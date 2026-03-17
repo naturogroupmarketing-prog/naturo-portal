@@ -376,6 +376,7 @@ export async function updateAsset(formData: FormData) {
   const isHighValue = formData.get("isHighValue") === "true";
   const notes = (formData.get("notes") as string)?.trim();
   const status = formData.get("status") as AssetStatus;
+  const imageUrl = formData.get("imageUrl") as string | null;
 
   const asset = await db.asset.findUnique({ where: { id: assetId } });
   if (!asset) throw new Error("Asset not found");
@@ -392,21 +393,28 @@ export async function updateAsset(formData: FormData) {
     }
   }
 
+  const updateData: Record<string, unknown> = {
+    name,
+    category,
+    regionId,
+    serialNumber: serialNumber || null,
+    description: description || null,
+    purchaseDate: purchaseDate ? new Date(purchaseDate) : null,
+    purchaseCost: purchaseCost ? parseFloat(purchaseCost) : null,
+    supplier: supplier || null,
+    isHighValue,
+    notes: notes || null,
+    status,
+  };
+
+  // Only update imageUrl if it was explicitly provided in the form
+  if (formData.has("imageUrl")) {
+    updateData.imageUrl = imageUrl || null;
+  }
+
   const updated = await db.asset.update({
     where: { id: assetId },
-    data: {
-      name,
-      category,
-      regionId,
-      serialNumber: serialNumber || null,
-      description: description || null,
-      purchaseDate: purchaseDate ? new Date(purchaseDate) : null,
-      purchaseCost: purchaseCost ? parseFloat(purchaseCost) : null,
-      supplier: supplier || null,
-      isHighValue,
-      notes: notes || null,
-      status,
-    },
+    data: updateData,
   });
 
   await createAuditLog({

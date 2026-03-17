@@ -141,6 +141,13 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const [suggestingCategory, setSuggestingCategory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Image upload state for edit modal
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editImageRemoved, setEditImageRemoved] = useState(false);
+  const [editUploading, setEditUploading] = useState(false);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
+
   const [regionFilter, setRegionFilter] = useState(initialRegion || "ALL");
 
   // Clear selection when filters change so hidden items aren't selected
@@ -279,6 +286,20 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     } catch (err) {
       setEquipmentError(err instanceof Error ? err.message : "Failed to remove equipment");
     }
+  };
+
+  const handleEditImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File too large. Max 5MB.");
+      return;
+    }
+    setEditImageFile(file);
+    setEditImageRemoved(false);
+    const reader = new FileReader();
+    reader.onload = () => setEditImagePreview(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1051,16 +1072,87 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       </Modal>
 
       {/* Edit Asset Modal */}
-      <Modal open={!!editAsset} onClose={() => setEditAsset(null)} title={`Edit: ${editAsset?.name}`}>
+      <Modal open={!!editAsset} onClose={() => { setEditAsset(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }} title={`Edit: ${editAsset?.name}`}>
         {editAsset && (
           <form
             action={async (fd) => {
-              await updateAsset(fd);
-              setEditAsset(null);
+              setEditUploading(true);
+              try {
+                // Handle image upload/removal
+                if (editImageFile) {
+                  const uploadData = new FormData();
+                  uploadData.append("file", editImageFile);
+                  const res = await fetch("/api/upload", { method: "POST", body: uploadData });
+                  if (res.ok) {
+                    const { url } = await res.json();
+                    fd.set("imageUrl", url);
+                  }
+                } else if (editImageRemoved) {
+                  fd.set("imageUrl", "");
+                }
+                await updateAsset(fd);
+                setEditAsset(null);
+                setEditImagePreview(null);
+                setEditImageFile(null);
+                setEditImageRemoved(false);
+              } finally {
+                setEditUploading(false);
+              }
             }}
             className="space-y-4"
           >
             <input type="hidden" name="assetId" value={editAsset.id} />
+
+            {/* Image Upload/Edit */}
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Photo</label>
+              <div className="flex items-start gap-4">
+                {(editImagePreview || (!editImageRemoved && editAsset.imageUrl)) ? (
+                  <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200">
+                    <img src={editImagePreview || editAsset.imageUrl!} alt="Preview" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => { setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(true); if (editFileInputRef.current) editFileInputRef.current.value = ""; }}
+                      className="absolute top-1 right-1 w-5 h-5 bg-black/50 rounded-full flex items-center justify-center text-white text-xs hover:bg-black/70"
+                    >
+                      x
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => editFileInputRef.current?.click()}
+                    className="w-24 h-24 rounded-xl border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
+                  >
+                    <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                    </svg>
+                    <span className="text-xs">Add Photo</span>
+                  </button>
+                )}
+                <div>
+                  <input
+                    ref={editFileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/heic"
+                    onChange={handleEditImageSelect}
+                    className="hidden"
+                  />
+                  {(editImagePreview || (!editImageRemoved && editAsset.imageUrl)) && (
+                    <button
+                      type="button"
+                      onClick={() => editFileInputRef.current?.click()}
+                      className="text-xs text-action-500 hover:text-action-600 font-medium"
+                    >
+                      Change photo
+                    </button>
+                  )}
+                  <p className="text-xs text-shark-400 mt-1">JPEG, PNG, WebP or HEIC. Max 5MB.</p>
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
               <Input name="name" required defaultValue={editAsset.name} />
@@ -1128,8 +1220,10 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               <textarea name="notes" defaultValue={editAsset.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="secondary" onClick={() => setEditAsset(null)}>Cancel</Button>
-              <Button type="submit">Save Changes</Button>
+              <Button type="button" variant="secondary" onClick={() => { setEditAsset(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }}>Cancel</Button>
+              <Button type="submit" disabled={editUploading}>
+                {editUploading ? "Saving..." : "Save Changes"}
+              </Button>
             </div>
           </form>
         )}
