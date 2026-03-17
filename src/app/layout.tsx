@@ -4,7 +4,7 @@ import { PWARegister } from "@/components/pwa-register";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
-const exo = Exo({ subsets: ["latin"], variable: "--font-exo", weight: ["700", "800"] });
+const exo = Exo({ subsets: ["latin"], variable: "--font-exo", weight: ["600", "700", "800"] });
 
 export const metadata: Metadata = {
   title: "Trackio",

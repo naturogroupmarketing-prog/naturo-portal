@@ -8,8 +8,8 @@ export function Logo({ size = 32, className = "" }: LogoProps) {
 
   return (
     <span
-      className={`font-exo font-bold text-action-500 select-none ${className}`}
-      style={{ fontSize: `${fontSize}px`, lineHeight: 1, fontWeight: 700 }}
+      className={`font-exo font-semibold text-action-500 select-none ${className}`}
+      style={{ fontSize: `${fontSize}px`, lineHeight: 1, fontWeight: 600 }}
     >
       trackio
     </span>
