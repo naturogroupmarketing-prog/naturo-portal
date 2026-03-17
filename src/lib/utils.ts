@@ -38,7 +38,7 @@ export function statusColor(status: string): string {
     DAMAGED: "bg-red-50 text-red-700 ring-1 ring-red-600/20",
     LOST: "bg-shark-50 text-shark-600 ring-1 ring-shark-500/20",
     UNAVAILABLE: "bg-shark-100 text-shark-500 ring-1 ring-shark-400/20",
-    PENDING: "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20",
+    PENDING: "bg-amber-100 text-amber-800 ring-1 ring-amber-600/30",
     APPROVED: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20",
     REJECTED: "bg-red-50 text-red-700 ring-1 ring-red-600/20",
     ISSUED: "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20",

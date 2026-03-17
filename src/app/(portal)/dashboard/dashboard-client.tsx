@@ -226,11 +226,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <p className="text-xs text-shark-400">Lost</p>
                           </div>
                         </Link>
-                        <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 hover:bg-amber-100 transition-colors">
-                          <Icon name="clipboard" size={14} className="text-amber-500" />
+                        <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 hover:bg-amber-200 transition-colors">
+                          <Icon name="clipboard" size={14} className="text-amber-600" />
                           <div>
-                            <p className="text-lg font-bold text-amber-600">{region.pendingRequests}</p>
-                            <p className="text-xs text-amber-400">Pending Requests</p>
+                            <p className="text-lg font-bold text-amber-700">{region.pendingRequests}</p>
+                            <p className="text-xs text-amber-600">Pending Requests</p>
                           </div>
                         </Link>
                         <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-purple-50 px-3 py-2 hover:bg-purple-100 transition-colors">
