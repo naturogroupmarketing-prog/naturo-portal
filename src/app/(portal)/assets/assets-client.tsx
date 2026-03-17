@@ -288,31 +288,64 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     }
   };
 
-  const handleEditImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      alert("File too large. Max 5MB.");
-      return;
-    }
-    setEditImageFile(file);
-    setEditImageRemoved(false);
-    const reader = new FileReader();
-    reader.onload = () => setEditImagePreview(reader.result as string);
-    reader.readAsDataURL(file);
+  // Resize & compress image client-side to keep base64 under Vercel's body limit
+  const compressImage = (file: File, maxDim = 800, quality = 0.7): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Failed to read file"));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error("Failed to load image"));
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+            else { width = Math.round(width * maxDim / height); height = maxDim; }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d")!;
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.src = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEditImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      alert("File too large. Max 5MB.");
+    if (file.size > 10 * 1024 * 1024) {
+      alert("File too large. Max 10MB.");
       return;
     }
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = () => setImagePreview(reader.result as string);
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImage(file);
+      setEditImageFile(file);
+      setEditImageRemoved(false);
+      setEditImagePreview(compressed);
+    } catch {
+      alert("Failed to process image. Try a different file.");
+    }
+  };
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      alert("File too large. Max 10MB.");
+      return;
+    }
+    try {
+      const compressed = await compressImage(file);
+      setImageFile(file);
+      setImagePreview(compressed);
+    } catch {
+      alert("Failed to process image. Try a different file.");
+    }
   };
 
   const handleSuggestCategory = async () => {
@@ -348,14 +381,9 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const handleCreateSubmit = async (fd: FormData) => {
     setUploading(true);
     try {
-      if (imageFile) {
-        const uploadData = new FormData();
-        uploadData.append("file", imageFile);
-        const res = await fetch("/api/upload", { method: "POST", body: uploadData });
-        if (res.ok) {
-          const { url } = await res.json();
-          fd.set("imageUrl", url);
-        }
+      // Use the already-compressed base64 preview directly (no separate upload needed)
+      if (imagePreview) {
+        fd.set("imageUrl", imagePreview);
       }
       await createAsset(fd);
       setShowCreate(false);
@@ -1078,15 +1106,9 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             action={async (fd) => {
               setEditUploading(true);
               try {
-                // Handle image upload/removal
-                if (editImageFile) {
-                  const uploadData = new FormData();
-                  uploadData.append("file", editImageFile);
-                  const res = await fetch("/api/upload", { method: "POST", body: uploadData });
-                  if (res.ok) {
-                    const { url } = await res.json();
-                    fd.set("imageUrl", url);
-                  }
+                // Use the already-compressed base64 preview directly
+                if (editImagePreview) {
+                  fd.set("imageUrl", editImagePreview);
                 } else if (editImageRemoved) {
                   fd.set("imageUrl", "");
                 }
