@@ -2,7 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "buildCommand": "npx prisma generate && next build",
-  "regions": ["syd1"],
   "headers": [
     {
       "source": "/sw.js",
