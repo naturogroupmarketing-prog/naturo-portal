@@ -1,0 +1,156 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Icon, type IconName } from "@/components/ui/icon";
+import { Logo } from "@/components/ui/logo";
+import { Role } from "@/generated/prisma/browser";
+
+interface SidebarProps {
+  role: Role;
+  onClose?: () => void;
+}
+
+interface NavItem {
+  label: string;
+  href: string;
+  icon: IconName;
+  roles: Role[];
+}
+
+interface NavSection {
+  heading?: string;
+  roles: Role[];
+  items: NavItem[];
+}
+
+const navSections: NavSection[] = [
+  {
+    roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
+    items: [
+      { label: "Dashboard", href: "/dashboard", icon: "dashboard", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+    ],
+  },
+  {
+    heading: "Manage",
+    roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
+    items: [
+      { label: "Assets", href: "/assets", icon: "package", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+      { label: "Consumables", href: "/consumables", icon: "droplet", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+      { label: "Purchase Orders", href: "/purchase-orders", icon: "truck", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+      { label: "Staff", href: "/staff", icon: "users", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+      { label: "Reports", href: "/reports", icon: "clipboard", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+    ],
+  },
+  {
+    heading: "Recent Activity",
+    roles: ["SUPER_ADMIN"],
+    items: [
+      { label: "Activity Log", href: "/activity", icon: "clock", roles: ["SUPER_ADMIN"] },
+    ],
+  },
+  {
+    heading: "Admin",
+    roles: ["SUPER_ADMIN"],
+    items: [
+      { label: "Users", href: "/admin/users", icon: "settings", roles: ["SUPER_ADMIN"] },
+      { label: "Permissions", href: "/admin/permissions", icon: "shield", roles: ["SUPER_ADMIN"] },
+      { label: "Locations", href: "/admin/locations", icon: "map-pin", roles: ["SUPER_ADMIN"] },
+      { label: "Import Data", href: "/admin/import", icon: "upload", roles: ["SUPER_ADMIN"] },
+    ],
+  },
+  // Staff sections
+  {
+    roles: ["STAFF"],
+    items: [
+      { label: "Dashboard", href: "/dashboard", icon: "dashboard", roles: ["STAFF"] },
+      { label: "My Assets", href: "/my-assets", icon: "package", roles: ["STAFF"] },
+      { label: "My Consumables", href: "/my-consumables", icon: "droplet", roles: ["STAFF"] },
+      { label: "My Requests", href: "/my-requests", icon: "clipboard", roles: ["STAFF"] },
+    ],
+  },
+  {
+    heading: "Actions",
+    roles: ["STAFF"],
+    items: [
+      { label: "Request Consumables", href: "/request-consumables", icon: "plus", roles: ["STAFF"] },
+      { label: "Report Damage/Loss", href: "/report-damage", icon: "alert-triangle", roles: ["STAFF"] },
+    ],
+  },
+  // Help — visible to all roles
+  {
+    heading: "Support",
+    roles: ["SUPER_ADMIN", "BRANCH_MANAGER", "STAFF"],
+    items: [
+      { label: "Help", href: "/help", icon: "help-circle", roles: ["SUPER_ADMIN", "BRANCH_MANAGER", "STAFF"] },
+    ],
+  },
+];
+
+export function Sidebar({ role, onClose }: SidebarProps) {
+  const pathname = usePathname();
+
+  return (
+    <nav className="flex flex-col h-full">
+      <div className="flex items-center justify-between px-5 py-5 border-b border-shark-100">
+        <div className="flex items-center gap-2.5">
+          <Logo size={32} />
+          <div>
+            <h1 className="text-sm font-bold text-shark-900 leading-tight">Check It Out</h1>
+            <p className="text-xs text-shark-400 leading-tight">Asset Consumable Tracker</p>
+          </div>
+        </div>
+        {onClose && (
+          <button onClick={onClose} className="text-shark-400 hover:text-shark-700 lg:hidden">
+            <Icon name="x" size={20} />
+          </button>
+        )}
+      </div>
+      <div className="flex-1 overflow-y-auto py-3 px-3">
+        {navSections
+          .filter((section) => section.roles.includes(role))
+          .map((section, sIdx) => {
+            const visibleItems = section.items.filter((item) => item.roles.includes(role));
+            if (visibleItems.length === 0) return null;
+
+            return (
+              <div key={sIdx} className={sIdx > 0 ? "mt-4" : ""}>
+                {section.heading && (
+                  <p className="px-3 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-shark-400">
+                    {section.heading}
+                  </p>
+                )}
+                <div className="space-y-0.5">
+                  {visibleItems.map((item) => {
+                    const active = pathname === item.href || pathname.startsWith(item.href + "/");
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={onClose}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-150",
+                          active
+                            ? "bg-action-50 text-action-600 font-medium"
+                            : "text-shark-600 hover:bg-shark-50 hover:text-shark-900"
+                        )}
+                      >
+                        <Icon name={item.icon} size={18} className={active ? "text-action-500" : "text-shark-400"} />
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+      </div>
+      <div className="border-t border-shark-100 px-5 py-3">
+        <p className="text-xs text-shark-400">
+          {role.replace(/_/g, " ")}
+        </p>
+      </div>
+    </nav>
+  );
+}

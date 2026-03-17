@@ -1,0 +1,22 @@
+import { cn } from "@/lib/utils";
+import { SelectHTMLAttributes, forwardRef } from "react";
+
+const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSelectElement>>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <select
+        ref={ref}
+        className={cn(
+          "w-full rounded-xl border border-shark-200 bg-white px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 disabled:bg-shark-50 disabled:text-shark-400 transition-colors",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </select>
+    );
+  }
+);
+
+Select.displayName = "Select";
+export { Select };

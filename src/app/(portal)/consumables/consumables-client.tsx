@@ -1,0 +1,1060 @@
+"use client";
+
+import { useState, useRef } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
+import { Modal } from "@/components/ui/modal";
+import { Icon, type IconName } from "@/components/ui/icon";
+import { createConsumable, updateConsumable, addStock, approveRequest, issueConsumable, assignConsumable, returnConsumable, bulkDeleteConsumables } from "@/app/actions/consumables";
+import { createCategory, updateCategory, deleteCategory } from "@/app/actions/categories";
+import { formatDate } from "@/lib/utils";
+
+// Color palette auto-assigned by category index
+const SECTION_COLORS = [
+  { color: "text-blue-600", bg: "bg-blue-50" },
+  { color: "text-amber-600", bg: "bg-amber-50" },
+  { color: "text-cyan-600", bg: "bg-cyan-50" },
+  { color: "text-red-600", bg: "bg-red-50" },
+  { color: "text-emerald-600", bg: "bg-emerald-50" },
+  { color: "text-violet-600", bg: "bg-violet-50" },
+  { color: "text-gray-600", bg: "bg-gray-100" },
+  { color: "text-orange-600", bg: "bg-orange-50" },
+  { color: "text-pink-600", bg: "bg-pink-50" },
+  { color: "text-lime-600", bg: "bg-lime-50" },
+  { color: "text-yellow-600", bg: "bg-yellow-50" },
+  { color: "text-indigo-600", bg: "bg-indigo-50" },
+  { color: "text-teal-600", bg: "bg-teal-50" },
+  { color: "text-rose-600", bg: "bg-rose-50" },
+  { color: "text-sky-600", bg: "bg-sky-50" },
+];
+
+interface CategoryDef {
+  id: string;
+  name: string;
+  type: string;
+  sortOrder: number;
+}
+
+interface ConsumableAssignment {
+  id: string;
+  quantity: number;
+  assignedDate: string;
+  isActive: boolean;
+  user: { id: string; name: string | null; email: string };
+}
+
+interface Consumable {
+  id: string;
+  name: string;
+  category: string;
+  unitType: string;
+  imageUrl: string | null;
+  quantityOnHand: number;
+  minimumThreshold: number;
+  reorderLevel: number;
+  supplier: string | null;
+  unitCost: number | null;
+  notes: string | null;
+  region: { id: string; name: string; state: { name: string } };
+  assignments: ConsumableAssignment[];
+}
+
+interface Request {
+  id: string;
+  quantity: number;
+  status: string;
+  notes: string | null;
+  consumable: { name: string; unitType: string; quantityOnHand: number };
+  user: { id: string; name: string | null; email: string };
+  createdAt: string;
+}
+
+const REGION_COLORS = [
+  { color: "text-blue-600", bg: "bg-blue-50" },
+  { color: "text-emerald-600", bg: "bg-emerald-50" },
+  { color: "text-amber-600", bg: "bg-amber-50" },
+  { color: "text-cyan-600", bg: "bg-cyan-50" },
+  { color: "text-red-600", bg: "bg-red-50" },
+  { color: "text-violet-600", bg: "bg-violet-50" },
+  { color: "text-pink-600", bg: "bg-pink-50" },
+  { color: "text-orange-600", bg: "bg-orange-50" },
+  { color: "text-lime-600", bg: "bg-lime-50" },
+  { color: "text-teal-600", bg: "bg-teal-50" },
+];
+
+interface ConsumablesClientProps {
+  consumables: Consumable[];
+  pendingRequests: Request[];
+  regions: Array<{ id: string; name: string; state: { name: string } }>;
+  users: Array<{ id: string; name: string | null; email: string }>;
+  categories: CategoryDef[];
+  isSuperAdmin: boolean;
+  initialTab?: string;
+}
+
+export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, initialTab }: ConsumablesClientProps) {
+  const [showCreate, setShowCreate] = useState(false);
+  const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
+  const [showAssign, setShowAssign] = useState<Consumable | null>(null);
+  const [showReturn, setShowReturn] = useState<{ assignment: ConsumableAssignment; consumable: Consumable } | null>(null);
+  const [showImage, setShowImage] = useState<Consumable | null>(null);
+  const [editConsumable, setEditConsumable] = useState<Consumable | null>(null);
+  const [search, setSearch] = useState("");
+  const [tab, setTab] = useState<"stock" | "requests">(initialTab === "requests" ? "requests" : "stock");
+
+  // Collapsed sections state
+  const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+
+  const toggleRegion = (id: string) => {
+    setCollapsedRegions((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleCategory = (key: string) => {
+    setCollapsedCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key); else next.add(key);
+      return next;
+    });
+  };
+
+  // Checkbox delete state
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showBulkDelete, setShowBulkDelete] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+
+  // Manage sections state
+  const [showManageSections, setShowManageSections] = useState(false);
+  const [newSectionName, setNewSectionName] = useState("");
+  const [addingSectionError, setAddingSectionError] = useState("");
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
+  const [editingSectionName, setEditingSectionName] = useState("");
+
+  // Image upload state for create modal
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [suggestingCategory, setSuggestingCategory] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Clear selection when filters change so hidden items aren't selected
+  const setSearchAndClear = (v: string) => { setSearch(v); setSelectedIds(new Set()); };
+
+  const filtered = consumables.filter(
+    (c) =>
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.category.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // Group filtered consumables by category (using dynamic categories)
+  const groupedConsumables = categories.map((cat, idx) => {
+    const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
+    return {
+      name: cat.name,
+      ...colors,
+      items: filtered.filter((c) => c.category === cat.name),
+    };
+  });
+
+  // Deletable items = items without active assignments
+  const deletableIds = new Set(
+    consumables.filter((c) => (c.assignments || []).length === 0).map((c) => c.id)
+  );
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = (sectionItems: Consumable[]) => {
+    const deletable = sectionItems.filter((c) => deletableIds.has(c.id));
+    const allSelected = deletable.every((c) => selectedIds.has(c.id));
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (allSelected) {
+        deletable.forEach((c) => next.delete(c.id));
+      } else {
+        deletable.forEach((c) => next.add(c.id));
+      }
+      return next;
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    setBulkDeleting(true);
+    try {
+      // Only delete items that are currently visible (matching filters)
+      const filteredIds = new Set(filtered.map((c) => c.id));
+      const idsToDelete = Array.from(selectedIds).filter((id) => filteredIds.has(id));
+      const result = await bulkDeleteConsumables(idsToDelete);
+      if (result.errors.length > 0) {
+        alert(`Deleted ${result.deleted} consumable(s). Errors:\n${result.errors.join("\n")}`);
+      }
+      setSelectedIds(new Set());
+      setShowBulkDelete(false);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Delete failed");
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
+  const handleAddSection = async () => {
+    if (!newSectionName.trim()) return;
+    setAddingSectionError("");
+    try {
+      const fd = new FormData();
+      fd.set("name", newSectionName.trim());
+      fd.set("type", "CONSUMABLE");
+      await createCategory(fd);
+      setNewSectionName("");
+    } catch (err) {
+      setAddingSectionError(err instanceof Error ? err.message : "Failed to add section");
+    }
+  };
+
+  const handleDeleteSection = async (catId: string) => {
+    setAddingSectionError("");
+    try {
+      const fd = new FormData();
+      fd.set("id", catId);
+      await deleteCategory(fd);
+    } catch (err) {
+      setAddingSectionError(err instanceof Error ? err.message : "Failed to delete section");
+    }
+  };
+
+  const handleEditSection = async (catId: string) => {
+    if (!editingSectionName.trim()) return;
+    setAddingSectionError("");
+    try {
+      const fd = new FormData();
+      fd.set("id", catId);
+      fd.set("name", editingSectionName.trim());
+      await updateCategory(fd);
+      setEditingSectionId(null);
+      setEditingSectionName("");
+    } catch (err) {
+      setAddingSectionError(err instanceof Error ? err.message : "Failed to rename section");
+    }
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File too large. Max 5MB.");
+      return;
+    }
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = () => setImagePreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleSuggestCategory = async () => {
+    const nameInput = document.querySelector<HTMLInputElement>('input[name="name"]');
+    const name = nameInput?.value;
+    if (!name) return;
+    setSuggestingCategory(true);
+    try {
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{
+            role: "user",
+            content: `Suggest the best category for a new CONSUMABLE named "${name}". Available categories: ${categories.map(c => c.name).join(", ")}. Reply with ONLY the category name, nothing else.`,
+          }],
+        }),
+      });
+      const data = await res.json();
+      const suggested = data.response?.trim();
+      const match = categories.find(c => c.name.toLowerCase() === suggested?.toLowerCase());
+      if (match) {
+        const select = document.querySelector<HTMLSelectElement>('select[name="category"]');
+        if (select) {
+          select.value = match.name;
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      }
+    } catch { /* silent fail */ }
+    finally { setSuggestingCategory(false); }
+  };
+
+  const handleCreateSubmit = async (fd: FormData) => {
+    setUploading(true);
+    try {
+      if (imageFile) {
+        const uploadData = new FormData();
+        uploadData.append("file", imageFile);
+        const res = await fetch("/api/upload", { method: "POST", body: uploadData });
+        if (res.ok) {
+          const { url } = await res.json();
+          fd.set("imageUrl", url);
+        }
+      }
+      await createConsumable(fd);
+      setShowCreate(false);
+      setImagePreview(null);
+      setImageFile(null);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const renderConsumableTable = (sectionItems: Consumable[]) => {
+    const deletableInSection = sectionItems.filter((c) => deletableIds.has(c.id));
+    const allSelected = deletableInSection.length > 0 && deletableInSection.every((c) => selectedIds.has(c.id));
+    const someSelected = deletableInSection.some((c) => selectedIds.has(c.id));
+
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-shark-100">
+              <th className="px-3 py-3 text-left w-10">
+                {deletableInSection.length > 0 && (
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }}
+                    onChange={() => toggleSelectAll(sectionItems)}
+                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                  />
+                )}
+              </th>
+              <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sectionItems.map((c) => {
+              const activeAssignments = c.assignments || [];
+              const canDelete = deletableIds.has(c.id);
+              return (
+                <tr key={c.id} onClick={() => setEditConsumable(c)} className={`border-b border-shark-50 hover:bg-shark-50/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""}`}>
+                  <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
+                    {canDelete ? (
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(c.id)}
+                        onChange={() => toggleSelect(c.id)}
+                        className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                      />
+                    ) : (
+                      <div className="w-4" />
+                    )}
+                  </td>
+                  <td className="px-3 py-2">
+                    {c.imageUrl ? (
+                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100">
+                        <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" />
+                      </div>
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-shark-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+                        </svg>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="font-medium text-shark-800">{c.name}</span>
+                    <span className="text-shark-400 ml-1 text-xs">({c.unitType})</span>
+                  </td>
+                  <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">
+                    {c.region.state.name} / {c.region.name}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>
+                      {c.quantityOnHand}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-shark-500 hidden md:table-cell">
+                    {activeAssignments.length > 0 ? (
+                      <div className="space-y-0.5">
+                        {activeAssignments.map((a) => (
+                          <div key={a.id} className="text-xs">
+                            {a.user.name || a.user.email} <span className="text-shark-400">({a.quantity})</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-shark-400">{"\u2014"}</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button size="sm" variant="outline" onClick={() => setShowAddStock(c)}>+ Stock</Button>
+                      <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
+                      {activeAssignments.length > 0 && (
+                        <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}>
+                          Return
+                        </Button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+            {sectionItems.length === 0 && (
+              <tr>
+                <td colSpan={7} className="px-4 py-6 text-center text-shark-400 text-sm">
+                  No items in this section.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-shark-900">Consumables</h1>
+          <p className="text-sm text-shark-400 mt-1">{consumables.length} total items</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowManageSections(true)}>
+            <Icon name="settings" size={14} className="mr-1.5" />
+            Sections
+          </Button>
+          <Button onClick={() => setShowCreate(true)}>+ New Consumable</Button>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 border-b border-shark-200">
+        <button
+          onClick={() => setTab("stock")}
+          className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+            tab === "stock" ? "border-action-400 text-action-500" : "border-transparent text-shark-400 hover:text-shark-700"
+          }`}
+        >
+          Stock Levels
+        </button>
+        <button
+          onClick={() => setTab("requests")}
+          className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+            tab === "requests" ? "border-action-400 text-action-500" : "border-transparent text-shark-400 hover:text-shark-700"
+          }`}
+        >
+          Requests {pendingRequests.length > 0 && (
+            <span className="ml-1.5 bg-action-400 text-white text-xs rounded-full px-2 py-0.5">
+              {pendingRequests.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {tab === "stock" && (
+        <>
+          {/* Search + Delete Selected */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <Input
+              placeholder="Search consumables..."
+              value={search}
+              onChange={(e) => setSearchAndClear(e.target.value)}
+              className="max-w-xs"
+            />
+            {selectedIds.size > 0 && (
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => setShowBulkDelete(true)}
+              >
+                Delete Selected ({selectedIds.size})
+              </Button>
+            )}
+          </div>
+
+          {/* Grouped Sections */}
+          {isSuperAdmin ? (
+            // Super Admin: group by region first, then category within each region
+            regions.map((region, rIdx) => {
+              const regionItems = filtered.filter((c) => c.region.id === region.id);
+              if (regionItems.length === 0 && search) return null;
+              const rc = REGION_COLORS[rIdx % REGION_COLORS.length];
+              const regionCollapsed = collapsedRegions.has(region.id);
+              return (
+                <div key={region.id} className="space-y-4">
+                  <button
+                    onClick={() => toggleRegion(region.id)}
+                    className="flex items-center gap-3 px-1 pt-2 w-full text-left group"
+                  >
+                    <div className={`w-9 h-9 rounded-xl ${rc.bg} flex items-center justify-center`}>
+                      <Icon name="map-pin" size={18} className={rc.color} />
+                    </div>
+                    <div className="flex items-center gap-2 flex-1">
+                      <h2 className="text-xl font-bold text-shark-900">{region.name}</h2>
+                      <span className="text-sm text-shark-400">{region.state.name}</span>
+                      <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                        {regionItems.length}
+                      </span>
+                    </div>
+                    <Icon
+                      name="chevron-down"
+                      size={18}
+                      className={`text-shark-400 group-hover:text-shark-600 transition-transform ${regionCollapsed ? "-rotate-90" : ""}`}
+                    />
+                  </button>
+
+                  {!regionCollapsed && (
+                    <>
+                      {categories.map((cat, idx) => {
+                        const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
+                        const catItems = regionItems.filter((c) => c.category === cat.name);
+                        if (catItems.length === 0) return null;
+                        const catKey = `${region.id}-${cat.name}`;
+                        const catCollapsed = collapsedCategories.has(catKey);
+                        return (
+                          <div key={cat.name} className="space-y-2 ml-4">
+                            <button
+                              onClick={() => toggleCategory(catKey)}
+                              className="flex items-center gap-3 px-1 w-full text-left group"
+                            >
+                              <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center`}>
+                                <Icon name="package" size={14} className={colors.color} />
+                              </div>
+                              <div className="flex items-center gap-2 flex-1">
+                                <h3 className="text-base font-semibold text-shark-900">{cat.name}</h3>
+                                <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                                  {catItems.length}
+                                </span>
+                              </div>
+                              <Icon
+                                name="chevron-down"
+                                size={16}
+                                className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
+                              />
+                            </button>
+                            {!catCollapsed && (
+                              <Card>
+                                {renderConsumableTable(catItems)}
+                              </Card>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {regionItems.length === 0 && (
+                        <p className="text-sm text-shark-400 ml-4 px-1">No consumables in this region.</p>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })
+          ) : (
+            // Branch Manager: group by category only
+            groupedConsumables.map((section) => {
+              if (search && section.items.length === 0) return null;
+              const catCollapsed = collapsedCategories.has(section.name);
+              return (
+                <div key={section.name} className="space-y-2">
+                  <button
+                    onClick={() => toggleCategory(section.name)}
+                    className="flex items-center gap-3 px-1 w-full text-left group"
+                  >
+                    <div className={`w-8 h-8 rounded-lg ${section.bg} flex items-center justify-center`}>
+                      <Icon name="package" size={16} className={section.color} />
+                    </div>
+                    <div className="flex items-center gap-2 flex-1">
+                      <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
+                      <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                        {section.items.length}
+                      </span>
+                    </div>
+                    <Icon
+                      name="chevron-down"
+                      size={16}
+                      className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
+                    />
+                  </button>
+                  {!catCollapsed && (
+                    <Card>
+                      {renderConsumableTable(section.items)}
+                    </Card>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </>
+      )}
+
+      {tab === "requests" && (
+        <Card>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-shark-100">
+                  <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>
+                  <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Requested By</th>
+                  <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>
+                  <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Date</th>
+                  <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingRequests.map((r) => (
+                  <tr key={r.id} className="border-b border-shark-50 hover:bg-shark-50/50">
+                    <td className="px-5 py-3.5 font-medium text-shark-800">{r.consumable.name}</td>
+                    <td className="px-5 py-3.5 text-shark-500">{r.user.name || r.user.email}</td>
+                    <td className="px-5 py-3.5 text-right font-medium text-shark-700">{r.quantity} {r.consumable.unitType}</td>
+                    <td className="px-5 py-3.5 text-shark-400 hidden md:table-cell">{formatDate(r.createdAt)}</td>
+                    <td className="px-5 py-3.5 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        {r.consumable.quantityOnHand < r.quantity ? (
+                          <span className="text-xs text-red-500 font-medium">
+                            Out of stock ({r.consumable.quantityOnHand} available)
+                          </span>
+                        ) : (
+                          <form action={async (fd) => {
+                            try { await issueConsumable(fd); }
+                            catch (e) { alert(e instanceof Error ? e.message : "Failed to assign"); }
+                          }}>
+                            <input type="hidden" name="requestId" value={r.id} />
+                            <Button size="sm" variant="primary" type="submit">Assign</Button>
+                          </form>
+                        )}
+                        <form action={async (fd) => { await approveRequest(fd); }}>
+                          <input type="hidden" name="requestId" value={r.id} />
+                          <input type="hidden" name="action" value="reject" />
+                          <Button size="sm" variant="danger" type="submit">Reject</Button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {pendingRequests.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-8 text-center text-gray-400">No pending requests.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* Bulk Delete Confirmation Modal */}
+      <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Consumables">
+        <div className="space-y-4">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+            <p className="text-sm text-red-800 font-medium">
+              Are you sure you want to delete {selectedIds.size} consumable{selectedIds.size > 1 ? "s" : ""}?
+            </p>
+            <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
+          </div>
+          <div className="bg-shark-50 rounded-xl p-4 max-h-40 overflow-y-auto">
+            {consumables
+              .filter((c) => selectedIds.has(c.id))
+              .map((c) => (
+                <div key={c.id} className="flex items-center gap-2 py-1">
+                  <span className="font-medium text-shark-800 text-sm">{c.name}</span>
+                  <span className="text-xs text-shark-400">{c.category}</span>
+                </div>
+              ))}
+          </div>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button type="button" variant="secondary" onClick={() => setShowBulkDelete(false)}>Cancel</Button>
+            <Button
+              variant="danger"
+              disabled={bulkDeleting}
+              onClick={handleBulkDelete}
+            >
+              {bulkDeleting ? "Deleting..." : `Delete ${selectedIds.size} Consumable${selectedIds.size > 1 ? "s" : ""}`}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Manage Sections Modal */}
+      <Modal open={showManageSections} onClose={() => { setShowManageSections(false); setAddingSectionError(""); setNewSectionName(""); setEditingSectionId(null); }} title="Manage Consumable Sections">
+        <div className="space-y-4">
+          <p className="text-sm text-shark-500">Add, rename, or remove sections for organising consumables.</p>
+
+          {/* Existing sections */}
+          <div className="space-y-1 max-h-60 overflow-y-auto">
+            {categories.map((cat, idx) => {
+              const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
+              const itemCount = consumables.filter((c) => c.category === cat.name).length;
+              const isEditing = editingSectionId === cat.id;
+              return (
+                <div key={cat.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50">
+                  {isEditing ? (
+                    <div className="flex items-center gap-2 flex-1 mr-2">
+                      <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center shrink-0`}>
+                        <Icon name="package" size={12} className={colors.color} />
+                      </div>
+                      <Input
+                        value={editingSectionName}
+                        onChange={(e) => setEditingSectionName(e.target.value)}
+                        className="flex-1 text-sm"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") { e.preventDefault(); handleEditSection(cat.id); }
+                          if (e.key === "Escape") { setEditingSectionId(null); setEditingSectionName(""); }
+                        }}
+                      />
+                      <Button size="sm" onClick={() => handleEditSection(cat.id)} disabled={!editingSectionName.trim()}>
+                        Save
+                      </Button>
+                      <button
+                        onClick={() => { setEditingSectionId(null); setEditingSectionName(""); }}
+                        className="text-shark-400 hover:text-shark-600 p-1"
+                      >
+                        <Icon name="x" size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-3">
+                        <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center`}>
+                          <Icon name="package" size={12} className={colors.color} />
+                        </div>
+                        <span className="text-sm font-medium text-shark-800">{cat.name}</span>
+                        <span className="text-xs text-shark-400">{itemCount} item{itemCount !== 1 ? "s" : ""}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => { setEditingSectionId(cat.id); setEditingSectionName(cat.name); setAddingSectionError(""); }}
+                          className="text-shark-400 hover:text-action-500 transition-colors p-1"
+                          title="Rename section"
+                        >
+                          <Icon name="edit" size={14} />
+                        </button>
+                        {itemCount === 0 && (
+                          <button
+                            onClick={() => handleDeleteSection(cat.id)}
+                            className="text-shark-400 hover:text-red-500 transition-colors p-1"
+                            title="Remove section"
+                          >
+                            <Icon name="x" size={14} />
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Add new section */}
+          <div className="border-t border-shark-100 pt-4">
+            <label className="block text-sm font-medium text-shark-700 mb-1">Add New Section</label>
+            <div className="flex gap-2">
+              <Input
+                value={newSectionName}
+                onChange={(e) => setNewSectionName(e.target.value)}
+                placeholder="Section name..."
+                className="flex-1"
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddSection(); } }}
+              />
+              <Button size="sm" onClick={handleAddSection} disabled={!newSectionName.trim()}>
+                Add
+              </Button>
+            </div>
+            {addingSectionError && (
+              <p className="text-xs text-red-500 mt-1">{addingSectionError}</p>
+            )}
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <Button variant="secondary" onClick={() => { setShowManageSections(false); setAddingSectionError(""); setNewSectionName(""); setEditingSectionId(null); }}>
+              Done
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Create Consumable Modal */}
+      <Modal open={showCreate} onClose={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }} title="Add New Consumable">
+        <form action={handleCreateSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Photo</label>
+            <div className="flex items-start gap-4">
+              {imagePreview ? (
+                <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200">
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => { setImagePreview(null); setImageFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+                    className="absolute top-1 right-1 w-5 h-5 bg-black/50 rounded-full flex items-center justify-center text-white text-xs hover:bg-black/70"
+                  >
+                    x
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-24 h-24 rounded-xl border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
+                >
+                  <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                  </svg>
+                  <span className="text-xs">Add Photo</span>
+                </button>
+              )}
+              <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic" onChange={handleImageSelect} className="hidden" />
+              <p className="text-xs text-shark-400 mt-1">JPEG, PNG, WebP or HEIC. Max 5MB.</p>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+            <Input name="name" required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Category *</label>
+            <div className="flex gap-2">
+              <Select name="category" required className="flex-1">
+                <option value="">Select category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.name}>{cat.name}</option>
+                ))}
+              </Select>
+              <Button type="button" variant="ghost" size="sm" onClick={handleSuggestCategory} disabled={suggestingCategory} title="AI suggest category">
+                {suggestingCategory ? "..." : "AI"}
+              </Button>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Unit Type *</label>
+              <Input name="unitType" required placeholder="e.g. boxes, packs, rolls" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Initial Qty</label>
+              <Input name="quantityOnHand" type="number" defaultValue="0" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Min Threshold</label>
+              <Input name="minimumThreshold" type="number" defaultValue="5" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Reorder Level</label>
+              <Input name="reorderLevel" type="number" defaultValue="10" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Region *</label>
+            <Select name="regionId" required>
+              <option value="">Select</option>
+              {regions.map((r) => (
+                <option key={r.id} value={r.id}>{r.state.name} / {r.name}</option>
+              ))}
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
+              <Input name="supplier" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Unit Cost (AUD)</label>
+              <Input name="unitCost" type="number" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button type="button" variant="secondary" onClick={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }}>Cancel</Button>
+            <Button type="submit" disabled={uploading}>{uploading ? "Uploading..." : "Add Consumable"}</Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Add Stock Modal */}
+      <Modal open={!!showAddStock} onClose={() => setShowAddStock(null)} title={`Add Stock: ${showAddStock?.name}`}>
+        {showAddStock && (
+          <form action={async (fd) => { await addStock(fd); setShowAddStock(null); }} className="space-y-4">
+            <input type="hidden" name="consumableId" value={showAddStock.id} />
+            <p className="text-sm text-gray-600">
+              Current stock: <strong>{showAddStock.quantityOnHand} {showAddStock.unitType}</strong>
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Quantity to Add *</label>
+              <Input name="quantity" type="number" min="1" required />
+            </div>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button type="button" variant="secondary" onClick={() => setShowAddStock(null)}>Cancel</Button>
+              <Button type="submit">Add Stock</Button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
+      {/* Assign Consumable Modal */}
+      <Modal open={!!showAssign} onClose={() => setShowAssign(null)} title={`Assign: ${showAssign?.name}`}>
+        {showAssign && (
+          <form action={async (fd) => { await assignConsumable(fd); setShowAssign(null); }} className="space-y-4">
+            <input type="hidden" name="consumableId" value={showAssign.id} />
+            <p className="text-sm text-gray-600">
+              Available stock: <strong>{showAssign.quantityOnHand} {showAssign.unitType}</strong>
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Assign to *</label>
+              <Select name="userId" required>
+                <option value="">Select staff member</option>
+                {users.map((u) => (
+                  <option key={u.id} value={u.id}>{u.name || u.email}</option>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Quantity *</label>
+              <Input name="quantity" type="number" min="1" max={showAssign.quantityOnHand} required />
+              <p className="text-xs text-gray-400 mt-1">Max: {showAssign.quantityOnHand}</p>
+            </div>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button type="button" variant="secondary" onClick={() => setShowAssign(null)}>Cancel</Button>
+              <Button type="submit">Assign</Button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
+      {/* Return Consumable Modal */}
+      <Modal open={!!showReturn} onClose={() => setShowReturn(null)} title={`Return: ${showReturn?.consumable.name}`}>
+        {showReturn && (
+          <form action={async (fd) => { await returnConsumable(fd); setShowReturn(null); }} className="space-y-4">
+            <input type="hidden" name="assignmentId" value={showReturn.assignment.id} />
+            <p className="text-sm text-gray-600">
+              Assigned to <strong>{showReturn.assignment.user.name || showReturn.assignment.user.email}</strong>
+              {" \u2014 "}{showReturn.assignment.quantity} {showReturn.consumable.unitType}
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Quantity Returning *</label>
+              <Input name="returnQuantity" type="number" min="1" max={showReturn.assignment.quantity} defaultValue={showReturn.assignment.quantity} required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Return Condition *</label>
+              <Select name="returnCondition" required>
+                <option value="">Select condition</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+                <option value="Damaged">Damaged</option>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
+              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
+            </div>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
+              <Button type="submit">Confirm Return</Button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
+      {/* Image Preview Modal */}
+      <Modal open={!!showImage} onClose={() => setShowImage(null)} title={showImage?.name || "Consumable Photo"}>
+        {showImage && showImage.imageUrl && (
+          <div className="text-center space-y-4">
+            <img src={showImage.imageUrl} alt={showImage.name} className="mx-auto max-w-full max-h-[60vh] rounded-xl object-contain" />
+            <div>
+              <p className="font-bold text-shark-900">{showImage.name}</p>
+              <p className="text-sm text-shark-400">{showImage.category} &middot; {showImage.unitType}</p>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Edit Consumable Modal */}
+      <Modal open={!!editConsumable} onClose={() => setEditConsumable(null)} title={`Edit: ${editConsumable?.name}`}>
+        {editConsumable && (
+          <form
+            action={async (fd) => {
+              await updateConsumable(fd);
+              setEditConsumable(null);
+            }}
+            className="space-y-4"
+          >
+            <input type="hidden" name="consumableId" value={editConsumable.id} />
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+              <Input name="name" required defaultValue={editConsumable.name} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Category *</label>
+              <Select name="category" required defaultValue={editConsumable.category}>
+                <option value="">Select category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.name}>{cat.name}</option>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Unit Type *</label>
+              <Input name="unitType" required defaultValue={editConsumable.unitType} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Region *</label>
+              <Select name="regionId" required defaultValue={editConsumable.region.id}>
+                <option value="">Select region</option>
+                {regions.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.state.name} / {r.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-shark-700 mb-1">Minimum Threshold</label>
+                <Input name="minimumThreshold" type="number" defaultValue={editConsumable.minimumThreshold} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-shark-700 mb-1">Reorder Level</label>
+                <Input name="reorderLevel" type="number" defaultValue={editConsumable.reorderLevel} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
+                <Input name="supplier" defaultValue={editConsumable.supplier || ""} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-shark-700 mb-1">Unit Cost (AUD)</label>
+                <Input name="unitCost" type="number" step="0.01" defaultValue={editConsumable.unitCost ?? ""} />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
+              <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            </div>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button type="button" variant="secondary" onClick={() => setEditConsumable(null)}>Cancel</Button>
+              <Button type="submit">Save Changes</Button>
+            </div>
+          </form>
+        )}
+      </Modal>
+    </div>
+  );
+}

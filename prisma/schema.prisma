@@ -1,0 +1,504 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── ENUMS ───────────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  BRANCH_MANAGER
+  STAFF
+}
+
+enum AssetStatus {
+  AVAILABLE
+  ASSIGNED
+  CHECKED_OUT
+  PENDING_RETURN
+  DAMAGED
+  LOST
+  UNAVAILABLE
+}
+
+enum AssignmentType {
+  PERMANENT
+  TEMPORARY
+}
+
+enum ConsumableRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ISSUED
+  CLOSED
+}
+
+enum PurchaseOrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ORDERED
+}
+
+enum AuditAction {
+  ASSET_CREATED
+  ASSET_UPDATED
+  ASSET_ASSIGNED
+  ASSET_CHECKED_OUT
+  ASSET_RETURNED
+  ASSET_ACKNOWLEDGED
+  ASSET_DAMAGED
+  ASSET_LOST
+  ASSET_MARKED_UNAVAILABLE
+  ASSET_MARKED_AVAILABLE
+  CONSUMABLE_CREATED
+  CONSUMABLE_UPDATED
+  CONSUMABLE_STOCK_ADDED
+  CONSUMABLE_STOCK_REDUCED
+  CONSUMABLE_REQUEST_CREATED
+  CONSUMABLE_REQUEST_APPROVED
+  CONSUMABLE_REQUEST_REJECTED
+  CONSUMABLE_REQUEST_ISSUED
+  CONSUMABLE_REQUEST_CLOSED
+  USER_CREATED
+  USER_UPDATED
+  USER_DISABLED
+  USER_ENABLED
+  CONSUMABLE_ASSIGNED
+  CONSUMABLE_RETURNED
+  CONSUMABLE_USED
+  DAMAGE_REPORTED
+  LOSS_REPORTED
+  PURCHASE_ORDER_CREATED
+  PURCHASE_ORDER_APPROVED
+  PURCHASE_ORDER_REJECTED
+  PURCHASE_ORDER_ORDERED
+  PURCHASE_ORDER_UPDATED
+}
+
+// ─── ORGANIZATION (Multi-Tenancy) ──────────────────────────
+
+enum SubscriptionPlan {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+}
+
+model Organization {
+  id                 String             @id @default(cuid())
+  name               String
+  slug               String             @unique
+  logo               String?
+  plan               SubscriptionPlan   @default(FREE)
+  subscriptionStatus SubscriptionStatus @default(TRIALING)
+  stripeCustomerId   String?            @unique
+  stripeSubscriptionId String?          @unique
+  trialEndsAt        DateTime?
+  maxUsers           Int                @default(5)
+  maxAssets          Int                @default(50)
+
+  users          User[]
+  states         State[]
+  regions        Region[]
+  assets         Asset[]
+  consumables    Consumable[]
+  categories     Category[]
+  purchaseOrders PurchaseOrder[]
+  auditLogs      AuditLog[]
+  damageReports  DamageReport[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── AUTH (NextAuth.js) ──────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── LOCATION HIERARCHY ─────────────────────────────────
+
+model State {
+  id             String       @id @default(cuid())
+  name           String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  regions        Region[]
+  createdAt      DateTime     @default(now())
+
+  @@unique([name, organizationId])
+  @@index([organizationId])
+}
+
+model Region {
+  id             String       @id @default(cuid())
+  name           String
+  stateId        String
+  organizationId String
+  state          State        @relation(fields: [stateId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assets         Asset[]
+  consumables    Consumable[]
+  users          User[]
+  purchaseOrders PurchaseOrder[]
+  createdAt      DateTime       @default(now())
+
+  @@unique([name, stateId])
+  @@index([organizationId])
+  @@index([stateId])
+}
+
+// ─── USERS ──────────────────────────────────────────────
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  role           Role      @default(STAFF)
+  regionId       String?
+  organizationId String?
+  isActive              Boolean   @default(true)
+  password              String?
+  dashboardPreferences  Json?
+
+  region       Region?       @relation(fields: [regionId], references: [id])
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  accounts               Account[]
+  sessions               Session[]
+  assetAssignments       AssetAssignment[]
+  consumableAssignments  ConsumableAssignment[]
+  consumableRequests     ConsumableRequest[]
+  damageReports          DamageReport[]
+  auditLogsPerformed     AuditLog[]              @relation("PerformedBy")
+  auditLogsTarget        AuditLog[]              @relation("TargetUser")
+  permissions            ManagerPermission?
+  purchaseOrdersCreated  PurchaseOrder[]         @relation("POCreatedBy")
+  purchaseOrdersApproved PurchaseOrder[]         @relation("POApprovedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([regionId])
+  @@index([role])
+  @@index([organizationId])
+}
+
+// ─── ASSETS ─────────────────────────────────────────────
+
+model Asset {
+  id             String      @id @default(cuid())
+  assetCode      String      @unique
+  name           String
+  category       String
+  description    String?
+  serialNumber   String?
+  imageUrl       String?
+  qrCodeData     String?
+  regionId       String
+  organizationId String
+  status         AssetStatus @default(AVAILABLE)
+  isHighValue    Boolean     @default(false)
+  purchaseDate   DateTime?
+  purchaseCost   Float?
+  supplier       String?
+  notes          String?     @db.Text
+
+  region       Region       @relation(fields: [regionId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assignments   AssetAssignment[]
+  damageReports DamageReport[]
+  photos        AssetPhoto[]
+  auditLogs     AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([regionId])
+  @@index([status])
+  @@index([category])
+  @@index([organizationId])
+}
+
+model AssetPhoto {
+  id        String   @id @default(cuid())
+  assetId   String
+  url       String
+  caption   String?
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model AssetAssignment {
+  id                 String         @id @default(cuid())
+  assetId            String
+  userId             String
+  assignmentType     AssignmentType
+  checkoutDate       DateTime       @default(now())
+  expectedReturnDate DateTime?
+  actualReturnDate   DateTime?
+  returnCondition    String?
+  returnNotes        String?        @db.Text
+  acknowledgedAt     DateTime?
+  isActive           Boolean        @default(true)
+
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([assetId, isActive])
+  @@index([userId, isActive])
+}
+
+// ─── CONSUMABLES ────────────────────────────────────────
+
+model Consumable {
+  id               String  @id @default(cuid())
+  name             String
+  category         String
+  unitType         String
+  imageUrl         String?
+  quantityOnHand   Int     @default(0)
+  minimumThreshold Int     @default(5)
+  reorderLevel     Int     @default(10)
+  regionId         String
+  organizationId   String
+  supplier         String?
+  unitCost         Float?
+  notes            String? @db.Text
+  isActive         Boolean @default(true)
+
+  region       Region       @relation(fields: [regionId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requests       ConsumableRequest[]
+  assignments    ConsumableAssignment[]
+  purchaseOrders PurchaseOrder[]
+  auditLogs      AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, regionId])
+  @@index([regionId])
+  @@index([category])
+  @@index([organizationId])
+}
+
+model ConsumableRequest {
+  id            String                  @id @default(cuid())
+  consumableId  String
+  userId        String
+  quantity      Int
+  status        ConsumableRequestStatus @default(PENDING)
+  notes         String?                 @db.Text
+  approvedById  String?
+  approvedAt    DateTime?
+  issuedAt      DateTime?
+  rejectionNote String?
+
+  consumable Consumable @relation(fields: [consumableId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([consumableId])
+  @@index([status])
+}
+
+model ConsumableAssignment {
+  id              String    @id @default(cuid())
+  consumableId    String
+  userId          String
+  quantity        Int
+  assignedDate    DateTime  @default(now())
+  returnedDate    DateTime?
+  returnCondition String?
+  returnNotes     String?   @db.Text
+  isActive        Boolean   @default(true)
+
+  consumable Consumable @relation(fields: [consumableId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([consumableId, isActive])
+  @@index([userId, isActive])
+}
+
+// ─── DAMAGE / LOSS REPORTS ──────────────────────────────
+
+model DamageReport {
+  id             String  @id @default(cuid())
+  assetId        String
+  reportedById   String
+  organizationId String
+  type           String // "DAMAGE" or "LOSS"
+  description    String  @db.Text
+  photoUrl       String?
+  isResolved     Boolean @default(false)
+
+  asset        Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  reportedBy   User         @relation(fields: [reportedById], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([assetId])
+  @@index([reportedById])
+  @@index([organizationId])
+  @@index([isResolved])
+}
+
+// ─── CATEGORIES ────────────────────────────────────────
+
+model Category {
+  id             String   @id @default(cuid())
+  name           String
+  type           String // "ASSET" or "CONSUMABLE"
+  organizationId String
+  sortOrder      Int      @default(0)
+  equipment      String[] @default([])
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([name, type, organizationId])
+  @@index([organizationId])
+}
+
+// ─── PURCHASE ORDERS ────────────────────────────────────
+
+model PurchaseOrder {
+  id             String              @id @default(cuid())
+  consumableId   String
+  regionId       String
+  organizationId String
+  quantity       Int
+  supplier       String?
+  status         PurchaseOrderStatus @default(PENDING)
+  createdById    String?
+  approvedById   String?
+  approvedAt     DateTime?
+  notes          String?             @db.Text
+
+  consumable   Consumable   @relation(fields: [consumableId], references: [id])
+  region       Region       @relation(fields: [regionId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("POCreatedBy", fields: [createdById], references: [id])
+  approvedBy   User?        @relation("POApprovedBy", fields: [approvedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([regionId])
+  @@index([consumableId])
+  @@index([organizationId])
+  @@index([createdById])
+}
+
+// ─── AUDIT LOG ──────────────────────────────────────────
+
+model AuditLog {
+  id             String      @id @default(cuid())
+  action         AuditAction
+  description    String      @db.Text
+  performedById  String
+  targetUserId   String?
+  assetId        String?
+  consumableId   String?
+  organizationId String?
+  metadata       String?     @db.Text // JSON string for extra data
+
+  performedBy  User          @relation("PerformedBy", fields: [performedById], references: [id])
+  targetUser   User?         @relation("TargetUser", fields: [targetUserId], references: [id])
+  asset        Asset?        @relation(fields: [assetId], references: [id])
+  consumable   Consumable?   @relation(fields: [consumableId], references: [id])
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([action])
+  @@index([assetId])
+  @@index([consumableId])
+  @@index([performedById])
+  @@index([targetUserId])
+  @@index([createdAt])
+  @@index([organizationId])
+}
+
+// ─── MANAGER PERMISSIONS ────────────────────────────────
+
+model ManagerPermission {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  staffAdd         Boolean @default(true)
+  staffDelete      Boolean @default(true)
+  assetAdd         Boolean @default(true)
+  assetEdit        Boolean @default(true)
+  assetDelete      Boolean @default(true)
+  consumableAdd    Boolean @default(true)
+  consumableEdit   Boolean @default(true)
+  consumableDelete Boolean @default(true)
+  purchaseOrderManage Boolean @default(false)
+  regionAdd           Boolean @default(false)
+  regionDelete        Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
