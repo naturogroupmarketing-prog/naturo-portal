@@ -8,7 +8,7 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
-import { createAsset, updateAsset, assignAsset, returnAsset, bulkDeleteAssets } from "@/app/actions/assets";
+import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets } from "@/app/actions/assets";
 import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem } from "@/app/actions/categories";
 
 // Color palette auto-assigned by category index
@@ -385,7 +385,12 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       if (imagePreview) {
         fd.set("imageUrl", imagePreview);
       }
-      await createAsset(fd);
+      const quantity = parseInt(fd.get("quantity") as string) || 1;
+      if (quantity > 1) {
+        await bulkCreateAssets(fd);
+      } else {
+        await createAsset(fd);
+      }
       setShowCreate(false);
       setImagePreview(null);
       setImageFile(null);
@@ -966,13 +971,20 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <label htmlFor="isHighValue" className="text-sm text-gray-700">High-value asset</label>
           </div>
           <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Quantity</label>
+            <div className="flex items-center gap-2">
+              <Input name="quantity" type="number" min={1} max={50} defaultValue={1} className="w-24" />
+              <span className="text-xs text-shark-400">Add multiple identical assets (max 50). Names will be numbered automatically.</span>
+            </div>
+          </div>
+          <div>
             <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
             <textarea name="notes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }}>Cancel</Button>
             <Button type="submit" disabled={uploading}>
-              {uploading ? "Uploading..." : "Create Asset"}
+              {uploading ? "Creating..." : "Create Asset"}
             </Button>
           </div>
         </form>

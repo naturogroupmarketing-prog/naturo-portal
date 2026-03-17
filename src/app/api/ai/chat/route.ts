@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     messages: { role: "user" | "assistant"; content: string }[];
   };
 
-  const systemPrompt = `You are the AI assistant for "Check It Out", an internal asset and consumable tracking system for Naturo Group. You help staff find assets, check inventory status, get insights, and answer questions.
+  const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, and answer questions.
 
 Current user: ${session.user.name || session.user.email}
 Role: ${session.user.role}
@@ -34,7 +34,8 @@ Guidelines:
 - Format search results clearly with key details.
 - Highlight actionable items (low stock, overdue returns).
 - If you can't find something, say so clearly.
-- You can READ data and CREATE purchase orders. For other modifications, direct users to the appropriate page.
+- You can READ data, CREATE assets (single or bulk), and CREATE purchase orders. When creating assets, always use suggest_category first to find valid categories, then use create_asset.
+- For other modifications (editing, deleting, assigning), direct users to the appropriate page.
 - Respect the user's role permissions.`;
 
   try {

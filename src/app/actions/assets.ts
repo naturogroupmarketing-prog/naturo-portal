@@ -430,6 +430,77 @@ export async function updateAsset(formData: FormData) {
   return { success: true };
 }
 
+export async function bulkCreateAssets(formData: FormData) {
+  const session = await auth();
+  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "assetAdd"))) {
+    throw new Error("Unauthorized");
+  }
+
+  const name = (formData.get("name") as string)?.trim();
+  const category = (formData.get("category") as string)?.trim();
+  const description = (formData.get("description") as string)?.trim();
+  const serialNumber = (formData.get("serialNumber") as string)?.trim();
+  const regionId = formData.get("regionId") as string;
+  const isHighValue = formData.get("isHighValue") === "true";
+  const purchaseDate = formData.get("purchaseDate") as string;
+  const purchaseCost = formData.get("purchaseCost") as string;
+  const supplier = (formData.get("supplier") as string)?.trim();
+  const notes = (formData.get("notes") as string)?.trim();
+  const imageUrl = formData.get("imageUrl") as string;
+  const quantity = Math.min(Math.max(parseInt(formData.get("quantity") as string) || 1, 1), 50);
+
+  if (!canManageRegion(session.user.role, session.user.regionId, regionId)) {
+    throw new Error("Cannot manage this region");
+  }
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  await enforceAssetLimit(organizationId);
+
+  const created: { id: string; name: string; assetCode: string }[] = [];
+
+  for (let i = 0; i < quantity; i++) {
+    const assetName = quantity > 1 ? `${name} (#${i + 1})` : name;
+    const assetCode = generateAssetCode();
+    const qrCodeData = await generateQRCodeDataURL(buildAssetQRData(assetCode));
+
+    const asset = await db.asset.create({
+      data: {
+        assetCode,
+        name: assetName,
+        category,
+        description: description || null,
+        serialNumber: serialNumber && quantity === 1 ? serialNumber : null,
+        imageUrl: imageUrl || null,
+        qrCodeData,
+        regionId,
+        organizationId,
+        isHighValue,
+        purchaseDate: purchaseDate ? new Date(purchaseDate) : null,
+        purchaseCost: purchaseCost ? parseFloat(purchaseCost) : null,
+        supplier: supplier || null,
+        notes: notes || null,
+      },
+    });
+
+    created.push({ id: asset.id, name: assetName, assetCode });
+  }
+
+  await createAuditLog({
+    action: "ASSET_CREATED",
+    description: quantity > 1
+      ? `Bulk created ${quantity} assets: "${name}" (#1-#${quantity})`
+      : `Asset "${name}" (${created[0].assetCode}) created`,
+    performedById: session.user.id,
+    assetId: created[0].id,
+    organizationId,
+  });
+
+  revalidatePath("/assets");
+  return { success: true, count: created.length, assets: created };
+}
+
 export async function getAssets(regionId?: string) {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");

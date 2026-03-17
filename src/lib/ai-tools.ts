@@ -1,4 +1,7 @@
 import { db } from "@/lib/db";
+import { generateAssetCode } from "@/lib/utils";
+import { buildAssetQRData, generateQRCodeDataURL } from "@/lib/qr";
+import { createAuditLog } from "@/lib/audit";
 import type { Tool } from "@anthropic-ai/sdk/resources/messages";
 
 export const AI_TOOLS: Tool[] = [
@@ -107,6 +110,27 @@ export const AI_TOOLS: Tool[] = [
         },
         consumable_name: { type: "string", description: "Filter by consumable name" },
       },
+    },
+  },
+  {
+    name: "create_asset",
+    description:
+      "Create one or more new assets in the system. Only available to admins and managers. Use this when the user asks to add/create assets. If quantity > 1, creates multiple identical assets with numbered names.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        name: { type: "string", description: "Name of the asset (e.g. 'MacBook Pro', 'Office Chair')" },
+        category: { type: "string", description: "Category/system name. Use suggest_category first to find available categories." },
+        region: { type: "string", description: "Region name (e.g. 'Sydney', 'Melbourne'). The asset will be assigned to this region." },
+        quantity: { type: "number", description: "Number of identical assets to create (default 1, max 50). Names will be numbered if > 1." },
+        serial_number: { type: "string", description: "Serial number (only for single assets)" },
+        description: { type: "string", description: "Optional description" },
+        is_high_value: { type: "boolean", description: "Whether this is a high-value asset" },
+        supplier: { type: "string", description: "Supplier name" },
+        purchase_cost: { type: "number", description: "Purchase cost in AUD" },
+        purchase_date: { type: "string", description: "Purchase date in YYYY-MM-DD format" },
+      },
+      required: ["name", "category", "region"],
     },
   },
 ];
@@ -425,6 +449,103 @@ async function viewPurchaseOrders(
   }));
 }
 
+async function createAssetTool(
+  input: {
+    name: string;
+    category: string;
+    region: string;
+    quantity?: number;
+    serial_number?: string;
+    description?: string;
+    is_high_value?: boolean;
+    supplier?: string;
+    purchase_cost?: number;
+    purchase_date?: string;
+  },
+  role: Role,
+  regionId: string | null,
+  userId: string,
+) {
+  if (role === "STAFF") {
+    return { error: "Only admins and managers can create assets." };
+  }
+
+  // Look up the region by name
+  const region = await db.region.findFirst({
+    where: {
+      name: { contains: input.region, mode: "insensitive" },
+      ...(role === "BRANCH_MANAGER" && regionId ? { id: regionId } : {}),
+    },
+  });
+  if (!region) {
+    return { error: `Region "${input.region}" not found. Use search to find available regions.` };
+  }
+
+  // Verify category exists
+  const category = await db.category.findFirst({
+    where: {
+      name: { contains: input.category, mode: "insensitive" },
+      type: "ASSET",
+      organizationId: region.organizationId,
+    },
+  });
+  if (!category) {
+    return { error: `Category "${input.category}" not found. Use suggest_category to see available options.` };
+  }
+
+  const quantity = Math.min(Math.max(input.quantity || 1, 1), 50);
+  const created: { name: string; assetCode: string; category: string; region: string }[] = [];
+
+  for (let i = 0; i < quantity; i++) {
+    const assetName = quantity > 1 ? `${input.name} (#${i + 1})` : input.name;
+    const assetCode = generateAssetCode();
+    const qrCodeData = await generateQRCodeDataURL(buildAssetQRData(assetCode));
+
+    const asset = await db.asset.create({
+      data: {
+        assetCode,
+        name: assetName,
+        category: category.name,
+        description: input.description || null,
+        serialNumber: input.serial_number && quantity === 1 ? input.serial_number : null,
+        qrCodeData,
+        regionId: region.id,
+        organizationId: region.organizationId,
+        isHighValue: input.is_high_value || false,
+        purchaseDate: input.purchase_date ? new Date(input.purchase_date) : null,
+        purchaseCost: input.purchase_cost || null,
+        supplier: input.supplier || null,
+      },
+    });
+
+    created.push({
+      name: asset.name,
+      assetCode: asset.assetCode,
+      category: category.name,
+      region: region.name,
+    });
+  }
+
+  await createAuditLog({
+    action: "ASSET_CREATED",
+    description: quantity > 1
+      ? `AI bulk created ${quantity} assets: "${input.name}" (#1-#${quantity})`
+      : `AI created asset "${input.name}" (${created[0].assetCode})`,
+    performedById: userId,
+    assetId: undefined,
+    organizationId: region.organizationId,
+  });
+
+  return {
+    success: true,
+    count: created.length,
+    assets: created,
+    message: quantity > 1
+      ? `Created ${quantity} assets named "${input.name}" (#1-#${quantity}) in ${region.name}`
+      : `Created asset "${input.name}" (${created[0].assetCode}) in ${region.name}`,
+  };
+}
+
 // ── Dispatcher ──────────────────────────────────────────
 
 export async function executeAITool(
@@ -458,6 +579,9 @@ export async function executeAITool(
         break;
       case "view_purchase_orders":
         result = await viewPurchaseOrders(toolInput as never, userRole, userRegionId);
+        break;
+      case "create_asset":
+        result = await createAssetTool(toolInput as never, userRole, userRegionId, userId!);
         break;
       default:
         result = { error: `Unknown tool: ${toolName}` };
