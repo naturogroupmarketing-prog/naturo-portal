@@ -45,9 +45,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-shark-50 px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Logo size={64} className="mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-shark-900">Check It Out</h1>
-          <p className="text-sm text-shark-400 mt-1">Asset Consumable Tracker</p>
+          <Logo size={64} className="mx-auto mb-2" />
+          <p className="text-sm text-shark-400 mt-1">Asset & Consumable Tracker</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-shark-100 overflow-hidden">

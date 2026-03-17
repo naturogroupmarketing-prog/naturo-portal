@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @theme inline {
+  --font-exo: var(--font-exo);
+
   /* Brand colors (preserved) */
   --color-navy-50: #e8eaf0;
   --color-navy-100: #c5c9d9;
@@ -49,6 +51,10 @@
   --color-action-700: #4a3bb5;
   --color-action-800: #3d3194;
   --color-action-900: #332a77;
+}
+
+.font-exo {
+  font-family: var(--font-exo), sans-serif;
 }
 
 body {

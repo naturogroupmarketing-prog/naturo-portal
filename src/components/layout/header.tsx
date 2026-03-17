@@ -22,11 +22,11 @@ export function Header({ userName, userImage, onMenuToggle }: HeaderProps) {
       </button>
 
       <div className="lg:hidden text-center flex-1">
-        <span className="font-bold text-shark-900 text-sm">Check It Out</span>
+        <Logo size={28} />
       </div>
 
       <div className="flex items-center gap-3">
-        <Logo size={28} className="hidden lg:block" />
+        <Logo size={24} className="hidden lg:block" />
         <div className="hidden sm:block text-right">
           <p className="text-sm font-medium text-shark-700">{userName}</p>
         </div>

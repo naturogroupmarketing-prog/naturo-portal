@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Check It Out — Asset & Consumable Tracker",
-    short_name: "Check It Out",
+    name: "Trackio — Asset & Consumable Tracker",
+    short_name: "Trackio",
     description: "Internal asset and consumable management portal",
     start_url: "/",
     display: "standalone",

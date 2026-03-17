@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Exo } from "next/font/google";
 import { PWARegister } from "@/components/pwa-register";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+const exo = Exo({ subsets: ["latin"], variable: "--font-exo", weight: ["700", "800"] });
 
 export const metadata: Metadata = {
-  title: "Check It Out",
-  description: "Asset Consumable Tracker - Internal management portal",
+  title: "Trackio",
+  description: "Asset & Consumable Tracker - Internal management portal",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Check It Out",
+    title: "Trackio",
   },
   formatDetection: {
     telephone: false,
@@ -33,7 +34,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#0f172a" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className} ${exo.variable} antialiased`}>
         <PWARegister />
         {children}
       </body>

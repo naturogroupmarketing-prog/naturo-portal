@@ -94,12 +94,9 @@ export function Sidebar({ role, onClose }: SidebarProps) {
   return (
     <nav className="flex flex-col h-full">
       <div className="flex items-center justify-between px-5 py-5 border-b border-shark-100">
-        <div className="flex items-center gap-2.5">
-          <Logo size={32} />
-          <div>
-            <h1 className="text-sm font-bold text-shark-900 leading-tight">Check It Out</h1>
-            <p className="text-xs text-shark-400 leading-tight">Asset Consumable Tracker</p>
-          </div>
+        <div className="flex items-center gap-1">
+          <Logo size={36} />
+          <p className="text-[10px] text-shark-400 leading-tight mt-1">Asset Tracker</p>
         </div>
         {onClose && (
           <button onClick={onClose} className="text-shark-400 hover:text-shark-700 lg:hidden">

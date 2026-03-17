@@ -11,7 +11,7 @@ export default async function HelpPage() {
       <div>
         <h1 className="text-2xl font-bold text-shark-900">Help & Support</h1>
         <p className="text-sm text-shark-400 mt-1">
-          Get the help you need to make the most of Check It Out
+          Get the help you need to make the most of Trackio
         </p>
       </div>
 
@@ -56,10 +56,10 @@ export default async function HelpPage() {
           <div className="mt-4 bg-emerald-50 rounded-xl p-4">
             <p className="text-sm font-medium text-emerald-700 mb-2">Contact us at:</p>
             <a
-              href="mailto:support@checkitout.app"
+              href="mailto:support@trackio.au"
               className="text-base font-semibold text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
             >
-              support@checkitout.app
+              support@trackio.au
             </a>
           </div>
           <div className="mt-4">
