@@ -9,7 +9,8 @@ export type PermissionKey =
   | "consumableDelete"
   | "purchaseOrderManage"
   | "regionAdd"
-  | "regionDelete";
+  | "regionDelete"
+  | "aiAssetCreate";
 
 export const MANAGER_DEFAULTS: Record<PermissionKey, boolean> = {
   staffAdd: false,
@@ -23,4 +24,5 @@ export const MANAGER_DEFAULTS: Record<PermissionKey, boolean> = {
   purchaseOrderManage: false,
   regionAdd: false,
   regionDelete: false,
+  aiAssetCreate: false,
 };

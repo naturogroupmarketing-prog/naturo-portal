@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { generateAssetCode } from "@/lib/utils";
 import { buildAssetQRData, generateQRCodeDataURL } from "@/lib/qr";
 import { createAuditLog } from "@/lib/audit";
+import { hasPermission } from "@/lib/permissions";
 import type { Tool } from "@anthropic-ai/sdk/resources/messages";
 
 export const AI_TOOLS: Tool[] = [
@@ -367,7 +368,15 @@ async function createPurchaseOrder(
   userId: string,
 ) {
   if (role === "STAFF") {
-    return { error: "Only admins and managers can create purchase orders." };
+    return { error: "Only admins and managers can create purchase orders via AI." };
+  }
+
+  // Branch managers need aiAssetCreate permission for AI creation tools
+  if (role === "BRANCH_MANAGER") {
+    const allowed = await hasPermission(userId, role, "aiAssetCreate");
+    if (!allowed) {
+      return { error: "You don't have permission to create items via AI. Please ask your Super Admin to enable AI Asset Creation for your account." };
+    }
   }
 
   const consumable = await db.consumable.findFirst({
@@ -467,7 +476,15 @@ async function createAssetTool(
   userId: string,
 ) {
   if (role === "STAFF") {
-    return { error: "Only admins and managers can create assets." };
+    return { error: "Only admins and managers can create assets via AI." };
+  }
+
+  // Branch managers need aiAssetCreate permission
+  if (role === "BRANCH_MANAGER") {
+    const allowed = await hasPermission(userId, role, "aiAssetCreate");
+    if (!allowed) {
+      return { error: "You don't have permission to create assets via AI. Please ask your Super Admin to enable AI Asset Creation for your account." };
+    }
   }
 
   // Look up the region by name

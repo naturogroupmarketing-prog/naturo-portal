@@ -134,7 +134,7 @@ function ManagerCard({ manager }: { manager: Manager }) {
         </div>
 
         {/* Standalone permission toggles */}
-        <div className="mt-4 pt-4 border-t border-shark-100">
+        <div className="mt-4 pt-4 border-t border-shark-100 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-sm text-shark-700">Purchase Orders</p>
@@ -143,6 +143,17 @@ function ManagerCard({ manager }: { manager: Manager }) {
             <Toggle
               checked={getPermValue("purchaseOrderManage")}
               onChange={(val) => handleToggle("purchaseOrderManage", val)}
+              disabled={isPending}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm text-shark-700">AI Asset Creation</p>
+              <p className="text-xs text-shark-400 mt-0.5">Create assets and purchase orders via the AI chat assistant</p>
+            </div>
+            <Toggle
+              checked={getPermValue("aiAssetCreate")}
+              onChange={(val) => handleToggle("aiAssetCreate", val)}
               disabled={isPending}
             />
           </div>

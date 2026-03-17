@@ -498,6 +498,7 @@ model ManagerPermission {
   purchaseOrderManage Boolean @default(false)
   regionAdd           Boolean @default(false)
   regionDelete        Boolean @default(false)
+  aiAssetCreate       Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

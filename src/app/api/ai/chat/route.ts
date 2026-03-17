@@ -2,7 +2,9 @@ import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { anthropic } from "@/lib/ai";
 import { AI_TOOLS, executeAITool } from "@/lib/ai-tools";
+import { hasPermission } from "@/lib/permissions";
 import { rateLimit, RATE_LIMITS, rateLimitHeaders } from "@/lib/rate-limit";
+import type { Role } from "@/generated/prisma/client";
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -23,6 +25,28 @@ export async function POST(request: NextRequest) {
     messages: { role: "user" | "assistant"; content: string }[];
   };
 
+  const userRole = session.user.role as Role;
+
+  // Determine which AI creation tools this user can access
+  const AI_CREATION_TOOLS = ["create_asset", "create_purchase_order", "suggest_category"];
+  let canUseAICreation = false;
+
+  if (userRole === "SUPER_ADMIN") {
+    canUseAICreation = true;
+  } else if (userRole === "BRANCH_MANAGER") {
+    canUseAICreation = await hasPermission(session.user.id, userRole, "aiAssetCreate");
+  }
+  // STAFF: canUseAICreation stays false
+
+  // Filter tools based on permissions
+  const availableTools = canUseAICreation
+    ? AI_TOOLS
+    : AI_TOOLS.filter((t) => !AI_CREATION_TOOLS.includes(t.name));
+
+  const creationNote = canUseAICreation
+    ? "You can READ data, CREATE assets (single or bulk), and CREATE purchase orders. When creating assets, always use suggest_category first to find valid categories, then use create_asset."
+    : "You can READ data and provide insights. For creating or modifying assets, direct users to the appropriate page in the app.";
+
   const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, and answer questions.
 
 Current user: ${session.user.name || session.user.email}
@@ -34,7 +58,7 @@ Guidelines:
 - Format search results clearly with key details.
 - Highlight actionable items (low stock, overdue returns).
 - If you can't find something, say so clearly.
-- You can READ data, CREATE assets (single or bulk), and CREATE purchase orders. When creating assets, always use suggest_category first to find valid categories, then use create_asset.
+- ${creationNote}
 - For other modifications (editing, deleting, assigning), direct users to the appropriate page.
 - Respect the user's role permissions.`;
 
@@ -53,7 +77,7 @@ Guidelines:
         max_tokens: 1024,
         system: systemPrompt,
         messages: currentMessages,
-        tools: AI_TOOLS,
+        tools: availableTools,
       });
 
       // Extract text blocks
