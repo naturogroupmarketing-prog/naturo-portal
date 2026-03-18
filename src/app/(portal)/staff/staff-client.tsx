@@ -6,6 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
+import { Modal } from "@/components/ui/modal";
+import { updateUser, deleteUser, resetPassword, toggleUserActive } from "@/app/actions/users";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
@@ -38,9 +41,36 @@ interface Region {
   state: { name: string };
 }
 
-export function StaffClient({ users, regions }: { users: StaffUser[]; regions: Region[] }) {
+interface StaffClientProps {
+  users: StaffUser[];
+  regions: Region[];
+  allRegions: Region[];
+  isSuperAdmin: boolean;
+}
+
+export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffClientProps) {
   const [search, setSearch] = useState("");
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+
+  // Edit modal state
+  const [editUser, setEditUser] = useState<StaffUser | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editRole, setEditRole] = useState("STAFF");
+  const [editRegionId, setEditRegionId] = useState("");
+  const [editSaving, setEditSaving] = useState(false);
+  const [editError, setEditError] = useState("");
+
+  // Reset password state
+  const [resetUser, setResetUser] = useState<StaffUser | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [resetSaving, setResetSaving] = useState(false);
+  const [resetError, setResetError] = useState("");
+  const [resetSuccess, setResetSuccess] = useState(false);
+
+  // Delete modal state
+  const [deleteTarget, setDeleteTarget] = useState<StaffUser | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const toggleSection = (key: string) => {
     setCollapsedSections((prev) => {
@@ -70,6 +100,73 @@ export function StaffClient({ users, regions }: { users: StaffUser[]; regions: R
   const headOfficeUsers = filtered.filter((u) => !u.region);
   const headOfficeColors = SECTION_COLORS[regions.length % SECTION_COLORS.length];
   const isHeadOfficeCollapsed = collapsedSections.has("head-office");
+
+  const openEdit = (user: StaffUser) => {
+    setEditUser(user);
+    setEditName(user.name || "");
+    setEditRole(user.role);
+    setEditRegionId(user.region?.id || "");
+    setEditError("");
+  };
+
+  const handleEdit = async () => {
+    if (!editUser) return;
+    setEditSaving(true);
+    setEditError("");
+    try {
+      const fd = new FormData();
+      fd.append("userId", editUser.id);
+      fd.append("name", editName);
+      fd.append("role", editRole);
+      fd.append("regionId", editRegionId);
+      await updateUser(fd);
+      setEditUser(null);
+    } catch (e: unknown) {
+      setEditError(e instanceof Error ? e.message : "Failed to update");
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  const handleToggleActive = async (user: StaffUser) => {
+    try {
+      const fd = new FormData();
+      fd.append("userId", user.id);
+      await toggleUserActive(fd);
+    } catch {
+      // silently fail
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await deleteUser(deleteTarget.id);
+      setDeleteTarget(null);
+    } catch (e: unknown) {
+      setDeleteError(e instanceof Error ? e.message : "Failed to delete");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetUser) return;
+    setResetSaving(true);
+    setResetError("");
+    setResetSuccess(false);
+    try {
+      await resetPassword(resetUser.id, newPassword);
+      setResetSuccess(true);
+      setNewPassword("");
+    } catch (e: unknown) {
+      setResetError(e instanceof Error ? e.message : "Failed to reset password");
+    } finally {
+      setResetSaving(false);
+    }
+  };
 
   const exportCSV = () => {
     const headers = ["Name", "Email", "Role", "Region", "Status", "Assigned Assets"];
@@ -101,12 +198,15 @@ export function StaffClient({ users, regions }: { users: StaffUser[]; regions: R
             <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
             <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Assets</th>
             <th className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
+            {isSuperAdmin && (
+              <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
+            )}
           </tr>
         </thead>
         <tbody>
           {sectionUsers.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-5 py-8 text-center text-sm text-shark-400">
+              <td colSpan={isSuperAdmin ? 6 : 5} className="px-5 py-8 text-center text-sm text-shark-400">
                 No staff in this section.
               </td>
             </tr>
@@ -132,6 +232,24 @@ export function StaffClient({ users, regions }: { users: StaffUser[]; regions: R
                 <td className="px-5 py-3.5 text-center">
                   <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
                 </td>
+                {isSuperAdmin && (
+                  <td className="px-5 py-3.5 text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <Button size="sm" variant="ghost" onClick={() => openEdit(user)} title="Edit">
+                        <Icon name="edit" size={14} />
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => { setResetUser(user); setNewPassword(""); setResetError(""); setResetSuccess(false); }} title="Reset Password">
+                        <Icon name="lock" size={14} />
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => handleToggleActive(user)} title={user.isActive ? "Disable" : "Enable"}>
+                        <Icon name={user.isActive ? "x" : "check"} size={14} className={user.isActive ? "text-red-500" : "text-emerald-500"} />
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => { setDeleteTarget(user); setDeleteError(""); }} title="Delete">
+                        <span className="text-red-500 text-xs font-bold">DEL</span>
+                      </Button>
+                    </div>
+                  </td>
+                )}
               </tr>
             ))
           )}
@@ -226,6 +344,98 @@ export function StaffClient({ users, regions }: { users: StaffUser[]; regions: R
           )}
         </div>
       )}
+
+      {/* Edit User Modal */}
+      <Modal open={!!editUser} onClose={() => setEditUser(null)} title="Edit Staff Member">
+        {editUser && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Email</label>
+              <p className="text-sm text-shark-500">{editUser.email}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Name</label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Role</label>
+              <Select value={editRole} onChange={(e) => setEditRole(e.target.value)}>
+                <option value="STAFF">Staff</option>
+                <option value="BRANCH_MANAGER">Branch Manager</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Region</label>
+              <Select value={editRegionId} onChange={(e) => setEditRegionId(e.target.value)}>
+                <option value="">Head Office (No Region)</option>
+                {allRegions.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name} — {r.state.name}</option>
+                ))}
+              </Select>
+            </div>
+            {editError && <p className="text-sm text-red-500">{editError}</p>}
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setEditUser(null)}>Cancel</Button>
+              <Button onClick={handleEdit} disabled={editSaving}>
+                {editSaving ? "Saving..." : "Save Changes"}
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Reset Password Modal */}
+      <Modal open={!!resetUser} onClose={() => setResetUser(null)} title="Reset Password">
+        {resetUser && (
+          <div className="space-y-4">
+            <p className="text-sm text-shark-500">
+              Reset password for <span className="font-medium text-shark-800">{resetUser.name || resetUser.email}</span>
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">New Password</label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Minimum 8 characters"
+              />
+            </div>
+            {resetError && <p className="text-sm text-red-500">{resetError}</p>}
+            {resetSuccess && <p className="text-sm text-emerald-600">Password reset successfully!</p>}
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setResetUser(null)}>Close</Button>
+              <Button onClick={handleResetPassword} disabled={resetSaving || newPassword.length < 8}>
+                {resetSaving ? "Resetting..." : "Reset Password"}
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Delete User Modal */}
+      <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete Staff Member">
+        {deleteTarget && (
+          <div className="space-y-4">
+            <p className="text-sm text-shark-600">
+              Are you sure you want to permanently delete <span className="font-bold text-shark-900">{deleteTarget.name || deleteTarget.email}</span>?
+            </p>
+            <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
+            {deleteTarget.assetAssignments.length > 0 && (
+              <p className="text-sm text-amber-600 font-medium">
+                This user has {deleteTarget.assetAssignments.length} active asset assignment(s). Please return all assets before deleting.
+              </p>
+            )}
+            {deleteError && <p className="text-sm text-red-500">{deleteError}</p>}
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+              <Button variant="danger" onClick={handleDelete} disabled={deleting}>
+                {deleting ? "Deleting..." : "Delete Permanently"}
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

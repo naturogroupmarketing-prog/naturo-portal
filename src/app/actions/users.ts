@@ -197,6 +197,61 @@ export async function getUsers(regionId?: string) {
   });
 }
 
+export async function deleteUser(userId: string) {
+  const session = await auth();
+  if (!session?.user || !isSuperAdmin(session.user.role)) {
+    throw new Error("Unauthorized");
+  }
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  // Prevent deleting yourself
+  if (userId === session.user.id) throw new Error("Cannot delete yourself");
+
+  const user = await db.user.findUnique({ where: { id: userId } });
+  if (!user) throw new Error("User not found");
+
+  // Check for active assignments
+  const activeAssignments = await db.assetAssignment.count({
+    where: { userId, isActive: true },
+  });
+  if (activeAssignments > 0) {
+    throw new Error("Cannot delete user with active asset assignments. Return all assets first.");
+  }
+
+  const activeConsumableAssignments = await db.consumableAssignment.count({
+    where: { userId, isActive: true },
+  });
+  if (activeConsumableAssignments > 0) {
+    throw new Error("Cannot delete user with active consumable assignments. Return all consumables first.");
+  }
+
+  // Delete user and related records
+  await db.$transaction(async (tx) => {
+    // Delete inactive assignments
+    await tx.assetAssignment.deleteMany({ where: { userId } });
+    await tx.consumableAssignment.deleteMany({ where: { userId } });
+    // Delete consumable requests
+    await tx.consumableRequest.deleteMany({ where: { userId } });
+    // Delete the user
+    await tx.user.delete({ where: { id: userId } });
+  });
+
+  await createAuditLog({
+    action: "USER_DELETED",
+    description: `User "${user.name || user.email}" permanently deleted`,
+    performedById: session.user.id,
+    targetUserId: userId,
+    organizationId,
+  });
+
+  revalidatePath("/admin/users");
+  revalidatePath("/staff");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
 export async function resetPassword(userId: string, newPassword: string) {
   const session = await auth();
   if (!session?.user || !isSuperAdmin(session.user.role)) {

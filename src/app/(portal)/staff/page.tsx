@@ -35,10 +35,20 @@ export default async function StaffPage() {
     }),
   ]);
 
+  const allRegions = session.user.role === "SUPER_ADMIN"
+    ? await db.region.findMany({
+        where: { organizationId },
+        include: { state: true },
+        orderBy: { name: "asc" },
+      })
+    : regions;
+
   return (
     <StaffClient
       users={JSON.parse(JSON.stringify(users))}
       regions={JSON.parse(JSON.stringify(regions))}
+      allRegions={JSON.parse(JSON.stringify(allRegions))}
+      isSuperAdmin={session.user.role === "SUPER_ADMIN"}
     />
   );
 }
