@@ -78,13 +78,22 @@ export async function updateUser(formData: FormData) {
 
   const userId = formData.get("userId") as string;
   const name = formData.get("name") as string;
+  const email = (formData.get("email") as string)?.trim().toLowerCase();
   const phone = (formData.get("phone") as string)?.trim() || null;
   const role = formData.get("role") as Role;
   const regionId = formData.get("regionId") as string;
 
+  // If email is changing, check it's not already taken
+  if (email) {
+    const existing = await db.user.findFirst({
+      where: { email, id: { not: userId } },
+    });
+    if (existing) throw new Error("Email already in use by another user");
+  }
+
   await db.user.update({
     where: { id: userId },
-    data: { name, phone, role, regionId: regionId || null },
+    data: { name, email: email || undefined, phone, role, regionId: regionId || null },
   });
 
   await createAuditLog({

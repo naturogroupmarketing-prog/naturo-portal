@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
-import { createUser, updateUser, batchDisableUsers, resetPassword } from "@/app/actions/users";
+import { createUser, updateUser, deleteUser, batchDisableUsers, resetPassword } from "@/app/actions/users";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
@@ -51,6 +51,9 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [disabling, setDisabling] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
 
   const toggleSection = (key: string) => {
@@ -114,6 +117,20 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
     }
   };
 
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await deleteUser(deleteTarget.id);
+      setDeleteTarget(null);
+    } catch (e: unknown) {
+      setDeleteError(e instanceof Error ? e.message : "Failed to delete user");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const renderUserTable = (sectionUsers: User[]) => (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
@@ -163,9 +180,14 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                   <span className={`inline-block w-2.5 h-2.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-red-400"}`} />
                 </td>
                 <td className="px-5 py-3.5 text-right">
-                  <Button size="sm" variant="secondary" onClick={() => setEditUser(user)}>
-                    Edit
-                  </Button>
+                  <div className="flex items-center justify-end gap-1">
+                    <Button size="sm" variant="secondary" onClick={() => setEditUser(user)}>
+                      Edit
+                    </Button>
+                    <Button size="sm" variant="danger" onClick={() => { setDeleteTarget(user); setDeleteError(""); }}>
+                      Delete
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))
@@ -324,7 +346,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
               <input type="hidden" name="userId" value={editUser.id} />
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Email</label>
-                <p className="text-sm text-shark-500 bg-shark-50 rounded-xl px-3.5 py-2">{editUser.email}</p>
+                <Input name="email" type="email" required defaultValue={editUser.email} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
@@ -364,6 +386,25 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
               <Input name="newPassword" type="password" required minLength={6} placeholder="New password (min 6 characters)" />
               <Button type="submit" size="sm" variant="secondary">Reset Password</Button>
             </form>
+          </div>
+        )}
+      </Modal>
+
+      {/* Delete User Modal */}
+      <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete User">
+        {deleteTarget && (
+          <div className="space-y-4">
+            <p className="text-sm text-shark-600">
+              Are you sure you want to permanently delete <span className="font-bold text-shark-900">{deleteTarget.name || deleteTarget.email}</span>?
+            </p>
+            <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
+            {deleteError && <p className="text-sm text-red-500">{deleteError}</p>}
+            <div className="flex justify-end gap-2">
+              <Button variant="secondary" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+              <Button variant="danger" onClick={handleDelete} disabled={deleting}>
+                {deleting ? "Deleting..." : "Delete Permanently"}
+              </Button>
+            </div>
           </div>
         )}
       </Modal>
