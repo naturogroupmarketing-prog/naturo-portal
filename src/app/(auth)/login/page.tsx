@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/ui/logo";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -100,6 +101,11 @@ export default function LoginPage() {
                 {loading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
+            <div className="mt-4 text-center">
+              <Link href="/forgot-password" className="text-sm text-action-500 hover:text-action-600">
+                Forgot your password?
+              </Link>
+            </div>
           </div>
         </div>
 

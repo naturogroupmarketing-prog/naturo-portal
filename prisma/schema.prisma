@@ -482,6 +482,20 @@ model AuditLog {
   @@index([organizationId])
 }
 
+// ─── PASSWORD RESET ─────────────────────────────────────
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([token])
+}
+
 // ─── MANAGER PERMISSIONS ────────────────────────────────
 
 model ManagerPermission {

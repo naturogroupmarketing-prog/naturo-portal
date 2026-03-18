@@ -6,6 +6,8 @@ export function middleware(request: NextRequest) {
   // Public routes — no auth check needed
   if (
     pathname.startsWith("/login") ||
+    pathname.startsWith("/forgot-password") ||
+    pathname.startsWith("/reset-password") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/webhooks") ||
     pathname.startsWith("/_next") ||
