@@ -144,6 +144,20 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const [suggestingCategory, setSuggestingCategory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Column visibility state
+  const [visibleColumns, setVisibleColumns] = useState({
+    photo: true,
+    item: true,
+    location: true,
+    qty: true,
+    assignedTo: true,
+  });
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
+
+  const toggleColumn = (col: keyof typeof visibleColumns) => {
+    setVisibleColumns((prev) => ({ ...prev, [col]: !prev[col] }));
+  };
+
   // Clear selection when filters change so hidden items aren't selected
   const setSearchAndClear = (v: string) => { setSearch(v); setSelectedIds(new Set()); };
 
@@ -335,11 +349,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   />
                 )}
               </th>
-              <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>
+              {visibleColumns.photo && <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
+              {visibleColumns.item && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>}
+              {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
+              {visibleColumns.qty && <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>}
+              {visibleColumns.assignedTo && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
               <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
             </tr>
           </thead>
@@ -361,6 +375,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       <div className="w-4" />
                     )}
                   </td>
+                  {visibleColumns.photo && (
                   <td className="px-3 py-2">
                     {c.imageUrl ? (
                       <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100">
@@ -374,18 +389,26 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       </div>
                     )}
                   </td>
+                  )}
+                  {visibleColumns.item && (
                   <td className="px-4 py-3">
                     <span className="font-medium text-shark-800">{c.name}</span>
                     <span className="text-shark-400 ml-1 text-xs">({c.unitType})</span>
                   </td>
+                  )}
+                  {visibleColumns.location && (
                   <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">
                     {c.region.state.name} / {c.region.name}
                   </td>
+                  )}
+                  {visibleColumns.qty && (
                   <td className="px-4 py-3 text-right">
                     <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>
                       {c.quantityOnHand}
                     </span>
                   </td>
+                  )}
+                  {visibleColumns.assignedTo && (
                   <td className="px-4 py-3 text-shark-500 hidden md:table-cell">
                     {activeAssignments.length > 0 ? (
                       <div className="space-y-0.5">
@@ -399,6 +422,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       <span className="text-shark-400">{"\u2014"}</span>
                     )}
                   </td>
+                  )}
                   <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
                       <Button size="sm" variant="outline" onClick={() => setShowAddStock(c)}>+ Stock</Button>
@@ -476,6 +500,32 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               onChange={(e) => setSearchAndClear(e.target.value)}
               className="max-w-xs"
             />
+            <div className="relative">
+              <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
+                Columns
+              </Button>
+              {showColumnMenu && (
+                <div className="absolute right-0 top-full mt-1 bg-white border border-shark-200 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
+                  {([
+                    ["photo", "Photo"],
+                    ["item", "Item"],
+                    ["location", "Location"],
+                    ["qty", "Qty"],
+                    ["assignedTo", "Assigned To"],
+                  ] as [keyof typeof visibleColumns, string][]).map(([key, label]) => (
+                    <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 cursor-pointer text-sm">
+                      <input
+                        type="checkbox"
+                        checked={visibleColumns[key]}
+                        onChange={() => toggleColumn(key)}
+                        className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
             {selectedIds.size > 0 && (
               <Button
                 variant="danger"

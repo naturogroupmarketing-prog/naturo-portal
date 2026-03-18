@@ -150,6 +150,21 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
   const [regionFilter, setRegionFilter] = useState(initialRegion || "ALL");
 
+  // Column visibility state
+  const [visibleColumns, setVisibleColumns] = useState({
+    photo: true,
+    code: true,
+    name: true,
+    location: true,
+    status: true,
+    assignedTo: true,
+  });
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
+
+  const toggleColumn = (col: keyof typeof visibleColumns) => {
+    setVisibleColumns((prev) => ({ ...prev, [col]: !prev[col] }));
+  };
+
   // Clear selection when filters change so hidden items aren't selected
   const setSearchAndClear = (v: string) => { setSearch(v); setSelectedIds(new Set()); };
   const setStatusFilterAndClear = (v: string) => { setStatusFilter(v); setSelectedIds(new Set()); };
@@ -420,12 +435,12 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   />
                 )}
               </th>
-              <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Code</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>
+              {visibleColumns.photo && <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
+              {visibleColumns.code && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Code</th>}
+              {visibleColumns.name && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>}
+              {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
+              {visibleColumns.status && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>}
+              {visibleColumns.assignedTo && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
               <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
             </tr>
           </thead>
@@ -447,6 +462,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       <div className="w-4" />
                     )}
                   </td>
+                  {visibleColumns.photo && (
                   <td className="px-3 py-2">
                     {asset.imageUrl ? (
                       <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100">
@@ -460,7 +476,9 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-shark-800">{asset.assetCode}</td>
+                  )}
+                  {visibleColumns.code && <td className="px-4 py-3 font-mono text-xs text-shark-800">{asset.assetCode}</td>}
+                  {visibleColumns.name && (
                   <td className="px-4 py-3 max-w-[200px]">
                     <div className="truncate">
                       <span className="font-medium text-shark-800">{asset.name}</span>
@@ -469,15 +487,20 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       )}
                     </div>
                   </td>
+                  )}
+                  {visibleColumns.location && (
                   <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">
                     {asset.region.state.name} / {asset.region.name}
                   </td>
-                  <td className="px-4 py-3"><Badge status={asset.status} /></td>
+                  )}
+                  {visibleColumns.status && <td className="px-4 py-3"><Badge status={asset.status} /></td>}
+                  {visibleColumns.assignedTo && (
                   <td className="px-4 py-3 text-shark-500 hidden md:table-cell">
                     {activeAssignment
                       ? activeAssignment.user.name || activeAssignment.user.email
                       : "\u2014"}
                   </td>
+                  )}
                   <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
                       <Button size="sm" variant="ghost" onClick={() => setShowQR(asset)} title="QR Code">
@@ -562,6 +585,33 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             ))}
           </Select>
         )}
+        <div className="relative">
+          <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
+            Columns
+          </Button>
+          {showColumnMenu && (
+            <div className="absolute right-0 top-full mt-1 bg-white border border-shark-200 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
+              {([
+                ["photo", "Photo"],
+                ["code", "Code"],
+                ["name", "Name"],
+                ["location", "Location"],
+                ["status", "Status"],
+                ["assignedTo", "Assigned To"],
+              ] as [keyof typeof visibleColumns, string][]).map(([key, label]) => (
+                <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    checked={visibleColumns[key]}
+                    onChange={() => toggleColumn(key)}
+                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
         {permissions.canDelete && selectedIds.size > 0 && (
           <Button
             variant="danger"
