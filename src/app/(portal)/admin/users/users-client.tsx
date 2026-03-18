@@ -32,6 +32,7 @@ interface User {
   id: string;
   name: string | null;
   email: string;
+  phone: string | null;
   role: string;
   isActive: boolean;
   region: { id: string; name: string; state: { name: string } } | null;
@@ -282,6 +283,10 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             <Input name="email" type="email" required placeholder="user@company.com" />
           </div>
           <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+            <Input name="phone" type="tel" placeholder="e.g. 0412 345 678" />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-shark-700 mb-1">Password *</label>
             <Input name="password" type="password" required minLength={6} placeholder="Min 6 characters" />
           </div>
@@ -324,6 +329,10 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
                 <Input name="name" required defaultValue={editUser.name || ""} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+                <Input name="phone" type="tel" defaultValue={editUser.phone || ""} placeholder="e.g. 0412 345 678" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Role *</label>
