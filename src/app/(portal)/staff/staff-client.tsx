@@ -27,6 +27,7 @@ interface StaffUser {
   id: string;
   name: string | null;
   email: string;
+  phone: string | null;
   role: string;
   isActive: boolean;
   region: { id: string; name: string } | null;
@@ -55,6 +56,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
   // Edit modal state
   const [editUser, setEditUser] = useState<StaffUser | null>(null);
   const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
   const [editRole, setEditRole] = useState("STAFF");
   const [editRegionId, setEditRegionId] = useState("");
   const [editSaving, setEditSaving] = useState(false);
@@ -104,6 +106,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
   const openEdit = (user: StaffUser) => {
     setEditUser(user);
     setEditName(user.name || "");
+    setEditPhone(user.phone || "");
     setEditRole(user.role);
     setEditRegionId(user.region?.id || "");
     setEditError("");
@@ -117,6 +120,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
       const fd = new FormData();
       fd.append("userId", editUser.id);
       fd.append("name", editName);
+      fd.append("phone", editPhone);
       fd.append("role", editRole);
       fd.append("regionId", editRegionId);
       await updateUser(fd);
@@ -169,10 +173,11 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
   };
 
   const exportCSV = () => {
-    const headers = ["Name", "Email", "Role", "Region", "Status", "Assigned Assets"];
+    const headers = ["Name", "Email", "Phone", "Role", "Region", "Status", "Assigned Assets"];
     const rows = filtered.map((u) => [
       u.name || "",
       u.email,
+      u.phone || "",
       u.role,
       u.region?.name || "Head Office",
       u.isActive ? "Active" : "Inactive",
@@ -195,6 +200,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
           <tr className="border-b border-shark-100">
             <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
             <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Email</th>
+            <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Phone</th>
             <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
             <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Assets</th>
             <th className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
@@ -206,7 +212,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
         <tbody>
           {sectionUsers.length === 0 ? (
             <tr>
-              <td colSpan={isSuperAdmin ? 6 : 5} className="px-5 py-8 text-center text-sm text-shark-400">
+              <td colSpan={isSuperAdmin ? 7 : 6} className="px-5 py-8 text-center text-sm text-shark-400">
                 No staff in this section.
               </td>
             </tr>
@@ -215,6 +221,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
               <tr key={user.id} className="border-b border-shark-50 hover:bg-shark-50/50">
                 <td className="px-5 py-3.5 font-medium text-shark-800">{user.name || "—"}</td>
                 <td className="px-5 py-3.5 text-shark-500 hidden md:table-cell">{user.email}</td>
+                <td className="px-5 py-3.5 text-shark-500 hidden lg:table-cell">{user.phone || "—"}</td>
                 <td className="px-5 py-3.5"><Badge status={user.role} /></td>
                 <td className="px-5 py-3.5 text-right">
                   {user.assetAssignments.length > 0 ? (
@@ -356,6 +363,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
             <div>
               <label className="block text-sm font-medium text-shark-700 mb-1">Name</label>
               <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="e.g. 0412 345 678" />
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 mb-1">Role</label>

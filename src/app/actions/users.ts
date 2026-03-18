@@ -22,6 +22,7 @@ export async function createUser(formData: FormData) {
 
   const email = (formData.get("email") as string)?.trim().toLowerCase();
   const name = (formData.get("name") as string)?.trim();
+  const phone = (formData.get("phone") as string)?.trim() || null;
   const role = formData.get("role") as Role;
   const regionId = formData.get("regionId") as string;
   const password = formData.get("password") as string;
@@ -45,6 +46,7 @@ export async function createUser(formData: FormData) {
     data: {
       email,
       name,
+      phone,
       role,
       regionId: regionId || null,
       password: hashedPassword,
@@ -76,12 +78,13 @@ export async function updateUser(formData: FormData) {
 
   const userId = formData.get("userId") as string;
   const name = formData.get("name") as string;
+  const phone = (formData.get("phone") as string)?.trim() || null;
   const role = formData.get("role") as Role;
   const regionId = formData.get("regionId") as string;
 
   await db.user.update({
     where: { id: userId },
-    data: { name, role, regionId: regionId || null },
+    data: { name, phone, role, regionId: regionId || null },
   });
 
   await createAuditLog({
