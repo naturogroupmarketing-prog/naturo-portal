@@ -239,23 +239,46 @@ export async function deleteUser(userId: string) {
     throw new Error("Cannot delete user with active consumable assignments. Return all consumables first.");
   }
 
-  // Delete user and related records
-  await db.$transaction(async (tx) => {
-    // Delete inactive assignments
-    await tx.assetAssignment.deleteMany({ where: { userId } });
-    await tx.consumableAssignment.deleteMany({ where: { userId } });
-    // Delete consumable requests
-    await tx.consumableRequest.deleteMany({ where: { userId } });
-    // Delete the user
-    await tx.user.delete({ where: { id: userId } });
-  });
+  // Gather history for audit archive before deletion
+  const [assetHistory, consumableHistory] = await Promise.all([
+    db.assetAssignment.findMany({
+      where: { userId },
+      include: { asset: { select: { name: true, assetCode: true } } },
+    }),
+    db.consumableAssignment.findMany({
+      where: { userId },
+      include: { consumable: { select: { name: true } } },
+    }),
+  ]);
+
+  const archiveData = {
+    userName: user.name,
+    userEmail: user.email,
+    userPhone: user.phone,
+    userRole: user.role,
+    assetHistory: assetHistory.map((a) => ({
+      asset: `${a.asset.name} (${a.asset.assetCode})`,
+      checkoutDate: a.checkoutDate,
+      returnDate: a.actualReturnDate,
+      type: a.assignmentType,
+    })),
+    consumableHistory: consumableHistory.map((c) => ({
+      consumable: c.consumable.name,
+      quantity: c.quantity,
+      assignedDate: c.assignedDate,
+      returnedDate: c.returnedDate,
+    })),
+  };
+
+  // Delete user — cascade will remove assignments and requests
+  await db.user.delete({ where: { id: userId } });
 
   await createAuditLog({
     action: "USER_DELETED",
-    description: `User "${user.name || user.email}" permanently deleted`,
+    description: `User "${user.name || user.email}" (${user.email}) permanently deleted. History archived.`,
     performedById: session.user.id,
-    targetUserId: userId,
     organizationId,
+    metadata: archiveData,
   });
 
   revalidatePath("/admin/users");

@@ -124,6 +124,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
     try {
       await deleteUser(deleteTarget.id);
       setDeleteTarget(null);
+      setEditUser(null);
     } catch (e: unknown) {
       setDeleteError(e instanceof Error ? e.message : "Failed to delete user");
     } finally {
@@ -180,14 +181,9 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                   <span className={`inline-block w-2.5 h-2.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-red-400"}`} />
                 </td>
                 <td className="px-5 py-3.5 text-right">
-                  <div className="flex items-center justify-end gap-1">
-                    <Button size="sm" variant="secondary" onClick={() => setEditUser(user)}>
-                      Edit
-                    </Button>
-                    <Button size="sm" variant="danger" onClick={() => { setDeleteTarget(user); setDeleteError(""); }}>
-                      Delete
-                    </Button>
-                  </div>
+                  <Button size="sm" variant="secondary" onClick={() => setEditUser(user)}>
+                    Edit
+                  </Button>
                 </td>
               </tr>
             ))
@@ -386,24 +382,24 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
               <Input name="newPassword" type="password" required minLength={6} placeholder="New password (min 6 characters)" />
               <Button type="submit" size="sm" variant="secondary">Reset Password</Button>
             </form>
-          </div>
-        )}
-      </Modal>
-
-      {/* Delete User Modal */}
-      <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete User">
-        {deleteTarget && (
-          <div className="space-y-4">
-            <p className="text-sm text-shark-600">
-              Are you sure you want to permanently delete <span className="font-bold text-shark-900">{deleteTarget.name || deleteTarget.email}</span>?
-            </p>
-            <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
-            {deleteError && <p className="text-sm text-red-500">{deleteError}</p>}
-            <div className="flex justify-end gap-2">
-              <Button variant="secondary" onClick={() => setDeleteTarget(null)}>Cancel</Button>
-              <Button variant="danger" onClick={handleDelete} disabled={deleting}>
-                {deleting ? "Deleting..." : "Delete Permanently"}
-              </Button>
+            <hr className="border-shark-100" />
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-red-600">Danger Zone</label>
+              <p className="text-xs text-shark-400">Permanently delete this user. Their assignment history will be archived in the audit log.</p>
+              {deleteError && <p className="text-sm text-red-500">{deleteError}</p>}
+              {deleteTarget?.id === editUser.id ? (
+                <div className="flex items-center gap-2">
+                  <p className="text-sm text-red-500 flex-1">Are you sure? This cannot be undone.</p>
+                  <Button size="sm" variant="secondary" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+                  <Button size="sm" variant="danger" onClick={handleDelete} disabled={deleting}>
+                    {deleting ? "Deleting..." : "Confirm Delete"}
+                  </Button>
+                </div>
+              ) : (
+                <Button size="sm" variant="danger" onClick={() => { setDeleteTarget(editUser); setDeleteError(""); }}>
+                  Delete User
+                </Button>
+              )}
             </div>
           </div>
         )}
