@@ -14,6 +14,7 @@ import {
   deleteStarterKit,
   addStarterKitItem,
   removeStarterKitItem,
+  applyStarterKit,
 } from "@/app/actions/starter-kits";
 
 interface StarterKitItem {
@@ -44,19 +45,29 @@ interface Consumable {
   quantityOnHand: number;
 }
 
+interface User {
+  id: string;
+  name: string | null;
+  email: string;
+  region: { name: string } | null;
+}
+
 export function StarterKitsClient({
   kits,
   categories,
   consumables,
+  users,
 }: {
   kits: StarterKit[];
   categories: Category[];
   consumables: Consumable[];
+  users: User[];
 }) {
   const [showCreate, setShowCreate] = useState(false);
   const [editKit, setEditKit] = useState<StarterKit | null>(null);
   const [expandedKit, setExpandedKit] = useState<string | null>(null);
   const [showAddItem, setShowAddItem] = useState<string | null>(null);
+  const [showApply, setShowApply] = useState<StarterKit | null>(null);
 
   return (
     <div className="space-y-6">
@@ -97,6 +108,9 @@ export function StarterKitsClient({
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" onClick={() => setShowApply(kit)} disabled={kit.items.length === 0}>
+                      Apply to Staff
+                    </Button>
                     <Button size="sm" variant="outline" onClick={() => setEditKit(kit)}>Edit</Button>
                   </div>
                 </div>
@@ -221,6 +235,17 @@ export function StarterKitsClient({
             categories={categories}
             consumables={consumables}
             onDone={() => setShowAddItem(null)}
+          />
+        )}
+      </Modal>
+
+      {/* Apply to Staff Modal */}
+      <Modal open={!!showApply} onClose={() => setShowApply(null)} title={`Apply "${showApply?.name}" to Staff`}>
+        {showApply && (
+          <ApplyToStaffForm
+            kit={showApply}
+            users={users}
+            onDone={() => setShowApply(null)}
           />
         )}
       </Modal>
@@ -395,6 +420,148 @@ function AddItemsChecklist({
           <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>
           <Button onClick={handleSave} disabled={totalSelected === 0 || saving}>
             {saving ? "Adding..." : `Add ${totalSelected} Item${totalSelected !== 1 ? "s" : ""}`}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ApplyToStaffForm({
+  kit,
+  users,
+  onDone,
+}: {
+  kit: StarterKit;
+  users: User[];
+  onDone: () => void;
+}) {
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
+  const [applying, setApplying] = useState(false);
+  const [results, setResults] = useState<{ userName: string; applied: number; details: string[] }[] | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredUsers = users.filter((u) => {
+    const q = search.toLowerCase();
+    return !q || (u.name || "").toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+  });
+
+  const toggleUser = (id: string) => {
+    setSelectedUsers((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const selectAll = () => {
+    if (selectedUsers.size === filteredUsers.length) {
+      setSelectedUsers(new Set());
+    } else {
+      setSelectedUsers(new Set(filteredUsers.map((u) => u.id)));
+    }
+  };
+
+  const handleApply = async () => {
+    setApplying(true);
+    const applyResults: { userName: string; applied: number; details: string[] }[] = [];
+    try {
+      for (const userId of selectedUsers) {
+        const user = users.find((u) => u.id === userId);
+        const result = await applyStarterKit(userId, kit.id);
+        applyResults.push({
+          userName: user?.name || user?.email || "Unknown",
+          applied: result.applied || 0,
+          details: (result.results as string[]) || [],
+        });
+      }
+      setResults(applyResults);
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  if (results) {
+    return (
+      <div className="space-y-4">
+        <p className="text-sm font-medium text-shark-700">Results:</p>
+        <div className="space-y-2 max-h-60 overflow-y-auto">
+          {results.map((r, i) => (
+            <div key={i} className="bg-shark-50 rounded-lg px-3 py-2">
+              <p className="text-sm font-semibold text-shark-800">{r.userName}</p>
+              <p className="text-xs text-shark-500">{r.applied} item{r.applied !== 1 ? "s" : ""} assigned</p>
+              {r.details.map((d, j) => (
+                <p key={j} className="text-xs text-shark-400 ml-2">• {d}</p>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-end pt-2">
+          <Button onClick={onDone}>Done</Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-shark-500">
+        Select staff members to receive the <strong>{kit.name}</strong> kit ({kit.items.length} items).
+      </p>
+
+      <Input
+        placeholder="Search staff..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <div className="border-b border-shark-100 pb-2">
+        <label className="flex items-center gap-2 cursor-pointer text-sm text-shark-600">
+          <input
+            type="checkbox"
+            checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
+            onChange={selectAll}
+            className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+          />
+          Select All ({filteredUsers.length})
+        </label>
+      </div>
+
+      <div className="space-y-1 max-h-56 overflow-y-auto">
+        {filteredUsers.length === 0 ? (
+          <p className="text-sm text-shark-400 text-center py-4">No staff found.</p>
+        ) : (
+          filteredUsers.map((user) => (
+            <label
+              key={user.id}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+                selectedUsers.has(user.id) ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 border border-transparent"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={selectedUsers.has(user.id)}
+                onChange={() => toggleUser(user.id)}
+                className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+              />
+              <div className="flex-1 min-w-0">
+                <span className="text-sm text-shark-700">{user.name || user.email}</span>
+                {user.name && <span className="text-xs text-shark-400 ml-1">({user.email})</span>}
+              </div>
+              {user.region && (
+                <span className="text-xs text-shark-400 shrink-0">{user.region.name}</span>
+              )}
+            </label>
+          ))
+        )}
+      </div>
+
+      <div className="flex justify-between items-center pt-3 border-t border-shark-100">
+        <span className="text-sm text-shark-400">{selectedUsers.size} staff selected</span>
+        <div className="flex gap-3">
+          <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>
+          <Button onClick={handleApply} disabled={selectedUsers.size === 0 || applying}>
+            {applying ? "Applying..." : `Apply to ${selectedUsers.size} Staff`}
           </Button>
         </div>
       </div>

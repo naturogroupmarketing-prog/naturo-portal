@@ -9,7 +9,7 @@ export default async function StarterKitsPage() {
 
   const organizationId = session.user.organizationId!;
 
-  const [kits, categories, consumables] = await Promise.all([
+  const [kits, categories, consumables, users] = await Promise.all([
     db.starterKit.findMany({
       where: { organizationId },
       include: {
@@ -26,6 +26,11 @@ export default async function StarterKitsPage() {
       select: { id: true, name: true, unitType: true, quantityOnHand: true },
       orderBy: { name: "asc" },
     }),
+    db.user.findMany({
+      where: { organizationId, isActive: true, role: "STAFF" },
+      select: { id: true, name: true, email: true, region: { select: { name: true } } },
+      orderBy: { name: "asc" },
+    }),
   ]);
 
   return (
@@ -33,6 +38,7 @@ export default async function StarterKitsPage() {
       kits={JSON.parse(JSON.stringify(kits))}
       categories={JSON.parse(JSON.stringify(categories))}
       consumables={JSON.parse(JSON.stringify(consumables))}
+      users={JSON.parse(JSON.stringify(users))}
     />
   );
 }
