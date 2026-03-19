@@ -127,7 +127,7 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
   if (!organizationId) throw new Error("No organization");
 
   const user = await db.user.findUnique({ where: { id: userId } });
-  if (!user || !user.regionId) throw new Error("User not found or has no region");
+  if (!user) throw new Error("User not found");
 
   // Find the kit to apply
   let kit;
@@ -151,16 +151,31 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
 
   for (const item of kit.items) {
     if (item.itemType === "ASSET_CATEGORY" && item.category) {
-      // Find an available asset in this category in the user's region
-      const availableAsset = await db.asset.findFirst({
-        where: {
-          category: item.category,
-          regionId: user.regionId,
-          organizationId,
-          status: "AVAILABLE",
-        },
-        orderBy: { createdAt: "asc" },
-      });
+      // Find an available asset in this category — prefer user's region, then any region
+      let availableAsset = null;
+      if (user.regionId) {
+        availableAsset = await db.asset.findFirst({
+          where: {
+            category: item.category,
+            regionId: user.regionId,
+            organizationId,
+            status: "AVAILABLE",
+          },
+          orderBy: { createdAt: "asc" },
+        });
+      }
+
+      // If none in user's region (or no region), search all regions
+      if (!availableAsset) {
+        availableAsset = await db.asset.findFirst({
+          where: {
+            category: item.category,
+            organizationId,
+            status: "AVAILABLE",
+          },
+          orderBy: { createdAt: "asc" },
+        });
+      }
 
       if (availableAsset) {
         // Assign the asset
@@ -181,7 +196,7 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
         results.push(`Assigned ${availableAsset.name} (${availableAsset.assetCode})`);
         appliedCount++;
       } else {
-        results.push(`No available ${item.category} asset in region`);
+        results.push(`No available ${item.category} asset found`);
       }
     } else if (item.itemType === "CONSUMABLE" && item.consumableId) {
       // Assign consumable
