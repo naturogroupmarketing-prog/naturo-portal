@@ -73,12 +73,14 @@ interface Props {
   regionBreakdown?: RegionBreakdownItem[];
   assetStatusChart?: ChartItem[];
   categoryChart?: ChartItem[];
+  consumableStatusChart?: ChartItem[];
+  consumableCategoryChart?: ChartItem[];
   portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, portfolioValue, upcomingMaintenance, isSuperAdmin }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, upcomingMaintenance, isSuperAdmin }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -231,6 +233,64 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     const maxVal = Math.max(...categoryChart.map((c) => c.value));
                     const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
                     const colors = ["#7C3AED", "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4"];
+                    const color = colors[idx % colors.length];
+                    return (
+                      <div key={item.name} className="flex items-center gap-3">
+                        <span className="text-sm text-shark-700 flex-1 truncate">{item.name}</span>
+                        <span className="text-sm font-semibold text-shark-900">{item.value}</span>
+                        <div className="w-28 bg-shark-100 rounded-full h-2 overflow-hidden">
+                          <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      ) : null}
+
+      {/* Consumable Charts Section */}
+      {(consumableStatusChart && consumableStatusChart.length > 0) || (consumableCategoryChart && consumableCategoryChart.length > 0) ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {consumableStatusChart && consumableStatusChart.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Consumable Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {consumableStatusChart.map((item) => {
+                    const total = consumableStatusChart.reduce((sum, i) => sum + i.value, 0);
+                    const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
+                    return (
+                      <div key={item.name} className="flex items-center gap-3">
+                        <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                        <span className="text-sm text-shark-700 flex-1">{item.name}</span>
+                        <span className="text-sm font-semibold text-shark-900">{item.value}</span>
+                        <div className="w-24 bg-shark-100 rounded-full h-2 overflow-hidden">
+                          <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
+                        </div>
+                        <span className="text-xs text-shark-400 w-8 text-right">{pct}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {consumableCategoryChart && consumableCategoryChart.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Consumables by Category</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {consumableCategoryChart.map((item, idx) => {
+                    const maxVal = Math.max(...consumableCategoryChart.map((c) => c.value));
+                    const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
+                    const colors = ["#06b6d4", "#8b5cf6", "#ec4899", "#f97316", "#14b8a6", "#a855f7", "#f43f5e", "#0ea5e9"];
                     const color = colors[idx % colors.length];
                     return (
                       <div key={item.name} className="flex items-center gap-3">

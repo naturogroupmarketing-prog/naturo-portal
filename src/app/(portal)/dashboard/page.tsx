@@ -225,6 +225,42 @@ export default async function DashboardPage() {
     value: c._count,
   }));
 
+  // Chart data: consumable stock status
+  const allConsumables = await db.consumable.findMany({
+    where: { ...regionFilter, isActive: true },
+    select: { quantityOnHand: true, minimumThreshold: true, reorderLevel: true },
+  });
+
+  const consumableStatusChart = (() => {
+    let outOfStock = 0, critical = 0, low = 0, adequate = 0;
+    for (const c of allConsumables) {
+      if (c.quantityOnHand === 0) outOfStock++;
+      else if (c.quantityOnHand <= c.minimumThreshold) critical++;
+      else if (c.quantityOnHand <= c.reorderLevel) low++;
+      else adequate++;
+    }
+    return [
+      { name: "Adequate", value: adequate, color: "#10b981" },
+      { name: "Low Stock", value: low, color: "#f59e0b" },
+      { name: "Critical", value: critical, color: "#ef4444" },
+      { name: "Out of Stock", value: outOfStock, color: "#6b7280" },
+    ].filter((s) => s.value > 0);
+  })();
+
+  // Chart data: consumables by category
+  const consumablesByCategory = await db.consumable.groupBy({
+    by: ["category"],
+    where: { ...regionFilter, isActive: true },
+    _count: true,
+    orderBy: { _count: { category: "desc" } },
+    take: 8,
+  });
+
+  const consumableCategoryChart = consumablesByCategory.map((c) => ({
+    name: c.category,
+    value: c._count,
+  }));
+
   // Portfolio valuation
   const assetsWithCost = await db.asset.findMany({
     where: { ...regionFilter, purchaseCost: { not: null } },
@@ -287,6 +323,8 @@ export default async function DashboardPage() {
       regionBreakdown={regionBreakdown}
       assetStatusChart={assetStatusChart}
       categoryChart={categoryChart}
+      consumableStatusChart={consumableStatusChart}
+      consumableCategoryChart={consumableCategoryChart}
       portfolioValue={isSuperAdmin ? { purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100, consumableValue: Math.round(totalConsumableValue * 100) / 100 } : undefined}
       upcomingMaintenance={upcomingMaintenance}
       isSuperAdmin={isSuperAdmin}
