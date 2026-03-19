@@ -177,10 +177,10 @@ export async function returnAsset(formData: FormData) {
     throw new Error("Cannot manage this region");
   }
 
-  const newStatus: AssetStatus = isDamaged ? "DAMAGED" : "AVAILABLE";
+  const newStatus: AssetStatus = isDamaged ? "DAMAGED" : "PENDING_RETURN";
 
-  await db.$transaction([
-    db.assetAssignment.update({
+  await db.$transaction(async (tx) => {
+    await tx.assetAssignment.update({
       where: { id: assignmentId },
       data: {
         isActive: false,
@@ -188,12 +188,28 @@ export async function returnAsset(formData: FormData) {
         returnCondition,
         returnNotes: returnNotes || null,
       },
-    }),
-    db.asset.update({
+    });
+    await tx.asset.update({
       where: { id: assignment.assetId },
       data: { status: newStatus },
-    }),
-  ]);
+    });
+    // Create pending return for manager verification
+    if (!isDamaged) {
+      await tx.pendingReturn.create({
+        data: {
+          itemType: "ASSET",
+          assetId: assignment.assetId,
+          returnedByName: assignment.user.name || assignment.user.email,
+          returnedByEmail: assignment.user.email,
+          returnCondition: returnCondition || null,
+          returnNotes: returnNotes || null,
+          organizationId,
+          regionId: assignment.asset.regionId,
+          returnReason: "Manual return",
+        },
+      });
+    }
+  });
 
   await createAuditLog({
     action: "ASSET_RETURNED",

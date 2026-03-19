@@ -237,9 +237,10 @@ export async function deleteUser(userId: string) {
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
-  // Auto-return all active asset assignments before deletion
+  // Auto-return all active asset assignments — set to PENDING_RETURN for manager checklist
   const activeAssetAssignments = await db.assetAssignment.findMany({
     where: { userId, isActive: true },
+    include: { asset: true },
   });
   for (const assignment of activeAssetAssignments) {
     await db.$transaction(async (tx) => {
@@ -249,14 +250,26 @@ export async function deleteUser(userId: string) {
       });
       await tx.asset.update({
         where: { id: assignment.assetId },
-        data: { status: "AVAILABLE" },
+        data: { status: "PENDING_RETURN" },
+      });
+      await tx.pendingReturn.create({
+        data: {
+          itemType: "ASSET",
+          assetId: assignment.assetId,
+          returnedByName: user.name || user.email,
+          returnedByEmail: user.email,
+          returnReason: "User deleted",
+          organizationId: organizationId!,
+          regionId: assignment.asset.regionId,
+        },
       });
     });
   }
 
-  // Auto-return all active consumable assignments before deletion
+  // Auto-return all active consumable assignments — pending manager checklist
   const activeConsumableAssignments = await db.consumableAssignment.findMany({
     where: { userId, isActive: true },
+    include: { consumable: true },
   });
   for (const assignment of activeConsumableAssignments) {
     await db.$transaction(async (tx) => {
@@ -264,9 +277,18 @@ export async function deleteUser(userId: string) {
         where: { id: assignment.id },
         data: { isActive: false, returnedDate: new Date(), returnNotes: "Auto-returned: user deleted" },
       });
-      await tx.consumable.update({
-        where: { id: assignment.consumableId },
-        data: { quantityOnHand: { increment: assignment.quantity } },
+      // Don't restock yet — pending verification
+      await tx.pendingReturn.create({
+        data: {
+          itemType: "CONSUMABLE",
+          consumableId: assignment.consumableId,
+          quantity: assignment.quantity,
+          returnedByName: user.name || user.email,
+          returnedByEmail: user.email,
+          returnReason: "User deleted",
+          organizationId: organizationId!,
+          regionId: assignment.consumable.regionId,
+        },
       });
     });
   }

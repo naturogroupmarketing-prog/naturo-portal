@@ -627,8 +627,8 @@ export async function returnConsumable(formData: FormData) {
     throw new Error("Cannot manage this region");
   }
 
-  await db.$transaction([
-    db.consumableAssignment.update({
+  await db.$transaction(async (tx) => {
+    await tx.consumableAssignment.update({
       where: { id: assignmentId },
       data: {
         isActive: false,
@@ -636,12 +636,23 @@ export async function returnConsumable(formData: FormData) {
         returnCondition: returnCondition || null,
         returnNotes: returnNotes || null,
       },
-    }),
-    db.consumable.update({
-      where: { id: assignment.consumableId },
-      data: { quantityOnHand: { increment: returnQuantity } },
-    }),
-  ]);
+    });
+    // Don't restock immediately — create pending return for manager verification
+    await tx.pendingReturn.create({
+      data: {
+        itemType: "CONSUMABLE",
+        consumableId: assignment.consumableId,
+        quantity: returnQuantity,
+        returnedByName: assignment.user.name || assignment.user.email,
+        returnedByEmail: assignment.user.email,
+        returnCondition: returnCondition || null,
+        returnNotes: returnNotes || null,
+        organizationId,
+        regionId: assignment.consumable.regionId,
+        returnReason: "Manual return",
+      },
+    });
+  });
 
   await createAuditLog({
     action: "CONSUMABLE_RETURNED",

@@ -503,6 +503,33 @@ model AuditLog {
 
 // ─── PASSWORD RESET ─────────────────────────────────────
 
+// ─── RETURN CHECKLIST ───────────────────────────────────
+
+model PendingReturn {
+  id               String    @id @default(cuid())
+  itemType         String    // ASSET or CONSUMABLE
+  assetId          String?
+  consumableId     String?
+  quantity         Int       @default(1)
+  returnedByName   String    // Name of the user who had the item
+  returnedByEmail  String
+  returnReason     String?   // e.g. "User deleted", "Manual return"
+  returnCondition  String?   // GOOD, FAIR, POOR, DAMAGED
+  returnNotes      String?   @db.Text
+  organizationId   String
+  regionId         String?
+
+  verifiedById     String?
+  verifiedAt       DateTime?
+  isVerified       Boolean   @default(false)
+  verificationNotes String?  @db.Text
+
+  createdAt        DateTime  @default(now())
+
+  @@index([organizationId, isVerified])
+  @@index([regionId])
+}
+
 model PasswordResetToken {
   id        String   @id @default(cuid())
   email     String
