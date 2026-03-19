@@ -172,44 +172,50 @@ export function StaffDashboardClient({ stats, recentAssets, recentConsumables, r
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="divide-y divide-shark-100">
               {/* Pending Assets */}
               {pendingAssetItems.map((item) => {
                 const isConfirmed = confirmedIds.has(`asset-${item.id}`);
+                const isRejected = confirmedIds.has(`rejected-asset-${item.id}`);
+                const isDone = isConfirmed || isRejected;
                 return (
                   <div
                     key={`asset-${item.id}`}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all ${
-                      isConfirmed
-                        ? "bg-emerald-50 border-emerald-200"
-                        : "bg-white border-shark-100 hover:border-shark-200"
+                    className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
+                      isConfirmed ? "bg-emerald-50/50 opacity-60" : isRejected ? "bg-red-50/50 opacity-60" : ""
                     }`}
                   >
-                    {isConfirmed ? (
-                      <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
-                        <Icon name="check" size={12} className="text-white" />
-                      </div>
-                    ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-shark-300 shrink-0" />
-                    )}
-                    <Icon name="package" size={16} className="text-action-500 shrink-0" />
+                    <input
+                      type="checkbox"
+                      checked={isConfirmed}
+                      disabled={isDone}
+                      onChange={() => { if (!isDone) handleConfirmAsset(item.id); }}
+                      className="w-5 h-5 rounded border-shark-300 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0"
+                    />
+                    <Icon name="package" size={16} className={`shrink-0 ${isConfirmed ? "text-emerald-400" : isRejected ? "text-red-400" : "text-action-500"}`} />
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isConfirmed ? "text-emerald-700 line-through" : "text-shark-800"}`}>
+                      <p className={`text-sm font-medium ${isConfirmed ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
                         {item.asset.name}
                       </p>
-                      <p className="text-xs text-shark-400">
-                        {item.asset.assetCode} · {item.asset.category}
-                      </p>
+                      <p className="text-xs text-shark-400">{item.asset.assetCode} · {item.asset.category}</p>
                     </div>
-                    {!isConfirmed && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleConfirmAsset(item.id)}
-                        disabled={confirming === item.id}
+                    {isConfirmed ? (
+                      <span className="text-xs text-emerald-500 font-medium shrink-0">Received</span>
+                    ) : isRejected ? (
+                      <span className="text-xs text-red-500 font-medium shrink-0">Not received</span>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          const reason = prompt("Why was this item not received?");
+                          if (reason) {
+                            setConfirmedIds((prev) => new Set([...prev, `rejected-asset-${item.id}`]));
+                          }
+                        }}
+                        className="p-1.5 rounded-lg hover:bg-red-50 text-shark-400 hover:text-red-500 transition-colors shrink-0"
+                        title="Not received"
                       >
-                        {confirming === item.id ? "..." : "Received"}
-                      </Button>
+                        <Icon name="x" size={16} />
+                      </button>
                     )}
                   </div>
                 );
@@ -218,52 +224,68 @@ export function StaffDashboardClient({ stats, recentAssets, recentConsumables, r
               {/* Pending Consumables */}
               {pendingConsumableItems.map((item) => {
                 const isConfirmed = confirmedIds.has(`consumable-${item.id}`);
+                const isRejected = confirmedIds.has(`rejected-consumable-${item.id}`);
+                const isDone = isConfirmed || isRejected;
                 return (
                   <div
                     key={`consumable-${item.id}`}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all ${
-                      isConfirmed
-                        ? "bg-emerald-50 border-emerald-200"
-                        : "bg-white border-shark-100 hover:border-shark-200"
+                    className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
+                      isConfirmed ? "bg-emerald-50/50 opacity-60" : isRejected ? "bg-red-50/50 opacity-60" : ""
                     }`}
                   >
-                    {isConfirmed ? (
-                      <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
-                        <Icon name="check" size={12} className="text-white" />
-                      </div>
-                    ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-shark-300 shrink-0" />
-                    )}
-                    <Icon name="droplet" size={16} className="text-blue-500 shrink-0" />
+                    <input
+                      type="checkbox"
+                      checked={isConfirmed}
+                      disabled={isDone}
+                      onChange={() => { if (!isDone) handleConfirmConsumable(item.id); }}
+                      className="w-5 h-5 rounded border-shark-300 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0"
+                    />
+                    <Icon name="droplet" size={16} className={`shrink-0 ${isConfirmed ? "text-emerald-400" : isRejected ? "text-red-400" : "text-blue-500"}`} />
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isConfirmed ? "text-emerald-700 line-through" : "text-shark-800"}`}>
+                      <p className={`text-sm font-medium ${isConfirmed ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
                         {item.quantity}x {item.consumable.name}
                       </p>
                       <p className="text-xs text-shark-400">{item.consumable.unitType}</p>
                     </div>
-                    {!isConfirmed && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleConfirmConsumable(item.id)}
-                        disabled={confirming === item.id}
+                    {isConfirmed ? (
+                      <span className="text-xs text-emerald-500 font-medium shrink-0">Received</span>
+                    ) : isRejected ? (
+                      <span className="text-xs text-red-500 font-medium shrink-0">Not received</span>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          const reason = prompt("Why was this item not received?");
+                          if (reason) {
+                            setConfirmedIds((prev) => new Set([...prev, `rejected-consumable-${item.id}`]));
+                          }
+                        }}
+                        className="p-1.5 rounded-lg hover:bg-red-50 text-shark-400 hover:text-red-500 transition-colors shrink-0"
+                        title="Not received"
                       >
-                        {confirming === item.id ? "..." : "Received"}
-                      </Button>
+                        <Icon name="x" size={16} />
+                      </button>
                     )}
                   </div>
                 );
               })}
             </div>
 
-            {confirmedIds.size === pendingAssetItems.length + pendingConsumableItems.length &&
-             confirmedIds.size > 0 && (
-              <div className="mt-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
-                <p className="text-sm font-medium text-emerald-700">
-                  All items confirmed! They will now appear on your dashboard.
-                </p>
-              </div>
-            )}
+            {/* Summary when all processed */}
+            {(() => {
+              const totalItems = pendingAssetItems.length + pendingConsumableItems.length;
+              const processedCount = [...confirmedIds].filter(id => !id.startsWith("rejected-")).length +
+                [...confirmedIds].filter(id => id.startsWith("rejected-")).length;
+              if (processedCount >= totalItems && totalItems > 0) {
+                return (
+                  <div className="mt-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
+                    <p className="text-sm font-medium text-emerald-700">
+                      All items processed! Confirmed items will now appear on your dashboard.
+                    </p>
+                  </div>
+                );
+              }
+              return null;
+            })()}
           </CardContent>
         </Card>
       )}
