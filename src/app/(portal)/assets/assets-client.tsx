@@ -10,6 +10,7 @@ import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets } from "@/app/actions/assets";
 import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem, reorderCategories, reorderItems } from "@/app/actions/categories";
+import { QRScanner } from "@/components/ui/qr-scanner";
 
 // Color palette auto-assigned by category index
 const SECTION_COLORS = [
@@ -51,6 +52,7 @@ interface Asset {
   isHighValue: boolean;
   purchaseDate: string | null;
   purchaseCost: number | null;
+  warrantyExpiry: string | null;
   supplier: string | null;
   notes: string | null;
   region: { id: string; name: string; state: { name: string } };
@@ -149,6 +151,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
   const [regionFilter, setRegionFilter] = useState(initialRegion || "ALL");
+  const [showScanner, setShowScanner] = useState(false);
 
   // Column visibility state
   const [visibleColumns, setVisibleColumns] = useState({
@@ -615,6 +618,10 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           <p className="text-sm text-shark-400 mt-1">{assets.length} total assets</p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowScanner(true)}>
+            <Icon name="search" size={14} className="mr-1.5" />
+            Scan QR
+          </Button>
           <Button variant="outline" size="sm" onClick={() => setShowManageSections(true)}>
             <Icon name="settings" size={14} className="mr-1.5" />
             Sections
@@ -1335,6 +1342,10 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               </div>
             </div>
             <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Warranty Expiry</label>
+              <Input name="warrantyExpiry" type="date" defaultValue={editAsset.warrantyExpiry ? editAsset.warrantyExpiry.substring(0, 10) : ""} />
+            </div>
+            <div>
               <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
               <Input name="supplier" defaultValue={editAsset.supplier || ""} />
             </div>
@@ -1406,6 +1417,25 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           </form>
         )}
       </Modal>
+
+      {/* QR Scanner Modal */}
+      <QRScanner
+        open={showScanner}
+        onClose={() => setShowScanner(false)}
+        onScan={(result) => {
+          // Extract asset code from URL or use raw text
+          const match = result.match(/\/assets\/([A-Z0-9-]+)/i);
+          const code = match ? match[1] : result;
+          // Find asset by code
+          const found = assets.find((a) => a.assetCode.toLowerCase() === code.toLowerCase());
+          if (found) {
+            setEditAsset(found);
+          } else {
+            setSearchAndClear(code);
+          }
+          setShowScanner(false);
+        }}
+      />
     </div>
   );
 }

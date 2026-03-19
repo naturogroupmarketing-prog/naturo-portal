@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Exo } from "next/font/google";
 import { PWARegister } from "@/components/pwa-register";
+import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -35,8 +36,10 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className={`${inter.className} ${exo.variable} antialiased`}>
-        <PWARegister />
-        {children}
+        <ToastProvider>
+          <PWARegister />
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );

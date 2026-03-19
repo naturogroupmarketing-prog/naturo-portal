@@ -223,6 +223,9 @@ model User {
   permissions            ManagerPermission?
   purchaseOrdersCreated  PurchaseOrder[]         @relation("POCreatedBy")
   purchaseOrdersApproved PurchaseOrder[]         @relation("POApprovedBy")
+  notifications          Notification[]
+  maintenanceAssigned    MaintenanceSchedule[]   @relation("MaintenanceAssignee")
+  maintenancePerformed   MaintenanceLog[]        @relation("MaintenancePerformer")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -252,6 +255,8 @@ model Asset {
   supplier       String?
   notes          String?     @db.Text
   sortOrder      Int         @default(0)
+  warrantyExpiry DateTime?
+  depreciationRate Float?    // annual percentage
 
   region       Region       @relation(fields: [regionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -259,6 +264,7 @@ model Asset {
   damageReports DamageReport[]
   photos        AssetPhoto[]
   auditLogs     AuditLog[]
+  maintenance   MaintenanceSchedule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -498,6 +504,60 @@ model PasswordResetToken {
 
   @@index([email])
   @@index([token])
+}
+
+// ─── NOTIFICATIONS ──────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // LOW_STOCK, OVERDUE_RETURN, PENDING_REQUEST, DAMAGE_REPORT, ASSET_ASSIGNED, etc.
+  title     String
+  message   String
+  link      String?  // optional URL to navigate to
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+}
+
+// ─── MAINTENANCE ────────────────────────────────────────
+
+model MaintenanceSchedule {
+  id          String    @id @default(cuid())
+  assetId     String
+  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  title       String
+  description String?   @db.Text
+  frequency   String    // ONCE, DAILY, WEEKLY, MONTHLY, QUARTERLY, YEARLY
+  nextDueDate DateTime
+  lastCompletedDate DateTime?
+  assignedToId String?
+  assignedTo  User?     @relation("MaintenanceAssignee", fields: [assignedToId], references: [id])
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  logs        MaintenanceLog[]
+
+  @@index([assetId])
+  @@index([nextDueDate])
+  @@index([assignedToId])
+}
+
+model MaintenanceLog {
+  id          String   @id @default(cuid())
+  scheduleId  String
+  schedule    MaintenanceSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  performedById String
+  performedBy User     @relation("MaintenancePerformer", fields: [performedById], references: [id])
+  notes       String?  @db.Text
+  cost        Float?
+  condition   String?  // GOOD, FAIR, POOR, NEEDS_REPLACEMENT
+  completedAt DateTime @default(now())
+
+  @@index([scheduleId])
 }
 
 // ─── MANAGER PERMISSIONS ────────────────────────────────

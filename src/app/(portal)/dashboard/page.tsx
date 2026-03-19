@@ -171,6 +171,39 @@ export default async function DashboardPage() {
     }));
   }
 
+  // Chart data: asset status breakdown
+  const [availableCount, assignedCount, checkedOutCount, damagedCount, lostCount2, unavailableCount] = await Promise.all([
+    db.asset.count({ where: { ...regionFilter, status: "AVAILABLE" } }),
+    db.asset.count({ where: { ...regionFilter, status: "ASSIGNED" } }),
+    db.asset.count({ where: { ...regionFilter, status: "CHECKED_OUT" } }),
+    db.asset.count({ where: { ...regionFilter, status: "DAMAGED" } }),
+    db.asset.count({ where: { ...regionFilter, status: "LOST" } }),
+    db.asset.count({ where: { ...regionFilter, status: "UNAVAILABLE" } }),
+  ]);
+
+  const assetStatusChart = [
+    { name: "Available", value: availableCount, color: "#10b981" },
+    { name: "Assigned", value: assignedCount, color: "#3b82f6" },
+    { name: "Checked Out", value: checkedOutCount, color: "#f59e0b" },
+    { name: "Damaged", value: damagedCount, color: "#ef4444" },
+    { name: "Lost", value: lostCount2, color: "#6b7280" },
+    { name: "Unavailable", value: unavailableCount, color: "#8b5cf6" },
+  ].filter((s) => s.value > 0);
+
+  // Chart data: assets by category
+  const assetsByCategory = await db.asset.groupBy({
+    by: ["category"],
+    where: regionFilter,
+    _count: true,
+    orderBy: { _count: { category: "desc" } },
+    take: 8,
+  });
+
+  const categoryChart = assetsByCategory.map((c) => ({
+    name: c.category,
+    value: c._count,
+  }));
+
   const preferences = parsePreferences(userPrefs?.dashboardPreferences);
 
   const stats: { widgetId: string; label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
@@ -198,6 +231,8 @@ export default async function DashboardPage() {
       preferences={preferences}
       subtitle={isSuperAdmin ? "All locations overview" : "Your region overview"}
       regionBreakdown={regionBreakdown}
+      assetStatusChart={assetStatusChart}
+      categoryChart={categoryChart}
     />
   );
 }

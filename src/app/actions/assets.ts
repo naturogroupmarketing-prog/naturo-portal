@@ -377,6 +377,7 @@ export async function updateAsset(formData: FormData) {
   const notes = (formData.get("notes") as string)?.trim();
   const status = formData.get("status") as AssetStatus;
   const imageUrl = formData.get("imageUrl") as string | null;
+  const warrantyExpiry = formData.get("warrantyExpiry") as string;
 
   const asset = await db.asset.findUnique({ where: { id: assetId } });
   if (!asset) throw new Error("Asset not found");
@@ -405,6 +406,7 @@ export async function updateAsset(formData: FormData) {
     isHighValue,
     notes: notes || null,
     status,
+    warrantyExpiry: warrantyExpiry ? new Date(warrantyExpiry) : null,
   };
 
   // Only update imageUrl if it was explicitly provided in the form

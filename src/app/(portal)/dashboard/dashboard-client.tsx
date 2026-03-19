@@ -58,6 +58,12 @@ const REGION_COLORS = [
   { color: "text-orange-600", bg: "bg-orange-50" },
 ];
 
+interface ChartItem {
+  name: string;
+  value: number;
+  color?: string;
+}
+
 interface Props {
   stats: StatCard[];
   lowStockItems: LowStockItem[];
@@ -65,9 +71,11 @@ interface Props {
   preferences: DashboardPreferences;
   subtitle: string;
   regionBreakdown?: RegionBreakdownItem[];
+  assetStatusChart?: ChartItem[];
+  categoryChart?: ChartItem[];
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -129,6 +137,64 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           ))}
         </div>
       )}
+
+      {/* Charts Section */}
+      {(assetStatusChart && assetStatusChart.length > 0) || (categoryChart && categoryChart.length > 0) ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {assetStatusChart && assetStatusChart.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Asset Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {assetStatusChart.map((item) => {
+                    const total = assetStatusChart.reduce((sum, i) => sum + i.value, 0);
+                    const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
+                    return (
+                      <div key={item.name} className="flex items-center gap-3">
+                        <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                        <span className="text-sm text-shark-700 flex-1">{item.name}</span>
+                        <span className="text-sm font-semibold text-shark-900">{item.value}</span>
+                        <div className="w-24 bg-shark-100 rounded-full h-2 overflow-hidden">
+                          <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
+                        </div>
+                        <span className="text-xs text-shark-400 w-8 text-right">{pct}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {categoryChart && categoryChart.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Assets by Category</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {categoryChart.map((item, idx) => {
+                    const maxVal = Math.max(...categoryChart.map((c) => c.value));
+                    const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
+                    const colors = ["#7C3AED", "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4"];
+                    const color = colors[idx % colors.length];
+                    return (
+                      <div key={item.name} className="flex items-center gap-3">
+                        <span className="text-sm text-shark-700 flex-1 truncate">{item.name}</span>
+                        <span className="text-sm font-semibold text-shark-900">{item.value}</span>
+                        <div className="w-28 bg-shark-100 rounded-full h-2 overflow-hidden">
+                          <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      ) : null}
 
       {/* Low stock alerts */}
       {showLowStock && (

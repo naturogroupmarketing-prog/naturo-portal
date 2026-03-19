@@ -7,7 +7,7 @@ export type IconName =
   | "bar-chart" | "lock" | "user" | "star" | "chevron-down"
   | "log-out" | "arrow-right" | "arrow-left" | "box" | "truck" | "file-text"
   | "shield" | "clock" | "edit" | "upload" | "check-circle" | "file-spreadsheet"
-  | "help-circle" | "mail" | "message-circle";
+  | "help-circle" | "mail" | "message-circle" | "bell" | "inbox";
 
 interface IconProps {
   name: IconName;
@@ -86,6 +86,10 @@ const paths: Record<IconName, string> = {
     "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6",
   "message-circle":
     "M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z",
+  bell:
+    "M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9z M13.73 21a2 2 0 01-3.46 0",
+  inbox:
+    "M22 12h-6l-2 3H10l-2-3H2 M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z",
 };
 
 export function Icon({ name, className, size = 20 }: IconProps) {

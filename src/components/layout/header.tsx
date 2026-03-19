@@ -3,6 +3,7 @@
 import { signOut } from "next-auth/react";
 import { Icon } from "@/components/ui/icon";
 import { Logo } from "@/components/ui/logo";
+import { NotificationBell } from "./notification-bell";
 
 interface HeaderProps {
   userName?: string | null;
@@ -27,6 +28,7 @@ export function Header({ userName, userImage, onMenuToggle }: HeaderProps) {
 
       <div className="flex items-center gap-3">
         <Logo size={24} className="hidden lg:block" />
+        <NotificationBell />
         <div className="hidden sm:block text-right">
           <p className="text-sm font-medium text-shark-700">{userName}</p>
         </div>
