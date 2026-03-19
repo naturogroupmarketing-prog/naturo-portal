@@ -324,6 +324,10 @@ export async function deleteUser(userId: string) {
     })),
   };
 
+  // Clean up related records that may not cascade
+  await db.starterKitApplication.deleteMany({ where: { OR: [{ userId }, { appliedById: userId }] } });
+  await db.notification.deleteMany({ where: { userId } });
+
   // Delete user — cascade will remove assignments and requests
   await db.user.delete({ where: { id: userId } });
 

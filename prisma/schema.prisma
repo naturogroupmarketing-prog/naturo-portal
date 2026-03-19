@@ -563,11 +563,11 @@ model StarterKit {
 model StarterKitApplication {
   id             String @id @default(cuid())
   starterKitId   String
-  starterKit     StarterKit @relation(fields: [starterKitId], references: [id])
+  starterKit     StarterKit @relation(fields: [starterKitId], references: [id], onDelete: Cascade)
   userId         String
-  user           User @relation(fields: [userId], references: [id])
+  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
   appliedById    String
-  appliedBy      User @relation("AppliedStarterKit", fields: [appliedById], references: [id])
+  appliedBy      User @relation("AppliedStarterKit", fields: [appliedById], references: [id], onDelete: Cascade)
   results        String? @db.Text // JSON string of what was applied
   acknowledged   Boolean @default(false)
   acknowledgedAt DateTime?
