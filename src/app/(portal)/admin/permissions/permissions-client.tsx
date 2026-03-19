@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
 import { updatePermission } from "@/app/actions/permissions";
-import { MANAGER_DEFAULTS, type PermissionKey } from "@/lib/permission-types";
+import { MANAGER_DEFAULTS, PERMISSION_INFO, type PermissionKey } from "@/lib/permission-types";
 
 interface Manager {
   id: string;
@@ -16,12 +16,7 @@ interface Manager {
   permissions: Record<PermissionKey, boolean> | null;
 }
 
-const PERMISSION_GROUPS = [
-  { label: "Staff", addKey: "staffAdd" as PermissionKey, editKey: "staffViewDetails" as PermissionKey | null, deleteKey: "staffDelete" as PermissionKey },
-  { label: "Assets", addKey: "assetAdd" as PermissionKey, editKey: "assetEdit" as PermissionKey | null, deleteKey: "assetDelete" as PermissionKey },
-  { label: "Consumables", addKey: "consumableAdd" as PermissionKey, editKey: "consumableEdit" as PermissionKey | null, deleteKey: "consumableDelete" as PermissionKey },
-  { label: "Regions", addKey: "regionAdd" as PermissionKey, editKey: null as PermissionKey | null, deleteKey: "regionDelete" as PermissionKey },
-];
+const GROUPS = ["Staff", "Assets", "Consumables", "Features", "Regions", "AI"];
 
 function Toggle({
   checked,
@@ -54,6 +49,7 @@ function Toggle({
 
 function ManagerCard({ manager }: { manager: Manager }) {
   const [isPending, startTransition] = useTransition();
+  const [expanded, setExpanded] = useState(false);
 
   const getPermValue = (key: PermissionKey): boolean => {
     if (manager.permissions && key in manager.permissions) {
@@ -68,10 +64,16 @@ function ManagerCard({ manager }: { manager: Manager }) {
     });
   };
 
+  const allKeys = Object.keys(PERMISSION_INFO) as PermissionKey[];
+  const enabledCount = allKeys.filter((k) => getPermValue(k)).length;
+
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div
+          className="flex items-center justify-between cursor-pointer"
+          onClick={() => setExpanded(!expanded)}
+        >
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-action-50 flex items-center justify-center">
               <Icon name="user" size={18} className="text-action-500" />
@@ -84,81 +86,46 @@ function ManagerCard({ manager }: { manager: Manager }) {
               </p>
             </div>
           </div>
-          <Badge status="BRANCH_MANAGER" />
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-shark-400">{enabledCount}/{allKeys.length} enabled</span>
+            <Badge status="BRANCH_MANAGER" />
+            <Icon name={expanded ? "chevron-down" : "arrow-right"} size={16} className="text-shark-400" />
+          </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-shark-100">
-                <th className="py-2 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-1/4">Resource</th>
-                <th className="py-2 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Add</th>
-                <th className="py-2 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Edit</th>
-                <th className="py-2 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {PERMISSION_GROUPS.map((group) => (
-                <tr key={group.label} className="border-b border-shark-50 last:border-0">
-                  <td className="py-3 font-medium text-shark-700">{group.label}</td>
-                  <td className="py-3 text-center">
-                    <Toggle
-                      checked={getPermValue(group.addKey)}
-                      onChange={(val) => handleToggle(group.addKey, val)}
-                      disabled={isPending}
-                    />
-                  </td>
-                  <td className="py-3 text-center">
-                    {group.editKey ? (
-                      <Toggle
-                        checked={getPermValue(group.editKey)}
-                        onChange={(val) => handleToggle(group.editKey!, val)}
-                        disabled={isPending}
-                      />
-                    ) : (
-                      <span className="text-xs text-shark-300">—</span>
-                    )}
-                  </td>
-                  <td className="py-3 text-center">
-                    <Toggle
-                      checked={getPermValue(group.deleteKey)}
-                      onChange={(val) => handleToggle(group.deleteKey, val)}
-                      disabled={isPending}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Standalone permission toggles */}
-        <div className="mt-4 pt-4 border-t border-shark-100 space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-sm text-shark-700">Purchase Orders</p>
-              <p className="text-xs text-shark-400 mt-0.5">Approve, reject, and update purchase order status</p>
-            </div>
-            <Toggle
-              checked={getPermValue("purchaseOrderManage")}
-              onChange={(val) => handleToggle("purchaseOrderManage", val)}
-              disabled={isPending}
-            />
+      {expanded && (
+        <CardContent>
+          <div className="space-y-6">
+            {GROUPS.map((group) => {
+              const groupKeys = allKeys.filter((k) => PERMISSION_INFO[k].group === group);
+              if (groupKeys.length === 0) return null;
+              return (
+                <div key={group}>
+                  <h4 className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-3">{group}</h4>
+                  <div className="space-y-3">
+                    {groupKeys.map((key) => {
+                      const info = PERMISSION_INFO[key];
+                      return (
+                        <div key={key} className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-shark-700">{info.label}</p>
+                            <p className="text-xs text-shark-400">{info.description}</p>
+                          </div>
+                          <Toggle
+                            checked={getPermValue(key)}
+                            onChange={(val) => handleToggle(key, val)}
+                            disabled={isPending}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-sm text-shark-700">AI Asset Creation</p>
-              <p className="text-xs text-shark-400 mt-0.5">Create assets and purchase orders via the AI chat assistant</p>
-            </div>
-            <Toggle
-              checked={getPermValue("aiAssetCreate")}
-              onChange={(val) => handleToggle("aiAssetCreate", val)}
-              disabled={isPending}
-            />
-          </div>
-        </div>
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   );
 }
@@ -176,7 +143,7 @@ export function PermissionsClient({ managers }: { managers: Manager[] }) {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-shark-900">Permission Management</h1>
-        <p className="text-sm text-shark-400 mt-1">Manage granular permissions for Branch Managers</p>
+        <p className="text-sm text-shark-400 mt-1">Manage granular permissions for Branch Managers. Click a manager to expand.</p>
       </div>
 
       <Input
