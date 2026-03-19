@@ -169,8 +169,12 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
     setDeleting(true);
     setDeleteError("");
     try {
-      await deleteUser(editUser.id);
-      closeEdit();
+      const result = await deleteUser(editUser.id);
+      if (result && !result.success) {
+        setDeleteError(result.error || "Failed to delete");
+      } else {
+        closeEdit();
+      }
     } catch (e: unknown) {
       setDeleteError(e instanceof Error ? e.message : "Failed to delete");
     } finally {

@@ -225,12 +225,13 @@ export async function getUsers(regionId?: string) {
 export async function deleteUser(userId: string) {
   const session = await auth();
   if (!session?.user || !isSuperAdmin(session.user.role)) {
-    throw new Error("Unauthorized");
+    return { success: false, error: "Unauthorized" };
   }
 
   const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  if (!organizationId) return { success: false, error: "No organization found" };
 
+  try {
   // Prevent deleting yourself
   if (userId === session.user.id) throw new Error("Cannot delete yourself");
 
@@ -352,7 +353,12 @@ export async function deleteUser(userId: string) {
   revalidatePath("/admin/users");
   revalidatePath("/staff");
   revalidatePath("/dashboard");
+  revalidatePath("/returns");
   return { success: true };
+  } catch (err) {
+    console.error("Delete user error:", err);
+    return { success: false, error: err instanceof Error ? err.message : "Failed to delete user" };
+  }
 }
 
 export async function resetPassword(userId: string, newPassword: string) {
