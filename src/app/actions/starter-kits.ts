@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
+import { notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
 
 export async function getStarterKits() {
@@ -353,4 +354,106 @@ async function checkApplicationComplete(applicationId: string) {
       data: { acknowledged: true, acknowledgedAt: new Date() },
     });
   }
+}
+
+/**
+ * Staff rejects a kit asset item — marks as not received, returns asset, notifies manager
+ */
+export async function rejectKitAssetItem(assignmentId: string, reason: string) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const assignment = await db.assetAssignment.findUnique({
+    where: { id: assignmentId },
+    include: { asset: true },
+  });
+
+  if (!assignment || assignment.userId !== session.user.id) {
+    throw new Error("Not found");
+  }
+
+  await db.$transaction(async (tx) => {
+    // Deactivate the assignment
+    await tx.assetAssignment.update({
+      where: { id: assignmentId },
+      data: { isActive: false, acknowledgedAt: new Date(), actualReturnDate: new Date() },
+    });
+
+    // Return asset to available
+    await tx.asset.update({
+      where: { id: assignment.assetId },
+      data: { status: "AVAILABLE" },
+    });
+  });
+
+  // Check if application is complete
+  if (assignment.starterKitApplicationId) {
+    await checkApplicationComplete(assignment.starterKitApplicationId);
+  }
+
+  // Notify managers
+  await notifyAdminsAndManagers({
+    organizationId: assignment.asset.organizationId,
+    regionId: assignment.asset.regionId,
+    type: "ASSET_RETURNED",
+    title: "Kit Item Not Received",
+    message: `${session.user.name || session.user.email} did not receive "${assignment.asset.name}" (${assignment.asset.assetCode}). Reason: ${reason}. Asset returned to available.`,
+    link: "/assets",
+  });
+
+  revalidatePath("/my-assets");
+  revalidatePath("/dashboard");
+  revalidatePath("/assets");
+  return { success: true };
+}
+
+/**
+ * Staff rejects a kit consumable item — marks as not received, restocks, notifies manager
+ */
+export async function rejectKitConsumableItem(assignmentId: string, reason: string) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const assignment = await db.consumableAssignment.findUnique({
+    where: { id: assignmentId },
+    include: { consumable: true },
+  });
+
+  if (!assignment || assignment.userId !== session.user.id) {
+    throw new Error("Not found");
+  }
+
+  await db.$transaction(async (tx) => {
+    // Deactivate the assignment
+    await tx.consumableAssignment.update({
+      where: { id: assignmentId },
+      data: { isActive: false, acknowledgedAt: new Date() },
+    });
+
+    // Restock the consumable
+    await tx.consumable.update({
+      where: { id: assignment.consumableId },
+      data: { quantityOnHand: { increment: assignment.quantity } },
+    });
+  });
+
+  // Check if application is complete
+  if (assignment.starterKitApplicationId) {
+    await checkApplicationComplete(assignment.starterKitApplicationId);
+  }
+
+  // Notify managers
+  await notifyAdminsAndManagers({
+    organizationId: assignment.consumable.organizationId,
+    regionId: assignment.consumable.regionId,
+    type: "ASSET_RETURNED",
+    title: "Kit Item Not Received",
+    message: `${session.user.name || session.user.email} did not receive ${assignment.quantity}x "${assignment.consumable.name}". Reason: ${reason}. Stock returned.`,
+    link: "/consumables",
+  });
+
+  revalidatePath("/my-consumables");
+  revalidatePath("/dashboard");
+  revalidatePath("/consumables");
+  return { success: true };
 }

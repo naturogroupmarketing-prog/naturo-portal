@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Icon, type IconName } from "@/components/ui/icon";
-import { acknowledgeAssetItem, acknowledgeConsumableItem } from "@/app/actions/starter-kits";
+import { acknowledgeAssetItem, acknowledgeConsumableItem, rejectKitAssetItem, rejectKitConsumableItem } from "@/app/actions/starter-kits";
 
 interface StatCard {
   label: string;
@@ -66,17 +66,21 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
   const handleFinalConfirm = async () => {
     setSubmitting(true);
     try {
-      // Process all received items
+      // Process all items — both received and not received
       for (const item of pendingAssetItems) {
         const state = itemStates[`asset-${item.id}`];
         if (state?.status === "received") {
           await acknowledgeAssetItem(item.id);
+        } else if (state?.status === "not_received") {
+          await rejectKitAssetItem(item.id, state.reason || "Not received");
         }
       }
       for (const item of pendingConsumableItems) {
         const state = itemStates[`consumable-${item.id}`];
         if (state?.status === "received") {
           await acknowledgeConsumableItem(item.id);
+        } else if (state?.status === "not_received") {
+          await rejectKitConsumableItem(item.id, state.reason || "Not received");
         }
       }
       setSubmitted(true);
