@@ -245,6 +245,7 @@ export function StarterKitsClient({
           <ApplyToStaffForm
             kit={showApply}
             users={users}
+            consumables={consumables}
             onDone={() => setShowApply(null)}
           />
         )}
@@ -430,16 +431,29 @@ function AddItemsChecklist({
 function ApplyToStaffForm({
   kit,
   users,
+  consumables,
   onDone,
 }: {
   kit: StarterKit;
   users: User[];
+  consumables: Consumable[];
   onDone: () => void;
 }) {
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
+  const [excludedItems, setExcludedItems] = useState<Set<string>>(new Set());
   const [applying, setApplying] = useState(false);
   const [results, setResults] = useState<{ userName: string; applied: number; details: string[] }[] | null>(null);
   const [search, setSearch] = useState("");
+
+  const toggleItemExclusion = (itemId: string) => {
+    setExcludedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) next.delete(itemId); else next.add(itemId);
+      return next;
+    });
+  };
+
+  const includedCount = kit.items.length - excludedItems.size;
 
   const filteredUsers = users.filter((u) => {
     const q = search.toLowerCase();
@@ -468,7 +482,7 @@ function ApplyToStaffForm({
     try {
       for (const userId of selectedUsers) {
         const user = users.find((u) => u.id === userId);
-        const result = await applyStarterKit(userId, kit.id);
+        const result = await applyStarterKit(userId, kit.id, [...excludedItems]);
         applyResults.push({
           userName: user?.name || user?.email || "Unknown",
           applied: result.applied || 0,
@@ -505,9 +519,45 @@ function ApplyToStaffForm({
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-shark-500">
-        Select staff members to receive the <strong>{kit.name}</strong> kit ({kit.items.length} items).
-      </p>
+      {/* Kit Items — deselect to exclude */}
+      <div>
+        <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">Kit Items ({includedCount} of {kit.items.length} selected)</p>
+        <div className="space-y-1 max-h-40 overflow-y-auto border border-shark-100 rounded-lg p-2">
+          {kit.items.map((item) => {
+            const consumable = consumables.find((c) => c.id === item.consumableId);
+            const isIncluded = !excludedItems.has(item.id);
+            return (
+              <label
+                key={item.id}
+                className={`flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer transition-colors ${
+                  isIncluded ? "hover:bg-shark-50" : "opacity-50"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={isIncluded}
+                  onChange={() => toggleItemExclusion(item.id)}
+                  className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                />
+                <Icon
+                  name={item.itemType === "ASSET_CATEGORY" ? "package" : "droplet"}
+                  size={14}
+                  className={item.itemType === "ASSET_CATEGORY" ? "text-action-500" : "text-blue-500"}
+                />
+                <span className={`text-sm ${isIncluded ? "text-shark-700" : "text-shark-400 line-through"}`}>
+                  {item.itemType === "ASSET_CATEGORY"
+                    ? `1x Asset from "${item.category}"`
+                    : `${item.quantity}x ${consumable?.name || "Unknown"}`
+                  }
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Staff Selection */}
+      <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider">Select Staff</p>
 
       <Input
         placeholder="Search staff..."
@@ -557,11 +607,11 @@ function ApplyToStaffForm({
       </div>
 
       <div className="flex justify-between items-center pt-3 border-t border-shark-100">
-        <span className="text-sm text-shark-400">{selectedUsers.size} staff selected</span>
+        <span className="text-sm text-shark-400">{selectedUsers.size} staff · {includedCount} items</span>
         <div className="flex gap-3">
           <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>
-          <Button onClick={handleApply} disabled={selectedUsers.size === 0 || applying}>
-            {applying ? "Applying..." : `Apply to ${selectedUsers.size} Staff`}
+          <Button onClick={handleApply} disabled={selectedUsers.size === 0 || includedCount === 0 || applying}>
+            {applying ? "Applying..." : `Apply ${includedCount} Items to ${selectedUsers.size} Staff`}
           </Button>
         </div>
       </div>

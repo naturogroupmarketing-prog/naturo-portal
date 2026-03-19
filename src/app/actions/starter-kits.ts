@@ -120,7 +120,7 @@ export async function removeStarterKitItem(itemId: string) {
 /**
  * Apply a starter kit to a user — assigns available assets and deducts consumables
  */
-export async function applyStarterKit(userId: string, starterKitId?: string) {
+export async function applyStarterKit(userId: string, starterKitId?: string, excludedItemIds?: string[]) {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
 
@@ -160,7 +160,15 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
   let appliedCount = 0;
   const results: string[] = [];
 
+  const excludedSet = new Set(excludedItemIds || []);
+
   for (const item of kit.items) {
+    // Skip excluded items
+    if (excludedSet.has(item.id)) {
+      results.push(`Skipped: ${item.itemType === "ASSET_CATEGORY" ? item.category : "consumable"} (deselected)`);
+      continue;
+    }
+
     if (item.itemType === "ASSET_CATEGORY" && item.category) {
       // Find an available asset in this category — prefer user's region, then any region
       let availableAsset = null;
