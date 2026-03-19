@@ -357,7 +357,7 @@ async function checkApplicationComplete(applicationId: string) {
 }
 
 /**
- * Staff rejects a kit asset item — marks as not received, returns asset, notifies manager
+ * Staff rejects a kit asset item — creates PendingReturn for manager to verify & restock
  */
 export async function rejectKitAssetItem(assignmentId: string, reason: string) {
   const session = await auth();
@@ -379,10 +379,26 @@ export async function rejectKitAssetItem(assignmentId: string, reason: string) {
       data: { isActive: false, acknowledgedAt: new Date(), actualReturnDate: new Date() },
     });
 
-    // Return asset to available
+    // Mark asset as PENDING_RETURN (manager must verify)
     await tx.asset.update({
       where: { id: assignment.assetId },
-      data: { status: "AVAILABLE" },
+      data: { status: "PENDING_RETURN" },
+    });
+
+    // Create PendingReturn for manager checklist
+    await tx.pendingReturn.create({
+      data: {
+        itemType: "ASSET",
+        assetId: assignment.assetId,
+        quantity: 1,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: `Kit item not received: ${reason}`,
+        returnCondition: "GOOD",
+        returnNotes: reason,
+        organizationId: assignment.asset.organizationId,
+        regionId: assignment.asset.regionId,
+      },
     });
   });
 
@@ -391,24 +407,25 @@ export async function rejectKitAssetItem(assignmentId: string, reason: string) {
     await checkApplicationComplete(assignment.starterKitApplicationId);
   }
 
-  // Notify managers
+  // Notify managers — link to returns checklist
   await notifyAdminsAndManagers({
     organizationId: assignment.asset.organizationId,
     regionId: assignment.asset.regionId,
     type: "ASSET_RETURNED",
     title: "Kit Item Not Received",
-    message: `${session.user.name || session.user.email} did not receive "${assignment.asset.name}" (${assignment.asset.assetCode}). Reason: ${reason}. Asset returned to available.`,
-    link: "/assets",
+    message: `${session.user.name || session.user.email} did not receive "${assignment.asset.name}" (${assignment.asset.assetCode}). Reason: ${reason}. Please verify and restock.`,
+    link: "/returns",
   });
 
   revalidatePath("/my-assets");
   revalidatePath("/dashboard");
+  revalidatePath("/returns");
   revalidatePath("/assets");
   return { success: true };
 }
 
 /**
- * Staff rejects a kit consumable item — marks as not received, restocks, notifies manager
+ * Staff rejects a kit consumable item — creates PendingReturn for manager to verify & restock
  */
 export async function rejectKitConsumableItem(assignmentId: string, reason: string) {
   const session = await auth();
@@ -430,10 +447,20 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
       data: { isActive: false, acknowledgedAt: new Date() },
     });
 
-    // Restock the consumable
-    await tx.consumable.update({
-      where: { id: assignment.consumableId },
-      data: { quantityOnHand: { increment: assignment.quantity } },
+    // Create PendingReturn for manager checklist (don't auto-restock)
+    await tx.pendingReturn.create({
+      data: {
+        itemType: "CONSUMABLE",
+        consumableId: assignment.consumableId,
+        quantity: assignment.quantity,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: `Kit item not received: ${reason}`,
+        returnCondition: "GOOD",
+        returnNotes: reason,
+        organizationId: assignment.consumable.organizationId,
+        regionId: assignment.consumable.regionId,
+      },
     });
   });
 
@@ -442,18 +469,19 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
     await checkApplicationComplete(assignment.starterKitApplicationId);
   }
 
-  // Notify managers
+  // Notify managers — link to returns checklist
   await notifyAdminsAndManagers({
     organizationId: assignment.consumable.organizationId,
     regionId: assignment.consumable.regionId,
     type: "ASSET_RETURNED",
     title: "Kit Item Not Received",
-    message: `${session.user.name || session.user.email} did not receive ${assignment.quantity}x "${assignment.consumable.name}". Reason: ${reason}. Stock returned.`,
-    link: "/consumables",
+    message: `${session.user.name || session.user.email} did not receive ${assignment.quantity}x "${assignment.consumable.name}". Reason: ${reason}. Please verify and restock.`,
+    link: "/returns",
   });
 
   revalidatePath("/my-consumables");
   revalidatePath("/dashboard");
+  revalidatePath("/returns");
   revalidatePath("/consumables");
   return { success: true };
 }
