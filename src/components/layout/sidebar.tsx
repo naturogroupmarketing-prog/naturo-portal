@@ -33,7 +33,7 @@ const navSections: NavSection[] = [
     ],
   },
   {
-    heading: "Manage",
+    heading: "Management",
     roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
     items: [
       { label: "Assets", href: "/assets", icon: "package", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
@@ -52,19 +52,15 @@ const navSections: NavSection[] = [
     ],
   },
   {
-    heading: "Admin",
-    roles: ["SUPER_ADMIN"],
-    items: [
-      { label: "Permissions", href: "/admin/permissions", icon: "shield", roles: ["SUPER_ADMIN"] },
-      { label: "Locations", href: "/admin/locations", icon: "map-pin", roles: ["SUPER_ADMIN"] },
-      { label: "Import Data", href: "/admin/import", icon: "upload", roles: ["SUPER_ADMIN"] },
-    ],
-  },
-  // Staff sections
-  {
     roles: ["STAFF"],
     items: [
       { label: "Dashboard", href: "/dashboard", icon: "dashboard", roles: ["STAFF"] },
+    ],
+  },
+  {
+    heading: "My Items",
+    roles: ["STAFF"],
+    items: [
       { label: "My Assets", href: "/my-assets", icon: "package", roles: ["STAFF"] },
       { label: "My Consumables", href: "/my-consumables", icon: "droplet", roles: ["STAFF"] },
       { label: "My Requests", href: "/my-requests", icon: "clipboard", roles: ["STAFF"] },
@@ -75,15 +71,13 @@ const navSections: NavSection[] = [
     roles: ["STAFF"],
     items: [
       { label: "Request Consumables", href: "/request-consumables", icon: "plus", roles: ["STAFF"] },
-      { label: "Report Damage/Loss", href: "/report-damage", icon: "alert-triangle", roles: ["STAFF"] },
+      { label: "Report Damage", href: "/report-damage", icon: "alert-triangle", roles: ["STAFF"] },
     ],
   },
-  // Help — visible to all roles
   {
-    heading: "Support",
-    roles: ["SUPER_ADMIN", "BRANCH_MANAGER", "STAFF"],
+    roles: ["STAFF", "SUPER_ADMIN", "BRANCH_MANAGER"],
     items: [
-      { label: "Help", href: "/help", icon: "help-circle", roles: ["SUPER_ADMIN", "BRANCH_MANAGER", "STAFF"] },
+      { label: "Help", href: "/help", icon: "help-circle", roles: ["STAFF", "SUPER_ADMIN", "BRANCH_MANAGER"] },
     ],
   },
 ];
@@ -92,14 +86,14 @@ export function Sidebar({ role, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-5 py-5 border-b border-shark-100">
+    <nav className="flex flex-col h-full bg-white dark:bg-shark-900 transition-colors">
+      <div className="flex items-center justify-between px-5 py-5 border-b border-shark-100 dark:border-shark-800">
         <div className="flex items-center gap-1">
           <Logo size={36} />
           <p className="text-[10px] text-shark-400 leading-tight mt-1">Asset Tracker</p>
         </div>
         {onClose && (
-          <button onClick={onClose} className="text-shark-400 hover:text-shark-700 lg:hidden">
+          <button onClick={onClose} className="text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 lg:hidden">
             <Icon name="x" size={20} />
           </button>
         )}
@@ -129,11 +123,11 @@ export function Sidebar({ role, onClose }: SidebarProps) {
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-150",
                           active
-                            ? "bg-action-50 text-action-600 font-medium"
-                            : "text-shark-600 hover:bg-shark-50 hover:text-shark-900"
+                            ? "bg-action-50 dark:bg-action-900/30 text-action-600 dark:text-action-400 font-medium"
+                            : "text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 hover:text-shark-900 dark:hover:text-shark-100"
                         )}
                       >
-                        <Icon name={item.icon} size={18} className={active ? "text-action-500" : "text-shark-400"} />
+                        <Icon name={item.icon} size={18} className={active ? "text-action-500 dark:text-action-400" : "text-shark-400"} />
                         {item.label}
                       </Link>
                     );
@@ -143,7 +137,7 @@ export function Sidebar({ role, onClose }: SidebarProps) {
             );
           })}
       </div>
-      <div className="border-t border-shark-100 px-5 py-3">
+      <div className="border-t border-shark-100 dark:border-shark-800 px-5 py-3">
         <p className="text-xs text-shark-400">
           {role.replace(/_/g, " ")}
         </p>

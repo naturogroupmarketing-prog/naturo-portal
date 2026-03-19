@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --font-exo: var(--font-exo);
 
@@ -58,8 +60,6 @@
 }
 
 body {
-  background: #f6f6f7;
-  color: #292d34;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

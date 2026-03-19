@@ -43,16 +43,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-shark-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-shark-50 dark:bg-shark-950 px-4 transition-colors">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Logo size={64} className="mx-auto mb-2" />
           <p className="text-sm text-shark-400 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-shark-100 overflow-hidden">
+        <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-shark-100 dark:border-shark-800 overflow-hidden transition-colors">
           <div className="p-8">
-            <h2 className="text-lg font-semibold text-shark-900 text-center mb-1">
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 text-center mb-1">
               Sign In
             </h2>
             <p className="text-sm text-shark-400 text-center mb-6">
@@ -67,7 +67,7 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                   Email
                 </label>
                 <Input
@@ -80,7 +80,7 @@ export default function LoginPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                   Password
                 </label>
                 <Input

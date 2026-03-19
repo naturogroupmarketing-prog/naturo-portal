@@ -105,7 +105,7 @@ export function NotificationBell() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-lg hover:bg-shark-100 transition-colors"
+        className="relative p-2 rounded-lg hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
         title="Notifications"
       >
         <Icon name="bell" size={20} className="text-shark-500" />
@@ -117,9 +117,9 @@ export function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-shark-200 rounded-xl shadow-xl z-50 overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100">
-            <h3 className="font-semibold text-sm text-shark-900">Notifications</h3>
+        <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-xl shadow-xl z-50 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 dark:border-shark-800">
+            <h3 className="font-semibold text-sm text-shark-900 dark:text-shark-100">Notifications</h3>
             {unreadCount > 0 && (
               <button onClick={markAllRead} className="text-xs text-action-500 hover:text-action-600">
                 Mark all read

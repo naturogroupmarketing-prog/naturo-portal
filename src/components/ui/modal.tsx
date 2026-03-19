@@ -50,16 +50,16 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
     >
       <div
         className={cn(
-          "w-full max-w-lg rounded-2xl bg-white shadow-2xl max-h-[90vh] overflow-y-auto",
+          "w-full max-w-lg rounded-2xl bg-white dark:bg-shark-900 shadow-2xl max-h-[90vh] overflow-y-auto transition-colors",
           className
         )}
       >
-        <div className="flex items-center justify-between border-b border-shark-100 px-6 py-4">
-          <h2 id={titleId} className="text-lg font-semibold text-shark-900">{title}</h2>
+        <div className="flex items-center justify-between border-b border-shark-100 dark:border-shark-800 px-6 py-4">
+          <h2 id={titleId} className="text-lg font-semibold text-shark-900 dark:text-shark-100">{title}</h2>
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="text-shark-400 hover:text-shark-600 hover:bg-shark-50 rounded-lg p-1 transition-colors text-xl leading-none"
+            className="text-shark-400 hover:text-shark-600 dark:hover:text-shark-200 hover:bg-shark-50 dark:hover:bg-shark-800 rounded-lg p-1 transition-colors text-xl leading-none"
           >
             &times;
           </button>
