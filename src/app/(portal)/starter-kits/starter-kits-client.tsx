@@ -212,11 +212,12 @@ export function StarterKitsClient({
         )}
       </Modal>
 
-      {/* Add Item to Kit Modal */}
-      <Modal open={!!showAddItem} onClose={() => setShowAddItem(null)} title="Add Item to Kit">
+      {/* Add Items to Kit Modal — Checklist */}
+      <Modal open={!!showAddItem} onClose={() => setShowAddItem(null)} title="Add Items to Kit">
         {showAddItem && (
-          <AddItemForm
+          <AddItemsChecklist
             starterKitId={showAddItem}
+            existingItems={kits.find((k) => k.id === showAddItem)?.items || []}
             categories={categories}
             consumables={consumables}
             onDone={() => setShowAddItem(null)}
@@ -227,63 +228,176 @@ export function StarterKitsClient({
   );
 }
 
-function AddItemForm({
+function AddItemsChecklist({
   starterKitId,
+  existingItems,
   categories,
   consumables,
   onDone,
 }: {
   starterKitId: string;
+  existingItems: StarterKitItem[];
   categories: Category[];
   consumables: Consumable[];
   onDone: () => void;
 }) {
-  const [itemType, setItemType] = useState("ASSET_CATEGORY");
+  const existingCategories = new Set(existingItems.filter((i) => i.itemType === "ASSET_CATEGORY").map((i) => i.category));
+  const existingConsumableIds = new Set(existingItems.filter((i) => i.itemType === "CONSUMABLE").map((i) => i.consumableId));
+
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
+  const [selectedConsumables, setSelectedConsumables] = useState<Map<string, number>>(new Map());
+  const [saving, setSaving] = useState(false);
+
+  const toggleCategory = (name: string) => {
+    setSelectedCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name); else next.add(name);
+      return next;
+    });
+  };
+
+  const toggleConsumable = (id: string) => {
+    setSelectedConsumables((prev) => {
+      const next = new Map(prev);
+      if (next.has(id)) next.delete(id); else next.set(id, 1);
+      return next;
+    });
+  };
+
+  const setConsumableQty = (id: string, qty: number) => {
+    setSelectedConsumables((prev) => {
+      const next = new Map(prev);
+      next.set(id, Math.max(1, qty));
+      return next;
+    });
+  };
+
+  const totalSelected = selectedCategories.size + selectedConsumables.size;
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      // Add all selected categories
+      for (const catName of selectedCategories) {
+        const fd = new FormData();
+        fd.set("starterKitId", starterKitId);
+        fd.set("itemType", "ASSET_CATEGORY");
+        fd.set("category", catName);
+        fd.set("quantity", "1");
+        await addStarterKitItem(fd);
+      }
+      // Add all selected consumables
+      for (const [consumableId, qty] of selectedConsumables) {
+        const fd = new FormData();
+        fd.set("starterKitId", starterKitId);
+        fd.set("itemType", "CONSUMABLE");
+        fd.set("consumableId", consumableId);
+        fd.set("quantity", qty.toString());
+        await addStarterKitItem(fd);
+      }
+      onDone();
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
-    <form action={async (fd) => { await addStarterKitItem(fd); onDone(); }} className="space-y-4">
-      <input type="hidden" name="starterKitId" value={starterKitId} />
-      <div>
-        <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Type</label>
-        <Select name="itemType" value={itemType} onChange={(e) => setItemType(e.target.value)}>
-          <option value="ASSET_CATEGORY">Asset (by category)</option>
-          <option value="CONSUMABLE">Consumable</option>
-        </Select>
-      </div>
-
-      {itemType === "ASSET_CATEGORY" ? (
+    <div className="space-y-4">
+      {/* Asset Categories */}
+      {categories.length > 0 && (
         <div>
-          <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Asset Category *</label>
-          <Select name="category" required>
-            <option value="">Select category...</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.name}>{c.name}</option>
-            ))}
-          </Select>
-          <p className="text-xs text-shark-400 mt-1">One available asset from this category will be assigned.</p>
+          <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">
+            <Icon name="package" size={12} className="inline mr-1 text-action-500" />
+            Asset Categories
+          </p>
+          <p className="text-xs text-shark-400 mb-2">One available asset from each selected category will be assigned.</p>
+          <div className="space-y-1 max-h-40 overflow-y-auto">
+            {categories.map((cat) => {
+              const alreadyAdded = existingCategories.has(cat.name);
+              return (
+                <label
+                  key={cat.id}
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+                    alreadyAdded ? "bg-shark-100 opacity-50 cursor-not-allowed" : selectedCategories.has(cat.name) ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 border border-transparent"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedCategories.has(cat.name) || alreadyAdded}
+                    disabled={alreadyAdded}
+                    onChange={() => !alreadyAdded && toggleCategory(cat.name)}
+                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                  />
+                  <span className="text-sm text-shark-700">{cat.name}</span>
+                  {alreadyAdded && <span className="text-xs text-shark-400 ml-auto">Already added</span>}
+                </label>
+              );
+            })}
+          </div>
         </div>
-      ) : (
-        <>
-          <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Consumable *</label>
-            <Select name="consumableId" required>
-              <option value="">Select consumable...</option>
-              {consumables.map((c) => (
-                <option key={c.id} value={c.id}>{c.name} ({c.unitType}) — {c.quantityOnHand} in stock</option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity</label>
-            <Input name="quantity" type="number" min="1" defaultValue="1" />
-          </div>
-        </>
       )}
 
-      <div className="flex justify-end gap-3 pt-2">
-        <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>
-        <Button type="submit">Add Item</Button>
+      {/* Consumables */}
+      {consumables.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">
+            <Icon name="droplet" size={12} className="inline mr-1 text-blue-500" />
+            Consumables
+          </p>
+          <div className="space-y-1 max-h-48 overflow-y-auto">
+            {consumables.map((c) => {
+              const alreadyAdded = existingConsumableIds.has(c.id);
+              const isSelected = selectedConsumables.has(c.id);
+              return (
+                <div
+                  key={c.id}
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
+                    alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 border border-transparent"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected || alreadyAdded}
+                    disabled={alreadyAdded}
+                    onChange={() => !alreadyAdded && toggleConsumable(c.id)}
+                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                  />
+                  <label
+                    className={`text-sm text-shark-700 flex-1 ${alreadyAdded ? "cursor-not-allowed" : "cursor-pointer"}`}
+                    onClick={() => !alreadyAdded && toggleConsumable(c.id)}
+                  >
+                    {c.name} <span className="text-shark-400 text-xs">({c.unitType}) · {c.quantityOnHand} in stock</span>
+                  </label>
+                  {alreadyAdded && <span className="text-xs text-shark-400">Added</span>}
+                  {isSelected && !alreadyAdded && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-shark-500">Qty:</span>
+                      <input
+                        type="number"
+                        min="1"
+                        value={selectedConsumables.get(c.id) || 1}
+                        onChange={(e) => setConsumableQty(c.id, parseInt(e.target.value) || 1)}
+                        className="w-14 text-center text-sm rounded-lg border border-shark-200 py-0.5"
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="flex justify-between items-center pt-3 border-t border-shark-100">
+        <span className="text-sm text-shark-400">{totalSelected} item{totalSelected !== 1 ? "s" : ""} selected</span>
+        <div className="flex gap-3">
+          <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>
+          <Button onClick={handleSave} disabled={totalSelected === 0 || saving}>
+            {saving ? "Adding..." : `Add ${totalSelected} Item${totalSelected !== 1 ? "s" : ""}`}
+          </Button>
+        </div>
       </div>
-    </form>
+    </div>
   );
 }
