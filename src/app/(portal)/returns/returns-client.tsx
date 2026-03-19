@@ -36,13 +36,19 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   const [processing, setProcessing] = useState<string | null>(null);
   const [verifyingAll, setVerifyingAll] = useState(false);
 
-  const pendingItems = returns.filter((r) => !verifiedIds.has(r.id));
+  // Items that have been verified show green briefly, then disappear
+  const [justVerifiedIds, setJustVerifiedIds] = useState<Set<string>>(new Set());
 
   const handleVerify = async (id: string) => {
     setProcessing(id);
     try {
       await verifyReturn(id);
-      setVerifiedIds((prev) => new Set([...prev, id]));
+      // Show green "Verified" state briefly
+      setJustVerifiedIds((prev) => new Set([...prev, id]));
+      setTimeout(() => {
+        setVerifiedIds((prev) => new Set([...prev, id]));
+        setJustVerifiedIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
+      }, 1200);
     } finally {
       setProcessing(null);
     }
@@ -54,11 +60,17 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
     setProcessing(id);
     try {
       await rejectReturn(id, reason);
-      setVerifiedIds((prev) => new Set([...prev, id]));
+      setJustVerifiedIds((prev) => new Set([...prev, id]));
+      setTimeout(() => {
+        setVerifiedIds((prev) => new Set([...prev, id]));
+        setJustVerifiedIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
+      }, 1200);
     } finally {
       setProcessing(null);
     }
   };
+
+  const pendingItems = returns.filter((r) => !verifiedIds.has(r.id));
 
   const handleVerifyAll = async () => {
     if (!confirm(`Verify and restock all ${pendingItems.length} items?`)) return;
@@ -96,9 +108,26 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         </Card>
       ) : (
         <div className="space-y-3">
-          {pendingItems.map((item) => (
-            <Card key={item.id}>
+          {pendingItems.map((item) => {
+            const isJustVerified = justVerifiedIds.has(item.id);
+            return (
+            <Card key={item.id} className={isJustVerified ? "border-emerald-300 bg-emerald-50/50 transition-all" : "transition-all"}>
               <div className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                {/* Verified state */}
+                {isJustVerified ? (
+                  <div className="flex items-center gap-3 w-full">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+                      <Icon name="check" size={20} className="text-emerald-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-emerald-700">
+                        {item.itemType === "ASSET" ? item.assetDetails?.name : `${item.quantity}x ${item.consumableDetails?.name}`}
+                      </p>
+                      <p className="text-sm text-emerald-600">Verified & Restocked</p>
+                    </div>
+                  </div>
+                ) : (
+                <>
                 {/* Icon */}
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${item.itemType === "ASSET" ? "bg-action-50" : "bg-blue-50"}`}>
                   <Icon
@@ -159,9 +188,12 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                     <Icon name="x" size={14} className="text-red-500" />
                   </Button>
                 </div>
+                </>
+                )}
               </div>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
