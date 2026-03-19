@@ -218,20 +218,16 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
       });
 
       if (consumable && consumable.quantityOnHand >= item.quantity) {
-        await db.$transaction(async (tx) => {
-          await tx.consumable.update({
-            where: { id: item.consumableId! },
-            data: { quantityOnHand: { decrement: item.quantity } },
-          });
-          await tx.consumableAssignment.create({
-            data: {
-              consumableId: item.consumableId!,
-              userId,
-              quantity: item.quantity,
-              starterKitApplicationId: application.id,
-              // acknowledgedAt left null — pending confirmation
-            },
-          });
+        // Don't deduct stock yet — only deduct when staff confirms receipt
+        await db.consumableAssignment.create({
+          data: {
+            consumableId: item.consumableId!,
+            userId,
+            quantity: item.quantity,
+            starterKitApplicationId: application.id,
+            // acknowledgedAt left null — pending confirmation
+            // Stock deducted in acknowledgeConsumableItem when staff confirms
+          },
         });
         results.push(`Assigned ${item.quantity}x ${consumable.name}`);
         appliedCount++;
@@ -320,9 +316,20 @@ export async function acknowledgeConsumableItem(assignmentId: string) {
     throw new Error("Not found");
   }
 
-  await db.consumableAssignment.update({
-    where: { id: assignmentId },
-    data: { acknowledgedAt: new Date() },
+  // Deduct stock NOW — staff confirmed they received it
+  await db.$transaction(async (tx) => {
+    await tx.consumableAssignment.update({
+      where: { id: assignmentId },
+      data: { acknowledgedAt: new Date() },
+    });
+
+    // Only deduct if this is a starter kit item (stock wasn't deducted on apply)
+    if (assignment.starterKitApplicationId) {
+      await tx.consumable.update({
+        where: { id: assignment.consumableId },
+        data: { quantityOnHand: { decrement: assignment.quantity } },
+      });
+    }
   });
 
   // Check if all items in this application are now acknowledged
@@ -332,6 +339,7 @@ export async function acknowledgeConsumableItem(assignmentId: string) {
 
   revalidatePath("/my-consumables");
   revalidatePath("/dashboard");
+  revalidatePath("/consumables");
   return { success: true };
 }
 
@@ -446,15 +454,10 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
 
   await db.$transaction(async (tx) => {
     // Deactivate the assignment — staff never had the item
+    // Stock was never deducted (only deducted on confirm), so no restock needed
     await tx.consumableAssignment.update({
       where: { id: assignmentId },
       data: { isActive: false, acknowledgedAt: new Date() },
-    });
-
-    // Restock — the consumable was deducted but never given
-    await tx.consumable.update({
-      where: { id: assignment.consumableId },
-      data: { quantityOnHand: { increment: assignment.quantity } },
     });
 
     // Create PendingReturn so manager sees it in Returns checklist
