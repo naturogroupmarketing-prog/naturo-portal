@@ -87,6 +87,7 @@ export default async function DashboardPage() {
     pendingRequests,
     pendingPOs,
     lowStockItems,
+    pendingReturns,
     userPrefs,
     ...regionData
   ] = await Promise.all([
@@ -123,6 +124,12 @@ export default async function DashboardPage() {
     }).then((items) =>
       items.filter((i) => i.quantityOnHand <= i.minimumThreshold).slice(0, 10)
     ),
+    db.pendingReturn.count({
+      where: {
+        isVerified: false,
+        ...regionFilter,
+      },
+    }),
     db.user.findUnique({
       where: { id: session.user.id },
       select: { dashboardPreferences: true },
@@ -260,6 +267,7 @@ export default async function DashboardPage() {
     { widgetId: "stat-lost", label: "Lost", value: lost, icon: "shield", borderColor: "border-l-shark-400", iconBg: "bg-shark-50", iconColor: "text-shark-500", href: "/assets" },
     { widgetId: "stat-pending-requests", label: "Pending Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-l-amber-500", iconBg: "bg-amber-100", iconColor: "text-amber-700", href: "/consumables" },
     { widgetId: "stat-pending-pos", label: "Pending POs", value: pendingPOs, icon: "truck", borderColor: "border-l-purple-400", iconBg: "bg-purple-50", iconColor: "text-purple-500", href: "/purchase-orders" },
+    { widgetId: "stat-pending-returns", label: "Pending Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-l-cyan-400", iconBg: "bg-cyan-50", iconColor: "text-cyan-500", href: "/returns" },
   ];
 
   const quickLinks: { label: string; href: string; icon: IconName; iconBg: string; iconColor: string }[] = [

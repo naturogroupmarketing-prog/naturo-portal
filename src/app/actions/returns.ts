@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { isAdminOrManager } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
+import { notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -186,6 +187,16 @@ export async function staffReturnAsset(assignmentId: string, condition: string, 
     performedById: session.user.id,
     assetId: assignment.assetId,
     organizationId: assignment.asset.organizationId,
+  });
+
+  // Notify managers about the return
+  await notifyAdminsAndManagers({
+    organizationId: assignment.asset.organizationId,
+    regionId: assignment.asset.regionId,
+    type: "ASSET_RETURNED",
+    title: "Asset Return Pending",
+    message: `${session.user.name || session.user.email} returned "${assignment.asset.name}" (${assignment.asset.assetCode}). Condition: ${condition || "Good"}. Please verify and restock.`,
+    link: "/returns",
   });
 
   revalidatePath("/my-assets");
