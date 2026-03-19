@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
-import { updateUser, deleteUser, resetPassword, toggleUserActive } from "@/app/actions/users";
+import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive } from "@/app/actions/users";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
@@ -52,6 +52,9 @@ interface StaffClientProps {
 export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffClientProps) {
   const [search, setSearch] = useState("");
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+
+  // Create user modal state
+  const [showCreate, setShowCreate] = useState(false);
 
   // Edit modal state
   const [editUser, setEditUser] = useState<StaffUser | null>(null);
@@ -280,9 +283,12 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-shark-900">Staff Overview</h1>
-        <p className="text-sm text-shark-400 mt-1">{filtered.length} staff members</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-shark-900">Staff Overview</h1>
+          <p className="text-sm text-shark-400 mt-1">{filtered.length} staff members</p>
+        </div>
+        {isSuperAdmin && <Button onClick={() => setShowCreate(true)}>+ New User</Button>}
       </div>
 
       <div className="flex items-center gap-3">
@@ -364,6 +370,49 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
           )}
         </div>
       )}
+
+      {/* Create User Modal */}
+      <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create User">
+        <form action={async (fd) => { await createUser(fd); setShowCreate(false); }} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+            <Input name="name" required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Email *</label>
+            <Input name="email" type="email" required placeholder="user@company.com" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+            <Input name="phone" type="tel" placeholder="e.g. 0412 345 678" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Password *</label>
+            <Input name="password" type="password" required minLength={6} placeholder="Min 6 characters" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Role *</label>
+            <Select name="role" required>
+              <option value="STAFF">Staff</option>
+              <option value="BRANCH_MANAGER">Branch Manager</option>
+              <option value="SUPER_ADMIN">Super Admin</option>
+            </Select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Region</label>
+            <Select name="regionId">
+              <option value="">No region (head office)</option>
+              {allRegions.map((r) => (
+                <option key={r.id} value={r.id}>{r.name} — {r.state.name}</option>
+              ))}
+            </Select>
+          </div>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
+            <Button type="submit">Create User</Button>
+          </div>
+        </form>
+      </Modal>
 
       {/* Edit User Modal — includes reset password, toggle active, and delete */}
       <Modal open={!!editUser} onClose={closeEdit} title={`Edit: ${editUser?.name || editUser?.email || ""}`}>
