@@ -860,16 +860,21 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         <div className="space-y-4">
           <p className="text-sm text-shark-500">Add, rename, or remove sections for organising assets.</p>
 
-          {/* Existing sections */}
+          {/* Existing sections — draggable to reorder */}
           <div className="space-y-1">
             {categories.map((cat, idx) => {
               const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
               const assetCount = assets.filter((a) => a.category === cat.name).length;
               const isEditing = editingSectionId === cat.id;
-              const isExpanded = expandedSectionId === cat.id;
-              const equipmentList = cat.equipment || [];
               return (
-                <div key={cat.id}>
+                <div
+                  key={cat.id}
+                  draggable={!isEditing}
+                  onDragStart={() => handleSectionDragStart(idx)}
+                  onDragOver={(e) => handleSectionDragOver(e, idx)}
+                  onDragEnd={handleSectionDragEnd}
+                  className={`${dragSectionIdx === idx ? "opacity-40" : ""} ${dragOverSectionIdx === idx ? "border-t-2 border-t-action-500" : ""}`}
+                >
                   <div className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50">
                     {isEditing ? (
                       <div className="flex items-center gap-2 flex-1 mr-2">
@@ -898,20 +903,16 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       </div>
                     ) : (
                       <>
-                        <button
-                          className="flex items-center gap-3 flex-1 text-left"
-                          onClick={() => { setExpandedSectionId(isExpanded ? null : cat.id); setNewEquipmentName(""); setEquipmentError(""); }}
-                        >
+                        <div className="flex items-center gap-2 flex-1">
+                          <div className="cursor-grab active:cursor-grabbing p-0.5">
+                            <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                          </div>
                           <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center`}>
                             <Icon name="package" size={12} className={colors.color} />
                           </div>
                           <span className="text-sm font-medium text-shark-800">{cat.name}</span>
                           <span className="text-xs text-shark-400">{assetCount} item{assetCount !== 1 ? "s" : ""}</span>
-                          {equipmentList.length > 0 && (
-                            <span className="text-xs font-medium text-shark-400 bg-shark-100 px-1.5 py-0.5 rounded-full">{equipmentList.length} equip.</span>
-                          )}
-                          <Icon name="chevron-down" size={12} className={`text-shark-400 transition-transform ${isExpanded ? "" : "-rotate-90"}`} />
-                        </button>
+                        </div>
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => { setEditingSectionId(cat.id); setEditingSectionName(cat.name); setAddingSectionError(""); }}
@@ -933,50 +934,6 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       </>
                     )}
                   </div>
-
-                  {/* Equipment checklist (expanded) */}
-                  {isExpanded && !isEditing && (
-                    <div className="ml-12 mr-3 mb-2 mt-1 p-3 bg-shark-50 rounded-lg space-y-2">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-shark-400">Equipment Checklist</p>
-                      {equipmentList.length === 0 ? (
-                        <p className="text-xs text-shark-400">No equipment defined yet.</p>
-                      ) : (
-                        <div className="flex flex-wrap gap-1.5">
-                          {equipmentList.map((item) => (
-                            <span key={item} className="inline-flex items-center gap-1 text-xs font-medium text-shark-700 bg-white border border-shark-200 rounded-full px-2.5 py-1">
-                              {item}
-                              {isSuperAdmin && (
-                                <button
-                                  onClick={() => handleRemoveEquipment(cat.id, item)}
-                                  className="text-shark-400 hover:text-red-500 transition-colors"
-                                  title="Remove equipment"
-                                >
-                                  <Icon name="x" size={10} />
-                                </button>
-                              )}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      {isSuperAdmin && (
-                        <div className="flex gap-2 pt-1">
-                          <Input
-                            value={newEquipmentName}
-                            onChange={(e) => setNewEquipmentName(e.target.value)}
-                            placeholder="Equipment name..."
-                            className="flex-1 text-xs"
-                            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddEquipment(cat.id); } }}
-                          />
-                          <Button size="sm" onClick={() => handleAddEquipment(cat.id)} disabled={!newEquipmentName.trim()}>
-                            Add
-                          </Button>
-                        </div>
-                      )}
-                      {equipmentError && (
-                        <p className="text-xs text-red-500">{equipmentError}</p>
-                      )}
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -1389,6 +1346,57 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
               <textarea name="notes" defaultValue={editAsset.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
+
+            {/* Equipment Checklist for this category */}
+            {(() => {
+              const cat = categories.find((c) => c.name === editAsset.category);
+              const equipmentList = cat?.equipment || [];
+              if (!cat) return null;
+              return (
+                <div className="border-t border-shark-100 pt-3">
+                  <p className="text-sm font-medium text-shark-700 mb-2">Equipment Checklist</p>
+                  {equipmentList.length === 0 ? (
+                    <p className="text-xs text-shark-400">No equipment defined for this section.</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-1.5">
+                      {equipmentList.map((item) => (
+                        <span key={item} className="inline-flex items-center gap-1 text-xs font-medium text-shark-700 bg-shark-50 border border-shark-200 rounded-full px-2.5 py-1">
+                          {item}
+                          {isSuperAdmin && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveEquipment(cat.id, item)}
+                              className="text-shark-400 hover:text-red-500 transition-colors"
+                              title="Remove equipment"
+                            >
+                              <Icon name="x" size={10} />
+                            </button>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {isSuperAdmin && (
+                    <div className="flex gap-2 mt-2">
+                      <Input
+                        value={newEquipmentName}
+                        onChange={(e) => setNewEquipmentName(e.target.value)}
+                        placeholder="Add equipment..."
+                        className="flex-1 text-xs"
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddEquipment(cat.id); } }}
+                      />
+                      <Button type="button" size="sm" onClick={() => handleAddEquipment(cat.id)} disabled={!newEquipmentName.trim()}>
+                        Add
+                      </Button>
+                    </div>
+                  )}
+                  {equipmentError && (
+                    <p className="text-xs text-red-500 mt-1">{equipmentError}</p>
+                  )}
+                </div>
+              );
+            })()}
+
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => { setEditAsset(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }}>Cancel</Button>
               <Button type="submit" disabled={editUploading}>
