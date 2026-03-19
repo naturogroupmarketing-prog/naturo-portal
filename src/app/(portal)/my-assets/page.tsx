@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
 import { formatDate } from "@/lib/utils";
 import { ConfirmReceiptButton } from "./confirm-receipt-button";
+import { ReturnAssetButton } from "./return-button";
 
 export default async function MyAssetsPage() {
   const session = await auth();
@@ -70,10 +71,13 @@ export default async function MyAssetsPage() {
                   <p className="mt-2 text-xs text-gold-600 font-medium">★ High-value asset — handle with care</p>
                 )}
                 {a.acknowledgedAt ? (
-                  <p className="mt-3 text-xs text-emerald-600 flex items-center gap-1">
-                    <Icon name="check" size={12} />
-                    Receipt confirmed {formatDate(a.acknowledgedAt)}
-                  </p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <p className="text-xs text-emerald-600 flex items-center gap-1">
+                      <Icon name="check" size={12} />
+                      Receipt confirmed {formatDate(a.acknowledgedAt)}
+                    </p>
+                    <ReturnAssetButton assignmentId={a.id} assetName={a.asset.name} />
+                  </div>
                 ) : (
                   <ConfirmReceiptButton assignmentId={a.id} />
                 )}

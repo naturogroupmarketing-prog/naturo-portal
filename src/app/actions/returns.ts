@@ -133,3 +133,122 @@ export async function rejectReturn(returnId: string, reason: string) {
   revalidatePath("/consumables");
   return { success: true };
 }
+
+/**
+ * Staff initiates a return — creates PendingReturn for manager to verify
+ */
+export async function staffReturnAsset(assignmentId: string, condition: string, notes: string) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const assignment = await db.assetAssignment.findUnique({
+    where: { id: assignmentId },
+    include: { asset: { include: { region: true } } },
+  });
+
+  if (!assignment || assignment.userId !== session.user.id || !assignment.isActive) {
+    throw new Error("Assignment not found or not yours");
+  }
+
+  await db.$transaction(async (tx) => {
+    // Deactivate the assignment
+    await tx.assetAssignment.update({
+      where: { id: assignmentId },
+      data: { isActive: false, actualReturnDate: new Date() },
+    });
+
+    // Mark asset as PENDING_RETURN
+    await tx.asset.update({
+      where: { id: assignment.assetId },
+      data: { status: "PENDING_RETURN" },
+    });
+
+    // Create pending return for manager verification
+    await tx.pendingReturn.create({
+      data: {
+        itemType: "ASSET",
+        assetId: assignment.assetId,
+        quantity: 1,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: "Staff initiated return",
+        returnCondition: condition || "GOOD",
+        returnNotes: notes || null,
+        organizationId: assignment.asset.organizationId,
+        regionId: assignment.asset.regionId,
+      },
+    });
+  });
+
+  await createAuditLog({
+    action: "ASSET_RETURNED",
+    description: `Asset "${assignment.asset.name}" (${assignment.asset.assetCode}) returned by ${session.user.name || session.user.email}`,
+    performedById: session.user.id,
+    assetId: assignment.assetId,
+    organizationId: assignment.asset.organizationId,
+  });
+
+  revalidatePath("/my-assets");
+  revalidatePath("/returns");
+  revalidatePath("/assets");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+/**
+ * Staff initiates a consumable return
+ */
+export async function staffReturnConsumable(assignmentId: string, quantity: number, condition: string, notes: string) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const assignment = await db.consumableAssignment.findUnique({
+    where: { id: assignmentId },
+    include: { consumable: { include: { region: true } } },
+  });
+
+  if (!assignment || assignment.userId !== session.user.id || !assignment.isActive) {
+    throw new Error("Assignment not found or not yours");
+  }
+
+  const returnQty = Math.min(quantity, assignment.quantity);
+
+  await db.$transaction(async (tx) => {
+    if (returnQty >= assignment.quantity) {
+      // Return all — deactivate assignment
+      await tx.consumableAssignment.update({
+        where: { id: assignmentId },
+        data: { isActive: false },
+      });
+    } else {
+      // Partial return — reduce quantity
+      await tx.consumableAssignment.update({
+        where: { id: assignmentId },
+        data: { quantity: { decrement: returnQty } },
+      });
+    }
+
+    // Create pending return
+    await tx.pendingReturn.create({
+      data: {
+        itemType: "CONSUMABLE",
+        consumableId: assignment.consumableId,
+        quantity: returnQty,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: "Staff initiated return",
+        returnCondition: condition || "GOOD",
+        returnNotes: notes || null,
+        organizationId: assignment.consumable.organizationId,
+        regionId: assignment.consumable.regionId,
+      },
+    });
+  });
+
+  revalidatePath("/my-assets");
+  revalidatePath("/my-consumables");
+  revalidatePath("/returns");
+  revalidatePath("/consumables");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
