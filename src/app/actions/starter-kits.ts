@@ -394,23 +394,6 @@ export async function rejectKitAssetItem(assignmentId: string, reason: string) {
       where: { id: assignment.assetId },
       data: { status: "AVAILABLE" },
     });
-
-    // Create PendingReturn so manager sees it in Returns checklist
-    // Mark with "STOCK_ALREADY_HANDLED" so verify doesn't double-restock
-    await tx.pendingReturn.create({
-      data: {
-        itemType: "ASSET",
-        assetId: assignment.assetId,
-        quantity: 1,
-        returnedByName: session.user.name || session.user.email || "Unknown",
-        returnedByEmail: session.user.email || "",
-        returnReason: "STOCK_ALREADY_HANDLED",
-        returnCondition: "NOT_RECEIVED",
-        returnNotes: `Staff reports item not received. Reason: ${reason}`,
-        organizationId: assignment.asset.organizationId,
-        regionId: assignment.asset.regionId,
-      },
-    });
   });
 
   // Check if application is complete
@@ -418,19 +401,18 @@ export async function rejectKitAssetItem(assignmentId: string, reason: string) {
     await checkApplicationComplete(assignment.starterKitApplicationId);
   }
 
-  // Notify managers — link to returns checklist
+  // Notify managers — no return needed, just investigation
   await notifyAdminsAndManagers({
     organizationId: assignment.asset.organizationId,
     regionId: assignment.asset.regionId,
     type: "ASSET_RETURNED",
     title: "Kit Item Not Received",
-    message: `${session.user.name || session.user.email} reports they did not receive "${assignment.asset.name}" (${assignment.asset.assetCode}). Reason: ${reason}. Please review in Returns checklist.`,
-    link: "/returns",
+    message: `${session.user.name || session.user.email} reports they did not receive "${assignment.asset.name}" (${assignment.asset.assetCode}). Reason: ${reason}. Asset has been returned to available.`,
+    link: "/staff",
   });
 
   revalidatePath("/my-assets");
   revalidatePath("/dashboard");
-  revalidatePath("/returns");
   revalidatePath("/assets");
   return { success: true };
 }
@@ -452,30 +434,11 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
     throw new Error("Not found");
   }
 
-  await db.$transaction(async (tx) => {
-    // Deactivate the assignment — staff never had the item
-    // Stock was never deducted (only deducted on confirm), so no restock needed
-    await tx.consumableAssignment.update({
-      where: { id: assignmentId },
-      data: { isActive: false, acknowledgedAt: new Date() },
-    });
-
-    // Create PendingReturn so manager sees it in Returns checklist
-    // Mark with "STOCK_ALREADY_HANDLED" so verify doesn't double-restock
-    await tx.pendingReturn.create({
-      data: {
-        itemType: "CONSUMABLE",
-        consumableId: assignment.consumableId,
-        quantity: assignment.quantity,
-        returnedByName: session.user.name || session.user.email || "Unknown",
-        returnedByEmail: session.user.email || "",
-        returnReason: "STOCK_ALREADY_HANDLED",
-        returnCondition: "NOT_RECEIVED",
-        returnNotes: `Staff reports item not received. Reason: ${reason}`,
-        organizationId: assignment.consumable.organizationId,
-        regionId: assignment.consumable.regionId,
-      },
-    });
+  // Deactivate the assignment — staff never had the item
+  // Stock was never deducted (only deducted on confirm), so no changes needed
+  await db.consumableAssignment.update({
+    where: { id: assignmentId },
+    data: { isActive: false, acknowledgedAt: new Date() },
   });
 
   // Check if application is complete
@@ -489,13 +452,12 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
     regionId: assignment.consumable.regionId,
     type: "ASSET_RETURNED",
     title: "Kit Item Not Received",
-    message: `${session.user.name || session.user.email} reports they did not receive ${assignment.quantity}x "${assignment.consumable.name}". Reason: ${reason}. Please review in Returns checklist.`,
-    link: "/returns",
+    message: `${session.user.name || session.user.email} reports they did not receive ${assignment.quantity}x "${assignment.consumable.name}". Reason: ${reason}. No stock changes made.`,
+    link: "/staff",
   });
 
   revalidatePath("/my-consumables");
   revalidatePath("/dashboard");
-  revalidatePath("/returns");
   revalidatePath("/consumables");
   return { success: true };
 }
