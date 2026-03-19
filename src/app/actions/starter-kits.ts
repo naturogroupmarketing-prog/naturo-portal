@@ -386,6 +386,23 @@ export async function rejectKitAssetItem(assignmentId: string, reason: string) {
       where: { id: assignment.assetId },
       data: { status: "AVAILABLE" },
     });
+
+    // Create PendingReturn so manager sees it in Returns checklist
+    // Mark with "STOCK_ALREADY_HANDLED" so verify doesn't double-restock
+    await tx.pendingReturn.create({
+      data: {
+        itemType: "ASSET",
+        assetId: assignment.assetId,
+        quantity: 1,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: "STOCK_ALREADY_HANDLED",
+        returnCondition: "NOT_RECEIVED",
+        returnNotes: `Staff reports item not received. Reason: ${reason}`,
+        organizationId: assignment.asset.organizationId,
+        regionId: assignment.asset.regionId,
+      },
+    });
   });
 
   // Check if application is complete
@@ -393,18 +410,19 @@ export async function rejectKitAssetItem(assignmentId: string, reason: string) {
     await checkApplicationComplete(assignment.starterKitApplicationId);
   }
 
-  // Notify managers to investigate
+  // Notify managers — link to returns checklist
   await notifyAdminsAndManagers({
     organizationId: assignment.asset.organizationId,
     regionId: assignment.asset.regionId,
     type: "ASSET_RETURNED",
     title: "Kit Item Not Received",
-    message: `${session.user.name || session.user.email} reports they did not receive "${assignment.asset.name}" (${assignment.asset.assetCode}). Reason: ${reason}. Asset returned to available — no stock changes made.`,
-    link: "/assets",
+    message: `${session.user.name || session.user.email} reports they did not receive "${assignment.asset.name}" (${assignment.asset.assetCode}). Reason: ${reason}. Please review in Returns checklist.`,
+    link: "/returns",
   });
 
   revalidatePath("/my-assets");
   revalidatePath("/dashboard");
+  revalidatePath("/returns");
   revalidatePath("/assets");
   return { success: true };
 }
@@ -438,6 +456,23 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
       where: { id: assignment.consumableId },
       data: { quantityOnHand: { increment: assignment.quantity } },
     });
+
+    // Create PendingReturn so manager sees it in Returns checklist
+    // Mark with "STOCK_ALREADY_HANDLED" so verify doesn't double-restock
+    await tx.pendingReturn.create({
+      data: {
+        itemType: "CONSUMABLE",
+        consumableId: assignment.consumableId,
+        quantity: assignment.quantity,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: "STOCK_ALREADY_HANDLED",
+        returnCondition: "NOT_RECEIVED",
+        returnNotes: `Staff reports item not received. Reason: ${reason}`,
+        organizationId: assignment.consumable.organizationId,
+        regionId: assignment.consumable.regionId,
+      },
+    });
   });
 
   // Check if application is complete
@@ -445,18 +480,19 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
     await checkApplicationComplete(assignment.starterKitApplicationId);
   }
 
-  // Notify managers to investigate
+  // Notify managers — link to returns checklist
   await notifyAdminsAndManagers({
     organizationId: assignment.consumable.organizationId,
     regionId: assignment.consumable.regionId,
     type: "ASSET_RETURNED",
     title: "Kit Item Not Received",
-    message: `${session.user.name || session.user.email} reports they did not receive ${assignment.quantity}x "${assignment.consumable.name}". Reason: ${reason}. Stock has been returned — no further action needed.`,
-    link: "/consumables",
+    message: `${session.user.name || session.user.email} reports they did not receive ${assignment.quantity}x "${assignment.consumable.name}". Reason: ${reason}. Please review in Returns checklist.`,
+    link: "/returns",
   });
 
   revalidatePath("/my-consumables");
   revalidatePath("/dashboard");
+  revalidatePath("/returns");
   revalidatePath("/consumables");
   return { success: true };
 }

@@ -36,17 +36,19 @@ export async function verifyReturn(returnId: string, notes?: string) {
       },
     });
 
-    // Restock the item
-    if (pendingReturn.itemType === "ASSET" && pendingReturn.assetId) {
-      await tx.asset.update({
-        where: { id: pendingReturn.assetId },
-        data: { status: "AVAILABLE" },
-      });
-    } else if (pendingReturn.itemType === "CONSUMABLE" && pendingReturn.consumableId) {
-      await tx.consumable.update({
-        where: { id: pendingReturn.consumableId },
-        data: { quantityOnHand: { increment: pendingReturn.quantity } },
-      });
+    // Restock the item — skip if stock was already handled (e.g. kit not-received)
+    if (pendingReturn.returnReason !== "STOCK_ALREADY_HANDLED") {
+      if (pendingReturn.itemType === "ASSET" && pendingReturn.assetId) {
+        await tx.asset.update({
+          where: { id: pendingReturn.assetId },
+          data: { status: "AVAILABLE" },
+        });
+      } else if (pendingReturn.itemType === "CONSUMABLE" && pendingReturn.consumableId) {
+        await tx.consumable.update({
+          where: { id: pendingReturn.consumableId },
+          data: { quantityOnHand: { increment: pendingReturn.quantity } },
+        });
+      }
     }
   });
 
