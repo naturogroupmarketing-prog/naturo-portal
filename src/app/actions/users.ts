@@ -324,9 +324,19 @@ export async function deleteUser(userId: string) {
     })),
   };
 
-  // Clean up related records that may not cascade
+  // Clean up ALL related records that don't have onDelete: Cascade
   await db.starterKitApplication.deleteMany({ where: { OR: [{ userId }, { appliedById: userId }] } });
   await db.notification.deleteMany({ where: { userId } });
+  await db.maintenanceLog.deleteMany({ where: { performedById: userId } });
+  await db.maintenanceSchedule.updateMany({ where: { assignedToId: userId }, data: { assignedToId: null } });
+  // Nullify audit log references instead of deleting (preserve history)
+  await db.auditLog.updateMany({ where: { performedById: userId }, data: { performedById: session.user.id } });
+  await db.auditLog.updateMany({ where: { targetUserId: userId }, data: { targetUserId: null } });
+  // Nullify purchase order references
+  await db.purchaseOrder.updateMany({ where: { createdById: userId }, data: { createdById: null } });
+  await db.purchaseOrder.updateMany({ where: { approvedById: userId }, data: { approvedById: null } });
+  // Remove manager permissions
+  await db.managerPermission.deleteMany({ where: { userId } });
 
   // Delete user — cascade will remove assignments and requests
   await db.user.delete({ where: { id: userId } });
