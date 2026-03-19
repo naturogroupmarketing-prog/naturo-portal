@@ -62,17 +62,21 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
   const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState("");
 
-  // Reset password state
-  const [resetUser, setResetUser] = useState<StaffUser | null>(null);
+  // Reset password state (inside edit modal)
+  const [showResetPassword, setShowResetPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [resetSaving, setResetSaving] = useState(false);
   const [resetError, setResetError] = useState("");
   const [resetSuccess, setResetSuccess] = useState(false);
 
-  // Delete modal state
-  const [deleteTarget, setDeleteTarget] = useState<StaffUser | null>(null);
+  // Delete confirmation state (inside edit modal)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+
+  // Drag and drop state for users
+  const [dragItemId, setDragItemId] = useState<string | null>(null);
+  const [dragOverItemId, setDragOverItemId] = useState<string | null>(null);
 
   const toggleSection = (key: string) => {
     setCollapsedSections((prev) => {
@@ -110,6 +114,18 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
     setEditRole(user.role);
     setEditRegionId(user.region?.id || "");
     setEditError("");
+    setShowResetPassword(false);
+    setShowDeleteConfirm(false);
+    setResetSuccess(false);
+    setResetError("");
+    setDeleteError("");
+    setNewPassword("");
+  };
+
+  const closeEdit = () => {
+    setEditUser(null);
+    setShowResetPassword(false);
+    setShowDeleteConfirm(false);
   };
 
   const handleEdit = async () => {
@@ -124,7 +140,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
       fd.append("role", editRole);
       fd.append("regionId", editRegionId);
       await updateUser(fd);
-      setEditUser(null);
+      closeEdit();
     } catch (e: unknown) {
       setEditError(e instanceof Error ? e.message : "Failed to update");
     } finally {
@@ -132,23 +148,25 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
     }
   };
 
-  const handleToggleActive = async (user: StaffUser) => {
+  const handleToggleActive = async () => {
+    if (!editUser) return;
     try {
       const fd = new FormData();
-      fd.append("userId", user.id);
+      fd.append("userId", editUser.id);
       await toggleUserActive(fd);
+      closeEdit();
     } catch {
       // silently fail
     }
   };
 
   const handleDelete = async () => {
-    if (!deleteTarget) return;
+    if (!editUser) return;
     setDeleting(true);
     setDeleteError("");
     try {
-      await deleteUser(deleteTarget.id);
-      setDeleteTarget(null);
+      await deleteUser(editUser.id);
+      closeEdit();
     } catch (e: unknown) {
       setDeleteError(e instanceof Error ? e.message : "Failed to delete");
     } finally {
@@ -157,12 +175,12 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
   };
 
   const handleResetPassword = async () => {
-    if (!resetUser) return;
+    if (!editUser) return;
     setResetSaving(true);
     setResetError("");
     setResetSuccess(false);
     try {
-      await resetPassword(resetUser.id, newPassword);
+      await resetPassword(editUser.id, newPassword);
       setResetSuccess(true);
       setNewPassword("");
     } catch (e: unknown) {
@@ -198,27 +216,40 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-shark-100">
+            <th className="px-1 py-3 w-6"></th>
             <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
             <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Email</th>
             <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Phone</th>
             <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
             <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Assets</th>
             <th className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
-            {isSuperAdmin && (
-              <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
-            )}
           </tr>
         </thead>
         <tbody>
           {sectionUsers.length === 0 ? (
             <tr>
-              <td colSpan={isSuperAdmin ? 7 : 6} className="px-5 py-8 text-center text-sm text-shark-400">
+              <td colSpan={7} className="px-5 py-8 text-center text-sm text-shark-400">
                 No staff in this section.
               </td>
             </tr>
           ) : (
             sectionUsers.map((user) => (
-              <tr key={user.id} className="border-b border-shark-50 hover:bg-shark-50/50">
+              <tr
+                key={user.id}
+                onClick={() => isSuperAdmin && openEdit(user)}
+                draggable={isSuperAdmin}
+                onDragStart={() => setDragItemId(user.id)}
+                onDragOver={(e) => { e.preventDefault(); setDragOverItemId(user.id); }}
+                onDragEnd={() => { setDragItemId(null); setDragOverItemId(null); }}
+                className={`border-b border-shark-50 hover:bg-shark-50/50 ${isSuperAdmin ? "cursor-pointer" : ""} ${dragItemId === user.id ? "opacity-40" : ""} ${dragOverItemId === user.id ? "border-t-2 border-t-action-500" : ""}`}
+              >
+                <td className="px-1 py-2" onClick={(e) => e.stopPropagation()}>
+                  {isSuperAdmin && (
+                    <div className="cursor-grab active:cursor-grabbing p-0.5">
+                      <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                    </div>
+                  )}
+                </td>
                 <td className="px-5 py-3.5 font-medium text-shark-800">{user.name || "—"}</td>
                 <td className="px-5 py-3.5 text-shark-500 hidden md:table-cell">{user.email}</td>
                 <td className="px-5 py-3.5 text-shark-500 hidden lg:table-cell">{user.phone || "—"}</td>
@@ -239,24 +270,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
                 <td className="px-5 py-3.5 text-center">
                   <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
                 </td>
-                {isSuperAdmin && (
-                  <td className="px-5 py-3.5 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button size="sm" variant="ghost" onClick={() => openEdit(user)} title="Edit">
-                        <Icon name="edit" size={14} />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => { setResetUser(user); setNewPassword(""); setResetError(""); setResetSuccess(false); }} title="Reset Password">
-                        <Icon name="lock" size={14} />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => handleToggleActive(user)} title={user.isActive ? "Disable" : "Enable"}>
-                        <Icon name={user.isActive ? "x" : "check"} size={14} className={user.isActive ? "text-red-500" : "text-emerald-500"} />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => { setDeleteTarget(user); setDeleteError(""); }} title="Delete">
-                        <span className="text-red-500 text-xs font-bold">DEL</span>
-                      </Button>
-                    </div>
-                  </td>
-                )}
               </tr>
             ))
           )}
@@ -352,98 +365,117 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin }: StaffC
         </div>
       )}
 
-      {/* Edit User Modal */}
-      <Modal open={!!editUser} onClose={() => setEditUser(null)} title="Edit Staff Member">
+      {/* Edit User Modal — includes reset password, toggle active, and delete */}
+      <Modal open={!!editUser} onClose={closeEdit} title={`Edit: ${editUser?.name || editUser?.email || ""}`}>
         {editUser && (
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Email</label>
-              <p className="text-sm text-shark-500">{editUser.email}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Name</label>
-              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
-              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="e.g. 0412 345 678" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Role</label>
-              <Select value={editRole} onChange={(e) => setEditRole(e.target.value)}>
-                <option value="STAFF">Staff</option>
-                <option value="BRANCH_MANAGER">Branch Manager</option>
-                <option value="SUPER_ADMIN">Super Admin</option>
-              </Select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Region</label>
-              <Select value={editRegionId} onChange={(e) => setEditRegionId(e.target.value)}>
-                <option value="">Head Office (No Region)</option>
-                {allRegions.map((r) => (
-                  <option key={r.id} value={r.id}>{r.name} — {r.state.name}</option>
-                ))}
-              </Select>
-            </div>
-            {editError && <p className="text-sm text-red-500">{editError}</p>}
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setEditUser(null)}>Cancel</Button>
-              <Button onClick={handleEdit} disabled={editSaving}>
-                {editSaving ? "Saving..." : "Save Changes"}
-              </Button>
-            </div>
-          </div>
-        )}
-      </Modal>
+            {!showResetPassword && !showDeleteConfirm ? (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-shark-700 mb-1">Email</label>
+                  <p className="text-sm text-shark-500">{editUser.email}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-shark-700 mb-1">Name</label>
+                  <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+                  <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="e.g. 0412 345 678" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-shark-700 mb-1">Role</label>
+                  <Select value={editRole} onChange={(e) => setEditRole(e.target.value)}>
+                    <option value="STAFF">Staff</option>
+                    <option value="BRANCH_MANAGER">Branch Manager</option>
+                    <option value="SUPER_ADMIN">Super Admin</option>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-shark-700 mb-1">Region</label>
+                  <Select value={editRegionId} onChange={(e) => setEditRegionId(e.target.value)}>
+                    <option value="">Head Office (No Region)</option>
+                    {allRegions.map((r) => (
+                      <option key={r.id} value={r.id}>{r.name} — {r.state.name}</option>
+                    ))}
+                  </Select>
+                </div>
 
-      {/* Reset Password Modal */}
-      <Modal open={!!resetUser} onClose={() => setResetUser(null)} title="Reset Password">
-        {resetUser && (
-          <div className="space-y-4">
-            <p className="text-sm text-shark-500">
-              Reset password for <span className="font-medium text-shark-800">{resetUser.name || resetUser.email}</span>
-            </p>
-            <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">New Password</label>
-              <Input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimum 8 characters"
-              />
-            </div>
-            {resetError && <p className="text-sm text-red-500">{resetError}</p>}
-            {resetSuccess && <p className="text-sm text-emerald-600">Password reset successfully!</p>}
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setResetUser(null)}>Close</Button>
-              <Button onClick={handleResetPassword} disabled={resetSaving || newPassword.length < 8}>
-                {resetSaving ? "Resetting..." : "Reset Password"}
-              </Button>
-            </div>
-          </div>
-        )}
-      </Modal>
+                {/* Status */}
+                <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-shark-50">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                    <span className="text-sm text-shark-700">{editUser.isActive ? "Active" : "Disabled"}</span>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={handleToggleActive}>
+                    {editUser.isActive ? "Disable User" : "Enable User"}
+                  </Button>
+                </div>
 
-      {/* Delete User Modal */}
-      <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete Staff Member">
-        {deleteTarget && (
-          <div className="space-y-4">
-            <p className="text-sm text-shark-600">
-              Are you sure you want to permanently delete <span className="font-bold text-shark-900">{deleteTarget.name || deleteTarget.email}</span>?
-            </p>
-            <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
-            {deleteTarget.assetAssignments.length > 0 && (
-              <p className="text-sm text-amber-600 font-medium">
-                This user has {deleteTarget.assetAssignments.length} active asset assignment(s). Please return all assets before deleting.
-              </p>
+                {editError && <p className="text-sm text-red-500">{editError}</p>}
+
+                {/* Action buttons row */}
+                <div className="flex items-center justify-between border-t border-shark-100 pt-3">
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" onClick={() => { setShowResetPassword(true); setResetSuccess(false); setResetError(""); setNewPassword(""); }}>
+                      <Icon name="lock" size={14} className="mr-1" />
+                      Reset Password
+                    </Button>
+                    <Button size="sm" variant="danger" onClick={() => { setShowDeleteConfirm(true); setDeleteError(""); }}>
+                      Delete User
+                    </Button>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={closeEdit}>Cancel</Button>
+                    <Button onClick={handleEdit} disabled={editSaving}>
+                      {editSaving ? "Saving..." : "Save Changes"}
+                    </Button>
+                  </div>
+                </div>
+              </>
+            ) : showResetPassword ? (
+              <>
+                <p className="text-sm text-shark-500">
+                  Reset password for <span className="font-medium text-shark-800">{editUser.name || editUser.email}</span>
+                </p>
+                <div>
+                  <label className="block text-sm font-medium text-shark-700 mb-1">New Password</label>
+                  <Input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Minimum 8 characters"
+                  />
+                </div>
+                {resetError && <p className="text-sm text-red-500">{resetError}</p>}
+                {resetSuccess && <p className="text-sm text-emerald-600">Password reset successfully!</p>}
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setShowResetPassword(false)}>Back</Button>
+                  <Button onClick={handleResetPassword} disabled={resetSaving || newPassword.length < 8}>
+                    {resetSaving ? "Resetting..." : "Reset Password"}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-shark-600">
+                  Are you sure you want to permanently delete <span className="font-bold text-shark-900">{editUser.name || editUser.email}</span>?
+                </p>
+                <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
+                {editUser.assetAssignments.length > 0 && (
+                  <p className="text-sm text-amber-600 font-medium">
+                    This user has {editUser.assetAssignments.length} active asset assignment(s). Please return all assets before deleting.
+                  </p>
+                )}
+                {deleteError && <p className="text-sm text-red-500">{deleteError}</p>}
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>Back</Button>
+                  <Button variant="danger" onClick={handleDelete} disabled={deleting}>
+                    {deleting ? "Deleting..." : "Delete Permanently"}
+                  </Button>
+                </div>
+              </>
             )}
-            {deleteError && <p className="text-sm text-red-500">{deleteError}</p>}
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
-              <Button variant="danger" onClick={handleDelete} disabled={deleting}>
-                {deleting ? "Deleting..." : "Delete Permanently"}
-              </Button>
-            </div>
           </div>
         )}
       </Modal>
