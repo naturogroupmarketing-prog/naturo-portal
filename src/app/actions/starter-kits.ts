@@ -2,13 +2,15 @@
 
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
+import { hasPermission } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
 
 export async function getStarterKits() {
   const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
+  if (!session?.user) throw new Error("Unauthorized");
+  if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
   const organizationId = session.user.organizationId;
   if (!organizationId) return [];
 
@@ -21,7 +23,8 @@ export async function getStarterKits() {
 
 export async function createStarterKit(formData: FormData) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
+  if (!session?.user) throw new Error("Unauthorized");
+  if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization");
 
@@ -50,7 +53,8 @@ export async function createStarterKit(formData: FormData) {
 
 export async function updateStarterKit(formData: FormData) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
+  if (!session?.user) throw new Error("Unauthorized");
+  if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization");
 
@@ -78,7 +82,8 @@ export async function updateStarterKit(formData: FormData) {
 
 export async function deleteStarterKit(id: string) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
+  if (!session?.user) throw new Error("Unauthorized");
+  if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
   await db.starterKit.delete({ where: { id } });
 
@@ -89,7 +94,8 @@ export async function deleteStarterKit(id: string) {
 
 export async function addStarterKitItem(formData: FormData) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
+  if (!session?.user) throw new Error("Unauthorized");
+  if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
   const starterKitId = formData.get("starterKitId") as string;
   const itemType = formData.get("itemType") as string;
@@ -108,7 +114,8 @@ export async function addStarterKitItem(formData: FormData) {
 
 export async function removeStarterKitItem(itemId: string) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
+  if (!session?.user) throw new Error("Unauthorized");
+  if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
   await db.starterKitItem.delete({ where: { id: itemId } });
 

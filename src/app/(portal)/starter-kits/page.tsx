@@ -1,11 +1,15 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { hasPermission, isAdminOrManager } from "@/lib/permissions";
 import { StarterKitsClient } from "./starter-kits-client";
 
 export default async function StarterKitsPage() {
   const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") redirect("/dashboard");
+  if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/dashboard");
+
+  const canManage = await hasPermission(session.user.id, session.user.role, "starterKitsManage");
+  if (!canManage) redirect("/dashboard");
 
   const organizationId = session.user.organizationId!;
 
