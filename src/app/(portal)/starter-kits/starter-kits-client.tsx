@@ -98,13 +98,6 @@ export function StarterKitsClient({
                   </div>
                   <div className="flex items-center gap-2">
                     <Button size="sm" variant="outline" onClick={() => setEditKit(kit)}>Edit</Button>
-                    <Button size="sm" variant="ghost" onClick={async () => {
-                      if (confirm(`Delete starter kit "${kit.name}"?`)) {
-                        await deleteStarterKit(kit.id);
-                      }
-                    }}>
-                      <Icon name="x" size={14} className="text-red-500" />
-                    </Button>
                   </div>
                 </div>
 
@@ -196,9 +189,24 @@ export function StarterKitsClient({
                 Auto-apply to new staff (default kit)
               </label>
             </div>
-            <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="secondary" onClick={() => setEditKit(null)}>Cancel</Button>
-              <Button type="submit">Save</Button>
+            <div className="flex justify-between pt-4 border-t border-shark-100">
+              <Button
+                type="button"
+                variant="danger"
+                size="sm"
+                onClick={async () => {
+                  if (confirm(`Delete starter kit "${editKit.name}"? This cannot be undone.`)) {
+                    await deleteStarterKit(editKit.id);
+                    setEditKit(null);
+                  }
+                }}
+              >
+                Delete Kit
+              </Button>
+              <div className="flex gap-3">
+                <Button type="button" variant="secondary" onClick={() => setEditKit(null)}>Cancel</Button>
+                <Button type="submit">Save</Button>
+              </div>
             </div>
           </form>
         )}
