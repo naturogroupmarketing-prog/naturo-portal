@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -160,6 +160,18 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     assignedTo: true,
   });
   const [showColumnMenu, setShowColumnMenu] = useState(false);
+  const columnMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showColumnMenu) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (columnMenuRef.current && !columnMenuRef.current.contains(e.target as Node)) {
+        setShowColumnMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showColumnMenu]);
 
   const toggleColumn = (col: keyof typeof visibleColumns) => {
     setVisibleColumns((prev) => ({ ...prev, [col]: !prev[col] }));
@@ -645,7 +657,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             ))}
           </Select>
         )}
-        <div className="relative">
+        <div className="relative" ref={columnMenuRef}>
           <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
             Columns
           </Button>
