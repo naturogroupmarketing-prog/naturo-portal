@@ -526,6 +526,6 @@ export async function getAssets(regionId?: string) {
         include: { user: { select: { id: true, name: true, email: true } } },
       },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
   });
 }

@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { createConsumable, updateConsumable, addStock, approveRequest, issueConsumable, assignConsumable, returnConsumable, bulkDeleteConsumables } from "@/app/actions/consumables";
-import { createCategory, updateCategory, deleteCategory } from "@/app/actions/categories";
+import { createCategory, updateCategory, deleteCategory, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { formatDate } from "@/lib/utils";
 
 // Color palette auto-assigned by category index
@@ -156,6 +156,52 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
   const toggleColumn = (col: keyof typeof visibleColumns) => {
     setVisibleColumns((prev) => ({ ...prev, [col]: !prev[col] }));
+  };
+
+  // Drag and drop state for sections
+  const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
+  const [dragOverSectionIdx, setDragOverSectionIdx] = useState<number | null>(null);
+
+  // Drag and drop state for items within a section
+  const [dragItemId, setDragItemId] = useState<string | null>(null);
+  const [dragOverItemId, setDragOverItemId] = useState<string | null>(null);
+
+  const handleSectionDragStart = (idx: number) => { setDragSectionIdx(idx); };
+  const handleSectionDragOver = (e: React.DragEvent, idx: number) => { e.preventDefault(); setDragOverSectionIdx(idx); };
+  const handleSectionDragEnd = async () => {
+    if (dragSectionIdx !== null && dragOverSectionIdx !== null && dragSectionIdx !== dragOverSectionIdx) {
+      const reordered = [...categories];
+      const [moved] = reordered.splice(dragSectionIdx, 1);
+      reordered.splice(dragOverSectionIdx, 0, moved);
+      try {
+        await reorderCategories(reordered.map((c) => c.id));
+      } catch (err) {
+        console.error("Reorder failed:", err);
+      }
+    }
+    setDragSectionIdx(null);
+    setDragOverSectionIdx(null);
+  };
+
+  const handleItemDragStart = (id: string) => { setDragItemId(id); };
+  const handleItemDragOver = (e: React.DragEvent, id: string) => { e.preventDefault(); setDragOverItemId(id); };
+  const handleItemDragEnd = async (sectionItems: Consumable[]) => {
+    if (dragItemId && dragOverItemId && dragItemId !== dragOverItemId) {
+      const items = [...sectionItems];
+      const fromIdx = items.findIndex((c) => c.id === dragItemId);
+      const toIdx = items.findIndex((c) => c.id === dragOverItemId);
+      if (fromIdx >= 0 && toIdx >= 0) {
+        const [moved] = items.splice(fromIdx, 1);
+        items.splice(toIdx, 0, moved);
+        try {
+          await reorderItems(items.map((c) => c.id), "CONSUMABLE");
+        } catch (err) {
+          console.error("Reorder failed:", err);
+        }
+      }
+    }
+    setDragItemId(null);
+    setDragOverItemId(null);
   };
 
   // Clear selection when filters change so hidden items aren't selected
@@ -338,6 +384,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-shark-100">
+              <th className="px-1 py-3 w-6"></th>
               <th className="px-3 py-3 text-left w-10">
                 {deletableInSection.length > 0 && (
                   <input
@@ -362,7 +409,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               const activeAssignments = c.assignments || [];
               const canDelete = deletableIds.has(c.id);
               return (
-                <tr key={c.id} onClick={() => setEditConsumable(c)} className={`border-b border-shark-50 hover:bg-shark-50/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""}`}>
+                <tr
+                  key={c.id}
+                  onClick={() => setEditConsumable(c)}
+                  draggable
+                  onDragStart={() => handleItemDragStart(c.id)}
+                  onDragOver={(e) => handleItemDragOver(e, c.id)}
+                  onDragEnd={() => handleItemDragEnd(sectionItems)}
+                  className={`border-b border-shark-50 hover:bg-shark-50/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}
+                >
+                  <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
+                    <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                  </td>
                   <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
                     {canDelete ? (
                       <input
@@ -616,30 +674,42 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             })
           ) : (
             // Branch Manager: group by category only
-            groupedConsumables.map((section) => {
+            groupedConsumables.map((section, sIdx) => {
               if (search && section.items.length === 0) return null;
               const catCollapsed = collapsedCategories.has(section.name);
               return (
-                <div key={section.name} className="space-y-2">
-                  <button
-                    onClick={() => toggleCategory(section.name)}
-                    className="flex items-center gap-3 px-1 w-full text-left group"
-                  >
-                    <div className={`w-8 h-8 rounded-lg ${section.bg} flex items-center justify-center`}>
-                      <Icon name="package" size={16} className={section.color} />
+                <div
+                  key={section.name}
+                  className={`space-y-2 ${dragSectionIdx === sIdx ? "opacity-40" : ""} ${dragOverSectionIdx === sIdx ? "border-t-2 border-t-action-500 pt-1" : ""}`}
+                  draggable
+                  onDragStart={() => handleSectionDragStart(sIdx)}
+                  onDragOver={(e) => handleSectionDragOver(e, sIdx)}
+                  onDragEnd={handleSectionDragEnd}
+                >
+                  <div className="flex items-center gap-1">
+                    <div className="cursor-grab active:cursor-grabbing p-1">
+                      <svg className="w-5 h-5 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
                     </div>
-                    <div className="flex items-center gap-2 flex-1">
-                      <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
-                      <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
-                        {section.items.length}
-                      </span>
-                    </div>
-                    <Icon
-                      name="chevron-down"
-                      size={16}
-                      className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
-                    />
-                  </button>
+                    <button
+                      onClick={() => toggleCategory(section.name)}
+                      className="flex items-center gap-3 px-1 w-full text-left group"
+                    >
+                      <div className={`w-8 h-8 rounded-lg ${section.bg} flex items-center justify-center`}>
+                        <Icon name="package" size={16} className={section.color} />
+                      </div>
+                      <div className="flex items-center gap-2 flex-1">
+                        <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
+                        <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                          {section.items.length}
+                        </span>
+                      </div>
+                      <Icon
+                        name="chevron-down"
+                        size={16}
+                        className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
+                      />
+                    </button>
+                  </div>
                   {!catCollapsed && (
                     <Card>
                       {renderConsumableTable(section.items)}

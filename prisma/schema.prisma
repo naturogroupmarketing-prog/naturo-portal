@@ -251,6 +251,7 @@ model Asset {
   purchaseCost   Float?
   supplier       String?
   notes          String?     @db.Text
+  sortOrder      Int         @default(0)
 
   region       Region       @relation(fields: [regionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -266,6 +267,7 @@ model Asset {
   @@index([status])
   @@index([category])
   @@index([organizationId])
+  @@index([sortOrder])
 }
 
 model AssetPhoto {
@@ -317,6 +319,7 @@ model Consumable {
   unitCost         Float?
   notes            String? @db.Text
   isActive         Boolean @default(true)
+  sortOrder        Int     @default(0)
 
   region       Region       @relation(fields: [regionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -332,6 +335,7 @@ model Consumable {
   @@index([regionId])
   @@index([category])
   @@index([organizationId])
+  @@index([sortOrder])
 }
 
 model ConsumableRequest {

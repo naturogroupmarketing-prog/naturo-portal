@@ -25,7 +25,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
           include: { user: { select: { id: true, name: true, email: true } } },
         },
       },
-      orderBy: { name: "asc" },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }),
     db.consumableRequest.findMany({
       where: {

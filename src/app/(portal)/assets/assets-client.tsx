@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets } from "@/app/actions/assets";
-import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem } from "@/app/actions/categories";
+import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem, reorderCategories, reorderItems } from "@/app/actions/categories";
 
 // Color palette auto-assigned by category index
 const SECTION_COLORS = [
@@ -163,6 +163,52 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
   const toggleColumn = (col: keyof typeof visibleColumns) => {
     setVisibleColumns((prev) => ({ ...prev, [col]: !prev[col] }));
+  };
+
+  // Drag and drop state for sections
+  const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
+  const [dragOverSectionIdx, setDragOverSectionIdx] = useState<number | null>(null);
+
+  // Drag and drop state for items within a section
+  const [dragItemId, setDragItemId] = useState<string | null>(null);
+  const [dragOverItemId, setDragOverItemId] = useState<string | null>(null);
+
+  const handleSectionDragStart = (idx: number) => { setDragSectionIdx(idx); };
+  const handleSectionDragOver = (e: React.DragEvent, idx: number) => { e.preventDefault(); setDragOverSectionIdx(idx); };
+  const handleSectionDragEnd = async () => {
+    if (dragSectionIdx !== null && dragOverSectionIdx !== null && dragSectionIdx !== dragOverSectionIdx) {
+      const reordered = [...categories];
+      const [moved] = reordered.splice(dragSectionIdx, 1);
+      reordered.splice(dragOverSectionIdx, 0, moved);
+      try {
+        await reorderCategories(reordered.map((c) => c.id));
+      } catch (err) {
+        console.error("Reorder failed:", err);
+      }
+    }
+    setDragSectionIdx(null);
+    setDragOverSectionIdx(null);
+  };
+
+  const handleItemDragStart = (id: string) => { setDragItemId(id); };
+  const handleItemDragOver = (e: React.DragEvent, id: string) => { e.preventDefault(); setDragOverItemId(id); };
+  const handleItemDragEnd = async (sectionAssets: Asset[]) => {
+    if (dragItemId && dragOverItemId && dragItemId !== dragOverItemId) {
+      const items = [...sectionAssets];
+      const fromIdx = items.findIndex((a) => a.id === dragItemId);
+      const toIdx = items.findIndex((a) => a.id === dragOverItemId);
+      if (fromIdx >= 0 && toIdx >= 0) {
+        const [moved] = items.splice(fromIdx, 1);
+        items.splice(toIdx, 0, moved);
+        try {
+          await reorderItems(items.map((a) => a.id), "ASSET");
+        } catch (err) {
+          console.error("Reorder failed:", err);
+        }
+      }
+    }
+    setDragItemId(null);
+    setDragOverItemId(null);
   };
 
   // Clear selection when filters change so hidden items aren't selected
@@ -424,6 +470,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-shark-100">
+              {permissions.canEdit && <th className="px-1 py-3 w-6"></th>}
               <th className="px-3 py-3 text-left w-10">
                 {deletableInSection.length > 0 && (
                   <input
@@ -449,7 +496,20 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               const activeAssignment = asset.assignments[0];
               const canDelete = deletableIds.has(asset.id);
               return (
-                <tr key={asset.id} onClick={() => permissions.canEdit && setEditAsset(asset)} className={`border-b border-shark-50 hover:bg-shark-50/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""}`}>
+                <tr
+                  key={asset.id}
+                  onClick={() => permissions.canEdit && setEditAsset(asset)}
+                  draggable={permissions.canEdit}
+                  onDragStart={() => handleItemDragStart(asset.id)}
+                  onDragOver={(e) => handleItemDragOver(e, asset.id)}
+                  onDragEnd={() => handleItemDragEnd(sectionAssets)}
+                  className={`border-b border-shark-50 hover:bg-shark-50/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""} ${dragItemId === asset.id ? "opacity-40" : ""} ${dragOverItemId === asset.id ? "border-t-2 border-t-action-500" : ""}`}
+                >
+                  {permissions.canEdit && (
+                    <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
+                      <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                    </td>
+                  )}
                   <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
                     {canDelete ? (
                       <input
@@ -704,29 +764,43 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         })
       ) : (
         // Branch Manager: group by category only (single region)
-        groupedAssets.map((section) => {
+        groupedAssets.map((section, sIdx) => {
           const catCollapsed = collapsedCategories.has(section.name);
           return (
-            <div key={section.name} className="space-y-2">
-              <button
-                onClick={() => toggleCategory(section.name)}
-                className="flex items-center gap-3 px-1 w-full text-left group"
-              >
-                <div className={`w-8 h-8 rounded-lg ${section.bg} flex items-center justify-center`}>
-                  <Icon name="package" size={16} className={section.color} />
-                </div>
-                <div className="flex items-center gap-2 flex-1">
-                  <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
-                  <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
-                    {section.assets.length}
-                  </span>
-                </div>
-                <Icon
-                  name="chevron-down"
-                  size={16}
-                  className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
-                />
-              </button>
+            <div
+              key={section.name}
+              className={`space-y-2 ${dragSectionIdx === sIdx ? "opacity-40" : ""} ${dragOverSectionIdx === sIdx ? "border-t-2 border-t-action-500 pt-1" : ""}`}
+              draggable={permissions.canEdit}
+              onDragStart={() => handleSectionDragStart(sIdx)}
+              onDragOver={(e) => handleSectionDragOver(e, sIdx)}
+              onDragEnd={handleSectionDragEnd}
+            >
+              <div className="flex items-center gap-1">
+                {permissions.canEdit && (
+                  <div className="cursor-grab active:cursor-grabbing p-1">
+                    <svg className="w-5 h-5 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                  </div>
+                )}
+                <button
+                  onClick={() => toggleCategory(section.name)}
+                  className="flex items-center gap-3 px-1 w-full text-left group"
+                >
+                  <div className={`w-8 h-8 rounded-lg ${section.bg} flex items-center justify-center`}>
+                    <Icon name="package" size={16} className={section.color} />
+                  </div>
+                  <div className="flex items-center gap-2 flex-1">
+                    <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
+                    <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                      {section.assets.length}
+                    </span>
+                  </div>
+                  <Icon
+                    name="chevron-down"
+                    size={16}
+                    className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
+                  />
+                </button>
+              </div>
               {!catCollapsed && (
                 <Card>
                   {renderAssetTable(section.assets, section.name)}

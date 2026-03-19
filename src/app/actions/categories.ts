@@ -169,6 +169,52 @@ export async function addEquipmentItem(formData: FormData) {
   return { success: true };
 }
 
+export async function reorderCategories(orderedIds: string[]) {
+  const session = await auth();
+  if (!session?.user || !isAdminOrManager(session.user.role)) {
+    throw new Error("Unauthorized");
+  }
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  // Update sortOrder for each category
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      db.category.update({ where: { id }, data: { sortOrder: index } })
+    )
+  );
+
+  revalidatePath("/assets");
+  revalidatePath("/consumables");
+  return { success: true };
+}
+
+export async function reorderItems(orderedIds: string[], type: "ASSET" | "CONSUMABLE") {
+  const session = await auth();
+  if (!session?.user || !isAdminOrManager(session.user.role)) {
+    throw new Error("Unauthorized");
+  }
+
+  if (type === "ASSET") {
+    await Promise.all(
+      orderedIds.map((id, index) =>
+        db.asset.update({ where: { id }, data: { sortOrder: index } })
+      )
+    );
+    revalidatePath("/assets");
+  } else {
+    await Promise.all(
+      orderedIds.map((id, index) =>
+        db.consumable.update({ where: { id }, data: { sortOrder: index } })
+      )
+    );
+    revalidatePath("/consumables");
+  }
+
+  return { success: true };
+}
+
 export async function removeEquipmentItem(formData: FormData) {
   const session = await auth();
   if (!session?.user || session.user.role !== "SUPER_ADMIN") {
