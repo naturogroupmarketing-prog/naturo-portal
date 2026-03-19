@@ -156,6 +156,13 @@ export function NotificationBell() {
               })
             )}
           </div>
+          <a
+            href="/notifications"
+            className="block text-center text-xs text-action-500 hover:text-action-600 font-medium py-2.5 border-t border-shark-100"
+            onClick={() => setIsOpen(false)}
+          >
+            View all notifications →
+          </a>
         </div>
       )}
     </div>
