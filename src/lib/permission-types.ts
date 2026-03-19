@@ -1,6 +1,7 @@
 export type PermissionKey =
   | "staffAdd"
   | "staffDelete"
+  | "staffViewDetails"
   | "assetAdd"
   | "assetEdit"
   | "assetDelete"
@@ -15,6 +16,7 @@ export type PermissionKey =
 export const MANAGER_DEFAULTS: Record<PermissionKey, boolean> = {
   staffAdd: false,
   staffDelete: true,
+  staffViewDetails: false,
   assetAdd: true,
   assetEdit: true,
   assetDelete: true,

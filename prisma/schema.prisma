@@ -509,6 +509,7 @@ model ManagerPermission {
 
   staffAdd         Boolean @default(true)
   staffDelete      Boolean @default(true)
+  staffViewDetails Boolean @default(false)
   assetAdd         Boolean @default(true)
   assetEdit        Boolean @default(true)
   assetDelete      Boolean @default(true)

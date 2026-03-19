@@ -17,7 +17,7 @@ interface Manager {
 }
 
 const PERMISSION_GROUPS = [
-  { label: "Staff", addKey: "staffAdd" as PermissionKey, editKey: null as PermissionKey | null, deleteKey: "staffDelete" as PermissionKey },
+  { label: "Staff", addKey: "staffAdd" as PermissionKey, editKey: "staffViewDetails" as PermissionKey | null, deleteKey: "staffDelete" as PermissionKey },
   { label: "Assets", addKey: "assetAdd" as PermissionKey, editKey: "assetEdit" as PermissionKey | null, deleteKey: "assetDelete" as PermissionKey },
   { label: "Consumables", addKey: "consumableAdd" as PermissionKey, editKey: "consumableEdit" as PermissionKey | null, deleteKey: "consumableDelete" as PermissionKey },
   { label: "Regions", addKey: "regionAdd" as PermissionKey, editKey: null as PermissionKey | null, deleteKey: "regionDelete" as PermissionKey },

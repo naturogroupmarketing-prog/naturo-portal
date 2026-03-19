@@ -43,12 +43,22 @@ export default async function StaffPage() {
       })
     : regions;
 
+  // Check branch manager permissions for viewing staff details
+  let canViewStaffDetails = true; // Super admin always can
+  if (session.user.role === "BRANCH_MANAGER") {
+    const perms = await db.managerPermission.findUnique({
+      where: { userId: session.user.id },
+    });
+    canViewStaffDetails = perms?.staffViewDetails ?? false;
+  }
+
   return (
     <StaffClient
       users={JSON.parse(JSON.stringify(users))}
       regions={JSON.parse(JSON.stringify(regions))}
       allRegions={JSON.parse(JSON.stringify(allRegions))}
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
+      canViewStaffDetails={canViewStaffDetails}
     />
   );
 }
