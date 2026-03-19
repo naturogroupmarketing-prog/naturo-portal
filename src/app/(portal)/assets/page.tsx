@@ -4,7 +4,7 @@ import { isAdminOrManager, hasPermission } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { AssetsClient } from "./assets-client";
 
-export default async function AssetsPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string }> }) {
+export default async function AssetsPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string; category?: string }> }) {
   const params = await searchParams;
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/login");
@@ -64,6 +64,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
       permissions={{ canAdd, canEdit, canDelete }}
       initialStatus={params.status}
       initialRegion={params.region}
+      initialCategory={params.category}
     />
   );
 }

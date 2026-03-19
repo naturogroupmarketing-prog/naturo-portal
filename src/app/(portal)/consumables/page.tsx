@@ -4,7 +4,7 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { ConsumablesClient } from "./consumables-client";
 
-export default async function ConsumablesPage({ searchParams }: { searchParams: Promise<{ tab?: string; region?: string }> }) {
+export default async function ConsumablesPage({ searchParams }: { searchParams: Promise<{ tab?: string; region?: string; stock?: string; category?: string }> }) {
   const params = await searchParams;
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/login");
@@ -71,6 +71,8 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
       categories={JSON.parse(JSON.stringify(categories))}
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
       initialTab={params.tab}
+      initialStock={params.stock}
+      initialCategory={params.category}
     />
   );
 }

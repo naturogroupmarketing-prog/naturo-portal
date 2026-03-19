@@ -93,17 +93,20 @@ interface ConsumablesClientProps {
   categories: CategoryDef[];
   isSuperAdmin: boolean;
   initialTab?: string;
+  initialStock?: string;
+  initialCategory?: string;
 }
 
-export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, initialTab }: ConsumablesClientProps) {
+export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
   const [showCreate, setShowCreate] = useState(false);
   const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
   const [showAssign, setShowAssign] = useState<Consumable | null>(null);
   const [showReturn, setShowReturn] = useState<{ assignment: ConsumableAssignment; consumable: Consumable } | null>(null);
   const [showImage, setShowImage] = useState<Consumable | null>(null);
   const [editConsumable, setEditConsumable] = useState<Consumable | null>(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialCategory || "");
   const [tab, setTab] = useState<"stock" | "requests">(initialTab === "requests" ? "requests" : "stock");
+  const [stockFilter, setStockFilter] = useState(initialStock || "ALL");
 
   // Collapsed sections state
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -219,11 +222,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   // Clear selection when filters change so hidden items aren't selected
   const setSearchAndClear = (v: string) => { setSearch(v); setSelectedIds(new Set()); };
 
-  const filtered = consumables.filter(
-    (c) =>
+  const filtered = consumables.filter((c) => {
+    const matchSearch =
       c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.category.toLowerCase().includes(search.toLowerCase())
-  );
+      c.category.toLowerCase().includes(search.toLowerCase());
+    if (!matchSearch) return false;
+    if (stockFilter === "ALL") return true;
+    if (stockFilter === "out") return c.quantityOnHand === 0;
+    if (stockFilter === "critical") return c.quantityOnHand > 0 && c.quantityOnHand <= c.minimumThreshold;
+    if (stockFilter === "low") return c.quantityOnHand > c.minimumThreshold && c.quantityOnHand <= c.reorderLevel;
+    if (stockFilter === "adequate") return c.quantityOnHand > c.reorderLevel;
+    return true;
+  });
 
   // Group filtered consumables by category (using dynamic categories)
   const groupedConsumables = categories.map((cat, idx) => {
@@ -570,6 +580,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               onChange={(e) => setSearchAndClear(e.target.value)}
               className="max-w-xs"
             />
+            <Select value={stockFilter} onChange={(e) => setStockFilter(e.target.value)} className="text-sm max-w-[160px]">
+              <option value="ALL">All Stock</option>
+              <option value="adequate">Adequate</option>
+              <option value="low">Low Stock</option>
+              <option value="critical">Critical</option>
+              <option value="out">Out of Stock</option>
+            </Select>
             <div className="relative" ref={columnMenuRef}>
               <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
                 Columns

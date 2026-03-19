@@ -89,9 +89,10 @@ interface AssetsClientProps {
   permissions: { canAdd: boolean; canEdit: boolean; canDelete: boolean };
   initialStatus?: string;
   initialRegion?: string;
+  initialCategory?: string;
 }
 
-export function AssetsClient({ assets, regions, users, categories, isSuperAdmin, permissions, initialStatus, initialRegion }: AssetsClientProps) {
+export function AssetsClient({ assets, regions, users, categories, isSuperAdmin, permissions, initialStatus, initialRegion, initialCategory }: AssetsClientProps) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState(initialStatus || "ALL");
   const [showCreate, setShowCreate] = useState(false);
@@ -151,7 +152,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
   const [regionFilter, setRegionFilter] = useState(initialRegion || "ALL");
-  const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [categoryFilter, setCategoryFilter] = useState(initialCategory || "ALL");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
