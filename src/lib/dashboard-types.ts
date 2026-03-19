@@ -10,7 +10,24 @@ export interface CustomShortcut {
 export interface DashboardPreferences {
   hiddenWidgets: string[];
   customShortcuts: CustomShortcut[];
+  sectionOrder: string[];
 }
+
+export const DASHBOARD_SECTIONS = [
+  { id: "stats", label: "Stats Cards" },
+  { id: "portfolio", label: "Portfolio Valuation" },
+  { id: "maintenance", label: "Maintenance Due" },
+  { id: "asset-charts", label: "Asset Charts" },
+  { id: "consumable-charts", label: "Consumable Charts" },
+  { id: "low-stock", label: "Low Stock Alerts" },
+  { id: "regional", label: "Regional Breakdown" },
+  { id: "quick-links", label: "Quick Links" },
+  { id: "shortcuts", label: "My Shortcuts" },
+] as const;
+
+export const DEFAULT_SECTION_ORDER = DASHBOARD_SECTIONS.map((s) => s.id);
+
+export type SectionId = (typeof DASHBOARD_SECTIONS)[number]["id"];
 
 export const WIDGET_IDS = {
   STAT_TOTAL_ASSETS: "stat-total-assets",
@@ -43,14 +60,21 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
 export const DEFAULT_PREFERENCES: DashboardPreferences = {
   hiddenWidgets: [],
   customShortcuts: [],
+  sectionOrder: [...DEFAULT_SECTION_ORDER],
 };
 
 export function parsePreferences(raw: unknown): DashboardPreferences {
   if (!raw || typeof raw !== "object") return { ...DEFAULT_PREFERENCES, customShortcuts: [] };
   const obj = raw as Record<string, unknown>;
+  const sectionOrder = Array.isArray(obj.sectionOrder) ? obj.sectionOrder as string[] : [...DEFAULT_SECTION_ORDER];
+  // Ensure any new sections are appended
+  for (const s of DEFAULT_SECTION_ORDER) {
+    if (!sectionOrder.includes(s)) sectionOrder.push(s);
+  }
   return {
     hiddenWidgets: Array.isArray(obj.hiddenWidgets) ? obj.hiddenWidgets : [],
     customShortcuts: Array.isArray(obj.customShortcuts) ? obj.customShortcuts : [],
+    sectionOrder,
   };
 }
 

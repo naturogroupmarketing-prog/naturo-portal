@@ -73,3 +73,16 @@ export async function removeCustomShortcut(shortcutId: string) {
   await savePreferences(session.user.id, prefs);
   return { success: true };
 }
+
+export async function reorderSections(newOrder: string[]) {
+  const session = await auth();
+  if (!session?.user || !isAdminOrManager(session.user.role)) {
+    throw new Error("Unauthorized");
+  }
+
+  const prefs = await getPreferences(session.user.id);
+  prefs.sectionOrder = newOrder;
+
+  await savePreferences(session.user.id, prefs);
+  return { success: true };
+}

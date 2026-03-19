@@ -4,7 +4,7 @@ export type IconName =
   | "dashboard" | "package" | "droplet" | "users" | "clipboard"
   | "settings" | "map-pin" | "plus" | "alert-triangle" | "search"
   | "x" | "check" | "menu" | "qr-code" | "download"
-  | "bar-chart" | "lock" | "user" | "star" | "chevron-down"
+  | "bar-chart" | "lock" | "user" | "star" | "chevron-down" | "chevron-up"
   | "log-out" | "arrow-right" | "arrow-left" | "box" | "truck" | "file-text"
   | "shield" | "clock" | "edit" | "upload" | "check-circle" | "file-spreadsheet"
   | "help-circle" | "mail" | "message-circle" | "bell" | "inbox";
@@ -56,6 +56,8 @@ const paths: Record<IconName, string> = {
     "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
   "chevron-down":
     "M6 9l6 6 6-6",
+  "chevron-up":
+    "M18 15l-6-6-6 6",
   "log-out":
     "M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4 M16 17l5-5-5-5 M21 12H9",
   "arrow-right":

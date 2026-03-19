@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef, useCallback } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { updateWidgetVisibility, addCustomShortcut, removeCustomShortcut } from "@/app/actions/dashboard";
-import { WIDGET_LABELS, SHORTCUT_ICON_OPTIONS, type DashboardPreferences, type WidgetId } from "@/lib/dashboard-types";
+import { updateWidgetVisibility, addCustomShortcut, removeCustomShortcut, reorderSections } from "@/app/actions/dashboard";
+import { WIDGET_LABELS, SHORTCUT_ICON_OPTIONS, DASHBOARD_SECTIONS, type DashboardPreferences, type WidgetId } from "@/lib/dashboard-types";
 import type { IconName } from "@/components/ui/icon";
 
 function Toggle({
@@ -39,6 +39,10 @@ function Toggle({
   );
 }
 
+const SECTION_LABELS: Record<string, string> = Object.fromEntries(
+  DASHBOARD_SECTIONS.map((s) => [s.id, s.label])
+);
+
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -51,6 +55,60 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
   const [newLabel, setNewLabel] = useState("");
   const [newHref, setNewHref] = useState("");
   const [newIcon, setNewIcon] = useState<IconName>("star");
+
+  // Section reorder state
+  const [sectionOrder, setSectionOrder] = useState<string[]>(preferences.sectionOrder);
+  const dragItem = useRef<number | null>(null);
+  const dragOverItem = useRef<number | null>(null);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+
+  // Keep sectionOrder in sync when preferences change (modal reopen)
+  const prevOrderRef = useRef(preferences.sectionOrder);
+  if (prevOrderRef.current !== preferences.sectionOrder) {
+    prevOrderRef.current = preferences.sectionOrder;
+    setSectionOrder(preferences.sectionOrder);
+  }
+
+  const handleDragStart = useCallback((idx: number) => {
+    dragItem.current = idx;
+    setDragIndex(idx);
+  }, []);
+
+  const handleDragEnter = useCallback((idx: number) => {
+    dragOverItem.current = idx;
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    if (dragItem.current === null || dragOverItem.current === null) {
+      setDragIndex(null);
+      return;
+    }
+    const from = dragItem.current;
+    const to = dragOverItem.current;
+    if (from !== to) {
+      const newOrder = [...sectionOrder];
+      const [removed] = newOrder.splice(from, 1);
+      newOrder.splice(to, 0, removed);
+      setSectionOrder(newOrder);
+      startTransition(async () => {
+        await reorderSections(newOrder);
+      });
+    }
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setDragIndex(null);
+  }, [sectionOrder, startTransition]);
+
+  const moveSection = useCallback((idx: number, direction: "up" | "down") => {
+    const newIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (newIdx < 0 || newIdx >= sectionOrder.length) return;
+    const newOrder = [...sectionOrder];
+    [newOrder[idx], newOrder[newIdx]] = [newOrder[newIdx], newOrder[idx]];
+    setSectionOrder(newOrder);
+    startTransition(async () => {
+      await reorderSections(newOrder);
+    });
+  }, [sectionOrder, startTransition]);
 
   const handleToggle = (widgetId: WidgetId, currentlyVisible: boolean) => {
     startTransition(async () => {
@@ -77,6 +135,53 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
 
   return (
     <Modal open={open} onClose={onClose} title="Dashboard Settings">
+      {/* Section Order */}
+      <div className="space-y-3">
+        <h3 className="text-xs font-semibold text-shark-400 uppercase tracking-wider">Section Order</h3>
+        <p className="text-xs text-shark-400">Drag to reorder or use arrows</p>
+        <div className="space-y-1">
+          {sectionOrder.map((sectionId, idx) => (
+            <div
+              key={sectionId}
+              draggable
+              onDragStart={() => handleDragStart(idx)}
+              onDragEnter={() => handleDragEnter(idx)}
+              onDragEnd={handleDragEnd}
+              onDragOver={(e) => e.preventDefault()}
+              className={`flex items-center gap-2 py-2 px-3 rounded-lg border transition-all cursor-grab active:cursor-grabbing ${
+                dragIndex === idx
+                  ? "border-action-400 bg-action-50 opacity-60"
+                  : "border-shark-100 bg-white hover:border-shark-200 hover:bg-shark-25"
+              }`}
+            >
+              <Icon name="menu" size={14} className="text-shark-300 shrink-0" />
+              <span className="text-sm text-shark-700 flex-1">{SECTION_LABELS[sectionId] || sectionId}</span>
+              <div className="flex items-center gap-0.5 shrink-0">
+                <button
+                  onClick={() => moveSection(idx, "up")}
+                  disabled={idx === 0 || isPending}
+                  className="p-1 rounded text-shark-400 hover:text-shark-700 hover:bg-shark-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  title="Move up"
+                >
+                  <Icon name="chevron-up" size={14} />
+                </button>
+                <button
+                  onClick={() => moveSection(idx, "down")}
+                  disabled={idx === sectionOrder.length - 1 || isPending}
+                  className="p-1 rounded text-shark-400 hover:text-shark-700 hover:bg-shark-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  title="Move down"
+                >
+                  <Icon name="chevron-down" size={14} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <hr className="my-5 border-shark-100" />
+
+      {/* Widget Visibility */}
       <div className="space-y-3">
         <h3 className="text-xs font-semibold text-shark-400 uppercase tracking-wider">Widget Visibility</h3>
         {(Object.entries(WIDGET_LABELS) as [WidgetId, string][]).map(([id, label]) => {
@@ -96,6 +201,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
 
       <hr className="my-5 border-shark-100" />
 
+      {/* Custom Shortcuts */}
       <div className="space-y-3">
         <h3 className="text-xs font-semibold text-shark-400 uppercase tracking-wider">Custom Shortcuts</h3>
 
