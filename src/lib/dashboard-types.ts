@@ -22,6 +22,7 @@ export const WIDGET_IDS = {
   STAT_PENDING_POS: "stat-pending-pos",
   LOW_STOCK_ALERTS: "low-stock-alerts",
   QUICK_LINKS: "quick-links",
+  PORTFOLIO_VALUATION: "portfolio-valuation",
 } as const;
 
 export type WidgetId = (typeof WIDGET_IDS)[keyof typeof WIDGET_IDS];
@@ -36,6 +37,7 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   "stat-pending-pos": "Pending POs",
   "low-stock-alerts": "Low Stock Alerts",
   "quick-links": "Quick Links",
+  "portfolio-valuation": "Portfolio Valuation",
 };
 
 export const DEFAULT_PREFERENCES: DashboardPreferences = {

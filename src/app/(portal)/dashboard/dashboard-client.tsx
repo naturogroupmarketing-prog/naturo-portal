@@ -73,7 +73,7 @@ interface Props {
   regionBreakdown?: RegionBreakdownItem[];
   assetStatusChart?: ChartItem[];
   categoryChart?: ChartItem[];
-  portfolioValue?: { purchase: number; current: number; depreciation: number };
+  portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
 }
@@ -82,22 +82,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
-  const [showPortfolio, setShowPortfolio] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("trackio-show-portfolio") !== "false";
-    }
-    return true;
-  });
-
-  const togglePortfolio = () => {
-    const next = !showPortfolio;
-    setShowPortfolio(next);
-    localStorage.setItem("trackio-show-portfolio", String(next));
-  };
 
   const visibleStats = stats.filter((s) => !preferences.hiddenWidgets.includes(s.widgetId));
   const showLowStock = !preferences.hiddenWidgets.includes("low-stock-alerts");
   const showQuickLinks = !preferences.hiddenWidgets.includes("quick-links");
+  const showPortfolio = !preferences.hiddenWidgets.includes("portfolio-valuation");
 
   const handleRemoveShortcut = (id: string) => {
     startTransition(async () => {
@@ -153,50 +142,42 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </div>
       )}
 
-      {/* Portfolio Value & Maintenance — Super Admin only */}
-      {isSuperAdmin && portfolioValue && portfolioValue.purchase > 0 && (
+      {/* Portfolio Valuation — Super Admin only, controlled via dashboard settings */}
+      {isSuperAdmin && showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-shark-500 dark:text-shark-400 uppercase tracking-wider">Portfolio Valuation</h2>
-            <button
-              onClick={togglePortfolio}
-              className="text-xs text-action-500 hover:text-action-600 font-medium"
-            >
-              {showPortfolio ? "Hide" : "Show"}
-            </button>
+          <h2 className="text-sm font-semibold text-shark-500 dark:text-shark-400 uppercase tracking-wider mb-3">Portfolio Valuation</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="pt-5">
+                <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Asset Purchase Value</p>
+                <p className="text-2xl font-bold text-shark-900 dark:text-shark-100 mt-1">${portfolioValue.purchase.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-5">
+                <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Asset Current Value</p>
+                <p className="text-2xl font-bold text-emerald-600 mt-1">${portfolioValue.current.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                <p className="text-xs text-shark-400 mt-1">Depreciation: ${portfolioValue.depreciation.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-5">
+                <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Consumable Stock Value</p>
+                <p className="text-2xl font-bold text-blue-600 mt-1">${portfolioValue.consumableValue.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-5">
+                <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Total Portfolio</p>
+                <p className="text-2xl font-bold text-action-500 mt-1">${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+              </CardContent>
+            </Card>
           </div>
-          {showPortfolio && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Card>
-                <CardContent className="pt-5">
-                  <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Purchase Value</p>
-                  <p className="text-2xl font-bold text-shark-900 dark:text-shark-100 mt-1">${portfolioValue.purchase.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-5">
-                  <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Current Value</p>
-                  <p className="text-2xl font-bold text-emerald-600 mt-1">${portfolioValue.current.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                  <p className="text-xs text-shark-400 mt-1">Depreciation: ${portfolioValue.depreciation.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                </CardContent>
-              </Card>
-              {upcomingMaintenance !== undefined && upcomingMaintenance > 0 && (
-                <Link href="/maintenance">
-                  <Card className="hover:border-amber-300 transition-colors cursor-pointer h-full">
-                    <CardContent className="pt-5">
-                      <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Maintenance Due</p>
-                      <p className="text-2xl font-bold text-amber-600 mt-1">{upcomingMaintenance}</p>
-                      <p className="text-xs text-shark-400 mt-1">Due within 7 days</p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              )}
-            </div>
-          )}
         </div>
       )}
-      {/* Maintenance card for branch managers (no portfolio) */}
-      {!isSuperAdmin && upcomingMaintenance !== undefined && upcomingMaintenance > 0 && (
+
+      {/* Maintenance Due card */}
+      {upcomingMaintenance !== undefined && upcomingMaintenance > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link href="/maintenance">
             <Card className="hover:border-amber-300 transition-colors cursor-pointer">

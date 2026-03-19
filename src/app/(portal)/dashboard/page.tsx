@@ -220,6 +220,13 @@ export default async function DashboardPage() {
     return sum + currentValue;
   }, 0);
 
+  // Consumable stock valuation
+  const consumablesWithCost = await db.consumable.findMany({
+    where: { ...regionFilter, isActive: true, unitCost: { not: null } },
+    select: { unitCost: true, quantityOnHand: true },
+  });
+  const totalConsumableValue = consumablesWithCost.reduce((sum, c) => sum + (c.unitCost || 0) * c.quantityOnHand, 0);
+
   // Upcoming maintenance count
   const upcomingMaintenance = await db.maintenanceSchedule.count({
     where: {
@@ -258,7 +265,7 @@ export default async function DashboardPage() {
       regionBreakdown={regionBreakdown}
       assetStatusChart={assetStatusChart}
       categoryChart={categoryChart}
-      portfolioValue={isSuperAdmin ? { purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100 } : undefined}
+      portfolioValue={isSuperAdmin ? { purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100, consumableValue: Math.round(totalConsumableValue * 100) / 100 } : undefined}
       upcomingMaintenance={upcomingMaintenance}
       isSuperAdmin={isSuperAdmin}
     />
