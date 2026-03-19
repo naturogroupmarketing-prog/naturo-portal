@@ -77,6 +77,7 @@ const navSections: NavSection[] = [
     items: [
       { label: "Request Consumables", href: "/request-consumables", icon: "plus", roles: ["STAFF"] },
       { label: "Report Damage", href: "/report-damage", icon: "alert-triangle", roles: ["STAFF"] },
+      { label: "Recent Activity", href: "/my-activity", icon: "clock", roles: ["STAFF"] },
     ],
   },
   {
