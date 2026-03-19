@@ -32,7 +32,17 @@ interface StaffUser {
   isActive: boolean;
   region: { id: string; name: string } | null;
   assetAssignments: {
-    asset: { name: string; assetCode: string };
+    asset: { name: string; assetCode: string; category: string };
+  }[];
+  consumableAssignments?: {
+    quantity: number;
+    consumable: { name: string; unitType: string };
+  }[];
+  consumableRequests?: {
+    id: string;
+    quantity: number;
+    status: string;
+    consumable: { name: string; unitType: string };
   }[];
 }
 
@@ -467,6 +477,55 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   </Button>
                 </div>
 
+                {/* Inventory Summary */}
+                {(editUser.assetAssignments.length > 0 || (editUser.consumableAssignments?.length ?? 0) > 0 || (editUser.consumableRequests?.length ?? 0) > 0) && (
+                  <div className="border border-shark-100 rounded-lg p-3 space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-shark-400">On Hand</p>
+                    {editUser.assetAssignments.length > 0 && (
+                      <div>
+                        <p className="text-xs text-shark-400 mb-1">Assets ({editUser.assetAssignments.length})</p>
+                        <div className="space-y-0.5">
+                          {editUser.assetAssignments.map((a) => (
+                            <div key={a.asset.assetCode} className="flex items-center gap-2 text-sm text-shark-700">
+                              <Icon name="package" size={12} className="text-action-400 shrink-0" />
+                              <span className="font-mono text-xs text-shark-400">{a.asset.assetCode}</span>
+                              <span className="truncate">{a.asset.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {(editUser.consumableAssignments?.length ?? 0) > 0 && (
+                      <div>
+                        <p className="text-xs text-shark-400 mb-1">Consumables ({editUser.consumableAssignments!.length})</p>
+                        <div className="space-y-0.5">
+                          {editUser.consumableAssignments!.map((c, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-sm text-shark-700">
+                              <Icon name="droplet" size={12} className="text-blue-400 shrink-0" />
+                              <span>{c.quantity}x {c.consumable.name}</span>
+                              <span className="text-xs text-shark-300 ml-auto">{c.consumable.unitType}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {(editUser.consumableRequests?.length ?? 0) > 0 && (
+                      <div>
+                        <p className="text-xs text-shark-400 mb-1">Pending Requests ({editUser.consumableRequests!.length})</p>
+                        <div className="space-y-0.5">
+                          {editUser.consumableRequests!.map((r) => (
+                            <div key={r.id} className="flex items-center gap-2 text-sm text-shark-700">
+                              <Icon name="clipboard" size={12} className="text-amber-400 shrink-0" />
+                              <span>{r.quantity}x {r.consumable.name}</span>
+                              <Badge status={r.status} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {editError && <p className="text-sm text-red-500">{editError}</p>}
 
                 {/* Action buttons row */}
@@ -525,10 +584,46 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                       <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Assigned Assets ({editUser.assetAssignments.length})</label>
                       <div className="space-y-1">
                         {editUser.assetAssignments.map((a) => (
-                          <p key={a.asset.assetCode} className="text-sm text-shark-700">
-                            <span className="font-mono text-xs text-shark-400 mr-1">{a.asset.assetCode}</span>
-                            {a.asset.name}
-                          </p>
+                          <div key={a.asset.assetCode} className="flex items-center gap-2 py-1">
+                            <Icon name="package" size={14} className="text-action-400 shrink-0" />
+                            <p className="text-sm text-shark-700">
+                              <span className="font-mono text-xs text-shark-400 mr-1">{a.asset.assetCode}</span>
+                              {a.asset.name}
+                            </p>
+                            <span className="text-xs text-shark-300 ml-auto">{a.asset.category}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {(editUser.consumableAssignments?.length ?? 0) > 0 && (
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Assigned Consumables ({editUser.consumableAssignments!.length})</label>
+                      <div className="space-y-1">
+                        {editUser.consumableAssignments!.map((c, idx) => (
+                          <div key={idx} className="flex items-center gap-2 py-1">
+                            <Icon name="droplet" size={14} className="text-blue-400 shrink-0" />
+                            <p className="text-sm text-shark-700">
+                              {c.quantity}x {c.consumable.name}
+                            </p>
+                            <span className="text-xs text-shark-300 ml-auto">{c.consumable.unitType}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {(editUser.consumableRequests?.length ?? 0) > 0 && (
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Pending Requests ({editUser.consumableRequests!.length})</label>
+                      <div className="space-y-1">
+                        {editUser.consumableRequests!.map((r) => (
+                          <div key={r.id} className="flex items-center gap-2 py-1">
+                            <Icon name="clipboard" size={14} className="text-amber-400 shrink-0" />
+                            <p className="text-sm text-shark-700">
+                              {r.quantity}x {r.consumable.name}
+                            </p>
+                            <Badge status={r.status} />
+                          </div>
                         ))}
                       </div>
                     </div>

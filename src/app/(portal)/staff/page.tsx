@@ -21,7 +21,17 @@ export default async function StaffPage() {
         region: true,
         assetAssignments: {
           where: { isActive: true },
-          include: { asset: { select: { name: true, assetCode: true } } },
+          include: { asset: { select: { name: true, assetCode: true, category: true } } },
+        },
+        consumableAssignments: {
+          where: { isActive: true },
+          include: { consumable: { select: { name: true, unitType: true } } },
+        },
+        consumableRequests: {
+          where: { status: "PENDING" },
+          include: { consumable: { select: { name: true, unitType: true } } },
+          orderBy: { createdAt: "desc" },
+          take: 10,
         },
       },
       orderBy: { name: "asc" },
