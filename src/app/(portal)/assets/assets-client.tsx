@@ -151,6 +151,10 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
   const [regionFilter, setRegionFilter] = useState(initialRegion || "ALL");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
 
   // Column visibility state
@@ -235,10 +239,14 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const filtered = assets.filter((a) => {
     const matchSearch =
       a.name.toLowerCase().includes(search.toLowerCase()) ||
-      a.assetCode.toLowerCase().includes(search.toLowerCase());
+      a.assetCode.toLowerCase().includes(search.toLowerCase()) ||
+      (a.serialNumber || "").toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === "ALL" || a.status === statusFilter;
     const matchRegion = regionFilter === "ALL" || a.region.id === regionFilter;
-    return matchSearch && matchStatus && matchRegion;
+    const matchCategory = categoryFilter === "ALL" || a.category === categoryFilter;
+    const matchDateFrom = !dateFrom || new Date(a.createdAt) >= new Date(dateFrom);
+    const matchDateTo = !dateTo || new Date(a.createdAt) <= new Date(dateTo + "T23:59:59");
+    return matchSearch && matchStatus && matchRegion && matchCategory && matchDateFrom && matchDateTo;
   });
 
   // Group filtered assets by category (using dynamic categories)
@@ -664,6 +672,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             ))}
           </Select>
         )}
+        <Button size="sm" variant="outline" onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}>
+          <Icon name="search" size={14} className="mr-1" />
+          Filters
+          {(categoryFilter !== "ALL" || dateFrom || dateTo) && <span className="ml-1 w-2 h-2 bg-action-500 rounded-full" />}
+        </Button>
         <div className="relative" ref={columnMenuRef}>
           <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
             Columns
@@ -701,6 +714,37 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           </Button>
         )}
       </div>
+
+      {/* Advanced Filters */}
+      {showAdvancedFilters && (
+        <div className="bg-white rounded-xl border border-shark-100 p-4 shadow-sm">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
+              <label className="block text-xs font-medium text-shark-500 mb-1">Category</label>
+              <Select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="text-sm">
+                <option value="ALL">All categories</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
+              </Select>
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-medium text-shark-500 mb-1">Date From</label>
+              <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="text-sm" />
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-medium text-shark-500 mb-1">Date To</label>
+              <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="text-sm" />
+            </div>
+            <div className="flex items-end">
+              <Button size="sm" variant="outline" onClick={() => { setCategoryFilter("ALL"); setDateFrom(""); setDateTo(""); }}>
+                Clear
+              </Button>
+            </div>
+          </div>
+          <p className="text-xs text-shark-400 mt-2">{filtered.length} assets matching filters</p>
+        </div>
+      )}
 
       {/* Grouped Sections */}
       {isSuperAdmin ? (

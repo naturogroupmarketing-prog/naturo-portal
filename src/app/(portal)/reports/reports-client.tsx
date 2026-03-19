@@ -13,10 +13,15 @@ const reports: { id: string; name: string; description: string; icon: IconName; 
   { id: "requests", name: "Request History", description: "All consumable requests with status", icon: "clipboard", iconBg: "bg-orange-50", iconColor: "text-orange-500" },
   { id: "damage-loss", name: "Damage & Loss", description: "Damage and loss reports", icon: "alert-triangle", iconBg: "bg-red-50", iconColor: "text-red-500" },
   { id: "audit", name: "Audit Trail", description: "Complete system audit history", icon: "lock", iconBg: "bg-shark-100", iconColor: "text-shark-500" },
+  { id: "maintenance", name: "Maintenance Schedule", description: "All maintenance tasks with due dates and history", icon: "settings", iconBg: "bg-teal-50", iconColor: "text-teal-500" },
 ];
 
 export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
   const visibleReports = reports.filter((r) => !r.superAdminOnly || isSuperAdmin);
+
+  function openPrintableReport(reportType: string) {
+    window.open(`/api/reports/pdf?type=${reportType}`, "_blank");
+  }
 
   async function downloadReport(reportId: string) {
     const res = await fetch(`/api/reports/${reportId}`);
@@ -25,7 +30,7 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `naturo-${reportId}-${new Date().toISOString().split("T")[0]}.csv`;
+    link.download = `trackio-${reportId}-${new Date().toISOString().split("T")[0]}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -34,7 +39,7 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-shark-900">Reports</h1>
-        <p className="text-sm text-shark-400 mt-1">Export data as CSV files</p>
+        <p className="text-sm text-shark-400 mt-1">Export data as CSV or printable reports</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -48,15 +53,26 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
                 <div className="flex-1">
                   <h3 className="font-semibold text-shark-800">{report.name}</h3>
                   <p className="text-xs text-shark-400 mt-1">{report.description}</p>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="mt-3"
-                    onClick={() => downloadReport(report.id)}
-                  >
-                    <Icon name="download" size={14} className="mr-1.5" />
-                    Download CSV
-                  </Button>
+                  <div className="flex gap-2 mt-3">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => downloadReport(report.id)}
+                    >
+                      <Icon name="download" size={14} className="mr-1.5" />
+                      CSV
+                    </Button>
+                    {["assets", "consumables", "maintenance"].includes(report.id) && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openPrintableReport(report.id)}
+                      >
+                        <Icon name="file-text" size={14} className="mr-1.5" />
+                        Print
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>

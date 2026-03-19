@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
+import { notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
 
 export async function reportDamage(formData: FormData) {
@@ -61,6 +62,16 @@ export async function reportDamage(formData: FormData) {
     assetId,
     organizationId,
     metadata: { type, description, photoUrl },
+  });
+
+  // Notify admins and managers
+  await notifyAdminsAndManagers({
+    organizationId,
+    regionId: asset.regionId,
+    type: "DAMAGE_REPORT",
+    title: `${type === "LOSS" ? "Loss" : "Damage"} Reported: ${asset.name}`,
+    message: `${session.user.name || session.user.email} reported ${type === "LOSS" ? "a loss" : "damage"} for ${asset.assetCode}: ${description}`,
+    link: "/assets",
   });
 
   revalidatePath("/my-assets");

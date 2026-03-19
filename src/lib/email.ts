@@ -12,7 +12,7 @@ interface EmailParams {
 export async function sendEmail({ to, subject, html }: EmailParams) {
   try {
     await resend.emails.send({
-      from: `NATURO GROUP <${FROM}>`,
+      from: `Trackio <${FROM}>`,
       to,
       subject,
       html: wrapTemplate(subject, html),
@@ -32,15 +32,15 @@ function wrapTemplate(title: string, body: string) {
         <tr><td align="center">
           <table width="100%" style="max-width:560px;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
             <tr><td style="background:#0f1b3d;padding:24px 32px;text-align:center;">
-              <h1 style="margin:0;color:#ffffff;font-size:20px;font-weight:600;">NATURO GROUP</h1>
-              <p style="margin:4px 0 0;color:#c9a84c;font-size:12px;letter-spacing:1px;">ASSETS &amp; CONSUMABLES PORTAL</p>
+              <h1 style="margin:0;color:#ffffff;font-size:20px;font-weight:600;">Trackio</h1>
+              <p style="margin:4px 0 0;color:#c9a84c;font-size:12px;letter-spacing:1px;">ASSET &amp; CONSUMABLE TRACKER</p>
             </td></tr>
             <tr><td style="padding:32px;">
               <h2 style="margin:0 0 16px;color:#0f1b3d;font-size:18px;">${title}</h2>
               ${body}
             </td></tr>
             <tr><td style="padding:16px 32px;background:#f8f9fa;text-align:center;border-top:1px solid #e9ecef;">
-              <p style="margin:0;color:#868e96;font-size:12px;">&copy; NATURO GROUP Australia. All rights reserved.</p>
+              <p style="margin:0;color:#868e96;font-size:12px;">&copy; Trackio Australia. All rights reserved.</p>
             </td></tr>
           </table>
         </td></tr>

@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { sendEmail, emailLowStock } from "@/lib/email";
 import { createAuditLog } from "@/lib/audit";
+import { createNotification } from "@/lib/notifications";
 
 interface LowStockParams {
   consumableId: string;
@@ -28,8 +29,19 @@ export async function handleLowStockAlert({ consumableId, performedById }: LowSt
     select: { email: true, name: true },
   });
 
-  // 2. Email each recipient
-  for (const recipient of recipients) {
+  // 2. Email each recipient + create in-app notification
+  const recipientsWithId = await db.user.findMany({
+    where: {
+      isActive: true,
+      OR: [
+        { role: "SUPER_ADMIN" },
+        { role: "BRANCH_MANAGER", regionId: consumable.regionId },
+      ],
+    },
+    select: { id: true, email: true, name: true },
+  });
+
+  for (const recipient of recipientsWithId) {
     await sendEmail({
       to: recipient.email,
       subject: `Low Stock Alert: ${consumable.name}`,
@@ -39,6 +51,13 @@ export async function handleLowStockAlert({ consumableId, performedById }: LowSt
         consumable.minimumThreshold,
         consumable.region.name
       ),
+    });
+    await createNotification({
+      userId: recipient.id,
+      type: "LOW_STOCK",
+      title: `Low Stock: ${consumable.name}`,
+      message: `Only ${consumable.quantityOnHand} left (threshold: ${consumable.minimumThreshold}) in ${consumable.region.name}`,
+      link: "/consumables",
     });
   }
 

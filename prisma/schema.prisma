@@ -119,6 +119,7 @@ model Organization {
   purchaseOrders PurchaseOrder[]
   auditLogs      AuditLog[]
   damageReports  DamageReport[]
+  customFieldDefs CustomFieldDefinition[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -257,6 +258,7 @@ model Asset {
   sortOrder      Int         @default(0)
   warrantyExpiry DateTime?
   depreciationRate Float?    // annual percentage
+  customFields   Json?       // User-defined custom fields as JSON
 
   region       Region       @relation(fields: [regionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -326,6 +328,7 @@ model Consumable {
   notes            String? @db.Text
   isActive         Boolean @default(true)
   sortOrder        Int     @default(0)
+  customFields     Json?   // User-defined custom fields as JSON
 
   region       Region       @relation(fields: [regionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -504,6 +507,25 @@ model PasswordResetToken {
 
   @@index([email])
   @@index([token])
+}
+
+// ─── CUSTOM FIELD DEFINITIONS ───────────────────────────
+
+model CustomFieldDefinition {
+  id             String  @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  entityType     String  // "ASSET" or "CONSUMABLE"
+  fieldName      String
+  fieldType      String  // "TEXT", "NUMBER", "DATE", "SELECT"
+  options        String? // comma-separated options for SELECT type
+  isRequired     Boolean @default(false)
+  sortOrder      Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@unique([organizationId, entityType, fieldName])
+  @@index([organizationId, entityType])
 }
 
 // ─── NOTIFICATIONS ──────────────────────────────────────

@@ -73,9 +73,11 @@ interface Props {
   regionBreakdown?: RegionBreakdownItem[];
   assetStatusChart?: ChartItem[];
   categoryChart?: ChartItem[];
+  portfolioValue?: { purchase: number; current: number; depreciation: number };
+  upcomingMaintenance?: number;
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, portfolioValue, upcomingMaintenance }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -137,6 +139,40 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           ))}
         </div>
       )}
+
+      {/* Portfolio Value & Maintenance */}
+      {(portfolioValue && portfolioValue.purchase > 0) || (upcomingMaintenance !== undefined && upcomingMaintenance > 0) ? (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {portfolioValue && portfolioValue.purchase > 0 && (
+            <>
+              <Card>
+                <CardContent className="pt-5">
+                  <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Purchase Value</p>
+                  <p className="text-2xl font-bold text-shark-900 mt-1">${portfolioValue.purchase.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-5">
+                  <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Current Value</p>
+                  <p className="text-2xl font-bold text-emerald-600 mt-1">${portfolioValue.current.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                  <p className="text-xs text-shark-400 mt-1">Depreciation: ${portfolioValue.depreciation.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                </CardContent>
+              </Card>
+            </>
+          )}
+          {upcomingMaintenance !== undefined && upcomingMaintenance > 0 && (
+            <Link href="/maintenance">
+              <Card className="hover:border-amber-300 transition-colors cursor-pointer h-full">
+                <CardContent className="pt-5">
+                  <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Maintenance Due</p>
+                  <p className="text-2xl font-bold text-amber-600 mt-1">{upcomingMaintenance}</p>
+                  <p className="text-xs text-shark-400 mt-1">Due within 7 days</p>
+                </CardContent>
+              </Card>
+            </Link>
+          )}
+        </div>
+      ) : null}
 
       {/* Charts Section */}
       {(assetStatusChart && assetStatusChart.length > 0) || (categoryChart && categoryChart.length > 0) ? (

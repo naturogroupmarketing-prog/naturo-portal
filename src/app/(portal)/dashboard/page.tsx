@@ -204,6 +204,31 @@ export default async function DashboardPage() {
     value: c._count,
   }));
 
+  // Portfolio valuation
+  const assetsWithCost = await db.asset.findMany({
+    where: { ...regionFilter, purchaseCost: { not: null } },
+    select: { purchaseCost: true, purchaseDate: true, depreciationRate: true },
+  });
+
+  const totalPurchaseValue = assetsWithCost.reduce((sum, a) => sum + (a.purchaseCost || 0), 0);
+  const totalCurrentValue = assetsWithCost.reduce((sum, a) => {
+    const cost = a.purchaseCost || 0;
+    const rate = a.depreciationRate || 10; // default 10% per year
+    const purchaseDate = a.purchaseDate ? new Date(a.purchaseDate) : new Date();
+    const yearsOwned = (Date.now() - purchaseDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
+    const currentValue = Math.max(0, cost * Math.pow(1 - rate / 100, yearsOwned));
+    return sum + currentValue;
+  }, 0);
+
+  // Upcoming maintenance count
+  const upcomingMaintenance = await db.maintenanceSchedule.count({
+    where: {
+      isActive: true,
+      nextDueDate: { lte: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
+      asset: regionFilter,
+    },
+  });
+
   const preferences = parsePreferences(userPrefs?.dashboardPreferences);
 
   const stats: { widgetId: string; label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
@@ -233,6 +258,8 @@ export default async function DashboardPage() {
       regionBreakdown={regionBreakdown}
       assetStatusChart={assetStatusChart}
       categoryChart={categoryChart}
+      portfolioValue={{ purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100 }}
+      upcomingMaintenance={upcomingMaintenance}
     />
   );
 }
