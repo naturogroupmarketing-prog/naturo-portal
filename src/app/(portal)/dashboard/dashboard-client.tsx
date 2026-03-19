@@ -75,12 +75,25 @@ interface Props {
   categoryChart?: ChartItem[];
   portfolioValue?: { purchase: number; current: number; depreciation: number };
   upcomingMaintenance?: number;
+  isSuperAdmin?: boolean;
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, portfolioValue, upcomingMaintenance }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, portfolioValue, upcomingMaintenance, isSuperAdmin }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
+  const [showPortfolio, setShowPortfolio] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("trackio-show-portfolio") !== "false";
+    }
+    return true;
+  });
+
+  const togglePortfolio = () => {
+    const next = !showPortfolio;
+    setShowPortfolio(next);
+    localStorage.setItem("trackio-show-portfolio", String(next));
+  };
 
   const visibleStats = stats.filter((s) => !preferences.hiddenWidgets.includes(s.widgetId));
   const showLowStock = !preferences.hiddenWidgets.includes("low-stock-alerts");
@@ -140,15 +153,24 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </div>
       )}
 
-      {/* Portfolio Value & Maintenance */}
-      {(portfolioValue && portfolioValue.purchase > 0) || (upcomingMaintenance !== undefined && upcomingMaintenance > 0) ? (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {portfolioValue && portfolioValue.purchase > 0 && (
-            <>
+      {/* Portfolio Value & Maintenance — Super Admin only */}
+      {isSuperAdmin && portfolioValue && portfolioValue.purchase > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-shark-500 dark:text-shark-400 uppercase tracking-wider">Portfolio Valuation</h2>
+            <button
+              onClick={togglePortfolio}
+              className="text-xs text-action-500 hover:text-action-600 font-medium"
+            >
+              {showPortfolio ? "Hide" : "Show"}
+            </button>
+          </div>
+          {showPortfolio && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Card>
                 <CardContent className="pt-5">
                   <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Purchase Value</p>
-                  <p className="text-2xl font-bold text-shark-900 mt-1">${portfolioValue.purchase.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                  <p className="text-2xl font-bold text-shark-900 dark:text-shark-100 mt-1">${portfolioValue.purchase.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
                 </CardContent>
               </Card>
               <Card>
@@ -158,21 +180,35 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <p className="text-xs text-shark-400 mt-1">Depreciation: ${portfolioValue.depreciation.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
                 </CardContent>
               </Card>
-            </>
-          )}
-          {upcomingMaintenance !== undefined && upcomingMaintenance > 0 && (
-            <Link href="/maintenance">
-              <Card className="hover:border-amber-300 transition-colors cursor-pointer h-full">
-                <CardContent className="pt-5">
-                  <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Maintenance Due</p>
-                  <p className="text-2xl font-bold text-amber-600 mt-1">{upcomingMaintenance}</p>
-                  <p className="text-xs text-shark-400 mt-1">Due within 7 days</p>
-                </CardContent>
-              </Card>
-            </Link>
+              {upcomingMaintenance !== undefined && upcomingMaintenance > 0 && (
+                <Link href="/maintenance">
+                  <Card className="hover:border-amber-300 transition-colors cursor-pointer h-full">
+                    <CardContent className="pt-5">
+                      <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Maintenance Due</p>
+                      <p className="text-2xl font-bold text-amber-600 mt-1">{upcomingMaintenance}</p>
+                      <p className="text-xs text-shark-400 mt-1">Due within 7 days</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              )}
+            </div>
           )}
         </div>
-      ) : null}
+      )}
+      {/* Maintenance card for branch managers (no portfolio) */}
+      {!isSuperAdmin && upcomingMaintenance !== undefined && upcomingMaintenance > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Link href="/maintenance">
+            <Card className="hover:border-amber-300 transition-colors cursor-pointer">
+              <CardContent className="pt-5">
+                <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Maintenance Due</p>
+                <p className="text-2xl font-bold text-amber-600 mt-1">{upcomingMaintenance}</p>
+                <p className="text-xs text-shark-400 mt-1">Due within 7 days</p>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+      )}
 
       {/* Charts Section */}
       {(assetStatusChart && assetStatusChart.length > 0) || (categoryChart && categoryChart.length > 0) ? (

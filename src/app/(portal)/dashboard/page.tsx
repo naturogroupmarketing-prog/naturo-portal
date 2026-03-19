@@ -258,8 +258,9 @@ export default async function DashboardPage() {
       regionBreakdown={regionBreakdown}
       assetStatusChart={assetStatusChart}
       categoryChart={categoryChart}
-      portfolioValue={{ purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100 }}
+      portfolioValue={isSuperAdmin ? { purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100 } : undefined}
       upcomingMaintenance={upcomingMaintenance}
+      isSuperAdmin={isSuperAdmin}
     />
   );
 }
