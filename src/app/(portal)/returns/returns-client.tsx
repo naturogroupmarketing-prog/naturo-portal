@@ -20,64 +20,38 @@ interface PendingReturnItem {
   consumableDetails: { id: string; name: string; unitType: string; imageUrl: string | null } | null;
 }
 
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.floor(hrs / 24);
-  return `${days}d ago`;
-}
-
 export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
-  const [verifiedIds, setVerifiedIds] = useState<Set<string>>(new Set());
-  const [processing, setProcessing] = useState<string | null>(null);
+  const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
+  const [rejectedIds, setRejectedIds] = useState<Set<string>>(new Set());
   const [verifyingAll, setVerifyingAll] = useState(false);
 
-  // Items that have been verified show green briefly, then disappear
-  const [justVerifiedIds, setJustVerifiedIds] = useState<Set<string>>(new Set());
+  const pendingItems = returns.filter((r) => !checkedIds.has(r.id) && !rejectedIds.has(r.id));
+  const checkedCount = checkedIds.size;
+  const rejectedCount = rejectedIds.size;
 
-  const handleVerify = async (id: string) => {
-    setProcessing(id);
-    try {
-      await verifyReturn(id);
-      // Show green "Verified" state briefly
-      setJustVerifiedIds((prev) => new Set([...prev, id]));
-      setTimeout(() => {
-        setVerifiedIds((prev) => new Set([...prev, id]));
-        setJustVerifiedIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
-      }, 1200);
-    } finally {
-      setProcessing(null);
-    }
+  const handleCheck = async (id: string) => {
+    setCheckedIds((prev) => new Set([...prev, id]));
+    // Fire and forget — don't wait
+    verifyReturn(id).catch(() => {
+      setCheckedIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
+    });
   };
 
   const handleReject = async (id: string) => {
-    const reason = prompt("Reason for rejecting this return (e.g., damaged, missing parts):");
+    const reason = prompt("Why was this item not returned? (e.g. damaged, missing, lost)");
     if (!reason) return;
-    setProcessing(id);
-    try {
-      await rejectReturn(id, reason);
-      setJustVerifiedIds((prev) => new Set([...prev, id]));
-      setTimeout(() => {
-        setVerifiedIds((prev) => new Set([...prev, id]));
-        setJustVerifiedIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
-      }, 1200);
-    } finally {
-      setProcessing(null);
-    }
+    setRejectedIds((prev) => new Set([...prev, id]));
+    rejectReturn(id, reason).catch(() => {
+      setRejectedIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
+    });
   };
-
-  const pendingItems = returns.filter((r) => !verifiedIds.has(r.id));
 
   const handleVerifyAll = async () => {
     if (!confirm(`Verify and restock all ${pendingItems.length} items?`)) return;
     setVerifyingAll(true);
     try {
       await verifyAllReturns();
-      setVerifiedIds(new Set(returns.map((r) => r.id)));
+      setCheckedIds(new Set(returns.map((r) => r.id)));
     } finally {
       setVerifyingAll(false);
     }
@@ -89,7 +63,9 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         <div>
           <h1 className="text-2xl font-bold text-shark-900">Return Checklist</h1>
           <p className="text-sm text-shark-400 mt-1">
-            {pendingItems.length} item{pendingItems.length !== 1 ? "s" : ""} pending verification
+            {pendingItems.length} pending
+            {checkedCount > 0 && <span className="text-emerald-500"> · {checkedCount} verified</span>}
+            {rejectedCount > 0 && <span className="text-red-500"> · {rejectedCount} rejected</span>}
           </p>
         </div>
         {pendingItems.length > 1 && (
@@ -99,101 +75,89 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         )}
       </div>
 
-      {pendingItems.length === 0 ? (
+      {returns.length === 0 ? (
         <Card>
           <div className="py-12 text-center">
             <Icon name="check-circle" size={32} className="text-emerald-400 mx-auto mb-3" />
-            <p className="text-sm text-shark-400">All returns verified. Nothing pending.</p>
+            <p className="text-sm text-shark-400">No returns pending. All clear.</p>
           </div>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {pendingItems.map((item) => {
-            const isJustVerified = justVerifiedIds.has(item.id);
-            return (
-            <Card key={item.id} className={isJustVerified ? "border-emerald-300 bg-emerald-50/50 transition-all" : "transition-all"}>
-              <div className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
-                {/* Verified state */}
-                {isJustVerified ? (
-                  <div className="flex items-center gap-3 w-full">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
-                      <Icon name="check" size={20} className="text-emerald-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-emerald-700">
-                        {item.itemType === "ASSET" ? item.assetDetails?.name : `${item.quantity}x ${item.consumableDetails?.name}`}
-                      </p>
-                      <p className="text-sm text-emerald-600">Verified & Restocked</p>
-                    </div>
-                  </div>
-                ) : (
-                <>
-                {/* Icon */}
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${item.itemType === "ASSET" ? "bg-action-50" : "bg-blue-50"}`}>
+        <Card>
+          <div className="divide-y divide-shark-100">
+            {returns.map((item) => {
+              const isChecked = checkedIds.has(item.id);
+              const isRejected = rejectedIds.has(item.id);
+              const isDone = isChecked || isRejected;
+
+              return (
+                <div
+                  key={item.id}
+                  className={`flex items-center gap-3 px-4 py-3 transition-all ${
+                    isChecked ? "bg-emerald-50/50 opacity-60" : isRejected ? "bg-red-50/50 opacity-60" : ""
+                  }`}
+                >
+                  {/* Checkbox */}
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    disabled={isDone}
+                    onChange={() => !isDone && handleCheck(item.id)}
+                    className="w-5 h-5 rounded border-shark-300 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0"
+                  />
+
+                  {/* Icon */}
                   <Icon
                     name={item.itemType === "ASSET" ? "package" : "droplet"}
-                    size={18}
-                    className={item.itemType === "ASSET" ? "text-action-500" : "text-blue-500"}
+                    size={16}
+                    className={`shrink-0 ${isChecked ? "text-emerald-400" : isRejected ? "text-red-400" : item.itemType === "ASSET" ? "text-action-500" : "text-blue-500"}`}
                   />
-                </div>
 
-                {/* Details */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold text-shark-900">
+                  {/* Details */}
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-medium ${isChecked ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
                       {item.itemType === "ASSET"
-                        ? item.assetDetails?.name || "Unknown Asset"
-                        : `${item.quantity}x ${item.consumableDetails?.name || "Unknown Consumable"}`
+                        ? `${item.assetDetails?.name || "Unknown"}`
+                        : `${item.quantity}x ${item.consumableDetails?.name || "Unknown"}`
                       }
-                    </h3>
-                    {item.itemType === "ASSET" && item.assetDetails && (
-                      <span className="text-xs font-mono text-shark-400">{item.assetDetails.assetCode}</span>
-                    )}
-                    {item.returnCondition && (
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        item.returnCondition === "GOOD" ? "bg-emerald-50 text-emerald-600"
-                        : item.returnCondition === "FAIR" ? "bg-amber-50 text-amber-600"
-                        : "bg-red-50 text-red-600"
-                      }`}>
-                        {item.returnCondition}
-                      </span>
-                    )}
+                      {item.itemType === "ASSET" && item.assetDetails && (
+                        <span className="font-mono text-xs text-shark-400 ml-1">{item.assetDetails.assetCode}</span>
+                      )}
+                    </p>
+                    <p className="text-xs text-shark-400">
+                      {item.returnedByName}
+                      {item.returnCondition && ` · ${item.returnCondition}`}
+                      {item.returnReason && ` · ${item.returnReason}`}
+                    </p>
                   </div>
-                  <p className="text-sm text-shark-500 mt-0.5">
-                    Returned by <span className="font-medium">{item.returnedByName}</span>
-                    {item.returnReason && <span className="text-shark-400"> · {item.returnReason}</span>}
-                  </p>
-                  {item.returnNotes && (
-                    <p className="text-xs text-shark-400 mt-0.5">Notes: {item.returnNotes}</p>
-                  )}
-                  <p className="text-xs text-shark-300 mt-0.5">{timeAgo(item.createdAt)}</p>
-                </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-2 shrink-0">
-                  <Button
-                    size="sm"
-                    onClick={() => handleVerify(item.id)}
-                    disabled={processing === item.id}
-                  >
-                    <Icon name="check" size={14} className="mr-1" />
-                    {processing === item.id ? "..." : "Verify & Restock"}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleReject(item.id)}
-                    disabled={processing === item.id}
-                  >
-                    <Icon name="x" size={14} className="text-red-500" />
-                  </Button>
+                  {/* Status or Reject button */}
+                  {isChecked ? (
+                    <span className="text-xs text-emerald-500 font-medium shrink-0">Restocked</span>
+                  ) : isRejected ? (
+                    <span className="text-xs text-red-500 font-medium shrink-0">Rejected</span>
+                  ) : (
+                    <button
+                      onClick={() => handleReject(item.id)}
+                      className="p-1.5 rounded-lg hover:bg-red-50 text-shark-400 hover:text-red-500 transition-colors shrink-0"
+                      title="Not returned — reject"
+                    >
+                      <Icon name="x" size={16} />
+                    </button>
+                  )}
                 </div>
-                </>
-                )}
-              </div>
-            </Card>
-            );
-          })}
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
+      {/* Summary when all done */}
+      {pendingItems.length === 0 && returns.length > 0 && (
+        <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
+          <p className="text-sm font-medium text-emerald-700">
+            All items processed. {checkedCount} restocked{rejectedCount > 0 ? `, ${rejectedCount} rejected` : ""}.
+          </p>
         </div>
       )}
     </div>
