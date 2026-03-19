@@ -85,28 +85,49 @@ type ActivityItem = {
 };
 
 export function StaffDashboardClient({ stats, recentAssets, recentConsumables, recentRequests, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [] }: Props) {
-  const [confirmedIds, setConfirmedIds] = useState<Set<string>>(new Set());
-  const [confirming, setConfirming] = useState<string | null>(null);
+  // Track item states: "received" | "not_received" | undefined (pending)
+  const [itemStates, setItemStates] = useState<Record<string, { status: "received" | "not_received"; reason?: string }>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const hasPendingKit = pendingAssetItems.length > 0 || pendingConsumableItems.length > 0;
+  const hasPendingKit = (pendingAssetItems.length > 0 || pendingConsumableItems.length > 0) && !submitted;
 
-  const handleConfirmAsset = async (id: string) => {
-    setConfirming(id);
-    try {
-      await acknowledgeAssetItem(id);
-      setConfirmedIds((prev) => new Set([...prev, `asset-${id}`]));
-    } finally {
-      setConfirming(null);
-    }
+  const totalItems = pendingAssetItems.length + pendingConsumableItems.length;
+  const processedCount = Object.keys(itemStates).length;
+  const allProcessed = processedCount >= totalItems && totalItems > 0;
+
+  const toggleItem = (key: string, status: "received" | "not_received", reason?: string) => {
+    setItemStates((prev) => {
+      const next = { ...prev };
+      // If clicking same status, remove it (toggle off)
+      if (next[key]?.status === status) {
+        delete next[key];
+      } else {
+        next[key] = { status, reason };
+      }
+      return next;
+    });
   };
 
-  const handleConfirmConsumable = async (id: string) => {
-    setConfirming(id);
+  const handleFinalConfirm = async () => {
+    setSubmitting(true);
     try {
-      await acknowledgeConsumableItem(id);
-      setConfirmedIds((prev) => new Set([...prev, `consumable-${id}`]));
+      // Process all received items
+      for (const item of pendingAssetItems) {
+        const state = itemStates[`asset-${item.id}`];
+        if (state?.status === "received") {
+          await acknowledgeAssetItem(item.id);
+        }
+      }
+      for (const item of pendingConsumableItems) {
+        const state = itemStates[`consumable-${item.id}`];
+        if (state?.status === "received") {
+          await acknowledgeConsumableItem(item.id);
+        }
+      }
+      setSubmitted(true);
     } finally {
-      setConfirming(null);
+      setSubmitting(false);
     }
   };
   // Build merged activity feed
@@ -175,117 +196,120 @@ export function StaffDashboardClient({ stats, recentAssets, recentConsumables, r
             <div className="divide-y divide-shark-100">
               {/* Pending Assets */}
               {pendingAssetItems.map((item) => {
-                const isConfirmed = confirmedIds.has(`asset-${item.id}`);
-                const isRejected = confirmedIds.has(`rejected-asset-${item.id}`);
-                const isDone = isConfirmed || isRejected;
+                const key = `asset-${item.id}`;
+                const state = itemStates[key];
+                const isReceived = state?.status === "received";
+                const isNotReceived = state?.status === "not_received";
                 return (
                   <div
-                    key={`asset-${item.id}`}
+                    key={key}
                     className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
-                      isConfirmed ? "bg-emerald-50/50 opacity-60" : isRejected ? "bg-red-50/50 opacity-60" : ""
+                      isReceived ? "bg-emerald-50/50" : isNotReceived ? "bg-red-50/50" : ""
                     }`}
                   >
                     <input
                       type="checkbox"
-                      checked={isConfirmed}
-                      disabled={isDone}
-                      onChange={() => { if (!isDone) handleConfirmAsset(item.id); }}
+                      checked={isReceived}
+                      onChange={() => toggleItem(key, "received")}
                       className="w-5 h-5 rounded border-shark-300 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0"
                     />
-                    <Icon name="package" size={16} className={`shrink-0 ${isConfirmed ? "text-emerald-400" : isRejected ? "text-red-400" : "text-action-500"}`} />
+                    <Icon name="package" size={16} className={`shrink-0 ${isReceived ? "text-emerald-400" : isNotReceived ? "text-red-400" : "text-action-500"}`} />
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isConfirmed ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
+                      <p className={`text-sm font-medium ${isReceived ? "line-through text-emerald-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>
                         {item.asset.name}
                       </p>
                       <p className="text-xs text-shark-400">{item.asset.assetCode} · {item.asset.category}</p>
+                      {isNotReceived && state.reason && (
+                        <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>
+                      )}
                     </div>
-                    {isConfirmed ? (
-                      <span className="text-xs text-emerald-500 font-medium shrink-0">Received</span>
-                    ) : isRejected ? (
-                      <span className="text-xs text-red-500 font-medium shrink-0">Not received</span>
-                    ) : (
-                      <button
-                        onClick={() => {
+                    <button
+                      onClick={() => {
+                        if (isNotReceived) {
+                          toggleItem(key, "not_received");
+                        } else {
                           const reason = prompt("Why was this item not received?");
-                          if (reason) {
-                            setConfirmedIds((prev) => new Set([...prev, `rejected-asset-${item.id}`]));
-                          }
-                        }}
-                        className="p-1.5 rounded-lg hover:bg-red-50 text-shark-400 hover:text-red-500 transition-colors shrink-0"
-                        title="Not received"
-                      >
-                        <Icon name="x" size={16} />
-                      </button>
-                    )}
+                          if (reason) toggleItem(key, "not_received", reason);
+                        }
+                      }}
+                      className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                        isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
+                      }`}
+                      title={isNotReceived ? "Undo not received" : "Not received"}
+                    >
+                      <Icon name="x" size={16} />
+                    </button>
                   </div>
                 );
               })}
 
               {/* Pending Consumables */}
               {pendingConsumableItems.map((item) => {
-                const isConfirmed = confirmedIds.has(`consumable-${item.id}`);
-                const isRejected = confirmedIds.has(`rejected-consumable-${item.id}`);
-                const isDone = isConfirmed || isRejected;
+                const key = `consumable-${item.id}`;
+                const state = itemStates[key];
+                const isReceived = state?.status === "received";
+                const isNotReceived = state?.status === "not_received";
                 return (
                   <div
-                    key={`consumable-${item.id}`}
+                    key={key}
                     className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
-                      isConfirmed ? "bg-emerald-50/50 opacity-60" : isRejected ? "bg-red-50/50 opacity-60" : ""
+                      isReceived ? "bg-emerald-50/50" : isNotReceived ? "bg-red-50/50" : ""
                     }`}
                   >
                     <input
                       type="checkbox"
-                      checked={isConfirmed}
-                      disabled={isDone}
-                      onChange={() => { if (!isDone) handleConfirmConsumable(item.id); }}
+                      checked={isReceived}
+                      onChange={() => toggleItem(key, "received")}
                       className="w-5 h-5 rounded border-shark-300 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0"
                     />
-                    <Icon name="droplet" size={16} className={`shrink-0 ${isConfirmed ? "text-emerald-400" : isRejected ? "text-red-400" : "text-blue-500"}`} />
+                    <Icon name="droplet" size={16} className={`shrink-0 ${isReceived ? "text-emerald-400" : isNotReceived ? "text-red-400" : "text-blue-500"}`} />
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isConfirmed ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
+                      <p className={`text-sm font-medium ${isReceived ? "line-through text-emerald-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>
                         {item.quantity}x {item.consumable.name}
                       </p>
                       <p className="text-xs text-shark-400">{item.consumable.unitType}</p>
+                      {isNotReceived && state.reason && (
+                        <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>
+                      )}
                     </div>
-                    {isConfirmed ? (
-                      <span className="text-xs text-emerald-500 font-medium shrink-0">Received</span>
-                    ) : isRejected ? (
-                      <span className="text-xs text-red-500 font-medium shrink-0">Not received</span>
-                    ) : (
-                      <button
-                        onClick={() => {
+                    <button
+                      onClick={() => {
+                        if (isNotReceived) {
+                          toggleItem(key, "not_received");
+                        } else {
                           const reason = prompt("Why was this item not received?");
-                          if (reason) {
-                            setConfirmedIds((prev) => new Set([...prev, `rejected-consumable-${item.id}`]));
-                          }
-                        }}
-                        className="p-1.5 rounded-lg hover:bg-red-50 text-shark-400 hover:text-red-500 transition-colors shrink-0"
-                        title="Not received"
-                      >
-                        <Icon name="x" size={16} />
-                      </button>
-                    )}
+                          if (reason) toggleItem(key, "not_received", reason);
+                        }
+                      }}
+                      className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                        isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
+                      }`}
+                      title={isNotReceived ? "Undo not received" : "Not received"}
+                    >
+                      <Icon name="x" size={16} />
+                    </button>
                   </div>
                 );
               })}
             </div>
 
-            {/* Summary when all processed */}
-            {(() => {
-              const totalItems = pendingAssetItems.length + pendingConsumableItems.length;
-              const processedCount = [...confirmedIds].filter(id => !id.startsWith("rejected-")).length +
-                [...confirmedIds].filter(id => id.startsWith("rejected-")).length;
-              if (processedCount >= totalItems && totalItems > 0) {
-                return (
-                  <div className="mt-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
-                    <p className="text-sm font-medium text-emerald-700">
-                      All items processed! Confirmed items will now appear on your dashboard.
-                    </p>
-                  </div>
-                );
-              }
-              return null;
-            })()}
+            {/* Final confirm button */}
+            {allProcessed && (
+              <div className="mt-4 pt-3 border-t border-shark-100">
+                <Button
+                  className="w-full"
+                  onClick={handleFinalConfirm}
+                  disabled={submitting}
+                >
+                  {submitting ? "Confirming..." : `Confirm Receipt (${Object.values(itemStates).filter(s => s.status === "received").length} received, ${Object.values(itemStates).filter(s => s.status === "not_received").length} not received)`}
+                </Button>
+              </div>
+            )}
+            {!allProcessed && totalItems > 0 && (
+              <p className="text-xs text-shark-400 text-center mt-3">
+                {processedCount} of {totalItems} items marked — mark all items to confirm
+              </p>
+            )}
           </CardContent>
         </Card>
       )}
