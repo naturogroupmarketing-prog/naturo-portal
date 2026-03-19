@@ -14,19 +14,19 @@ export default async function DashboardPage() {
 
   // Staff dashboard
   if (session.user.role === "STAFF") {
-    const [assetCount, consumableCount, pendingRequestCount, unacknowledgedCount, recentAssets, recentConsumables, recentRequests] = await Promise.all([
-      db.assetAssignment.count({ where: { userId: session.user.id, isActive: true } }),
-      db.consumableAssignment.count({ where: { userId: session.user.id, isActive: true } }),
+    const [assetCount, consumableCount, pendingRequestCount, unacknowledgedCount, recentAssets, recentConsumables, recentRequests, pendingAssetItems, pendingConsumableItems] = await Promise.all([
+      db.assetAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } } }),
+      db.consumableAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } } }),
       db.consumableRequest.count({ where: { userId: session.user.id, status: "PENDING" } }),
-      db.assetAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: null } }),
+      db.assetAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: null, starterKitApplicationId: { not: null } } }),
       db.assetAssignment.findMany({
-        where: { userId: session.user.id, isActive: true },
+        where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } },
         include: { asset: true },
         orderBy: { checkoutDate: "desc" },
         take: 5,
       }),
       db.consumableAssignment.findMany({
-        where: { userId: session.user.id, isActive: true },
+        where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } },
         include: { consumable: true },
         orderBy: { assignedDate: "desc" },
         take: 5,
@@ -36,6 +36,18 @@ export default async function DashboardPage() {
         include: { consumable: true },
         orderBy: { createdAt: "desc" },
         take: 5,
+      }),
+      // Pending kit items — assets not yet acknowledged
+      db.assetAssignment.findMany({
+        where: { userId: session.user.id, isActive: true, acknowledgedAt: null, starterKitApplicationId: { not: null } },
+        include: { asset: { select: { name: true, assetCode: true, category: true, imageUrl: true } } },
+        orderBy: { checkoutDate: "desc" },
+      }),
+      // Pending kit items — consumables not yet acknowledged
+      db.consumableAssignment.findMany({
+        where: { userId: session.user.id, isActive: true, acknowledgedAt: null, starterKitApplicationId: { not: null } },
+        include: { consumable: { select: { name: true, unitType: true, imageUrl: true } } },
+        orderBy: { assignedDate: "desc" },
       }),
     ]);
 
@@ -52,6 +64,8 @@ export default async function DashboardPage() {
         recentConsumables={JSON.parse(JSON.stringify(recentConsumables))}
         recentRequests={JSON.parse(JSON.stringify(recentRequests))}
         unacknowledgedCount={unacknowledgedCount}
+        pendingAssetItems={JSON.parse(JSON.stringify(pendingAssetItems))}
+        pendingConsumableItems={JSON.parse(JSON.stringify(pendingConsumableItems))}
       />
     );
   }

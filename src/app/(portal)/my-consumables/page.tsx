@@ -12,7 +12,14 @@ export default async function MyConsumablesPage() {
   const [consumableAssignments, categories, regionConsumables, recentRequests] = await Promise.all([
     // Active assignments for this user
     db.consumableAssignment.findMany({
-      where: { userId: session.user.id, isActive: true },
+      where: {
+        userId: session.user.id,
+        isActive: true,
+        OR: [
+          { starterKitApplicationId: null },
+          { acknowledgedAt: { not: null } },
+        ],
+      },
       include: {
         consumable: {
           include: { region: true },

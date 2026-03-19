@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { formatDate } from "@/lib/utils";
+import { acknowledgeAssetItem, acknowledgeConsumableItem } from "@/app/actions/starter-kits";
 
 interface StatCard {
   label: string;
@@ -48,12 +51,25 @@ interface RecentRequest {
   };
 }
 
+interface PendingAssetItem {
+  id: string;
+  asset: { name: string; assetCode: string; category: string; imageUrl: string | null };
+}
+
+interface PendingConsumableItem {
+  id: string;
+  quantity: number;
+  consumable: { name: string; unitType: string; imageUrl: string | null };
+}
+
 interface Props {
   stats: StatCard[];
   recentAssets: RecentAsset[];
   recentConsumables: RecentConsumable[];
   recentRequests: RecentRequest[];
   unacknowledgedCount: number;
+  pendingAssetItems?: PendingAssetItem[];
+  pendingConsumableItems?: PendingConsumableItem[];
 }
 
 type ActivityItem = {
@@ -68,7 +84,31 @@ type ActivityItem = {
   badge?: string;
 };
 
-export function StaffDashboardClient({ stats, recentAssets, recentConsumables, recentRequests, unacknowledgedCount }: Props) {
+export function StaffDashboardClient({ stats, recentAssets, recentConsumables, recentRequests, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [] }: Props) {
+  const [confirmedIds, setConfirmedIds] = useState<Set<string>>(new Set());
+  const [confirming, setConfirming] = useState<string | null>(null);
+
+  const hasPendingKit = pendingAssetItems.length > 0 || pendingConsumableItems.length > 0;
+
+  const handleConfirmAsset = async (id: string) => {
+    setConfirming(id);
+    try {
+      await acknowledgeAssetItem(id);
+      setConfirmedIds((prev) => new Set([...prev, `asset-${id}`]));
+    } finally {
+      setConfirming(null);
+    }
+  };
+
+  const handleConfirmConsumable = async (id: string) => {
+    setConfirming(id);
+    try {
+      await acknowledgeConsumableItem(id);
+      setConfirmedIds((prev) => new Set([...prev, `consumable-${id}`]));
+    } finally {
+      setConfirming(null);
+    }
+  };
   // Build merged activity feed
   const activities: ActivityItem[] = [
     ...recentAssets.map((a) => ({
@@ -115,18 +155,117 @@ export function StaffDashboardClient({ stats, recentAssets, recentConsumables, r
         <p className="text-sm text-shark-400 mt-1">Your personal overview</p>
       </div>
 
-      {/* Unacknowledged Assets Banner */}
-      {unacknowledgedCount > 0 && (
-        <Link href="/my-assets">
-          <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 hover:bg-amber-100 transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-              <Icon name="alert-triangle" size={16} className="text-amber-600" />
+      {/* Pending Starter Kit Checklist */}
+      {hasPendingKit && (
+        <Card className="border-l-4 border-l-amber-400">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                <Icon name="clipboard" size={16} className="text-amber-600" />
+              </div>
+              <div>
+                <CardTitle>Equipment Checklist</CardTitle>
+                <p className="text-xs text-shark-400 mt-0.5">
+                  Confirm receipt of each item below. Items will appear on your dashboard once confirmed.
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-amber-800">
-              You have <span className="font-semibold">{unacknowledgedCount}</span> asset{unacknowledgedCount !== 1 ? "s" : ""} awaiting receipt confirmation
-            </p>
-          </div>
-        </Link>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {/* Pending Assets */}
+              {pendingAssetItems.map((item) => {
+                const isConfirmed = confirmedIds.has(`asset-${item.id}`);
+                return (
+                  <div
+                    key={`asset-${item.id}`}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all ${
+                      isConfirmed
+                        ? "bg-emerald-50 border-emerald-200"
+                        : "bg-white border-shark-100 hover:border-shark-200"
+                    }`}
+                  >
+                    {isConfirmed ? (
+                      <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                        <Icon name="check" size={12} className="text-white" />
+                      </div>
+                    ) : (
+                      <div className="w-5 h-5 rounded-full border-2 border-shark-300 shrink-0" />
+                    )}
+                    <Icon name="package" size={16} className="text-action-500 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm font-medium ${isConfirmed ? "text-emerald-700 line-through" : "text-shark-800"}`}>
+                        {item.asset.name}
+                      </p>
+                      <p className="text-xs text-shark-400">
+                        {item.asset.assetCode} · {item.asset.category}
+                      </p>
+                    </div>
+                    {!isConfirmed && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleConfirmAsset(item.id)}
+                        disabled={confirming === item.id}
+                      >
+                        {confirming === item.id ? "..." : "Received"}
+                      </Button>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Pending Consumables */}
+              {pendingConsumableItems.map((item) => {
+                const isConfirmed = confirmedIds.has(`consumable-${item.id}`);
+                return (
+                  <div
+                    key={`consumable-${item.id}`}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all ${
+                      isConfirmed
+                        ? "bg-emerald-50 border-emerald-200"
+                        : "bg-white border-shark-100 hover:border-shark-200"
+                    }`}
+                  >
+                    {isConfirmed ? (
+                      <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                        <Icon name="check" size={12} className="text-white" />
+                      </div>
+                    ) : (
+                      <div className="w-5 h-5 rounded-full border-2 border-shark-300 shrink-0" />
+                    )}
+                    <Icon name="droplet" size={16} className="text-blue-500 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm font-medium ${isConfirmed ? "text-emerald-700 line-through" : "text-shark-800"}`}>
+                        {item.quantity}x {item.consumable.name}
+                      </p>
+                      <p className="text-xs text-shark-400">{item.consumable.unitType}</p>
+                    </div>
+                    {!isConfirmed && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleConfirmConsumable(item.id)}
+                        disabled={confirming === item.id}
+                      >
+                        {confirming === item.id ? "..." : "Received"}
+                      </Button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {confirmedIds.size === pendingAssetItems.length + pendingConsumableItems.length &&
+             confirmedIds.size > 0 && (
+              <div className="mt-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
+                <p className="text-sm font-medium text-emerald-700">
+                  All items confirmed! They will now appear on your dashboard.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       )}
 
       {/* Stat Cards */}

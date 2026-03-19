@@ -302,6 +302,7 @@ model AssetAssignment {
   returnNotes        String?        @db.Text
   acknowledgedAt     DateTime?
   isActive           Boolean        @default(true)
+  starterKitApplicationId String?
 
   asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -383,6 +384,8 @@ model ConsumableAssignment {
   returnCondition String?
   returnNotes     String?   @db.Text
   isActive        Boolean   @default(true)
+  acknowledgedAt  DateTime?
+  starterKitApplicationId String?
 
   consumable Consumable @relation(fields: [consumableId], references: [id], onDelete: Cascade)
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -12,7 +12,14 @@ export default async function MyAssetsPage() {
   if (!session?.user) redirect("/login");
 
   const assignments = await db.assetAssignment.findMany({
-    where: { userId: session.user.id, isActive: true },
+    where: {
+      userId: session.user.id,
+      isActive: true,
+      OR: [
+        { starterKitApplicationId: null },
+        { acknowledgedAt: { not: null } },
+      ],
+    },
     include: {
       asset: {
         include: { region: true },

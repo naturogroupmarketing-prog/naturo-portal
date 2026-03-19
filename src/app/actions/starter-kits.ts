@@ -146,6 +146,16 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
 
   if (!kit || kit.items.length === 0) return { success: true, applied: 0 };
 
+  // Create application record first so we can link assignments
+  const application = await db.starterKitApplication.create({
+    data: {
+      starterKitId: kit.id,
+      userId,
+      appliedById: session.user.id,
+      results: "[]",
+    },
+  });
+
   let appliedCount = 0;
   const results: string[] = [];
 
@@ -178,7 +188,7 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
       }
 
       if (availableAsset) {
-        // Assign the asset
+        // Assign the asset — pending acknowledgment
         await db.$transaction(async (tx) => {
           await tx.asset.update({
             where: { id: availableAsset.id },
@@ -190,6 +200,8 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
               userId,
               assignmentType: "PERMANENT",
               checkoutDate: new Date(),
+              starterKitApplicationId: application.id,
+              // acknowledgedAt left null — pending confirmation
             },
           });
         });
@@ -215,6 +227,8 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
               consumableId: item.consumableId!,
               userId,
               quantity: item.quantity,
+              starterKitApplicationId: application.id,
+              // acknowledgedAt left null — pending confirmation
             },
           });
         });
@@ -226,14 +240,10 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
     }
   }
 
-  // Create application record for acknowledgment
-  const application = await db.starterKitApplication.create({
-    data: {
-      starterKitId: kit.id,
-      userId,
-      appliedById: session.user.id,
-      results: JSON.stringify(results),
-    },
+  // Update application with results
+  await db.starterKitApplication.update({
+    where: { id: application.id },
+    data: { results: JSON.stringify(results) },
   });
 
   // Audit log
@@ -265,30 +275,82 @@ export async function applyStarterKit(userId: string, starterKitId?: string) {
 }
 
 /**
- * Staff acknowledges receipt of starter kit items with signature
+ * Staff acknowledges receipt of an individual asset assignment
  */
-export async function acknowledgeStarterKit(applicationId: string, signatureData: string) {
+export async function acknowledgeAssetItem(assignmentId: string) {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
 
-  const application = await db.starterKitApplication.findUnique({
-    where: { id: applicationId },
+  const assignment = await db.assetAssignment.findUnique({
+    where: { id: assignmentId },
   });
 
-  if (!application || application.userId !== session.user.id) {
+  if (!assignment || assignment.userId !== session.user.id) {
     throw new Error("Not found");
   }
 
-  await db.starterKitApplication.update({
-    where: { id: applicationId },
-    data: {
-      acknowledged: true,
-      acknowledgedAt: new Date(),
-      signatureData,
-    },
+  await db.assetAssignment.update({
+    where: { id: assignmentId },
+    data: { acknowledgedAt: new Date() },
   });
+
+  // Check if all items in this application are now acknowledged
+  if (assignment.starterKitApplicationId) {
+    await checkApplicationComplete(assignment.starterKitApplicationId);
+  }
 
   revalidatePath("/my-assets");
   revalidatePath("/dashboard");
   return { success: true };
+}
+
+/**
+ * Staff acknowledges receipt of an individual consumable assignment
+ */
+export async function acknowledgeConsumableItem(assignmentId: string) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const assignment = await db.consumableAssignment.findUnique({
+    where: { id: assignmentId },
+  });
+
+  if (!assignment || assignment.userId !== session.user.id) {
+    throw new Error("Not found");
+  }
+
+  await db.consumableAssignment.update({
+    where: { id: assignmentId },
+    data: { acknowledgedAt: new Date() },
+  });
+
+  // Check if all items in this application are now acknowledged
+  if (assignment.starterKitApplicationId) {
+    await checkApplicationComplete(assignment.starterKitApplicationId);
+  }
+
+  revalidatePath("/my-consumables");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+/**
+ * Check if all items in a starter kit application have been acknowledged
+ */
+async function checkApplicationComplete(applicationId: string) {
+  const [unackedAssets, unackedConsumables] = await Promise.all([
+    db.assetAssignment.count({
+      where: { starterKitApplicationId: applicationId, acknowledgedAt: null, isActive: true },
+    }),
+    db.consumableAssignment.count({
+      where: { starterKitApplicationId: applicationId, acknowledgedAt: null, isActive: true },
+    }),
+  ]);
+
+  if (unackedAssets === 0 && unackedConsumables === 0) {
+    await db.starterKitApplication.update({
+      where: { id: applicationId },
+      data: { acknowledged: true, acknowledgedAt: new Date() },
+    });
+  }
 }
