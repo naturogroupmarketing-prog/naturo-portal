@@ -120,6 +120,7 @@ model Organization {
   auditLogs      AuditLog[]
   damageReports  DamageReport[]
   customFieldDefs CustomFieldDefinition[]
+  starterKits    StarterKit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -227,6 +228,8 @@ model User {
   notifications          Notification[]
   maintenanceAssigned    MaintenanceSchedule[]   @relation("MaintenanceAssignee")
   maintenancePerformed   MaintenanceLog[]        @relation("MaintenancePerformer")
+  starterKitApplications StarterKitApplication[]
+  appliedStarterKits     StarterKitApplication[] @relation("AppliedStarterKit")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -507,6 +510,54 @@ model PasswordResetToken {
 
   @@index([email])
   @@index([token])
+}
+
+// ─── STARTER KITS ───────────────────────────────────────
+
+model StarterKit {
+  id             String @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  isDefault      Boolean @default(false) // auto-apply on new staff creation
+  items          StarterKitItem[]
+  applications   StarterKitApplication[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+}
+
+model StarterKitApplication {
+  id             String @id @default(cuid())
+  starterKitId   String
+  starterKit     StarterKit @relation(fields: [starterKitId], references: [id])
+  userId         String
+  user           User @relation(fields: [userId], references: [id])
+  appliedById    String
+  appliedBy      User @relation("AppliedStarterKit", fields: [appliedById], references: [id])
+  results        String? @db.Text // JSON string of what was applied
+  acknowledged   Boolean @default(false)
+  acknowledgedAt DateTime?
+  signatureData  String? @db.Text // base64 signature image
+  appliedAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([starterKitId])
+}
+
+model StarterKitItem {
+  id           String @id @default(cuid())
+  starterKitId String
+  starterKit   StarterKit @relation(fields: [starterKitId], references: [id], onDelete: Cascade)
+  itemType     String // "ASSET_CATEGORY" or "CONSUMABLE"
+  category     String? // for ASSET_CATEGORY: assign one available asset from this category
+  consumableId String? // for CONSUMABLE: specific consumable to assign
+  quantity     Int    @default(1) // quantity for consumables
+
+  @@index([starterKitId])
 }
 
 // ─── CUSTOM FIELD DEFINITIONS ───────────────────────────

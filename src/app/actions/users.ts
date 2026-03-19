@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { Role } from "@/generated/prisma/client";
 import bcrypt from "bcryptjs";
 import { enforceUserLimit } from "@/lib/tenant";
+import { applyStarterKit } from "@/app/actions/starter-kits";
 
 export async function createUser(formData: FormData) {
   const session = await auth();
@@ -62,7 +63,19 @@ export async function createUser(formData: FormData) {
     organizationId,
   });
 
+  // Auto-apply default starter kit if user has a region
+  const applyKit = formData.get("applyStarterKit") !== "false";
+  if (applyKit && regionId) {
+    const starterKitId = formData.get("starterKitId") as string | null;
+    try {
+      await applyStarterKit(user.id, starterKitId || undefined);
+    } catch {
+      // Don't fail user creation if starter kit fails
+    }
+  }
+
   revalidatePath("/admin/users");
+  revalidatePath("/staff");
   revalidatePath("/dashboard");
   return { success: true, userId: user.id };
 }
