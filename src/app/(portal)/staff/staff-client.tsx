@@ -240,12 +240,12 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             sectionUsers.map((user) => (
               <tr
                 key={user.id}
-                onClick={() => isSuperAdmin && openEdit(user)}
+                onClick={() => (isSuperAdmin || canViewStaffDetails) && openEdit(user)}
                 draggable={isSuperAdmin}
                 onDragStart={() => setDragItemId(user.id)}
                 onDragOver={(e) => { e.preventDefault(); setDragOverItemId(user.id); }}
                 onDragEnd={() => { setDragItemId(null); setDragOverItemId(null); }}
-                className={`border-b border-shark-50 hover:bg-shark-50/50 ${isSuperAdmin ? "cursor-pointer" : ""} ${dragItemId === user.id ? "opacity-40" : ""} ${dragOverItemId === user.id ? "border-t-2 border-t-action-500" : ""}`}
+                className={`border-b border-shark-50 hover:bg-shark-50/50 ${(isSuperAdmin || canViewStaffDetails) ? "cursor-pointer" : ""} ${dragItemId === user.id ? "opacity-40" : ""} ${dragOverItemId === user.id ? "border-t-2 border-t-action-500" : ""}`}
               >
                 <td className="px-1 py-2" onClick={(e) => e.stopPropagation()}>
                   {isSuperAdmin && (
@@ -416,10 +416,11 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
       </Modal>
 
       {/* Edit User Modal — includes reset password, toggle active, and delete */}
-      <Modal open={!!editUser} onClose={closeEdit} title={`Edit: ${editUser?.name || editUser?.email || ""}`}>
+      <Modal open={!!editUser} onClose={closeEdit} title={isSuperAdmin ? `Edit: ${editUser?.name || editUser?.email || ""}` : `${editUser?.name || editUser?.email || ""}`}>
         {editUser && (
           <div className="space-y-4">
             {!showResetPassword && !showDeleteConfirm ? (
+              isSuperAdmin ? (
               <>
                 <div>
                   <label className="block text-sm font-medium text-shark-700 mb-1">Email</label>
@@ -483,6 +484,57 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   </div>
                 </div>
               </>
+              ) : (
+              /* Read-only view for Branch Managers */
+              <>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 pb-3 border-b border-shark-100">
+                    <div className="w-12 h-12 rounded-full bg-action-50 flex items-center justify-center">
+                      <Icon name="user" size={24} className="text-action-500" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-shark-900 text-lg">{editUser.name || "—"}</p>
+                      <Badge status={editUser.role} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-0.5">Email</label>
+                    <p className="text-sm text-shark-800">{editUser.email}</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-0.5">Phone</label>
+                    <p className="text-sm text-shark-800">{editUser.phone || "—"}</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-0.5">Region</label>
+                    <p className="text-sm text-shark-800">{editUser.region?.name || "Head Office"}</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-0.5">Status</label>
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                      <span className="text-sm text-shark-800">{editUser.isActive ? "Active" : "Disabled"}</span>
+                    </div>
+                  </div>
+                  {editUser.assetAssignments.length > 0 && (
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Assigned Assets ({editUser.assetAssignments.length})</label>
+                      <div className="space-y-1">
+                        {editUser.assetAssignments.map((a) => (
+                          <p key={a.asset.assetCode} className="text-sm text-shark-700">
+                            <span className="font-mono text-xs text-shark-400 mr-1">{a.asset.assetCode}</span>
+                            {a.asset.name}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="flex justify-end pt-2">
+                  <Button variant="outline" onClick={closeEdit}>Close</Button>
+                </div>
+              </>
+              )
             ) : showResetPassword ? (
               <>
                 <p className="text-sm text-shark-500">
