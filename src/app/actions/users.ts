@@ -237,19 +237,38 @@ export async function deleteUser(userId: string) {
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
-  // Check for active assignments
-  const activeAssignments = await db.assetAssignment.count({
+  // Auto-return all active asset assignments before deletion
+  const activeAssetAssignments = await db.assetAssignment.findMany({
     where: { userId, isActive: true },
   });
-  if (activeAssignments > 0) {
-    throw new Error("Cannot delete user with active asset assignments. Return all assets first.");
+  for (const assignment of activeAssetAssignments) {
+    await db.$transaction(async (tx) => {
+      await tx.assetAssignment.update({
+        where: { id: assignment.id },
+        data: { isActive: false, actualReturnDate: new Date(), returnNotes: "Auto-returned: user deleted" },
+      });
+      await tx.asset.update({
+        where: { id: assignment.assetId },
+        data: { status: "AVAILABLE" },
+      });
+    });
   }
 
-  const activeConsumableAssignments = await db.consumableAssignment.count({
+  // Auto-return all active consumable assignments before deletion
+  const activeConsumableAssignments = await db.consumableAssignment.findMany({
     where: { userId, isActive: true },
   });
-  if (activeConsumableAssignments > 0) {
-    throw new Error("Cannot delete user with active consumable assignments. Return all consumables first.");
+  for (const assignment of activeConsumableAssignments) {
+    await db.$transaction(async (tx) => {
+      await tx.consumableAssignment.update({
+        where: { id: assignment.id },
+        data: { isActive: false, returnedDate: new Date(), returnNotes: "Auto-returned: user deleted" },
+      });
+      await tx.consumable.update({
+        where: { id: assignment.consumableId },
+        data: { quantityOnHand: { increment: assignment.quantity } },
+      });
+    });
   }
 
   // Gather history for audit archive before deletion
