@@ -533,57 +533,55 @@ export async function returnStarterKit(applicationId: string, condition: string,
 
   const returnResults: string[] = [];
 
-  await db.$transaction(async (tx) => {
-    // Return each asset
-    for (const assignment of activeAssets) {
-      await tx.assetAssignment.update({
-        where: { id: assignment.id },
-        data: { isActive: false, actualReturnDate: new Date() },
-      });
-      await tx.asset.update({
-        where: { id: assignment.assetId },
-        data: { status: "PENDING_RETURN" },
-      });
-      await tx.pendingReturn.create({
-        data: {
-          itemType: "ASSET",
-          assetId: assignment.assetId,
-          quantity: 1,
-          returnedByName: session.user.name || session.user.email || "Unknown",
-          returnedByEmail: session.user.email || "",
-          returnReason: `Starter kit "${application.starterKit.name}" returned`,
-          returnCondition: condition || "GOOD",
-          returnNotes: notes || null,
-          organizationId,
-          regionId: assignment.asset.regionId,
-        },
-      });
-      returnResults.push(`${assignment.asset.name} (${assignment.asset.assetCode})`);
-    }
+  // Return each asset
+  for (const assignment of activeAssets) {
+    await db.assetAssignment.update({
+      where: { id: assignment.id },
+      data: { isActive: false, actualReturnDate: new Date() },
+    });
+    await db.asset.update({
+      where: { id: assignment.assetId },
+      data: { status: "PENDING_RETURN" },
+    });
+    await db.pendingReturn.create({
+      data: {
+        itemType: "ASSET",
+        assetId: assignment.assetId,
+        quantity: 1,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: `Starter kit "${application.starterKit.name}" returned`,
+        returnCondition: condition || "GOOD",
+        returnNotes: notes || null,
+        organizationId,
+        regionId: assignment.asset.regionId,
+      },
+    });
+    returnResults.push(`${assignment.asset.name} (${assignment.asset.assetCode})`);
+  }
 
-    // Return each consumable
-    for (const assignment of activeConsumables) {
-      await tx.consumableAssignment.update({
-        where: { id: assignment.id },
-        data: { isActive: false },
-      });
-      await tx.pendingReturn.create({
-        data: {
-          itemType: "CONSUMABLE",
-          consumableId: assignment.consumableId,
-          quantity: assignment.quantity,
-          returnedByName: session.user.name || session.user.email || "Unknown",
-          returnedByEmail: session.user.email || "",
-          returnReason: `Starter kit "${application.starterKit.name}" returned`,
-          returnCondition: condition || "GOOD",
-          returnNotes: notes || null,
-          organizationId,
-          regionId: assignment.consumable.regionId,
-        },
-      });
-      returnResults.push(`${assignment.quantity}x ${assignment.consumable.name}`);
-    }
-  });
+  // Return each consumable
+  for (const assignment of activeConsumables) {
+    await db.consumableAssignment.update({
+      where: { id: assignment.id },
+      data: { isActive: false },
+    });
+    await db.pendingReturn.create({
+      data: {
+        itemType: "CONSUMABLE",
+        consumableId: assignment.consumableId,
+        quantity: assignment.quantity,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: `Starter kit "${application.starterKit.name}" returned`,
+        returnCondition: condition || "GOOD",
+        returnNotes: notes || null,
+        organizationId,
+        regionId: assignment.consumable.regionId,
+      },
+    });
+    returnResults.push(`${assignment.quantity}x ${assignment.consumable.name}`);
+  }
 
   // Audit log
   await createAuditLog({
