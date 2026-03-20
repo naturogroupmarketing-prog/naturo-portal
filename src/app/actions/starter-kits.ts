@@ -511,9 +511,6 @@ export async function returnStarterKit(applicationId: string, condition: string,
   if (!application || application.userId !== session.user.id) {
     throw new Error("Application not found");
   }
-  if (!application.acknowledged) {
-    throw new Error("Kit has not been acknowledged yet");
-  }
 
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization");

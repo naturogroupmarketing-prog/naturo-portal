@@ -128,15 +128,20 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
   const [returningItemType, setReturningItemType] = useState<"asset" | "consumable">("asset");
   const [returnedItemIds, setReturnedItemIds] = useState<Set<string>>(new Set());
 
+  const [returnError, setReturnError] = useState<string | null>(null);
+
   const handleReturnKit = async () => {
     if (!returningKitId) return;
     setReturnSubmitting(true);
+    setReturnError(null);
     try {
       await returnStarterKit(returningKitId, returnCondition, returnNotes);
       setReturnedKitIds((prev) => new Set(prev).add(returningKitId));
       setReturningKitId(null);
       setReturnCondition("GOOD");
       setReturnNotes("");
+    } catch (err) {
+      setReturnError(err instanceof Error ? err.message : "Failed to return kit. Please try again.");
     } finally {
       setReturnSubmitting(false);
     }
@@ -145,6 +150,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
   const handleReturnIndividualItem = async () => {
     if (!returningItemId) return;
     setReturnSubmitting(true);
+    setReturnError(null);
     try {
       if (returningItemType === "asset") {
         await staffReturnAsset(returningItemId, returnCondition, returnNotes);
@@ -156,6 +162,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       setReturningItemId(null);
       setReturnCondition("GOOD");
       setReturnNotes("");
+    } catch (err) {
+      setReturnError(err instanceof Error ? err.message : "Failed to return item. Please try again.");
     } finally {
       setReturnSubmitting(false);
     }
@@ -446,8 +454,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
       {/* Return Kit Confirmation Modal */}
       {returningKitId && returningKit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md my-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100">
               <h3 className="text-lg font-semibold text-shark-900">Return Starter Kit</h3>
               <button
@@ -510,11 +518,16 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 />
               </div>
             </div>
+            {returnError && (
+              <div className="mx-6 mb-2 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                <p className="text-sm text-red-700">{returnError}</p>
+              </div>
+            )}
             <div className="flex gap-3 px-6 py-4 border-t border-shark-100">
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => setReturningKitId(null)}
+                onClick={() => { setReturningKitId(null); setReturnError(null); }}
                 disabled={returnSubmitting}
               >
                 Cancel
@@ -533,8 +546,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
       {/* Return Individual Item Modal */}
       {returningItemId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md my-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100">
               <h3 className="text-lg font-semibold text-shark-900">Return Item</h3>
               <button
@@ -578,11 +591,16 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 />
               </div>
             </div>
+            {returnError && (
+              <div className="mx-6 mb-2 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                <p className="text-sm text-red-700">{returnError}</p>
+              </div>
+            )}
             <div className="flex gap-3 px-6 py-4 border-t border-shark-100">
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => setReturningItemId(null)}
+                onClick={() => { setReturningItemId(null); setReturnError(null); }}
                 disabled={returnSubmitting}
               >
                 Cancel
