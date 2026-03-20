@@ -499,7 +499,12 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
 /**
  * Staff returns an entire starter kit — creates PendingReturn for each item, manager verifies
  */
-export async function returnStarterKit(applicationId: string, condition: string, notes: string) {
+export async function returnStarterKit(
+  applicationId: string,
+  condition: string,
+  notes: string,
+  excludedItems?: { itemType: string; itemId: string; note: string }[]
+) {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
 
@@ -515,6 +520,14 @@ export async function returnStarterKit(applicationId: string, condition: string,
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization");
 
+  // Build sets of excluded item IDs
+  const excludedAssetIds = new Set(
+    (excludedItems || []).filter((e) => e.itemType === "ASSET").map((e) => e.itemId)
+  );
+  const excludedConsumableIds = new Set(
+    (excludedItems || []).filter((e) => e.itemType === "CONSUMABLE").map((e) => e.itemId)
+  );
+
   // Find all active assignments linked to this kit application
   const [activeAssets, activeConsumables] = await Promise.all([
     db.assetAssignment.findMany({
@@ -527,14 +540,19 @@ export async function returnStarterKit(applicationId: string, condition: string,
     }),
   ]);
 
-  if (activeAssets.length === 0 && activeConsumables.length === 0) {
-    throw new Error("No active items to return");
+  // Filter to only items being returned (not excluded)
+  const assetsToReturn = activeAssets.filter((a) => !excludedAssetIds.has(a.id));
+  const consumablesToReturn = activeConsumables.filter((a) => !excludedConsumableIds.has(a.id));
+
+  if (assetsToReturn.length === 0 && consumablesToReturn.length === 0) {
+    throw new Error("No items selected for return");
   }
 
   const returnResults: string[] = [];
+  const excludedResults: string[] = [];
 
-  // Return each asset
-  for (const assignment of activeAssets) {
+  // Return each asset (only non-excluded)
+  for (const assignment of assetsToReturn) {
     await db.assetAssignment.update({
       where: { id: assignment.id },
       data: { isActive: false, actualReturnDate: new Date() },
@@ -560,8 +578,14 @@ export async function returnStarterKit(applicationId: string, condition: string,
     returnResults.push(`${assignment.asset.name} (${assignment.asset.assetCode})`);
   }
 
-  // Return each consumable
-  for (const assignment of activeConsumables) {
+  // Track excluded assets
+  for (const assignment of activeAssets.filter((a) => excludedAssetIds.has(a.id))) {
+    const excl = excludedItems?.find((e) => e.itemType === "ASSET" && e.itemId === assignment.id);
+    excludedResults.push(`${assignment.asset.name} (${assignment.asset.assetCode}) - ${excl?.note || "not returned"}`);
+  }
+
+  // Return each consumable (only non-excluded)
+  for (const assignment of consumablesToReturn) {
     await db.consumableAssignment.update({
       where: { id: assignment.id },
       data: { isActive: false },
@@ -583,22 +607,36 @@ export async function returnStarterKit(applicationId: string, condition: string,
     returnResults.push(`${assignment.quantity}x ${assignment.consumable.name}`);
   }
 
+  // Track excluded consumables
+  for (const assignment of activeConsumables.filter((a) => excludedConsumableIds.has(a.id))) {
+    const excl = excludedItems?.find((e) => e.itemType === "CONSUMABLE" && e.itemId === assignment.id);
+    excludedResults.push(`${assignment.quantity}x ${assignment.consumable.name} - ${excl?.note || "not returned"}`);
+  }
+
   // Audit log
+  const auditDescription = excludedResults.length > 0
+    ? `Starter kit "${application.starterKit.name}" partially returned by ${session.user.name || session.user.email}. Returned: ${returnResults.join(", ")}. Not returned: ${excludedResults.join(", ")}`
+    : `Starter kit "${application.starterKit.name}" returned by ${session.user.name || session.user.email}: ${returnResults.join(", ")}`;
+
   await createAuditLog({
     action: "USER_UPDATED",
-    description: `Starter kit "${application.starterKit.name}" returned by ${session.user.name || session.user.email}: ${returnResults.join(", ")}`,
+    description: auditDescription,
     performedById: session.user.id,
     targetUserId: session.user.id,
     organizationId,
-    metadata: { starterKitId: application.starterKitId, applicationId, returnResults },
+    metadata: { starterKitId: application.starterKitId, applicationId, returnResults, excludedResults },
   });
 
   // Notify managers to verify and restock
+  const notifMessage = excludedResults.length > 0
+    ? `${session.user.name || session.user.email} partially returned starter kit "${application.starterKit.name}" (${returnResults.length} of ${returnResults.length + excludedResults.length} items). ${excludedResults.length} item(s) not returned. Please verify and restock.`
+    : `${session.user.name || session.user.email} returned starter kit "${application.starterKit.name}" (${returnResults.length} items). Please verify and restock.`;
+
   await notifyAdminsAndManagers({
     organizationId,
     type: "ASSET_RETURNED",
     title: "Starter Kit Return Pending",
-    message: `${session.user.name || session.user.email} returned starter kit "${application.starterKit.name}" (${returnResults.length} items). Please verify and restock.`,
+    message: notifMessage,
     link: "/returns",
   });
 

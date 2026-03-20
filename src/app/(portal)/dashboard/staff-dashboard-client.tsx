@@ -77,6 +77,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
   const [returnSubmitting, setReturnSubmitting] = useState(false);
   const [returnedKitIds, setReturnedKitIds] = useState<Set<string>>(new Set());
   const [equipmentExpanded, setEquipmentExpanded] = useState(false);
+  // Per-item exclusion state: keyed by "asset-{id}" or "consumable-{id}"
+  const [kitItemExclusions, setKitItemExclusions] = useState<Record<string, { excluded: boolean; note: string }>>({});
 
   const hasPendingKit = (pendingAssetItems.length > 0 || pendingConsumableItems.length > 0) && !submitted;
 
@@ -135,11 +137,27 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
     setReturnSubmitting(true);
     setReturnError(null);
     try {
-      await returnStarterKit(returningKitId, returnCondition, returnNotes);
+      // Build excluded items list from exclusion state
+      const excludedItems = Object.entries(kitItemExclusions)
+        .filter(([, v]) => v.excluded)
+        .map(([key, v]) => {
+          const [itemType, itemId] = key.startsWith("asset-")
+            ? ["ASSET", key.replace("asset-", "")]
+            : ["CONSUMABLE", key.replace("consumable-", "")];
+          return { itemType, itemId, note: v.note };
+        });
+
+      await returnStarterKit(
+        returningKitId,
+        returnCondition,
+        returnNotes,
+        excludedItems.length > 0 ? excludedItems : undefined
+      );
       setReturnedKitIds((prev) => new Set(prev).add(returningKitId));
       setReturningKitId(null);
       setReturnCondition("GOOD");
       setReturnNotes("");
+      setKitItemExclusions({});
     } catch (err) {
       setReturnError(err instanceof Error ? err.message : "Failed to return kit. Please try again.");
     } finally {
@@ -365,6 +383,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                       setReturningKitId(app.id);
                       setReturnCondition("GOOD");
                       setReturnNotes("");
+                      setKitItemExclusions({});
                     }}
                   >
                     <Icon name="arrow-left" size={14} className="mr-1.5" />
@@ -468,26 +487,90 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             <div className="px-6 py-4 space-y-4">
               <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
                 <p className="text-sm text-amber-800">
-                  You are returning <span className="font-semibold">&quot;{returningKit.kitName}&quot;</span> ({returningKit.assets.length + returningKit.consumables.length} items). This will be sent to your manager for verification before restocking.
+                  You are returning <span className="font-semibold">&quot;{returningKit.kitName}&quot;</span>. Uncheck any items you are not returning and provide a reason. Returned items will be sent to your manager for verification.
                 </p>
               </div>
 
-              {/* Items being returned */}
+              {/* Items checklist — uncheck items not being returned */}
               <div>
-                <p className="text-xs font-medium text-shark-500 uppercase mb-2">Items to return</p>
-                <div className="border border-shark-100 rounded-lg divide-y divide-shark-50 max-h-40 overflow-y-auto">
-                  {returningKit.assets.map((a) => (
-                    <div key={a.id} className="flex items-center gap-2 px-3 py-2">
-                      <Icon name="package" size={12} className="text-action-500 shrink-0" />
-                      <span className="text-sm text-shark-700">{a.name} ({a.assetCode})</span>
-                    </div>
-                  ))}
-                  {returningKit.consumables.map((c) => (
-                    <div key={c.id} className="flex items-center gap-2 px-3 py-2">
-                      <Icon name="droplet" size={12} className="text-blue-500 shrink-0" />
-                      <span className="text-sm text-shark-700">{c.quantity}x {c.name}</span>
-                    </div>
-                  ))}
+                <p className="text-xs font-medium text-shark-500 uppercase mb-2">Select items to return</p>
+                <div className="border border-shark-100 rounded-lg divide-y divide-shark-50 max-h-60 overflow-y-auto">
+                  {returningKit.assets.map((a) => {
+                    const key = `asset-${a.id}`;
+                    const isExcluded = kitItemExclusions[key]?.excluded || false;
+                    return (
+                      <div key={a.id} className="px-3 py-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!isExcluded}
+                            onChange={() => setKitItemExclusions((prev) => ({
+                              ...prev,
+                              [key]: { excluded: !isExcluded, note: prev[key]?.note || "" },
+                            }))}
+                            className="rounded border-shark-300 text-action-600 focus:ring-action-500"
+                          />
+                          <Icon name="package" size={12} className={isExcluded ? "text-shark-300 shrink-0" : "text-action-500 shrink-0"} />
+                          <span className={`text-sm ${isExcluded ? "text-shark-400 line-through" : "text-shark-700"}`}>{a.name} ({a.assetCode})</span>
+                        </label>
+                        {isExcluded && (
+                          <div className="ml-7 mt-1.5">
+                            <input
+                              type="text"
+                              value={kitItemExclusions[key]?.note || ""}
+                              onChange={(e) => setKitItemExclusions((prev) => ({
+                                ...prev,
+                                [key]: { excluded: true, note: e.target.value },
+                              }))}
+                              placeholder="Reason not returning (e.g., lost, damaged, used up)..."
+                              className="w-full border border-amber-200 bg-amber-50 rounded-md px-2.5 py-1.5 text-xs text-shark-700 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 placeholder:text-shark-400"
+                            />
+                            {kitItemExclusions[key]?.note === "" && (
+                              <p className="text-xs text-red-500 mt-0.5">Please provide a reason</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {returningKit.consumables.map((c) => {
+                    const key = `consumable-${c.id}`;
+                    const isExcluded = kitItemExclusions[key]?.excluded || false;
+                    return (
+                      <div key={c.id} className="px-3 py-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!isExcluded}
+                            onChange={() => setKitItemExclusions((prev) => ({
+                              ...prev,
+                              [key]: { excluded: !isExcluded, note: prev[key]?.note || "" },
+                            }))}
+                            className="rounded border-shark-300 text-action-600 focus:ring-action-500"
+                          />
+                          <Icon name="droplet" size={12} className={isExcluded ? "text-shark-300 shrink-0" : "text-blue-500 shrink-0"} />
+                          <span className={`text-sm ${isExcluded ? "text-shark-400 line-through" : "text-shark-700"}`}>{c.quantity}x {c.name}</span>
+                        </label>
+                        {isExcluded && (
+                          <div className="ml-7 mt-1.5">
+                            <input
+                              type="text"
+                              value={kitItemExclusions[key]?.note || ""}
+                              onChange={(e) => setKitItemExclusions((prev) => ({
+                                ...prev,
+                                [key]: { excluded: true, note: e.target.value },
+                              }))}
+                              placeholder="Reason not returning (e.g., lost, damaged, used up)..."
+                              className="w-full border border-amber-200 bg-amber-50 rounded-md px-2.5 py-1.5 text-xs text-shark-700 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 placeholder:text-shark-400"
+                            />
+                            {kitItemExclusions[key]?.note === "" && (
+                              <p className="text-xs text-red-500 mt-0.5">Please provide a reason</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -535,7 +618,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               <Button
                 className="flex-1 bg-red-600 hover:bg-red-700"
                 onClick={handleReturnKit}
-                disabled={returnSubmitting}
+                disabled={returnSubmitting || Object.entries(kitItemExclusions).some(([, v]) => v.excluded && v.note.trim() === "")}
               >
                 {returnSubmitting ? "Returning..." : "Confirm Return"}
               </Button>
