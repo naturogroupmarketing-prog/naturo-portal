@@ -94,6 +94,107 @@ export async function verifyAllReturns() {
 }
 
 /**
+ * Batch process multiple returns in a single transaction
+ * Replaces N sequential calls to verifyReturn/rejectReturn
+ */
+export async function batchProcessReturns(
+  items: { id: string; status: "verified" | "rejected"; reason?: string }[]
+) {
+  const session = await auth();
+  if (!session?.user || !isAdminOrManager(session.user.role)) {
+    throw new Error("Unauthorized");
+  }
+
+  const allIds = items.map((i) => i.id);
+  const pendingReturns = await db.pendingReturn.findMany({
+    where: { id: { in: allIds }, isVerified: false },
+  });
+
+  const returnMap = new Map(pendingReturns.map((r) => [r.id, r]));
+
+  let verifiedCount = 0;
+  let rejectedCount = 0;
+
+  await db.$transaction(async (tx) => {
+    for (const item of items) {
+      const pr = returnMap.get(item.id);
+      if (!pr) continue;
+
+      if (item.status === "verified") {
+        // Mark as verified
+        await tx.pendingReturn.update({
+          where: { id: item.id },
+          data: {
+            isVerified: true,
+            verifiedById: session.user.id,
+            verifiedAt: new Date(),
+          },
+        });
+
+        // Restock — skip if stock already handled or NOT_RETURNED
+        if (pr.returnReason !== "STOCK_ALREADY_HANDLED" && pr.returnCondition !== "NOT_RETURNED") {
+          if (pr.itemType === "ASSET" && pr.assetId) {
+            await tx.asset.update({
+              where: { id: pr.assetId },
+              data: { status: "AVAILABLE" },
+            });
+          } else if (pr.itemType === "CONSUMABLE" && pr.consumableId) {
+            await tx.consumable.update({
+              where: { id: pr.consumableId },
+              data: { quantityOnHand: { increment: pr.quantity } },
+            });
+          }
+        } else if (pr.returnCondition === "NOT_RETURNED") {
+          // NOT_RETURNED items: acknowledge without restocking — mark asset as DAMAGED
+          if (pr.itemType === "ASSET" && pr.assetId) {
+            await tx.asset.update({
+              where: { id: pr.assetId },
+              data: { status: "DAMAGED" },
+            });
+          }
+        }
+
+        verifiedCount++;
+      } else if (item.status === "rejected") {
+        // Reject — mark as verified with rejection notes
+        await tx.pendingReturn.update({
+          where: { id: item.id },
+          data: {
+            isVerified: true,
+            verifiedById: session.user.id,
+            verifiedAt: new Date(),
+            verificationNotes: `REJECTED: ${item.reason || "Not returned"}`,
+          },
+        });
+
+        // Mark asset as DAMAGED
+        if (pr.itemType === "ASSET" && pr.assetId) {
+          await tx.asset.update({
+            where: { id: pr.assetId },
+            data: { status: "DAMAGED" },
+          });
+        }
+
+        rejectedCount++;
+      }
+    }
+  });
+
+  await createAuditLog({
+    action: "ASSET_UPDATED",
+    description: `Batch return processed: ${verifiedCount} verified, ${rejectedCount} rejected`,
+    performedById: session.user.id,
+    organizationId: session.user.organizationId!,
+  });
+
+  revalidatePath("/returns");
+  revalidatePath("/assets");
+  revalidatePath("/consumables");
+  revalidatePath("/dashboard");
+  return { success: true, verified: verifiedCount, rejected: rejectedCount };
+}
+
+/**
  * Reject a return — mark as damaged or discard
  */
 export async function rejectReturn(returnId: string, reason: string) {

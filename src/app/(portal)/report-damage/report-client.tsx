@@ -20,6 +20,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
   const [error, setError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const descRef = useRef<HTMLTextAreaElement>(null);
 
   async function handleUpload(file: File) {
     setUploading(true);
@@ -95,7 +96,15 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
             >
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Asset *</label>
-                <Select name="assetId" required>
+                <Select
+                  name="assetId"
+                  required
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setTimeout(() => descRef.current?.focus(), 100);
+                    }
+                  }}
+                >
                   <option value="">Select the asset</option>
                   {assignments.map((a) => (
                     <option key={a.asset.id} value={a.asset.id}>
@@ -114,6 +123,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Description *</label>
                 <textarea
+                  ref={descRef}
                   name="description"
                   required
                   className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"

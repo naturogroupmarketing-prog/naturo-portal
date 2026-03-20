@@ -29,7 +29,7 @@ export default async function ReturnsPage() {
     assetIds.length > 0
       ? db.asset.findMany({
           where: { id: { in: assetIds } },
-          select: { id: true, name: true, assetCode: true, category: true, imageUrl: true },
+          select: { id: true, name: true, assetCode: true, category: true, imageUrl: true, isHighValue: true },
         })
       : [],
     consumableIds.length > 0

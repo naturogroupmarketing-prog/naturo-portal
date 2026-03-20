@@ -497,6 +497,134 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
 }
 
 /**
+ * Batch confirm/reject all kit receipt items in a single transaction
+ * Replaces N sequential calls to acknowledgeAssetItem/acknowledgeConsumableItem/rejectKitAssetItem/rejectKitConsumableItem
+ */
+export async function batchConfirmKitReceipt(
+  applicationId: string,
+  items: { id: string; type: "asset" | "consumable"; status: "received" | "not_received"; reason?: string }[]
+) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const receivedAssets = items.filter((i) => i.type === "asset" && i.status === "received");
+  const receivedConsumables = items.filter((i) => i.type === "consumable" && i.status === "received");
+  const rejectedAssets = items.filter((i) => i.type === "asset" && i.status === "not_received");
+  const rejectedConsumables = items.filter((i) => i.type === "consumable" && i.status === "not_received");
+
+  const rejectedAssetDetails: { name: string; code: string; reason: string }[] = [];
+
+  await db.$transaction(async (tx) => {
+    // 1. Batch acknowledge received assets
+    if (receivedAssets.length > 0) {
+      await tx.assetAssignment.updateMany({
+        where: {
+          id: { in: receivedAssets.map((i) => i.id) },
+          userId: session.user.id,
+        },
+        data: { acknowledgedAt: new Date() },
+      });
+    }
+
+    // 2. Acknowledge received consumables + deduct stock (per-item since each has different consumableId)
+    for (const item of receivedConsumables) {
+      const assignment = await tx.consumableAssignment.findUnique({
+        where: { id: item.id },
+      });
+      if (!assignment || assignment.userId !== session.user.id) continue;
+
+      await tx.consumableAssignment.update({
+        where: { id: item.id },
+        data: { acknowledgedAt: new Date() },
+      });
+
+      if (assignment.starterKitApplicationId) {
+        await tx.consumable.update({
+          where: { id: assignment.consumableId },
+          data: { quantityOnHand: { decrement: assignment.quantity } },
+        });
+      }
+    }
+
+    // 3. Reject assets — deactivate assignment, return asset to AVAILABLE
+    for (const item of rejectedAssets) {
+      const assignment = await tx.assetAssignment.findUnique({
+        where: { id: item.id },
+        include: { asset: true },
+      });
+      if (!assignment || assignment.userId !== session.user.id) continue;
+
+      await tx.assetAssignment.update({
+        where: { id: item.id },
+        data: { isActive: false, acknowledgedAt: new Date(), actualReturnDate: new Date() },
+      });
+      await tx.asset.update({
+        where: { id: assignment.assetId },
+        data: { status: "AVAILABLE" },
+      });
+
+      rejectedAssetDetails.push({
+        name: assignment.asset.name,
+        code: assignment.asset.assetCode,
+        reason: item.reason || "Not received",
+      });
+    }
+
+    // 4. Batch reject consumables — deactivate assignments
+    if (rejectedConsumables.length > 0) {
+      await tx.consumableAssignment.updateMany({
+        where: {
+          id: { in: rejectedConsumables.map((i) => i.id) },
+          userId: session.user.id,
+        },
+        data: { isActive: false, acknowledgedAt: new Date() },
+      });
+    }
+  });
+
+  // Check if application is complete
+  await checkApplicationComplete(applicationId);
+
+  // Send batch notification for rejected items
+  const allRejected = [...rejectedAssets, ...rejectedConsumables];
+  if (allRejected.length > 0) {
+    // Get org/region info from one of the assignments
+    const sampleAssignment = await db.assetAssignment.findFirst({
+      where: { starterKitApplicationId: applicationId },
+      include: { asset: true },
+    }) || await db.consumableAssignment.findFirst({
+      where: { starterKitApplicationId: applicationId },
+      include: { consumable: true },
+    });
+
+    if (sampleAssignment) {
+      const orgId = "asset" in sampleAssignment
+        ? (sampleAssignment as { asset: { organizationId: string } }).asset.organizationId
+        : (sampleAssignment as { consumable: { organizationId: string } }).consumable.organizationId;
+      const regId = "asset" in sampleAssignment
+        ? (sampleAssignment as { asset: { regionId: string } }).asset.regionId
+        : (sampleAssignment as { consumable: { regionId: string } }).consumable.regionId;
+
+      await notifyAdminsAndManagers({
+        organizationId: orgId,
+        regionId: regId,
+        type: "ASSET_RETURNED",
+        title: `${allRejected.length} Kit Item(s) Not Received`,
+        message: `${session.user.name || session.user.email} reports ${allRejected.length} item(s) were not received from their starter kit.`,
+        link: "/staff",
+      });
+    }
+  }
+
+  revalidatePath("/my-assets");
+  revalidatePath("/my-consumables");
+  revalidatePath("/dashboard");
+  revalidatePath("/assets");
+  revalidatePath("/consumables");
+  return { success: true };
+}
+
+/**
  * Staff returns an entire starter kit — creates PendingReturn for each item, manager verifies
  */
 export async function returnStarterKit(

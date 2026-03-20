@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Icon, type IconName } from "@/components/ui/icon";
-import { acknowledgeAssetItem, acknowledgeConsumableItem, rejectKitAssetItem, rejectKitConsumableItem, returnStarterKit } from "@/app/actions/starter-kits";
+import { useToast } from "@/components/ui/toast";
+import { batchConfirmKitReceipt, returnStarterKit } from "@/app/actions/starter-kits";
 import { staffReturnAsset, staffReturnConsumable } from "@/app/actions/returns";
 
 interface StatCard {
@@ -20,11 +22,13 @@ interface StatCard {
 
 interface PendingAssetItem {
   id: string;
+  starterKitApplicationId: string | null;
   asset: { name: string; assetCode: string; category: string; imageUrl: string | null };
 }
 
 interface PendingConsumableItem {
   id: string;
+  starterKitApplicationId: string | null;
   quantity: number;
   consumable: { name: string; unitType: string; imageUrl: string | null };
 }
@@ -65,6 +69,8 @@ interface Props {
 }
 
 export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [], activeKitApplications = [], individualAssets = [], individualConsumables = [] }: Props) {
+  const router = useRouter();
+  const { addToast } = useToast();
   // Track item states: "received" | "not_received" | undefined (pending)
   const [itemStates, setItemStates] = useState<Record<string, { status: "received" | "not_received"; reason?: string }>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -99,27 +105,48 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
     });
   };
 
+  // Select All toggle for kit receipt
+  const allReceivedAlready = totalItems > 0 &&
+    pendingAssetItems.every((item) => itemStates[`asset-${item.id}`]?.status === "received") &&
+    pendingConsumableItems.every((item) => itemStates[`consumable-${item.id}`]?.status === "received");
+
+  const handleSelectAll = () => {
+    if (allReceivedAlready) {
+      setItemStates({});
+    } else {
+      const newStates: typeof itemStates = {};
+      pendingAssetItems.forEach((item) => { newStates[`asset-${item.id}`] = { status: "received" }; });
+      pendingConsumableItems.forEach((item) => { newStates[`consumable-${item.id}`] = { status: "received" }; });
+      setItemStates(newStates);
+    }
+  };
+
   const handleFinalConfirm = async () => {
     setSubmitting(true);
     try {
-      // Process all items — both received and not received
+      // Get applicationId from first item
+      const applicationId = pendingAssetItems[0]?.starterKitApplicationId || pendingConsumableItems[0]?.starterKitApplicationId;
+      if (!applicationId) throw new Error("No application ID found");
+
+      // Build batch items
+      const batchItems: { id: string; type: "asset" | "consumable"; status: "received" | "not_received"; reason?: string }[] = [];
+
       for (const item of pendingAssetItems) {
         const state = itemStates[`asset-${item.id}`];
-        if (state?.status === "received") {
-          await acknowledgeAssetItem(item.id);
-        } else if (state?.status === "not_received") {
-          await rejectKitAssetItem(item.id, state.reason || "Not received");
+        if (state) {
+          batchItems.push({ id: item.id, type: "asset", status: state.status, reason: state.reason });
         }
       }
       for (const item of pendingConsumableItems) {
         const state = itemStates[`consumable-${item.id}`];
-        if (state?.status === "received") {
-          await acknowledgeConsumableItem(item.id);
-        } else if (state?.status === "not_received") {
-          await rejectKitConsumableItem(item.id, state.reason || "Not received");
+        if (state) {
+          batchItems.push({ id: item.id, type: "consumable", status: state.status, reason: state.reason });
         }
       }
+
+      await batchConfirmKitReceipt(applicationId, batchItems);
       setSubmitted(true);
+      addToast("Kit receipt confirmed successfully", "success");
     } finally {
       setSubmitting(false);
     }
@@ -158,6 +185,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       setReturnCondition("GOOD");
       setReturnNotes("");
       setKitItemExclusions({});
+      addToast("Kit returned successfully", "success");
+      router.refresh();
     } catch (err) {
       setReturnError(err instanceof Error ? err.message : "Failed to return kit. Please try again.");
     } finally {
@@ -178,6 +207,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       }
       setReturnedItemIds((prev) => new Set(prev).add(returningItemId));
       setReturningItemId(null);
+      addToast("Item returned successfully", "success");
+      router.refresh();
       setReturnCondition("GOOD");
       setReturnNotes("");
     } catch (err) {
@@ -218,6 +249,19 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             </div>
           </CardHeader>
           <CardContent>
+            {/* Select All toggle */}
+            <div className="flex items-center justify-between px-3 py-2 mb-1">
+              <p className="text-xs text-shark-400">
+                {processedCount} of {totalItems} items marked
+              </p>
+              <button
+                type="button"
+                onClick={handleSelectAll}
+                className="text-xs font-medium text-action-600 hover:text-action-700 transition-colors"
+              >
+                {allReceivedAlready ? "Deselect All" : "Select All as Received"}
+              </button>
+            </div>
             <div className="divide-y divide-shark-100">
               {/* Pending Assets */}
               {pendingAssetItems.map((item) => {

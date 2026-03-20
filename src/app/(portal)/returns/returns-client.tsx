@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { verifyReturn, rejectReturn } from "@/app/actions/returns";
+import { Select } from "@/components/ui/select";
+import { batchProcessReturns } from "@/app/actions/returns";
 
 interface PendingReturnItem {
   id: string;
@@ -16,7 +17,7 @@ interface PendingReturnItem {
   returnCondition: string | null;
   returnNotes: string | null;
   createdAt: string;
-  assetDetails: { id: string; name: string; assetCode: string; category: string; imageUrl: string | null } | null;
+  assetDetails: { id: string; name: string; assetCode: string; category: string; imageUrl: string | null; isHighValue: boolean } | null;
   consumableDetails: { id: string; name: string; unitType: string; imageUrl: string | null } | null;
 }
 
@@ -25,6 +26,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   const [itemStates, setItemStates] = useState<Record<string, { status: "verified" | "rejected"; reason?: string }>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [groupBy, setGroupBy] = useState<"none" | "staff" | "type">("none");
 
   const totalItems = returns.length;
   const processedCount = Object.keys(itemStates).length;
@@ -47,27 +49,164 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
     });
   };
 
+  // Select All / Clear All
+  const allVerified = totalItems > 0 && returns.every((r) => itemStates[r.id]?.status === "verified");
+  const handleSelectAll = () => {
+    if (allVerified) {
+      setItemStates({});
+    } else {
+      const newStates: typeof itemStates = {};
+      returns.forEach((r) => { newStates[r.id] = { status: "verified" }; });
+      setItemStates(newStates);
+    }
+  };
+
+  // Grouping
+  const groupedReturns = useMemo(() => {
+    if (groupBy === "staff") {
+      const groups: Record<string, PendingReturnItem[]> = {};
+      for (const r of returns) {
+        const key = r.returnedByName || "Unknown";
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(r);
+      }
+      return groups;
+    } else if (groupBy === "type") {
+      const groups: Record<string, PendingReturnItem[]> = {};
+      for (const r of returns) {
+        const key = r.itemType === "ASSET" ? "Assets" : "Consumables";
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(r);
+      }
+      return groups;
+    }
+    return { "All Items": returns };
+  }, [returns, groupBy]);
+
   const handleFinalConfirm = async () => {
     setSubmitting(true);
     try {
+      // Build batch items — handle NOT_RETURNED logic
+      const batchItems: { id: string; status: "verified" | "rejected"; reason?: string }[] = [];
+
       for (const item of returns) {
         const state = itemStates[item.id];
+        if (!state) continue;
+
         const isNotReturned = item.returnCondition === "NOT_RETURNED";
-        if (state?.status === "verified") {
+
+        if (state.status === "verified") {
           if (isNotReturned) {
-            // NOT_RETURNED items: acknowledge without restocking
-            await rejectReturn(item.id, item.returnNotes || "Not returned by staff");
+            // NOT_RETURNED items: send as rejected (acknowledge without restocking)
+            batchItems.push({ id: item.id, status: "verified", reason: item.returnNotes || "Not returned by staff" });
           } else {
-            await verifyReturn(item.id);
+            batchItems.push({ id: item.id, status: "verified" });
           }
-        } else if (state?.status === "rejected") {
-          await rejectReturn(item.id, state.reason || "Not returned");
+        } else if (state.status === "rejected") {
+          batchItems.push({ id: item.id, status: "rejected", reason: state.reason || "Not returned" });
         }
       }
+
+      await batchProcessReturns(batchItems);
       setSubmitted(true);
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const renderItem = (item: PendingReturnItem) => {
+    const state = itemStates[item.id];
+    const isVerified = state?.status === "verified";
+    const isRejected = state?.status === "rejected";
+    const isNotReturned = item.returnCondition === "NOT_RETURNED";
+
+    return (
+      <div
+        key={item.id}
+        className={`flex items-center gap-3 px-4 py-3 transition-all ${
+          isNotReturned ? "bg-amber-50/50 border-l-4 border-l-amber-400" : isVerified ? "bg-emerald-50/50" : isRejected ? "bg-red-50/50" : ""
+        }`}
+      >
+        {/* Checkbox — toggles verified/acknowledged */}
+        <input
+          type="checkbox"
+          checked={isVerified}
+          onChange={() => toggleItem(item.id, "verified")}
+          className={`w-5 h-5 rounded border-shark-300 cursor-pointer shrink-0 ${
+            isNotReturned ? "text-amber-500 focus:ring-amber-400" : "text-emerald-500 focus:ring-emerald-400"
+          }`}
+        />
+
+        {/* Icon */}
+        <Icon
+          name={isNotReturned ? "alert-triangle" : item.itemType === "ASSET" ? "package" : "droplet"}
+          size={16}
+          className={`shrink-0 ${isNotReturned ? "text-amber-500" : isVerified ? "text-emerald-400" : isRejected ? "text-red-400" : item.itemType === "ASSET" ? "text-action-500" : "text-blue-500"}`}
+        />
+
+        {/* Details */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className={`text-sm font-medium ${isVerified ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
+              {item.itemType === "ASSET"
+                ? `${item.assetDetails?.name || "Unknown"}`
+                : `${item.quantity}x ${item.consumableDetails?.name || "Unknown"}`
+              }
+            </p>
+            {isNotReturned && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-700 uppercase tracking-wide">Not Returned</span>
+            )}
+            {item.assetDetails?.isHighValue && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 uppercase tracking-wide">High Value</span>
+            )}
+          </div>
+          {item.itemType === "ASSET" && item.assetDetails && (
+            <p className="text-xs font-mono text-shark-400 mt-0.5">{item.assetDetails.assetCode}</p>
+          )}
+          <p className="text-xs text-shark-400">
+            {item.returnedByName}
+            {item.returnCondition && item.returnCondition !== "NOT_RETURNED" && ` · ${item.returnCondition}`}
+            {item.returnReason && ` · ${item.returnReason}`}
+          </p>
+          {isNotReturned && item.returnNotes && (
+            <p className="text-xs text-amber-600 mt-0.5 font-medium">Staff note: {item.returnNotes}</p>
+          )}
+          {isRejected && state.reason && (
+            <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>
+          )}
+        </div>
+
+        {/* Status label */}
+        {isVerified ? (
+          <span className={`text-xs font-medium shrink-0 ${isNotReturned ? "text-amber-600" : "text-emerald-500"}`}>
+            {isNotReturned ? "Acknowledged" : "Restocked"}
+          </span>
+        ) : isRejected ? (
+          <span className="text-xs text-red-500 font-medium shrink-0">Rejected</span>
+        ) : null}
+
+        {/* Red X — toggles rejected (hidden for NOT_RETURNED items) */}
+        {!isNotReturned && (
+          <button
+            onClick={() => {
+              if (isRejected) {
+                // Undo rejection
+                toggleItem(item.id, "rejected");
+              } else {
+                const reason = prompt("Why was this item not returned? (e.g. damaged, missing, lost)");
+                if (reason) toggleItem(item.id, "rejected", reason);
+              }
+            }}
+            className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+              isRejected ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
+            }`}
+            title={isRejected ? "Undo rejection" : "Not returned — reject"}
+          >
+            <Icon name="x" size={16} />
+          </button>
+        )}
+      </div>
+    );
   };
 
   if (submitted) {
@@ -88,14 +227,36 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-shark-900">Return Checklist</h1>
-        <p className="text-sm text-shark-400 mt-1">
-          {totalItems} items to process
-          {processedCount > 0 && (
-            <span> · {processedCount} of {totalItems} marked</span>
-          )}
-        </p>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <h1 className="text-2xl font-bold text-shark-900">Return Checklist</h1>
+          <p className="text-sm text-shark-400 mt-1">
+            {totalItems} items to process
+            {processedCount > 0 && (
+              <span> · {processedCount} of {totalItems} marked</span>
+            )}
+          </p>
+        </div>
+        {totalItems > 0 && (
+          <div className="flex items-center gap-2">
+            <Select
+              value={groupBy}
+              onChange={(e) => setGroupBy(e.target.value as "none" | "staff" | "type")}
+              className="text-xs h-8"
+            >
+              <option value="none">No grouping</option>
+              <option value="staff">By Staff</option>
+              <option value="type">By Type</option>
+            </Select>
+            <button
+              type="button"
+              onClick={handleSelectAll}
+              className="text-xs font-medium text-action-600 hover:text-action-700 transition-colors whitespace-nowrap"
+            >
+              {allVerified ? "Clear All" : "Mark All Restocked"}
+            </button>
+          </div>
+        )}
       </div>
 
       {returns.length === 0 ? (
@@ -107,99 +268,20 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         </Card>
       ) : (
         <Card>
-          <div className="divide-y divide-shark-100">
-            {returns.map((item) => {
-              const state = itemStates[item.id];
-              const isVerified = state?.status === "verified";
-              const isRejected = state?.status === "rejected";
-              const isNotReturned = item.returnCondition === "NOT_RETURNED";
-
-              return (
-                <div
-                  key={item.id}
-                  className={`flex items-center gap-3 px-4 py-3 transition-all ${
-                    isNotReturned ? "bg-amber-50/50 border-l-4 border-l-amber-400" : isVerified ? "bg-emerald-50/50" : isRejected ? "bg-red-50/50" : ""
-                  }`}
-                >
-                  {/* Checkbox — toggles verified/acknowledged */}
-                  <input
-                    type="checkbox"
-                    checked={isVerified}
-                    onChange={() => toggleItem(item.id, "verified")}
-                    className={`w-5 h-5 rounded border-shark-300 cursor-pointer shrink-0 ${
-                      isNotReturned ? "text-amber-500 focus:ring-amber-400" : "text-emerald-500 focus:ring-emerald-400"
-                    }`}
-                  />
-
-                  {/* Icon */}
-                  <Icon
-                    name={isNotReturned ? "alert-triangle" : item.itemType === "ASSET" ? "package" : "droplet"}
-                    size={16}
-                    className={`shrink-0 ${isNotReturned ? "text-amber-500" : isVerified ? "text-emerald-400" : isRejected ? "text-red-400" : item.itemType === "ASSET" ? "text-action-500" : "text-blue-500"}`}
-                  />
-
-                  {/* Details */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className={`text-sm font-medium ${isVerified ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
-                        {item.itemType === "ASSET"
-                          ? `${item.assetDetails?.name || "Unknown"}`
-                          : `${item.quantity}x ${item.consumableDetails?.name || "Unknown"}`
-                        }
-                        {item.itemType === "ASSET" && item.assetDetails && (
-                          <span className="font-mono text-xs text-shark-400 ml-1">{item.assetDetails.assetCode}</span>
-                        )}
-                      </p>
-                      {isNotReturned && (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-700 uppercase tracking-wide">Not Returned</span>
-                      )}
-                    </div>
-                    <p className="text-xs text-shark-400">
-                      {item.returnedByName}
-                      {item.returnCondition && item.returnCondition !== "NOT_RETURNED" && ` · ${item.returnCondition}`}
-                      {item.returnReason && ` · ${item.returnReason}`}
-                    </p>
-                    {isNotReturned && item.returnNotes && (
-                      <p className="text-xs text-amber-600 mt-0.5 font-medium">Staff note: {item.returnNotes}</p>
-                    )}
-                    {isRejected && state.reason && (
-                      <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>
-                    )}
-                  </div>
-
-                  {/* Status label */}
-                  {isVerified ? (
-                    <span className={`text-xs font-medium shrink-0 ${isNotReturned ? "text-amber-600" : "text-emerald-500"}`}>
-                      {isNotReturned ? "Acknowledged" : "Restocked"}
-                    </span>
-                  ) : isRejected ? (
-                    <span className="text-xs text-red-500 font-medium shrink-0">Rejected</span>
-                  ) : null}
-
-                  {/* Red X — toggles rejected (hidden for NOT_RETURNED items) */}
-                  {!isNotReturned && (
-                    <button
-                      onClick={() => {
-                        if (isRejected) {
-                          // Undo rejection
-                          toggleItem(item.id, "rejected");
-                        } else {
-                          const reason = prompt("Why was this item not returned? (e.g. damaged, missing, lost)");
-                          if (reason) toggleItem(item.id, "rejected", reason);
-                        }
-                      }}
-                      className={`p-1.5 rounded-lg transition-colors shrink-0 ${
-                        isRejected ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
-                      }`}
-                      title={isRejected ? "Undo rejection" : "Not returned — reject"}
-                    >
-                      <Icon name="x" size={16} />
-                    </button>
-                  )}
+          {Object.entries(groupedReturns).map(([groupName, groupItems]) => (
+            <div key={groupName}>
+              {groupBy !== "none" && (
+                <div className="px-4 py-2 bg-shark-50 border-b border-shark-100">
+                  <p className="text-xs font-semibold text-shark-500 uppercase tracking-wide">
+                    {groupName} ({groupItems.length})
+                  </p>
                 </div>
-              );
-            })}
-          </div>
+              )}
+              <div className="divide-y divide-shark-100">
+                {groupItems.map(renderItem)}
+              </div>
+            </div>
+          ))}
 
           {/* Final confirm button */}
           {allProcessed && (
