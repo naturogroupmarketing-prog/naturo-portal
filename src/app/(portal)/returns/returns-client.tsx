@@ -29,7 +29,9 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   const totalItems = returns.length;
   const processedCount = Object.keys(itemStates).length;
   const allProcessed = processedCount >= totalItems && totalItems > 0;
-  const verifiedCount = Object.values(itemStates).filter((s) => s.status === "verified").length;
+  const notReturnedItems = new Set(returns.filter((r) => r.returnCondition === "NOT_RETURNED").map((r) => r.id));
+  const restockedCount = Object.entries(itemStates).filter(([id, s]) => s.status === "verified" && !notReturnedItems.has(id)).length;
+  const acknowledgedCount = Object.entries(itemStates).filter(([id, s]) => s.status === "verified" && notReturnedItems.has(id)).length;
   const rejectedCount = Object.values(itemStates).filter((s) => s.status === "rejected").length;
 
   const toggleItem = (id: string, status: "verified" | "rejected", reason?: string) => {
@@ -50,8 +52,14 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
     try {
       for (const item of returns) {
         const state = itemStates[item.id];
+        const isNotReturned = item.returnCondition === "NOT_RETURNED";
         if (state?.status === "verified") {
-          await verifyReturn(item.id);
+          if (isNotReturned) {
+            // NOT_RETURNED items: acknowledge without restocking
+            await rejectReturn(item.id, item.returnNotes || "Not returned by staff");
+          } else {
+            await verifyReturn(item.id);
+          }
         } else if (state?.status === "rejected") {
           await rejectReturn(item.id, state.reason || "Not returned");
         }
@@ -71,7 +79,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         <div className="p-6 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
           <Icon name="check-circle" size={32} className="text-emerald-400 mx-auto mb-3" />
           <p className="text-sm font-medium text-emerald-700">
-            All items processed. {verifiedCount} restocked{rejectedCount > 0 ? `, ${rejectedCount} rejected` : ""}.
+            All items processed. {restockedCount > 0 ? `${restockedCount} restocked` : ""}{acknowledgedCount > 0 ? `${restockedCount > 0 ? ", " : ""}${acknowledgedCount} not-returned acknowledged` : ""}{rejectedCount > 0 ? `, ${rejectedCount} rejected` : ""}.
           </p>
         </div>
       </div>
@@ -113,12 +121,14 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                     isNotReturned ? "bg-amber-50/50 border-l-4 border-l-amber-400" : isVerified ? "bg-emerald-50/50" : isRejected ? "bg-red-50/50" : ""
                   }`}
                 >
-                  {/* Checkbox — toggles verified */}
+                  {/* Checkbox — toggles verified/acknowledged */}
                   <input
                     type="checkbox"
                     checked={isVerified}
                     onChange={() => toggleItem(item.id, "verified")}
-                    className="w-5 h-5 rounded border-shark-300 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0"
+                    className={`w-5 h-5 rounded border-shark-300 cursor-pointer shrink-0 ${
+                      isNotReturned ? "text-amber-500 focus:ring-amber-400" : "text-emerald-500 focus:ring-emerald-400"
+                    }`}
                   />
 
                   {/* Icon */}
@@ -157,31 +167,35 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                     )}
                   </div>
 
-                  {/* Status label or X button */}
+                  {/* Status label */}
                   {isVerified ? (
-                    <span className="text-xs text-emerald-500 font-medium shrink-0">Restocked</span>
+                    <span className={`text-xs font-medium shrink-0 ${isNotReturned ? "text-amber-600" : "text-emerald-500"}`}>
+                      {isNotReturned ? "Acknowledged" : "Restocked"}
+                    </span>
                   ) : isRejected ? (
                     <span className="text-xs text-red-500 font-medium shrink-0">Rejected</span>
                   ) : null}
 
-                  {/* Red X — toggles rejected */}
-                  <button
-                    onClick={() => {
-                      if (isRejected) {
-                        // Undo rejection
-                        toggleItem(item.id, "rejected");
-                      } else {
-                        const reason = prompt("Why was this item not returned? (e.g. damaged, missing, lost)");
-                        if (reason) toggleItem(item.id, "rejected", reason);
-                      }
-                    }}
-                    className={`p-1.5 rounded-lg transition-colors shrink-0 ${
-                      isRejected ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
-                    }`}
-                    title={isRejected ? "Undo rejection" : "Not returned — reject"}
-                  >
-                    <Icon name="x" size={16} />
-                  </button>
+                  {/* Red X — toggles rejected (hidden for NOT_RETURNED items) */}
+                  {!isNotReturned && (
+                    <button
+                      onClick={() => {
+                        if (isRejected) {
+                          // Undo rejection
+                          toggleItem(item.id, "rejected");
+                        } else {
+                          const reason = prompt("Why was this item not returned? (e.g. damaged, missing, lost)");
+                          if (reason) toggleItem(item.id, "rejected", reason);
+                        }
+                      }}
+                      className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                        isRejected ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
+                      }`}
+                      title={isRejected ? "Undo rejection" : "Not returned — reject"}
+                    >
+                      <Icon name="x" size={16} />
+                    </button>
+                  )}
                 </div>
               );
             })}
@@ -195,7 +209,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                 onClick={handleFinalConfirm}
                 disabled={submitting}
               >
-                {submitting ? "Processing..." : `Confirm & Restock (${verifiedCount} verified, ${rejectedCount} rejected)`}
+                {submitting ? "Processing..." : `Confirm (${restockedCount > 0 ? `${restockedCount} restock` : ""}${acknowledgedCount > 0 ? `${restockedCount > 0 ? ", " : ""}${acknowledgedCount} acknowledged` : ""}${rejectedCount > 0 ? `, ${rejectedCount} rejected` : ""})`}
               </Button>
             </div>
           )}
