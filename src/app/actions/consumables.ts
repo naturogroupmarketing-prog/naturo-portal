@@ -6,6 +6,7 @@ import { isAdminOrManager, canManageRegion, hasPermission } from "@/lib/permissi
 import { createAuditLog } from "@/lib/audit";
 import { sendEmail, emailConsumableRequested } from "@/lib/email";
 import { handleLowStockAlert } from "@/lib/low-stock-handler";
+import { createNotification, notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
 
 export async function createConsumable(formData: FormData) {
@@ -232,6 +233,16 @@ export async function requestConsumable(formData: FormData) {
     }
   }
 
+  // In-app notification for managers
+  await notifyAdminsAndManagers({
+    organizationId,
+    regionId: consumable.regionId,
+    type: "PENDING_REQUEST",
+    title: "New Consumable Request",
+    message: `${session.user.name || session.user.email} requested ${quantity} ${consumable.unitType} of "${consumable.name}".`,
+    link: "/consumables?tab=requests",
+  });
+
   revalidatePath("/my-requests");
   revalidatePath("/consumables");
   return { success: true, requestId: request.id };
@@ -327,6 +338,14 @@ export async function approveRequest(formData: FormData) {
       targetUserId: request.userId,
       organizationId,
     });
+
+    await createNotification({
+      userId: request.userId,
+      type: "REQUEST_APPROVED",
+      title: "Consumable Request Approved",
+      message: `Your request for ${request.quantity} ${request.consumable.unitType} of "${request.consumable.name}" has been approved.`,
+      link: "/dashboard",
+    });
   } else {
     await db.consumableRequest.update({
       where: { id: requestId },
@@ -345,6 +364,14 @@ export async function approveRequest(formData: FormData) {
       consumableId: request.consumableId,
       targetUserId: request.userId,
       organizationId,
+    });
+
+    await createNotification({
+      userId: request.userId,
+      type: "REQUEST_REJECTED",
+      title: "Consumable Request Rejected",
+      message: `Your request for ${request.quantity} ${request.consumable.unitType} of "${request.consumable.name}" was rejected.${rejectionNote ? ` Reason: ${rejectionNote}` : ""}`,
+      link: "/dashboard",
     });
   }
 

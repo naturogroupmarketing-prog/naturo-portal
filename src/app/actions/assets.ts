@@ -7,6 +7,7 @@ import { createAuditLog } from "@/lib/audit";
 import { generateAssetCode } from "@/lib/utils";
 import { buildAssetQRData, generateQRCodeDataURL } from "@/lib/qr";
 import { sendEmail, emailAssetAssigned, emailAssetReturned } from "@/lib/email";
+import { createNotification } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
 import { AssetStatus, AssignmentType } from "@/generated/prisma/client";
 import { enforceAssetLimit } from "@/lib/tenant";
@@ -143,6 +144,15 @@ export async function assignAsset(formData: FormData) {
       ),
     });
   }
+
+  // In-app notification for the assigned user
+  await createNotification({
+    userId,
+    type: "ASSET_ASSIGNED",
+    title: `Asset ${assignmentType === "PERMANENT" ? "Assigned" : "Checked Out"}`,
+    message: `"${asset.name}" (${asset.assetCode}) has been ${assignmentType === "PERMANENT" ? "assigned" : "checked out"} to you.`,
+    link: "/dashboard",
+  });
 
   revalidatePath("/assets");
   revalidatePath("/dashboard");
