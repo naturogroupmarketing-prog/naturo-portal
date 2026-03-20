@@ -187,42 +187,12 @@ export function StarterKitsClient({
       {/* Edit Starter Kit Modal */}
       <Modal open={!!editKit} onClose={() => setEditKit(null)} title="Edit Starter Kit">
         {editKit && (
-          <form action={async (fd) => { await updateStarterKit(fd); setEditKit(null); }} className="space-y-4">
-            <input type="hidden" name="id" value={editKit.id} />
-            <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
-              <Input name="name" required defaultValue={editKit.name} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
-              <Input name="description" defaultValue={editKit.description || ""} />
-            </div>
-            <div className="flex items-center gap-2">
-              <input type="checkbox" name="isDefault" value="true" id="editIsDefault" className="rounded" defaultChecked={editKit.isDefault} />
-              <label htmlFor="editIsDefault" className="text-sm text-shark-700 dark:text-shark-300">
-                Auto-apply to new staff (default kit)
-              </label>
-            </div>
-            <div className="flex justify-between pt-4 border-t border-shark-100">
-              <Button
-                type="button"
-                variant="danger"
-                size="sm"
-                onClick={async () => {
-                  if (confirm(`Delete starter kit "${editKit.name}"? This cannot be undone.`)) {
-                    await deleteStarterKit(editKit.id);
-                    setEditKit(null);
-                  }
-                }}
-              >
-                Delete Kit
-              </Button>
-              <div className="flex gap-3">
-                <Button type="button" variant="secondary" onClick={() => setEditKit(null)}>Cancel</Button>
-                <Button type="submit">Save</Button>
-              </div>
-            </div>
-          </form>
+          <EditStarterKitForm
+            kit={editKit}
+            categories={categories}
+            consumables={consumables}
+            onDone={() => setEditKit(null)}
+          />
         )}
       </Modal>
 
@@ -250,6 +220,144 @@ export function StarterKitsClient({
           />
         )}
       </Modal>
+    </div>
+  );
+}
+
+function EditStarterKitForm({
+  kit,
+  categories,
+  consumables,
+  onDone,
+}: {
+  kit: StarterKit;
+  categories: Category[];
+  consumables: Consumable[];
+  onDone: () => void;
+}) {
+  const [saving, setSaving] = useState(false);
+  const [showAddItems, setShowAddItems] = useState(false);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+  const [editQty, setEditQty] = useState<Record<string, number>>({});
+
+  const handleRemoveItem = async (itemId: string) => {
+    setRemovingId(itemId);
+    await removeStarterKitItem(itemId);
+    setRemovingId(null);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Kit Details */}
+      <form action={async (fd) => { setSaving(true); await updateStarterKit(fd); setSaving(false); onDone(); }} className="space-y-4">
+        <input type="hidden" name="id" value={kit.id} />
+        <div>
+          <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
+          <Input name="name" required defaultValue={kit.name} />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
+          <Input name="description" defaultValue={kit.description || ""} />
+        </div>
+        <div className="flex items-center gap-2">
+          <input type="checkbox" name="isDefault" value="true" id="editIsDefault" className="rounded" defaultChecked={kit.isDefault} />
+          <label htmlFor="editIsDefault" className="text-sm text-shark-700 dark:text-shark-300">
+            Auto-apply to new staff (default kit)
+          </label>
+        </div>
+
+        {/* Kit Items Section */}
+        <div className="border-t border-shark-100 pt-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider">
+              Kit Items ({kit.items.length})
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowAddItems(!showAddItems)}
+              className="text-xs font-medium text-action-500 hover:text-action-600 transition-colors flex items-center gap-1"
+            >
+              <Icon name="plus" size={12} />
+              {showAddItems ? "Hide" : "Add Items"}
+            </button>
+          </div>
+
+          {kit.items.length === 0 ? (
+            <p className="text-sm text-shark-400 italic py-2">No items in this kit yet. Add items below.</p>
+          ) : (
+            <div className="space-y-1.5 max-h-48 overflow-y-auto">
+              {kit.items.map((item) => {
+                const consumable = consumables.find((c) => c.id === item.consumableId);
+                return (
+                  <div
+                    key={item.id}
+                    className={`flex items-center gap-2.5 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2 transition-opacity ${
+                      removingId === item.id ? "opacity-40" : ""
+                    }`}
+                  >
+                    <Icon
+                      name={item.itemType === "ASSET_CATEGORY" ? "package" : "droplet"}
+                      size={14}
+                      className={item.itemType === "ASSET_CATEGORY" ? "text-action-500" : "text-blue-500"}
+                    />
+                    <span className="text-sm text-shark-700 dark:text-shark-300 flex-1">
+                      {item.itemType === "ASSET_CATEGORY"
+                        ? `1x Asset from "${item.category}"`
+                        : `${item.quantity}x ${consumable?.name || "Unknown"} (${consumable?.unitType || ""})`
+                      }
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveItem(item.id)}
+                      disabled={removingId === item.id}
+                      className="text-shark-400 hover:text-red-500 p-1 rounded transition-colors disabled:opacity-50"
+                      title="Remove item"
+                    >
+                      <Icon name="x" size={14} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Inline Add Items */}
+        {showAddItems && (
+          <div className="border border-action-200 rounded-xl p-3 bg-action-50/30">
+            <AddItemsChecklist
+              starterKitId={kit.id}
+              existingItems={kit.items}
+              categories={categories}
+              consumables={consumables}
+              onDone={() => setShowAddItems(false)}
+            />
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="flex justify-between pt-4 border-t border-shark-100">
+          <Button
+            type="button"
+            variant="danger"
+            size="sm"
+            onClick={async () => {
+              if (confirm(`Delete starter kit "${kit.name}"? This cannot be undone.`)) {
+                await deleteStarterKit(kit.id);
+                onDone();
+              }
+            }}
+          >
+            Delete Kit
+          </Button>
+          <div className="flex gap-3">
+            <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>
+            <Button type="submit" disabled={saving}>
+              {saving ? "Saving..." : "Save"}
+            </Button>
+          </div>
+        </div>
+      </form>
     </div>
   );
 }
