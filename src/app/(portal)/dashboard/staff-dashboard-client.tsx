@@ -76,6 +76,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
   const [returnNotes, setReturnNotes] = useState("");
   const [returnSubmitting, setReturnSubmitting] = useState(false);
   const [returnedKitIds, setReturnedKitIds] = useState<Set<string>>(new Set());
+  const [equipmentExpanded, setEquipmentExpanded] = useState(false);
 
   const hasPendingKit = (pendingAssetItems.length > 0 || pendingConsumableItems.length > 0) && !submitted;
 
@@ -315,20 +316,28 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {/* My Equipment — All assigned items */}
       {hasEquipment && (
         <Card className="border-l-4 border-l-action-400">
-          <CardHeader>
+          <CardHeader
+            className="cursor-pointer select-none"
+            onClick={() => setEquipmentExpanded((prev) => !prev)}
+          >
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center">
                 <Icon name="package" size={16} className="text-action-600" />
               </div>
-              <div>
+              <div className="flex-1">
                 <CardTitle>My Equipment</CardTitle>
                 <p className="text-xs text-shark-400 mt-0.5">
-                  Equipment currently assigned to you
+                  Equipment currently assigned to you · {visibleKitApplications.reduce((n, a) => n + a.assets.length + a.consumables.length, 0) + visibleIndividualAssets.length + visibleIndividualConsumables.length} items
                 </p>
               </div>
+              <Icon
+                name="chevron-down"
+                size={18}
+                className={`text-shark-400 transition-transform duration-200 ${equipmentExpanded ? "rotate-180" : ""}`}
+              />
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          {equipmentExpanded && <CardContent className="space-y-4">
             {/* Kit-based assignments */}
             {visibleKitApplications.map((app) => (
               <div key={app.id} className="border border-shark-100 rounded-lg overflow-hidden">
@@ -431,7 +440,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 </div>
               </div>
             )}
-          </CardContent>
+          </CardContent>}
         </Card>
       )}
 
