@@ -104,12 +104,13 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
               const state = itemStates[item.id];
               const isVerified = state?.status === "verified";
               const isRejected = state?.status === "rejected";
+              const isNotReturned = item.returnCondition === "NOT_RETURNED";
 
               return (
                 <div
                   key={item.id}
                   className={`flex items-center gap-3 px-4 py-3 transition-all ${
-                    isVerified ? "bg-emerald-50/50" : isRejected ? "bg-red-50/50" : ""
+                    isNotReturned ? "bg-amber-50/50 border-l-4 border-l-amber-400" : isVerified ? "bg-emerald-50/50" : isRejected ? "bg-red-50/50" : ""
                   }`}
                 >
                   {/* Checkbox — toggles verified */}
@@ -122,27 +123,35 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
                   {/* Icon */}
                   <Icon
-                    name={item.itemType === "ASSET" ? "package" : "droplet"}
+                    name={isNotReturned ? "alert-triangle" : item.itemType === "ASSET" ? "package" : "droplet"}
                     size={16}
-                    className={`shrink-0 ${isVerified ? "text-emerald-400" : isRejected ? "text-red-400" : item.itemType === "ASSET" ? "text-action-500" : "text-blue-500"}`}
+                    className={`shrink-0 ${isNotReturned ? "text-amber-500" : isVerified ? "text-emerald-400" : isRejected ? "text-red-400" : item.itemType === "ASSET" ? "text-action-500" : "text-blue-500"}`}
                   />
 
                   {/* Details */}
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium ${isVerified ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
-                      {item.itemType === "ASSET"
-                        ? `${item.assetDetails?.name || "Unknown"}`
-                        : `${item.quantity}x ${item.consumableDetails?.name || "Unknown"}`
-                      }
-                      {item.itemType === "ASSET" && item.assetDetails && (
-                        <span className="font-mono text-xs text-shark-400 ml-1">{item.assetDetails.assetCode}</span>
+                    <div className="flex items-center gap-2">
+                      <p className={`text-sm font-medium ${isVerified ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
+                        {item.itemType === "ASSET"
+                          ? `${item.assetDetails?.name || "Unknown"}`
+                          : `${item.quantity}x ${item.consumableDetails?.name || "Unknown"}`
+                        }
+                        {item.itemType === "ASSET" && item.assetDetails && (
+                          <span className="font-mono text-xs text-shark-400 ml-1">{item.assetDetails.assetCode}</span>
+                        )}
+                      </p>
+                      {isNotReturned && (
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-700 uppercase tracking-wide">Not Returned</span>
                       )}
-                    </p>
+                    </div>
                     <p className="text-xs text-shark-400">
                       {item.returnedByName}
-                      {item.returnCondition && ` · ${item.returnCondition}`}
+                      {item.returnCondition && item.returnCondition !== "NOT_RETURNED" && ` · ${item.returnCondition}`}
                       {item.returnReason && ` · ${item.returnReason}`}
                     </p>
+                    {isNotReturned && item.returnNotes && (
+                      <p className="text-xs text-amber-600 mt-0.5 font-medium">Staff note: {item.returnNotes}</p>
+                    )}
                     {isRejected && state.reason && (
                       <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>
                     )}

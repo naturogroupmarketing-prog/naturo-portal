@@ -544,8 +544,8 @@ export async function returnStarterKit(
   const assetsToReturn = activeAssets.filter((a) => !excludedAssetIds.has(a.id));
   const consumablesToReturn = activeConsumables.filter((a) => !excludedConsumableIds.has(a.id));
 
-  if (assetsToReturn.length === 0 && consumablesToReturn.length === 0) {
-    throw new Error("No items selected for return");
+  if (activeAssets.length === 0 && activeConsumables.length === 0) {
+    throw new Error("No active items to return");
   }
 
   const returnResults: string[] = [];
@@ -578,9 +578,32 @@ export async function returnStarterKit(
     returnResults.push(`${assignment.asset.name} (${assignment.asset.assetCode})`);
   }
 
-  // Track excluded assets
+  // Create PendingReturn records for excluded assets (so managers can see them)
   for (const assignment of activeAssets.filter((a) => excludedAssetIds.has(a.id))) {
     const excl = excludedItems?.find((e) => e.itemType === "ASSET" && e.itemId === assignment.id);
+    // Deactivate the assignment since staff is surrendering the kit
+    await db.assetAssignment.update({
+      where: { id: assignment.id },
+      data: { isActive: false, actualReturnDate: new Date() },
+    });
+    await db.asset.update({
+      where: { id: assignment.assetId },
+      data: { status: "PENDING_RETURN" },
+    });
+    await db.pendingReturn.create({
+      data: {
+        itemType: "ASSET",
+        assetId: assignment.assetId,
+        quantity: 1,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: `Not returned from kit "${application.starterKit.name}"`,
+        returnCondition: "NOT_RETURNED",
+        returnNotes: excl?.note || "Not returned",
+        organizationId,
+        regionId: assignment.asset.regionId,
+      },
+    });
     excludedResults.push(`${assignment.asset.name} (${assignment.asset.assetCode}) - ${excl?.note || "not returned"}`);
   }
 
@@ -607,9 +630,27 @@ export async function returnStarterKit(
     returnResults.push(`${assignment.quantity}x ${assignment.consumable.name}`);
   }
 
-  // Track excluded consumables
+  // Create PendingReturn records for excluded consumables (so managers can see them)
   for (const assignment of activeConsumables.filter((a) => excludedConsumableIds.has(a.id))) {
     const excl = excludedItems?.find((e) => e.itemType === "CONSUMABLE" && e.itemId === assignment.id);
+    await db.consumableAssignment.update({
+      where: { id: assignment.id },
+      data: { isActive: false },
+    });
+    await db.pendingReturn.create({
+      data: {
+        itemType: "CONSUMABLE",
+        consumableId: assignment.consumableId,
+        quantity: assignment.quantity,
+        returnedByName: session.user.name || session.user.email || "Unknown",
+        returnedByEmail: session.user.email || "",
+        returnReason: `Not returned from kit "${application.starterKit.name}"`,
+        returnCondition: "NOT_RETURNED",
+        returnNotes: excl?.note || "Not returned",
+        organizationId,
+        regionId: assignment.consumable.regionId,
+      },
+    });
     excludedResults.push(`${assignment.quantity}x ${assignment.consumable.name} - ${excl?.note || "not returned"}`);
   }
 
