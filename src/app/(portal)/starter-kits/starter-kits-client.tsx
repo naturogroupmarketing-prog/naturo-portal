@@ -14,6 +14,7 @@ import {
   deleteStarterKit,
   addStarterKitItem,
   removeStarterKitItem,
+  updateStarterKitItemQuantity,
   applyStarterKit,
 } from "@/app/actions/starter-kits";
 
@@ -133,7 +134,7 @@ export function StarterKitsClient({
                                 />
                                 <span className="text-sm text-shark-700 dark:text-shark-300">
                                   {item.itemType === "ASSET_CATEGORY"
-                                    ? `1x Asset from "${item.category}"`
+                                    ? `${item.quantity}x Asset from "${item.category}"`
                                     : `${item.quantity}x ${consumable?.name || "Unknown"} (${consumable?.unitType || ""})`
                                   }
                                 </span>
@@ -238,12 +239,26 @@ function EditStarterKitForm({
   const [saving, setSaving] = useState(false);
   const [showAddItems, setShowAddItems] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
-  const [editQty, setEditQty] = useState<Record<string, number>>({});
+  const [editQty, setEditQty] = useState<Record<string, number>>(
+    () => Object.fromEntries(kit.items.map((i) => [i.id, i.quantity]))
+  );
+  const [savingQtyId, setSavingQtyId] = useState<string | null>(null);
 
   const handleRemoveItem = async (itemId: string) => {
     setRemovingId(itemId);
     await removeStarterKitItem(itemId);
     setRemovingId(null);
+  };
+
+  const handleQtyChange = async (itemId: string, newQty: number) => {
+    const qty = Math.max(1, newQty);
+    setEditQty((prev) => ({ ...prev, [itemId]: qty }));
+    const original = kit.items.find((i) => i.id === itemId);
+    if (original && original.quantity !== qty) {
+      setSavingQtyId(itemId);
+      await updateStarterKitItemQuantity(itemId, qty);
+      setSavingQtyId(null);
+    }
   };
 
   return (
@@ -288,6 +303,7 @@ function EditStarterKitForm({
             <div className="space-y-1.5 max-h-48 overflow-y-auto">
               {kit.items.map((item) => {
                 const consumable = consumables.find((c) => c.id === item.consumableId);
+                const currentQty = editQty[item.id] ?? item.quantity;
                 return (
                   <div
                     key={item.id}
@@ -300,12 +316,28 @@ function EditStarterKitForm({
                       size={14}
                       className={item.itemType === "ASSET_CATEGORY" ? "text-action-500" : "text-blue-500"}
                     />
-                    <span className="text-sm text-shark-700 dark:text-shark-300 flex-1">
+                    <span className="text-sm text-shark-700 dark:text-shark-300 flex-1 truncate">
                       {item.itemType === "ASSET_CATEGORY"
-                        ? `1x Asset from "${item.category}"`
-                        : `${item.quantity}x ${consumable?.name || "Unknown"} (${consumable?.unitType || ""})`
+                        ? `Asset from "${item.category}"`
+                        : `${consumable?.name || "Unknown"} (${consumable?.unitType || ""})`
                       }
                     </span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="text-xs text-shark-400">Qty:</span>
+                      <input
+                        type="number"
+                        min="1"
+                        value={currentQty}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 1;
+                          setEditQty((prev) => ({ ...prev, [item.id]: Math.max(1, val) }));
+                        }}
+                        onBlur={() => handleQtyChange(item.id, currentQty)}
+                        className={`w-14 text-center text-sm rounded-lg border py-0.5 ${
+                          savingQtyId === item.id ? "border-action-400 bg-action-50" : "border-shark-200"
+                        }`}
+                      />
+                    </div>
                     <button
                       type="button"
                       onClick={() => handleRemoveItem(item.id)}
@@ -378,14 +410,22 @@ function AddItemsChecklist({
   const existingCategories = new Set(existingItems.filter((i) => i.itemType === "ASSET_CATEGORY").map((i) => i.category));
   const existingConsumableIds = new Set(existingItems.filter((i) => i.itemType === "CONSUMABLE").map((i) => i.consumableId));
 
-  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
+  const [selectedCategories, setSelectedCategories] = useState<Map<string, number>>(new Map());
   const [selectedConsumables, setSelectedConsumables] = useState<Map<string, number>>(new Map());
   const [saving, setSaving] = useState(false);
 
   const toggleCategory = (name: string) => {
     setSelectedCategories((prev) => {
-      const next = new Set(prev);
-      if (next.has(name)) next.delete(name); else next.add(name);
+      const next = new Map(prev);
+      if (next.has(name)) next.delete(name); else next.set(name, 1);
+      return next;
+    });
+  };
+
+  const setCategoryQty = (name: string, qty: number) => {
+    setSelectedCategories((prev) => {
+      const next = new Map(prev);
+      next.set(name, Math.max(1, qty));
       return next;
     });
   };
@@ -411,13 +451,13 @@ function AddItemsChecklist({
   const handleSave = async () => {
     setSaving(true);
     try {
-      // Add all selected categories
-      for (const catName of selectedCategories) {
+      // Add all selected categories with their quantities
+      for (const [catName, qty] of selectedCategories) {
         const fd = new FormData();
         fd.set("starterKitId", starterKitId);
         fd.set("itemType", "ASSET_CATEGORY");
         fd.set("category", catName);
-        fd.set("quantity", "1");
+        fd.set("quantity", qty.toString());
         await addStarterKitItem(fd);
       }
       // Add all selected consumables
@@ -444,27 +484,46 @@ function AddItemsChecklist({
             <Icon name="package" size={12} className="inline mr-1 text-action-500" />
             Asset Categories
           </p>
-          <p className="text-xs text-shark-400 mb-2">One available asset from each selected category will be assigned.</p>
+          <p className="text-xs text-shark-400 mb-2">Available assets from each selected category will be assigned.</p>
           <div className="space-y-1 max-h-40 overflow-y-auto">
             {categories.map((cat) => {
               const alreadyAdded = existingCategories.has(cat.name);
+              const isSelected = selectedCategories.has(cat.name);
               return (
-                <label
+                <div
                   key={cat.id}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
-                    alreadyAdded ? "bg-shark-100 opacity-50 cursor-not-allowed" : selectedCategories.has(cat.name) ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 border border-transparent"
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
+                    alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 border border-transparent"
                   }`}
                 >
                   <input
                     type="checkbox"
-                    checked={selectedCategories.has(cat.name) || alreadyAdded}
+                    checked={isSelected || alreadyAdded}
                     disabled={alreadyAdded}
                     onChange={() => !alreadyAdded && toggleCategory(cat.name)}
-                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                    className="rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer"
                   />
-                  <span className="text-sm text-shark-700">{cat.name}</span>
-                  {alreadyAdded && <span className="text-xs text-shark-400 ml-auto">Already added</span>}
-                </label>
+                  <label
+                    className={`text-sm text-shark-700 flex-1 ${alreadyAdded ? "cursor-not-allowed" : "cursor-pointer"}`}
+                    onClick={() => !alreadyAdded && toggleCategory(cat.name)}
+                  >
+                    {cat.name}
+                  </label>
+                  {alreadyAdded && <span className="text-xs text-shark-400">Already added</span>}
+                  {isSelected && !alreadyAdded && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-shark-500">Qty:</span>
+                      <input
+                        type="number"
+                        min="1"
+                        value={selectedCategories.get(cat.name) || 1}
+                        onChange={(e) => setCategoryQty(cat.name, parseInt(e.target.value) || 1)}
+                        className="w-14 text-center text-sm rounded-lg border border-shark-200 py-0.5"
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>

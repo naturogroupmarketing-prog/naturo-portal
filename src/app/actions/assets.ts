@@ -102,6 +102,11 @@ export async function assignAsset(formData: FormData) {
   const targetUser = await db.user.findUnique({ where: { id: userId } });
   if (!targetUser) throw new Error("User not found");
 
+  // Staff can only be assigned assets from their own region
+  if (targetUser.regionId && targetUser.regionId !== asset.regionId) {
+    throw new Error("Staff can only be assigned items from their region");
+  }
+
   const newStatus: AssetStatus = assignmentType === "PERMANENT" ? "ASSIGNED" : "CHECKED_OUT";
 
   await db.$transaction([

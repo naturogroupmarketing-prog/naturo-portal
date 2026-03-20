@@ -14,7 +14,7 @@ export default async function DashboardPage() {
 
   // Staff dashboard
   if (session.user.role === "STAFF") {
-    const [assetCount, consumableCount, pendingRequestCount, unacknowledgedCount, recentAssets, recentConsumables, recentRequests, pendingAssetItems, pendingConsumableItems] = await Promise.all([
+    const [assetCount, consumableCount, pendingRequestCount, unacknowledgedCount, recentAssets, recentConsumables, recentRequests, pendingAssetItems, pendingConsumableItems, kitApplications, allActiveAssets, allActiveConsumables] = await Promise.all([
       db.assetAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } } }),
       db.consumableAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } } }),
       db.consumableRequest.count({ where: { userId: session.user.id, status: "PENDING" } }),
@@ -49,7 +49,48 @@ export default async function DashboardPage() {
         include: { consumable: { select: { name: true, unitType: true, imageUrl: true } } },
         orderBy: { assignedDate: "desc" },
       }),
+      // Kit applications for "Return Kit" feature
+      db.starterKitApplication.findMany({
+        where: { userId: session.user.id },
+        include: { starterKit: { select: { name: true } } },
+        orderBy: { appliedAt: "desc" },
+      }),
+      // ALL active asset assignments (for My Equipment section)
+      db.assetAssignment.findMany({
+        where: { userId: session.user.id, isActive: true },
+        include: { asset: { select: { name: true, assetCode: true, category: true } } },
+        orderBy: { checkoutDate: "desc" },
+      }),
+      // ALL active consumable assignments (for My Equipment section)
+      db.consumableAssignment.findMany({
+        where: { userId: session.user.id, isActive: true },
+        include: { consumable: { select: { name: true, unitType: true } } },
+        orderBy: { assignedDate: "desc" },
+      }),
     ]);
+
+    // Build kit application groups (for "Return Kit" button)
+    const activeKitApplications = kitApplications
+      .map((app) => ({
+        id: app.id,
+        kitName: app.starterKit.name,
+        appliedAt: app.appliedAt.toISOString(),
+        assets: allActiveAssets
+          .filter((a) => a.starterKitApplicationId === app.id)
+          .map((a) => ({ id: a.id, name: a.asset.name, assetCode: a.asset.assetCode, category: a.asset.category })),
+        consumables: allActiveConsumables
+          .filter((c) => c.starterKitApplicationId === app.id)
+          .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity })),
+      }))
+      .filter((app) => app.assets.length > 0 || app.consumables.length > 0);
+
+    // Non-kit individual assignments (items assigned directly, not through a kit)
+    const individualAssets = allActiveAssets
+      .filter((a) => !a.starterKitApplicationId)
+      .map((a) => ({ id: a.id, name: a.asset.name, assetCode: a.asset.assetCode, category: a.asset.category }));
+    const individualConsumables = allActiveConsumables
+      .filter((c) => !c.starterKitApplicationId)
+      .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity }));
 
     const staffStats: { label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
       { label: "Assigned Assets", value: assetCount, icon: "package", borderColor: "border-l-action-400", iconBg: "bg-action-50", iconColor: "text-action-500", href: "/my-assets" },
@@ -66,6 +107,9 @@ export default async function DashboardPage() {
         unacknowledgedCount={unacknowledgedCount}
         pendingAssetItems={JSON.parse(JSON.stringify(pendingAssetItems))}
         pendingConsumableItems={JSON.parse(JSON.stringify(pendingConsumableItems))}
+        activeKitApplications={activeKitApplications}
+        individualAssets={individualAssets}
+        individualConsumables={individualConsumables}
       />
     );
   }

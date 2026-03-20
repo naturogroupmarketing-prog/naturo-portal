@@ -575,6 +575,11 @@ export async function assignConsumable(formData: FormData) {
   if (!targetUser) throw new Error("User not found");
   if (targetUser.organizationId !== organizationId) throw new Error("User not found");
 
+  // Staff can only be assigned consumables from their own region
+  if (targetUser.regionId && targetUser.regionId !== consumable.regionId) {
+    throw new Error("Staff can only be assigned items from their region");
+  }
+
   await db.$transaction(async (tx) => {
     await tx.consumable.update({
       where: { id: consumableId },

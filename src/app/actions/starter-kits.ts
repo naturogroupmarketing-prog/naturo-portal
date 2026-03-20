@@ -124,6 +124,23 @@ export async function removeStarterKitItem(itemId: string) {
   return { success: true };
 }
 
+export async function updateStarterKitItemQuantity(itemId: string, quantity: number) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+  if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
+
+  if (quantity < 1) throw new Error("Quantity must be at least 1");
+
+  await db.starterKitItem.update({
+    where: { id: itemId },
+    data: { quantity },
+  });
+
+  revalidatePath("/staff");
+  revalidatePath("/starter-kits");
+  return { success: true };
+}
+
 /**
  * Apply a starter kit to a user — assigns available assets and deducts consumables
  */
@@ -177,54 +194,53 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
     }
 
     if (item.itemType === "ASSET_CATEGORY" && item.category) {
-      // Find an available asset in this category — prefer user's region, then any region
-      let availableAsset = null;
-      if (user.regionId) {
-        availableAsset = await db.asset.findFirst({
-          where: {
-            category: item.category,
-            regionId: user.regionId,
-            organizationId,
-            status: "AVAILABLE",
-          },
-          orderBy: { createdAt: "asc" },
-        });
-      }
+      // Assign item.quantity assets from this category
+      const alreadyAssignedIds: string[] = [];
+      let assignedInCategory = 0;
 
-      // If none in user's region (or no region), search all regions
-      if (!availableAsset) {
-        availableAsset = await db.asset.findFirst({
-          where: {
-            category: item.category,
-            organizationId,
-            status: "AVAILABLE",
-          },
-          orderBy: { createdAt: "asc" },
-        });
-      }
-
-      if (availableAsset) {
-        // Assign the asset — pending acknowledgment
-        await db.$transaction(async (tx) => {
-          await tx.asset.update({
-            where: { id: availableAsset.id },
-            data: { status: "ASSIGNED" },
-          });
-          await tx.assetAssignment.create({
-            data: {
-              assetId: availableAsset.id,
-              userId,
-              assignmentType: "PERMANENT",
-              checkoutDate: new Date(),
-              starterKitApplicationId: application.id,
-              // acknowledgedAt left null — pending confirmation
+      for (let q = 0; q < item.quantity; q++) {
+        // Find an available asset in this category — restricted to user's region
+        let availableAsset = null;
+        if (user.regionId) {
+          availableAsset = await db.asset.findFirst({
+            where: {
+              category: item.category,
+              regionId: user.regionId,
+              organizationId,
+              status: "AVAILABLE",
+              id: { notIn: alreadyAssignedIds },
             },
+            orderBy: { createdAt: "asc" },
           });
-        });
-        results.push(`Assigned ${availableAsset.name} (${availableAsset.assetCode})`);
-        appliedCount++;
-      } else {
-        results.push(`No available ${item.category} asset found`);
+        }
+
+        if (availableAsset) {
+          alreadyAssignedIds.push(availableAsset.id);
+          // Assign the asset — pending acknowledgment
+          await db.$transaction(async (tx) => {
+            await tx.asset.update({
+              where: { id: availableAsset.id },
+              data: { status: "ASSIGNED" },
+            });
+            await tx.assetAssignment.create({
+              data: {
+                assetId: availableAsset.id,
+                userId,
+                assignmentType: "PERMANENT",
+                checkoutDate: new Date(),
+                starterKitApplicationId: application.id,
+                // acknowledgedAt left null — pending confirmation
+              },
+            });
+          });
+          results.push(`Assigned ${availableAsset.name} (${availableAsset.assetCode})`);
+          assignedInCategory++;
+          appliedCount++;
+        } else {
+          const remaining = item.quantity - assignedInCategory;
+          results.push(`No available ${item.category} asset found (${remaining} of ${item.quantity} unfulfilled)`);
+          break; // No more available assets in this category
+        }
       }
     } else if (item.itemType === "CONSUMABLE" && item.consumableId) {
       // Assign consumable
@@ -232,7 +248,10 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
         where: { id: item.consumableId },
       });
 
-      if (consumable && consumable.quantityOnHand >= item.quantity) {
+      // Skip consumables not in user's region
+      if (consumable && user.regionId && consumable.regionId !== user.regionId) {
+        results.push(`Skipped ${consumable.name} (not in staff's region)`);
+      } else if (consumable && consumable.quantityOnHand >= item.quantity) {
         // Don't deduct stock yet — only deduct when staff confirms receipt
         await db.consumableAssignment.create({
           data: {
@@ -475,4 +494,124 @@ export async function rejectKitConsumableItem(assignmentId: string, reason: stri
   revalidatePath("/dashboard");
   revalidatePath("/consumables");
   return { success: true };
+}
+
+/**
+ * Staff returns an entire starter kit — creates PendingReturn for each item, manager verifies
+ */
+export async function returnStarterKit(applicationId: string, condition: string, notes: string) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const application = await db.starterKitApplication.findUnique({
+    where: { id: applicationId },
+    include: { starterKit: true },
+  });
+
+  if (!application || application.userId !== session.user.id) {
+    throw new Error("Application not found");
+  }
+  if (!application.acknowledged) {
+    throw new Error("Kit has not been acknowledged yet");
+  }
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization");
+
+  // Find all active assignments linked to this kit application
+  const [activeAssets, activeConsumables] = await Promise.all([
+    db.assetAssignment.findMany({
+      where: { starterKitApplicationId: applicationId, isActive: true },
+      include: { asset: true },
+    }),
+    db.consumableAssignment.findMany({
+      where: { starterKitApplicationId: applicationId, isActive: true },
+      include: { consumable: true },
+    }),
+  ]);
+
+  if (activeAssets.length === 0 && activeConsumables.length === 0) {
+    throw new Error("No active items to return");
+  }
+
+  const returnResults: string[] = [];
+
+  await db.$transaction(async (tx) => {
+    // Return each asset
+    for (const assignment of activeAssets) {
+      await tx.assetAssignment.update({
+        where: { id: assignment.id },
+        data: { isActive: false, actualReturnDate: new Date() },
+      });
+      await tx.asset.update({
+        where: { id: assignment.assetId },
+        data: { status: "PENDING_RETURN" },
+      });
+      await tx.pendingReturn.create({
+        data: {
+          itemType: "ASSET",
+          assetId: assignment.assetId,
+          quantity: 1,
+          returnedByName: session.user.name || session.user.email || "Unknown",
+          returnedByEmail: session.user.email || "",
+          returnReason: `Starter kit "${application.starterKit.name}" returned`,
+          returnCondition: condition || "GOOD",
+          returnNotes: notes || null,
+          organizationId,
+          regionId: assignment.asset.regionId,
+        },
+      });
+      returnResults.push(`${assignment.asset.name} (${assignment.asset.assetCode})`);
+    }
+
+    // Return each consumable
+    for (const assignment of activeConsumables) {
+      await tx.consumableAssignment.update({
+        where: { id: assignment.id },
+        data: { isActive: false },
+      });
+      await tx.pendingReturn.create({
+        data: {
+          itemType: "CONSUMABLE",
+          consumableId: assignment.consumableId,
+          quantity: assignment.quantity,
+          returnedByName: session.user.name || session.user.email || "Unknown",
+          returnedByEmail: session.user.email || "",
+          returnReason: `Starter kit "${application.starterKit.name}" returned`,
+          returnCondition: condition || "GOOD",
+          returnNotes: notes || null,
+          organizationId,
+          regionId: assignment.consumable.regionId,
+        },
+      });
+      returnResults.push(`${assignment.quantity}x ${assignment.consumable.name}`);
+    }
+  });
+
+  // Audit log
+  await createAuditLog({
+    action: "USER_UPDATED",
+    description: `Starter kit "${application.starterKit.name}" returned by ${session.user.name || session.user.email}: ${returnResults.join(", ")}`,
+    performedById: session.user.id,
+    targetUserId: session.user.id,
+    organizationId,
+    metadata: { starterKitId: application.starterKitId, applicationId, returnResults },
+  });
+
+  // Notify managers to verify and restock
+  await notifyAdminsAndManagers({
+    organizationId,
+    type: "ASSET_RETURNED",
+    title: "Starter Kit Return Pending",
+    message: `${session.user.name || session.user.email} returned starter kit "${application.starterKit.name}" (${returnResults.length} items). Please verify and restock.`,
+    link: "/returns",
+  });
+
+  revalidatePath("/my-assets");
+  revalidatePath("/my-consumables");
+  revalidatePath("/returns");
+  revalidatePath("/assets");
+  revalidatePath("/consumables");
+  revalidatePath("/dashboard");
+  return { success: true, returnedCount: returnResults.length };
 }
