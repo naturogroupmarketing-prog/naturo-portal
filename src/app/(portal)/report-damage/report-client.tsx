@@ -45,8 +45,8 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-shark-900">Report Damage / Loss</h1>
         <Card>
-          <CardContent className="py-12 text-center">
-            <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4">
+          <CardContent className="py-12 text-center animate-fade-in">
+            <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4 animate-check-pop">
               <Icon name="alert-triangle" size={28} className="text-amber-500" />
             </div>
             <h2 className="text-lg font-semibold text-shark-900">Report Submitted</h2>
@@ -153,9 +153,22 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
               {error && (
                 <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
               )}
-              <Button type="submit" size="lg" className="w-full" disabled={uploading || submitting}>
-                {submitting ? "Submitting..." : "Submit Report"}
-              </Button>
+              {submitting ? (
+                <div className="flex flex-col items-center py-4 animate-fade-in">
+                  <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center mb-2">
+                    <svg className="animate-spinner text-amber-500" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
+                      <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-medium text-shark-700">Submitting report...</p>
+                  <p className="text-xs text-shark-400 mt-0.5">Notifying your manager</p>
+                </div>
+              ) : (
+                <Button type="submit" size="lg" className="w-full" disabled={uploading}>
+                  Submit Report
+                </Button>
+              )}
             </form>
           </CardContent>
         </Card>

@@ -215,8 +215,8 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         <div>
           <h1 className="text-2xl font-bold text-shark-900">Return Checklist</h1>
         </div>
-        <div className="p-6 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
-          <Icon name="check-circle" size={32} className="text-emerald-400 mx-auto mb-3" />
+        <div className="p-6 rounded-lg bg-emerald-50 border border-emerald-200 text-center animate-fade-in">
+          <Icon name="check-circle" size={32} className="text-emerald-400 mx-auto mb-3 animate-check-pop" />
           <p className="text-sm font-medium text-emerald-700">
             All items processed. {restockedCount > 0 ? `${restockedCount} restocked` : ""}{acknowledgedCount > 0 ? `${restockedCount > 0 ? ", " : ""}${acknowledgedCount} not-returned acknowledged` : ""}{rejectedCount > 0 ? `, ${rejectedCount} rejected` : ""}.
           </p>
@@ -283,19 +283,41 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
             </div>
           ))}
 
+          {/* Processing overlay */}
+          {submitting && (
+            <div className="p-6 border-t border-shark-100 animate-fade-in">
+              <div className="flex flex-col items-center py-4">
+                <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mb-3">
+                  <svg className="animate-spinner text-emerald-500" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
+                    <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <p className="text-sm font-medium text-shark-700">Processing returns...</p>
+                <p className="text-xs text-shark-400 mt-1">
+                  {restockedCount > 0 && `Restocking ${restockedCount} items`}
+                  {acknowledgedCount > 0 && `${restockedCount > 0 ? ", a" : "A"}cknowledging ${acknowledgedCount} items`}
+                  {rejectedCount > 0 && `, rejecting ${rejectedCount} items`}
+                </p>
+                <div className="w-48 h-1.5 bg-shark-100 rounded-full mt-3 overflow-hidden">
+                  <div className="h-full bg-emerald-400 rounded-full animate-progress-bar" />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Final confirm button */}
-          {allProcessed && (
+          {allProcessed && !submitting && (
             <div className="p-4 border-t border-shark-100">
               <Button
                 className="w-full"
                 onClick={handleFinalConfirm}
-                disabled={submitting}
               >
-                {submitting ? "Processing..." : `Confirm (${restockedCount > 0 ? `${restockedCount} restock` : ""}${acknowledgedCount > 0 ? `${restockedCount > 0 ? ", " : ""}${acknowledgedCount} acknowledged` : ""}${rejectedCount > 0 ? `, ${rejectedCount} rejected` : ""})`}
+                Confirm ({restockedCount > 0 ? `${restockedCount} restock` : ""}{acknowledgedCount > 0 ? `${restockedCount > 0 ? ", " : ""}${acknowledgedCount} acknowledged` : ""}{rejectedCount > 0 ? `, ${rejectedCount} rejected` : ""})
               </Button>
             </div>
           )}
-          {!allProcessed && totalItems > 0 && (
+          {!allProcessed && !submitting && totalItems > 0 && (
             <p className="text-xs text-shark-400 text-center py-3">
               {processedCount} of {totalItems} items marked — mark all items to confirm
             </p>

@@ -4,10 +4,38 @@ import { ButtonHTMLAttributes, forwardRef } from "react";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "danger" | "ghost" | "outline";
   size?: "sm" | "md" | "lg";
+  loading?: boolean;
+}
+
+function Spinner({ className }: { className?: string }) {
+  return (
+    <svg
+      className={cn("animate-spinner", className)}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+    >
+      <circle
+        cx="8"
+        cy="8"
+        r="6.5"
+        stroke="currentColor"
+        strokeOpacity="0.25"
+        strokeWidth="2.5"
+      />
+      <path
+        d="M8 1.5a6.5 6.5 0 016.5 6.5"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", ...props }, ref) => {
+  ({ className, variant = "primary", size = "md", loading, disabled, children, ...props }, ref) => {
     return (
       <button
         ref={ref}
@@ -27,11 +55,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           },
           className
         )}
+        disabled={disabled || loading}
         {...props}
-      />
+      >
+        {loading && <Spinner className="mr-2 shrink-0" />}
+        {children}
+      </button>
     );
   }
 );
 
 Button.displayName = "Button";
-export { Button };
+export { Button, Spinner };

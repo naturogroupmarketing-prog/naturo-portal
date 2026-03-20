@@ -362,19 +362,38 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               })}
             </div>
 
+            {/* Processing overlay */}
+            {submitting && (
+              <div className="relative mt-4 pt-3 border-t border-shark-100">
+                <div className="flex flex-col items-center py-6 animate-fade-in">
+                  <div className="w-12 h-12 rounded-full bg-action-50 flex items-center justify-center mb-3">
+                    <svg className="animate-spinner text-action-500" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
+                      <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-medium text-shark-700">Processing your receipt...</p>
+                  <p className="text-xs text-shark-400 mt-1">Updating inventory records</p>
+                  <div className="w-48 h-1.5 bg-shark-100 rounded-full mt-3 overflow-hidden">
+                    <div className="h-full bg-action-400 rounded-full animate-progress-bar" />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Final confirm button */}
-            {allProcessed && (
+            {allProcessed && !submitting && (
               <div className="mt-4 pt-3 border-t border-shark-100">
                 <Button
                   className="w-full"
                   onClick={handleFinalConfirm}
-                  disabled={submitting}
+                  loading={submitting}
                 >
-                  {submitting ? "Confirming..." : `Confirm Receipt (${Object.values(itemStates).filter(s => s.status === "received").length} received, ${Object.values(itemStates).filter(s => s.status === "not_received").length} not received)`}
+                  Confirm Receipt ({Object.values(itemStates).filter(s => s.status === "received").length} received, {Object.values(itemStates).filter(s => s.status === "not_received").length} not received)
                 </Button>
               </div>
             )}
-            {!allProcessed && totalItems > 0 && (
+            {!allProcessed && !submitting && totalItems > 0 && (
               <p className="text-xs text-shark-400 text-center mt-3">
                 {processedCount} of {totalItems} items marked — mark all items to confirm
               </p>
@@ -518,7 +537,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {/* Return Kit Confirmation Modal */}
       {returningKitId && returningKit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md my-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md my-auto animate-fade-in">
             <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100">
               <h3 className="text-lg font-semibold text-shark-900">Return Starter Kit</h3>
               <button
@@ -650,23 +669,40 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <p className="text-sm text-red-700">{returnError}</p>
               </div>
             )}
-            <div className="flex gap-3 px-6 py-4 border-t border-shark-100">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => { setReturningKitId(null); setReturnError(null); }}
-                disabled={returnSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="flex-1 bg-red-600 hover:bg-red-700"
-                onClick={handleReturnKit}
-                disabled={returnSubmitting || Object.entries(kitItemExclusions).some(([, v]) => v.excluded && v.note.trim() === "")}
-              >
-                {returnSubmitting ? "Returning..." : "Confirm Return"}
-              </Button>
-            </div>
+            {/* Processing overlay for return */}
+            {returnSubmitting && (
+              <div className="px-6 py-8 flex flex-col items-center animate-fade-in">
+                <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-3">
+                  <svg className="animate-spinner text-red-500" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
+                    <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <p className="text-sm font-medium text-shark-700">Processing kit return...</p>
+                <p className="text-xs text-shark-400 mt-1">Notifying your manager</p>
+                <div className="w-48 h-1.5 bg-shark-100 rounded-full mt-3 overflow-hidden">
+                  <div className="h-full bg-red-400 rounded-full animate-progress-bar" />
+                </div>
+              </div>
+            )}
+            {!returnSubmitting && (
+              <div className="flex gap-3 px-6 py-4 border-t border-shark-100">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => { setReturningKitId(null); setReturnError(null); }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="flex-1 bg-red-600 hover:bg-red-700"
+                  onClick={handleReturnKit}
+                  disabled={Object.entries(kitItemExclusions).some(([, v]) => v.excluded && v.note.trim() === "")}
+                >
+                  Confirm Return
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -674,7 +710,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {/* Return Individual Item Modal */}
       {returningItemId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md my-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md my-auto animate-fade-in">
             <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100">
               <h3 className="text-lg font-semibold text-shark-900">Return Item</h3>
               <button
@@ -723,23 +759,39 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <p className="text-sm text-red-700">{returnError}</p>
               </div>
             )}
-            <div className="flex gap-3 px-6 py-4 border-t border-shark-100">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => { setReturningItemId(null); setReturnError(null); }}
-                disabled={returnSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="flex-1 bg-red-600 hover:bg-red-700"
-                onClick={handleReturnIndividualItem}
-                disabled={returnSubmitting}
-              >
-                {returnSubmitting ? "Returning..." : "Confirm Return"}
-              </Button>
-            </div>
+            {/* Processing overlay for individual return */}
+            {returnSubmitting && (
+              <div className="px-6 py-8 flex flex-col items-center animate-fade-in">
+                <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-3">
+                  <svg className="animate-spinner text-red-500" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
+                    <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <p className="text-sm font-medium text-shark-700">Processing return...</p>
+                <p className="text-xs text-shark-400 mt-1">Notifying your manager</p>
+                <div className="w-48 h-1.5 bg-shark-100 rounded-full mt-3 overflow-hidden">
+                  <div className="h-full bg-red-400 rounded-full animate-progress-bar" />
+                </div>
+              </div>
+            )}
+            {!returnSubmitting && (
+              <div className="flex gap-3 px-6 py-4 border-t border-shark-100">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => { setReturningItemId(null); setReturnError(null); }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="flex-1 bg-red-600 hover:bg-red-700"
+                  onClick={handleReturnIndividualItem}
+                >
+                  Confirm Return
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}
