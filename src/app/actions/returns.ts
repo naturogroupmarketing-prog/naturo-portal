@@ -115,70 +115,69 @@ export async function batchProcessReturns(
   let verifiedCount = 0;
   let rejectedCount = 0;
 
-  await db.$transaction(async (tx) => {
-    for (const item of items) {
-      const pr = returnMap.get(item.id);
-      if (!pr) continue;
+  // Process each item sequentially (no interactive transaction for Neon compatibility)
+  for (const item of items) {
+    const pr = returnMap.get(item.id);
+    if (!pr) continue;
 
-      if (item.status === "verified") {
-        // Mark as verified
-        await tx.pendingReturn.update({
-          where: { id: item.id },
-          data: {
-            isVerified: true,
-            verifiedById: session.user.id,
-            verifiedAt: new Date(),
-          },
-        });
+    if (item.status === "verified") {
+      // Mark as verified
+      await db.pendingReturn.update({
+        where: { id: item.id },
+        data: {
+          isVerified: true,
+          verifiedById: session.user.id,
+          verifiedAt: new Date(),
+        },
+      });
 
-        // Restock — skip if stock already handled or NOT_RETURNED
-        if (pr.returnReason !== "STOCK_ALREADY_HANDLED" && pr.returnCondition !== "NOT_RETURNED") {
-          if (pr.itemType === "ASSET" && pr.assetId) {
-            await tx.asset.update({
-              where: { id: pr.assetId },
-              data: { status: "AVAILABLE" },
-            });
-          } else if (pr.itemType === "CONSUMABLE" && pr.consumableId) {
-            await tx.consumable.update({
-              where: { id: pr.consumableId },
-              data: { quantityOnHand: { increment: pr.quantity } },
-            });
-          }
-        } else if (pr.returnCondition === "NOT_RETURNED") {
-          // NOT_RETURNED items: acknowledge without restocking — mark asset as DAMAGED
-          if (pr.itemType === "ASSET" && pr.assetId) {
-            await tx.asset.update({
-              where: { id: pr.assetId },
-              data: { status: "DAMAGED" },
-            });
-          }
-        }
-
-        verifiedCount++;
-      } else if (item.status === "rejected") {
-        // Reject — mark as verified with rejection notes
-        await tx.pendingReturn.update({
-          where: { id: item.id },
-          data: {
-            isVerified: true,
-            verifiedById: session.user.id,
-            verifiedAt: new Date(),
-            verificationNotes: `REJECTED: ${item.reason || "Not returned"}`,
-          },
-        });
-
-        // Mark asset as DAMAGED
+      // Restock — skip if stock already handled or NOT_RETURNED
+      if (pr.returnReason !== "STOCK_ALREADY_HANDLED" && pr.returnCondition !== "NOT_RETURNED") {
         if (pr.itemType === "ASSET" && pr.assetId) {
-          await tx.asset.update({
+          await db.asset.update({
+            where: { id: pr.assetId },
+            data: { status: "AVAILABLE" },
+          });
+        } else if (pr.itemType === "CONSUMABLE" && pr.consumableId) {
+          await db.consumable.update({
+            where: { id: pr.consumableId },
+            data: { quantityOnHand: { increment: pr.quantity } },
+          });
+        }
+      } else if (pr.returnCondition === "NOT_RETURNED") {
+        // NOT_RETURNED items: acknowledge without restocking — mark asset as DAMAGED
+        if (pr.itemType === "ASSET" && pr.assetId) {
+          await db.asset.update({
             where: { id: pr.assetId },
             data: { status: "DAMAGED" },
           });
         }
-
-        rejectedCount++;
       }
+
+      verifiedCount++;
+    } else if (item.status === "rejected") {
+      // Reject — mark as verified with rejection notes
+      await db.pendingReturn.update({
+        where: { id: item.id },
+        data: {
+          isVerified: true,
+          verifiedById: session.user.id,
+          verifiedAt: new Date(),
+          verificationNotes: `REJECTED: ${item.reason || "Not returned"}`,
+        },
+      });
+
+      // Mark asset as DAMAGED
+      if (pr.itemType === "ASSET" && pr.assetId) {
+        await db.asset.update({
+          where: { id: pr.assetId },
+          data: { status: "DAMAGED" },
+        });
+      }
+
+      rejectedCount++;
     }
-  });
+  }
 
   await createAuditLog({
     action: "ASSET_UPDATED",

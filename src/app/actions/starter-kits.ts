@@ -514,73 +514,73 @@ export async function batchConfirmKitReceipt(
 
   const rejectedAssetDetails: { name: string; code: string; reason: string }[] = [];
 
-  await db.$transaction(async (tx) => {
-    // 1. Batch acknowledge received assets
-    if (receivedAssets.length > 0) {
-      await tx.assetAssignment.updateMany({
-        where: {
-          id: { in: receivedAssets.map((i) => i.id) },
-          userId: session.user.id,
-        },
-        data: { acknowledgedAt: new Date() },
+  // Process sequentially (no interactive transaction for Neon compatibility)
+
+  // 1. Batch acknowledge received assets
+  if (receivedAssets.length > 0) {
+    await db.assetAssignment.updateMany({
+      where: {
+        id: { in: receivedAssets.map((i) => i.id) },
+        userId: session.user.id,
+      },
+      data: { acknowledgedAt: new Date() },
+    });
+  }
+
+  // 2. Acknowledge received consumables + deduct stock (per-item since each has different consumableId)
+  for (const item of receivedConsumables) {
+    const assignment = await db.consumableAssignment.findUnique({
+      where: { id: item.id },
+    });
+    if (!assignment || assignment.userId !== session.user.id) continue;
+
+    await db.consumableAssignment.update({
+      where: { id: item.id },
+      data: { acknowledgedAt: new Date() },
+    });
+
+    if (assignment.starterKitApplicationId) {
+      await db.consumable.update({
+        where: { id: assignment.consumableId },
+        data: { quantityOnHand: { decrement: assignment.quantity } },
       });
     }
+  }
 
-    // 2. Acknowledge received consumables + deduct stock (per-item since each has different consumableId)
-    for (const item of receivedConsumables) {
-      const assignment = await tx.consumableAssignment.findUnique({
-        where: { id: item.id },
-      });
-      if (!assignment || assignment.userId !== session.user.id) continue;
+  // 3. Reject assets — deactivate assignment, return asset to AVAILABLE
+  for (const item of rejectedAssets) {
+    const assignment = await db.assetAssignment.findUnique({
+      where: { id: item.id },
+      include: { asset: true },
+    });
+    if (!assignment || assignment.userId !== session.user.id) continue;
 
-      await tx.consumableAssignment.update({
-        where: { id: item.id },
-        data: { acknowledgedAt: new Date() },
-      });
+    await db.assetAssignment.update({
+      where: { id: item.id },
+      data: { isActive: false, acknowledgedAt: new Date(), actualReturnDate: new Date() },
+    });
+    await db.asset.update({
+      where: { id: assignment.assetId },
+      data: { status: "AVAILABLE" },
+    });
 
-      if (assignment.starterKitApplicationId) {
-        await tx.consumable.update({
-          where: { id: assignment.consumableId },
-          data: { quantityOnHand: { decrement: assignment.quantity } },
-        });
-      }
-    }
+    rejectedAssetDetails.push({
+      name: assignment.asset.name,
+      code: assignment.asset.assetCode,
+      reason: item.reason || "Not received",
+    });
+  }
 
-    // 3. Reject assets — deactivate assignment, return asset to AVAILABLE
-    for (const item of rejectedAssets) {
-      const assignment = await tx.assetAssignment.findUnique({
-        where: { id: item.id },
-        include: { asset: true },
-      });
-      if (!assignment || assignment.userId !== session.user.id) continue;
-
-      await tx.assetAssignment.update({
-        where: { id: item.id },
-        data: { isActive: false, acknowledgedAt: new Date(), actualReturnDate: new Date() },
-      });
-      await tx.asset.update({
-        where: { id: assignment.assetId },
-        data: { status: "AVAILABLE" },
-      });
-
-      rejectedAssetDetails.push({
-        name: assignment.asset.name,
-        code: assignment.asset.assetCode,
-        reason: item.reason || "Not received",
-      });
-    }
-
-    // 4. Batch reject consumables — deactivate assignments
-    if (rejectedConsumables.length > 0) {
-      await tx.consumableAssignment.updateMany({
-        where: {
-          id: { in: rejectedConsumables.map((i) => i.id) },
-          userId: session.user.id,
-        },
-        data: { isActive: false, acknowledgedAt: new Date() },
-      });
-    }
-  });
+  // 4. Batch reject consumables — deactivate assignments
+  if (rejectedConsumables.length > 0) {
+    await db.consumableAssignment.updateMany({
+      where: {
+        id: { in: rejectedConsumables.map((i) => i.id) },
+        userId: session.user.id,
+      },
+      data: { isActive: false, acknowledgedAt: new Date() },
+    });
+  }
 
   // Check if application is complete
   await checkApplicationComplete(applicationId);

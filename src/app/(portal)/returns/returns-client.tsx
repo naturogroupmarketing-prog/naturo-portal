@@ -26,6 +26,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   const [itemStates, setItemStates] = useState<Record<string, { status: "verified" | "rejected"; reason?: string }>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<"none" | "staff" | "type">("none");
 
   const totalItems = returns.length;
@@ -85,6 +86,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
   const handleFinalConfirm = async () => {
     setSubmitting(true);
+    setError(null);
     try {
       // Build batch items — handle NOT_RETURNED logic
       const batchItems: { id: string; status: "verified" | "rejected"; reason?: string }[] = [];
@@ -107,8 +109,16 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         }
       }
 
+      if (batchItems.length === 0) {
+        setError("No items to process");
+        setSubmitting(false);
+        return;
+      }
+
       await batchProcessReturns(batchItems);
       setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to process returns. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -282,6 +292,13 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
               </div>
             </div>
           ))}
+
+          {/* Error message */}
+          {error && (
+            <div className="p-4 border-t border-shark-100">
+              <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+            </div>
+          )}
 
           {/* Processing overlay */}
           {submitting && (
