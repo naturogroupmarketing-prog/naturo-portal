@@ -321,7 +321,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         </Card>
       )}
 
-      {/* My Equipment — All assigned items */}
+      {/* Starter Kit — All assigned items */}
       {hasEquipment && (
         <Card className="border-l-4 border-l-action-400">
           <CardHeader
@@ -333,7 +333,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <Icon name="package" size={16} className="text-action-600" />
               </div>
               <div className="flex-1">
-                <CardTitle>My Equipment</CardTitle>
+                <CardTitle>Starter Kit</CardTitle>
                 <p className="text-xs text-shark-400 mt-0.5">
                   Equipment currently assigned to you · {visibleKitApplications.reduce((n, a) => n + a.assets.length + a.consumables.length, 0) + visibleIndividualAssets.length + visibleIndividualConsumables.length} items
                 </p>
