@@ -313,6 +313,7 @@ model AssetAssignment {
   @@index([assetId, isActive])
   @@index([userId, isActive])
   @@index([starterKitApplicationId])
+  @@index([starterKitApplicationId, acknowledgedAt, isActive])
 }
 
 // ─── CONSUMABLES ────────────────────────────────────────
@@ -397,6 +398,7 @@ model ConsumableAssignment {
   @@index([consumableId, isActive])
   @@index([userId, isActive])
   @@index([starterKitApplicationId])
+  @@index([starterKitApplicationId, acknowledgedAt, isActive])
 }
 
 // ─── DAMAGE / LOSS REPORTS ──────────────────────────────

@@ -349,22 +349,22 @@ export async function bulkDeleteAssets(assetIds: string[]) {
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization found");
 
+  // Batch fetch all assets in one query instead of N individual queries
+  const assets = await db.asset.findMany({
+    where: { id: { in: assetIds }, organizationId },
+    include: { assignments: { where: { isActive: true } } },
+  });
+  const assetMap = new Map(assets.map((a) => [a.id, a]));
+
   let deleted = 0;
   const errors: string[] = [];
+  const toDelete: string[] = [];
 
   for (const assetId of assetIds) {
-    const asset = await db.asset.findUnique({
-      where: { id: assetId },
-      include: { assignments: { where: { isActive: true } } },
-    });
+    const asset = assetMap.get(assetId);
 
     if (!asset) {
-      errors.push(`Asset not found`);
-      continue;
-    }
-
-    if (asset.organizationId !== organizationId) {
-      errors.push(`Asset not found`);
+      errors.push("Asset not found");
       continue;
     }
 
@@ -378,15 +378,17 @@ export async function bulkDeleteAssets(assetIds: string[]) {
       continue;
     }
 
-    await db.$transaction([
-      db.auditLog.deleteMany({ where: { assetId } }),
-      db.assetAssignment.deleteMany({ where: { assetId } }),
-      db.damageReport.deleteMany({ where: { assetId } }),
-      db.assetPhoto.deleteMany({ where: { assetId } }),
-      db.asset.delete({ where: { id: assetId } }),
-    ]);
+    toDelete.push(assetId);
+  }
 
-    deleted++;
+  // Batch delete all eligible assets
+  if (toDelete.length > 0) {
+    await db.auditLog.deleteMany({ where: { assetId: { in: toDelete } } });
+    await db.assetAssignment.deleteMany({ where: { assetId: { in: toDelete } } });
+    await db.damageReport.deleteMany({ where: { assetId: { in: toDelete } } });
+    await db.assetPhoto.deleteMany({ where: { assetId: { in: toDelete } } });
+    await db.asset.deleteMany({ where: { id: { in: toDelete } } });
+    deleted = toDelete.length;
   }
 
   revalidatePath("/assets");

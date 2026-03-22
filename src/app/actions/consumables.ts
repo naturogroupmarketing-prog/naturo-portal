@@ -547,21 +547,21 @@ export async function bulkDeleteConsumables(consumableIds: string[]) {
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization found");
 
+  // Batch fetch all consumables in one query instead of N individual queries
+  const consumables = await db.consumable.findMany({
+    where: { id: { in: consumableIds }, organizationId },
+    include: { assignments: { where: { isActive: true } } },
+  });
+  const consumableMap = new Map(consumables.map((c) => [c.id, c]));
+
   let deleted = 0;
   const errors: string[] = [];
+  const toDelete: string[] = [];
 
   for (const consumableId of consumableIds) {
-    const consumable = await db.consumable.findUnique({
-      where: { id: consumableId },
-      include: { assignments: { where: { isActive: true } } },
-    });
+    const consumable = consumableMap.get(consumableId);
 
     if (!consumable) {
-      errors.push("Consumable not found");
-      continue;
-    }
-
-    if (consumable.organizationId !== organizationId) {
       errors.push("Consumable not found");
       continue;
     }
@@ -576,14 +576,16 @@ export async function bulkDeleteConsumables(consumableIds: string[]) {
       continue;
     }
 
-    await db.$transaction([
-      db.auditLog.deleteMany({ where: { consumableId } }),
-      db.consumableAssignment.deleteMany({ where: { consumableId } }),
-      db.consumableRequest.deleteMany({ where: { consumableId } }),
-      db.consumable.delete({ where: { id: consumableId } }),
-    ]);
+    toDelete.push(consumableId);
+  }
 
-    deleted++;
+  // Batch delete all eligible consumables
+  if (toDelete.length > 0) {
+    await db.auditLog.deleteMany({ where: { consumableId: { in: toDelete } } });
+    await db.consumableAssignment.deleteMany({ where: { consumableId: { in: toDelete } } });
+    await db.consumableRequest.deleteMany({ where: { consumableId: { in: toDelete } } });
+    await db.consumable.deleteMany({ where: { id: { in: toDelete } } });
+    deleted = toDelete.length;
   }
 
   revalidatePath("/consumables");

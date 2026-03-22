@@ -9,9 +9,15 @@ import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
+import dynamic from "next/dynamic";
 import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets } from "@/app/actions/assets";
 import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem, reorderCategories, reorderItems } from "@/app/actions/categories";
-import { QRScanner } from "@/components/ui/qr-scanner";
+
+// Lazy-load QR scanner (~100KB html5-qrcode) — only needed when modal opens
+const QRScanner = dynamic(
+  () => import("@/components/ui/qr-scanner").then((m) => m.QRScanner),
+  { ssr: false, loading: () => <div className="flex items-center justify-center py-12"><div className="animate-pulse text-sm text-shark-400">Loading scanner...</div></div> }
+);
 
 // Color palette auto-assigned by category index
 const SECTION_COLORS = [
