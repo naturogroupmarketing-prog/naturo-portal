@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
-import { createConsumable, updateConsumable, addStock, approveRequest, issueConsumable, assignConsumable, returnConsumable, bulkDeleteConsumables } from "@/app/actions/consumables";
+import { createConsumable, updateConsumable, addStock, deductStock, approveRequest, issueConsumable, assignConsumable, returnConsumable, bulkDeleteConsumables } from "@/app/actions/consumables";
 import { createCategory, updateCategory, deleteCategory, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { formatDate } from "@/lib/utils";
 
@@ -102,6 +102,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const { addToast } = useToast();
   const [showCreate, setShowCreate] = useState(false);
   const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
+  const [stockMode, setStockMode] = useState<"add" | "deduct">("add");
   const [showAssign, setShowAssign] = useState<Consumable | null>(null);
   const [showReturn, setShowReturn] = useState<{ assignment: ConsumableAssignment; consumable: Consumable } | null>(null);
   const [addingStock, setAddingStock] = useState(false);
@@ -514,7 +515,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   )}
                   <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
-                      <Button size="sm" variant="outline" onClick={() => setShowAddStock(c)}>+ Stock</Button>
+                      <Button size="sm" variant="outline" onClick={() => { setStockMode("add"); setShowAddStock(c); }}>{isSuperAdmin ? "Stock" : "+ Stock"}</Button>
                       <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
                       {activeAssignments.length > 0 && (
                         <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}>
@@ -1052,32 +1053,84 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         </form>
       </Modal>
 
-      {/* Add Stock Modal */}
-      <Modal open={!!showAddStock} onClose={() => setShowAddStock(null)} title={`Add Stock: ${showAddStock?.name}`}>
+      {/* Stock Management Modal */}
+      <Modal open={!!showAddStock} onClose={() => setShowAddStock(null)} title={`${stockMode === "add" ? "Add" : "Deduct"} Stock: ${showAddStock?.name}`}>
         {showAddStock && (
           <form action={async (fd) => {
             setAddingStock(true);
             try {
-              await addStock(fd);
-              addToast("Stock added successfully", "success");
+              if (stockMode === "deduct") {
+                await deductStock(fd);
+                addToast("Stock deducted successfully", "success");
+              } else {
+                await addStock(fd);
+                addToast("Stock added successfully", "success");
+              }
               setShowAddStock(null);
             } catch (e) {
-              addToast(e instanceof Error ? e.message : "Failed to add stock", "error");
+              addToast(e instanceof Error ? e.message : "Failed to update stock", "error");
             } finally {
               setAddingStock(false);
             }
           }} className="space-y-4">
             <input type="hidden" name="consumableId" value={showAddStock.id} />
-            <p className="text-sm text-gray-600">
+
+            {/* Add / Deduct toggle — Super Admin only */}
+            {isSuperAdmin && (
+              <div className="flex rounded-lg bg-shark-50 p-1 gap-1">
+                <button
+                  type="button"
+                  onClick={() => setStockMode("add")}
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "add" ? "bg-white text-emerald-700 shadow-sm" : "text-shark-500 hover:text-shark-700"}`}
+                >
+                  + Add Stock
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStockMode("deduct")}
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "deduct" ? "bg-white text-red-700 shadow-sm" : "text-shark-500 hover:text-shark-700"}`}
+                >
+                  − Deduct Stock
+                </button>
+              </div>
+            )}
+
+            <p className="text-sm text-shark-600">
               Current stock: <strong>{showAddStock.quantityOnHand} {showAddStock.unitType}</strong>
             </p>
+
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Quantity to Add *</label>
-              <Input name="quantity" type="number" min="1" required />
+              <label className="block text-sm font-medium text-shark-700 mb-1">
+                Quantity to {stockMode === "add" ? "Add" : "Deduct"} *
+              </label>
+              <Input
+                name="quantity"
+                type="number"
+                min="1"
+                max={stockMode === "deduct" ? showAddStock.quantityOnHand : undefined}
+                required
+              />
             </div>
+
+            {stockMode === "deduct" && (
+              <div>
+                <label className="block text-sm font-medium text-shark-700 mb-1">Reason *</label>
+                <Input name="reason" placeholder="e.g. Stock correction, write-off, expired..." required />
+              </div>
+            )}
+
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowAddStock(null)}>Cancel</Button>
-              <Button type="submit" disabled={addingStock}>{addingStock ? "Adding..." : "Add Stock"}</Button>
+              <Button
+                type="submit"
+                disabled={addingStock}
+                className={stockMode === "deduct" ? "bg-red-600 hover:bg-red-700" : ""}
+              >
+                {addingStock
+                  ? (stockMode === "add" ? "Adding..." : "Deducting...")
+                  : (stockMode === "add" ? "Add Stock" : "Deduct Stock")
+                }
+              </Button>
             </div>
           </form>
         )}

@@ -165,6 +165,53 @@ export async function addStock(formData: FormData) {
   return { success: true };
 }
 
+/**
+ * Super Admin: deduct stock directly (for corrections, write-offs, etc.)
+ */
+export async function deductStock(formData: FormData) {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "SUPER_ADMIN") {
+    throw new Error("Only Super Admins can deduct stock directly");
+  }
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  const consumableId = formData.get("consumableId") as string;
+  const quantity = parseInt(formData.get("quantity") as string);
+  const reason = (formData.get("reason") as string)?.trim();
+
+  if (!quantity || quantity <= 0) throw new Error("Invalid quantity");
+  if (!reason) throw new Error("A reason is required for stock deduction");
+
+  const consumable = await db.consumable.findUnique({
+    where: { id: consumableId },
+  });
+  if (!consumable) throw new Error("Consumable not found");
+  if (consumable.organizationId !== organizationId) throw new Error("Consumable not found");
+
+  if (consumable.quantityOnHand < quantity) {
+    throw new Error(`Cannot deduct ${quantity} — only ${consumable.quantityOnHand} ${consumable.unitType} in stock`);
+  }
+
+  await db.consumable.update({
+    where: { id: consumableId },
+    data: { quantityOnHand: { decrement: quantity } },
+  });
+
+  await createAuditLog({
+    action: "CONSUMABLE_STOCK_REDUCED",
+    description: `Deducted ${quantity} ${consumable.unitType} of "${consumable.name}" — Reason: ${reason}`,
+    performedById: session.user.id,
+    consumableId,
+    organizationId,
+    metadata: { quantity, previousQty: consumable.quantityOnHand, reason },
+  });
+
+  revalidatePath("/consumables");
+  return { success: true };
+}
+
 export async function requestConsumable(formData: FormData) {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
