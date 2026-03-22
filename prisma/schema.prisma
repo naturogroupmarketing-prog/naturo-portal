@@ -686,9 +686,10 @@ model ManagerPermission {
   assetDelete      Boolean @default(true)
 
   // Consumable permissions
-  consumableAdd    Boolean @default(true)
-  consumableEdit   Boolean @default(true)
-  consumableDelete Boolean @default(true)
+  consumableAdd         Boolean @default(true)
+  consumableEdit        Boolean @default(true)
+  consumableDelete      Boolean @default(true)
+  consumableStockAdjust Boolean @default(false)
 
   // Feature permissions
   purchaseOrderManage    Boolean @default(false)

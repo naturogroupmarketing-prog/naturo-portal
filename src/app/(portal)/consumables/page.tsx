@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { isAdminOrManager } from "@/lib/permissions";
+import { isAdminOrManager, hasPermission } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { ConsumablesClient } from "./consumables-client";
 
@@ -62,6 +62,8 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
     }),
   ]);
 
+  const canAdjustStock = await hasPermission(session.user.id, session.user.role, "consumableStockAdjust");
+
   return (
     <ConsumablesClient
       consumables={JSON.parse(JSON.stringify(consumables))}
@@ -70,6 +72,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
       users={JSON.parse(JSON.stringify(users))}
       categories={JSON.parse(JSON.stringify(categories))}
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
+      canAdjustStock={canAdjustStock}
       initialTab={params.tab}
       initialStock={params.stock}
       initialCategory={params.category}

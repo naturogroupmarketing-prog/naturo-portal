@@ -82,6 +82,7 @@ export async function updateConsumable(formData: FormData) {
   const supplier = (formData.get("supplier") as string)?.trim();
   const unitCost = formData.get("unitCost") as string;
   const notes = (formData.get("notes") as string)?.trim();
+  const imageUrl = formData.get("imageUrl") as string | null;
 
   const consumable = await db.consumable.findUnique({ where: { id: consumableId } });
   if (!consumable) throw new Error("Consumable not found");
@@ -109,6 +110,7 @@ export async function updateConsumable(formData: FormData) {
       supplier: supplier || null,
       unitCost: unitCost ? parseFloat(unitCost) : null,
       notes: notes || null,
+      ...(imageUrl !== null ? { imageUrl: imageUrl || null } : {}),
     },
   });
 
@@ -170,8 +172,8 @@ export async function addStock(formData: FormData) {
  */
 export async function deductStock(formData: FormData) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") {
-    throw new Error("Only Super Admins can deduct stock directly");
+  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableStockAdjust"))) {
+    throw new Error("You do not have permission to adjust stock");
   }
 
   const organizationId = session.user.organizationId;

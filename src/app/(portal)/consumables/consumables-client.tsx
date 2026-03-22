@@ -93,12 +93,13 @@ interface ConsumablesClientProps {
   users: Array<{ id: string; name: string | null; email: string }>;
   categories: CategoryDef[];
   isSuperAdmin: boolean;
+  canAdjustStock: boolean;
   initialTab?: string;
   initialStock?: string;
   initialCategory?: string;
 }
 
-export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
+export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdjustStock, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
   const { addToast } = useToast();
   const [showCreate, setShowCreate] = useState(false);
   const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
@@ -112,6 +113,9 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [showImage, setShowImage] = useState<Consumable | null>(null);
   const [editConsumable, setEditConsumable] = useState<Consumable | null>(null);
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editSaving, setEditSaving] = useState(false);
   const [search, setSearch] = useState(initialCategory || "");
   const [tab, setTab] = useState<"stock" | "requests">(initialTab === "requests" ? "requests" : "stock");
   const [stockFilter, setStockFilter] = useState(initialStock || "ALL");
@@ -515,7 +519,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   )}
                   <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
-                      <Button size="sm" variant="outline" onClick={() => { setStockMode("add"); setShowAddStock(c); }}>{isSuperAdmin ? "Stock" : "+ Stock"}</Button>
+                      <Button size="sm" variant="outline" onClick={() => { setStockMode("add"); setShowAddStock(c); }}>{canAdjustStock ? "Stock" : "+ Stock"}</Button>
                       <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
                       {activeAssignments.length > 0 && (
                         <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}>
@@ -1075,8 +1079,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           }} className="space-y-4">
             <input type="hidden" name="consumableId" value={showAddStock.id} />
 
-            {/* Add / Deduct toggle — Super Admin only */}
-            {isSuperAdmin && (
+            {/* Add / Deduct toggle — users with stockAdjust permission */}
+            {canAdjustStock && (
               <div className="flex rounded-lg bg-shark-50 p-1 gap-1">
                 <button
                   type="button"
@@ -1237,16 +1241,80 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       </Modal>
 
       {/* Edit Consumable Modal */}
-      <Modal open={!!editConsumable} onClose={() => setEditConsumable(null)} title={`Edit: ${editConsumable?.name}`}>
+      <Modal open={!!editConsumable} onClose={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); }} title={`Edit: ${editConsumable?.name}`}>
         {editConsumable && (
           <form
             action={async (fd) => {
-              await updateConsumable(fd);
-              setEditConsumable(null);
+              setEditSaving(true);
+              try {
+                // Upload new image if selected
+                if (editImageFile) {
+                  const uploadData = new FormData();
+                  uploadData.append("file", editImageFile);
+                  const res = await fetch("/api/upload", { method: "POST", body: uploadData });
+                  if (res.ok) {
+                    const { url } = await res.json();
+                    fd.set("imageUrl", url);
+                  }
+                } else if (editImagePreview === null && editConsumable.imageUrl) {
+                  // Image was removed
+                  fd.set("imageUrl", "");
+                }
+                await updateConsumable(fd);
+                addToast("Consumable updated successfully", "success");
+                setEditConsumable(null);
+                setEditImagePreview(null);
+                setEditImageFile(null);
+              } catch (e) {
+                addToast(e instanceof Error ? e.message : "Failed to update", "error");
+              } finally {
+                setEditSaving(false);
+              }
             }}
             className="space-y-4"
           >
             <input type="hidden" name="consumableId" value={editConsumable.id} />
+
+            {/* Photo */}
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Photo</label>
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 rounded-lg border border-shark-200 overflow-hidden bg-shark-50 flex items-center justify-center">
+                  {(editImagePreview || editConsumable.imageUrl) ? (
+                    <img src={editImagePreview || editConsumable.imageUrl!} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <Icon name="package" className="w-8 h-8 text-shark-300" />
+                  )}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="cursor-pointer text-sm text-action-600 hover:text-action-700 font-medium">
+                    {editConsumable.imageUrl || editImagePreview ? "Change Photo" : "Upload Photo"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          if (file.size > 5 * 1024 * 1024) {
+                            addToast("Image must be under 5MB", "error");
+                            return;
+                          }
+                          setEditImageFile(file);
+                          setEditImagePreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </label>
+                  {(editConsumable.imageUrl || editImagePreview) && (
+                    <button type="button" onClick={() => { setEditImagePreview(null); setEditImageFile(null); }} className="text-sm text-red-500 hover:text-red-600 text-left">
+                      Remove Photo
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
               <Input name="name" required defaultValue={editConsumable.name} />
@@ -1300,8 +1368,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="secondary" onClick={() => setEditConsumable(null)}>Cancel</Button>
-              <Button type="submit">Save Changes</Button>
+              <Button type="button" variant="secondary" onClick={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); }}>Cancel</Button>
+              <Button type="submit" disabled={editSaving}>{editSaving ? "Saving..." : "Save Changes"}</Button>
             </div>
           </form>
         )}
