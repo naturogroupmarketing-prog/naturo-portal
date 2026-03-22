@@ -6,7 +6,7 @@ import { parsePreferences } from "@/lib/dashboard-types";
 import { DashboardClient } from "./dashboard-client";
 import { StaffDashboardClient } from "./staff-dashboard-client";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30; // Refresh data every 30 seconds instead of every request
 
 export default async function DashboardPage() {
   const session = await auth();

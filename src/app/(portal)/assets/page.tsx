@@ -18,11 +18,15 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
   const [assets, regions, users, categories, perms] = await Promise.all([
     db.asset.findMany({
       where: regionFilter,
-      include: {
-        region: { include: { state: true } },
+      select: {
+        id: true, name: true, assetCode: true, category: true, status: true,
+        serialNumber: true, isHighValue: true, imageUrl: true, description: true,
+        sortOrder: true, supplier: true, purchaseCost: true, purchaseDate: true,
+        regionId: true, organizationId: true,
+        region: { select: { id: true, name: true, state: { select: { id: true, name: true } } } },
         assignments: {
           where: { isActive: true },
-          include: { user: { select: { id: true, name: true, email: true } } },
+          select: { id: true, user: { select: { id: true, name: true, email: true } } },
         },
       },
       orderBy: { createdAt: "desc" },
