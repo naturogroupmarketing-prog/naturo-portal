@@ -107,6 +107,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const [showAssign, setShowAssign] = useState<Consumable | null>(null);
   const [showReturn, setShowReturn] = useState<{ assignment: ConsumableAssignment; consumable: Consumable } | null>(null);
   const [addingStock, setAddingStock] = useState(false);
+  const stockSubmittingRef = useRef(false);
   const [assigning, setAssigning] = useState(false);
   const [returning, setReturning] = useState(false);
   const [issuingId, setIssuingId] = useState<string | null>(null);
@@ -1061,6 +1062,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <Modal open={!!showAddStock} onClose={() => setShowAddStock(null)} title={`${stockMode === "add" ? "Add" : "Deduct"} Stock: ${showAddStock?.name}`}>
         {showAddStock && (
           <form action={async (fd) => {
+            if (stockSubmittingRef.current) return;
+            stockSubmittingRef.current = true;
             setAddingStock(true);
             try {
               if (stockMode === "deduct") {
@@ -1075,6 +1078,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               addToast(e instanceof Error ? e.message : "Failed to update stock", "error");
             } finally {
               setAddingStock(false);
+              stockSubmittingRef.current = false;
             }
           }} className="space-y-4">
             <input type="hidden" name="consumableId" value={showAddStock.id} />
