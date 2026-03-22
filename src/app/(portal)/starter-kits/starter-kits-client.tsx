@@ -384,9 +384,7 @@ function EditStarterKitForm({
           </Button>
           <div className="flex gap-3">
             <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>
-            <Button type="submit" disabled={saving}>
-              {saving ? "Saving..." : "Save"}
-            </Button>
+            <Button type="submit" disabled={saving} loading={saving}>Save</Button>
           </div>
         </div>
       </form>
@@ -586,8 +584,8 @@ function AddItemsChecklist({
         <span className="text-sm text-shark-400">{totalSelected} item{totalSelected !== 1 ? "s" : ""} selected</span>
         <div className="flex gap-3">
           <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>
-          <Button onClick={handleSave} disabled={totalSelected === 0 || saving}>
-            {saving ? "Adding..." : `Add ${totalSelected} Item${totalSelected !== 1 ? "s" : ""}`}
+          <Button onClick={handleSave} disabled={totalSelected === 0 || saving} loading={saving}>
+            {`Add ${totalSelected} Item${totalSelected !== 1 ? "s" : ""}`}
           </Button>
         </div>
       </div>

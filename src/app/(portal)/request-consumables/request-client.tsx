@@ -95,9 +95,7 @@ export function RequestConsumablesClient({ consumables }: { consumables: Consuma
             {error && (
               <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
             )}
-            <Button type="submit" size="lg" className="w-full" disabled={submitting}>
-              {submitting ? "Submitting..." : "Submit Request"}
-            </Button>
+            <Button type="submit" size="lg" className="w-full" disabled={submitting} loading={submitting}>Submit Request</Button>
           </form>
         </CardContent>
       </Card>

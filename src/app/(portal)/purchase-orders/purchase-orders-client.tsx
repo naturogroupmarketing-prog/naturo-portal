@@ -399,9 +399,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, isSuperAdmin, ca
               {/* Actions */}
               <div className="flex justify-end gap-2 pt-2 border-t border-shark-100">
                 <Button variant="outline" type="button" onClick={() => setViewOrder(null)}>Cancel</Button>
-                <Button type="submit" disabled={loading === viewOrder.id + "update"}>
-                  {loading === viewOrder.id + "update" ? "Saving..." : "Save Changes"}
-                </Button>
+                <Button type="submit" disabled={loading === viewOrder.id + "update"} loading={loading === viewOrder.id + "update"}>Save Changes</Button>
               </div>
             </form>
           ) : (

@@ -359,8 +359,8 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment }) {
               <p className="text-xs text-amber-600">All used — this will close the assignment.</p>
             )}
             <div className="flex items-center gap-2 pt-1">
-              <Button size="sm" onClick={handleMarkUsed} disabled={loading || useQty === 0} className="text-xs">
-                {loading ? "Saving..." : `Use ${useQty}`}
+              <Button size="sm" onClick={handleMarkUsed} disabled={loading || useQty === 0} loading={loading} className="text-xs">
+                {`Use ${useQty}`}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => { setMode("idle"); setUseQty(ca.quantity); }} disabled={loading} className="text-xs">
                 Cancel

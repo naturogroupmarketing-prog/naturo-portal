@@ -438,7 +438,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
-            <Button type="submit" disabled={creating}>{creating ? "Creating..." : "Create User"}</Button>
+            <Button type="submit" disabled={creating} loading={creating}>Create User</Button>
           </div>
         </form>
       </Modal>
@@ -555,9 +555,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   </div>
                   <div className="flex gap-2">
                     <Button variant="outline" onClick={closeEdit}>Cancel</Button>
-                    <Button onClick={handleEdit} disabled={editSaving}>
-                      {editSaving ? "Saving..." : "Save Changes"}
-                    </Button>
+                    <Button onClick={handleEdit} disabled={editSaving} loading={editSaving}>Save Changes</Button>
                   </div>
                 </div>
               </>

@@ -248,9 +248,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
               ))}
             </Select>
             <div className="flex gap-2">
-              <Button size="sm" onClick={handleAddShortcut} disabled={isPending || !newLabel.trim() || !newHref.trim()}>
-                {isPending ? "Saving..." : "Save"}
-              </Button>
+              <Button size="sm" onClick={handleAddShortcut} disabled={isPending || !newLabel.trim() || !newHref.trim()} loading={isPending}>Save</Button>
               <Button size="sm" variant="secondary" onClick={() => { setShowAddForm(false); setNewLabel(""); setNewHref(""); }}>
                 Cancel
               </Button>

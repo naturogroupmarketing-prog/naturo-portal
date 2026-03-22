@@ -799,7 +799,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                             finally { setIssuingId(null); }
                           }}>
                             <input type="hidden" name="requestId" value={r.id} />
-                            <Button size="sm" variant="primary" type="submit" disabled={issuingId === r.id}>{issuingId === r.id ? "Assigning..." : "Assign"}</Button>
+                            <Button size="sm" variant="primary" type="submit" disabled={issuingId === r.id} loading={issuingId === r.id}>Assign</Button>
                           </form>
                         )}
                         <form action={async (fd) => {
@@ -810,7 +810,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         }}>
                           <input type="hidden" name="requestId" value={r.id} />
                           <input type="hidden" name="action" value="reject" />
-                          <Button size="sm" variant="danger" type="submit" disabled={rejectingId === r.id}>{rejectingId === r.id ? "Rejecting..." : "Reject"}</Button>
+                          <Button size="sm" variant="danger" type="submit" disabled={rejectingId === r.id} loading={rejectingId === r.id}>Reject</Button>
                         </form>
                       </div>
                     </td>
@@ -1052,7 +1052,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }}>Cancel</Button>
-            <Button type="submit" disabled={uploading}>{uploading ? "Uploading..." : "Add Consumable"}</Button>
+            <Button type="submit" disabled={uploading} loading={uploading}>Add Consumable</Button>
           </div>
         </form>
       </Modal>
@@ -1128,11 +1128,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <Button
                 type="submit"
                 disabled={addingStock}
+                loading={addingStock}
                 className={stockMode === "deduct" ? "bg-red-600 hover:bg-red-700" : ""}
               >
-                {addingStock
-                  ? (stockMode === "add" ? "Adding..." : "Deducting...")
-                  : (stockMode === "add" ? "Add Stock" : "Deduct Stock")
+                {stockMode === "add" ? "Add Stock" : "Deduct Stock"
                 }
               </Button>
             </div>
@@ -1175,7 +1174,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowAssign(null)}>Cancel</Button>
-              <Button type="submit" disabled={assigning}>{assigning ? "Assigning..." : "Assign"}</Button>
+              <Button type="submit" disabled={assigning} loading={assigning}>Assign</Button>
             </div>
           </form>
         )}
@@ -1221,7 +1220,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
-              <Button type="submit" disabled={returning}>{returning ? "Returning..." : "Confirm Return"}</Button>
+              <Button type="submit" disabled={returning} loading={returning}>Confirm Return</Button>
             </div>
           </form>
         )}
@@ -1369,7 +1368,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); }}>Cancel</Button>
-              <Button type="submit" disabled={editSaving}>{editSaving ? "Saving..." : "Save Changes"}</Button>
+              <Button type="submit" disabled={editSaving} loading={editSaving}>Save Changes</Button>
             </div>
           </form>
         )}

@@ -1185,7 +1185,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowAssign(null)}>Cancel</Button>
-              <Button type="submit" disabled={assigningAsset}>{assigningAsset ? "Assigning..." : "Assign Asset"}</Button>
+              <Button type="submit" disabled={assigningAsset} loading={assigningAsset}>Assign Asset</Button>
             </div>
           </form>
         )}
@@ -1230,7 +1230,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
-              <Button type="submit" disabled={returningAsset}>{returningAsset ? "Returning..." : "Confirm Return"}</Button>
+              <Button type="submit" disabled={returningAsset} loading={returningAsset}>Confirm Return</Button>
             </div>
           </form>
         )}
@@ -1477,9 +1477,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => { setEditAsset(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }}>Cancel</Button>
-              <Button type="submit" disabled={editUploading}>
-                {editUploading ? "Saving..." : "Save Changes"}
-              </Button>
+              <Button type="submit" disabled={editUploading} loading={editUploading}>Save Changes</Button>
             </div>
           </form>
         )}
