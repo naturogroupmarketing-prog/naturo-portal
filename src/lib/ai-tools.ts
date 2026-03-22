@@ -219,6 +219,27 @@ export const AI_TOOLS: Tool[] = [
       required: ["asset_code", "action"],
     },
   },
+  {
+    name: "create_consumable",
+    description:
+      "Create a new consumable item in the system. Only available to admins and managers. Use suggest_category first to find valid categories.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        name: { type: "string", description: "Name of the consumable (e.g. 'Vacuum Bags', 'Hand Sanitiser')" },
+        category: { type: "string", description: "Category name. Use suggest_category first with item_type CONSUMABLE." },
+        region: { type: "string", description: "Region name (e.g. 'Sydney', 'Melbourne')" },
+        unit_type: { type: "string", description: "Unit type (e.g. 'packs', 'bottles', 'units', 'boxes'). Default: 'units'" },
+        initial_stock: { type: "number", description: "Initial stock quantity (default: 0)" },
+        minimum_threshold: { type: "number", description: "Low stock alert threshold (default: 5)" },
+        reorder_level: { type: "number", description: "Reorder level (default: 10)" },
+        supplier: { type: "string", description: "Supplier name" },
+        unit_cost: { type: "number", description: "Unit cost in AUD" },
+        notes: { type: "string", description: "Optional notes" },
+      },
+      required: ["name", "category", "region"],
+    },
+  },
 ];
 
 // ── Tool Executors ──────────────────────────────────────
@@ -1011,6 +1032,106 @@ async function assignAssetTool(
   return { error: "Invalid action. Use 'assign' or 'unassign'." };
 }
 
+// ── Create Consumable ───────────────────────────────────
+
+async function createConsumableTool(
+  input: {
+    name: string;
+    category: string;
+    region: string;
+    unit_type?: string;
+    initial_stock?: number;
+    minimum_threshold?: number;
+    reorder_level?: number;
+    supplier?: string;
+    unit_cost?: number;
+    notes?: string;
+  },
+  role: Role,
+  regionId: string | null,
+  userId: string,
+) {
+  if (role === "STAFF") {
+    return { error: "Only admins and managers can create consumables via AI." };
+  }
+
+  if (role === "BRANCH_MANAGER") {
+    const allowed = await hasPermission(userId, role, "aiAssetCreate");
+    if (!allowed) {
+      return { error: "You don't have permission to create items via AI. Ask your Super Admin to enable AI Asset Creation." };
+    }
+  }
+
+  const region = await db.region.findFirst({
+    where: {
+      name: { contains: input.region, mode: "insensitive" },
+      ...(role === "BRANCH_MANAGER" && regionId ? { id: regionId } : {}),
+    },
+  });
+  if (!region) return { error: `Region "${input.region}" not found.` };
+
+  const category = await db.category.findFirst({
+    where: {
+      name: { contains: input.category, mode: "insensitive" },
+      type: "CONSUMABLE",
+      organizationId: region.organizationId,
+    },
+  });
+  if (!category) {
+    return { error: `Category "${input.category}" not found. Use suggest_category with item_type CONSUMABLE first.` };
+  }
+
+  // Check for duplicate
+  const existing = await db.consumable.findFirst({
+    where: {
+      name: { equals: input.name, mode: "insensitive" },
+      regionId: region.id,
+      organizationId: region.organizationId,
+      isActive: true,
+    },
+  });
+  if (existing) {
+    return { error: `Consumable "${input.name}" already exists in ${region.name}. Use adjust_stock to add quantity instead.` };
+  }
+
+  const consumable = await db.consumable.create({
+    data: {
+      name: input.name,
+      category: category.name,
+      unitType: input.unit_type || "units",
+      quantityOnHand: input.initial_stock || 0,
+      minimumThreshold: input.minimum_threshold ?? 5,
+      reorderLevel: input.reorder_level ?? 10,
+      regionId: region.id,
+      organizationId: region.organizationId,
+      supplier: input.supplier || null,
+      unitCost: input.unit_cost || null,
+      notes: input.notes || null,
+    },
+  });
+
+  await createAuditLog({
+    action: "CONSUMABLE_CREATED",
+    description: `AI created consumable "${consumable.name}" in ${region.name} (stock: ${consumable.quantityOnHand})`,
+    performedById: userId,
+    consumableId: consumable.id,
+    organizationId: region.organizationId,
+  });
+
+  return {
+    success: true,
+    consumable: {
+      name: consumable.name,
+      category: category.name,
+      region: region.name,
+      unitType: consumable.unitType,
+      stock: consumable.quantityOnHand,
+      supplier: consumable.supplier,
+    },
+    message: `Created consumable "${consumable.name}" in ${region.name} with ${consumable.quantityOnHand} ${consumable.unitType} in stock.`,
+  };
+}
+
 // ── Dispatcher ──────────────────────────────────────────
 
 export async function executeAITool(
@@ -1063,6 +1184,9 @@ export async function executeAITool(
         break;
       case "assign_asset":
         result = await assignAssetTool(toolInput as never, userRole, userRegionId, userId!, organizationId!);
+        break;
+      case "create_consumable":
+        result = await createConsumableTool(toolInput as never, userRole, userRegionId, userId!);
         break;
       default:
         result = { error: `Unknown tool: ${toolName}` };

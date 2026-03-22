@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
   // Determine which AI management tools this user can access
   const AI_MANAGEMENT_TOOLS = [
-    "create_asset", "create_purchase_order", "suggest_category",
+    "create_asset", "create_consumable", "create_purchase_order", "suggest_category",
     "update_asset", "update_consumable", "adjust_stock", "delete_asset", "assign_asset",
   ];
   let canUseAIManagement = false;
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
   const managementNote = canUseAIManagement
     ? `You have FULL management capabilities:
 - SEARCH: Find assets, consumables, users, and get inventory insights.
-- CREATE: Create assets (single or bulk) and purchase orders. Always use suggest_category first.
+- CREATE: Create assets (single or bulk), consumables, and purchase orders. Always use suggest_category first.
 - UPDATE: Edit asset details (name, category, region, status, description, serial number, supplier, etc.) and consumable details (name, category, region, thresholds, supplier, etc.).
 - STOCK: Add or deduct consumable stock (positive number = add, negative = deduct).
 - ASSIGN: Assign available assets to staff or unassign them.
