@@ -24,6 +24,10 @@ export async function verifyReturn(returnId: string, notes?: string) {
     throw new Error("Return not found or already verified");
   }
 
+  if (pendingReturn.organizationId !== session.user.organizationId) {
+    throw new Error("Unauthorized");
+  }
+
   await db.$transaction(async (tx) => {
     // Mark as verified
     await tx.pendingReturn.update({

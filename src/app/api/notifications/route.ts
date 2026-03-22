@@ -31,8 +31,8 @@ export async function PATCH(req: Request) {
       data: { isRead: true },
     });
   } else if (id) {
-    await db.notification.update({
-      where: { id },
+    await db.notification.updateMany({
+      where: { id, userId: session.user.id },
       data: { isRead: true },
     });
   }

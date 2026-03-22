@@ -18,6 +18,7 @@ export async function updatePermission(
 
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
+  if (user.organizationId !== session.user.organizationId) throw new Error("User not found");
   if (user.role !== "BRANCH_MANAGER") throw new Error("Permissions only apply to Branch Managers");
 
   await db.managerPermission.upsert({

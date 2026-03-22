@@ -30,6 +30,10 @@ export async function createAsset(formData: FormData) {
   const notes = (formData.get("notes") as string)?.trim();
   const imageUrl = formData.get("imageUrl") as string;
 
+  if (!name) throw new Error("Asset name is required");
+  if (!category) throw new Error("Category is required");
+  if (!regionId) throw new Error("Region is required");
+
   // Verify region access
   if (!canManageRegion(session.user.role, session.user.regionId, regionId)) {
     throw new Error("Cannot manage this region");
@@ -87,6 +91,10 @@ export async function assignAsset(formData: FormData) {
   const userId = formData.get("userId") as string;
   const assignmentType = formData.get("assignmentType") as AssignmentType;
   const expectedReturnDate = formData.get("expectedReturnDate") as string;
+
+  if (!assetId) throw new Error("Asset is required");
+  if (!userId) throw new Error("Staff member is required");
+  if (!assignmentType) throw new Error("Assignment type is required");
 
   const asset = await db.asset.findUnique({
     where: { id: assetId },
@@ -425,6 +433,23 @@ export async function updateAsset(formData: FormData) {
     }
   }
 
+  // Validate status transitions — prevent bypassing workflows
+  if (status && status !== asset.status) {
+    const validTransitions: Record<string, string[]> = {
+      AVAILABLE: ["UNAVAILABLE", "DAMAGED", "LOST"],           // Can't directly assign via edit
+      ASSIGNED: ["DAMAGED", "LOST"],                           // Must use return flow to make available
+      CHECKED_OUT: ["DAMAGED", "LOST"],                        // Must use return flow
+      PENDING_RETURN: ["DAMAGED", "LOST"],                     // Manager can mark damaged/lost
+      DAMAGED: ["AVAILABLE", "UNAVAILABLE"],                   // Can restore to available or unavailable
+      LOST: ["AVAILABLE"],                                     // Can restore if found
+      UNAVAILABLE: ["AVAILABLE", "DAMAGED", "LOST"],           // Can reactivate
+    };
+    const allowed = validTransitions[asset.status] || [];
+    if (!allowed.includes(status)) {
+      throw new Error(`Cannot change status from ${asset.status} to ${status}. Use the proper workflow instead.`);
+    }
+  }
+
   const updateData: Record<string, unknown> = {
     name,
     category,
@@ -436,7 +461,7 @@ export async function updateAsset(formData: FormData) {
     supplier: supplier || null,
     isHighValue,
     notes: notes || null,
-    status,
+    status: status || asset.status,
     warrantyExpiry: warrantyExpiry ? new Date(warrantyExpiry) : null,
   };
 

@@ -3,6 +3,9 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useCallback } from "react";
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 interface ModalProps {
   open: boolean;
   onClose: () => void;
@@ -13,27 +16,73 @@ interface ModalProps {
 
 export function Modal({ open, onClose, title, children, className }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
   const titleId = useRef(`modal-title-${Math.random().toString(36).slice(2, 9)}`).current;
+
+  const getFocusableElements = useCallback(() => {
+    if (!contentRef.current) return [];
+    return Array.from(contentRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const focusable = getFocusableElements();
+        if (focusable.length === 0) {
+          e.preventDefault();
+          return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
     },
-    [onClose]
+    [onClose, getFocusableElements]
   );
 
   useEffect(() => {
     if (open) {
+      previouslyFocusedRef.current = document.activeElement as HTMLElement;
       document.body.style.overflow = "hidden";
       document.addEventListener("keydown", handleKeyDown);
+
+      // Auto-focus the first focusable element inside the modal
+      requestAnimationFrame(() => {
+        const focusable = getFocusableElements();
+        if (focusable.length > 0) {
+          focusable[0].focus();
+        } else {
+          contentRef.current?.focus();
+        }
+      });
     } else {
       document.body.style.overflow = "";
+      // Restore focus to previously focused element
+      previouslyFocusedRef.current?.focus();
     }
     return () => {
       document.body.style.overflow = "";
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open, handleKeyDown]);
+  }, [open, handleKeyDown, getFocusableElements]);
 
   if (!open) return null;
 
@@ -49,6 +98,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       }}
     >
       <div
+        ref={contentRef}
         className={cn(
           "w-full max-w-lg rounded-2xl bg-white dark:bg-shark-900 shadow-2xl max-h-[90vh] overflow-y-auto transition-colors",
           className

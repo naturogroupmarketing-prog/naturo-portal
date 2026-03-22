@@ -312,6 +312,7 @@ model AssetAssignment {
 
   @@index([assetId, isActive])
   @@index([userId, isActive])
+  @@index([starterKitApplicationId])
 }
 
 // ─── CONSUMABLES ────────────────────────────────────────
@@ -395,6 +396,7 @@ model ConsumableAssignment {
 
   @@index([consumableId, isActive])
   @@index([userId, isActive])
+  @@index([starterKitApplicationId])
 }
 
 // ─── DAMAGE / LOSS REPORTS ──────────────────────────────
@@ -647,6 +649,7 @@ model MaintenanceSchedule {
   @@index([assetId])
   @@index([nextDueDate])
   @@index([assignedToId])
+  @@index([assetId, isActive])
 }
 
 model MaintenanceLog {

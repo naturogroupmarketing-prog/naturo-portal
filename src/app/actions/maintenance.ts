@@ -38,13 +38,19 @@ export async function completeMaintenanceTask(formData: FormData) {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
 
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization");
+
   const scheduleId = formData.get("scheduleId") as string;
   const notes = formData.get("notes") as string | null;
   const cost = formData.get("cost") as string | null;
   const condition = formData.get("condition") as string | null;
 
-  const schedule = await db.maintenanceSchedule.findUnique({ where: { id: scheduleId } });
-  if (!schedule) throw new Error("Schedule not found");
+  const schedule = await db.maintenanceSchedule.findUnique({
+    where: { id: scheduleId },
+    include: { asset: { select: { organizationId: true } } },
+  });
+  if (!schedule || schedule.asset.organizationId !== organizationId) throw new Error("Schedule not found");
 
   // Create log entry
   await db.maintenanceLog.create({
@@ -87,6 +93,17 @@ export async function deleteMaintenanceSchedule(scheduleId: string) {
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) throw new Error("Unauthorized");
 
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization");
+
+  const schedule = await db.maintenanceSchedule.findUnique({
+    where: { id: scheduleId },
+    include: { asset: { select: { organizationId: true } } },
+  });
+  if (!schedule || schedule.asset.organizationId !== organizationId) throw new Error("Not found");
+
+  // Delete related logs first
+  await db.maintenanceLog.deleteMany({ where: { scheduleId } });
   await db.maintenanceSchedule.delete({ where: { id: scheduleId } });
 
   revalidatePath("/assets");

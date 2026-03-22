@@ -27,9 +27,13 @@ export async function GET(
   }
 
   const { type } = await params;
+  const organizationId = session.user.organizationId;
+  if (!organizationId) {
+    return NextResponse.json({ error: "No organization" }, { status: 403 });
+  }
   const regionFilter = session.user.role === "BRANCH_MANAGER"
-    ? { regionId: session.user.regionId! }
-    : {};
+    ? { regionId: session.user.regionId!, organizationId }
+    : { organizationId };
 
   let csv = "";
 
@@ -134,7 +138,7 @@ export async function GET(
 
       // Get all issued consumable requests
       const issuedRequests = await db.consumableRequest.findMany({
-        where: { status: { in: ["ISSUED", "CLOSED"] } },
+        where: { status: { in: ["ISSUED", "CLOSED"] }, consumable: { organizationId } },
         include: {
           user: { select: { name: true, email: true, region: { select: { name: true } } } },
           consumable: { select: { name: true, category: true, unitType: true, region: { select: { name: true } } } },
@@ -144,6 +148,7 @@ export async function GET(
 
       // Get all consumable assignments
       const consAssignments = await db.consumableAssignment.findMany({
+        where: { consumable: { organizationId } },
         include: {
           user: { select: { name: true, email: true, region: { select: { name: true } } } },
           consumable: { select: { name: true, category: true, unitType: true, region: { select: { name: true } } } },
@@ -197,8 +202,8 @@ export async function GET(
     case "damage-loss": {
       const reports = await db.damageReport.findMany({
         where: session.user.role === "BRANCH_MANAGER"
-          ? { asset: { regionId: session.user.regionId! } }
-          : {},
+          ? { asset: { regionId: session.user.regionId!, organizationId } }
+          : { asset: { organizationId } },
         include: { asset: true, reportedBy: true },
         orderBy: { createdAt: "desc" },
         take: 1000,
@@ -218,13 +223,14 @@ export async function GET(
       const logs = await db.auditLog.findMany({
         where: session.user.role === "BRANCH_MANAGER"
           ? {
+              organizationId,
               OR: [
                 { performedBy: { regionId: session.user.regionId } },
                 { asset: { regionId: session.user.regionId! } },
                 { consumable: { regionId: session.user.regionId! } },
               ],
             }
-          : {},
+          : { organizationId },
         include: { performedBy: true, targetUser: true, asset: true, consumable: true },
         orderBy: { createdAt: "desc" },
         take: 2000,

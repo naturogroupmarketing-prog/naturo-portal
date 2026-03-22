@@ -580,31 +580,31 @@ export async function assignConsumable(formData: FormData) {
     throw new Error("Staff can only be assigned items from their region");
   }
 
-  await db.$transaction(async (tx) => {
-    await tx.consumable.update({
-      where: { id: consumableId },
-      data: { quantityOnHand: { decrement: quantity } },
-    });
-    await tx.consumableAssignment.create({
-      data: {
-        consumableId,
-        userId,
-        quantity,
-      },
-    });
+  // Atomic stock deduction — WHERE prevents negative stock from race conditions
+  const updated = await db.consumable.updateMany({
+    where: { id: consumableId, quantityOnHand: { gte: quantity } },
+    data: { quantityOnHand: { decrement: quantity } },
+  });
 
-    // Auto-close any pending/approved requests from this user for this consumable
-    await tx.consumableRequest.updateMany({
-      where: {
-        consumableId,
-        userId,
-        status: { in: ["PENDING", "APPROVED"] },
-      },
-      data: {
-        status: "CLOSED",
-        issuedAt: new Date(),
-      },
-    });
+  if (updated.count === 0) {
+    throw new Error("Insufficient stock — another operation may have reduced it");
+  }
+
+  await db.consumableAssignment.create({
+    data: { consumableId, userId, quantity },
+  });
+
+  // Auto-close any pending/approved requests from this user for this consumable
+  await db.consumableRequest.updateMany({
+    where: {
+      consumableId,
+      userId,
+      status: { in: ["PENDING", "APPROVED"] },
+    },
+    data: {
+      status: "CLOSED",
+      issuedAt: new Date(),
+    },
   });
 
   // Check for low stock — alerts managers/admins + creates AI purchase order

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
+import { useToast } from "@/components/ui/toast";
 import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive } from "@/app/actions/users";
 
 const SECTION_COLORS = [
@@ -61,11 +62,13 @@ interface StaffClientProps {
 }
 
 export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true }: StaffClientProps) {
+  const { addToast } = useToast();
   const [search, setSearch] = useState("");
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
 
   // Create user modal state
   const [showCreate, setShowCreate] = useState(false);
+  const [creating, setCreating] = useState(false);
 
   // Edit modal state
   const [editUser, setEditUser] = useState<StaffUser | null>(null);
@@ -388,7 +391,18 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
       {/* Create User Modal */}
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create User">
-        <form action={async (fd) => { await createUser(fd); setShowCreate(false); }} className="space-y-4">
+        <form action={async (fd) => {
+          setCreating(true);
+          try {
+            await createUser(fd);
+            addToast("User created successfully", "success");
+            setShowCreate(false);
+          } catch (e) {
+            addToast(e instanceof Error ? e.message : "Failed to create user", "error");
+          } finally {
+            setCreating(false);
+          }
+        }} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
             <Input name="name" required />
@@ -424,7 +438,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
-            <Button type="submit">Create User</Button>
+            <Button type="submit" disabled={creating}>{creating ? "Creating..." : "Create User"}</Button>
           </div>
         </form>
       </Modal>

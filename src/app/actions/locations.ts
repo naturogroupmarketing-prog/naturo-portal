@@ -9,7 +9,8 @@ export async function createState(formData: FormData) {
   const session = await auth();
   if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const name = formData.get("name") as string;
+  const name = (formData.get("name") as string)?.trim();
+  if (!name) throw new Error("State name is required");
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization found");
 
@@ -22,8 +23,10 @@ export async function createRegion(formData: FormData) {
   const session = await auth();
   if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "regionAdd"))) throw new Error("Unauthorized");
 
-  const name = formData.get("name") as string;
+  const name = (formData.get("name") as string)?.trim();
   const stateId = formData.get("stateId") as string;
+  if (!name) throw new Error("Region name is required");
+  if (!stateId) throw new Error("State is required");
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization found");
 

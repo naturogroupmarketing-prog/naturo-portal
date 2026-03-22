@@ -178,9 +178,11 @@ export async function reorderCategories(orderedIds: string[]) {
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization found");
 
-  // Update sortOrder for each category
+  // Verify all categories belong to this org, then update sortOrder
+  const categories = await db.category.findMany({ where: { id: { in: orderedIds }, organizationId } });
+  const validIds = new Set(categories.map((c) => c.id));
   await Promise.all(
-    orderedIds.map((id, index) =>
+    orderedIds.filter((id) => validIds.has(id)).map((id, index) =>
       db.category.update({ where: { id }, data: { sortOrder: index } })
     )
   );
@@ -196,16 +198,23 @@ export async function reorderItems(orderedIds: string[], type: "ASSET" | "CONSUM
     throw new Error("Unauthorized");
   }
 
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
   if (type === "ASSET") {
+    const assets = await db.asset.findMany({ where: { id: { in: orderedIds }, organizationId } });
+    const validIds = new Set(assets.map((a) => a.id));
     await Promise.all(
-      orderedIds.map((id, index) =>
+      orderedIds.filter((id) => validIds.has(id)).map((id, index) =>
         db.asset.update({ where: { id }, data: { sortOrder: index } })
       )
     );
     revalidatePath("/assets");
   } else {
+    const consumables = await db.consumable.findMany({ where: { id: { in: orderedIds }, organizationId } });
+    const validIds = new Set(consumables.map((c) => c.id));
     await Promise.all(
-      orderedIds.map((id, index) =>
+      orderedIds.filter((id) => validIds.has(id)).map((id, index) =>
         db.consumable.update({ where: { id }, data: { sortOrder: index } })
       )
     );

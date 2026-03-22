@@ -85,6 +85,12 @@ export async function deleteStarterKit(id: string) {
   if (!session?.user) throw new Error("Unauthorized");
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization");
+
+  const kit = await db.starterKit.findUnique({ where: { id } });
+  if (!kit || kit.organizationId !== organizationId) throw new Error("Not found");
+
   await db.starterKit.delete({ where: { id } });
 
   revalidatePath("/staff");
@@ -97,11 +103,18 @@ export async function addStarterKitItem(formData: FormData) {
   if (!session?.user) throw new Error("Unauthorized");
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization");
+
   const starterKitId = formData.get("starterKitId") as string;
   const itemType = formData.get("itemType") as string;
   const category = (formData.get("category") as string)?.trim() || null;
   const consumableId = (formData.get("consumableId") as string) || null;
   const quantity = parseInt(formData.get("quantity") as string) || 1;
+
+  // Verify kit belongs to this org
+  const kit = await db.starterKit.findUnique({ where: { id: starterKitId } });
+  if (!kit || kit.organizationId !== organizationId) throw new Error("Not found");
 
   await db.starterKitItem.create({
     data: { starterKitId, itemType, category, consumableId, quantity },
@@ -117,6 +130,12 @@ export async function removeStarterKitItem(itemId: string) {
   if (!session?.user) throw new Error("Unauthorized");
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization");
+
+  const item = await db.starterKitItem.findUnique({ where: { id: itemId }, include: { starterKit: true } });
+  if (!item || item.starterKit.organizationId !== organizationId) throw new Error("Not found");
+
   await db.starterKitItem.delete({ where: { id: itemId } });
 
   revalidatePath("/staff");
@@ -129,7 +148,13 @@ export async function updateStarterKitItemQuantity(itemId: string, quantity: num
   if (!session?.user) throw new Error("Unauthorized");
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization");
+
   if (quantity < 1) throw new Error("Quantity must be at least 1");
+
+  const item = await db.starterKitItem.findUnique({ where: { id: itemId }, include: { starterKit: true } });
+  if (!item || item.starterKit.organizationId !== organizationId) throw new Error("Not found");
 
   await db.starterKitItem.update({
     where: { id: itemId },
@@ -293,8 +318,8 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
       userId,
       type: "GENERAL",
       title: "Equipment Assigned — Please Acknowledge",
-      message: `You've been assigned a starter kit "${kit.name}". Please review and confirm receipt.`,
-      link: "/my-assets",
+      message: `You've been assigned a starter kit "${kit.name}". Go to your Dashboard to review and confirm your equipment.`,
+      link: "/dashboard",
     },
   });
 

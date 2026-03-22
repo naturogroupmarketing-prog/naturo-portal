@@ -41,6 +41,7 @@ export function Header({ userName, userImage, onMenuToggle }: HeaderProps) {
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
           className="flex items-center gap-1.5 text-sm text-shark-400 hover:text-shark-700 transition-colors px-2 py-1 rounded-lg hover:bg-shark-50"
+          aria-label="Sign out"
         >
           <Icon name="log-out" size={16} />
           <span className="hidden sm:inline">Sign out</span>

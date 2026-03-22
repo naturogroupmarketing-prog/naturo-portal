@@ -1,9 +1,18 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import crypto from "crypto";
+import { rateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    // Rate limit by IP
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded?.split(",")[0]?.trim() || "unknown";
+    const rl = await rateLimit(`auth:forgot:${ip}`, RATE_LIMITS.auth);
+    if (!rl.success) {
+      return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+    }
+
     const { email } = await req.json();
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
@@ -19,8 +28,8 @@ export async function POST(req: Request) {
     // Delete any existing tokens for this email
     await db.passwordResetToken.deleteMany({ where: { email: user.email } });
 
-    // Generate token (6-digit code for simplicity)
-    const token = crypto.randomInt(100000, 999999).toString();
+    // Generate secure token (32-char hex string — not brute-forceable)
+    const token = crypto.randomBytes(16).toString("hex");
     const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
 
     await db.passwordResetToken.create({

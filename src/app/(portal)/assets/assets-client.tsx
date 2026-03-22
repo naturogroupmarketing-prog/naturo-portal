@@ -8,6 +8,7 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
+import { useToast } from "@/components/ui/toast";
 import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets } from "@/app/actions/assets";
 import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { QRScanner } from "@/components/ui/qr-scanner";
@@ -93,11 +94,14 @@ interface AssetsClientProps {
 }
 
 export function AssetsClient({ assets, regions, users, categories, isSuperAdmin, permissions, initialStatus, initialRegion, initialCategory }: AssetsClientProps) {
+  const { addToast } = useToast();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState(initialStatus || "ALL");
   const [showCreate, setShowCreate] = useState(false);
   const [showAssign, setShowAssign] = useState<Asset | null>(null);
   const [showReturn, setShowReturn] = useState<{ assignmentId: string; asset: Asset } | null>(null);
+  const [assigningAsset, setAssigningAsset] = useState(false);
+  const [returningAsset, setReturningAsset] = useState(false);
   const [showQR, setShowQR] = useState<Asset | null>(null);
   const [showImage, setShowImage] = useState<Asset | null>(null);
   const [editAsset, setEditAsset] = useState<Asset | null>(null);
@@ -296,12 +300,14 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       const idsToDelete = Array.from(selectedIds).filter((id) => filteredIds.has(id));
       const result = await bulkDeleteAssets(idsToDelete);
       if (result.errors.length > 0) {
-        alert(`Deleted ${result.deleted} asset(s). Errors:\n${result.errors.join("\n")}`);
+        addToast(`Deleted ${result.deleted} asset(s). Some errors occurred.`, "warning");
+      } else {
+        addToast(`Deleted ${result.deleted} asset(s) successfully`, "success");
       }
       setSelectedIds(new Set());
       setShowBulkDelete(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Delete failed");
+      addToast(err instanceof Error ? err.message : "Delete failed", "error");
     } finally {
       setBulkDeleting(false);
     }
@@ -404,7 +410,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) {
-      alert("File too large. Max 10MB.");
+      addToast("File too large. Max 10MB.", "error");
       return;
     }
     try {
@@ -413,7 +419,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       setEditImageRemoved(false);
       setEditImagePreview(compressed);
     } catch {
-      alert("Failed to process image. Try a different file.");
+      addToast("Failed to process image. Try a different file.", "error");
     }
   };
 
@@ -421,7 +427,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) {
-      alert("File too large. Max 10MB.");
+      addToast("File too large. Max 10MB.", "error");
       return;
     }
     try {
@@ -429,7 +435,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       setImageFile(file);
       setImagePreview(compressed);
     } catch {
-      alert("Failed to process image. Try a different file.");
+      addToast("Failed to process image. Try a different file.", "error");
     }
   };
 
@@ -1140,8 +1146,16 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         {showAssign && (
           <form
             action={async (fd) => {
-              await assignAsset(fd);
-              setShowAssign(null);
+              setAssigningAsset(true);
+              try {
+                await assignAsset(fd);
+                addToast("Asset assigned successfully", "success");
+                setShowAssign(null);
+              } catch (e) {
+                addToast(e instanceof Error ? e.message : "Failed to assign asset", "error");
+              } finally {
+                setAssigningAsset(false);
+              }
             }}
             className="space-y-4"
           >
@@ -1171,7 +1185,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowAssign(null)}>Cancel</Button>
-              <Button type="submit">Assign Asset</Button>
+              <Button type="submit" disabled={assigningAsset}>{assigningAsset ? "Assigning..." : "Assign Asset"}</Button>
             </div>
           </form>
         )}
@@ -1182,8 +1196,16 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         {showReturn && (
           <form
             action={async (fd) => {
-              await returnAsset(fd);
-              setShowReturn(null);
+              setReturningAsset(true);
+              try {
+                await returnAsset(fd);
+                addToast("Asset returned successfully", "success");
+                setShowReturn(null);
+              } catch (e) {
+                addToast(e instanceof Error ? e.message : "Failed to return asset", "error");
+              } finally {
+                setReturningAsset(false);
+              }
             }}
             className="space-y-4"
           >
@@ -1208,7 +1230,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
-              <Button type="submit">Confirm Return</Button>
+              <Button type="submit" disabled={returningAsset}>{returningAsset ? "Returning..." : "Confirm Return"}</Button>
             </div>
           </form>
         )}

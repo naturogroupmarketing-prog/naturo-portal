@@ -8,6 +8,7 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon, type IconName } from "@/components/ui/icon";
+import { useToast } from "@/components/ui/toast";
 import { createConsumable, updateConsumable, addStock, approveRequest, issueConsumable, assignConsumable, returnConsumable, bulkDeleteConsumables } from "@/app/actions/consumables";
 import { createCategory, updateCategory, deleteCategory, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { formatDate } from "@/lib/utils";
@@ -98,10 +99,16 @@ interface ConsumablesClientProps {
 }
 
 export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
+  const { addToast } = useToast();
   const [showCreate, setShowCreate] = useState(false);
   const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
   const [showAssign, setShowAssign] = useState<Consumable | null>(null);
   const [showReturn, setShowReturn] = useState<{ assignment: ConsumableAssignment; consumable: Consumable } | null>(null);
+  const [addingStock, setAddingStock] = useState(false);
+  const [assigning, setAssigning] = useState(false);
+  const [returning, setReturning] = useState(false);
+  const [issuingId, setIssuingId] = useState<string | null>(null);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [showImage, setShowImage] = useState<Consumable | null>(null);
   const [editConsumable, setEditConsumable] = useState<Consumable | null>(null);
   const [search, setSearch] = useState(initialCategory || "");
@@ -281,12 +288,14 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       const idsToDelete = Array.from(selectedIds).filter((id) => filteredIds.has(id));
       const result = await bulkDeleteConsumables(idsToDelete);
       if (result.errors.length > 0) {
-        alert(`Deleted ${result.deleted} consumable(s). Errors:\n${result.errors.join("\n")}`);
+        addToast(`Deleted ${result.deleted} consumable(s). Some errors occurred.`, "warning");
+      } else {
+        addToast(`Deleted ${result.deleted} consumable(s) successfully`, "success");
       }
       setSelectedIds(new Set());
       setShowBulkDelete(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Delete failed");
+      addToast(err instanceof Error ? err.message : "Delete failed", "error");
     } finally {
       setBulkDeleting(false);
     }
@@ -336,7 +345,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      alert("File too large. Max 5MB.");
+      addToast("File too large. Max 5MB.", "error");
       return;
     }
     setImageFile(file);
@@ -779,17 +788,24 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                           </span>
                         ) : (
                           <form action={async (fd) => {
-                            try { await issueConsumable(fd); }
-                            catch (e) { alert(e instanceof Error ? e.message : "Failed to assign"); }
+                            setIssuingId(r.id);
+                            try { await issueConsumable(fd); addToast("Consumable assigned successfully", "success"); }
+                            catch (e) { addToast(e instanceof Error ? e.message : "Failed to assign", "error"); }
+                            finally { setIssuingId(null); }
                           }}>
                             <input type="hidden" name="requestId" value={r.id} />
-                            <Button size="sm" variant="primary" type="submit">Assign</Button>
+                            <Button size="sm" variant="primary" type="submit" disabled={issuingId === r.id}>{issuingId === r.id ? "Assigning..." : "Assign"}</Button>
                           </form>
                         )}
-                        <form action={async (fd) => { await approveRequest(fd); }}>
+                        <form action={async (fd) => {
+                          setRejectingId(r.id);
+                          try { await approveRequest(fd); addToast("Request rejected", "success"); }
+                          catch (e) { addToast(e instanceof Error ? e.message : "Failed to reject", "error"); }
+                          finally { setRejectingId(null); }
+                        }}>
                           <input type="hidden" name="requestId" value={r.id} />
                           <input type="hidden" name="action" value="reject" />
-                          <Button size="sm" variant="danger" type="submit">Reject</Button>
+                          <Button size="sm" variant="danger" type="submit" disabled={rejectingId === r.id}>{rejectingId === r.id ? "Rejecting..." : "Reject"}</Button>
                         </form>
                       </div>
                     </td>
@@ -1039,7 +1055,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {/* Add Stock Modal */}
       <Modal open={!!showAddStock} onClose={() => setShowAddStock(null)} title={`Add Stock: ${showAddStock?.name}`}>
         {showAddStock && (
-          <form action={async (fd) => { await addStock(fd); setShowAddStock(null); }} className="space-y-4">
+          <form action={async (fd) => {
+            setAddingStock(true);
+            try {
+              await addStock(fd);
+              addToast("Stock added successfully", "success");
+              setShowAddStock(null);
+            } catch (e) {
+              addToast(e instanceof Error ? e.message : "Failed to add stock", "error");
+            } finally {
+              setAddingStock(false);
+            }
+          }} className="space-y-4">
             <input type="hidden" name="consumableId" value={showAddStock.id} />
             <p className="text-sm text-gray-600">
               Current stock: <strong>{showAddStock.quantityOnHand} {showAddStock.unitType}</strong>
@@ -1050,7 +1077,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowAddStock(null)}>Cancel</Button>
-              <Button type="submit">Add Stock</Button>
+              <Button type="submit" disabled={addingStock}>{addingStock ? "Adding..." : "Add Stock"}</Button>
             </div>
           </form>
         )}
@@ -1059,7 +1086,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {/* Assign Consumable Modal */}
       <Modal open={!!showAssign} onClose={() => setShowAssign(null)} title={`Assign: ${showAssign?.name}`}>
         {showAssign && (
-          <form action={async (fd) => { await assignConsumable(fd); setShowAssign(null); }} className="space-y-4">
+          <form action={async (fd) => {
+            setAssigning(true);
+            try {
+              await assignConsumable(fd);
+              addToast("Consumable assigned successfully", "success");
+              setShowAssign(null);
+            } catch (e) {
+              addToast(e instanceof Error ? e.message : "Failed to assign consumable", "error");
+            } finally {
+              setAssigning(false);
+            }
+          }} className="space-y-4">
             <input type="hidden" name="consumableId" value={showAssign.id} />
             <p className="text-sm text-gray-600">
               Available stock: <strong>{showAssign.quantityOnHand} {showAssign.unitType}</strong>
@@ -1080,7 +1118,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowAssign(null)}>Cancel</Button>
-              <Button type="submit">Assign</Button>
+              <Button type="submit" disabled={assigning}>{assigning ? "Assigning..." : "Assign"}</Button>
             </div>
           </form>
         )}
@@ -1089,7 +1127,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {/* Return Consumable Modal */}
       <Modal open={!!showReturn} onClose={() => setShowReturn(null)} title={`Return: ${showReturn?.consumable.name}`}>
         {showReturn && (
-          <form action={async (fd) => { await returnConsumable(fd); setShowReturn(null); }} className="space-y-4">
+          <form action={async (fd) => {
+            setReturning(true);
+            try {
+              await returnConsumable(fd);
+              addToast("Consumable returned successfully", "success");
+              setShowReturn(null);
+            } catch (e) {
+              addToast(e instanceof Error ? e.message : "Failed to return consumable", "error");
+            } finally {
+              setReturning(false);
+            }
+          }} className="space-y-4">
             <input type="hidden" name="assignmentId" value={showReturn.assignment.id} />
             <p className="text-sm text-gray-600">
               Assigned to <strong>{showReturn.assignment.user.name || showReturn.assignment.user.email}</strong>
@@ -1115,7 +1164,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
-              <Button type="submit">Confirm Return</Button>
+              <Button type="submit" disabled={returning}>{returning ? "Returning..." : "Confirm Return"}</Button>
             </div>
           </form>
         )}

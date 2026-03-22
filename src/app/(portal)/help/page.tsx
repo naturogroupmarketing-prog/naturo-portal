@@ -11,7 +11,7 @@ export default async function HelpPage() {
       <div>
         <h1 className="text-2xl font-bold text-shark-900">Help & Support</h1>
         <p className="text-sm text-shark-400 mt-1">
-          Get the help you need to make the most of Trackio
+          Get the help you need to make the most of trackio
         </p>
       </div>
 

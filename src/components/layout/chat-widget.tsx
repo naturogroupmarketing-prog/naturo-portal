@@ -106,6 +106,7 @@ export function ChatWidget() {
             <button
               onClick={() => setIsOpen(false)}
               className="text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+              aria-label="Close chat"
             >
               <Icon name="x" size={18} />
             </button>
@@ -148,6 +149,7 @@ export function ChatWidget() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about assets, stock..."
               disabled={isLoading}
+              aria-label="Type your message"
               className="flex-1 rounded-xl border border-shark-200 bg-white px-3.5 py-2 text-sm text-shark-900 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50"
             />
             <Button type="submit" size="sm" disabled={isLoading || !input.trim()}>

@@ -107,6 +107,7 @@ export function NotificationBell() {
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 rounded-lg hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
         title="Notifications"
+        aria-label="Notifications"
       >
         <Icon name="bell" size={20} className="text-shark-500" />
         {unreadCount > 0 && (

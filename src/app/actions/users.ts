@@ -96,6 +96,10 @@ export async function updateUser(formData: FormData) {
   const role = formData.get("role") as Role;
   const regionId = formData.get("regionId") as string;
 
+  // Verify target user belongs to same org
+  const targetUser = await db.user.findUnique({ where: { id: userId } });
+  if (!targetUser || targetUser.organizationId !== organizationId) throw new Error("User not found");
+
   // If email is changing, check it's not already taken
   if (email) {
     const existing = await db.user.findFirst({

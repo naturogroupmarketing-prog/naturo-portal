@@ -57,6 +57,12 @@ export async function deleteCustomField(fieldId: string) {
   const session = await auth();
   if (!session?.user || session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
 
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization");
+
+  const field = await db.customFieldDefinition.findUnique({ where: { id: fieldId } });
+  if (!field || field.organizationId !== organizationId) throw new Error("Not found");
+
   await db.customFieldDefinition.delete({ where: { id: fieldId } });
 
   revalidatePath("/assets");

@@ -55,6 +55,12 @@ export async function reportDamage(formData: FormData) {
     });
   }
 
+  // Deactivate active assignment — asset is no longer usable
+  await db.assetAssignment.updateMany({
+    where: { assetId: asset.id, isActive: true },
+    data: { isActive: false, actualReturnDate: new Date() },
+  });
+
   await createAuditLog({
     action: type === "LOSS" ? "LOSS_REPORTED" : "DAMAGE_REPORTED",
     description: `${type === "LOSS" ? "Loss" : "Damage"} reported for asset "${asset.name}" (${asset.assetCode}): ${description}`,
