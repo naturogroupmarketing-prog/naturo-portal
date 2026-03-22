@@ -11,119 +11,135 @@ import { enforceUserLimit } from "@/lib/tenant";
 import { applyStarterKit } from "@/app/actions/starter-kits";
 
 export async function createUser(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "staffAdd"))) {
-    throw new Error("Unauthorized");
-  }
-
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
-
-  await enforceUserLimit(organizationId);
-
-  const email = (formData.get("email") as string)?.trim().toLowerCase();
-  const name = (formData.get("name") as string)?.trim();
-  const phone = (formData.get("phone") as string)?.trim() || null;
-  const role = formData.get("role") as Role;
-  const regionId = formData.get("regionId") as string;
-  const password = formData.get("password") as string;
-
-  if (!password || password.length < 8) {
-    throw new Error("Password must be at least 8 characters");
-  }
-
-  // Branch Managers can only create STAFF in their own region
-  if (session.user.role === "BRANCH_MANAGER") {
-    if (role !== "STAFF") throw new Error("Branch Managers can only create Staff users");
-    if (!session.user.regionId) throw new Error("No region assigned");
-  }
-
-  const existing = await db.user.findUnique({ where: { email } });
-  if (existing) throw new Error("User already exists");
-
-  const hashedPassword = await bcrypt.hash(password, 12);
-
-  const user = await db.user.create({
-    data: {
-      email,
-      name,
-      phone,
-      role,
-      regionId: regionId || null,
-      password: hashedPassword,
-      organizationId,
-    },
-  });
-
-  await createAuditLog({
-    action: "USER_CREATED",
-    description: `User "${name}" (${email}) created with role ${role}`,
-    performedById: session.user.id,
-    targetUserId: user.id,
-    organizationId,
-  });
-
-  // Auto-apply default starter kit if user has a region
-  const applyKit = formData.get("applyStarterKit") !== "false";
-  if (applyKit && regionId) {
-    const starterKitId = formData.get("starterKitId") as string | null;
-    try {
-      await applyStarterKit(user.id, starterKitId || undefined);
-    } catch {
-      // Don't fail user creation if starter kit fails
+  try {
+    const session = await auth();
+    if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "staffAdd"))) {
+      return { error: "Unauthorized" };
     }
-  }
 
-  revalidatePath("/admin/users");
-  revalidatePath("/staff");
-  revalidatePath("/dashboard");
-  return { success: true, userId: user.id };
+    const organizationId = session.user.organizationId;
+    if (!organizationId) return { error: "No organization found" };
+
+    try {
+      await enforceUserLimit(organizationId);
+    } catch (e) {
+      return { error: e instanceof Error ? e.message : "User limit reached" };
+    }
+
+    const email = (formData.get("email") as string)?.trim().toLowerCase();
+    const name = (formData.get("name") as string)?.trim();
+    const phone = (formData.get("phone") as string)?.trim() || null;
+    const role = formData.get("role") as Role;
+    const regionId = formData.get("regionId") as string;
+    const password = formData.get("password") as string;
+
+    if (!email) return { error: "Email is required" };
+    if (!name) return { error: "Name is required" };
+    if (!password || password.length < 8) {
+      return { error: "Password must be at least 8 characters" };
+    }
+
+    // Branch Managers can only create STAFF in their own region
+    if (session.user.role === "BRANCH_MANAGER") {
+      if (role !== "STAFF") return { error: "Branch Managers can only create Staff users" };
+      if (!session.user.regionId) return { error: "No region assigned" };
+    }
+
+    const existing = await db.user.findUnique({ where: { email } });
+    if (existing) return { error: "A user with this email already exists" };
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const user = await db.user.create({
+      data: {
+        email,
+        name,
+        phone,
+        role,
+        regionId: regionId || null,
+        password: hashedPassword,
+        organizationId,
+      },
+    });
+
+    await createAuditLog({
+      action: "USER_CREATED",
+      description: `User "${name}" (${email}) created with role ${role}`,
+      performedById: session.user.id,
+      targetUserId: user.id,
+      organizationId,
+    });
+
+    // Auto-apply default starter kit if user has a region
+    const applyKit = formData.get("applyStarterKit") !== "false";
+    if (applyKit && regionId) {
+      const starterKitId = formData.get("starterKitId") as string | null;
+      try {
+        await applyStarterKit(user.id, starterKitId || undefined);
+      } catch {
+        // Don't fail user creation if starter kit fails
+      }
+    }
+
+    revalidatePath("/admin/users");
+    revalidatePath("/staff");
+    revalidatePath("/dashboard");
+    return { success: true, userId: user.id };
+  } catch (e) {
+    console.error("createUser error:", e);
+    return { error: e instanceof Error ? e.message : "Failed to create user" };
+  }
 }
 
 export async function updateUser(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) {
-    throw new Error("Unauthorized");
-  }
+  try {
+    const session = await auth();
+    if (!session?.user || !isSuperAdmin(session.user.role)) {
+      return { error: "Unauthorized" };
+    }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+    const organizationId = session.user.organizationId;
+    if (!organizationId) return { error: "No organization found" };
 
-  const userId = formData.get("userId") as string;
-  const name = formData.get("name") as string;
-  const email = (formData.get("email") as string)?.trim().toLowerCase();
-  const phone = (formData.get("phone") as string)?.trim() || null;
-  const role = formData.get("role") as Role;
-  const regionId = formData.get("regionId") as string;
+    const userId = formData.get("userId") as string;
+    const name = formData.get("name") as string;
+    const email = (formData.get("email") as string)?.trim().toLowerCase();
+    const phone = (formData.get("phone") as string)?.trim() || null;
+    const role = formData.get("role") as Role;
+    const regionId = formData.get("regionId") as string;
 
-  // Verify target user belongs to same org
-  const targetUser = await db.user.findUnique({ where: { id: userId } });
-  if (!targetUser || targetUser.organizationId !== organizationId) throw new Error("User not found");
+    // Verify target user belongs to same org
+    const targetUser = await db.user.findUnique({ where: { id: userId } });
+    if (!targetUser || targetUser.organizationId !== organizationId) return { error: "User not found" };
 
-  // If email is changing, check it's not already taken
-  if (email) {
-    const existing = await db.user.findFirst({
-      where: { email, id: { not: userId } },
+    // If email is changing, check it's not already taken
+    if (email) {
+      const existing = await db.user.findFirst({
+        where: { email, id: { not: userId } },
+      });
+      if (existing) return { error: "Email already in use by another user" };
+    }
+
+    await db.user.update({
+      where: { id: userId },
+      data: { name, email: email || undefined, phone, role, regionId: regionId || null },
     });
-    if (existing) throw new Error("Email already in use by another user");
+
+    await createAuditLog({
+      action: "USER_UPDATED",
+      description: `User ${userId} updated: role=${role}, region=${regionId}`,
+      performedById: session.user.id,
+      targetUserId: userId,
+      organizationId,
+    });
+
+    revalidatePath("/admin/users");
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (e) {
+    console.error("updateUser error:", e);
+    return { error: e instanceof Error ? e.message : "Failed to update user" };
   }
-
-  await db.user.update({
-    where: { id: userId },
-    data: { name, email: email || undefined, phone, role, regionId: regionId || null },
-  });
-
-  await createAuditLog({
-    action: "USER_UPDATED",
-    description: `User ${userId} updated: role=${role}, region=${regionId}`,
-    performedById: session.user.id,
-    targetUserId: userId,
-    organizationId,
-  });
-
-  revalidatePath("/admin/users");
-  revalidatePath("/dashboard");
-  return { success: true };
 }
 
 export async function toggleUserActive(formData: FormData) {

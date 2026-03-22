@@ -294,12 +294,12 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
       {/* Create User Modal */}
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create User">
         <form action={async (fd) => {
-          try {
-            await createUser(fd);
+          const result = await createUser(fd);
+          if (result.error) {
+            addToast(result.error, "error");
+          } else {
             addToast("User created successfully", "success");
             setShowCreate(false);
-          } catch (e) {
-            addToast(e instanceof Error ? e.message : "Failed to create user", "error");
           }
         }} className="space-y-4">
           <div>
@@ -349,12 +349,12 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
         {editUser && (
           <div className="space-y-5">
             <form action={async (fd) => {
-              try {
-                await updateUser(fd);
+              const result = await updateUser(fd);
+              if (result && "error" in result) {
+                addToast(result.error as string, "error");
+              } else {
                 addToast("User updated successfully", "success");
                 setEditUser(null);
-              } catch (e) {
-                addToast(e instanceof Error ? e.message : "Failed to update user", "error");
               }
             }} className="space-y-4">
               <input type="hidden" name="userId" value={editUser.id} />
