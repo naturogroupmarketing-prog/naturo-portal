@@ -94,10 +94,14 @@ export function Sidebar({ role, onClose }: SidebarProps) {
   return (
     <nav className="flex flex-col h-full bg-white dark:bg-shark-900 transition-colors">
       <div className="flex items-center justify-between px-5 py-5 border-b border-shark-100 dark:border-shark-800">
-        <div className="flex items-center gap-1">
+        <button
+          onClick={() => { window.location.href = "/dashboard"; }}
+          className="flex items-center gap-1 hover:opacity-80 transition-opacity"
+          title="Go to Dashboard"
+        >
           <Logo size={36} />
           <p className="text-[10px] text-shark-400 leading-tight mt-1">Asset Tracker</p>
-        </div>
+        </button>
         {onClose && (
           <button onClick={onClose} className="text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 lg:hidden">
             <Icon name="x" size={20} />
