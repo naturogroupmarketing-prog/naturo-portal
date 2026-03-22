@@ -116,6 +116,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const [editConsumable, setEditConsumable] = useState<Consumable | null>(null);
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
   const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editImageRemoved, setEditImageRemoved] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
   const [search, setSearch] = useState(initialCategory || "");
   const [tab, setTab] = useState<"stock" | "requests">(initialTab === "requests" ? "requests" : "stock");
@@ -1244,7 +1245,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       </Modal>
 
       {/* Edit Consumable Modal */}
-      <Modal open={!!editConsumable} onClose={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); }} title={`Edit: ${editConsumable?.name}`}>
+      <Modal open={!!editConsumable} onClose={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }} title={`Edit: ${editConsumable?.name}`}>
         {editConsumable && (
           <form
             action={async (fd) => {
@@ -1259,8 +1260,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     const { url } = await res.json();
                     fd.set("imageUrl", url);
                   }
-                } else if (editImagePreview === null && editConsumable.imageUrl) {
-                  // Image was removed
+                } else if (editImageRemoved) {
+                  // User explicitly clicked "Remove Photo"
                   fd.set("imageUrl", "");
                 }
                 await updateConsumable(fd);
@@ -1283,7 +1284,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <label className="block text-sm font-medium text-shark-700 mb-1">Photo</label>
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-lg border border-shark-200 overflow-hidden bg-shark-50 flex items-center justify-center">
-                  {(editImagePreview || editConsumable.imageUrl) ? (
+                  {(editImagePreview || (!editImageRemoved && editConsumable.imageUrl)) ? (
                     <img src={editImagePreview || editConsumable.imageUrl!} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <Icon name="package" className="w-8 h-8 text-shark-300" />
@@ -1291,7 +1292,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="cursor-pointer text-sm text-action-600 hover:text-action-700 font-medium">
-                    {editConsumable.imageUrl || editImagePreview ? "Change Photo" : "Upload Photo"}
+                    {(!editImageRemoved && editConsumable.imageUrl) || editImagePreview ? "Change Photo" : "Upload Photo"}
                     <input
                       type="file"
                       accept="image/*"
@@ -1305,12 +1306,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                           }
                           setEditImageFile(file);
                           setEditImagePreview(URL.createObjectURL(file));
+                          setEditImageRemoved(false);
                         }
                       }}
                     />
                   </label>
-                  {(editConsumable.imageUrl || editImagePreview) && (
-                    <button type="button" onClick={() => { setEditImagePreview(null); setEditImageFile(null); }} className="text-sm text-red-500 hover:text-red-600 text-left">
+                  {((!editImageRemoved && editConsumable.imageUrl) || editImagePreview) && (
+                    <button type="button" onClick={() => { setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(true); }} className="text-sm text-red-500 hover:text-red-600 text-left">
                       Remove Photo
                     </button>
                   )}
@@ -1371,7 +1373,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="secondary" onClick={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); }}>Cancel</Button>
+              <Button type="button" variant="secondary" onClick={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }}>Cancel</Button>
               <Button type="submit" disabled={editSaving} loading={editSaving}>Save Changes</Button>
             </div>
           </form>
