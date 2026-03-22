@@ -134,6 +134,91 @@ export const AI_TOOLS: Tool[] = [
       required: ["name", "category", "region"],
     },
   },
+  {
+    name: "update_asset",
+    description:
+      "Update an existing asset's details. Search for the asset first to get its code. Only available to Super Admins and permitted managers.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        asset_code: { type: "string", description: "The asset code (e.g. 'AST-XXXX') to identify which asset to update" },
+        name: { type: "string", description: "New name for the asset" },
+        category: { type: "string", description: "New category. Use suggest_category first." },
+        region: { type: "string", description: "New region name to move the asset to" },
+        description: { type: "string", description: "New description" },
+        serial_number: { type: "string", description: "New serial number" },
+        status: { type: "string", enum: ["AVAILABLE", "DAMAGED", "LOST", "UNAVAILABLE"], description: "New status (only non-assigned statuses)" },
+        is_high_value: { type: "boolean", description: "Whether this is a high-value asset" },
+        supplier: { type: "string", description: "Supplier name" },
+        purchase_cost: { type: "number", description: "Purchase cost in AUD" },
+        notes: { type: "string", description: "Notes about the asset" },
+      },
+      required: ["asset_code"],
+    },
+  },
+  {
+    name: "update_consumable",
+    description:
+      "Update an existing consumable's details (name, category, region, thresholds, supplier, etc). Search for the consumable first. Only available to Super Admins and permitted managers.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        consumable_name: { type: "string", description: "Current name of the consumable to find and update" },
+        new_name: { type: "string", description: "New name" },
+        category: { type: "string", description: "New category. Use suggest_category first." },
+        region: { type: "string", description: "New region name" },
+        unit_type: { type: "string", description: "New unit type (e.g. 'bottles', 'packs')" },
+        minimum_threshold: { type: "number", description: "New minimum stock threshold" },
+        reorder_level: { type: "number", description: "New reorder level" },
+        supplier: { type: "string", description: "New supplier name" },
+        unit_cost: { type: "number", description: "New unit cost in AUD" },
+        notes: { type: "string", description: "Notes about the consumable" },
+      },
+      required: ["consumable_name"],
+    },
+  },
+  {
+    name: "adjust_stock",
+    description:
+      "Add or deduct consumable stock. Use positive quantity to add, negative to deduct. Only available to Super Admins and permitted managers.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        consumable_name: { type: "string", description: "Name of the consumable" },
+        quantity: { type: "number", description: "Quantity to adjust. Positive = add stock, negative = deduct stock." },
+        reason: { type: "string", description: "Reason for the adjustment (required for deductions)" },
+      },
+      required: ["consumable_name", "quantity"],
+    },
+  },
+  {
+    name: "delete_asset",
+    description:
+      "Delete an asset from the system. The asset must not be currently assigned. Only available to Super Admins.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        asset_code: { type: "string", description: "The asset code to delete" },
+        confirm: { type: "boolean", description: "Must be true to confirm deletion" },
+      },
+      required: ["asset_code", "confirm"],
+    },
+  },
+  {
+    name: "assign_asset",
+    description:
+      "Assign an available asset to a staff member, or unassign a currently assigned asset. Only available to Super Admins and managers.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        asset_code: { type: "string", description: "The asset code to assign/unassign" },
+        action: { type: "string", enum: ["assign", "unassign"], description: "Whether to assign or unassign" },
+        user_email: { type: "string", description: "Email of the user to assign to (required for assign)" },
+        assignment_type: { type: "string", enum: ["PERMANENT", "TEMPORARY"], description: "Permanent or temporary assignment (default: PERMANENT)" },
+      },
+      required: ["asset_code", "action"],
+    },
+  },
 ];
 
 // ── Tool Executors ──────────────────────────────────────
@@ -563,6 +648,369 @@ async function createAssetTool(
   };
 }
 
+// ── Update Asset ────────────────────────────────────────
+
+async function updateAssetTool(
+  input: {
+    asset_code: string;
+    name?: string;
+    category?: string;
+    region?: string;
+    description?: string;
+    serial_number?: string;
+    status?: string;
+    is_high_value?: boolean;
+    supplier?: string;
+    purchase_cost?: number;
+    notes?: string;
+  },
+  role: Role,
+  regionId: string | null,
+  userId: string,
+  organizationId: string,
+) {
+  if (role === "STAFF") {
+    return { error: "Only admins and managers can update assets." };
+  }
+
+  if (role === "BRANCH_MANAGER") {
+    const allowed = await hasPermission(userId, role, "aiAssetCreate");
+    if (!allowed) return { error: "You don't have AI management permission. Ask your Super Admin to enable it." };
+  }
+
+  const asset = await db.asset.findFirst({
+    where: { assetCode: input.asset_code, organizationId },
+    include: { region: { include: { state: true } } },
+  });
+  if (!asset) return { error: `Asset "${input.asset_code}" not found.` };
+
+  if (role === "BRANCH_MANAGER" && regionId && asset.regionId !== regionId) {
+    return { error: "You can only manage assets in your own region." };
+  }
+
+  // Build update data
+  const data: Record<string, unknown> = {};
+  if (input.name) data.name = input.name;
+  if (input.description !== undefined) data.description = input.description || null;
+  if (input.serial_number !== undefined) data.serialNumber = input.serial_number || null;
+  if (input.is_high_value !== undefined) data.isHighValue = input.is_high_value;
+  if (input.supplier !== undefined) data.supplier = input.supplier || null;
+  if (input.purchase_cost !== undefined) data.purchaseCost = input.purchase_cost;
+  if (input.notes !== undefined) data.notes = input.notes || null;
+
+  // Status — only allow non-assigned statuses
+  if (input.status) {
+    const blocked = ["ASSIGNED", "CHECKED_OUT", "PENDING_RETURN"];
+    if (blocked.includes(input.status)) {
+      return { error: `Cannot set status to "${input.status}" via AI. Use assign/return flows instead.` };
+    }
+    data.status = input.status;
+  }
+
+  // Category change
+  if (input.category) {
+    const cat = await db.category.findFirst({
+      where: { name: { contains: input.category, mode: "insensitive" }, type: "ASSET", organizationId },
+    });
+    if (!cat) return { error: `Category "${input.category}" not found. Use suggest_category to see options.` };
+    data.category = cat.name;
+  }
+
+  // Region change
+  if (input.region) {
+    const region = await db.region.findFirst({
+      where: { name: { contains: input.region, mode: "insensitive" }, organizationId },
+    });
+    if (!region) return { error: `Region "${input.region}" not found.` };
+    if (role === "BRANCH_MANAGER" && regionId && region.id !== regionId) {
+      return { error: "You can only move assets within your own region." };
+    }
+    data.regionId = region.id;
+  }
+
+  if (Object.keys(data).length === 0) {
+    return { error: "No changes specified. Provide at least one field to update." };
+  }
+
+  await db.asset.update({ where: { id: asset.id }, data });
+
+  await createAuditLog({
+    action: "ASSET_UPDATED",
+    description: `AI updated asset "${asset.name}" (${asset.assetCode}): ${Object.keys(data).join(", ")}`,
+    performedById: userId,
+    assetId: asset.id,
+    organizationId,
+  });
+
+  return {
+    success: true,
+    message: `Updated asset "${input.name || asset.name}" (${asset.assetCode}). Changed: ${Object.keys(data).join(", ")}.`,
+  };
+}
+
+// ── Update Consumable ───────────────────────────────────
+
+async function updateConsumableTool(
+  input: {
+    consumable_name: string;
+    new_name?: string;
+    category?: string;
+    region?: string;
+    unit_type?: string;
+    minimum_threshold?: number;
+    reorder_level?: number;
+    supplier?: string;
+    unit_cost?: number;
+    notes?: string;
+  },
+  role: Role,
+  regionId: string | null,
+  userId: string,
+  organizationId: string,
+) {
+  if (role === "STAFF") {
+    return { error: "Only admins and managers can update consumables." };
+  }
+
+  if (role === "BRANCH_MANAGER") {
+    const allowed = await hasPermission(userId, role, "aiAssetCreate");
+    if (!allowed) return { error: "You don't have AI management permission." };
+  }
+
+  const consumable = await db.consumable.findFirst({
+    where: {
+      name: { contains: input.consumable_name, mode: "insensitive" },
+      isActive: true,
+      organizationId,
+      ...(role === "BRANCH_MANAGER" && regionId ? { regionId } : {}),
+    },
+  });
+  if (!consumable) return { error: `Consumable "${input.consumable_name}" not found.` };
+
+  const data: Record<string, unknown> = {};
+  if (input.new_name) data.name = input.new_name;
+  if (input.unit_type) data.unitType = input.unit_type;
+  if (input.minimum_threshold !== undefined) data.minimumThreshold = input.minimum_threshold;
+  if (input.reorder_level !== undefined) data.reorderLevel = input.reorder_level;
+  if (input.supplier !== undefined) data.supplier = input.supplier || null;
+  if (input.unit_cost !== undefined) data.unitCost = input.unit_cost;
+  if (input.notes !== undefined) data.notes = input.notes || null;
+
+  if (input.category) {
+    const cat = await db.category.findFirst({
+      where: { name: { contains: input.category, mode: "insensitive" }, type: "CONSUMABLE", organizationId },
+    });
+    if (!cat) return { error: `Category "${input.category}" not found. Use suggest_category first.` };
+    data.category = cat.name;
+  }
+
+  if (input.region) {
+    const region = await db.region.findFirst({
+      where: { name: { contains: input.region, mode: "insensitive" }, organizationId },
+    });
+    if (!region) return { error: `Region "${input.region}" not found.` };
+    data.regionId = region.id;
+  }
+
+  if (Object.keys(data).length === 0) {
+    return { error: "No changes specified." };
+  }
+
+  await db.consumable.update({ where: { id: consumable.id }, data });
+
+  await createAuditLog({
+    action: "CONSUMABLE_UPDATED",
+    description: `AI updated consumable "${consumable.name}": ${Object.keys(data).join(", ")}`,
+    performedById: userId,
+    consumableId: consumable.id,
+    organizationId,
+  });
+
+  return {
+    success: true,
+    message: `Updated consumable "${input.new_name || consumable.name}". Changed: ${Object.keys(data).join(", ")}.`,
+  };
+}
+
+// ── Adjust Stock ────────────────────────────────────────
+
+async function adjustStockTool(
+  input: { consumable_name: string; quantity: number; reason?: string },
+  role: Role,
+  regionId: string | null,
+  userId: string,
+  organizationId: string,
+) {
+  if (role === "STAFF") {
+    return { error: "Only admins and managers can adjust stock." };
+  }
+
+  if (role === "BRANCH_MANAGER") {
+    const allowed = await hasPermission(userId, role, "consumableStockAdjust");
+    if (!allowed) return { error: "You don't have stock adjustment permission." };
+  }
+
+  const consumable = await db.consumable.findFirst({
+    where: {
+      name: { contains: input.consumable_name, mode: "insensitive" },
+      isActive: true,
+      organizationId,
+      ...(role === "BRANCH_MANAGER" && regionId ? { regionId } : {}),
+    },
+    include: { region: true },
+  });
+  if (!consumable) return { error: `Consumable "${input.consumable_name}" not found.` };
+
+  const isDeduct = input.quantity < 0;
+  const absQty = Math.abs(input.quantity);
+
+  if (isDeduct && absQty > consumable.quantityOnHand) {
+    return { error: `Cannot deduct ${absQty} — only ${consumable.quantityOnHand} in stock.` };
+  }
+
+  if (isDeduct && !input.reason) {
+    return { error: "A reason is required when deducting stock." };
+  }
+
+  const newQty = consumable.quantityOnHand + input.quantity;
+  await db.consumable.update({
+    where: { id: consumable.id },
+    data: { quantityOnHand: newQty },
+  });
+
+  await createAuditLog({
+    action: "CONSUMABLE_UPDATED",
+    description: `AI ${isDeduct ? "deducted" : "added"} ${absQty} ${consumable.unitType} ${isDeduct ? "from" : "to"} "${consumable.name}" (${consumable.quantityOnHand} → ${newQty}). ${input.reason || ""}`,
+    performedById: userId,
+    consumableId: consumable.id,
+    organizationId,
+  });
+
+  return {
+    success: true,
+    message: `${isDeduct ? "Deducted" : "Added"} ${absQty} ${consumable.unitType} ${isDeduct ? "from" : "to"} "${consumable.name}". Stock: ${consumable.quantityOnHand} → ${newQty}.`,
+  };
+}
+
+// ── Delete Asset ────────────────────────────────────────
+
+async function deleteAssetTool(
+  input: { asset_code: string; confirm: boolean },
+  role: Role,
+  userId: string,
+  organizationId: string,
+) {
+  if (role !== "SUPER_ADMIN") {
+    return { error: "Only Super Admins can delete assets via AI." };
+  }
+
+  if (!input.confirm) {
+    return { error: "Deletion not confirmed. Set confirm to true to proceed." };
+  }
+
+  const asset = await db.asset.findFirst({
+    where: { assetCode: input.asset_code, organizationId },
+    include: { assignments: { where: { isActive: true } } },
+  });
+  if (!asset) return { error: `Asset "${input.asset_code}" not found.` };
+
+  if (asset.assignments.length > 0) {
+    return { error: `Cannot delete — asset is currently assigned to a user. Unassign it first.` };
+  }
+
+  await db.asset.delete({ where: { id: asset.id } });
+
+  await createAuditLog({
+    action: "ASSET_UPDATED",
+    description: `AI deleted asset "${asset.name}" (${asset.assetCode})`,
+    performedById: userId,
+    organizationId,
+  });
+
+  return { success: true, message: `Deleted asset "${asset.name}" (${asset.assetCode}).` };
+}
+
+// ── Assign / Unassign Asset ─────────────────────────────
+
+async function assignAssetTool(
+  input: { asset_code: string; action: "assign" | "unassign"; user_email?: string; assignment_type?: string },
+  role: Role,
+  regionId: string | null,
+  userId: string,
+  organizationId: string,
+) {
+  if (role === "STAFF") {
+    return { error: "Only admins and managers can assign assets." };
+  }
+
+  const asset = await db.asset.findFirst({
+    where: { assetCode: input.asset_code, organizationId },
+    include: { assignments: { where: { isActive: true }, include: { user: { select: { name: true, email: true } } } } },
+  });
+  if (!asset) return { error: `Asset "${input.asset_code}" not found.` };
+
+  if (role === "BRANCH_MANAGER" && regionId && asset.regionId !== regionId) {
+    return { error: "You can only manage assets in your own region." };
+  }
+
+  if (input.action === "assign") {
+    if (!input.user_email) return { error: "user_email is required for assignment." };
+    if (asset.status !== "AVAILABLE") {
+      return { error: `Asset is currently "${asset.status}" — must be AVAILABLE to assign.` };
+    }
+
+    const targetUser = await db.user.findFirst({
+      where: { email: { equals: input.user_email, mode: "insensitive" }, organizationId, isActive: true },
+    });
+    if (!targetUser) return { error: `User "${input.user_email}" not found or inactive.` };
+
+    await db.assetAssignment.create({
+      data: {
+        assetId: asset.id,
+        userId: targetUser.id,
+        assignmentType: (input.assignment_type as "PERMANENT" | "TEMPORARY") || "PERMANENT",
+      },
+    });
+    await db.asset.update({ where: { id: asset.id }, data: { status: "ASSIGNED" } });
+
+    await createAuditLog({
+      action: "ASSET_ASSIGNED",
+      description: `AI assigned "${asset.name}" (${asset.assetCode}) to ${targetUser.name || targetUser.email}`,
+      performedById: userId,
+      assetId: asset.id,
+      targetUserId: targetUser.id,
+      organizationId,
+    });
+
+    return { success: true, message: `Assigned "${asset.name}" (${asset.assetCode}) to ${targetUser.name || targetUser.email}.` };
+  }
+
+  // Unassign
+  if (input.action === "unassign") {
+    const activeAssignment = asset.assignments[0];
+    if (!activeAssignment) return { error: "Asset is not currently assigned to anyone." };
+
+    await db.assetAssignment.update({
+      where: { id: activeAssignment.id },
+      data: { isActive: false, actualReturnDate: new Date() },
+    });
+    await db.asset.update({ where: { id: asset.id }, data: { status: "AVAILABLE" } });
+
+    await createAuditLog({
+      action: "ASSET_RETURNED",
+      description: `AI unassigned "${asset.name}" (${asset.assetCode}) from ${activeAssignment.user.name || activeAssignment.user.email}`,
+      performedById: userId,
+      assetId: asset.id,
+      targetUserId: activeAssignment.userId,
+      organizationId,
+    });
+
+    return { success: true, message: `Unassigned "${asset.name}" (${asset.assetCode}) from ${activeAssignment.user.name || activeAssignment.user.email}.` };
+  }
+
+  return { error: "Invalid action. Use 'assign' or 'unassign'." };
+}
+
 // ── Dispatcher ──────────────────────────────────────────
 
 export async function executeAITool(
@@ -571,6 +1019,7 @@ export async function executeAITool(
   userRole: Role,
   userRegionId: string | null,
   userId?: string,
+  organizationId?: string,
 ): Promise<string> {
   try {
     let result: unknown;
@@ -599,6 +1048,21 @@ export async function executeAITool(
         break;
       case "create_asset":
         result = await createAssetTool(toolInput as never, userRole, userRegionId, userId!);
+        break;
+      case "update_asset":
+        result = await updateAssetTool(toolInput as never, userRole, userRegionId, userId!, organizationId!);
+        break;
+      case "update_consumable":
+        result = await updateConsumableTool(toolInput as never, userRole, userRegionId, userId!, organizationId!);
+        break;
+      case "adjust_stock":
+        result = await adjustStockTool(toolInput as never, userRole, userRegionId, userId!, organizationId!);
+        break;
+      case "delete_asset":
+        result = await deleteAssetTool(toolInput as never, userRole, userId!, organizationId!);
+        break;
+      case "assign_asset":
+        result = await assignAssetTool(toolInput as never, userRole, userRegionId, userId!, organizationId!);
         break;
       default:
         result = { error: `Unknown tool: ${toolName}` };

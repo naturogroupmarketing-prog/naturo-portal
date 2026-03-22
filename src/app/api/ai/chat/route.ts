@@ -27,40 +27,54 @@ export async function POST(request: NextRequest) {
 
   const userRole = session.user.role as Role;
 
-  // Determine which AI creation tools this user can access
-  const AI_CREATION_TOOLS = ["create_asset", "create_purchase_order", "suggest_category"];
-  let canUseAICreation = false;
+  // Determine which AI management tools this user can access
+  const AI_MANAGEMENT_TOOLS = [
+    "create_asset", "create_purchase_order", "suggest_category",
+    "update_asset", "update_consumable", "adjust_stock", "delete_asset", "assign_asset",
+  ];
+  let canUseAIManagement = false;
 
   if (userRole === "SUPER_ADMIN") {
-    canUseAICreation = true;
+    canUseAIManagement = true;
   } else if (userRole === "BRANCH_MANAGER") {
-    canUseAICreation = await hasPermission(session.user.id, userRole, "aiAssetCreate");
+    canUseAIManagement = await hasPermission(session.user.id, userRole, "aiAssetCreate");
   }
-  // STAFF: canUseAICreation stays false
+  // STAFF: canUseAIManagement stays false
 
   // Filter tools based on permissions
-  const availableTools = canUseAICreation
+  const availableTools = canUseAIManagement
     ? AI_TOOLS
-    : AI_TOOLS.filter((t) => !AI_CREATION_TOOLS.includes(t.name));
+    : AI_TOOLS.filter((t) => !AI_MANAGEMENT_TOOLS.includes(t.name));
 
-  const creationNote = canUseAICreation
-    ? "You can READ data, CREATE assets (single or bulk), and CREATE purchase orders. When creating assets, always use suggest_category first to find valid categories, then use create_asset."
+  const managementNote = canUseAIManagement
+    ? `You have FULL management capabilities:
+- SEARCH: Find assets, consumables, users, and get inventory insights.
+- CREATE: Create assets (single or bulk) and purchase orders. Always use suggest_category first.
+- UPDATE: Edit asset details (name, category, region, status, description, serial number, supplier, etc.) and consumable details (name, category, region, thresholds, supplier, etc.).
+- STOCK: Add or deduct consumable stock (positive number = add, negative = deduct).
+- ASSIGN: Assign available assets to staff or unassign them.
+- DELETE: Delete unassigned assets (Super Admin only, requires confirm: true).
+When modifying items, search for them first to confirm details before making changes.`
     : "You can READ data and provide insights. For creating or modifying assets, direct users to the appropriate page in the app.";
 
-  const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, and answer questions.
+  const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, manage inventory, and answer questions.
 
 Current user: ${session.user.name || session.user.email}
 Role: ${session.user.role}
 ${session.user.regionId ? "Region: restricted to their assigned region only" : "Region: all regions (Super Admin)"}
+
+Capabilities:
+${managementNote}
 
 Guidelines:
 - Be concise and helpful. Use plain language.
 - Format search results clearly with key details.
 - Highlight actionable items (low stock, overdue returns).
 - If you can't find something, say so clearly.
-- ${creationNote}
-- For other modifications (editing, deleting, assigning), direct users to the appropriate page.
-- Respect the user's role permissions.`;
+- When updating or deleting, always search first and confirm the item details with the user before making changes.
+- For delete operations, always ask the user to confirm before proceeding.
+- Respect the user's role permissions — some actions are Super Admin only.
+- All changes are logged in the audit trail.`;
 
   try {
     let currentMessages = messages.map((m) => ({
@@ -99,6 +113,7 @@ Guidelines:
             session.user.role as "SUPER_ADMIN" | "BRANCH_MANAGER" | "STAFF",
             session.user.regionId ?? null,
             session.user.id,
+            session.user.organizationId ?? undefined,
           );
           toolResults.push({ type: "tool_result", tool_use_id: block.id, content: result });
         }
