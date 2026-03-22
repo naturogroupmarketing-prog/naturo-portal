@@ -1,12 +1,7 @@
 import { redirect } from "next/navigation";
-import dynamic from "next/dynamic";
 import { auth } from "@/lib/auth";
 import { AppShell } from "@/components/layout/app-shell";
-
-const ChatWidget = dynamic(
-  () => import("@/components/layout/chat-widget").then((m) => ({ default: m.ChatWidget })),
-  { ssr: false }
-);
+import { ChatWidget } from "@/components/layout/chat-widget";
 
 export default async function PortalLayout({
   children,
