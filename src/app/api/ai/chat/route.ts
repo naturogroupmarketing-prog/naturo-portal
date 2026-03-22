@@ -48,14 +48,15 @@ export async function POST(request: NextRequest) {
 
   const managementNote = canUseAIManagement
     ? `You have FULL management capabilities:
-- SEARCH: Find assets, consumables, users, and get inventory insights.
+- SEARCH: Find assets, consumables, users, and get inventory insights. All searches support a region filter to narrow results to a specific location.
+- REGIONS: Use list_regions to discover all locations and their inventory counts. Use compare_regions to see side-by-side differences between locations (e.g. what Sydney has vs Melbourne).
 - CREATE: Create assets (single or bulk), consumables, and purchase orders. Always use suggest_category first.
 - UPDATE: Edit asset details (name, category, region, status, description, serial number, supplier, etc.) and consumable details (name, category, region, thresholds, supplier, etc.).
 - STOCK: Add or deduct consumable stock (positive number = add, negative = deduct).
 - ASSIGN: Assign available assets to staff or unassign them.
 - DELETE: Delete unassigned assets (Super Admin only, requires confirm: true).
-When modifying items, search for them first to confirm details before making changes.`
-    : "You can READ data and provide insights. For creating or modifying assets, direct users to the appropriate page in the app.";
+When the user asks about a specific region, always use the region filter parameter. When asked to compare, use compare_regions. When modifying items, search for them first to confirm details before making changes.`
+    : "You can READ data and provide insights. Use list_regions to see all locations, compare_regions to compare them, and add a region filter to any search to narrow by location. For creating or modifying assets, direct users to the appropriate page in the app.";
 
   const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, manage inventory, and answer questions.
 

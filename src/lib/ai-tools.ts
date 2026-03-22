@@ -9,7 +9,7 @@ export const AI_TOOLS: Tool[] = [
   {
     name: "search_assets",
     description:
-      "Search assets by name, asset code, serial number, status, or category. Returns matching assets with current status, location, and assignee.",
+      "Search assets by name, asset code, serial number, status, category, or region. Returns matching assets with current status, location, and assignee. Use the region parameter to filter results to a specific location.",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -20,6 +20,7 @@ export const AI_TOOLS: Tool[] = [
           description: "Optional status filter",
         },
         category: { type: "string", description: "Optional category filter" },
+        region: { type: "string", description: "Optional region name filter (e.g. 'Sydney', 'Melbourne')" },
       },
       required: ["query"],
     },
@@ -27,12 +28,13 @@ export const AI_TOOLS: Tool[] = [
   {
     name: "search_consumables",
     description:
-      "Search consumables by name, category, or supplier. Returns stock levels, thresholds, and location.",
+      "Search consumables by name, category, supplier, or region. Returns stock levels, thresholds, and location. Use the region parameter to see what's in a specific location.",
     input_schema: {
       type: "object" as const,
       properties: {
         query: { type: "string", description: "Search term for consumable name or category" },
         low_stock_only: { type: "boolean", description: "If true, only items at or below minimum threshold" },
+        region: { type: "string", description: "Optional region name filter (e.g. 'Sydney', 'Melbourne')" },
       },
       required: ["query"],
     },
@@ -57,7 +59,7 @@ export const AI_TOOLS: Tool[] = [
   {
     name: "get_inventory_insights",
     description:
-      "Get inventory statistics: total counts, low stock alerts, overdue checkouts, and reorder suggestions.",
+      "Get inventory statistics: total counts, low stock alerts, overdue checkouts, and reorder suggestions. Can be filtered by region to compare locations.",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -66,6 +68,7 @@ export const AI_TOOLS: Tool[] = [
           enum: ["overview", "low_stock", "overdue", "reorder_suggestions"],
           description: "Aspect to focus on. Default: overview",
         },
+        region: { type: "string", description: "Optional region name to get stats for a specific location only" },
       },
     },
   },
@@ -220,6 +223,31 @@ export const AI_TOOLS: Tool[] = [
     },
   },
   {
+    name: "list_regions",
+    description:
+      "List all regions (locations/branches) in the organisation with their asset and consumable counts. Use this to discover valid region names before filtering or creating items.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+    },
+  },
+  {
+    name: "compare_regions",
+    description:
+      "Compare inventory across two or more regions. Shows side-by-side asset counts by status, consumable stock levels, and highlights differences. Useful for answering 'what does Sydney have that Melbourne doesn't?'",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        regions: {
+          type: "array",
+          items: { type: "string" },
+          description: "Region names to compare (e.g. ['Sydney', 'Melbourne']). Use list_regions first to get valid names.",
+        },
+      },
+      required: ["regions"],
+    },
+  },
+  {
     name: "create_consumable",
     description:
       "Create a new consumable item in the system. Only available to admins and managers. Use suggest_category first to find valid categories.",
@@ -250,14 +278,33 @@ function regionFilter(role: Role, regionId: string | null) {
   return role === "BRANCH_MANAGER" && regionId ? { regionId } : {};
 }
 
+async function resolveRegionId(regionName: string, organizationId: string) {
+  const region = await db.region.findFirst({
+    where: {
+      name: { contains: regionName, mode: "insensitive" },
+      state: { organizationId },
+    },
+  });
+  return region?.id || null;
+}
+
 async function searchAssets(
-  input: { query: string; status?: string; category?: string },
+  input: { query: string; status?: string; category?: string; region?: string },
   role: Role,
   regionId: string | null,
+  organizationId?: string,
 ) {
+  // If a specific region filter is provided, resolve it
+  let effectiveRegionFilter = regionFilter(role, regionId);
+  if (input.region && organizationId) {
+    const resolvedId = await resolveRegionId(input.region, organizationId);
+    if (!resolvedId) return { error: `Region "${input.region}" not found. Use list_regions to see valid region names.` };
+    effectiveRegionFilter = { regionId: resolvedId };
+  }
+
   const assets = await db.asset.findMany({
     where: {
-      ...regionFilter(role, regionId),
+      ...effectiveRegionFilter,
       ...(input.status ? { status: input.status as never } : {}),
       ...(input.category ? { category: { contains: input.category, mode: "insensitive" as const } } : {}),
       OR: [
@@ -291,14 +338,22 @@ async function searchAssets(
 }
 
 async function searchConsumables(
-  input: { query: string; low_stock_only?: boolean },
+  input: { query: string; low_stock_only?: boolean; region?: string },
   role: Role,
   regionId: string | null,
+  organizationId?: string,
 ) {
+  let effectiveRegionFilter = regionFilter(role, regionId);
+  if (input.region && organizationId) {
+    const resolvedId = await resolveRegionId(input.region, organizationId);
+    if (!resolvedId) return { error: `Region "${input.region}" not found. Use list_regions to see valid region names.` };
+    effectiveRegionFilter = { regionId: resolvedId };
+  }
+
   const consumables = await db.consumable.findMany({
     where: {
       isActive: true,
-      ...regionFilter(role, regionId),
+      ...effectiveRegionFilter,
       OR: [
         { name: { contains: input.query, mode: "insensitive" } },
         { category: { contains: input.query, mode: "insensitive" } },
@@ -368,11 +423,17 @@ async function searchUsers(
 }
 
 async function getInventoryInsights(
-  input: { focus?: string },
+  input: { focus?: string; region?: string },
   role: Role,
   regionId: string | null,
+  organizationId?: string,
 ) {
-  const rf = regionFilter(role, regionId);
+  let rf = regionFilter(role, regionId);
+  if (input.region && organizationId) {
+    const resolvedId = await resolveRegionId(input.region, organizationId);
+    if (!resolvedId) return { error: `Region "${input.region}" not found. Use list_regions to see valid region names.` };
+    rf = { regionId: resolvedId };
+  }
   const focus = input.focus || "overview";
 
   if (focus === "overview" || focus === "low_stock" || focus === "reorder_suggestions") {
@@ -1032,6 +1093,103 @@ async function assignAssetTool(
   return { error: "Invalid action. Use 'assign' or 'unassign'." };
 }
 
+// ── List Regions ────────────────────────────────────────
+
+async function listRegions(organizationId: string) {
+  const regions = await db.region.findMany({
+    where: { state: { organizationId } },
+    include: {
+      state: true,
+      _count: {
+        select: {
+          assets: true,
+          consumables: { where: { isActive: true } },
+        },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return regions.map((r) => ({
+    name: r.name,
+    state: r.state.name,
+    assetCount: r._count.assets,
+    consumableCount: r._count.consumables,
+  }));
+}
+
+// ── Compare Regions ─────────────────────────────────────
+
+async function compareRegions(
+  input: { regions: string[] },
+  organizationId: string,
+) {
+  if (input.regions.length < 2) {
+    return { error: "Please provide at least 2 region names to compare." };
+  }
+
+  const results: Record<string, unknown> = {};
+
+  for (const regionName of input.regions) {
+    const region = await db.region.findFirst({
+      where: {
+        name: { contains: regionName, mode: "insensitive" },
+        state: { organizationId },
+      },
+    });
+
+    if (!region) {
+      results[regionName] = { error: "Region not found" };
+      continue;
+    }
+
+    const [assetsByStatus, assets, consumables] = await Promise.all([
+      db.asset.groupBy({
+        by: ["status"],
+        where: { regionId: region.id },
+        _count: true,
+      }),
+      db.asset.findMany({
+        where: { regionId: region.id },
+        select: { name: true, category: true, status: true },
+        orderBy: { category: "asc" },
+      }),
+      db.consumable.findMany({
+        where: { regionId: region.id, isActive: true },
+        select: { name: true, category: true, quantityOnHand: true, minimumThreshold: true, unitType: true },
+        orderBy: { category: "asc" },
+      }),
+    ]);
+
+    const lowStock = consumables.filter((c) => c.quantityOnHand <= c.minimumThreshold);
+
+    // Group assets by category
+    const assetsByCategory: Record<string, number> = {};
+    assets.forEach((a) => {
+      assetsByCategory[a.category] = (assetsByCategory[a.category] || 0) + 1;
+    });
+
+    // Group consumables by category
+    const consumablesByCategory: Record<string, { items: string[]; totalStock: number }> = {};
+    consumables.forEach((c) => {
+      if (!consumablesByCategory[c.category]) consumablesByCategory[c.category] = { items: [], totalStock: 0 };
+      consumablesByCategory[c.category].items.push(`${c.name} (${c.quantityOnHand} ${c.unitType})`);
+      consumablesByCategory[c.category].totalStock += c.quantityOnHand;
+    });
+
+    results[region.name] = {
+      totalAssets: assets.length,
+      assetsByStatus: Object.fromEntries(assetsByStatus.map((s) => [s.status, s._count])),
+      assetsByCategory,
+      totalConsumables: consumables.length,
+      consumablesByCategory,
+      lowStockItems: lowStock.map((c) => `${c.name} (${c.quantityOnHand}/${c.minimumThreshold} ${c.unitType})`),
+    };
+  }
+
+  return results;
+}
+
 // ── Create Consumable ───────────────────────────────────
 
 async function createConsumableTool(
@@ -1147,16 +1305,22 @@ export async function executeAITool(
 
     switch (toolName) {
       case "search_assets":
-        result = await searchAssets(toolInput as never, userRole, userRegionId);
+        result = await searchAssets(toolInput as never, userRole, userRegionId, organizationId!);
         break;
       case "search_consumables":
-        result = await searchConsumables(toolInput as never, userRole, userRegionId);
+        result = await searchConsumables(toolInput as never, userRole, userRegionId, organizationId!);
         break;
       case "search_users":
         result = await searchUsers(toolInput as never, userRole, userRegionId);
         break;
       case "get_inventory_insights":
-        result = await getInventoryInsights(toolInput as never, userRole, userRegionId);
+        result = await getInventoryInsights(toolInput as never, userRole, userRegionId, organizationId!);
+        break;
+      case "list_regions":
+        result = await listRegions(organizationId!);
+        break;
+      case "compare_regions":
+        result = await compareRegions(toolInput as never, organizationId!);
         break;
       case "suggest_category":
         result = await suggestCategory(toolInput as never);
