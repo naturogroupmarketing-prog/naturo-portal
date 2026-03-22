@@ -47,10 +47,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user, account }) {
       if (user) {
         token.sub = user.id;
+        // Force immediate DB fetch on sign-in
+        token.lastRefresh = 0;
       }
-      // Always refresh role, regionId, and isActive from DB
-      // so admin changes (e.g. region reassignment) take effect immediately
-      if (token.sub) {
+      // Refresh role/region/org from DB every 5 minutes instead of every request
+      // This reduces DB calls from ~50/page-load to 1 every 5 minutes
+      const now = Date.now();
+      const lastRefresh = (token.lastRefresh as number) || 0;
+      const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+      if (token.sub && now - lastRefresh > REFRESH_INTERVAL) {
         const dbUser = await db.user.findUnique({
           where: { id: token.sub },
           select: { role: true, regionId: true, isActive: true, organizationId: true },
@@ -60,6 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.regionId = dbUser.regionId;
           token.isActive = dbUser.isActive;
           token.organizationId = dbUser.organizationId;
+          token.lastRefresh = now;
         }
       }
       return token;

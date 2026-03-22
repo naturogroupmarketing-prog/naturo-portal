@@ -60,3 +60,34 @@ export async function hasPermission(
   if (!perms) return MANAGER_DEFAULTS[permission];
   return perms[permission];
 }
+
+/**
+ * Check multiple permissions in a single DB query instead of N separate calls
+ */
+export async function hasPermissions(
+  userId: string,
+  userRole: Role,
+  permissions: PermissionKey[]
+): Promise<Record<PermissionKey, boolean>> {
+  const result = {} as Record<PermissionKey, boolean>;
+
+  if (isSuperAdmin(userRole)) {
+    for (const p of permissions) result[p] = true;
+    return result;
+  }
+
+  if (!isBranchManager(userRole)) {
+    for (const p of permissions) result[p] = false;
+    return result;
+  }
+
+  // Single DB query for all permissions
+  const perms = await db.managerPermission.findUnique({
+    where: { userId },
+  });
+
+  for (const p of permissions) {
+    result[p] = perms ? perms[p] : MANAGER_DEFAULTS[p];
+  }
+  return result;
+}

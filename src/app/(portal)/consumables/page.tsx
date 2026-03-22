@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { isAdminOrManager, hasPermission } from "@/lib/permissions";
+import { isAdminOrManager, hasPermission, hasPermissions } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { ConsumablesClient } from "./consumables-client";
 
@@ -15,7 +15,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
     ? { regionId: session.user.regionId!, organizationId }
     : { organizationId };
 
-  const [consumables, pendingRequests, regions, users, categories] = await Promise.all([
+  const [consumables, pendingRequests, regions, users, categories, canAdjustStock] = await Promise.all([
     db.consumable.findMany({
       where: { ...regionFilter, isActive: true },
       include: {
@@ -60,9 +60,8 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
       where: { type: "CONSUMABLE", organizationId },
       orderBy: { sortOrder: "asc" },
     }),
+    hasPermission(session.user.id, session.user.role, "consumableStockAdjust"),
   ]);
-
-  const canAdjustStock = await hasPermission(session.user.id, session.user.role, "consumableStockAdjust");
 
   return (
     <ConsumablesClient

@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { isAdminOrManager, hasPermission } from "@/lib/permissions";
+import { isAdminOrManager, hasPermissions } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { AssetsClient } from "./assets-client";
 
@@ -15,7 +15,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
     ? { regionId: session.user.regionId!, organizationId }
     : { organizationId };
 
-  const [assets, regions, users, categories, canAdd, canEdit, canDelete] = await Promise.all([
+  const [assets, regions, users, categories, perms] = await Promise.all([
     db.asset.findMany({
       where: regionFilter,
       include: {
@@ -49,9 +49,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
       where: { type: "ASSET", organizationId },
       orderBy: { sortOrder: "asc" },
     }),
-    hasPermission(session.user.id, session.user.role, "assetAdd"),
-    hasPermission(session.user.id, session.user.role, "assetEdit"),
-    hasPermission(session.user.id, session.user.role, "assetDelete"),
+    hasPermissions(session.user.id, session.user.role, ["assetAdd", "assetEdit", "assetDelete"]),
   ]);
 
   return (
@@ -61,7 +59,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
       users={JSON.parse(JSON.stringify(users))}
       categories={JSON.parse(JSON.stringify(categories))}
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
-      permissions={{ canAdd, canEdit, canDelete }}
+      permissions={{ canAdd: perms.assetAdd, canEdit: perms.assetEdit, canDelete: perms.assetDelete }}
       initialStatus={params.status}
       initialRegion={params.region}
       initialCategory={params.category}

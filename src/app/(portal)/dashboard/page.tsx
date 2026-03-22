@@ -236,23 +236,21 @@ export default async function DashboardPage() {
     }));
   }
 
-  // Chart data: asset status breakdown
-  const [availableCount, assignedCount, checkedOutCount, damagedCount, lostCount2, unavailableCount] = await Promise.all([
-    db.asset.count({ where: { ...regionFilter, status: "AVAILABLE" } }),
-    db.asset.count({ where: { ...regionFilter, status: "ASSIGNED" } }),
-    db.asset.count({ where: { ...regionFilter, status: "CHECKED_OUT" } }),
-    db.asset.count({ where: { ...regionFilter, status: "DAMAGED" } }),
-    db.asset.count({ where: { ...regionFilter, status: "LOST" } }),
-    db.asset.count({ where: { ...regionFilter, status: "UNAVAILABLE" } }),
-  ]);
+  // Chart data: asset status breakdown — single groupBy instead of 6 count queries
+  const assetStatusGroups = await db.asset.groupBy({
+    by: ["status"],
+    where: regionFilter,
+    _count: true,
+  });
+  const statusCountMap = Object.fromEntries(assetStatusGroups.map((g) => [g.status, g._count]));
 
   const assetStatusChart = [
-    { name: "Available", value: availableCount, color: "#10b981" },
-    { name: "Assigned", value: assignedCount, color: "#3b82f6" },
-    { name: "Checked Out", value: checkedOutCount, color: "#f59e0b" },
-    { name: "Damaged", value: damagedCount, color: "#ef4444" },
-    { name: "Lost", value: lostCount2, color: "#6b7280" },
-    { name: "Unavailable", value: unavailableCount, color: "#8b5cf6" },
+    { name: "Available", value: statusCountMap["AVAILABLE"] || 0, color: "#10b981" },
+    { name: "Assigned", value: statusCountMap["ASSIGNED"] || 0, color: "#3b82f6" },
+    { name: "Checked Out", value: statusCountMap["CHECKED_OUT"] || 0, color: "#f59e0b" },
+    { name: "Damaged", value: statusCountMap["DAMAGED"] || 0, color: "#ef4444" },
+    { name: "Lost", value: statusCountMap["LOST"] || 0, color: "#6b7280" },
+    { name: "Unavailable", value: statusCountMap["UNAVAILABLE"] || 0, color: "#8b5cf6" },
   ].filter((s) => s.value > 0);
 
   // Chart data: assets by category
