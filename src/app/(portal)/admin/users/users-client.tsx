@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { createUser, updateUser, deleteUser, batchDisableUsers, resetPassword } from "@/app/actions/users";
+import { useToast } from "@/components/ui/toast";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
@@ -55,6 +56,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const { addToast } = useToast();
 
   const toggleSection = (key: string) => {
     setCollapsedSections((prev) => {
@@ -291,7 +293,15 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
 
       {/* Create User Modal */}
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create User">
-        <form action={async (fd) => { await createUser(fd); setShowCreate(false); }} className="space-y-4">
+        <form action={async (fd) => {
+          try {
+            await createUser(fd);
+            addToast("User created successfully", "success");
+            setShowCreate(false);
+          } catch (e) {
+            addToast(e instanceof Error ? e.message : "Failed to create user", "error");
+          }
+        }} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
             <Input name="name" required />
@@ -306,7 +316,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 mb-1">Password *</label>
-            <Input name="password" type="password" required minLength={6} placeholder="Min 6 characters" />
+            <Input name="password" type="password" required minLength={8} placeholder="Min 8 characters" />
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 mb-1">Role *</label>
@@ -338,7 +348,15 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
       <Modal open={!!editUser} onClose={() => setEditUser(null)} title="Edit User">
         {editUser && (
           <div className="space-y-5">
-            <form action={async (fd) => { await updateUser(fd); setEditUser(null); }} className="space-y-4">
+            <form action={async (fd) => {
+              try {
+                await updateUser(fd);
+                addToast("User updated successfully", "success");
+                setEditUser(null);
+              } catch (e) {
+                addToast(e instanceof Error ? e.message : "Failed to update user", "error");
+              }
+            }} className="space-y-4">
               <input type="hidden" name="userId" value={editUser.id} />
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Email</label>
