@@ -9,6 +9,8 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
 import { batchConfirmKitReceipt, returnStarterKit } from "@/app/actions/starter-kits";
 import { staffReturnAsset, staffReturnConsumable } from "@/app/actions/returns";
+import { submitConditionCheck } from "@/app/actions/condition-checks";
+import { Select } from "@/components/ui/select";
 
 interface StatCard {
   label: string;
@@ -55,6 +57,16 @@ interface IndividualConsumable {
   quantity: number;
 }
 
+interface ConditionCheckItem {
+  id: string;
+  type: "ASSET" | "CONSUMABLE";
+  name: string;
+  code: string | null;
+  category: string | null;
+  checked: boolean;
+  condition: string | null;
+}
+
 interface Props {
   stats: StatCard[];
   recentAssets?: unknown[];
@@ -66,14 +78,67 @@ interface Props {
   activeKitApplications?: ActiveKitApplication[];
   individualAssets?: IndividualAsset[];
   individualConsumables?: IndividualConsumable[];
+  conditionCheckItems?: ConditionCheckItem[];
+  conditionCheckMonth?: string;
 }
 
-export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [], activeKitApplications = [], individualAssets = [], individualConsumables = [] }: Props) {
+export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [], activeKitApplications = [], individualAssets = [], individualConsumables = [], conditionCheckItems = [], conditionCheckMonth = "" }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
   // Track item states: "received" | "not_received" | undefined (pending)
   const [itemStates, setItemStates] = useState<Record<string, { status: "received" | "not_received"; reason?: string }>>({});
   const [submitting, setSubmitting] = useState(false);
+
+  // Condition check state
+  const [checkStates, setCheckStates] = useState<Record<string, { condition: string; photoUrl: string; notes: string; uploading: boolean; submitting: boolean }>>({});
+  const [showConditionChecks, setShowConditionChecks] = useState(false);
+  const checkedCount = conditionCheckItems.filter((i) => i.checked || checkStates[`${i.type}-${i.id}`]?.photoUrl).length;
+
+  const handleCheckPhotoUpload = async (key: string, file: File) => {
+    if (file.size > 5 * 1024 * 1024) {
+      addToast("Image must be under 5MB", "error");
+      return;
+    }
+    setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], condition: prev[key]?.condition || "GOOD", notes: prev[key]?.notes || "", photoUrl: "", uploading: true, submitting: false } }));
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      if (res.ok) {
+        const { url } = await res.json();
+        setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], photoUrl: url, uploading: false } }));
+      } else {
+        addToast("Failed to upload photo", "error");
+        setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], uploading: false } }));
+      }
+    } catch {
+      addToast("Failed to upload photo", "error");
+      setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], uploading: false } }));
+    }
+  };
+
+  const handleSubmitCheck = async (item: ConditionCheckItem) => {
+    const key = `${item.type}-${item.id}`;
+    const state = checkStates[key];
+    if (!state?.photoUrl) { addToast("Please take a photo first", "error"); return; }
+    setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], submitting: true } }));
+    try {
+      await submitConditionCheck({
+        itemType: item.type,
+        assetId: item.type === "ASSET" ? item.id : undefined,
+        consumableId: item.type === "CONSUMABLE" ? item.id : undefined,
+        condition: state.condition || "GOOD",
+        photoUrl: state.photoUrl,
+        notes: state.notes || undefined,
+      });
+      addToast(`Condition check submitted for ${item.name}`, "success");
+      router.refresh();
+    } catch (e) {
+      addToast(e instanceof Error ? e.message : "Failed to submit", "error");
+    } finally {
+      setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], submitting: false } }));
+    }
+  };
   const [submitted, setSubmitted] = useState(false);
 
   // Return kit modal state
@@ -816,6 +881,159 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           </Link>
         ))}
       </div>
+
+      {/* Monthly Condition Check */}
+      {conditionCheckItems.length > 0 && (
+        <Card className="border-l-4 border-l-blue-400">
+          <div
+            className="px-6 py-4 flex items-center justify-between cursor-pointer"
+            onClick={() => setShowConditionChecks(!showConditionChecks)}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                <Icon name="search" size={20} className="text-blue-500" />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-shark-900">Monthly Condition Check</h3>
+                <p className="text-xs text-shark-400 mt-0.5">
+                  {checkedCount === conditionCheckItems.length ? (
+                    <span className="text-emerald-600 font-medium">All {conditionCheckItems.length} items checked ✓</span>
+                  ) : (
+                    <>{checkedCount} of {conditionCheckItems.length} items — take photos of your assigned equipment</>
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              {checkedCount < conditionCheckItems.length && (
+                <span className="text-xs font-medium text-white bg-blue-500 px-2.5 py-1 rounded-full">
+                  {conditionCheckItems.length - checkedCount} remaining
+                </span>
+              )}
+              <Icon
+                name="chevron-down"
+                size={18}
+                className={`text-shark-400 transition-transform ${showConditionChecks ? "" : "-rotate-90"}`}
+              />
+            </div>
+          </div>
+
+          {showConditionChecks && (
+            <div className="border-t border-shark-100 divide-y divide-shark-50">
+              {conditionCheckItems.map((item) => {
+                const key = `${item.type}-${item.id}`;
+                const state = checkStates[key];
+                const isChecked = item.checked;
+                const isUploading = state?.uploading;
+                const isSubmitting = state?.submitting;
+                const hasPhoto = !!state?.photoUrl;
+
+                return (
+                  <div key={key} className={`px-6 py-4 ${isChecked ? "bg-emerald-50/30" : ""}`}>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        {/* Status indicator */}
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                          isChecked ? "bg-emerald-100" : hasPhoto ? "bg-blue-100" : "bg-shark-100"
+                        }`}>
+                          {isChecked ? (
+                            <Icon name="check" size={16} className="text-emerald-600" />
+                          ) : (
+                            <Icon name={item.type === "ASSET" ? "package" : "droplet"} size={14} className="text-shark-400" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-shark-800 truncate">{item.name}</p>
+                          {item.code && <p className="text-xs font-mono text-shark-400">{item.code}</p>}
+                          {isChecked && item.condition && (
+                            <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${
+                              item.condition === "GOOD" ? "bg-emerald-100 text-emerald-700" :
+                              item.condition === "FAIR" ? "bg-blue-100 text-blue-700" :
+                              item.condition === "POOR" ? "bg-amber-100 text-amber-700" :
+                              "bg-red-100 text-red-700"
+                            }`}>
+                              {item.condition}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Action area */}
+                      {!isChecked && (
+                        <div className="flex items-center gap-2 shrink-0">
+                          {/* Photo preview */}
+                          {hasPhoto && (
+                            <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-200">
+                              <img src={state.photoUrl} alt="" className="w-full h-full object-cover" />
+                            </div>
+                          )}
+
+                          {/* Take photo button */}
+                          <label className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                            hasPhoto ? "bg-shark-100 text-shark-600 hover:bg-shark-200" : "bg-blue-500 text-white hover:bg-blue-600"
+                          } ${isUploading ? "opacity-50 pointer-events-none" : ""}`}>
+                            {isUploading ? (
+                              <span className="animate-pulse">Uploading...</span>
+                            ) : (
+                              <>
+                                <Icon name="upload" size={12} />
+                                {hasPhoto ? "Retake" : "Photo"}
+                              </>
+                            )}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              capture="environment"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleCheckPhotoUpload(key, file);
+                                e.target.value = "";
+                              }}
+                            />
+                          </label>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Condition + Notes + Submit (only visible after photo taken) */}
+                    {!isChecked && hasPhoto && (
+                      <div className="mt-3 ml-11 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                        <Select
+                          value={state?.condition || "GOOD"}
+                          onChange={(e) => setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], condition: e.target.value } }))}
+                          className="text-xs w-32"
+                        >
+                          <option value="GOOD">Good</option>
+                          <option value="FAIR">Fair</option>
+                          <option value="POOR">Poor</option>
+                          <option value="DAMAGED">Damaged</option>
+                        </Select>
+                        <input
+                          type="text"
+                          placeholder="Notes (optional)"
+                          value={state?.notes || ""}
+                          onChange={(e) => setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], notes: e.target.value } }))}
+                          className="flex-1 text-xs border border-shark-200 rounded-lg px-2.5 py-1.5 focus:border-action-400 focus:outline-none focus:ring-1 focus:ring-action-400/20"
+                        />
+                        <Button
+                          size="sm"
+                          onClick={() => handleSubmitCheck(item)}
+                          disabled={isSubmitting}
+                          loading={isSubmitting}
+                          className="text-xs"
+                        >
+                          Submit
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Quick Actions */}
       <div>

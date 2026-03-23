@@ -14,6 +14,7 @@ export default async function DashboardPage() {
 
   // Staff dashboard
   if (session.user.role === "STAFF") {
+    const currentMonthYear = new Date().toISOString().slice(0, 7);
     const [assetCount, consumableCount, pendingRequestCount, unacknowledgedCount, recentAssets, recentConsumables, recentRequests, pendingAssetItems, pendingConsumableItems, kitApplications, allActiveAssets, allActiveConsumables] = await Promise.all([
       db.assetAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } } }),
       db.consumableAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } } }),
@@ -69,6 +70,12 @@ export default async function DashboardPage() {
       }),
     ]);
 
+    // Condition checks already submitted this month (separate query to avoid Promise.all type limit)
+    const conditionChecksThisMonth = await db.conditionCheck.findMany({
+      where: { userId: session.user.id, monthYear: currentMonthYear },
+      select: { id: true, itemType: true, assetId: true, consumableId: true, condition: true },
+    });
+
     // Build kit application groups (for "Return Kit" button)
     const activeKitApplications = kitApplications
       .map((app) => ({
@@ -92,6 +99,39 @@ export default async function DashboardPage() {
       .filter((c) => !c.starterKitApplicationId)
       .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity }));
 
+    // Build condition check items from all active assignments
+    const checkedSet = new Set(conditionChecksThisMonth.map((c) =>
+      c.itemType === "ASSET" ? `asset-${c.assetId}` : `consumable-${c.consumableId}`
+    ));
+    const conditionCheckMap = new Map(conditionChecksThisMonth.map((c) => [
+      c.itemType === "ASSET" ? `asset-${c.assetId}` : `consumable-${c.consumableId}`,
+      c.condition,
+    ]));
+    const conditionCheckItems = [
+      ...allActiveAssets
+        .filter((a) => a.acknowledgedAt !== null)
+        .map((a) => ({
+          id: a.assetId,
+          type: "ASSET" as const,
+          name: a.asset.name,
+          code: a.asset.assetCode,
+          category: a.asset.category,
+          checked: checkedSet.has(`asset-${a.assetId}`),
+          condition: conditionCheckMap.get(`asset-${a.assetId}`) || null,
+        })),
+      ...allActiveConsumables
+        .filter((c) => c.acknowledgedAt !== null)
+        .map((c) => ({
+          id: c.consumableId,
+          type: "CONSUMABLE" as const,
+          name: c.consumable.name,
+          code: null,
+          category: null,
+          checked: checkedSet.has(`consumable-${c.consumableId}`),
+          condition: conditionCheckMap.get(`consumable-${c.consumableId}`) || null,
+        })),
+    ];
+
     const staffStats: { label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
       { label: "Assigned Assets", value: assetCount, icon: "package", borderColor: "border-l-action-400", iconBg: "bg-action-50", iconColor: "text-action-500", href: "/my-assets" },
       { label: "Consumable Items", value: consumableCount, icon: "droplet", borderColor: "border-l-blue-400", iconBg: "bg-blue-50", iconColor: "text-blue-500", href: "/my-consumables" },
@@ -110,6 +150,8 @@ export default async function DashboardPage() {
         activeKitApplications={activeKitApplications}
         individualAssets={individualAssets}
         individualConsumables={individualConsumables}
+        conditionCheckItems={conditionCheckItems}
+        conditionCheckMonth={currentMonthYear}
       />
     );
   }

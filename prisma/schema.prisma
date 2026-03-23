@@ -118,7 +118,8 @@ model Organization {
   categories     Category[]
   purchaseOrders PurchaseOrder[]
   auditLogs      AuditLog[]
-  damageReports  DamageReport[]
+  damageReports   DamageReport[]
+  conditionChecks ConditionCheck[]
   customFieldDefs CustomFieldDefinition[]
   starterKits    StarterKit[]
 
@@ -220,6 +221,7 @@ model User {
   consumableAssignments  ConsumableAssignment[]
   consumableRequests     ConsumableRequest[]
   damageReports          DamageReport[]
+  conditionChecks        ConditionCheck[]
   auditLogsPerformed     AuditLog[]              @relation("PerformedBy")
   auditLogsTarget        AuditLog[]              @relation("TargetUser")
   permissions            ManagerPermission?
@@ -265,8 +267,9 @@ model Asset {
 
   region       Region       @relation(fields: [regionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  assignments   AssetAssignment[]
-  damageReports DamageReport[]
+  assignments     AssetAssignment[]
+  damageReports   DamageReport[]
+  conditionChecks ConditionCheck[]
   photos        AssetPhoto[]
   auditLogs     AuditLog[]
   maintenance   MaintenanceSchedule[]
@@ -339,9 +342,10 @@ model Consumable {
   region       Region       @relation(fields: [regionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   requests       ConsumableRequest[]
-  assignments    ConsumableAssignment[]
-  purchaseOrders PurchaseOrder[]
-  auditLogs      AuditLog[]
+  assignments     ConsumableAssignment[]
+  conditionChecks ConditionCheck[]
+  purchaseOrders  PurchaseOrder[]
+  auditLogs       AuditLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -424,6 +428,35 @@ model DamageReport {
   @@index([reportedById])
   @@index([organizationId])
   @@index([isResolved])
+}
+
+// ─── CONDITION CHECKS (Monthly Photo Inspections) ──────
+
+model ConditionCheck {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String
+  itemType       String   // "ASSET" or "CONSUMABLE"
+  assetId        String?
+  consumableId   String?
+  condition      String   // "GOOD", "FAIR", "POOR", "DAMAGED"
+  photoUrl       String   @db.Text
+  notes          String?  @db.Text
+  monthYear      String   // "2026-03" format for monthly tracking
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  asset        Asset?       @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  consumable   Consumable?  @relation(fields: [consumableId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, itemType, assetId, monthYear])
+  @@unique([userId, itemType, consumableId, monthYear])
+  @@index([userId, monthYear])
+  @@index([organizationId, monthYear])
+  @@index([assetId])
+  @@index([consumableId])
 }
 
 // ─── CATEGORIES ────────────────────────────────────────
