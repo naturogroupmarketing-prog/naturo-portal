@@ -106,10 +106,13 @@ export default async function DashboardPage() {
       .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity }));
 
     // Build condition check items
-    // If super admin configured specific categories, only show those.
-    // If nothing is configured, show ALL assigned items (default behavior).
+    // Per-type filtering: if asset categories are configured, filter assets by those.
+    // If no asset categories configured, show all assets. Same for consumables.
     const inspectionCatNames = new Set(inspectionCategories.map((c) => c.name));
-    const hasInspectionConfig = inspectionCatNames.size > 0;
+    const inspectionAssetCats = new Set(inspectionCategories.filter((c) => c.type === "ASSET").map((c) => c.name));
+    const inspectionConsumableCats = new Set(inspectionCategories.filter((c) => c.type === "CONSUMABLE").map((c) => c.name));
+    const hasAssetConfig = inspectionAssetCats.size > 0;
+    const hasConsumableConfig = inspectionConsumableCats.size > 0;
     const photosPerCategory = new Map(inspectionCategories.map((c) => [c.name, c.inspectionPhotos]));
 
     // Build checked set keyed by "type-itemId-label"
@@ -125,10 +128,10 @@ export default async function DashboardPage() {
 
     const conditionCheckItems: Array<{ id: string; type: "ASSET" | "CONSUMABLE"; name: string; code: string | null; category: string | null; imageUrl: string | null; photoLabel: string | null; checked: boolean; condition: string | null }> = [];
 
-    // Assets
+    // Assets — filter by configured asset categories (or show all if none configured)
     for (const a of allActiveAssets) {
       if (a.acknowledgedAt === null) continue;
-      if (hasInspectionConfig && !inspectionCatNames.has(a.asset.category)) continue;
+      if (hasAssetConfig && !inspectionAssetCats.has(a.asset.category)) continue;
       const labels = photosPerCategory.get(a.asset.category) || [];
       if (labels.length > 0) {
         for (const label of labels) {
@@ -149,12 +152,12 @@ export default async function DashboardPage() {
       }
     }
 
-    // Consumables (allActiveConsumables now includes category + imageUrl)
+    // Consumables — filter by configured consumable categories (or show all if none configured)
     for (const c of allActiveConsumables) {
       if (c.acknowledgedAt === null) continue;
       const cat = (c.consumable as { name: string; unitType: string; category: string; imageUrl: string | null }).category;
       const img = (c.consumable as { name: string; unitType: string; category: string; imageUrl: string | null }).imageUrl;
-      if (hasInspectionConfig && !inspectionCatNames.has(cat)) continue;
+      if (hasConsumableConfig && !inspectionConsumableCats.has(cat)) continue;
       const labels = photosPerCategory.get(cat) || [];
       if (labels.length > 0) {
         for (const label of labels) {
