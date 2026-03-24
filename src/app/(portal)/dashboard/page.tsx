@@ -70,11 +70,17 @@ export default async function DashboardPage() {
       }),
     ]);
 
-    // Condition checks already submitted this month (separate query to avoid Promise.all type limit)
-    const conditionChecksThisMonth = await db.conditionCheck.findMany({
-      where: { userId: session.user.id, monthYear: currentMonthYear },
-      select: { id: true, itemType: true, assetId: true, consumableId: true, condition: true },
-    });
+    // Condition checks: get config + submitted checks
+    const [conditionChecksThisMonth, inspectionCategories] = await Promise.all([
+      db.conditionCheck.findMany({
+        where: { userId: session.user.id, monthYear: currentMonthYear },
+        select: { id: true, itemType: true, assetId: true, consumableId: true, condition: true, photoLabel: true },
+      }),
+      db.category.findMany({
+        where: { organizationId: session.user.organizationId!, requiresInspection: true },
+        select: { name: true, type: true, inspectionPhotos: true },
+      }),
+    ]);
 
     // Build kit application groups (for "Return Kit" button)
     const activeKitApplications = kitApplications
@@ -99,38 +105,73 @@ export default async function DashboardPage() {
       .filter((c) => !c.starterKitApplicationId)
       .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity }));
 
-    // Build condition check items from all active assignments
-    const checkedSet = new Set(conditionChecksThisMonth.map((c) =>
-      c.itemType === "ASSET" ? `asset-${c.assetId}` : `consumable-${c.consumableId}`
-    ));
-    const conditionCheckMap = new Map(conditionChecksThisMonth.map((c) => [
-      c.itemType === "ASSET" ? `asset-${c.assetId}` : `consumable-${c.consumableId}`,
-      c.condition,
-    ]));
-    const conditionCheckItems = [
-      ...allActiveAssets
-        .filter((a) => a.acknowledgedAt !== null)
-        .map((a) => ({
-          id: a.assetId,
-          type: "ASSET" as const,
-          name: a.asset.name,
-          code: a.asset.assetCode,
-          category: a.asset.category,
-          checked: checkedSet.has(`asset-${a.assetId}`),
-          condition: conditionCheckMap.get(`asset-${a.assetId}`) || null,
-        })),
-      ...allActiveConsumables
-        .filter((c) => c.acknowledgedAt !== null)
-        .map((c) => ({
-          id: c.consumableId,
-          type: "CONSUMABLE" as const,
-          name: c.consumable.name,
-          code: null,
-          category: null,
-          checked: checkedSet.has(`consumable-${c.consumableId}`),
-          condition: conditionCheckMap.get(`consumable-${c.consumableId}`) || null,
-        })),
-    ];
+    // Build condition check items — only for categories that require inspection
+    const inspectionCatNames = new Set(inspectionCategories.map((c) => c.name));
+    const photosPerCategory = new Map(inspectionCategories.map((c) => [c.name, c.inspectionPhotos]));
+
+    // Build checked set keyed by "type-itemId-label"
+    const checkedSet = new Set(conditionChecksThisMonth.map((c) => {
+      const base = c.itemType === "ASSET" ? `asset-${c.assetId}` : `consumable-${c.consumableId}`;
+      return c.photoLabel ? `${base}-${c.photoLabel}` : base;
+    }));
+    const conditionCheckMap = new Map(conditionChecksThisMonth.map((c) => {
+      const base = c.itemType === "ASSET" ? `asset-${c.assetId}` : `consumable-${c.consumableId}`;
+      const key = c.photoLabel ? `${base}-${c.photoLabel}` : base;
+      return [key, c.condition];
+    }));
+
+    const conditionCheckItems: Array<{ id: string; type: "ASSET" | "CONSUMABLE"; name: string; code: string | null; category: string | null; photoLabel: string | null; checked: boolean; condition: string | null }> = [];
+
+    // Assets in inspection categories
+    for (const a of allActiveAssets) {
+      if (a.acknowledgedAt === null) continue;
+      if (!inspectionCatNames.has(a.asset.category)) continue;
+      const labels = photosPerCategory.get(a.asset.category) || [];
+      if (labels.length > 0) {
+        for (const label of labels) {
+          const key = `asset-${a.assetId}-${label}`;
+          conditionCheckItems.push({
+            id: a.assetId, type: "ASSET", name: a.asset.name, code: a.asset.assetCode,
+            category: a.asset.category, photoLabel: label,
+            checked: checkedSet.has(key), condition: conditionCheckMap.get(key) || null,
+          });
+        }
+      } else {
+        const key = `asset-${a.assetId}`;
+        conditionCheckItems.push({
+          id: a.assetId, type: "ASSET", name: a.asset.name, code: a.asset.assetCode,
+          category: a.asset.category, photoLabel: null,
+          checked: checkedSet.has(key), condition: conditionCheckMap.get(key) || null,
+        });
+      }
+    }
+
+    // Consumables in inspection categories — need category field from consumable
+    const consumablesWithCategory = await db.consumableAssignment.findMany({
+      where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } },
+      include: { consumable: { select: { id: true, name: true, unitType: true, category: true } } },
+    });
+    for (const c of consumablesWithCategory) {
+      if (!inspectionCatNames.has(c.consumable.category)) continue;
+      const labels = photosPerCategory.get(c.consumable.category) || [];
+      if (labels.length > 0) {
+        for (const label of labels) {
+          const key = `consumable-${c.consumableId}-${label}`;
+          conditionCheckItems.push({
+            id: c.consumableId, type: "CONSUMABLE", name: c.consumable.name, code: null,
+            category: c.consumable.category, photoLabel: label,
+            checked: checkedSet.has(key), condition: conditionCheckMap.get(key) || null,
+          });
+        }
+      } else {
+        const key = `consumable-${c.consumableId}`;
+        conditionCheckItems.push({
+          id: c.consumableId, type: "CONSUMABLE", name: c.consumable.name, code: null,
+          category: c.consumable.category, photoLabel: null,
+          checked: checkedSet.has(key), condition: conditionCheckMap.get(key) || null,
+        });
+      }
+    }
 
     const staffStats: { label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
       { label: "Assigned Assets", value: assetCount, icon: "package", borderColor: "border-l-action-400", iconBg: "bg-action-50", iconColor: "text-action-500", href: "/my-assets" },

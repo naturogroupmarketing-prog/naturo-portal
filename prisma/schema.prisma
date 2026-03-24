@@ -441,6 +441,7 @@ model ConditionCheck {
   consumableId   String?
   condition      String   // "GOOD", "FAIR", "POOR", "DAMAGED"
   photoUrl       String   @db.Text
+  photoLabel     String?  // Custom label e.g. "Front View", "Interior" — null = default check
   notes          String?  @db.Text
   monthYear      String   // "2026-03" format for monthly tracking
 
@@ -451,8 +452,8 @@ model ConditionCheck {
 
   createdAt DateTime @default(now())
 
-  @@unique([userId, itemType, assetId, monthYear])
-  @@unique([userId, itemType, consumableId, monthYear])
+  @@unique([userId, itemType, assetId, photoLabel, monthYear])
+  @@unique([userId, itemType, consumableId, photoLabel, monthYear])
   @@index([userId, monthYear])
   @@index([organizationId, monthYear])
   @@index([assetId])
@@ -462,12 +463,14 @@ model ConditionCheck {
 // ─── CATEGORIES ────────────────────────────────────────
 
 model Category {
-  id             String   @id @default(cuid())
-  name           String
-  type           String // "ASSET" or "CONSUMABLE"
-  organizationId String
-  sortOrder      Int      @default(0)
-  equipment      String[] @default([])
+  id                  String   @id @default(cuid())
+  name                String
+  type                String // "ASSET" or "CONSUMABLE"
+  organizationId      String
+  sortOrder           Int      @default(0)
+  equipment           String[] @default([])
+  requiresInspection  Boolean  @default(false)
+  inspectionPhotos    String[] @default([]) // Custom photo labels e.g. ["Front View", "Interior", "Label"]
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 

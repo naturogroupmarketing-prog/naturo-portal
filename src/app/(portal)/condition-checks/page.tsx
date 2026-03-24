@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { isAdminOrManager } from "@/lib/permissions";
-import { getConditionChecksForReview } from "@/app/actions/condition-checks";
+import { isAdminOrManager, isSuperAdmin } from "@/lib/permissions";
+import { getConditionChecksForReview, getInspectionConfig } from "@/app/actions/condition-checks";
 import { db } from "@/lib/db";
 import { ConditionChecksClient } from "./condition-checks-client";
 
@@ -16,14 +16,18 @@ export default async function ConditionChecksPage() {
 
   const result = await getConditionChecksForReview();
 
-  // Get regions for filter
-  const regions = session.user.role === "SUPER_ADMIN"
-    ? await db.region.findMany({
-        where: { state: { organizationId } },
-        include: { state: true },
-        orderBy: { name: "asc" },
-      })
-    : [];
+  // Get regions and config for super admin
+  const isAdmin = isSuperAdmin(session.user.role);
+  const [regions, inspectionConfig] = await Promise.all([
+    isAdmin
+      ? db.region.findMany({
+          where: { state: { organizationId } },
+          include: { state: true },
+          orderBy: { name: "asc" },
+        })
+      : [],
+    isAdmin ? getInspectionConfig() : [],
+  ]);
 
   return (
     <ConditionChecksClient
@@ -31,7 +35,8 @@ export default async function ConditionChecksPage() {
       staffStatus={result.staffStatus}
       monthYear={result.monthYear}
       regions={JSON.parse(JSON.stringify(regions))}
-      isSuperAdmin={session.user.role === "SUPER_ADMIN"}
+      isSuperAdmin={isAdmin}
+      inspectionConfig={JSON.parse(JSON.stringify(inspectionConfig))}
     />
   );
 }

@@ -63,6 +63,7 @@ interface ConditionCheckItem {
   name: string;
   code: string | null;
   category: string | null;
+  photoLabel: string | null;
   checked: boolean;
   condition: string | null;
 }
@@ -92,7 +93,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
   // Condition check state
   const [checkStates, setCheckStates] = useState<Record<string, { condition: string; photoUrl: string; notes: string; uploading: boolean; submitting: boolean }>>({});
   const [showConditionChecks, setShowConditionChecks] = useState(false);
-  const checkedCount = conditionCheckItems.filter((i) => i.checked || checkStates[`${i.type}-${i.id}`]?.photoUrl).length;
+  const getCheckKey = (item: ConditionCheckItem) => item.photoLabel ? `${item.type}-${item.id}-${item.photoLabel}` : `${item.type}-${item.id}`;
+  const checkedCount = conditionCheckItems.filter((i) => i.checked || checkStates[getCheckKey(i)]?.photoUrl).length;
 
   const handleCheckPhotoUpload = async (key: string, file: File) => {
     if (file.size > 5 * 1024 * 1024) {
@@ -118,7 +120,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
   };
 
   const handleSubmitCheck = async (item: ConditionCheckItem) => {
-    const key = `${item.type}-${item.id}`;
+    const key = getCheckKey(item);
     const state = checkStates[key];
     if (!state?.photoUrl) { addToast("Please take a photo first", "error"); return; }
     setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], submitting: true } }));
@@ -129,6 +131,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         consumableId: item.type === "CONSUMABLE" ? item.id : undefined,
         condition: state.condition || "GOOD",
         photoUrl: state.photoUrl,
+        photoLabel: item.photoLabel || undefined,
         notes: state.notes || undefined,
       });
       addToast(`Condition check submitted for ${item.name}`, "success");
@@ -920,8 +923,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
           {showConditionChecks && (
             <div className="border-t border-shark-100 divide-y divide-shark-50">
-              {conditionCheckItems.map((item) => {
-                const key = `${item.type}-${item.id}`;
+              {conditionCheckItems.map((item, idx) => {
+                const key = getCheckKey(item);
                 const state = checkStates[key];
                 const isChecked = item.checked;
                 const isUploading = state?.uploading;
@@ -929,7 +932,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 const hasPhoto = !!state?.photoUrl;
 
                 return (
-                  <div key={key} className={`px-6 py-4 ${isChecked ? "bg-emerald-50/30" : ""}`}>
+                  <div key={`${key}-${idx}`} className={`px-6 py-4 ${isChecked ? "bg-emerald-50/30" : ""}`}>
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
                         {/* Status indicator */}
@@ -943,7 +946,10 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-shark-800 truncate">{item.name}</p>
+                          <p className="text-sm font-medium text-shark-800 truncate">
+                            {item.name}
+                            {item.photoLabel && <span className="text-xs text-blue-500 ml-1.5 font-normal">— {item.photoLabel}</span>}
+                          </p>
                           {item.code && <p className="text-xs font-mono text-shark-400">{item.code}</p>}
                           {isChecked && item.condition && (
                             <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${

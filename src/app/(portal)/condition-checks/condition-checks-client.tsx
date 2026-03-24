@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
+import { useToast } from "@/components/ui/toast";
+import { toggleCategoryInspection, updateCategoryInspectionPhotos } from "@/app/actions/condition-checks";
 
 interface Check {
   id: string;
@@ -36,12 +39,21 @@ interface Region {
   state: { name: string };
 }
 
+interface InspectionCategory {
+  id: string;
+  name: string;
+  type: string;
+  requiresInspection: boolean;
+  inspectionPhotos: string[];
+}
+
 interface Props {
   checks: Check[];
   staffStatus: StaffStatus[];
   monthYear: string;
   regions: Region[];
   isSuperAdmin: boolean;
+  inspectionConfig?: InspectionCategory[];
 }
 
 const CONDITION_COLORS: Record<string, string> = {
@@ -51,11 +63,16 @@ const CONDITION_COLORS: Record<string, string> = {
   DAMAGED: "bg-red-100 text-red-700",
 };
 
-export function ConditionChecksClient({ checks, staffStatus, monthYear, regions, isSuperAdmin }: Props) {
+export function ConditionChecksClient({ checks, staffStatus, monthYear, regions, isSuperAdmin, inspectionConfig = [] }: Props) {
+  const router = useRouter();
+  const { addToast } = useToast();
   const [search, setSearch] = useState("");
   const [expandedStaff, setExpandedStaff] = useState<Set<string>>(new Set());
   const [photoModal, setPhotoModal] = useState<Check | null>(null);
   const [statusFilter, setStatusFilter] = useState<"all" | "complete" | "incomplete">("all");
+  const [showConfig, setShowConfig] = useState(false);
+  const [newPhotoLabel, setNewPhotoLabel] = useState<Record<string, string>>({});
+  const [savingConfig, setSavingConfig] = useState<Set<string>>(new Set());
 
   const monthLabel = useMemo(() => {
     const [y, m] = monthYear.split("-");
@@ -109,7 +126,130 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
           <h1 className="text-2xl font-bold text-shark-900">Condition Checks</h1>
           <p className="text-sm text-shark-400 mt-1">{monthLabel} &middot; {totalChecked}/{staffStatus.length} staff completed</p>
         </div>
+        {isSuperAdmin && (
+          <Button variant="outline" size="sm" onClick={() => setShowConfig(!showConfig)}>
+            <Icon name="settings" size={14} className="mr-1.5" />
+            Configure
+          </Button>
+        )}
       </div>
+
+      {/* Configuration Panel — Super Admin Only */}
+      {isSuperAdmin && showConfig && (
+        <Card>
+          <div className="px-5 py-4 border-b border-shark-100">
+            <h3 className="text-sm font-semibold text-shark-900">Inspection Configuration</h3>
+            <p className="text-xs text-shark-400 mt-0.5">Choose which categories require monthly photos and define what photos staff need to submit.</p>
+          </div>
+          <div className="divide-y divide-shark-50">
+            {inspectionConfig.map((cat) => {
+              const isSaving = savingConfig.has(cat.id);
+              return (
+                <div key={cat.id} className="px-5 py-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={cat.requiresInspection}
+                          onChange={async () => {
+                            setSavingConfig((prev) => new Set(prev).add(cat.id));
+                            try {
+                              await toggleCategoryInspection(cat.id, !cat.requiresInspection);
+                              router.refresh();
+                              addToast(`${cat.name} inspection ${cat.requiresInspection ? "disabled" : "enabled"}`, "success");
+                            } catch { addToast("Failed to update", "error"); }
+                            setSavingConfig((prev) => { const n = new Set(prev); n.delete(cat.id); return n; });
+                          }}
+                          disabled={isSaving}
+                          className="sr-only peer"
+                        />
+                        <div className="w-9 h-5 bg-shark-200 peer-focus:ring-2 peer-focus:ring-action-400/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-action-500" />
+                      </label>
+                      <div>
+                        <span className="text-sm font-medium text-shark-800">{cat.name}</span>
+                        <span className="text-xs text-shark-400 ml-2">({cat.type === "ASSET" ? "Assets" : "Consumables"})</span>
+                      </div>
+                    </div>
+                    {cat.requiresInspection && (
+                      <span className="text-xs text-shark-400">
+                        {cat.inspectionPhotos.length > 0 ? `${cat.inspectionPhotos.length} photo types` : "1 photo (default)"}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Photo labels for this category */}
+                  {cat.requiresInspection && (
+                    <div className="mt-2.5 ml-12 space-y-1.5">
+                      {cat.inspectionPhotos.map((label, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <span className="text-xs text-shark-600 bg-shark-50 px-2.5 py-1 rounded-lg flex-1">{label}</span>
+                          <button
+                            onClick={async () => {
+                              const updated = cat.inspectionPhotos.filter((_, i) => i !== idx);
+                              setSavingConfig((prev) => new Set(prev).add(cat.id));
+                              try {
+                                await updateCategoryInspectionPhotos(cat.id, updated);
+                                router.refresh();
+                              } catch { addToast("Failed to update", "error"); }
+                              setSavingConfig((prev) => { const n = new Set(prev); n.delete(cat.id); return n; });
+                            }}
+                            className="text-shark-300 hover:text-red-500 p-0.5"
+                          >
+                            <Icon name="x" size={12} />
+                          </button>
+                        </div>
+                      ))}
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={newPhotoLabel[cat.id] || ""}
+                          onChange={(e) => setNewPhotoLabel((prev) => ({ ...prev, [cat.id]: e.target.value }))}
+                          placeholder="e.g. Front View, Interior..."
+                          className="text-xs flex-1"
+                          onKeyDown={async (e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              const label = newPhotoLabel[cat.id]?.trim();
+                              if (!label) return;
+                              setSavingConfig((prev) => new Set(prev).add(cat.id));
+                              try {
+                                await updateCategoryInspectionPhotos(cat.id, [...cat.inspectionPhotos, label]);
+                                setNewPhotoLabel((prev) => ({ ...prev, [cat.id]: "" }));
+                                router.refresh();
+                              } catch { addToast("Failed to add", "error"); }
+                              setSavingConfig((prev) => { const n = new Set(prev); n.delete(cat.id); return n; });
+                            }
+                          }}
+                        />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={!newPhotoLabel[cat.id]?.trim() || isSaving}
+                          onClick={async () => {
+                            const label = newPhotoLabel[cat.id]?.trim();
+                            if (!label) return;
+                            setSavingConfig((prev) => new Set(prev).add(cat.id));
+                            try {
+                              await updateCategoryInspectionPhotos(cat.id, [...cat.inspectionPhotos, label]);
+                              setNewPhotoLabel((prev) => ({ ...prev, [cat.id]: "" }));
+                              router.refresh();
+                              addToast(`Added "${label}" photo type`, "success");
+                            } catch { addToast("Failed to add", "error"); }
+                            setSavingConfig((prev) => { const n = new Set(prev); n.delete(cat.id); return n; });
+                          }}
+                          className="text-xs"
+                        >
+                          Add
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
