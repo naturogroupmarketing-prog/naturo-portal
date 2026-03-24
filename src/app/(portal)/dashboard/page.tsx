@@ -56,16 +56,16 @@ export default async function DashboardPage() {
         include: { starterKit: { select: { name: true } } },
         orderBy: { appliedAt: "desc" },
       }),
-      // ALL active asset assignments (for My Equipment section)
+      // ALL active asset assignments (for My Equipment section + condition checks)
       db.assetAssignment.findMany({
         where: { userId: session.user.id, isActive: true },
-        include: { asset: { select: { name: true, assetCode: true, category: true } } },
+        include: { asset: { select: { name: true, assetCode: true, category: true, imageUrl: true } } },
         orderBy: { checkoutDate: "desc" },
       }),
-      // ALL active consumable assignments (for My Equipment section)
+      // ALL active consumable assignments (for My Equipment section + condition checks)
       db.consumableAssignment.findMany({
         where: { userId: session.user.id, isActive: true },
-        include: { consumable: { select: { name: true, unitType: true } } },
+        include: { consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } } },
         orderBy: { assignedDate: "desc" },
       }),
     ]);
@@ -123,12 +123,11 @@ export default async function DashboardPage() {
       return [key, c.condition];
     }));
 
-    const conditionCheckItems: Array<{ id: string; type: "ASSET" | "CONSUMABLE"; name: string; code: string | null; category: string | null; photoLabel: string | null; checked: boolean; condition: string | null }> = [];
+    const conditionCheckItems: Array<{ id: string; type: "ASSET" | "CONSUMABLE"; name: string; code: string | null; category: string | null; imageUrl: string | null; photoLabel: string | null; checked: boolean; condition: string | null }> = [];
 
     // Assets
     for (const a of allActiveAssets) {
       if (a.acknowledgedAt === null) continue;
-      // If inspection config exists, filter by category; otherwise show all
       if (hasInspectionConfig && !inspectionCatNames.has(a.asset.category)) continue;
       const labels = photosPerCategory.get(a.asset.category) || [];
       if (labels.length > 0) {
@@ -136,7 +135,7 @@ export default async function DashboardPage() {
           const key = `asset-${a.assetId}-${label}`;
           conditionCheckItems.push({
             id: a.assetId, type: "ASSET", name: a.asset.name, code: a.asset.assetCode,
-            category: a.asset.category, photoLabel: label,
+            category: a.asset.category, imageUrl: a.asset.imageUrl || null, photoLabel: label,
             checked: checkedSet.has(key), condition: conditionCheckMap.get(key) || null,
           });
         }
@@ -144,26 +143,25 @@ export default async function DashboardPage() {
         const key = `asset-${a.assetId}`;
         conditionCheckItems.push({
           id: a.assetId, type: "ASSET", name: a.asset.name, code: a.asset.assetCode,
-          category: a.asset.category, photoLabel: null,
+          category: a.asset.category, imageUrl: a.asset.imageUrl || null, photoLabel: null,
           checked: checkedSet.has(key), condition: conditionCheckMap.get(key) || null,
         });
       }
     }
 
-    // Consumables — need category field
-    const consumablesWithCategory = await db.consumableAssignment.findMany({
-      where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } },
-      include: { consumable: { select: { id: true, name: true, unitType: true, category: true } } },
-    });
-    for (const c of consumablesWithCategory) {
-      if (hasInspectionConfig && !inspectionCatNames.has(c.consumable.category)) continue;
-      const labels = photosPerCategory.get(c.consumable.category) || [];
+    // Consumables (allActiveConsumables now includes category + imageUrl)
+    for (const c of allActiveConsumables) {
+      if (c.acknowledgedAt === null) continue;
+      const cat = (c.consumable as { name: string; unitType: string; category: string; imageUrl: string | null }).category;
+      const img = (c.consumable as { name: string; unitType: string; category: string; imageUrl: string | null }).imageUrl;
+      if (hasInspectionConfig && !inspectionCatNames.has(cat)) continue;
+      const labels = photosPerCategory.get(cat) || [];
       if (labels.length > 0) {
         for (const label of labels) {
           const key = `consumable-${c.consumableId}-${label}`;
           conditionCheckItems.push({
             id: c.consumableId, type: "CONSUMABLE", name: c.consumable.name, code: null,
-            category: c.consumable.category, photoLabel: label,
+            category: cat, imageUrl: img || null, photoLabel: label,
             checked: checkedSet.has(key), condition: conditionCheckMap.get(key) || null,
           });
         }
@@ -171,7 +169,7 @@ export default async function DashboardPage() {
         const key = `consumable-${c.consumableId}`;
         conditionCheckItems.push({
           id: c.consumableId, type: "CONSUMABLE", name: c.consumable.name, code: null,
-          category: c.consumable.category, photoLabel: null,
+          category: cat, imageUrl: img || null, photoLabel: null,
           checked: checkedSet.has(key), condition: conditionCheckMap.get(key) || null,
         });
       }

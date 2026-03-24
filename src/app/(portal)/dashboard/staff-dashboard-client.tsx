@@ -63,6 +63,7 @@ interface ConditionCheckItem {
   name: string;
   code: string | null;
   category: string | null;
+  imageUrl: string | null;
   photoLabel: string | null;
   checked: boolean;
   condition: string | null;
@@ -935,14 +936,18 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   <div key={`${key}-${idx}`} className={`px-6 py-4 ${isChecked ? "bg-emerald-50/30" : ""}`}>
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
-                        {/* Status indicator */}
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                          isChecked ? "bg-emerald-100" : hasPhoto ? "bg-blue-100" : "bg-shark-100"
+                        {/* Item photo or status indicator */}
+                        <div className={`w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center shrink-0 ${
+                          isChecked ? "ring-2 ring-emerald-400" : "bg-shark-50"
                         }`}>
-                          {isChecked ? (
-                            <Icon name="check" size={16} className="text-emerald-600" />
+                          {item.imageUrl ? (
+                            <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                          ) : isChecked ? (
+                            <div className="w-full h-full bg-emerald-100 flex items-center justify-center">
+                              <Icon name="check" size={16} className="text-emerald-600" />
+                            </div>
                           ) : (
-                            <Icon name={item.type === "ASSET" ? "package" : "droplet"} size={14} className="text-shark-400" />
+                            <Icon name={item.type === "ASSET" ? "package" : "droplet"} size={16} className="text-shark-300" />
                           )}
                         </div>
                         <div className="min-w-0">
