@@ -73,6 +73,8 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
   const [showConfig, setShowConfig] = useState(false);
   const [newPhotoLabel, setNewPhotoLabel] = useState<Record<string, string>>({});
   const [savingConfig, setSavingConfig] = useState<Set<string>>(new Set());
+  // Local optimistic state for toggles so UI updates instantly
+  const [localToggles, setLocalToggles] = useState<Record<string, boolean>>({});
 
   const monthLabel = useMemo(() => {
     const [y, m] = monthYear.split("-");
@@ -151,14 +153,19 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={cat.requiresInspection}
+                          checked={localToggles[cat.id] ?? cat.requiresInspection}
                           onChange={async () => {
+                            const newVal = !(localToggles[cat.id] ?? cat.requiresInspection);
+                            setLocalToggles((prev) => ({ ...prev, [cat.id]: newVal }));
                             setSavingConfig((prev) => new Set(prev).add(cat.id));
                             try {
-                              await toggleCategoryInspection(cat.id, !cat.requiresInspection);
+                              await toggleCategoryInspection(cat.id, newVal);
                               router.refresh();
-                              addToast(`${cat.name} inspection ${cat.requiresInspection ? "disabled" : "enabled"}`, "success");
-                            } catch { addToast("Failed to update", "error"); }
+                              addToast(`${cat.name} inspection ${newVal ? "enabled" : "disabled"}`, "success");
+                            } catch {
+                              setLocalToggles((prev) => ({ ...prev, [cat.id]: !newVal }));
+                              addToast("Failed to update", "error");
+                            }
                             setSavingConfig((prev) => { const n = new Set(prev); n.delete(cat.id); return n; });
                           }}
                           disabled={isSaving}
@@ -169,9 +176,10 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                       <div>
                         <span className="text-sm font-medium text-shark-800">{cat.name}</span>
                         <span className="text-xs text-shark-400 ml-2">({cat.type === "ASSET" ? "Assets" : "Consumables"})</span>
+                        {isSaving && <span className="text-xs text-action-500 ml-2 animate-pulse">Saving...</span>}
                       </div>
                     </div>
-                    {cat.requiresInspection && (
+                    {(localToggles[cat.id] ?? cat.requiresInspection) && (
                       <span className="text-xs text-shark-400">
                         {cat.inspectionPhotos.length > 0 ? `${cat.inspectionPhotos.length} photo types` : "1 photo (default)"}
                       </span>
@@ -179,7 +187,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   </div>
 
                   {/* Photo labels for this category */}
-                  {cat.requiresInspection && (
+                  {(localToggles[cat.id] ?? cat.requiresInspection) && (
                     <div className="mt-2.5 ml-12 space-y-1.5">
                       {cat.inspectionPhotos.map((label, idx) => (
                         <div key={idx} className="flex items-center gap-2">
