@@ -105,14 +105,8 @@ export default async function DashboardPage() {
       .filter((c) => !c.starterKitApplicationId)
       .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity }));
 
-    // Build condition check items
-    // Per-type filtering: if asset categories are configured, filter assets by those.
-    // If no asset categories configured, show all assets. Same for consumables.
+    // Build condition check items — only show items from enabled categories
     const inspectionCatNames = new Set(inspectionCategories.map((c) => c.name));
-    const inspectionAssetCats = new Set(inspectionCategories.filter((c) => c.type === "ASSET").map((c) => c.name));
-    const inspectionConsumableCats = new Set(inspectionCategories.filter((c) => c.type === "CONSUMABLE").map((c) => c.name));
-    const hasAssetConfig = inspectionAssetCats.size > 0;
-    const hasConsumableConfig = inspectionConsumableCats.size > 0;
     const photosPerCategory = new Map(inspectionCategories.map((c) => [c.name, c.inspectionPhotos]));
 
     // Build checked set keyed by "type-itemId-label"
@@ -128,10 +122,10 @@ export default async function DashboardPage() {
 
     const conditionCheckItems: Array<{ id: string; type: "ASSET" | "CONSUMABLE"; name: string; code: string | null; category: string | null; imageUrl: string | null; photoLabel: string | null; checked: boolean; condition: string | null }> = [];
 
-    // Assets — filter by configured asset categories (or show all if none configured)
+    // Assets — only show items from enabled inspection categories
     for (const a of allActiveAssets) {
       if (a.acknowledgedAt === null) continue;
-      if (hasAssetConfig && !inspectionAssetCats.has(a.asset.category)) continue;
+      if (!inspectionCatNames.has(a.asset.category)) continue;
       const labels = photosPerCategory.get(a.asset.category) || [];
       if (labels.length > 0) {
         for (const label of labels) {
@@ -152,12 +146,12 @@ export default async function DashboardPage() {
       }
     }
 
-    // Consumables — filter by configured consumable categories (or show all if none configured)
+    // Consumables — only show items from enabled inspection categories
     for (const c of allActiveConsumables) {
       if (c.acknowledgedAt === null) continue;
       const cat = (c.consumable as { name: string; unitType: string; category: string; imageUrl: string | null }).category;
       const img = (c.consumable as { name: string; unitType: string; category: string; imageUrl: string | null }).imageUrl;
-      if (hasConsumableConfig && !inspectionConsumableCats.has(cat)) continue;
+      if (!inspectionCatNames.has(cat)) continue;
       const labels = photosPerCategory.get(cat) || [];
       if (labels.length > 0) {
         for (const label of labels) {
