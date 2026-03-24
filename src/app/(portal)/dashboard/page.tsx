@@ -105,8 +105,11 @@ export default async function DashboardPage() {
       .filter((c) => !c.starterKitApplicationId)
       .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity }));
 
-    // Build condition check items — only for categories that require inspection
+    // Build condition check items
+    // If super admin configured specific categories, only show those.
+    // If nothing is configured, show ALL assigned items (default behavior).
     const inspectionCatNames = new Set(inspectionCategories.map((c) => c.name));
+    const hasInspectionConfig = inspectionCatNames.size > 0;
     const photosPerCategory = new Map(inspectionCategories.map((c) => [c.name, c.inspectionPhotos]));
 
     // Build checked set keyed by "type-itemId-label"
@@ -122,10 +125,11 @@ export default async function DashboardPage() {
 
     const conditionCheckItems: Array<{ id: string; type: "ASSET" | "CONSUMABLE"; name: string; code: string | null; category: string | null; photoLabel: string | null; checked: boolean; condition: string | null }> = [];
 
-    // Assets in inspection categories
+    // Assets
     for (const a of allActiveAssets) {
       if (a.acknowledgedAt === null) continue;
-      if (!inspectionCatNames.has(a.asset.category)) continue;
+      // If inspection config exists, filter by category; otherwise show all
+      if (hasInspectionConfig && !inspectionCatNames.has(a.asset.category)) continue;
       const labels = photosPerCategory.get(a.asset.category) || [];
       if (labels.length > 0) {
         for (const label of labels) {
@@ -146,13 +150,13 @@ export default async function DashboardPage() {
       }
     }
 
-    // Consumables in inspection categories — need category field from consumable
+    // Consumables — need category field
     const consumablesWithCategory = await db.consumableAssignment.findMany({
       where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } },
       include: { consumable: { select: { id: true, name: true, unitType: true, category: true } } },
     });
     for (const c of consumablesWithCategory) {
-      if (!inspectionCatNames.has(c.consumable.category)) continue;
+      if (hasInspectionConfig && !inspectionCatNames.has(c.consumable.category)) continue;
       const labels = photosPerCategory.get(c.consumable.category) || [];
       if (labels.length > 0) {
         for (const label of labels) {
