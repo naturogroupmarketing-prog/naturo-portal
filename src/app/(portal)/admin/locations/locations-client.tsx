@@ -148,10 +148,10 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "States", value: locations.length, icon: "map-pin" as const, color: "text-white", bg: "bg-action-500", border: "border-action-400" },
-          { label: "Total Assets", value: totalAssets, icon: "package" as const, color: "text-white", bg: "bg-blue-500", border: "border-blue-400" },
-          { label: "Total Consumables", value: totalConsumables, icon: "droplet" as const, color: "text-white", bg: "bg-emerald-500", border: "border-emerald-400" },
-          { label: "Total Staff", value: totalStaff, icon: "users" as const, color: "text-white", bg: "bg-amber-500", border: "border-amber-400" },
+          { label: "States", value: locations.length, icon: "map-pin" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
+          { label: "Total Assets", value: totalAssets, icon: "package" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
+          { label: "Total Consumables", value: totalConsumables, icon: "droplet" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
+          { label: "Total Staff", value: totalStaff, icon: "users" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
         ].map((stat) => (
           <Card key={stat.label} className={`border-l-4 ${stat.border}`}>
             <div className="px-4 py-4">

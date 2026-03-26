@@ -888,13 +888,13 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
       {/* Monthly Condition Check */}
       {conditionCheckItems.length > 0 && (
-        <Card className="border-l-4 border-l-blue-400">
+        <Card className="border-l-4 border-l-action-500">
           <div
             className="px-6 py-4 flex items-center justify-between cursor-pointer"
             onClick={() => setShowConditionChecks(!showConditionChecks)}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-action-500 flex items-center justify-center">
                 <Icon name="search" size={20} className="text-white" />
               </div>
               <div>
@@ -910,7 +910,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             </div>
             <div className="flex items-center gap-3">
               {checkedCount < conditionCheckItems.length && (
-                <span className="text-xs font-medium text-white bg-blue-500 px-2.5 py-1 rounded-full">
+                <span className="text-xs font-medium text-white bg-action-500 px-2.5 py-1 rounded-full">
                   {conditionCheckItems.length - checkedCount} remaining
                 </span>
               )}
@@ -1053,7 +1053,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           <Link href="/request-consumables">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="py-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center group-hover:bg-emerald-600 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-action-500 flex items-center justify-center group-hover:bg-action-600 transition-colors">
                   <Icon name="plus" size={24} className="text-white" />
                 </div>
                 <div>
@@ -1066,7 +1066,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           <Link href="/report-damage">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="py-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-red-500 flex items-center justify-center group-hover:bg-red-600 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-[#E8532E] flex items-center justify-center group-hover:bg-[#d14a28] transition-colors">
                   <Icon name="alert-triangle" size={24} className="text-white" />
                 </div>
                 <div>

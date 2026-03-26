@@ -174,8 +174,8 @@ export default async function DashboardPage() {
 
     const staffStats: { label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
       { label: "Assigned Assets", value: assetCount, icon: "package", borderColor: "border-l-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-assets" },
-      { label: "Consumable Items", value: consumableCount, icon: "droplet", borderColor: "border-l-blue-500", iconBg: "bg-blue-500", iconColor: "text-white", href: "/my-consumables" },
-      { label: "Pending Requests", value: pendingRequestCount, icon: "clipboard", borderColor: "border-l-amber-500", iconBg: "bg-amber-500", iconColor: "text-white", href: "/my-requests" },
+      { label: "Consumable Items", value: consumableCount, icon: "droplet", borderColor: "border-l-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-consumables" },
+      { label: "Pending Requests", value: pendingRequestCount, icon: "clipboard", borderColor: "border-l-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-requests" },
     ];
 
     return (
@@ -421,20 +421,20 @@ export default async function DashboardPage() {
 
   const stats: { widgetId: string; label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
     { widgetId: "stat-total-assets", label: "Total Assets", value: totalAssets, icon: "package", borderColor: "border-l-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
-    { widgetId: "stat-checked-out", label: "Checked Out", value: checkedOut, icon: "arrow-right", borderColor: "border-l-blue-500", iconBg: "bg-blue-500", iconColor: "text-white", href: "/assets" },
-    { widgetId: "stat-overdue", label: "Overdue", value: overdue, icon: "clock", borderColor: "border-l-orange-500", iconBg: "bg-orange-500", iconColor: "text-white", href: "/assets" },
-    { widgetId: "stat-damaged", label: "Damaged", value: damaged, icon: "alert-triangle", borderColor: "border-l-red-500", iconBg: "bg-red-500", iconColor: "text-white", href: "/assets" },
-    { widgetId: "stat-lost", label: "Lost", value: lost, icon: "shield", borderColor: "border-l-shark-500", iconBg: "bg-shark-500", iconColor: "text-white", href: "/assets" },
-    { widgetId: "stat-pending-requests", label: "Pending Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-l-amber-500", iconBg: "bg-amber-500", iconColor: "text-white", href: "/consumables" },
-    { widgetId: "stat-pending-pos", label: "Pending POs", value: pendingPOs, icon: "truck", borderColor: "border-l-purple-500", iconBg: "bg-purple-500", iconColor: "text-white", href: "/purchase-orders" },
-    { widgetId: "stat-pending-returns", label: "Pending Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-l-cyan-500", iconBg: "bg-cyan-500", iconColor: "text-white", href: "/returns" },
+    { widgetId: "stat-checked-out", label: "Checked Out", value: checkedOut, icon: "arrow-right", borderColor: "border-l-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
+    { widgetId: "stat-overdue", label: "Overdue", value: overdue, icon: "clock", borderColor: "border-l-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/assets" },
+    { widgetId: "stat-damaged", label: "Damaged", value: damaged, icon: "alert-triangle", borderColor: "border-l-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/assets" },
+    { widgetId: "stat-lost", label: "Lost", value: lost, icon: "shield", borderColor: "border-l-shark-700", iconBg: "bg-shark-700", iconColor: "text-white", href: "/assets" },
+    { widgetId: "stat-pending-requests", label: "Pending Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-l-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables" },
+    { widgetId: "stat-pending-pos", label: "Pending POs", value: pendingPOs, icon: "truck", borderColor: "border-l-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/purchase-orders" },
+    { widgetId: "stat-pending-returns", label: "Pending Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-l-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/returns" },
   ];
 
   const quickLinks: { label: string; href: string; icon: IconName; iconBg: string; iconColor: string }[] = [
     { label: "Manage Assets", href: "/assets", icon: "package", iconBg: "bg-action-500", iconColor: "text-white" },
-    { label: "Consumables", href: "/consumables", icon: "droplet", iconBg: "bg-blue-500", iconColor: "text-white" },
-    { label: "Staff Overview", href: "/staff", icon: "users", iconBg: "bg-emerald-500", iconColor: "text-white" },
-    { label: "Reports", href: "/reports", icon: "clipboard", iconBg: "bg-amber-500", iconColor: "text-white" },
+    { label: "Consumables", href: "/consumables", icon: "droplet", iconBg: "bg-action-500", iconColor: "text-white" },
+    { label: "Staff Overview", href: "/staff", icon: "users", iconBg: "bg-action-500", iconColor: "text-white" },
+    { label: "Reports", href: "/reports", icon: "clipboard", iconBg: "bg-action-500", iconColor: "text-white" },
   ];
 
   return (
