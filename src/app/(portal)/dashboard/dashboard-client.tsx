@@ -128,15 +128,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               <div key="stats" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 {visibleStats.map((s) => (
                   <Link key={s.label} href={s.href} className="block group">
-                    <Card className={`border-l-4 ${s.borderColor} hover:shadow-md transition-all duration-200 cursor-pointer hover:border-shark-200`}>
+                    <Card className={`border-t-3 ${s.borderColor.replace("border-l-", "border-t-")} hover:shadow-md transition-all duration-200 cursor-pointer`}>
                       <CardContent className="py-4 px-4">
                         <div className="flex items-start justify-between">
                           <div>
                             <p className="text-2xl font-bold text-shark-900">{s.value}</p>
                             <p className="text-xs text-shark-400 mt-1">{s.label}</p>
                           </div>
-                          <div className={`w-8 h-8 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform`}>
-                            <Icon name={s.icon} size={16} className={s.iconColor} />
+                          <div className={`w-10 h-10 rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform`}>
+                            <Icon name={s.icon} size={18} className={s.iconColor} />
                           </div>
                         </div>
                       </CardContent>

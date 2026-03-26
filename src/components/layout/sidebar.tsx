@@ -94,14 +94,15 @@ export function Sidebar({ role, onClose }: SidebarProps) {
 
   return (
     <nav className="flex flex-col h-full bg-white dark:bg-shark-900 transition-colors">
+      {/* Large Logo */}
       <div className="flex items-center justify-between px-5 py-5 border-b border-shark-100 dark:border-shark-800">
         <button
           onClick={() => { window.location.href = "/dashboard"; }}
-          className="flex items-center gap-1 hover:opacity-80 transition-opacity"
+          className="flex flex-col items-start hover:opacity-80 transition-opacity"
           title="Go to Dashboard"
         >
-          <Logo size={36} />
-          <p className="text-[10px] text-shark-400 leading-tight mt-1">Asset Tracker</p>
+          <Logo size={42} />
+          <p className="text-[10px] text-shark-400 leading-tight mt-0.5">Asset Management</p>
         </button>
         {onClose && (
           <button onClick={onClose} className="text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 lg:hidden">
@@ -109,6 +110,7 @@ export function Sidebar({ role, onClose }: SidebarProps) {
           </button>
         )}
       </div>
+
       <div className="flex-1 overflow-y-auto py-3 px-3">
         {navSections
           .filter((section) => section.roles.includes(role))
@@ -134,11 +136,11 @@ export function Sidebar({ role, onClose }: SidebarProps) {
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-150",
                           active
-                            ? "bg-action-50 dark:bg-action-900/30 text-action-600 dark:text-action-400 font-medium"
+                            ? "bg-action-500 text-white font-medium shadow-sm"
                             : "text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 hover:text-shark-900 dark:hover:text-shark-100"
                         )}
                       >
-                        <Icon name={item.icon} size={18} className={active ? "text-action-500 dark:text-action-400" : "text-shark-400"} />
+                        <Icon name={item.icon} size={18} className={active ? "text-white" : "text-shark-400"} />
                         {item.label}
                       </Link>
                     );
