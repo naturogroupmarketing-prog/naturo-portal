@@ -166,10 +166,10 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
   };
 
   const stats = [
-    { label: "Total Assets", value: assets.length, icon: "package" as const, color: "text-action-500", bg: "bg-action-50", border: "border-action-400" },
-    { label: "Consumables", value: consumables.length, icon: "droplet" as const, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-400" },
-    { label: "Staff", value: staff.length, icon: "users" as const, color: "text-emerald-500", bg: "bg-emerald-50", border: "border-emerald-400" },
-    { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, color: "text-amber-500", bg: "bg-amber-50", border: "border-amber-400" },
+    { label: "Total Assets", value: assets.length, icon: "package" as const, color: "text-white", bg: "bg-action-500", border: "border-action-400" },
+    { label: "Consumables", value: consumables.length, icon: "droplet" as const, color: "text-white", bg: "bg-blue-500", border: "border-blue-400" },
+    { label: "Staff", value: staff.length, icon: "users" as const, color: "text-white", bg: "bg-emerald-500", border: "border-emerald-400" },
+    { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, color: "text-white", bg: "bg-amber-500", border: "border-amber-400" },
   ];
 
   const tabs = [

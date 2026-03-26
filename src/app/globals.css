@@ -42,17 +42,17 @@
   --color-shark-900: #292d34;
   --color-shark-950: #1a1c21;
 
-  /* Brand blue — based on #1F3DD9 */
-  --color-action-50: #eef0ff;
-  --color-action-100: #d9deff;
-  --color-action-200: #b3bcff;
-  --color-action-300: #7d8ff5;
-  --color-action-400: #4a5fea;
+  /* Brand blue — bold, strong like Edaly */
+  --color-action-50: #e8ecff;
+  --color-action-100: #c5ceff;
+  --color-action-200: #8a9bff;
+  --color-action-300: #5570f5;
+  --color-action-400: #3350ea;
   --color-action-500: #1F3DD9;
-  --color-action-600: #1a33b8;
-  --color-action-700: #162b9a;
-  --color-action-800: #12237d;
-  --color-action-900: #0e1c63;
+  --color-action-600: #1830c0;
+  --color-action-700: #1226a0;
+  --color-action-800: #0d1d80;
+  --color-action-900: #091560;
 }
 
 .font-exo {

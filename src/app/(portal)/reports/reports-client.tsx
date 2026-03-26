@@ -5,15 +5,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/ui/icon";
 
 const reports: { id: string; name: string; description: string; icon: IconName; iconBg: string; iconColor: string; superAdminOnly?: boolean }[] = [
-  { id: "assets", name: "Asset Register", description: "Full list of all assets with status and assignments", icon: "package", iconBg: "bg-action-50", iconColor: "text-action-500" },
-  { id: "consumables", name: "Consumables by Location", description: "Stock levels by region", icon: "droplet", iconBg: "bg-blue-50", iconColor: "text-blue-500" },
-  { id: "assignments", name: "Staff Assignments", description: "Assets assigned to each staff member", icon: "user", iconBg: "bg-emerald-50", iconColor: "text-emerald-500" },
-  { id: "staff-consumable-usage", name: "Staff Consumable Usage", description: "Per-staff breakdown of consumable items issued", icon: "users", iconBg: "bg-purple-50", iconColor: "text-purple-500", superAdminOnly: true },
-  { id: "stock-movement", name: "Stock Movement", description: "Consumable issue and restock history", icon: "bar-chart", iconBg: "bg-amber-50", iconColor: "text-amber-500" },
-  { id: "requests", name: "Request History", description: "All consumable requests with status", icon: "clipboard", iconBg: "bg-orange-50", iconColor: "text-orange-500" },
-  { id: "damage-loss", name: "Damage & Loss", description: "Damage and loss reports", icon: "alert-triangle", iconBg: "bg-red-50", iconColor: "text-red-500" },
-  { id: "audit", name: "Audit Trail", description: "Complete system audit history", icon: "lock", iconBg: "bg-shark-100", iconColor: "text-shark-500" },
-  { id: "maintenance", name: "Maintenance Schedule", description: "All maintenance tasks with due dates and history", icon: "settings", iconBg: "bg-teal-50", iconColor: "text-teal-500" },
+  { id: "assets", name: "Asset Register", description: "Full list of all assets with status and assignments", icon: "package", iconBg: "bg-action-500", iconColor: "text-white" },
+  { id: "consumables", name: "Consumables by Location", description: "Stock levels by region", icon: "droplet", iconBg: "bg-blue-500", iconColor: "text-white" },
+  { id: "assignments", name: "Staff Assignments", description: "Assets assigned to each staff member", icon: "user", iconBg: "bg-emerald-500", iconColor: "text-white" },
+  { id: "staff-consumable-usage", name: "Staff Consumable Usage", description: "Per-staff breakdown of consumable items issued", icon: "users", iconBg: "bg-purple-500", iconColor: "text-white", superAdminOnly: true },
+  { id: "stock-movement", name: "Stock Movement", description: "Consumable issue and restock history", icon: "bar-chart", iconBg: "bg-amber-500", iconColor: "text-white" },
+  { id: "requests", name: "Request History", description: "All consumable requests with status", icon: "clipboard", iconBg: "bg-orange-500", iconColor: "text-white" },
+  { id: "damage-loss", name: "Damage & Loss", description: "Damage and loss reports", icon: "alert-triangle", iconBg: "bg-red-500", iconColor: "text-white" },
+  { id: "audit", name: "Audit Trail", description: "Complete system audit history", icon: "lock", iconBg: "bg-shark-500", iconColor: "text-white" },
+  { id: "maintenance", name: "Maintenance Schedule", description: "All maintenance tasks with due dates and history", icon: "settings", iconBg: "bg-teal-500", iconColor: "text-white" },
 ];
 
 export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {

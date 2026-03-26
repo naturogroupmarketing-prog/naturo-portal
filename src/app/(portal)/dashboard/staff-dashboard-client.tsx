@@ -894,8 +894,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             onClick={() => setShowConditionChecks(!showConditionChecks)}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <Icon name="search" size={20} className="text-blue-500" />
+              <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
+                <Icon name="search" size={20} className="text-white" />
               </div>
               <div>
                 <h3 className="text-base font-semibold text-shark-900">Monthly Condition Check</h3>
@@ -1053,8 +1053,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           <Link href="/request-consumables">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="py-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
-                  <Icon name="plus" size={24} className="text-emerald-500" />
+                <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center group-hover:bg-emerald-600 transition-colors">
+                  <Icon name="plus" size={24} className="text-white" />
                 </div>
                 <div>
                   <p className="font-semibold text-shark-900">Request Consumables</p>
@@ -1066,8 +1066,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           <Link href="/report-damage">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="py-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center group-hover:bg-red-100 transition-colors">
-                  <Icon name="alert-triangle" size={24} className="text-red-500" />
+                <div className="w-12 h-12 rounded-xl bg-red-500 flex items-center justify-center group-hover:bg-red-600 transition-colors">
+                  <Icon name="alert-triangle" size={24} className="text-white" />
                 </div>
                 <div>
                   <p className="font-semibold text-shark-900">Report Damage/Loss</p>
