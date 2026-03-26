@@ -134,11 +134,12 @@ export function Sidebar({ role, onClose }: SidebarProps) {
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-150",
                           active
-                            ? "bg-action-50 dark:bg-action-900/30 text-action-600 dark:text-action-400 font-medium"
+                            ? "text-white font-medium"
                             : "text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 hover:text-shark-900 dark:hover:text-shark-100"
                         )}
+                        style={active ? { backgroundColor: "#1F3DD9" } : undefined}
                       >
-                        <Icon name={item.icon} size={18} className={active ? "text-action-500 dark:text-action-400" : "text-shark-400"} />
+                        <Icon name={item.icon} size={18} className={active ? "text-white" : "text-shark-400"} />
                         {item.label}
                       </Link>
                     );

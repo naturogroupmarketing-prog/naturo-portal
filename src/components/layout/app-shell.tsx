@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
+import { Icon } from "@/components/ui/icon";
 import { Role } from "@/generated/prisma/browser";
 
 interface AppShellProps {
@@ -13,7 +15,10 @@ interface AppShellProps {
 }
 
 export function AppShell({ children, role, userName, userImage }: AppShellProps) {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [upgradeExpanded, setUpgradeExpanded] = useState(false);
+  const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
     <div className="flex h-screen bg-shark-50 dark:bg-shark-950 transition-colors">
@@ -47,6 +52,42 @@ export function AppShell({ children, role, userName, userImage }: AppShellProps)
         />
         <main className="flex-1 overflow-y-auto p-5 lg:p-10">{children}</main>
       </div>
+
+      {/* Floating Upgrade Card — bottom right, super admin only */}
+      {isSuperAdmin && (
+        <div
+          className="fixed bottom-6 right-6 z-40"
+          onMouseEnter={() => setUpgradeExpanded(true)}
+          onMouseLeave={() => setUpgradeExpanded(false)}
+        >
+          {upgradeExpanded ? (
+            <div
+              className="rounded-2xl shadow-xl overflow-hidden w-56 cursor-pointer transition-all duration-300"
+              onClick={() => router.push("/admin/billing")}
+            >
+              <div className="pt-5 pb-4 px-5 text-center" style={{ background: "linear-gradient(135deg, #1F3DD9 0%, #3B5BF5 100%)" }}>
+                <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
+                  <Icon name="award" size={28} className="text-white" />
+                </div>
+                <p className="text-sm font-semibold text-white">Upgrade Your</p>
+                <p className="text-sm font-semibold text-white mb-3">Account To Pro</p>
+                <div className="bg-white rounded-xl py-2 px-4 text-sm font-semibold" style={{ color: "#1F3DD9" }}>
+                  Upgrade Now
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => router.push("/admin/billing")}
+              className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-white transition-all hover:scale-110"
+              style={{ backgroundColor: "#1F3DD9" }}
+              title="Upgrade to Pro"
+            >
+              <Icon name="award" size={20} className="text-white" />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

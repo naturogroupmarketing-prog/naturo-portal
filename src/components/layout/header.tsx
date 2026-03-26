@@ -85,7 +85,7 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
               <img src={userImage} alt="" className="w-8 h-8 rounded-full ring-2 ring-shark-100" />
             ) : (
               <div className="w-8 h-8 rounded-full bg-action-100 flex items-center justify-center">
-                <span className="text-sm font-semibold" style={{ color: "#5759E5" }}>
+                <span className="text-sm font-semibold" style={{ color: "#1F3DD9" }}>
                   {userName?.charAt(0)?.toUpperCase() || "U"}
                 </span>
               </div>
@@ -133,7 +133,7 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
                   <button
                     onClick={() => { setDropdownOpen(false); router.push("/admin/billing"); }}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors"
-                    style={{ background: "linear-gradient(135deg, #5759E5 0%, #7C5CFC 100%)" }}
+                    style={{ background: "linear-gradient(135deg, #1F3DD9 0%, #3B5BF5 100%)" }}
                   >
                     <Icon name="award" size={16} className="text-white" />
                     Upgrade to Pro

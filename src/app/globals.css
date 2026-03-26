@@ -42,17 +42,17 @@
   --color-shark-900: #292d34;
   --color-shark-950: #1a1c21;
 
-  /* ClickUp-inspired action purple */
-  --color-action-50: #eeebff;
-  --color-action-100: #d9d2ff;
-  --color-action-200: #b5a8ff;
-  --color-action-300: #9184ff;
-  --color-action-400: #7b68ee;
-  --color-action-500: #6c5ce7;
-  --color-action-600: #5a49d6;
-  --color-action-700: #4a3bb5;
-  --color-action-800: #3d3194;
-  --color-action-900: #332a77;
+  /* Brand blue — based on #1F3DD9 */
+  --color-action-50: #eef0ff;
+  --color-action-100: #d9deff;
+  --color-action-200: #b3bcff;
+  --color-action-300: #7d8ff5;
+  --color-action-400: #4a5fea;
+  --color-action-500: #1F3DD9;
+  --color-action-600: #1a33b8;
+  --color-action-700: #162b9a;
+  --color-action-800: #12237d;
+  --color-action-900: #0e1c63;
 }
 
 .font-exo {
