@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { Icon } from "@/components/ui/icon";
 import { Logo } from "@/components/ui/logo";
@@ -12,6 +14,17 @@ interface HeaderProps {
 }
 
 export function Header({ userName, userImage, onMenuToggle }: HeaderProps) {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    router.push(`/assets?search=${encodeURIComponent(searchQuery.trim())}`);
+    setSearchQuery("");
+  };
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-shark-100 bg-white/80 backdrop-blur-md px-4 lg:px-8 transition-colors">
       <button
@@ -26,7 +39,24 @@ export function Header({ userName, userImage, onMenuToggle }: HeaderProps) {
         <Logo size={28} />
       </div>
 
+      {/* Search box — like Edaly */}
+      <form onSubmit={handleSearch} className="hidden lg:flex items-center flex-1 max-w-md">
+        <div className={`flex items-center w-full rounded-xl border ${searchFocused ? "border-action-400 ring-2 ring-action-400/20" : "border-shark-200"} bg-shark-50 px-3.5 py-1.5 transition-all`}>
+          <Icon name="search" size={16} className="text-shark-400 shrink-0" />
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            className="w-full bg-transparent border-none outline-none text-sm text-shark-700 placeholder-shark-400 ml-2.5"
+          />
+        </div>
+      </form>
+
       <div className="flex items-center gap-3">
+        <NotificationBell />
         <Logo size={24} className="hidden lg:block" />
         <div className="hidden sm:block text-right">
           <p className="text-sm font-medium text-shark-700">{userName}</p>
@@ -46,7 +76,6 @@ export function Header({ userName, userImage, onMenuToggle }: HeaderProps) {
           <Icon name="log-out" size={16} />
           <span className="hidden sm:inline">Sign out</span>
         </button>
-        <NotificationBell />
       </div>
     </header>
   );
