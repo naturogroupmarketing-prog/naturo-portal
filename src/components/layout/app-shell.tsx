@@ -56,7 +56,7 @@ export function AppShell({ children, role, userName, userImage }: AppShellProps)
       {/* Floating Upgrade Card — bottom right, super admin only */}
       {isSuperAdmin && (
         <div
-          className="fixed bottom-6 right-6 z-40"
+          className="fixed bottom-24 right-6 z-30"
           onMouseEnter={() => setUpgradeExpanded(true)}
           onMouseLeave={() => setUpgradeExpanded(false)}
         >
