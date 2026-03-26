@@ -148,10 +148,22 @@ export function Sidebar({ role, onClose }: SidebarProps) {
             );
           })}
       </div>
-      <div className="border-t border-shark-100 dark:border-shark-800 px-5 py-3">
-        <p className="text-xs text-shark-400">
-          {role.replace(/_/g, " ")}
-        </p>
+      {/* Upgrade Card */}
+      <div className="px-3 pb-3">
+        <div className="rounded-2xl p-4 text-center" style={{ background: "linear-gradient(135deg, #5759E5 0%, #7C5CFC 100%)" }}>
+          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
+            <Icon name="star" size={24} className="text-white" />
+          </div>
+          <p className="text-sm font-semibold text-white">Upgrade Your</p>
+          <p className="text-sm font-semibold text-white">Account To Pro</p>
+          <button
+            onClick={() => window.open("/admin/billing", "_self")}
+            className="mt-3 w-full py-2 rounded-xl bg-white text-sm font-semibold hover:bg-white/90 transition-colors"
+            style={{ color: "#5759E5" }}
+          >
+            Upgrade Now
+          </button>
+        </div>
       </div>
     </nav>
   );
