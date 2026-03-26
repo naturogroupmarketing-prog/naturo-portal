@@ -148,27 +148,6 @@ export function Sidebar({ role, onClose }: SidebarProps) {
             );
           })}
       </div>
-      {/* Upgrade Card — collapsed by default, expands on hover */}
-      <div className="px-3 pb-3 group/upgrade">
-        {/* Expanded content — hidden by default, shown on hover */}
-        <div className="max-h-0 group-hover/upgrade:max-h-40 overflow-hidden transition-all duration-300 ease-in-out">
-          <div className="rounded-t-2xl pt-4 px-4 pb-3 text-center" style={{ background: "linear-gradient(135deg, #5759E5 0%, #7C5CFC 100%)" }}>
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
-              <Icon name="award" size={24} className="text-white" />
-            </div>
-            <p className="text-sm font-semibold text-white">Upgrade Your</p>
-            <p className="text-sm font-semibold text-white">Account To Pro</p>
-          </div>
-        </div>
-        {/* Always visible button */}
-        <button
-          onClick={() => window.open("/admin/billing", "_self")}
-          className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border-2 group-hover/upgrade:rounded-t-none group-hover/upgrade:rounded-b-2xl group-hover/upgrade:bg-white group-hover/upgrade:border-transparent"
-          style={{ color: "#5759E5", borderColor: "#5759E5" }}
-        >
-          Upgrade Now
-        </button>
-      </div>
     </nav>
   );
 }

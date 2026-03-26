@@ -42,6 +42,7 @@ export function AppShell({ children, role, userName, userImage }: AppShellProps)
         <Header
           userName={userName}
           userImage={userImage}
+          role={role}
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
         />
         <main className="flex-1 overflow-y-auto p-5 lg:p-10">{children}</main>
