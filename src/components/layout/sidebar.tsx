@@ -152,7 +152,7 @@ export function Sidebar({ role, onClose }: SidebarProps) {
       <div className="px-3 pb-3">
         <div className="rounded-2xl p-4 text-center" style={{ background: "linear-gradient(135deg, #5759E5 0%, #7C5CFC 100%)" }}>
           <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
-            <Icon name="star" size={24} className="text-white" />
+            <Icon name="award" size={24} className="text-white" />
           </div>
           <p className="text-sm font-semibold text-white">Upgrade Your</p>
           <p className="text-sm font-semibold text-white">Account To Pro</p>
