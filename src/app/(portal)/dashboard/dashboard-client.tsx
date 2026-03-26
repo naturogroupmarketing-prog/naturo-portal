@@ -48,14 +48,14 @@ interface RegionBreakdownItem {
 }
 
 const REGION_COLORS = [
-  { color: "text-white", bg: "bg-blue-500" },
-  { color: "text-white", bg: "bg-emerald-500" },
-  { color: "text-white", bg: "bg-amber-500" },
-  { color: "text-white", bg: "bg-cyan-500" },
-  { color: "text-white", bg: "bg-red-500" },
-  { color: "text-white", bg: "bg-violet-500" },
-  { color: "text-white", bg: "bg-pink-500" },
-  { color: "text-white", bg: "bg-orange-500" },
+  { color: "text-blue-600", bg: "bg-blue-50" },
+  { color: "text-emerald-600", bg: "bg-emerald-50" },
+  { color: "text-amber-600", bg: "bg-amber-50" },
+  { color: "text-cyan-600", bg: "bg-cyan-50" },
+  { color: "text-red-600", bg: "bg-red-50" },
+  { color: "text-violet-600", bg: "bg-violet-50" },
+  { color: "text-pink-600", bg: "bg-pink-50" },
+  { color: "text-orange-600", bg: "bg-orange-50" },
 ];
 
 interface ChartItem {
@@ -128,15 +128,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               <div key="stats" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 {visibleStats.map((s) => (
                   <Link key={s.label} href={s.href} className="block group">
-                    <Card className={`border-t-[3px] ${s.borderColor} hover:shadow-lg transition-all duration-200 cursor-pointer`}>
+                    <Card className={`border-l-4 ${s.borderColor} hover:shadow-md transition-all duration-200 cursor-pointer hover:border-shark-200`}>
                       <CardContent className="py-4 px-4">
                         <div className="flex items-start justify-between">
                           <div>
                             <p className="text-2xl font-bold text-shark-900">{s.value}</p>
-                            <p className="text-xs text-shark-500 mt-1 font-medium">{s.label}</p>
+                            <p className="text-xs text-shark-400 mt-1">{s.label}</p>
                           </div>
-                          <div className={`w-10 h-10 rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
-                            <Icon name={s.icon} size={18} className={s.iconColor} />
+                          <div className={`w-8 h-8 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform`}>
+                            <Icon name={s.icon} size={16} className={s.iconColor} />
                           </div>
                         </div>
                       </CardContent>
@@ -320,8 +320,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               <Card key="low-stock">
                 <CardHeader>
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-red-500 flex items-center justify-center">
-                      <Icon name="alert-triangle" size={14} className="text-white" />
+                    <div className="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center">
+                      <Icon name="alert-triangle" size={14} className="text-red-500" />
                     </div>
                     <CardTitle>Low Stock Alerts</CardTitle>
                   </div>
@@ -329,8 +329,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 <CardContent>
                   {lowStockItems.length === 0 ? (
                     <div className="flex items-center gap-3 py-4">
-                      <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center">
-                        <Icon name="check" size={16} className="text-white" />
+                      <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
+                        <Icon name="check" size={16} className="text-emerald-500" />
                       </div>
                       <p className="text-sm text-shark-500">All stock levels are OK.</p>
                     </div>
@@ -358,8 +358,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return regionBreakdown && regionBreakdown.length > 0 ? (
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-action-500 flex items-center justify-center">
-              <Icon name="map-pin" size={14} className="text-white" />
+            <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center">
+              <Icon name="map-pin" size={14} className="text-action-500" />
             </div>
             <h2 className="text-lg font-semibold text-shark-900">Regional Breakdown</h2>
           </div>
@@ -397,40 +397,32 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   {!isCollapsed && (
                     <div className="px-5 pb-4 pt-1 border-t border-shark-50">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-                        <Link href={`/assets?status=DAMAGED&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-white border border-shark-100 px-3 py-2 hover:shadow-sm transition-all">
-                          <div className="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center shrink-0">
-                            <Icon name="alert-triangle" size={14} className="text-white" />
-                          </div>
+                        <Link href={`/assets?status=DAMAGED&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
+                          <Icon name="alert-triangle" size={14} className="text-red-500" />
                           <div>
-                            <p className="text-lg font-bold text-shark-900">{region.damaged}</p>
-                            <p className="text-xs text-shark-400">Damaged</p>
+                            <p className="text-lg font-bold text-red-600">{region.damaged}</p>
+                            <p className="text-xs text-red-400">Damaged</p>
                           </div>
                         </Link>
-                        <Link href={`/assets?status=LOST&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-white border border-shark-100 px-3 py-2 hover:shadow-sm transition-all">
-                          <div className="w-8 h-8 rounded-lg bg-shark-500 flex items-center justify-center shrink-0">
-                            <Icon name="shield" size={14} className="text-white" />
-                          </div>
+                        <Link href={`/assets?status=LOST&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-shark-50 px-3 py-2 hover:bg-shark-100 transition-colors">
+                          <Icon name="shield" size={14} className="text-shark-500" />
                           <div>
-                            <p className="text-lg font-bold text-shark-900">{region.lost}</p>
+                            <p className="text-lg font-bold text-shark-700">{region.lost}</p>
                             <p className="text-xs text-shark-400">Lost</p>
                           </div>
                         </Link>
-                        <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-white border border-shark-100 px-3 py-2 hover:shadow-sm transition-all">
-                          <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center shrink-0">
-                            <Icon name="clipboard" size={14} className="text-white" />
-                          </div>
+                        <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 hover:bg-amber-200 transition-colors">
+                          <Icon name="clipboard" size={14} className="text-amber-600" />
                           <div>
-                            <p className="text-lg font-bold text-shark-900">{region.pendingRequests}</p>
-                            <p className="text-xs text-shark-400">Requests</p>
+                            <p className="text-lg font-bold text-amber-700">{region.pendingRequests}</p>
+                            <p className="text-xs text-amber-600">Pending Requests</p>
                           </div>
                         </Link>
-                        <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-white border border-shark-100 px-3 py-2 hover:shadow-sm transition-all">
-                          <div className="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center shrink-0">
-                            <Icon name="truck" size={14} className="text-white" />
-                          </div>
+                        <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-purple-50 px-3 py-2 hover:bg-purple-100 transition-colors">
+                          <Icon name="truck" size={14} className="text-purple-500" />
                           <div>
-                            <p className="text-lg font-bold text-shark-900">{region.pendingPOs}</p>
-                            <p className="text-xs text-shark-400">Pending POs</p>
+                            <p className="text-lg font-bold text-purple-600">{region.pendingPOs}</p>
+                            <p className="text-xs text-purple-400">Pending POs</p>
                           </div>
                         </Link>
                       </div>
@@ -466,7 +458,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <Link key={link.href} href={link.href} className="block group">
                     <Card className="hover:shadow-md transition-all duration-200 cursor-pointer hover:border-shark-200">
                       <CardContent className="py-6 flex flex-col items-center gap-3">
-                        <div className={`w-11 h-11 rounded-xl ${link.iconBg} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
+                        <div className={`w-11 h-11 rounded-xl ${link.iconBg} flex items-center justify-center group-hover:scale-105 transition-transform`}>
                           <Icon name={link.icon} size={20} className={link.iconColor} />
                         </div>
                         <p className="text-sm font-medium text-shark-700">{link.label}</p>
@@ -487,8 +479,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <Link href={shortcut.href} className="block">
                         <Card className="hover:shadow-md transition-all duration-200 cursor-pointer hover:border-shark-200">
                           <CardContent className="py-6 flex flex-col items-center gap-3">
-                            <div className="w-11 h-11 rounded-xl bg-action-500 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                              <Icon name={shortcut.icon} size={20} className="text-white" />
+                            <div className="w-11 h-11 rounded-xl bg-action-50 flex items-center justify-center group-hover:scale-105 transition-transform">
+                              <Icon name={shortcut.icon} size={20} className="text-action-500" />
                             </div>
                             <p className="text-sm font-medium text-shark-700">{shortcut.label}</p>
                           </CardContent>

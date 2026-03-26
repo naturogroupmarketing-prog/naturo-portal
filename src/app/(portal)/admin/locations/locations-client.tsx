@@ -19,14 +19,14 @@ import {
 } from "@/app/actions/locations";
 
 const STATE_COLORS = [
-  { bg: "bg-blue-500", color: "text-white", ring: "ring-blue-200" },
-  { bg: "bg-emerald-500", color: "text-white", ring: "ring-emerald-200" },
-  { bg: "bg-amber-500", color: "text-white", ring: "ring-amber-200" },
-  { bg: "bg-cyan-500", color: "text-white", ring: "ring-cyan-200" },
-  { bg: "bg-violet-500", color: "text-white", ring: "ring-violet-200" },
-  { bg: "bg-rose-500", color: "text-white", ring: "ring-rose-200" },
-  { bg: "bg-teal-500", color: "text-white", ring: "ring-teal-200" },
-  { bg: "bg-orange-500", color: "text-white", ring: "ring-orange-200" },
+  { bg: "bg-blue-50", color: "text-blue-600", ring: "ring-blue-200" },
+  { bg: "bg-emerald-50", color: "text-emerald-600", ring: "ring-emerald-200" },
+  { bg: "bg-amber-50", color: "text-amber-600", ring: "ring-amber-200" },
+  { bg: "bg-cyan-50", color: "text-cyan-600", ring: "ring-cyan-200" },
+  { bg: "bg-violet-50", color: "text-violet-600", ring: "ring-violet-200" },
+  { bg: "bg-rose-50", color: "text-rose-600", ring: "ring-rose-200" },
+  { bg: "bg-teal-50", color: "text-teal-600", ring: "ring-teal-200" },
+  { bg: "bg-orange-50", color: "text-orange-600", ring: "ring-orange-200" },
 ];
 
 interface Location {
@@ -148,12 +148,12 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "States", value: locations.length, icon: "map-pin" as const, color: "text-white", bg: "bg-action-500", border: "border-t-action-500" },
-          { label: "Total Assets", value: totalAssets, icon: "package" as const, color: "text-white", bg: "bg-blue-500", border: "border-t-blue-500" },
-          { label: "Total Consumables", value: totalConsumables, icon: "droplet" as const, color: "text-white", bg: "bg-emerald-500", border: "border-t-emerald-500" },
-          { label: "Total Staff", value: totalStaff, icon: "users" as const, color: "text-white", bg: "bg-amber-500", border: "border-t-amber-500" },
+          { label: "States", value: locations.length, icon: "map-pin" as const, color: "text-action-500", bg: "bg-action-50", border: "border-action-400" },
+          { label: "Total Assets", value: totalAssets, icon: "package" as const, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-400" },
+          { label: "Total Consumables", value: totalConsumables, icon: "droplet" as const, color: "text-emerald-500", bg: "bg-emerald-50", border: "border-emerald-400" },
+          { label: "Total Staff", value: totalStaff, icon: "users" as const, color: "text-amber-500", bg: "bg-amber-50", border: "border-amber-400" },
         ].map((stat) => (
-          <Card key={stat.label} className={`border-t-[3px] ${stat.border}`}>
+          <Card key={stat.label} className={`border-l-4 ${stat.border}`}>
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>

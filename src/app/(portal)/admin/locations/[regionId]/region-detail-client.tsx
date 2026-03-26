@@ -9,16 +9,16 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 
 const SECTION_COLORS = [
-  { bg: "bg-blue-500", color: "text-white" },
-  { bg: "bg-emerald-500", color: "text-white" },
-  { bg: "bg-amber-500", color: "text-white" },
-  { bg: "bg-cyan-500", color: "text-white" },
-  { bg: "bg-red-500", color: "text-white" },
-  { bg: "bg-violet-500", color: "text-white" },
-  { bg: "bg-pink-500", color: "text-white" },
-  { bg: "bg-orange-500", color: "text-white" },
-  { bg: "bg-teal-500", color: "text-white" },
-  { bg: "bg-indigo-500", color: "text-white" },
+  { bg: "bg-blue-50", color: "text-blue-600" },
+  { bg: "bg-emerald-50", color: "text-emerald-600" },
+  { bg: "bg-amber-50", color: "text-amber-600" },
+  { bg: "bg-cyan-50", color: "text-cyan-600" },
+  { bg: "bg-red-50", color: "text-red-600" },
+  { bg: "bg-violet-50", color: "text-violet-600" },
+  { bg: "bg-pink-50", color: "text-pink-600" },
+  { bg: "bg-orange-50", color: "text-orange-600" },
+  { bg: "bg-teal-50", color: "text-teal-600" },
+  { bg: "bg-indigo-50", color: "text-indigo-600" },
 ];
 
 interface Asset {
@@ -166,10 +166,10 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
   };
 
   const stats = [
-    { label: "Total Assets", value: assets.length, icon: "package" as const, color: "text-white", bg: "bg-blue-500", border: "border-t-blue-500" },
-    { label: "Consumables", value: consumables.length, icon: "droplet" as const, color: "text-white", bg: "bg-orange-500", border: "border-t-orange-500" },
-    { label: "Staff", value: staff.length, icon: "users" as const, color: "text-white", bg: "bg-emerald-500", border: "border-t-emerald-500" },
-    { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, color: "text-white", bg: "bg-red-500", border: "border-t-red-500" },
+    { label: "Total Assets", value: assets.length, icon: "package" as const, color: "text-action-500", bg: "bg-action-50", border: "border-action-400" },
+    { label: "Consumables", value: consumables.length, icon: "droplet" as const, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-400" },
+    { label: "Staff", value: staff.length, icon: "users" as const, color: "text-emerald-500", bg: "bg-emerald-50", border: "border-emerald-400" },
+    { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, color: "text-amber-500", bg: "bg-amber-50", border: "border-amber-400" },
   ];
 
   const tabs = [
@@ -200,7 +200,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
-          <Card key={stat.label} className={`border-t-[3px] ${stat.border}`}>
+          <Card key={stat.label} className={`border-l-4 ${stat.border}`}>
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>

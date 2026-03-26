@@ -869,14 +869,14 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href}>
-            <Card className={`border-t-[3px] ${stat.borderColor} hover:shadow-lg transition-all duration-200 cursor-pointer group`}>
+            <Card className={`border-l-4 ${stat.borderColor} hover:shadow-md transition-shadow cursor-pointer`}>
               <CardContent className="py-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-shark-500 font-medium">{stat.label}</p>
+                    <p className="text-sm text-shark-400">{stat.label}</p>
                     <p className="text-3xl font-bold text-shark-900 mt-1">{stat.value}</p>
                   </div>
-                  <div className={`w-12 h-12 rounded-xl ${stat.iconBg} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
+                  <div className={`w-12 h-12 rounded-xl ${stat.iconBg} flex items-center justify-center`}>
                     <Icon name={stat.icon} size={24} className={stat.iconColor} />
                   </div>
                 </div>

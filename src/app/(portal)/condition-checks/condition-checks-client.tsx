@@ -262,12 +262,12 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Staff with Items", value: staffStatus.length, icon: "users" as const, color: "text-white", bg: "bg-blue-500", border: "border-t-blue-500" },
-          { label: "Completed", value: totalChecked, icon: "check" as const, color: "text-white", bg: "bg-emerald-500", border: "border-t-emerald-500" },
-          { label: "Incomplete", value: staffStatus.length - totalChecked, icon: "clock" as const, color: "text-white", bg: "bg-amber-500", border: "border-t-amber-500" },
-          { label: "Photos Submitted", value: checks.length, icon: "search" as const, color: "text-white", bg: "bg-pink-500", border: "border-t-pink-500" },
+          { label: "Staff with Items", value: staffStatus.length, icon: "users" as const, color: "text-action-500", bg: "bg-action-50", border: "border-action-400" },
+          { label: "Completed", value: totalChecked, icon: "check" as const, color: "text-emerald-500", bg: "bg-emerald-50", border: "border-emerald-400" },
+          { label: "Incomplete", value: staffStatus.length - totalChecked, icon: "clock" as const, color: "text-amber-500", bg: "bg-amber-50", border: "border-amber-400" },
+          { label: "Photos Submitted", value: checks.length, icon: "search" as const, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-400" },
         ].map((stat) => (
-          <Card key={stat.label} className={`border-t-[3px] ${stat.border}`}>
+          <Card key={stat.label} className={`border-l-4 ${stat.border}`}>
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
