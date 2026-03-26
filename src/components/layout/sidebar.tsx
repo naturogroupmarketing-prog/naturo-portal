@@ -148,21 +148,29 @@ export function Sidebar({ role, onClose }: SidebarProps) {
             );
           })}
       </div>
-      {/* Upgrade Card */}
-      <div className="px-3 pb-3">
-        <div className="rounded-2xl p-4 text-center" style={{ background: "linear-gradient(135deg, #5759E5 0%, #7C5CFC 100%)" }}>
-          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
-            <Icon name="award" size={24} className="text-white" />
+      {/* Upgrade Card — collapsed by default, expands on hover */}
+      <div className="px-3 pb-3 group/upgrade">
+        <div className="rounded-2xl text-center overflow-hidden transition-all duration-300" style={{ background: "linear-gradient(135deg, #5759E5 0%, #7C5CFC 100%)" }}>
+          {/* Expanded content — hidden by default, shown on hover */}
+          <div className="max-h-0 group-hover/upgrade:max-h-40 overflow-hidden transition-all duration-300 ease-in-out">
+            <div className="pt-4 px-4">
+              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3">
+                <Icon name="award" size={24} className="text-white" />
+              </div>
+              <p className="text-sm font-semibold text-white">Upgrade Your</p>
+              <p className="text-sm font-semibold text-white mb-3">Account To Pro</p>
+            </div>
           </div>
-          <p className="text-sm font-semibold text-white">Upgrade Your</p>
-          <p className="text-sm font-semibold text-white">Account To Pro</p>
-          <button
-            onClick={() => window.open("/admin/billing", "_self")}
-            className="mt-3 w-full py-2 rounded-xl bg-white text-sm font-semibold hover:bg-white/90 transition-colors"
-            style={{ color: "#5759E5" }}
-          >
-            Upgrade Now
-          </button>
+          {/* Always visible button */}
+          <div className="p-3">
+            <button
+              onClick={() => window.open("/admin/billing", "_self")}
+              className="w-full py-2 rounded-xl bg-white text-sm font-semibold hover:bg-white/90 transition-colors"
+              style={{ color: "#5759E5" }}
+            >
+              Upgrade Now
+            </button>
+          </div>
         </div>
       </div>
     </nav>
