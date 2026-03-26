@@ -431,10 +431,10 @@ export default async function DashboardPage() {
   ];
 
   const quickLinks: { label: string; href: string; icon: IconName; iconBg: string; iconColor: string }[] = [
-    { label: "Manage Assets", href: "/assets", icon: "package", iconBg: "bg-action-50", iconColor: "text-action-500" },
-    { label: "Consumables", href: "/consumables", icon: "droplet", iconBg: "bg-blue-50", iconColor: "text-blue-500" },
-    { label: "Staff Overview", href: "/staff", icon: "users", iconBg: "bg-emerald-50", iconColor: "text-emerald-500" },
-    { label: "Reports", href: "/reports", icon: "clipboard", iconBg: "bg-amber-100", iconColor: "text-amber-700" },
+    { label: "Manage Assets", href: "/assets", icon: "package", iconBg: "bg-blue-500", iconColor: "text-white" },
+    { label: "Consumables", href: "/consumables", icon: "droplet", iconBg: "bg-orange-500", iconColor: "text-white" },
+    { label: "Staff Overview", href: "/staff", icon: "users", iconBg: "bg-emerald-500", iconColor: "text-white" },
+    { label: "Reports", href: "/reports", icon: "clipboard", iconBg: "bg-amber-500", iconColor: "text-white" },
   ];
 
   return (
