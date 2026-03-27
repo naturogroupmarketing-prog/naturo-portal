@@ -35,6 +35,9 @@ interface Location {
   regions: Array<{
     id: string;
     name: string;
+    address: string | null;
+    latitude: number | null;
+    longitude: number | null;
     _count: { assets: number; consumables: number; users: number };
   }>;
 }
@@ -46,6 +49,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
   const [editValue, setEditValue] = useState("");
   const [collapsedStates, setCollapsedStates] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
+  const [editLocationRegion, setEditLocationRegion] = useState<Location["regions"][0] | null>(null);
   const { addToast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -294,7 +298,15 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                                       autoFocus
                                     />
                                   ) : (
-                                    <h3 className="text-sm font-semibold text-shark-800">{region.name}</h3>
+                                    <div>
+                                      <h3 className="text-sm font-semibold text-shark-800">{region.name}</h3>
+                                      {region.address && (
+                                        <p className="text-xs text-shark-400 mt-0.5 flex items-center gap-1">
+                                          <Icon name="map-pin" size={10} className="text-shark-300" />
+                                          {region.address}
+                                        </p>
+                                      )}
+                                    </div>
                                   )}
                                 </div>
 
@@ -318,9 +330,9 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                                   {/* Actions */}
                                   <div className="flex items-center gap-1">
                                     <button
-                                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditingRegion(region.id); setEditValue(region.name); }}
+                                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditLocationRegion(region); }}
                                       className="text-shark-300 hover:text-action-500 transition-colors p-1"
-                                      title="Rename region"
+                                      title="Edit location details"
                                     >
                                       <Icon name="edit" size={13} />
                                     </button>
@@ -394,11 +406,66 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
             <label className="block text-sm font-medium text-shark-700 mb-1">Region Name *</label>
             <Input name="name" required placeholder="e.g. Sydney Metro" />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Storage Address</label>
+            <Input name="address" placeholder="e.g. 123 Main St, Sydney NSW 2000" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Latitude</label>
+              <Input name="latitude" type="number" step="any" placeholder="-33.8688" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Longitude</label>
+              <Input name="longitude" type="number" step="any" placeholder="151.2093" />
+            </div>
+          </div>
+          <p className="text-xs text-shark-400">Tip: Search your address on Google Maps, right-click and select coordinates.</p>
           <div className="flex justify-end gap-3">
             <Button type="button" variant="secondary" onClick={() => setModal(null)}>Cancel</Button>
             <Button type="submit">Add Region</Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Edit Region Location Modal */}
+      <Modal open={!!editLocationRegion} onClose={() => setEditLocationRegion(null)} title={`Edit: ${editLocationRegion?.name}`}>
+        {editLocationRegion && (
+          <form action={async (fd) => {
+            try {
+              fd.set("id", editLocationRegion.id);
+              await updateRegion(fd);
+              addToast("Location updated", "success");
+              setEditLocationRegion(null);
+            } catch (e) {
+              addToast(e instanceof Error ? e.message : "Failed to update", "error");
+            }
+          }} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Region Name *</label>
+              <Input name="name" required defaultValue={editLocationRegion.name} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Storage Address</label>
+              <Input name="address" defaultValue={editLocationRegion.address || ""} placeholder="e.g. 123 Main St, Sydney NSW 2000" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-shark-700 mb-1">Latitude</label>
+                <Input name="latitude" type="number" step="any" defaultValue={editLocationRegion.latitude ?? ""} placeholder="-33.8688" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-shark-700 mb-1">Longitude</label>
+                <Input name="longitude" type="number" step="any" defaultValue={editLocationRegion.longitude ?? ""} placeholder="151.2093" />
+              </div>
+            </div>
+            <p className="text-xs text-shark-400">Tip: Search your address on Google Maps, right-click and select coordinates.</p>
+            <div className="flex justify-end gap-3">
+              <Button type="button" variant="secondary" onClick={() => setEditLocationRegion(null)}>Cancel</Button>
+              <Button type="submit">Save Changes</Button>
+            </div>
+          </form>
+        )}
       </Modal>
     </div>
   );

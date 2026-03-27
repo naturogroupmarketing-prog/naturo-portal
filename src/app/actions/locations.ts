@@ -30,8 +30,15 @@ export async function createRegion(formData: FormData) {
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization found");
 
-  await db.region.create({ data: { name, stateId, organizationId } });
+  const address = (formData.get("address") as string)?.trim() || null;
+  const lat = formData.get("latitude") as string;
+  const lng = formData.get("longitude") as string;
+  const latitude = lat ? parseFloat(lat) : null;
+  const longitude = lng ? parseFloat(lng) : null;
+
+  await db.region.create({ data: { name, stateId, organizationId, address, latitude, longitude } });
   revalidatePath("/admin/locations");
+  revalidatePath("/dashboard");
   return { success: true };
 }
 
@@ -70,8 +77,15 @@ export async function updateRegion(formData: FormData) {
   if (!region) throw new Error("Region not found");
   if (region.organizationId !== organizationId) throw new Error("Region not found");
 
-  await db.region.update({ where: { id }, data: { name: name.trim() } });
+  const address = (formData.get("address") as string)?.trim() || null;
+  const lat = formData.get("latitude") as string;
+  const lng = formData.get("longitude") as string;
+  const latitude = lat ? parseFloat(lat) : null;
+  const longitude = lng ? parseFloat(lng) : null;
+
+  await db.region.update({ where: { id }, data: { name: name.trim(), address, latitude, longitude } });
   revalidatePath("/admin/locations");
+  revalidatePath("/dashboard");
   return { success: true };
 }
 
