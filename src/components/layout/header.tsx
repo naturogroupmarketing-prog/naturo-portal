@@ -116,15 +116,13 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
                   Dashboard
                 </button>
 
-                {isSuperAdmin && (
-                  <button
-                    onClick={() => { setDropdownOpen(false); router.push("/admin/permissions"); }}
-                    className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 hover:bg-shark-50 transition-colors"
-                  >
-                    <Icon name="settings" size={15} className="text-shark-400" />
-                    Settings
-                  </button>
-                )}
+                <button
+                  onClick={() => { setDropdownOpen(false); router.push("/settings"); }}
+                  className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 hover:bg-shark-50 transition-colors"
+                >
+                  <Icon name="settings" size={15} className="text-shark-400" />
+                  Settings
+                </button>
               </div>
 
               {/* Upgrade — admin only */}

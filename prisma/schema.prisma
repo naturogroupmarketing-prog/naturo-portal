@@ -211,6 +211,7 @@ model User {
   phone                 String?
   password              String?
   dashboardPreferences  Json?
+  emailNotifications    Boolean  @default(true)
 
   region       Region?       @relation(fields: [regionId], references: [id])
   organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
