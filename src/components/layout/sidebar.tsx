@@ -100,7 +100,7 @@ export function Sidebar({ role, onClose }: SidebarProps) {
           className="flex items-center gap-1 hover:opacity-80 transition-opacity"
           title="Go to Dashboard"
         >
-          <Logo size={48} />
+          <Logo size={56} />
         </button>
         {onClose && (
           <button onClick={onClose} className="text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 lg:hidden">
