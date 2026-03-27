@@ -85,7 +85,7 @@ interface Props {
   consumableStatusChart?: ChartItem[];
   consumableCategoryChart?: ChartItem[];
   portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
-  portfolioChartData?: { month: string; assets: number; consumables: number }[];
+  portfolioChartData?: { month: string; assets: number; consumables: number; staff: number }[];
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
 }
@@ -169,7 +169,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     </div>
 
                     {/* Summary cards like Edaly Expenses/Income */}
-                    <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="grid grid-cols-3 gap-4 mb-6">
                       <div className="border border-shark-100 rounded-xl px-4 py-3">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#1F3DD9" }} />
@@ -194,6 +194,16 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         </p>
                         <span className="text-xs text-shark-400">Stock value</span>
                       </div>
+                      <div className="border border-shark-100 rounded-xl px-4 py-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#10b981" }} />
+                          <span className="text-sm text-shark-500">Staff</span>
+                        </div>
+                        <p className="text-2xl font-bold text-shark-900">
+                          {portfolioChartData?.[portfolioChartData.length - 1]?.staff || 0}
+                        </p>
+                        <span className="text-xs text-shark-400">Active members</span>
+                      </div>
                     </div>
 
                     {/* Chart */}
@@ -210,6 +220,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                 <stop offset="0%" stopColor="#E8532E" stopOpacity={0.15} />
                                 <stop offset="100%" stopColor="#E8532E" stopOpacity={0.02} />
                               </linearGradient>
+                              <linearGradient id="gradStaff" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#10b981" stopOpacity={0.15} />
+                                <stop offset="100%" stopColor="#10b981" stopOpacity={0.02} />
+                              </linearGradient>
                             </defs>
                             <XAxis
                               dataKey="month"
@@ -218,11 +232,21 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               tick={{ fontSize: 12, fill: "#6b7080" }}
                             />
                             <YAxis
+                              yAxisId="value"
                               axisLine={false}
                               tickLine={false}
                               tick={{ fontSize: 11, fill: "#8b8f96" }}
                               tickFormatter={(v: number) => v >= 1000 ? `$${(v / 1000).toFixed(0)}k` : `$${v}`}
                               width={50}
+                            />
+                            <YAxis
+                              yAxisId="staff"
+                              orientation="right"
+                              axisLine={false}
+                              tickLine={false}
+                              tick={{ fontSize: 11, fill: "#10b981" }}
+                              width={30}
+                              allowDecimals={false}
                             />
                             <RechartsTooltip
                               content={(props: Record<string, unknown>) => {
@@ -233,22 +257,26 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                 return (
                                   <div style={{ background: "#1a1c21", borderRadius: 10, padding: "10px 14px", border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
                                     <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
-                                    {payload.map((p) => (
-                                      <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                                        <span style={{ width: 8, height: 8, borderRadius: "50%", background: p.dataKey === "assets" ? "#1F3DD9" : "#E8532E" }} />
-                                        <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>
-                                          ${Number(p.value).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
-                                        </span>
-                                        <span style={{ color: "#6b7080", fontSize: 11 }}>
-                                          {p.dataKey === "assets" ? "Assets" : "Consumables"}
-                                        </span>
-                                      </div>
-                                    ))}
+                                    {payload.map((p) => {
+                                      const color = p.dataKey === "assets" ? "#1F3DD9" : p.dataKey === "consumables" ? "#E8532E" : "#10b981";
+                                      const labelName = p.dataKey === "assets" ? "Assets" : p.dataKey === "consumables" ? "Consumables" : "Staff";
+                                      const isStaff = p.dataKey === "staff";
+                                      return (
+                                        <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
+                                          <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>
+                                            {isStaff ? Number(p.value) : `$${Number(p.value).toLocaleString("en-AU", { maximumFractionDigits: 0 })}`}
+                                          </span>
+                                          <span style={{ color: "#6b7080", fontSize: 11 }}>{labelName}</span>
+                                        </div>
+                                      );
+                                    })}
                                   </div>
                                 );
                               }}
                             />
                             <Area
+                              yAxisId="value"
                               type="monotone"
                               dataKey="assets"
                               stroke="#1F3DD9"
@@ -258,6 +286,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               activeDot={{ r: 5, fill: "#1F3DD9", stroke: "#ffffff", strokeWidth: 2 }}
                             />
                             <Area
+                              yAxisId="value"
                               type="monotone"
                               dataKey="consumables"
                               stroke="#E8532E"
@@ -265,6 +294,16 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               fill="url(#gradConsumables)"
                               dot={false}
                               activeDot={{ r: 5, fill: "#E8532E", stroke: "#ffffff", strokeWidth: 2 }}
+                            />
+                            <Area
+                              yAxisId="staff"
+                              type="monotone"
+                              dataKey="staff"
+                              stroke="#10b981"
+                              strokeWidth={2}
+                              fill="url(#gradStaff)"
+                              dot={false}
+                              activeDot={{ r: 5, fill: "#10b981", stroke: "#ffffff", strokeWidth: 2 }}
                             />
                           </AreaChart>
                         </ResponsiveContainer>

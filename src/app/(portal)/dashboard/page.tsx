@@ -408,9 +408,13 @@ export default async function DashboardPage() {
   });
   const totalConsumableValue = consumablesWithCost.reduce((sum, c) => sum + (c.unitCost || 0) * c.quantityOnHand, 0);
 
-  // Portfolio chart data — 6-month trend using depreciation formula
+  // Portfolio chart data — 6-month trend using depreciation formula + staff count
   const now = new Date();
-  const portfolioChartData: { month: string; assets: number; consumables: number }[] = [];
+  const allUsers = await db.user.findMany({
+    where: { organizationId: session.user.organizationId!, isActive: true, role: "STAFF" },
+    select: { createdAt: true },
+  });
+  const portfolioChartData: { month: string; assets: number; consumables: number; staff: number }[] = [];
   for (let i = 5; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const monthLabel = d.toLocaleDateString("en-AU", { month: "short" });
@@ -426,10 +430,14 @@ export default async function DashboardPage() {
       return sum + Math.max(0, cost * Math.pow(1 - rate / 100, yearsOwned));
     }, 0);
 
+    // Staff count at this month-end
+    const staffCount = allUsers.filter((u) => new Date(u.createdAt) <= monthEnd).length;
+
     portfolioChartData.push({
       month: monthLabel,
       assets: Math.round(assetVal),
-      consumables: Math.round(totalConsumableValue), // constant (no historical data)
+      consumables: Math.round(totalConsumableValue),
+      staff: staffCount,
     });
   }
 
