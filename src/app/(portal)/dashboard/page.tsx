@@ -410,7 +410,7 @@ export default async function DashboardPage() {
 
   // Portfolio chart data — 6-month trend (assets vs consumables value)
   const now = new Date();
-  const portfolioChartData: { month: string; assets: number; consumables: number }[] = [];
+  const portfolioChartData: { month: string; assets: number; consumables: number; depreciation: number }[] = [];
 
   // Activity bar chart data — damaged, lost, staff per month
   const [allStaff, damageReportsAll] = await Promise.all([
@@ -432,20 +432,24 @@ export default async function DashboardPage() {
     const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
     const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
 
-    // Portfolio: asset value at this month-end
-    const assetVal = assetsWithCost.reduce((sum, a) => {
+    // Portfolio: asset value and depreciation at this month-end
+    let assetVal = 0;
+    let purchaseTotal = 0;
+    for (const a of assetsWithCost) {
       const cost = a.purchaseCost || 0;
       const rate = a.depreciationRate || 10;
       const purchaseDate = a.purchaseDate ? new Date(a.purchaseDate) : new Date();
-      if (purchaseDate > monthEnd) return sum;
+      if (purchaseDate > monthEnd) continue;
+      purchaseTotal += cost;
       const yearsOwned = (monthEnd.getTime() - purchaseDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
-      return sum + Math.max(0, cost * Math.pow(1 - rate / 100, yearsOwned));
-    }, 0);
+      assetVal += Math.max(0, cost * Math.pow(1 - rate / 100, yearsOwned));
+    }
 
     portfolioChartData.push({
       month: monthLabel,
       assets: Math.round(assetVal),
       consumables: Math.round(totalConsumableValue),
+      depreciation: Math.round(purchaseTotal - assetVal),
     });
 
     // Activity: damage/loss reports this month + staff count

@@ -87,7 +87,7 @@ interface Props {
   consumableStatusChart?: ChartItem[];
   consumableCategoryChart?: ChartItem[];
   portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
-  portfolioChartData?: { month: string; assets: number; consumables: number }[];
+  portfolioChartData?: { month: string; assets: number; consumables: number; depreciation: number }[];
   activityChartData?: { month: string; damaged: number; lost: number; staff: number }[];
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
@@ -268,6 +268,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   <stop offset="0%" stopColor="#E8532E" stopOpacity={0.12} />
                                   <stop offset="100%" stopColor="#E8532E" stopOpacity={0.01} />
                                 </linearGradient>
+                                <linearGradient id="gradDepreciation" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#8b8f96" stopOpacity={0.1} />
+                                  <stop offset="100%" stopColor="#8b8f96" stopOpacity={0.01} />
+                                </linearGradient>
                               </defs>
                               <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7080" }} />
                               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#8b8f96" }} tickFormatter={(v: number) => v >= 1000 ? `$${(v / 1000).toFixed(0)}k` : `$${v}`} width={45} />
@@ -280,23 +284,26 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   return (
                                     <div style={{ background: "#1a1c21", borderRadius: 10, padding: "10px 14px", border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
                                       <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
-                                      {payload.map((p) => (
-                                        <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: p.dataKey === "assets" ? "#1F3DD9" : "#E8532E" }} />
-                                          <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>
-                                            ${Number(p.value).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
-                                          </span>
-                                          <span style={{ color: "#6b7080", fontSize: 11 }}>
-                                            {p.dataKey === "assets" ? "Assets" : "Consumables"}
-                                          </span>
-                                        </div>
-                                      ))}
+                                      {payload.map((p) => {
+                                        const color = p.dataKey === "assets" ? "#1F3DD9" : p.dataKey === "consumables" ? "#E8532E" : "#8b8f96";
+                                        const name = p.dataKey === "assets" ? "Assets" : p.dataKey === "consumables" ? "Consumables" : "Depreciation";
+                                        return (
+                                          <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                                            <span style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
+                                            <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>
+                                              ${Number(p.value).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
+                                            </span>
+                                            <span style={{ color: "#6b7080", fontSize: 11 }}>{name}</span>
+                                          </div>
+                                        );
+                                      })}
                                     </div>
                                   );
                                 }}
                               />
                               <Area type="monotone" dataKey="assets" stroke="#1F3DD9" strokeWidth={2} fill="url(#gradAssets)" dot={false} activeDot={{ r: 4, fill: "#1F3DD9", stroke: "#fff", strokeWidth: 2 }} />
                               <Area type="monotone" dataKey="consumables" stroke="#E8532E" strokeWidth={2} fill="url(#gradConsumables)" dot={false} activeDot={{ r: 4, fill: "#E8532E", stroke: "#fff", strokeWidth: 2 }} />
+                              <Area type="monotone" dataKey="depreciation" stroke="#8b8f96" strokeWidth={1.5} strokeDasharray="4 3" fill="url(#gradDepreciation)" dot={false} activeDot={{ r: 4, fill: "#8b8f96", stroke: "#fff", strokeWidth: 2 }} />
                             </AreaChart>
                           </ResponsiveContainer>
                         </div>
