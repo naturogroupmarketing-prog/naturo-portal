@@ -19,6 +19,12 @@ const ResponsiveContainer = dynamic(() => import("recharts").then((m) => m.Respo
 const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), { ssr: false });
 const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false });
 
+// Lazy-load map — heavy dependency, only needed when locations have coordinates
+const LocationMap = dynamic(
+  () => import("@/components/ui/location-map").then((m) => m.LocationMap),
+  { ssr: false, loading: () => <div className="flex items-center justify-center bg-shark-50 rounded-xl text-shark-400 text-sm" style={{ minHeight: 300 }}>Loading map...</div> }
+);
+
 interface StatCard {
   widgetId: string;
   label: string;
@@ -91,9 +97,10 @@ interface Props {
   activityChartData?: { month: string; damaged: number; lost: number; staff: number }[];
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
+  mapLocations?: { id: string; name: string; stateName: string; latitude: number; longitude: number; assetCount: number; consumableCount: number; staffCount: number }[];
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, upcomingMaintenance, isSuperAdmin }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, upcomingMaintenance, isSuperAdmin, mapLocations = [] }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -646,6 +653,23 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return null;
         }
       })}
+
+      {/* Storage Locations Map */}
+      {isSuperAdmin && mapLocations.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-action-500 flex items-center justify-center">
+                <Icon name="map-pin" size={16} className="text-white" />
+              </div>
+              Storage Locations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LocationMap locations={mapLocations} className="h-[400px]" />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Settings Modal */}
       <DashboardSettingsModal

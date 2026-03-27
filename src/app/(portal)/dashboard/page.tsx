@@ -263,7 +263,7 @@ export default async function DashboardPage() {
     // Regional breakdown data (Super Admin only)
     ...(isSuperAdmin
       ? [
-          db.region.findMany({ where: { organizationId }, include: { state: true }, orderBy: { name: "asc" } }),
+          db.region.findMany({ where: { organizationId }, include: { state: true, _count: { select: { assets: true, consumables: true, users: true } } }, orderBy: { name: "asc" } }),
           db.asset.groupBy({ by: ["regionId"], where: { status: "DAMAGED", organizationId }, _count: true }),
           db.asset.groupBy({ by: ["regionId"], where: { status: "LOST", organizationId }, _count: true }),
           db.consumableRequest.findMany({
@@ -284,7 +284,7 @@ export default async function DashboardPage() {
 
   if (isSuperAdmin && regionData.length > 0) {
     const [regions, damagedByRegion, lostByRegion, pendingReqRaw, pendingPOsByRegion, allLowStock] = regionData as [
-      { id: string; name: string; state: { name: string } }[],
+      { id: string; name: string; latitude: number | null; longitude: number | null; state: { name: string }; _count: { assets: number; consumables: number; users: number } }[],
       { regionId: string; _count: number }[],
       { regionId: string; _count: number }[],
       { consumable: { regionId: string } }[],
@@ -316,6 +316,18 @@ export default async function DashboardPage() {
         .slice(0, 5)
         .map((i) => ({ id: i.id, name: i.name, unitType: i.unitType, quantityOnHand: i.quantityOnHand, minimumThreshold: i.minimumThreshold })),
     }));
+  }
+
+  // Map locations for Super Admin
+  type RegionWithCoords = { id: string; name: string; latitude: number | null; longitude: number | null; state: { name: string }; _count: { assets: number; consumables: number; users: number } };
+  const mapLocations: { id: string; name: string; stateName: string; latitude: number; longitude: number; assetCount: number; consumableCount: number; staffCount: number }[] = [];
+  if (isSuperAdmin && regionData.length > 0) {
+    const regionsWithCoords = regionData[0] as unknown as RegionWithCoords[];
+    for (const r of regionsWithCoords) {
+      if (r.latitude != null && r.longitude != null) {
+        mapLocations.push({ id: r.id, name: r.name, stateName: r.state.name, latitude: r.latitude, longitude: r.longitude, assetCount: r._count.assets, consumableCount: r._count.consumables, staffCount: r._count.users });
+      }
+    }
   }
 
   // Chart data: asset status breakdown — single groupBy instead of 6 count queries
@@ -511,6 +523,7 @@ export default async function DashboardPage() {
       activityChartData={isSuperAdmin ? activityChartData : undefined}
       upcomingMaintenance={upcomingMaintenance}
       isSuperAdmin={isSuperAdmin}
+      mapLocations={mapLocations}
     />
   );
 }

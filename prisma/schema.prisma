@@ -183,6 +183,8 @@ model Region {
   name           String
   stateId        String
   organizationId String
+  latitude       Float?
+  longitude      Float?
   state          State        @relation(fields: [stateId], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   assets         Asset[]
