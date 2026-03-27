@@ -16,6 +16,8 @@ const XAxis = dynamic(() => import("recharts").then((m) => m.XAxis), { ssr: fals
 const YAxis = dynamic(() => import("recharts").then((m) => m.YAxis), { ssr: false });
 const RechartsTooltip = dynamic(() => import("recharts").then((m) => m.Tooltip), { ssr: false });
 const ResponsiveContainer = dynamic(() => import("recharts").then((m) => m.ResponsiveContainer), { ssr: false });
+const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), { ssr: false });
+const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false });
 
 interface StatCard {
   widgetId: string;
@@ -85,12 +87,13 @@ interface Props {
   consumableStatusChart?: ChartItem[];
   consumableCategoryChart?: ChartItem[];
   portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
-  portfolioChartData?: { month: string; assets: number; consumables: number; staff: number }[];
+  portfolioChartData?: { month: string; assets: number; consumables: number }[];
+  activityChartData?: { month: string; damaged: number; lost: number; staff: number }[];
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, upcomingMaintenance, isSuperAdmin }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, upcomingMaintenance, isSuperAdmin }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -157,97 +160,28 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "portfolio":
-            return isSuperAdmin && showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) ? (
-              <div key="portfolio">
-                <Card>
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-6">
-                      <div>
-                        <h2 className="text-lg font-bold text-shark-900">Portfolio Valuation</h2>
-                        <p className="text-sm text-shark-400">Assets &amp; Consumables</p>
-                      </div>
-                    </div>
-
-                    {/* Summary cards like Edaly Expenses/Income */}
-                    <div className="grid grid-cols-3 gap-4 mb-6">
-                      <div className="border border-shark-100 rounded-xl px-4 py-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#1F3DD9" }} />
-                          <span className="text-sm text-shark-500">Assets</span>
+            return isSuperAdmin && showPortfolio ? (
+              <div key="portfolio" className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* LEFT — Activity Bar Chart (Damaged, Lost, Staff) like Edaly Attendance */}
+                {activityChartData && activityChartData.length > 0 && (
+                  <Card>
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <h2 className="text-lg font-bold text-shark-900">Activity</h2>
+                          <p className="text-sm text-shark-400">Recent Activity</p>
                         </div>
-                        <p className="text-2xl font-bold text-shark-900">
-                          ${portfolioValue.current.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                        </p>
-                        {portfolioValue.depreciation > 0 && (
-                          <span className="text-xs text-[#E8532E] font-medium">
-                            ↓ ${portfolioValue.depreciation.toLocaleString("en-AU", { maximumFractionDigits: 0 })} depreciation
-                          </span>
-                        )}
                       </div>
-                      <div className="border border-shark-100 rounded-xl px-4 py-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#E8532E" }} />
-                          <span className="text-sm text-shark-500">Consumables</span>
-                        </div>
-                        <p className="text-2xl font-bold text-shark-900">
-                          ${portfolioValue.consumableValue.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                        </p>
-                        <span className="text-xs text-shark-400">Stock value</span>
+                      <div className="flex items-center gap-5 mb-4">
+                        <span className="flex items-center gap-1.5 text-xs text-shark-500"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#1F3DD9" }} /> Damaged</span>
+                        <span className="flex items-center gap-1.5 text-xs text-shark-500"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#E8532E" }} /> Lost</span>
+                        <span className="flex items-center gap-1.5 text-xs text-shark-500"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#10b981" }} /> Staff</span>
                       </div>
-                      <div className="border border-shark-100 rounded-xl px-4 py-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#10b981" }} />
-                          <span className="text-sm text-shark-500">Staff</span>
-                        </div>
-                        <p className="text-2xl font-bold text-shark-900">
-                          {portfolioChartData?.[portfolioChartData.length - 1]?.staff || 0}
-                        </p>
-                        <span className="text-xs text-shark-400">Active members</span>
-                      </div>
-                    </div>
-
-                    {/* Chart */}
-                    {portfolioChartData && portfolioChartData.length > 0 && (
-                      <div className="h-64">
+                      <div className="h-56">
                         <ResponsiveContainer width="100%" height="100%">
-                          <AreaChart data={portfolioChartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
-                            <defs>
-                              <linearGradient id="gradAssets" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#1F3DD9" stopOpacity={0.15} />
-                                <stop offset="100%" stopColor="#1F3DD9" stopOpacity={0.02} />
-                              </linearGradient>
-                              <linearGradient id="gradConsumables" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#E8532E" stopOpacity={0.15} />
-                                <stop offset="100%" stopColor="#E8532E" stopOpacity={0.02} />
-                              </linearGradient>
-                              <linearGradient id="gradStaff" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#10b981" stopOpacity={0.15} />
-                                <stop offset="100%" stopColor="#10b981" stopOpacity={0.02} />
-                              </linearGradient>
-                            </defs>
-                            <XAxis
-                              dataKey="month"
-                              axisLine={false}
-                              tickLine={false}
-                              tick={{ fontSize: 12, fill: "#6b7080" }}
-                            />
-                            <YAxis
-                              yAxisId="value"
-                              axisLine={false}
-                              tickLine={false}
-                              tick={{ fontSize: 11, fill: "#8b8f96" }}
-                              tickFormatter={(v: number) => v >= 1000 ? `$${(v / 1000).toFixed(0)}k` : `$${v}`}
-                              width={50}
-                            />
-                            <YAxis
-                              yAxisId="staff"
-                              orientation="right"
-                              axisLine={false}
-                              tickLine={false}
-                              tick={{ fontSize: 11, fill: "#10b981" }}
-                              width={30}
-                              allowDecimals={false}
-                            />
+                          <BarChart data={activityChartData} margin={{ top: 5, right: 5, left: -10, bottom: 0 }} barGap={2} barSize={14}>
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7080" }} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#8b8f96" }} allowDecimals={false} />
                             <RechartsTooltip
                               content={(props: Record<string, unknown>) => {
                                 const active = props.active as boolean;
@@ -258,16 +192,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   <div style={{ background: "#1a1c21", borderRadius: 10, padding: "10px 14px", border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
                                     <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
                                     {payload.map((p) => {
-                                      const color = p.dataKey === "assets" ? "#1F3DD9" : p.dataKey === "consumables" ? "#E8532E" : "#10b981";
-                                      const labelName = p.dataKey === "assets" ? "Assets" : p.dataKey === "consumables" ? "Consumables" : "Staff";
-                                      const isStaff = p.dataKey === "staff";
+                                      const color = p.dataKey === "damaged" ? "#1F3DD9" : p.dataKey === "lost" ? "#E8532E" : "#10b981";
+                                      const name = p.dataKey === "damaged" ? "Damaged" : p.dataKey === "lost" ? "Lost" : "Staff";
                                       return (
                                         <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
                                           <span style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
-                                          <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>
-                                            {isStaff ? Number(p.value) : `$${Number(p.value).toLocaleString("en-AU", { maximumFractionDigits: 0 })}`}
-                                          </span>
-                                          <span style={{ color: "#6b7080", fontSize: 11 }}>{labelName}</span>
+                                          <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>{Number(p.value)}</span>
+                                          <span style={{ color: "#6b7080", fontSize: 11 }}>{name}</span>
                                         </div>
                                       );
                                     })}
@@ -275,50 +206,112 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                 );
                               }}
                             />
-                            <Area
-                              yAxisId="value"
-                              type="monotone"
-                              dataKey="assets"
-                              stroke="#1F3DD9"
-                              strokeWidth={2.5}
-                              fill="url(#gradAssets)"
-                              dot={false}
-                              activeDot={{ r: 5, fill: "#1F3DD9", stroke: "#ffffff", strokeWidth: 2 }}
-                            />
-                            <Area
-                              yAxisId="value"
-                              type="monotone"
-                              dataKey="consumables"
-                              stroke="#E8532E"
-                              strokeWidth={2.5}
-                              fill="url(#gradConsumables)"
-                              dot={false}
-                              activeDot={{ r: 5, fill: "#E8532E", stroke: "#ffffff", strokeWidth: 2 }}
-                            />
-                            <Area
-                              yAxisId="staff"
-                              type="monotone"
-                              dataKey="staff"
-                              stroke="#10b981"
-                              strokeWidth={2}
-                              fill="url(#gradStaff)"
-                              dot={false}
-                              activeDot={{ r: 5, fill: "#10b981", stroke: "#ffffff", strokeWidth: 2 }}
-                            />
-                          </AreaChart>
+                            <Bar dataKey="damaged" fill="#1F3DD9" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="lost" fill="#E8532E" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="staff" fill="#10b981" radius={[4, 4, 0, 0]} />
+                          </BarChart>
                         </ResponsiveContainer>
                       </div>
-                    )}
-
-                    {/* Total */}
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-shark-100">
-                      <span className="text-sm font-medium text-shark-500">Total Portfolio</span>
-                      <span className="text-xl font-bold text-shark-900">
-                        ${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                      </span>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                )}
+
+                {/* RIGHT — Portfolio Line Chart (Assets vs Consumables value) like Edaly Finance */}
+                {portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
+                  <Card>
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <h2 className="text-lg font-bold text-shark-900">Finance</h2>
+                          <p className="text-sm text-shark-400">Asset &amp; Consumable Value</p>
+                        </div>
+                      </div>
+
+                      {/* Summary cards */}
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="border border-shark-100 rounded-xl px-3.5 py-2.5">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className="w-2 h-2 rounded-full" style={{ background: "#1F3DD9" }} />
+                            <span className="text-xs text-shark-500">Assets</span>
+                          </div>
+                          <p className="text-xl font-bold text-shark-900">
+                            ${portfolioValue.current.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
+                          </p>
+                          {portfolioValue.depreciation > 0 && (
+                            <span className="text-[10px] text-[#E8532E] font-medium">
+                              ↓ ${portfolioValue.depreciation.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
+                            </span>
+                          )}
+                        </div>
+                        <div className="border border-shark-100 rounded-xl px-3.5 py-2.5">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className="w-2 h-2 rounded-full" style={{ background: "#E8532E" }} />
+                            <span className="text-xs text-shark-500">Consumables</span>
+                          </div>
+                          <p className="text-xl font-bold text-shark-900">
+                            ${portfolioValue.consumableValue.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Line chart */}
+                      {portfolioChartData && portfolioChartData.length > 0 && (
+                        <div className="h-48">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={portfolioChartData} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
+                              <defs>
+                                <linearGradient id="gradAssets" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#1F3DD9" stopOpacity={0.12} />
+                                  <stop offset="100%" stopColor="#1F3DD9" stopOpacity={0.01} />
+                                </linearGradient>
+                                <linearGradient id="gradConsumables" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#E8532E" stopOpacity={0.12} />
+                                  <stop offset="100%" stopColor="#E8532E" stopOpacity={0.01} />
+                                </linearGradient>
+                              </defs>
+                              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7080" }} />
+                              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#8b8f96" }} tickFormatter={(v: number) => v >= 1000 ? `$${(v / 1000).toFixed(0)}k` : `$${v}`} width={45} />
+                              <RechartsTooltip
+                                content={(props: Record<string, unknown>) => {
+                                  const active = props.active as boolean;
+                                  const payload = props.payload as Array<{ value: number; dataKey: string }> | undefined;
+                                  const label = props.label as string;
+                                  if (!active || !payload?.length) return null;
+                                  return (
+                                    <div style={{ background: "#1a1c21", borderRadius: 10, padding: "10px 14px", border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
+                                      <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
+                                      {payload.map((p) => (
+                                        <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: p.dataKey === "assets" ? "#1F3DD9" : "#E8532E" }} />
+                                          <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>
+                                            ${Number(p.value).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
+                                          </span>
+                                          <span style={{ color: "#6b7080", fontSize: 11 }}>
+                                            {p.dataKey === "assets" ? "Assets" : "Consumables"}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  );
+                                }}
+                              />
+                              <Area type="monotone" dataKey="assets" stroke="#1F3DD9" strokeWidth={2} fill="url(#gradAssets)" dot={false} activeDot={{ r: 4, fill: "#1F3DD9", stroke: "#fff", strokeWidth: 2 }} />
+                              <Area type="monotone" dataKey="consumables" stroke="#E8532E" strokeWidth={2} fill="url(#gradConsumables)" dot={false} activeDot={{ r: 4, fill: "#E8532E", stroke: "#fff", strokeWidth: 2 }} />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </div>
+                      )}
+
+                      {/* Total */}
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-shark-100">
+                        <span className="text-xs font-medium text-shark-500">Total Portfolio</span>
+                        <span className="text-lg font-bold text-shark-900">
+                          ${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
+                        </span>
+                      </div>
+                    </div>
+                  </Card>
+                )}
               </div>
             ) : null;
 

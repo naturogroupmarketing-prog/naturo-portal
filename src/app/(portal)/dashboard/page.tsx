@@ -408,35 +408,55 @@ export default async function DashboardPage() {
   });
   const totalConsumableValue = consumablesWithCost.reduce((sum, c) => sum + (c.unitCost || 0) * c.quantityOnHand, 0);
 
-  // Portfolio chart data — 6-month trend using depreciation formula + staff count
+  // Portfolio chart data — 6-month trend (assets vs consumables value)
   const now = new Date();
-  const allUsers = await db.user.findMany({
-    where: { organizationId: session.user.organizationId!, isActive: true, role: "STAFF" },
-    select: { createdAt: true },
-  });
-  const portfolioChartData: { month: string; assets: number; consumables: number; staff: number }[] = [];
+  const portfolioChartData: { month: string; assets: number; consumables: number }[] = [];
+
+  // Activity bar chart data — damaged, lost, staff per month
+  const [allStaff, damageReportsAll] = await Promise.all([
+    db.user.findMany({
+      where: { organizationId: session.user.organizationId!, isActive: true, role: "STAFF" },
+      select: { createdAt: true },
+    }),
+    db.damageReport.findMany({
+      where: { organizationId: session.user.organizationId! },
+      select: { type: true, createdAt: true },
+    }),
+  ]);
+
+  const activityChartData: { month: string; damaged: number; lost: number; staff: number }[] = [];
+
   for (let i = 5; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const monthLabel = d.toLocaleDateString("en-AU", { month: "short" });
+    const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
     const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
 
-    // Calculate asset value at this month-end
+    // Portfolio: asset value at this month-end
     const assetVal = assetsWithCost.reduce((sum, a) => {
       const cost = a.purchaseCost || 0;
       const rate = a.depreciationRate || 10;
       const purchaseDate = a.purchaseDate ? new Date(a.purchaseDate) : new Date();
-      if (purchaseDate > monthEnd) return sum; // not yet purchased
+      if (purchaseDate > monthEnd) return sum;
       const yearsOwned = (monthEnd.getTime() - purchaseDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
       return sum + Math.max(0, cost * Math.pow(1 - rate / 100, yearsOwned));
     }, 0);
-
-    // Staff count at this month-end
-    const staffCount = allUsers.filter((u) => new Date(u.createdAt) <= monthEnd).length;
 
     portfolioChartData.push({
       month: monthLabel,
       assets: Math.round(assetVal),
       consumables: Math.round(totalConsumableValue),
+    });
+
+    // Activity: damage/loss reports this month + staff count
+    const monthDamaged = damageReportsAll.filter((r) => r.type === "DAMAGE" && r.createdAt >= monthStart && r.createdAt <= monthEnd).length;
+    const monthLost = damageReportsAll.filter((r) => r.type === "LOSS" && r.createdAt >= monthStart && r.createdAt <= monthEnd).length;
+    const staffCount = allStaff.filter((u) => new Date(u.createdAt) <= monthEnd).length;
+
+    activityChartData.push({
+      month: monthLabel,
+      damaged: monthDamaged,
+      lost: monthLost,
       staff: staffCount,
     });
   }
@@ -484,6 +504,7 @@ export default async function DashboardPage() {
       consumableCategoryChart={consumableCategoryChart}
       portfolioValue={isSuperAdmin ? { purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100, consumableValue: Math.round(totalConsumableValue * 100) / 100 } : undefined}
       portfolioChartData={isSuperAdmin ? portfolioChartData : undefined}
+      activityChartData={isSuperAdmin ? activityChartData : undefined}
       upcomingMaintenance={upcomingMaintenance}
       isSuperAdmin={isSuperAdmin}
     />
