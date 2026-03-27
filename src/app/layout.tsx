@@ -5,7 +5,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
-const exo = Exo({ subsets: ["latin"], variable: "--font-exo", weight: ["600", "700", "800"] });
+const exo = Exo({ subsets: ["latin"], variable: "--font-exo", weight: ["300", "400", "500", "600", "700", "800"] });
 
 export const metadata: Metadata = {
   title: "Trackio",
