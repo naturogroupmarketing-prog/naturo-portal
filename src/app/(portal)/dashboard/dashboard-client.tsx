@@ -138,19 +138,20 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         switch (sectionId) {
           case "stats":
             return visibleStats.length > 0 ? (
-              <div key="stats" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div key="stats" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {visibleStats.map((s) => (
                   <Link key={s.label} href={s.href} className="block group">
-                    <Card className={`border-l-4 ${s.borderColor} hover:shadow-md transition-all duration-200 cursor-pointer hover:border-shark-200`}>
-                      <CardContent className="py-4 px-4">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <p className="text-2xl font-bold text-shark-900">{s.value}</p>
-                            <p className="text-xs text-shark-400 mt-1">{s.label}</p>
+                    <Card className={`border-t-[3px] ${s.borderColor} hover:shadow-md transition-all duration-200 cursor-pointer`}>
+                      <CardContent className="py-4 px-5">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                            <Icon name={s.icon} size={22} className={s.iconColor} />
                           </div>
-                          <div className={`w-8 h-8 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform`}>
-                            <Icon name={s.icon} size={16} className={s.iconColor} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-shark-400">{s.label}</p>
+                            <p className="text-2xl font-bold text-shark-900">{s.value.toLocaleString()}</p>
                           </div>
+                          <Icon name="arrow-right" size={18} className="text-shark-300 group-hover:text-action-500 transition-colors flex-shrink-0" />
                         </div>
                       </CardContent>
                     </Card>
