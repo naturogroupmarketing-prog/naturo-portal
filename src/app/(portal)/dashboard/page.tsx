@@ -408,6 +408,31 @@ export default async function DashboardPage() {
   });
   const totalConsumableValue = consumablesWithCost.reduce((sum, c) => sum + (c.unitCost || 0) * c.quantityOnHand, 0);
 
+  // Portfolio chart data — 6-month trend using depreciation formula
+  const now = new Date();
+  const portfolioChartData: { month: string; assets: number; consumables: number }[] = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthLabel = d.toLocaleDateString("en-AU", { month: "short" });
+    const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+
+    // Calculate asset value at this month-end
+    const assetVal = assetsWithCost.reduce((sum, a) => {
+      const cost = a.purchaseCost || 0;
+      const rate = a.depreciationRate || 10;
+      const purchaseDate = a.purchaseDate ? new Date(a.purchaseDate) : new Date();
+      if (purchaseDate > monthEnd) return sum; // not yet purchased
+      const yearsOwned = (monthEnd.getTime() - purchaseDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
+      return sum + Math.max(0, cost * Math.pow(1 - rate / 100, yearsOwned));
+    }, 0);
+
+    portfolioChartData.push({
+      month: monthLabel,
+      assets: Math.round(assetVal),
+      consumables: Math.round(totalConsumableValue), // constant (no historical data)
+    });
+  }
+
   // Upcoming maintenance count
   const upcomingMaintenance = await db.maintenanceSchedule.count({
     where: {
@@ -450,6 +475,7 @@ export default async function DashboardPage() {
       consumableStatusChart={consumableStatusChart}
       consumableCategoryChart={consumableCategoryChart}
       portfolioValue={isSuperAdmin ? { purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100, consumableValue: Math.round(totalConsumableValue * 100) / 100 } : undefined}
+      portfolioChartData={isSuperAdmin ? portfolioChartData : undefined}
       upcomingMaintenance={upcomingMaintenance}
       isSuperAdmin={isSuperAdmin}
     />

@@ -4,9 +4,18 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/ui/icon";
+import dynamic from "next/dynamic";
 import { DashboardSettingsModal } from "./dashboard-settings-modal";
 import { removeCustomShortcut } from "@/app/actions/dashboard";
 import type { DashboardPreferences } from "@/lib/dashboard-types";
+
+// Lazy-load recharts components
+const AreaChart = dynamic(() => import("recharts").then((m) => m.AreaChart), { ssr: false });
+const Area = dynamic(() => import("recharts").then((m) => m.Area), { ssr: false });
+const XAxis = dynamic(() => import("recharts").then((m) => m.XAxis), { ssr: false });
+const YAxis = dynamic(() => import("recharts").then((m) => m.YAxis), { ssr: false });
+const RechartsTooltip = dynamic(() => import("recharts").then((m) => m.Tooltip), { ssr: false });
+const ResponsiveContainer = dynamic(() => import("recharts").then((m) => m.ResponsiveContainer), { ssr: false });
 
 interface StatCard {
   widgetId: string;
@@ -76,11 +85,12 @@ interface Props {
   consumableStatusChart?: ChartItem[];
   consumableCategoryChart?: ChartItem[];
   portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
+  portfolioChartData?: { month: string; assets: number; consumables: number }[];
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, upcomingMaintenance, isSuperAdmin }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, upcomingMaintenance, isSuperAdmin }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -149,34 +159,127 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "portfolio":
             return isSuperAdmin && showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) ? (
               <div key="portfolio">
-                <h2 className="text-sm font-semibold text-shark-500 uppercase tracking-wider mb-3">Portfolio Valuation</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Card>
-                    <CardContent className="pt-5">
-                      <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Asset Purchase Value</p>
-                      <p className="text-2xl font-bold text-shark-900 mt-1">${portfolioValue.purchase.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-5">
-                      <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Asset Current Value</p>
-                      <p className="text-2xl font-bold text-emerald-600 mt-1">${portfolioValue.current.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                      <p className="text-xs text-shark-400 mt-1">Depreciation: ${portfolioValue.depreciation.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-5">
-                      <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Consumable Stock Value</p>
-                      <p className="text-2xl font-bold text-blue-600 mt-1">${portfolioValue.consumableValue.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-5">
-                      <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Total Portfolio</p>
-                      <p className="text-2xl font-bold text-action-500 mt-1">${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                    </CardContent>
-                  </Card>
-                </div>
+                <Card>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <h2 className="text-lg font-bold text-shark-900">Portfolio Valuation</h2>
+                        <p className="text-sm text-shark-400">Assets &amp; Consumables</p>
+                      </div>
+                    </div>
+
+                    {/* Summary cards like Edaly Expenses/Income */}
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div className="border border-shark-100 rounded-xl px-4 py-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#1F3DD9" }} />
+                          <span className="text-sm text-shark-500">Assets</span>
+                        </div>
+                        <p className="text-2xl font-bold text-shark-900">
+                          ${portfolioValue.current.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                        </p>
+                        {portfolioValue.depreciation > 0 && (
+                          <span className="text-xs text-[#E8532E] font-medium">
+                            ↓ ${portfolioValue.depreciation.toLocaleString("en-AU", { maximumFractionDigits: 0 })} depreciation
+                          </span>
+                        )}
+                      </div>
+                      <div className="border border-shark-100 rounded-xl px-4 py-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#E8532E" }} />
+                          <span className="text-sm text-shark-500">Consumables</span>
+                        </div>
+                        <p className="text-2xl font-bold text-shark-900">
+                          ${portfolioValue.consumableValue.toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                        </p>
+                        <span className="text-xs text-shark-400">Stock value</span>
+                      </div>
+                    </div>
+
+                    {/* Chart */}
+                    {portfolioChartData && portfolioChartData.length > 0 && (
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={portfolioChartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+                            <defs>
+                              <linearGradient id="gradAssets" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#1F3DD9" stopOpacity={0.15} />
+                                <stop offset="100%" stopColor="#1F3DD9" stopOpacity={0.02} />
+                              </linearGradient>
+                              <linearGradient id="gradConsumables" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#E8532E" stopOpacity={0.15} />
+                                <stop offset="100%" stopColor="#E8532E" stopOpacity={0.02} />
+                              </linearGradient>
+                            </defs>
+                            <XAxis
+                              dataKey="month"
+                              axisLine={false}
+                              tickLine={false}
+                              tick={{ fontSize: 12, fill: "#6b7080" }}
+                            />
+                            <YAxis
+                              axisLine={false}
+                              tickLine={false}
+                              tick={{ fontSize: 11, fill: "#8b8f96" }}
+                              tickFormatter={(v: number) => v >= 1000 ? `$${(v / 1000).toFixed(0)}k` : `$${v}`}
+                              width={50}
+                            />
+                            <RechartsTooltip
+                              content={(props: Record<string, unknown>) => {
+                                const active = props.active as boolean;
+                                const payload = props.payload as Array<{ value: number; dataKey: string }> | undefined;
+                                const label = props.label as string;
+                                if (!active || !payload?.length) return null;
+                                return (
+                                  <div style={{ background: "#1a1c21", borderRadius: 10, padding: "10px 14px", border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
+                                    <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
+                                    {payload.map((p) => (
+                                      <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                                        <span style={{ width: 8, height: 8, borderRadius: "50%", background: p.dataKey === "assets" ? "#1F3DD9" : "#E8532E" }} />
+                                        <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>
+                                          ${Number(p.value).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
+                                        </span>
+                                        <span style={{ color: "#6b7080", fontSize: 11 }}>
+                                          {p.dataKey === "assets" ? "Assets" : "Consumables"}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                );
+                              }}
+                            />
+                            <Area
+                              type="monotone"
+                              dataKey="assets"
+                              stroke="#1F3DD9"
+                              strokeWidth={2.5}
+                              fill="url(#gradAssets)"
+                              dot={false}
+                              activeDot={{ r: 5, fill: "#1F3DD9", stroke: "#ffffff", strokeWidth: 2 }}
+                            />
+                            <Area
+                              type="monotone"
+                              dataKey="consumables"
+                              stroke="#E8532E"
+                              strokeWidth={2.5}
+                              fill="url(#gradConsumables)"
+                              dot={false}
+                              activeDot={{ r: 5, fill: "#E8532E", stroke: "#ffffff", strokeWidth: 2 }}
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )}
+
+                    {/* Total */}
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-shark-100">
+                      <span className="text-sm font-medium text-shark-500">Total Portfolio</span>
+                      <span className="text-xl font-bold text-shark-900">
+                        ${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
               </div>
             ) : null;
 
