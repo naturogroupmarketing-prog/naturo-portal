@@ -10,6 +10,7 @@ import { Role } from "@/generated/prisma/browser";
 interface SidebarProps {
   role: Role;
   onClose?: () => void;
+  pendingPOCount?: number;
 }
 
 interface NavItem {
@@ -89,7 +90,7 @@ const navSections: NavSection[] = [
   },
 ];
 
-export function Sidebar({ role, onClose }: SidebarProps) {
+export function Sidebar({ role, onClose, pendingPOCount = 0 }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -139,7 +140,12 @@ export function Sidebar({ role, onClose }: SidebarProps) {
                         style={active ? { backgroundColor: "#1F3DD9" } : undefined}
                       >
                         <Icon name={item.icon} size={18} className={active ? "text-white" : "text-shark-400"} />
-                        {item.label}
+                        <span className="flex-1">{item.label}</span>
+                        {item.href === "/purchase-orders" && pendingPOCount > 0 && (
+                          <span className="min-w-[20px] h-5 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1.5">
+                            {pendingPOCount}
+                          </span>
+                        )}
                       </Link>
                     );
                   })}
