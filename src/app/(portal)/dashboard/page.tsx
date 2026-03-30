@@ -413,10 +413,10 @@ export default async function DashboardPage() {
     return sum + currentValue;
   }, 0);
 
-  // Consumable stock valuation
+  // Consumable stock valuation (with createdAt for historical chart)
   const consumablesWithCost = await db.consumable.findMany({
     where: { ...regionFilter, isActive: true, unitCost: { not: null } },
-    select: { unitCost: true, quantityOnHand: true },
+    select: { unitCost: true, quantityOnHand: true, createdAt: true },
   });
   const totalConsumableValue = consumablesWithCost.reduce((sum, c) => sum + (c.unitCost || 0) * c.quantityOnHand, 0);
 
@@ -457,10 +457,16 @@ export default async function DashboardPage() {
       assetVal += Math.max(0, cost * Math.pow(1 - rate / 100, yearsOwned));
     }
 
+    // Consumable value at this month-end — only include items that existed by then
+    const consumableVal = consumablesWithCost.reduce((sum, c) => {
+      if (new Date(c.createdAt) > monthEnd) return sum;
+      return sum + (c.unitCost || 0) * c.quantityOnHand;
+    }, 0);
+
     portfolioChartData.push({
       month: monthLabel,
       assets: Math.round(assetVal),
-      consumables: Math.round(totalConsumableValue),
+      consumables: Math.round(consumableVal),
       depreciation: Math.round(purchaseTotal - assetVal),
     });
 
