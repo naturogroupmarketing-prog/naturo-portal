@@ -1276,34 +1276,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <Modal open={!!editConsumable} onClose={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }} title={`Edit: ${editConsumable?.name}`}>
         {editConsumable && (
           <form
-            action={async (fd: FormData) => {
-              setEditSaving(true);
-              try {
-                // Compress and set image if selected
-                if (editImageFile) {
-                  try {
-                    const compressed = await compressImage(editImageFile);
-                    fd.set("imageUrl", compressed);
-                  } catch {
-                    addToast("Failed to process image", "error");
-                    setEditSaving(false);
-                    return;
-                  }
-                } else if (editImageRemoved) {
-                  fd.set("imageUrl", "");
-                }
-                await updateConsumable(fd);
-                addToast("Consumable updated successfully", "success");
-                setEditConsumable(null);
-                setEditImagePreview(null);
-                setEditImageFile(null);
-                setEditImageRemoved(false);
-              } catch (e) {
-                addToast(e instanceof Error ? e.message : "Failed to update consumable", "error");
-              } finally {
-                setEditSaving(false);
-              }
-            }}
+            id="edit-consumable-form"
             className="space-y-4"
           >
             <input type="hidden" name="consumableId" value={editConsumable.id} />
@@ -1403,7 +1376,36 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }}>Cancel</Button>
-              <Button type="submit" disabled={editSaving} loading={editSaving}>Save Changes</Button>
+              <Button type="button" disabled={editSaving} loading={editSaving} onClick={async () => {
+                const form = document.getElementById("edit-consumable-form") as HTMLFormElement;
+                if (!form) return;
+                setEditSaving(true);
+                try {
+                  const fd = new FormData(form);
+                  if (editImageFile) {
+                    try {
+                      const compressed = await compressImage(editImageFile);
+                      fd.set("imageUrl", compressed);
+                    } catch {
+                      addToast("Failed to process image", "error");
+                      setEditSaving(false);
+                      return;
+                    }
+                  } else if (editImageRemoved) {
+                    fd.set("imageUrl", "");
+                  }
+                  await updateConsumable(fd);
+                  addToast("Consumable updated successfully", "success");
+                  setEditConsumable(null);
+                  setEditImagePreview(null);
+                  setEditImageFile(null);
+                  setEditImageRemoved(false);
+                } catch (e) {
+                  addToast(e instanceof Error ? e.message : "Failed to update consumable", "error");
+                } finally {
+                  setEditSaving(false);
+                }
+              }}>Save Changes</Button>
             </div>
           </form>
         )}
