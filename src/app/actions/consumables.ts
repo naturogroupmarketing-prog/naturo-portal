@@ -76,13 +76,22 @@ export async function updateConsumable(formData: FormData) {
   const name = (formData.get("name") as string)?.trim();
   const category = (formData.get("category") as string)?.trim();
   const unitType = (formData.get("unitType") as string)?.trim();
-  const minimumThreshold = parseInt(formData.get("minimumThreshold") as string) || 5;
-  const reorderLevel = parseInt(formData.get("reorderLevel") as string) || 10;
+  const minimumThresholdRaw = formData.get("minimumThreshold") as string;
+  const reorderLevelRaw = formData.get("reorderLevel") as string;
+  const minimumThreshold = minimumThresholdRaw ? parseInt(minimumThresholdRaw) || 5 : 5;
+  const reorderLevel = reorderLevelRaw ? parseInt(reorderLevelRaw) || 10 : 10;
   const regionId = formData.get("regionId") as string;
   const supplier = (formData.get("supplier") as string)?.trim();
-  const unitCost = formData.get("unitCost") as string;
+  const unitCostRaw = (formData.get("unitCost") as string)?.trim();
   const notes = (formData.get("notes") as string)?.trim();
   const imageUrl = formData.get("imageUrl") as string | null;
+
+  if (!consumableId) throw new Error("Consumable ID is required");
+  if (!name) throw new Error("Name is required");
+  if (!category) throw new Error("Category is required");
+  if (!regionId) throw new Error("Region is required");
+
+  const parsedUnitCost = unitCostRaw && unitCostRaw !== "" ? parseFloat(unitCostRaw) : null;
 
   const consumable = await db.consumable.findUnique({ where: { id: consumableId } });
   if (!consumable) throw new Error("Consumable not found");
@@ -98,17 +107,17 @@ export async function updateConsumable(formData: FormData) {
     }
   }
 
-  const updated = await db.consumable.update({
+  await db.consumable.update({
     where: { id: consumableId },
     data: {
       name,
       category,
-      unitType,
+      unitType: unitType || "units",
       minimumThreshold,
       reorderLevel,
       regionId,
       supplier: supplier || null,
-      unitCost: unitCost ? parseFloat(unitCost) : null,
+      unitCost: parsedUnitCost !== null && !isNaN(parsedUnitCost) ? parsedUnitCost : null,
       notes: notes || null,
       ...(imageUrl !== null ? { imageUrl: imageUrl || null } : {}),
     },
@@ -116,7 +125,7 @@ export async function updateConsumable(formData: FormData) {
 
   await createAuditLog({
     action: "CONSUMABLE_UPDATED",
-    description: `Consumable "${updated.name}" updated`,
+    description: `Consumable "${name}" updated`,
     performedById: session.user.id,
     consumableId,
     organizationId,
