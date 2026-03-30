@@ -99,6 +99,33 @@ interface ConsumablesClientProps {
   initialCategory?: string;
 }
 
+// Compress image client-side to avoid server action body size limit
+function compressImage(file: File, maxDim = 800, quality = 0.7): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Failed to read file"));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Failed to load image"));
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+          else { width = Math.round(width * maxDim / height); height = maxDim; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdjustStock, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
   const { addToast } = useToast();
   const [showCreate, setShowCreate] = useState(false);
@@ -395,12 +422,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     setUploading(true);
     try {
       if (imageFile) {
-        const uploadData = new FormData();
-        uploadData.append("file", imageFile);
-        const res = await fetch("/api/upload", { method: "POST", body: uploadData });
-        if (res.ok) {
-          const { url } = await res.json();
-          fd.set("imageUrl", url);
+        try {
+          const compressed = await compressImage(imageFile);
+          fd.set("imageUrl", compressed);
+        } catch {
+          addToast("Failed to process image", "error");
+          setUploading(false);
+          return;
         }
       }
       await createConsumable(fd);
@@ -1251,14 +1279,15 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             action={async (fd: FormData) => {
               setEditSaving(true);
               try {
-                // Upload new image if selected
+                // Compress and set image if selected
                 if (editImageFile) {
-                  const uploadData = new FormData();
-                  uploadData.append("file", editImageFile);
-                  const res = await fetch("/api/upload", { method: "POST", body: uploadData });
-                  if (res.ok) {
-                    const { url } = await res.json();
-                    fd.set("imageUrl", url);
+                  try {
+                    const compressed = await compressImage(editImageFile);
+                    fd.set("imageUrl", compressed);
+                  } catch {
+                    addToast("Failed to process image", "error");
+                    setEditSaving(false);
+                    return;
                   }
                 } else if (editImageRemoved) {
                   fd.set("imageUrl", "");
