@@ -85,6 +85,7 @@ export async function updateConsumable(formData: FormData) {
   const unitCostRaw = (formData.get("unitCost") as string)?.trim();
   const notes = (formData.get("notes") as string)?.trim();
   const imageUrl = formData.get("imageUrl") as string | null;
+  const quantityRaw = formData.get("quantityOnHand") as string | null;
 
   if (!consumableId) throw new Error("Consumable ID is required");
   if (!name) throw new Error("Name is required");
@@ -107,6 +108,18 @@ export async function updateConsumable(formData: FormData) {
     }
   }
 
+  // Handle stock quantity change (super admin or stockAdjust permission)
+  let stockUpdate: { quantityOnHand?: number } = {};
+  if (quantityRaw !== null && quantityRaw !== "") {
+    const newQty = parseInt(quantityRaw);
+    if (!isNaN(newQty) && newQty >= 0 && newQty !== consumable.quantityOnHand) {
+      const canAdjust = session.user.role === "SUPER_ADMIN" || await hasPermission(session.user.id, session.user.role, "consumableStockAdjust");
+      if (canAdjust) {
+        stockUpdate = { quantityOnHand: newQty };
+      }
+    }
+  }
+
   await db.consumable.update({
     where: { id: consumableId },
     data: {
@@ -120,12 +133,17 @@ export async function updateConsumable(formData: FormData) {
       unitCost: parsedUnitCost !== null && !isNaN(parsedUnitCost) ? parsedUnitCost : null,
       notes: notes || null,
       ...(imageUrl !== null ? { imageUrl: imageUrl || null } : {}),
+      ...stockUpdate,
     },
   });
 
+  const stockChangeNote = stockUpdate.quantityOnHand !== undefined
+    ? ` Stock changed: ${consumable.quantityOnHand} → ${stockUpdate.quantityOnHand}`
+    : "";
+
   await createAuditLog({
     action: "CONSUMABLE_UPDATED",
-    description: `Consumable "${name}" updated`,
+    description: `Consumable "${name}" updated${stockChangeNote}`,
     performedById: session.user.id,
     consumableId,
     organizationId,

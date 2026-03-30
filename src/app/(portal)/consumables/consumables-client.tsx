@@ -1350,6 +1350,14 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 ))}
               </Select>
             </div>
+            {/* Current Stock — Super Admin or users with stock adjust permission */}
+            {(isSuperAdmin || canAdjustStock) && (
+              <div>
+                <label className="block text-sm font-medium text-shark-700 mb-1">Current Stock</label>
+                <Input name="quantityOnHand" type="number" min="0" defaultValue={editConsumable.quantityOnHand} />
+                <p className="text-xs text-shark-400 mt-1">Directly set the stock quantity</p>
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Minimum Threshold</label>
