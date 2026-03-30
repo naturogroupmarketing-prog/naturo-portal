@@ -8,7 +8,8 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
-import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder } from "@/app/actions/purchase-orders";
+import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder } from "@/app/actions/purchase-orders";
+import { useToast } from "@/components/ui/toast";
 import { formatDate } from "@/lib/utils";
 
 const SECTION_COLORS = [
@@ -43,11 +44,23 @@ type Region = {
   state: { name: string };
 };
 
-const TABS = ["All", "Pending", "Approved", "Ordered", "Rejected"] as const;
+const TABS = ["All", "Pending", "Approved", "Ordered", "Received", "Rejected"] as const;
+
+type ConsumableOption = {
+  id: string;
+  name: string;
+  category: string;
+  unitType: string;
+  supplier: string | null;
+  regionId: string;
+  quantityOnHand: number;
+  minimumThreshold: number;
+};
 
 interface Props {
   purchaseOrders: PurchaseOrder[];
   regions: Region[];
+  consumables?: ConsumableOption[];
   isSuperAdmin: boolean;
   canManagePO: boolean;
   initialStatus?: string;
@@ -56,11 +69,12 @@ interface Props {
 
 function mapStatusToTab(status?: string): string {
   if (!status) return "All";
-  const map: Record<string, string> = { PENDING: "Pending", APPROVED: "Approved", ORDERED: "Ordered", REJECTED: "Rejected" };
+  const map: Record<string, string> = { PENDING: "Pending", APPROVED: "Approved", ORDERED: "Ordered", RECEIVED: "Received", REJECTED: "Rejected" };
   return map[status.toUpperCase()] || "All";
 }
 
-export function PurchaseOrdersClient({ purchaseOrders, regions, isSuperAdmin, canManagePO, initialStatus, initialRegion }: Props) {
+export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, initialStatus, initialRegion }: Props) {
+  const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<string>(mapStatusToTab(initialStatus));
   const [search, setSearch] = useState("");
   const [regionFilter, setRegionFilter] = useState(initialRegion || "ALL");
@@ -68,6 +82,8 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, isSuperAdmin, ca
   const [loading, setLoading] = useState<string | null>(null);
   const [viewOrder, setViewOrder] = useState<PurchaseOrder | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [creating, setCreating] = useState(false);
 
   const toggleSection = (key: string) => {
     setCollapsedSections((prev) => {
@@ -103,6 +119,11 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, isSuperAdmin, ca
         const fd = new FormData();
         fd.set("purchaseOrderId", purchaseOrderId);
         await markPurchaseOrderOrdered(fd);
+      } else if (action === "received") {
+        const fd = new FormData();
+        fd.set("purchaseOrderId", purchaseOrderId);
+        await receivePurchaseOrder(fd);
+        addToast("PO received — stock updated", "success");
       } else {
         const fd = new FormData();
         fd.set("purchaseOrderId", purchaseOrderId);
@@ -189,6 +210,15 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, isSuperAdmin, ca
                           {loading === po.id + "ordered" ? "..." : "Mark Ordered"}
                         </Button>
                       )}
+                      {po.status === "ORDERED" && (
+                        <Button
+                          size="sm"
+                          onClick={() => handleAction(po.id, "received")}
+                          disabled={loading === po.id + "received"}
+                        >
+                          {loading === po.id + "received" ? "..." : "Mark Received"}
+                        </Button>
+                      )}
                     </div>
                   ) : (
                     <span className="text-xs text-shark-400">View only</span>
@@ -221,6 +251,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, isSuperAdmin, ca
             {pendingCount > 0 && ` · ${pendingCount} pending`}
           </p>
         </div>
+        {canManagePO && (
+          <Button onClick={() => setShowCreate(true)}>
+            <Icon name="plus" size={14} className="mr-1.5" />
+            Create Order
+          </Button>
+        )}
       </div>
 
       {/* Tabs */}
@@ -461,6 +497,54 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, isSuperAdmin, ca
           )}
         </Modal>
       )}
+
+      {/* Create PO Modal */}
+      <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Purchase Order">
+        <form id="create-po-form" className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Consumable *</label>
+            <Select name="consumableId" required>
+              <option value="">Select consumable</option>
+              {consumables.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} ({c.category}) — {c.quantityOnHand} {c.unitType} in stock
+                  {c.quantityOnHand <= c.minimumThreshold ? " ⚠ LOW" : ""}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Quantity *</label>
+            <Input name="quantity" type="number" min="1" required placeholder="e.g. 50" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
+            <Input name="supplier" placeholder="Leave blank to use default" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
+            <textarea name="notes" placeholder="Optional notes..." className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+          </div>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
+            <Button type="button" disabled={creating} loading={creating} onClick={async () => {
+              const form = document.getElementById("create-po-form") as HTMLFormElement;
+              if (!form) return;
+              setCreating(true);
+              try {
+                const fd = new FormData(form);
+                await createPurchaseOrder(fd);
+                addToast("Purchase order created", "success");
+                setShowCreate(false);
+              } catch (e) {
+                addToast(e instanceof Error ? e.message : "Failed to create order", "error");
+              } finally {
+                setCreating(false);
+              }
+            }}>Create Order</Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

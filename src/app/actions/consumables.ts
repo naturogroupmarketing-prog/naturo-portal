@@ -222,7 +222,7 @@ export async function deductStock(formData: FormData) {
     throw new Error(`Cannot deduct ${quantity} — only ${consumable.quantityOnHand} ${consumable.unitType} in stock`);
   }
 
-  await db.consumable.update({
+  const updated = await db.consumable.update({
     where: { id: consumableId },
     data: { quantityOnHand: { decrement: quantity } },
   });
@@ -234,6 +234,12 @@ export async function deductStock(formData: FormData) {
     consumableId,
     organizationId,
     metadata: { quantity, previousQty: consumable.quantityOnHand, reason },
+  });
+
+  // Trigger low stock alert + auto-PO if below threshold
+  await handleLowStockAlert({
+    consumableId,
+    performedById: session.user.id,
   });
 
   revalidatePath("/consumables");
