@@ -149,6 +149,11 @@ export async function updateConsumable(formData: FormData) {
     organizationId,
   });
 
+  // Check low stock if stock was edited downward
+  if (stockUpdate.quantityOnHand !== undefined && stockUpdate.quantityOnHand < consumable.quantityOnHand) {
+    await handleLowStockAlert({ consumableId, performedById: session.user.id });
+  }
+
   revalidatePath("/consumables");
   revalidatePath("/dashboard");
 }

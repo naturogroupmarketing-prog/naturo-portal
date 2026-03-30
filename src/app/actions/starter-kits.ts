@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { hasPermission } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { notifyAdminsAndManagers } from "@/lib/notifications";
+import { handleLowStockAlert } from "@/lib/low-stock-handler";
 import { revalidatePath } from "next/cache";
 
 export async function getStarterKits() {
@@ -394,6 +395,8 @@ export async function acknowledgeConsumableItem(assignmentId: string) {
   // Check if all items in this application are now acknowledged
   if (assignment.starterKitApplicationId) {
     await checkApplicationComplete(assignment.starterKitApplicationId);
+    // Check low stock after deduction
+    await handleLowStockAlert({ consumableId: assignment.consumableId, performedById: session.user.id });
   }
 
   revalidatePath("/my-consumables");
@@ -569,6 +572,7 @@ export async function batchConfirmKitReceipt(
         where: { id: assignment.consumableId },
         data: { quantityOnHand: { decrement: assignment.quantity } },
       });
+      await handleLowStockAlert({ consumableId: assignment.consumableId, performedById: session.user.id });
     }
   }
 
