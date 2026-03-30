@@ -1248,9 +1248,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <Modal open={!!editConsumable} onClose={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }} title={`Edit: ${editConsumable?.name}`}>
         {editConsumable && (
           <form
-            action={async (fd) => {
+            onSubmit={async (e) => {
+              e.preventDefault();
               setEditSaving(true);
               try {
+                const fd = new FormData(e.currentTarget);
+                fd.set("consumableId", editConsumable.id);
                 // Upload new image if selected
                 if (editImageFile) {
                   const uploadData = new FormData();
@@ -1264,18 +1267,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   // User explicitly clicked "Remove Photo"
                   fd.set("imageUrl", "");
                 }
-                const result = await updateConsumable(fd);
-                if (result && typeof result === "object" && "error" in result) {
-                  addToast((result as { error: string }).error, "error");
-                  return;
-                }
+                await updateConsumable(fd);
                 addToast("Consumable updated successfully", "success");
                 setEditConsumable(null);
                 setEditImagePreview(null);
                 setEditImageFile(null);
                 setEditImageRemoved(false);
               } catch (e) {
-                console.error("Update consumable error:", e);
                 addToast(e instanceof Error ? e.message : "Failed to update consumable", "error");
               } finally {
                 setEditSaving(false);
