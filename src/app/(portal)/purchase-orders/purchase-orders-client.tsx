@@ -63,6 +63,7 @@ interface Props {
   consumables?: ConsumableOption[];
   isSuperAdmin: boolean;
   canManagePO: boolean;
+  canApprovePO?: boolean;
   initialStatus?: string;
   initialRegion?: string;
 }
@@ -73,7 +74,7 @@ function mapStatusToTab(status?: string): string {
   return map[status.toUpperCase()] || "All";
 }
 
-export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, initialStatus, initialRegion }: Props) {
+export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, initialStatus, initialRegion }: Props) {
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<string>(mapStatusToTab(initialStatus));
   const [search, setSearch] = useState("");
@@ -182,7 +183,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
                   {canManagePO ? (
                     <div className="flex gap-1.5">
-                      {po.status === "PENDING" && (
+                      {po.status === "PENDING" && canApprovePO && (
                         <>
                           <Button
                             size="sm"
@@ -201,7 +202,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                           </Button>
                         </>
                       )}
-                      {po.status === "APPROVED" && (
+                      {po.status === "APPROVED" && canApprovePO && (
                         <Button
                           size="sm"
                           onClick={() => handleAction(po.id, "ordered")}
@@ -210,7 +211,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                           {loading === po.id + "ordered" ? "..." : "Mark Ordered"}
                         </Button>
                       )}
-                      {po.status === "ORDERED" && (
+                      {po.status === "ORDERED" && canManagePO && (
                         <Button
                           size="sm"
                           onClick={() => handleAction(po.id, "received")}

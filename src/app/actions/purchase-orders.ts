@@ -9,8 +9,10 @@ import type { PurchaseOrderStatus } from "@/generated/prisma/client";
 
 export async function approvePurchaseOrder(formData: FormData) {
   const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "purchaseOrderManage"))) {
-    throw new Error("Unauthorized");
+  // Super admin can always approve; branch managers need purchaseOrderApprove permission
+  const canApprove = session?.user?.role === "SUPER_ADMIN" || (session?.user && await hasPermission(session.user.id, session.user.role, "purchaseOrderApprove"));
+  if (!canApprove) {
+    throw new Error("Unauthorized — only super admins or managers with approve permission can approve/reject orders");
   }
 
   const organizationId = session.user.organizationId;
@@ -143,8 +145,9 @@ export async function updatePurchaseOrder(formData: FormData) {
 
 export async function markPurchaseOrderOrdered(formData: FormData) {
   const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "purchaseOrderManage"))) {
-    throw new Error("Unauthorized");
+  const canOrder = session?.user?.role === "SUPER_ADMIN" || (session?.user && await hasPermission(session.user.id, session.user.role, "purchaseOrderApprove"));
+  if (!canOrder) {
+    throw new Error("Unauthorized — only super admins or managers with approve permission can mark orders");
   }
 
   const organizationId = session.user.organizationId;

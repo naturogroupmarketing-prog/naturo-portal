@@ -16,6 +16,7 @@ export type PermissionKey =
   | "consumableStockAdjust"
   // Features
   | "purchaseOrderManage"
+  | "purchaseOrderApprove"
   | "maintenanceManage"
   | "starterKitsManage"
   | "returnsVerify"
@@ -43,6 +44,7 @@ export const MANAGER_DEFAULTS: Record<PermissionKey, boolean> = {
   consumableDelete: true,
   consumableStockAdjust: false,
   purchaseOrderManage: false,
+  purchaseOrderApprove: false,
   maintenanceManage: true,
   starterKitsManage: false,
   returnsVerify: true,
@@ -68,7 +70,8 @@ export const PERMISSION_INFO: Record<PermissionKey, { label: string; description
   consumableEdit: { label: "Edit Consumables", description: "Modify consumable details and stock", group: "Consumables" },
   consumableDelete: { label: "Delete Consumables", description: "Remove consumable items", group: "Consumables" },
   consumableStockAdjust: { label: "Adjust Stock", description: "Add and deduct consumable stock quantities", group: "Consumables" },
-  purchaseOrderManage: { label: "Purchase Orders", description: "Create, approve, and manage POs", group: "Features" },
+  purchaseOrderManage: { label: "Purchase Orders", description: "View, create, and mark POs as received", group: "Features" },
+  purchaseOrderApprove: { label: "Approve Orders", description: "Approve, reject, and mark POs as ordered", group: "Features" },
   maintenanceManage: { label: "Maintenance", description: "Schedule and complete maintenance tasks", group: "Features" },
   starterKitsManage: { label: "Starter Kits", description: "Create and manage starter kits", group: "Features" },
   returnsVerify: { label: "Verify Returns", description: "Confirm returned items and restock", group: "Features" },
