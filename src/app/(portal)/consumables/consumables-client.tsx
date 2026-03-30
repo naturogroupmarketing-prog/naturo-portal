@@ -1248,12 +1248,9 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <Modal open={!!editConsumable} onClose={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }} title={`Edit: ${editConsumable?.name}`}>
         {editConsumable && (
           <form
-            onSubmit={async (e) => {
-              e.preventDefault();
+            action={async (fd: FormData) => {
               setEditSaving(true);
               try {
-                const fd = new FormData(e.currentTarget);
-                fd.set("consumableId", editConsumable.id);
                 // Upload new image if selected
                 if (editImageFile) {
                   const uploadData = new FormData();
@@ -1264,7 +1261,6 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     fd.set("imageUrl", url);
                   }
                 } else if (editImageRemoved) {
-                  // User explicitly clicked "Remove Photo"
                   fd.set("imageUrl", "");
                 }
                 await updateConsumable(fd);
