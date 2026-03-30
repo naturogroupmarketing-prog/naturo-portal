@@ -64,9 +64,10 @@ export async function createConsumable(formData: FormData) {
 }
 
 export async function updateConsumable(formData: FormData) {
+  try {
   const session = await auth();
   if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableEdit"))) {
-    throw new Error("Unauthorized");
+    return { error: "Unauthorized" };
   }
 
   const organizationId = session.user.organizationId;
@@ -86,24 +87,24 @@ export async function updateConsumable(formData: FormData) {
   const notes = (formData.get("notes") as string)?.trim();
   const imageUrl = formData.get("imageUrl") as string | null;
 
-  if (!consumableId) throw new Error("Consumable ID is required");
-  if (!name) throw new Error("Name is required");
-  if (!category) throw new Error("Category is required");
-  if (!regionId) throw new Error("Region is required");
+  if (!consumableId) return { error: "Consumable ID is required" };
+  if (!name) return { error: "Name is required" };
+  if (!category) return { error: "Category is required" };
+  if (!regionId) return { error: "Region is required" };
 
   const parsedUnitCost = unitCostRaw && unitCostRaw !== "" ? parseFloat(unitCostRaw) : null;
 
   const consumable = await db.consumable.findUnique({ where: { id: consumableId } });
-  if (!consumable) throw new Error("Consumable not found");
-  if (consumable.organizationId !== organizationId) throw new Error("Consumable not found");
+  if (!consumable) return { error: "Consumable not found" };
+  if (consumable.organizationId !== organizationId) return { error: "Consumable not found" };
 
   if (!canManageRegion(session.user.role, session.user.regionId, consumable.regionId)) {
-    throw new Error("Cannot manage this region");
+    return { error: "Cannot manage this region" };
   }
 
   if (regionId !== consumable.regionId) {
     if (!canManageRegion(session.user.role, session.user.regionId, regionId)) {
-      throw new Error("Cannot manage target region");
+      return { error: "Cannot manage target region" };
     }
   }
 
@@ -134,6 +135,10 @@ export async function updateConsumable(formData: FormData) {
   revalidatePath("/consumables");
   revalidatePath("/dashboard");
   return { success: true };
+  } catch (e) {
+    console.error("updateConsumable error:", e);
+    return { error: e instanceof Error ? e.message : "Failed to update consumable" };
+  }
 }
 
 export async function addStock(formData: FormData) {

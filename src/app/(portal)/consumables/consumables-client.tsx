@@ -1264,13 +1264,19 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   // User explicitly clicked "Remove Photo"
                   fd.set("imageUrl", "");
                 }
-                await updateConsumable(fd);
+                const result = await updateConsumable(fd);
+                if (result && typeof result === "object" && "error" in result) {
+                  addToast((result as { error: string }).error, "error");
+                  return;
+                }
                 addToast("Consumable updated successfully", "success");
                 setEditConsumable(null);
                 setEditImagePreview(null);
                 setEditImageFile(null);
+                setEditImageRemoved(false);
               } catch (e) {
-                addToast(e instanceof Error ? e.message : "Failed to update", "error");
+                console.error("Update consumable error:", e);
+                addToast(e instanceof Error ? e.message : "Failed to update consumable", "error");
               } finally {
                 setEditSaving(false);
               }
