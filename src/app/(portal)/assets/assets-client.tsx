@@ -168,14 +168,17 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
 
-  // Column visibility state
-  const [visibleColumns, setVisibleColumns] = useState({
-    photo: true,
-    code: true,
-    name: true,
-    location: true,
-    status: true,
-    assignedTo: true,
+  // Column visibility state — persisted to localStorage
+  const ASSET_COLS_KEY = "trackio-asset-columns";
+  type AssetCols = { photo: boolean; code: boolean; name: boolean; location: boolean; status: boolean; assignedTo: boolean };
+  const defaultAssetCols: AssetCols = { photo: true, code: true, name: true, location: true, status: true, assignedTo: true };
+  const [visibleColumns, setVisibleColumns] = useState<AssetCols>(() => {
+    if (typeof window === "undefined") return defaultAssetCols;
+    try {
+      const saved = localStorage.getItem(ASSET_COLS_KEY);
+      if (saved) return { ...defaultAssetCols, ...JSON.parse(saved) };
+    } catch {}
+    return defaultAssetCols;
   });
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const columnMenuRef = useRef<HTMLDivElement>(null);
@@ -192,7 +195,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   }, [showColumnMenu]);
 
   const toggleColumn = (col: keyof typeof visibleColumns) => {
-    setVisibleColumns((prev) => ({ ...prev, [col]: !prev[col] }));
+    setVisibleColumns((prev) => {
+      const next = { ...prev, [col]: !prev[col] };
+      try { localStorage.setItem(ASSET_COLS_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
   };
 
   // Drag and drop state for sections

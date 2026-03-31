@@ -188,13 +188,17 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const [suggestingCategory, setSuggestingCategory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Column visibility state
-  const [visibleColumns, setVisibleColumns] = useState({
-    photo: true,
-    item: true,
-    location: true,
-    qty: true,
-    assignedTo: true,
+  // Column visibility state — persisted to localStorage
+  const CONSUMABLE_COLS_KEY = "trackio-consumable-columns";
+  type ConsumableCols = { photo: boolean; item: boolean; location: boolean; qty: boolean; assignedTo: boolean };
+  const defaultConsumableCols: ConsumableCols = { photo: true, item: true, location: true, qty: true, assignedTo: true };
+  const [visibleColumns, setVisibleColumns] = useState<ConsumableCols>(() => {
+    if (typeof window === "undefined") return defaultConsumableCols;
+    try {
+      const saved = localStorage.getItem(CONSUMABLE_COLS_KEY);
+      if (saved) return { ...defaultConsumableCols, ...JSON.parse(saved) };
+    } catch {}
+    return defaultConsumableCols;
   });
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const columnMenuRef = useRef<HTMLDivElement>(null);
@@ -211,7 +215,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   }, [showColumnMenu]);
 
   const toggleColumn = (col: keyof typeof visibleColumns) => {
-    setVisibleColumns((prev) => ({ ...prev, [col]: !prev[col] }));
+    setVisibleColumns((prev) => {
+      const next = { ...prev, [col]: !prev[col] };
+      try { localStorage.setItem(CONSUMABLE_COLS_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
   };
 
   // Drag and drop state for sections
