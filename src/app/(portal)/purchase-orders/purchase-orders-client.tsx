@@ -259,7 +259,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                           onClick={() => handleAction(po.id, "ordered")}
                           disabled={loading === po.id + "ordered"}
                         >
-                          {loading === po.id + "ordered" ? "..." : "Mark Ordered"}
+                          {loading === po.id + "ordered" ? "..." : "Ordered"}
                         </Button>
                       )}
                       {po.status === "ORDERED" && canManagePO && (
@@ -268,7 +268,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                           onClick={() => handleAction(po.id, "received")}
                           disabled={loading === po.id + "received"}
                         >
-                          {loading === po.id + "received" ? "..." : "Mark Received"}
+                          {loading === po.id + "received" ? "..." : "Received"}
                         </Button>
                       )}
                     </div>
