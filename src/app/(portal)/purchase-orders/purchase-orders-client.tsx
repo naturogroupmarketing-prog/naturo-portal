@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +46,19 @@ type Region = {
 
 const TABS = ["All", "Pending", "Approved", "Ordered", "Received", "Rejected"] as const;
 
+const PO_COLS_KEY = "trackio-purchase-orders-columns";
+type POCols = { item: boolean; category: boolean; supplier: boolean; qty: boolean; status: boolean; createdBy: boolean; date: boolean };
+const defaultPOCols: POCols = { item: true, category: true, supplier: true, qty: true, status: true, createdBy: true, date: true };
+const PO_COL_LABELS: [keyof POCols, string][] = [
+  ["item", "Item"],
+  ["category", "Category"],
+  ["supplier", "Supplier"],
+  ["qty", "Qty"],
+  ["status", "Status"],
+  ["createdBy", "Created By"],
+  ["date", "Date"],
+];
+
 type ConsumableOption = {
   id: string;
   name: string;
@@ -85,6 +98,39 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
+
+  // Column visibility
+  const [visibleColumns, setVisibleColumns] = useState<POCols>(() => {
+    if (typeof window === "undefined") return defaultPOCols;
+    try {
+      const saved = localStorage.getItem(PO_COLS_KEY);
+      if (saved) return { ...defaultPOCols, ...JSON.parse(saved) };
+    } catch {}
+    return defaultPOCols;
+  });
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
+  const columnMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showColumnMenu) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (columnMenuRef.current && !columnMenuRef.current.contains(e.target as Node)) {
+        setShowColumnMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showColumnMenu]);
+
+  const toggleColumn = (col: keyof POCols) => {
+    setVisibleColumns((prev) => {
+      const next = { ...prev, [col]: !prev[col] };
+      try { localStorage.setItem(PO_COLS_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
+  const visibleCount = Object.values(visibleColumns).filter(Boolean).length + 1; // +1 for actions
 
   const toggleSection = (key: string) => {
     setCollapsedSections((prev) => {
@@ -143,43 +189,47 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-shark-100 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
-            <th className="px-5 py-3">Item</th>
-            <th className="px-5 py-3">Category</th>
-            <th className="px-5 py-3">Supplier</th>
-            <th className="px-5 py-3">Qty</th>
-            <th className="px-5 py-3">Status</th>
-            <th className="px-5 py-3">Created By</th>
-            <th className="px-5 py-3">Date</th>
+            {visibleColumns.item && <th className="px-5 py-3">Item</th>}
+            {visibleColumns.category && <th className="px-5 py-3">Category</th>}
+            {visibleColumns.supplier && <th className="px-5 py-3">Supplier</th>}
+            {visibleColumns.qty && <th className="px-5 py-3">Qty</th>}
+            {visibleColumns.status && <th className="px-5 py-3">Status</th>}
+            {visibleColumns.createdBy && <th className="px-5 py-3">Created By</th>}
+            {visibleColumns.date && <th className="px-5 py-3">Date</th>}
             <th className="px-5 py-3">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-shark-50">
           {orders.length === 0 ? (
             <tr>
-              <td colSpan={8} className="px-5 py-8 text-center text-shark-400">
+              <td colSpan={visibleCount} className="px-5 py-8 text-center text-shark-400">
                 No purchase orders found.
               </td>
             </tr>
           ) : (
             orders.map((po) => (
               <tr key={po.id} onClick={() => setViewOrder(po)} className="hover:bg-shark-25 transition-colors cursor-pointer">
-                <td className="px-5 py-3.5 font-medium text-shark-800">
-                  {po.consumable.name}
-                  <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
-                </td>
-                <td className="px-5 py-3.5 text-shark-500">{po.consumable.category}</td>
-                <td className="px-5 py-3.5 text-shark-500">{po.supplier || "—"}</td>
-                <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity}</td>
-                <td className="px-5 py-3.5"><Badge status={po.status} /></td>
-                <td className="px-5 py-3.5 text-shark-500">
-                  {po.createdBy ? (po.createdBy.name || po.createdBy.email) : (
-                    <span className="inline-flex items-center gap-1 text-action-600 font-medium">
-                      <Icon name="star" size={14} />
-                      AI
-                    </span>
-                  )}
-                </td>
-                <td className="px-5 py-3.5 text-shark-400">{formatDate(po.createdAt)}</td>
+                {visibleColumns.item && (
+                  <td className="px-5 py-3.5 font-medium text-shark-800">
+                    {po.consumable.name}
+                    <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
+                  </td>
+                )}
+                {visibleColumns.category && <td className="px-5 py-3.5 text-shark-500">{po.consumable.category}</td>}
+                {visibleColumns.supplier && <td className="px-5 py-3.5 text-shark-500">{po.supplier || "—"}</td>}
+                {visibleColumns.qty && <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity}</td>}
+                {visibleColumns.status && <td className="px-5 py-3.5"><Badge status={po.status} /></td>}
+                {visibleColumns.createdBy && (
+                  <td className="px-5 py-3.5 text-shark-500">
+                    {po.createdBy ? (po.createdBy.name || po.createdBy.email) : (
+                      <span className="inline-flex items-center gap-1 text-action-600 font-medium">
+                        <Icon name="star" size={14} />
+                        AI
+                      </span>
+                    )}
+                  </td>
+                )}
+                {visibleColumns.date && <td className="px-5 py-3.5 text-shark-400">{formatDate(po.createdAt)}</td>}
                 <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
                   {canManagePO ? (
                     <div className="flex gap-1.5">
@@ -291,7 +341,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         </div>
       )}
 
-      {/* Search + Region Filter */}
+      {/* Search + Region Filter + Columns */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <Input
           placeholder="Search by item, category, or supplier..."
@@ -311,6 +361,27 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             ))}
           </Select>
         )}
+        <div className="relative sm:ml-auto" ref={columnMenuRef}>
+          <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
+            <Icon name="settings" size={14} className="mr-1.5" />
+            Columns
+          </Button>
+          {showColumnMenu && (
+            <div className="absolute right-0 top-full mt-1 bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
+              {PO_COL_LABELS.map(([key, label]) => (
+                <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 dark:hover:bg-shark-800 cursor-pointer text-sm text-shark-700 dark:text-shark-300">
+                  <input
+                    type="checkbox"
+                    checked={visibleColumns[key]}
+                    onChange={() => toggleColumn(key)}
+                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Content */}

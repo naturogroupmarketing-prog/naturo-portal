@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import crypto from "crypto";
 import { rateLimit, RATE_LIMITS } from "@/lib/rate-limit";
+import { sendEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -40,50 +41,25 @@ export async function POST(req: Request) {
       },
     });
 
-    // For now, since no email service is configured, we'll log the token
-    // In production, you would send this via email
-    // TODO: Add email sending when SMTP is configured
-    console.log(`Password reset token for ${user.email}: ${token}`);
+    const baseUrl = process.env.AUTH_URL || process.env.NEXTAUTH_URL || "https://app.trackio.au";
+    const resetLink = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(user.email)}`;
 
-    // Try to send email if SMTP is configured
-    if (process.env.SMTP_HOST) {
-      try {
-        const nodemailer = await import("nodemailer");
-        const transporter = nodemailer.default.createTransport({
-          host: process.env.SMTP_HOST,
-          port: parseInt(process.env.SMTP_PORT || "587"),
-          secure: process.env.SMTP_SECURE === "true",
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        });
-
-        const baseUrl = process.env.AUTH_URL || process.env.NEXTAUTH_URL || "https://app.trackio.au";
-
-        await transporter.sendMail({
-          from: process.env.SMTP_FROM || process.env.SMTP_USER,
-          to: user.email,
-          subject: "Trackio - Password Reset",
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto;">
-              <h2 style="color: #1a1a2e;">Reset Your Password</h2>
-              <p>Hi ${user.name || "there"},</p>
-              <p>We received a request to reset your Trackio password. Use the code below to reset it:</p>
-              <div style="text-align: center; margin: 24px 0;">
-                <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #7C3AED; background: #f3f0ff; padding: 12px 24px; border-radius: 8px;">${token}</span>
-              </div>
-              <p>Or click the link below:</p>
-              <p><a href="${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(user.email)}" style="color: #7C3AED;">Reset Password</a></p>
-              <p style="color: #666; font-size: 13px;">This code expires in 30 minutes. If you didn't request this, you can ignore this email.</p>
-            </div>
-          `,
-        });
-      } catch (emailErr) {
-        console.error("Failed to send reset email:", emailErr);
-        // Still return success — the token was created
-      }
-    }
+    await sendEmail({
+      to: user.email,
+      subject: "Password Reset",
+      html: `
+        <p style="color:#495057;">Hi ${user.name || "there"},</p>
+        <p style="color:#495057;">We received a request to reset your Trackio password. Use the code below to reset it:</p>
+        <div style="text-align:center;margin:24px 0;">
+          <span style="font-size:28px;font-weight:bold;letter-spacing:6px;color:#1F3DD9;background:#eef0fb;padding:12px 24px;border-radius:8px;display:inline-block;">${token}</span>
+        </div>
+        <p style="color:#495057;">Or click the button below:</p>
+        <div style="text-align:center;margin:24px 0;">
+          <a href="${resetLink}" style="background:#1F3DD9;color:#ffffff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block;">Reset Password</a>
+        </div>
+        <p style="color:#868e96;font-size:13px;">This code expires in 30 minutes. If you didn't request this, you can safely ignore this email.</p>
+      `,
+    });
 
     return NextResponse.json({ success: true });
   } catch {
