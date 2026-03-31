@@ -48,7 +48,7 @@ const TABS = ["All", "Pending", "Approved", "Ordered", "Received", "Rejected"] a
 
 const PO_COLS_KEY = "trackio-purchase-orders-columns";
 type POCols = { item: boolean; category: boolean; supplier: boolean; qty: boolean; status: boolean; createdBy: boolean; date: boolean };
-const defaultPOCols: POCols = { item: true, category: true, supplier: true, qty: true, status: true, createdBy: true, date: true };
+const defaultPOCols: POCols = { item: true, category: false, supplier: false, qty: true, status: true, createdBy: false, date: false };
 const PO_COL_LABELS: [keyof POCols, string][] = [
   ["item", "Item"],
   ["category", "Category"],
