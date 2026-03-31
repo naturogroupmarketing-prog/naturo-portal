@@ -24,6 +24,8 @@ export function QRScanner({ open, onClose, onScan }: QRScannerProps) {
   useEffect(() => {
     if (!open) return;
 
+    const cleanupRef = { current: () => {} };
+
     // Small delay to let the modal DOM render the #qr-reader div
     const timeout = setTimeout(async () => {
       const el = document.getElementById("qr-reader");
@@ -51,16 +53,40 @@ export function QRScanner({ open, onClose, onScan }: QRScannerProps) {
           scn.stop().then(() => scn.clear()).catch(() => {});
         };
       } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to start camera. Make sure you've granted camera permissions."
-        );
+        const msg = err instanceof Error ? err.message : String(err);
+        // Try to provide a helpful message based on the error
+        if (msg.includes("NotAllowedError") || msg.includes("Permission")) {
+          setError("Camera permission denied. Please allow camera access in your browser settings and refresh the page.");
+        } else if (msg.includes("NotFoundError") || msg.includes("no camera")) {
+          setError("No camera found on this device.");
+        } else if (msg.includes("NotReadableError") || msg.includes("in use")) {
+          setError("Camera is in use by another app. Close other camera apps and try again.");
+        } else if (msg.includes("OverconstrainedError")) {
+          // Fallback: try without facing mode constraint
+          try {
+            const { Html5Qrcode } = await import("html5-qrcode");
+            const scn2 = new Html5Qrcode("qr-reader");
+            await scn2.start(
+              { facingMode: "user" },
+              { fps: 10, qrbox: { width: 250, height: 250 } },
+              (decodedText: string) => {
+                onScanRef.current(decodedText);
+                scn2.stop().then(() => scn2.clear()).catch(() => {});
+                onCloseRef.current();
+              },
+              () => {}
+            );
+            cleanupRef.current = () => { scn2.stop().then(() => scn2.clear()).catch(() => {}); };
+            return;
+          } catch {
+            setError("Camera not supported on this device.");
+          }
+        } else {
+          setError(`Camera error: ${msg}`);
+        }
         setScanning(false);
       }
     }, 300);
-
-    const cleanupRef = { current: () => {} };
 
     return () => {
       clearTimeout(timeout);
