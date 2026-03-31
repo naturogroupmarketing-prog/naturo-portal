@@ -15,7 +15,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
     ? { regionId: session.user.regionId!, organizationId }
     : { organizationId };
 
-  const [purchaseOrders, regions, canManagePO, canApprovePO, consumables] = await Promise.all([
+  const [purchaseOrders, regions, canManagePO, canApprovePO, canEditQty, consumables] = await Promise.all([
     db.purchaseOrder.findMany({
       where: regionFilter,
       include: {
@@ -35,6 +35,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
     }),
     hasPermission(session.user.id, session.user.role, "purchaseOrderManage"),
     session.user.role === "SUPER_ADMIN" ? true : hasPermission(session.user.id, session.user.role, "purchaseOrderApprove"),
+    session.user.role === "SUPER_ADMIN" ? true : hasPermission(session.user.id, session.user.role, "purchaseOrderEditQty"),
     db.consumable.findMany({
       where: { ...regionFilter, isActive: true },
       select: { id: true, name: true, category: true, unitType: true, supplier: true, regionId: true, quantityOnHand: true, minimumThreshold: true },
@@ -49,6 +50,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
       canManagePO={canManagePO}
       canApprovePO={canApprovePO}
+      canEditQty={canEditQty}
       consumables={JSON.parse(JSON.stringify(consumables))}
       initialStatus={params.status}
       initialRegion={params.region}

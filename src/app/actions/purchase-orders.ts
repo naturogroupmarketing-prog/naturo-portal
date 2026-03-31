@@ -95,6 +95,14 @@ export async function updatePurchaseOrder(formData: FormData) {
     throw new Error("Invalid data");
   }
 
+  // Check if user is allowed to change quantity
+  const canEditQty = session.user.role === "SUPER_ADMIN" || await hasPermission(session.user.id, session.user.role, "purchaseOrderEditQty");
+
+  const existingPo = await db.purchaseOrder.findUnique({ where: { id: purchaseOrderId }, select: { quantity: true } });
+  if (existingPo && existingPo.quantity !== quantity && !canEditQty) {
+    throw new Error("You don't have permission to adjust purchase order quantities");
+  }
+
   const validStatuses = ["PENDING", "APPROVED", "ORDERED", "REJECTED"];
   if (!validStatuses.includes(status)) {
     throw new Error("Invalid status");

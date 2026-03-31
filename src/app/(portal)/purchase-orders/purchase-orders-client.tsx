@@ -77,6 +77,7 @@ interface Props {
   isSuperAdmin: boolean;
   canManagePO: boolean;
   canApprovePO?: boolean;
+  canEditQty?: boolean;
   initialStatus?: string;
   initialRegion?: string;
 }
@@ -87,7 +88,7 @@ function mapStatusToTab(status?: string): string {
   return map[status.toUpperCase()] || "All";
 }
 
-export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, initialStatus, initialRegion }: Props) {
+export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion }: Props) {
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<string>(mapStatusToTab(initialStatus));
   const [search, setSearch] = useState("");
@@ -484,7 +485,8 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-shark-700 mb-1">Quantity</label>
-                  <Input name="quantity" type="number" min={1} defaultValue={viewOrder.quantity} required />
+                  <Input name="quantity" type="number" min={1} defaultValue={viewOrder.quantity} required disabled={!canEditQty} className={!canEditQty ? "opacity-60 cursor-not-allowed" : ""} />
+                  {!canEditQty && <p className="text-xs text-shark-400 mt-1">Permission required to edit qty</p>}
                 </div>
               </div>
 

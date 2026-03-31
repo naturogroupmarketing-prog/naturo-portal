@@ -738,6 +738,7 @@ model ManagerPermission {
   // Feature permissions
   purchaseOrderManage    Boolean @default(false)
   purchaseOrderApprove   Boolean @default(false)
+  purchaseOrderEditQty   Boolean @default(false)
   maintenanceManage      Boolean @default(true)
   starterKitsManage      Boolean @default(false)
   returnsVerify          Boolean @default(true)
