@@ -94,7 +94,7 @@ interface Props {
   consumableCategoryChart?: ChartItem[];
   portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
   portfolioChartData?: { month: string; assets: number; consumables: number; depreciation: number }[];
-  activityChartData?: { month: string; damaged: number; lost: number; staff: number }[];
+  activityChartData?: { month: string; consumablesUsed: number; staff: number }[];
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
   mapLocations?: { id: string; name: string; stateName: string; latitude: number; longitude: number; assetCount: number; consumableCount: number; staffCount: number }[];
@@ -181,8 +181,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         </div>
                       </div>
                       <div className="flex items-center gap-5 mb-4">
-                        <span className="flex items-center gap-1.5 text-xs text-shark-500"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#1F3DD9" }} /> Damaged</span>
-                        <span className="flex items-center gap-1.5 text-xs text-shark-500"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#E8532E" }} /> Lost</span>
+                        <span className="flex items-center gap-1.5 text-xs text-shark-500"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#1F3DD9" }} /> Consumables Used</span>
                         <span className="flex items-center gap-1.5 text-xs text-shark-500"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#10b981" }} /> Staff</span>
                       </div>
                       <div className="h-56">
@@ -200,8 +199,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   <div style={{ background: "#1a1c21", borderRadius: 10, padding: "10px 14px", border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
                                     <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
                                     {payload.map((p) => {
-                                      const color = p.dataKey === "damaged" ? "#1F3DD9" : p.dataKey === "lost" ? "#E8532E" : "#10b981";
-                                      const name = p.dataKey === "damaged" ? "Damaged" : p.dataKey === "lost" ? "Lost" : "Staff";
+                                      const color = p.dataKey === "consumablesUsed" ? "#1F3DD9" : "#10b981";
+                                      const name = p.dataKey === "consumablesUsed" ? "Consumables Used" : "Staff";
                                       return (
                                         <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
                                           <span style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
@@ -214,8 +213,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                 );
                               }}
                             />
-                            <Bar dataKey="damaged" fill="#1F3DD9" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="lost" fill="#E8532E" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="consumablesUsed" fill="#1F3DD9" radius={[4, 4, 0, 0]} />
                             <Bar dataKey="staff" fill="#10b981" radius={[4, 4, 0, 0]} />
                           </BarChart>
                         </ResponsiveContainer>

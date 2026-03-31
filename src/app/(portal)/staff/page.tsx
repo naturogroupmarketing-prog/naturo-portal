@@ -62,9 +62,55 @@ export default async function StaffPage() {
     canViewStaffDetails = perms?.staffViewDetails ?? false;
   }
 
+  // Consumable usage history — last 6 months for all staff
+  const userIds = users.map((u) => u.id);
+  const sixMonthsAgo = new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1);
+  const usageRaw = await db.consumableAssignment.findMany({
+    where: {
+      userId: { in: userIds },
+      isActive: false,
+      returnCondition: "USED",
+      returnedDate: { gte: sixMonthsAgo },
+    },
+    select: {
+      userId: true,
+      quantity: true,
+      returnedDate: true,
+      consumable: { select: { name: true, unitType: true } },
+    },
+  });
+
+  // Build per-user usage map
+  const usageMap = new Map<string, { month: string; label: string; totalUsed: number; items: { name: string; quantity: number; unitType: string }[] }[]>();
+  for (const userId of userIds) {
+    const months: typeof usageMap extends Map<string, infer V> ? V : never = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(new Date().getFullYear(), new Date().getMonth() - i, 1);
+      months.push({ month: d.toISOString().slice(0, 7), label: d.toLocaleDateString("en-AU", { month: "short", year: "numeric" }), totalUsed: 0, items: [] });
+    }
+    usageMap.set(userId, months);
+  }
+  for (const u of usageRaw) {
+    if (!u.returnedDate) continue;
+    const key = u.returnedDate.toISOString().slice(0, 7);
+    const userMonths = usageMap.get(u.userId);
+    if (!userMonths) continue;
+    const bucket = userMonths.find((m) => m.month === key);
+    if (!bucket) continue;
+    bucket.totalUsed += u.quantity;
+    const existing = bucket.items.find((i) => i.name === u.consumable.name);
+    if (existing) existing.quantity += u.quantity;
+    else bucket.items.push({ name: u.consumable.name, quantity: u.quantity, unitType: u.consumable.unitType });
+  }
+
+  const usersWithUsage = users.map((u) => ({
+    ...u,
+    consumableUsageHistory: usageMap.get(u.id) || [],
+  }));
+
   return (
     <StaffClient
-      users={JSON.parse(JSON.stringify(users))}
+      users={JSON.parse(JSON.stringify(usersWithUsage))}
       regions={JSON.parse(JSON.stringify(regions))}
       allRegions={JSON.parse(JSON.stringify(allRegions))}
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}

@@ -45,6 +45,12 @@ interface StaffUser {
     status: string;
     consumable: { name: string; unitType: string };
   }[];
+  consumableUsageHistory?: {
+    month: string;
+    label: string;
+    totalUsed: number;
+    items: { name: string; quantity: number; unitType: string }[];
+  }[];
 }
 
 interface Region {
@@ -540,6 +546,35 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   </div>
                 )}
 
+                {/* Consumable Usage History */}
+                {editUser.consumableUsageHistory && editUser.consumableUsageHistory.some((m) => m.totalUsed > 0) && (
+                  <div className="border border-shark-100 rounded-lg p-3 space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-shark-400">Usage History (6 months)</p>
+                    <div className="space-y-2">
+                      {editUser.consumableUsageHistory.map((m) => (
+                        <div key={m.month} className="flex items-start gap-3">
+                          <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
+                          <div className="flex-1">
+                            {m.totalUsed === 0 ? (
+                              <span className="text-xs text-shark-300">—</span>
+                            ) : (
+                              <div className="space-y-0.5">
+                                {m.items.map((item) => (
+                                  <div key={item.name} className="flex items-center justify-between text-sm">
+                                    <span className="text-shark-700">{item.name}</span>
+                                    <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <div className="w-10 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed || "—"}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {editError && <p className="text-sm text-red-500">{editError}</p>}
 
                 {/* Action buttons row */}
@@ -635,6 +670,34 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                               {r.quantity}x {r.consumable.name}
                             </p>
                             <Badge status={r.status} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {/* Consumable Usage History (Branch Manager view) */}
+                  {editUser.consumableUsageHistory && editUser.consumableUsageHistory.some((m) => m.totalUsed > 0) && (
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Usage History (6 months)</label>
+                      <div className="space-y-2 border border-shark-100 rounded-lg p-3">
+                        {editUser.consumableUsageHistory.map((m) => (
+                          <div key={m.month} className="flex items-start gap-3">
+                            <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
+                            <div className="flex-1">
+                              {m.totalUsed === 0 ? (
+                                <span className="text-xs text-shark-300">—</span>
+                              ) : (
+                                <div className="space-y-0.5">
+                                  {m.items.map((item) => (
+                                    <div key={item.name} className="flex items-center justify-between text-sm">
+                                      <span className="text-shark-700">{item.name}</span>
+                                      <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <div className="w-10 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed || "—"}</div>
                           </div>
                         ))}
                       </div>

@@ -172,6 +172,41 @@ export default async function DashboardPage() {
       }
     }
 
+    // Consumable usage history — last 6 months
+    const staffUsageRaw = await db.consumableAssignment.findMany({
+      where: {
+        userId: session.user.id,
+        isActive: false,
+        returnCondition: "USED",
+        returnedDate: { gte: new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1) },
+      },
+      select: {
+        quantity: true,
+        returnedDate: true,
+        consumable: { select: { name: true, unitType: true } },
+      },
+      orderBy: { returnedDate: "desc" },
+    });
+
+    const usageByMonth = new Map<string, { month: string; label: string; totalUsed: number; items: { name: string; quantity: number; unitType: string }[] }>();
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(new Date().getFullYear(), new Date().getMonth() - i, 1);
+      const key = d.toISOString().slice(0, 7);
+      const label = d.toLocaleDateString("en-AU", { month: "short", year: "numeric" });
+      usageByMonth.set(key, { month: key, label, totalUsed: 0, items: [] });
+    }
+    for (const u of staffUsageRaw) {
+      if (!u.returnedDate) continue;
+      const key = u.returnedDate.toISOString().slice(0, 7);
+      const bucket = usageByMonth.get(key);
+      if (!bucket) continue;
+      bucket.totalUsed += u.quantity;
+      const existing = bucket.items.find((i) => i.name === u.consumable.name);
+      if (existing) existing.quantity += u.quantity;
+      else bucket.items.push({ name: u.consumable.name, quantity: u.quantity, unitType: u.consumable.unitType });
+    }
+    const consumableUsageHistory = Array.from(usageByMonth.values());
+
     const staffStats: { label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
       { label: "Assigned Assets", value: assetCount, icon: "package", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-assets" },
       { label: "Consumable Items", value: consumableCount, icon: "droplet", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-consumables" },
@@ -192,6 +227,7 @@ export default async function DashboardPage() {
         individualConsumables={individualConsumables}
         conditionCheckItems={conditionCheckItems}
         conditionCheckMonth={currentMonthYear}
+        consumableUsageHistory={consumableUsageHistory}
       />
     );
   }
@@ -424,19 +460,25 @@ export default async function DashboardPage() {
   const now = new Date();
   const portfolioChartData: { month: string; assets: number; consumables: number; depreciation: number }[] = [];
 
-  // Activity bar chart data — damaged, lost, staff per month
-  const [allStaff, damageReportsAll] = await Promise.all([
+  // Activity bar chart data — consumables used + staff per month
+  const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+  const [allStaff, consumableUsageAll] = await Promise.all([
     db.user.findMany({
       where: { organizationId: session.user.organizationId!, isActive: true, role: "STAFF" },
       select: { createdAt: true },
     }),
-    db.damageReport.findMany({
-      where: { organizationId: session.user.organizationId! },
-      select: { type: true, createdAt: true },
+    db.consumableAssignment.findMany({
+      where: {
+        user: { organizationId: session.user.organizationId! },
+        isActive: false,
+        returnCondition: "USED",
+        returnedDate: { gte: sixMonthsAgo },
+      },
+      select: { quantity: true, returnedDate: true },
     }),
   ]);
 
-  const activityChartData: { month: string; damaged: number; lost: number; staff: number }[] = [];
+  const activityChartData: { month: string; consumablesUsed: number; staff: number }[] = [];
 
   for (let i = 5; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -470,15 +512,15 @@ export default async function DashboardPage() {
       depreciation: Math.round(purchaseTotal - assetVal),
     });
 
-    // Activity: damage/loss reports this month + staff count
-    const monthDamaged = damageReportsAll.filter((r) => r.type === "DAMAGE" && r.createdAt >= monthStart && r.createdAt <= monthEnd).length;
-    const monthLost = damageReportsAll.filter((r) => r.type === "LOSS" && r.createdAt >= monthStart && r.createdAt <= monthEnd).length;
+    // Activity: consumables used this month + staff count
+    const monthConsumablesUsed = consumableUsageAll
+      .filter((a) => a.returnedDate && a.returnedDate >= monthStart && a.returnedDate <= monthEnd)
+      .reduce((sum, a) => sum + a.quantity, 0);
     const staffCount = allStaff.filter((u) => new Date(u.createdAt) <= monthEnd).length;
 
     activityChartData.push({
       month: monthLabel,
-      damaged: monthDamaged,
-      lost: monthLost,
+      consumablesUsed: monthConsumablesUsed,
       staff: staffCount,
     });
   }
