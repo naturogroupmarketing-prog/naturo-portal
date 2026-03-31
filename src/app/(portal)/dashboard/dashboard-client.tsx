@@ -565,14 +565,14 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="clipboard" size={14} className="text-amber-600" />
                           <div>
                             <p className="text-lg font-bold text-amber-700">{region.pendingRequests}</p>
-                            <p className="text-xs text-amber-600">Pending Requests</p>
+                            <p className="text-xs text-amber-600">Requests</p>
                           </div>
                         </Link>
                         <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-purple-50 px-3 py-2 hover:bg-purple-100 transition-colors">
                           <Icon name="truck" size={14} className="text-purple-500" />
                           <div>
                             <p className="text-lg font-bold text-purple-600">{region.pendingPOs}</p>
-                            <p className="text-xs text-purple-400">Pending POs</p>
+                            <p className="text-xs text-purple-400">POs</p>
                           </div>
                         </Link>
                       </div>
