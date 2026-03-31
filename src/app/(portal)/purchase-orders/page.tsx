@@ -15,9 +15,19 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
     ? { regionId: session.user.regionId!, organizationId }
     : { organizationId };
 
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  // Clean up rejected POs older than 24 hours
+  db.purchaseOrder.deleteMany({
+    where: { organizationId, status: "REJECTED", approvedAt: { lt: twentyFourHoursAgo } },
+  }).catch(() => {});
+
   const [purchaseOrders, regions, canManagePO, canApprovePO, canEditQty, consumables] = await Promise.all([
     db.purchaseOrder.findMany({
-      where: regionFilter,
+      where: {
+        ...regionFilter,
+        NOT: { status: "REJECTED", approvedAt: { lt: twentyFourHoursAgo } },
+      },
       include: {
         consumable: { select: { name: true, unitType: true, category: true } },
         region: { include: { state: true } },
