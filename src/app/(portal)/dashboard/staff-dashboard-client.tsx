@@ -102,6 +102,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
   // Condition check state
   const [checkStates, setCheckStates] = useState<Record<string, { condition: string; photoUrl: string; notes: string; uploading: boolean; submitting: boolean }>>({});
   const [showConditionChecks, setShowConditionChecks] = useState(false);
+  const [showUsageHistory, setShowUsageHistory] = useState(false);
   const getCheckKey = (item: ConditionCheckItem) => item.photoLabel ? `${item.type}-${item.id}-${item.photoLabel}` : `${item.type}-${item.id}`;
   const checkedCount = conditionCheckItems.filter((i) => i.checked || checkStates[getCheckKey(i)]?.photoUrl).length;
 
@@ -897,41 +898,47 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {/* Consumable Usage History */}
       {consumableUsageHistory.some((m) => m.totalUsed > 0) && (
         <Card>
-          <CardHeader>
+          <div
+            className="px-6 py-4 flex items-center justify-between cursor-pointer"
+            onClick={() => setShowUsageHistory(!showUsageHistory)}
+          >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-action-500 flex items-center justify-center">
                 <Icon name="droplet" size={20} className="text-white" />
               </div>
               <div>
-                <CardTitle>Consumable Usage</CardTitle>
+                <h3 className="text-base font-semibold text-shark-900">Consumable Usage</h3>
                 <p className="text-xs text-shark-400 mt-0.5">Last 6 months</p>
               </div>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {consumableUsageHistory.map((m) => (
-                <div key={m.month} className="flex items-start gap-3">
-                  <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
-                  <div className="flex-1">
-                    {m.totalUsed === 0 ? (
-                      <span className="text-xs text-shark-300">No usage</span>
-                    ) : (
-                      <div className="space-y-1">
-                        {m.items.map((item) => (
-                          <div key={item.name} className="flex items-center justify-between text-sm">
-                            <span className="text-shark-700">{item.name}</span>
-                            <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+            <Icon name="chevron-down" size={16} className={`text-shark-400 transition-transform ${showUsageHistory ? "" : "-rotate-90"}`} />
+          </div>
+          {showUsageHistory && (
+            <CardContent>
+              <div className="space-y-3">
+                {consumableUsageHistory.map((m) => (
+                  <div key={m.month} className="flex items-start gap-3">
+                    <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
+                    <div className="flex-1">
+                      {m.totalUsed === 0 ? (
+                        <span className="text-xs text-shark-300">No usage</span>
+                      ) : (
+                        <div className="space-y-1">
+                          {m.items.map((item) => (
+                            <div key={item.name} className="flex items-center justify-between text-sm">
+                              <span className="text-shark-700">{item.name}</span>
+                              <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="w-12 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed}</div>
                   </div>
-                  <div className="w-12 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
+                ))}
+              </div>
+            </CardContent>
+          )}
         </Card>
       )}
 

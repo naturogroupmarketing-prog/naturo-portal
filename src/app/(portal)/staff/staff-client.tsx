@@ -85,6 +85,8 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState("");
 
+  const [usageExpanded, setUsageExpanded] = useState(false);
+
   // Reset password state (inside edit modal)
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -143,12 +145,14 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
     setResetError("");
     setDeleteError("");
     setNewPassword("");
+    setUsageExpanded(false);
   };
 
   const closeEdit = () => {
     setEditUser(null);
     setShowResetPassword(false);
     setShowDeleteConfirm(false);
+    setUsageExpanded(false);
   };
 
   const handleEdit = async () => {
@@ -548,30 +552,39 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
                 {/* Consumable Usage History */}
                 {editUser.consumableUsageHistory && editUser.consumableUsageHistory.some((m) => m.totalUsed > 0) && (
-                  <div className="border border-shark-100 rounded-lg p-3 space-y-3">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-shark-400">Usage History (6 months)</p>
-                    <div className="space-y-2">
-                      {editUser.consumableUsageHistory.map((m) => (
-                        <div key={m.month} className="flex items-start gap-3">
-                          <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
-                          <div className="flex-1">
-                            {m.totalUsed === 0 ? (
-                              <span className="text-xs text-shark-300">—</span>
-                            ) : (
-                              <div className="space-y-0.5">
-                                {m.items.map((item) => (
-                                  <div key={item.name} className="flex items-center justify-between text-sm">
-                                    <span className="text-shark-700">{item.name}</span>
-                                    <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
+                  <div className="border border-shark-100 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => setUsageExpanded(!usageExpanded)}
+                      className="w-full flex items-center justify-between p-3 hover:bg-shark-25 transition-colors"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-wider text-shark-400">Usage History (6 months)</p>
+                      <Icon name="chevron-down" size={14} className={`text-shark-400 transition-transform ${usageExpanded ? "" : "-rotate-90"}`} />
+                    </button>
+                    {usageExpanded && (
+                      <div className="px-3 pb-3 space-y-2">
+                        {editUser.consumableUsageHistory.map((m) => (
+                          <div key={m.month} className="flex items-start gap-3">
+                            <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
+                            <div className="flex-1">
+                              {m.totalUsed === 0 ? (
+                                <span className="text-xs text-shark-300">—</span>
+                              ) : (
+                                <div className="space-y-0.5">
+                                  {m.items.map((item) => (
+                                    <div key={item.name} className="flex items-center justify-between text-sm">
+                                      <span className="text-shark-700">{item.name}</span>
+                                      <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <div className="w-10 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed || "—"}</div>
                           </div>
-                          <div className="w-10 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed || "—"}</div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -677,30 +690,39 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   )}
                   {/* Consumable Usage History (Branch Manager view) */}
                   {editUser.consumableUsageHistory && editUser.consumableUsageHistory.some((m) => m.totalUsed > 0) && (
-                    <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Usage History (6 months)</label>
-                      <div className="space-y-2 border border-shark-100 rounded-lg p-3">
-                        {editUser.consumableUsageHistory.map((m) => (
-                          <div key={m.month} className="flex items-start gap-3">
-                            <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
-                            <div className="flex-1">
-                              {m.totalUsed === 0 ? (
-                                <span className="text-xs text-shark-300">—</span>
-                              ) : (
-                                <div className="space-y-0.5">
-                                  {m.items.map((item) => (
-                                    <div key={item.name} className="flex items-center justify-between text-sm">
-                                      <span className="text-shark-700">{item.name}</span>
-                                      <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
+                    <div className="border border-shark-100 rounded-lg overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setUsageExpanded(!usageExpanded)}
+                        className="w-full flex items-center justify-between p-3 hover:bg-shark-25 transition-colors"
+                      >
+                        <p className="text-xs font-semibold uppercase tracking-wider text-shark-400">Usage History (6 months)</p>
+                        <Icon name="chevron-down" size={14} className={`text-shark-400 transition-transform ${usageExpanded ? "" : "-rotate-90"}`} />
+                      </button>
+                      {usageExpanded && (
+                        <div className="px-3 pb-3 space-y-2">
+                          {editUser.consumableUsageHistory.map((m) => (
+                            <div key={m.month} className="flex items-start gap-3">
+                              <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
+                              <div className="flex-1">
+                                {m.totalUsed === 0 ? (
+                                  <span className="text-xs text-shark-300">—</span>
+                                ) : (
+                                  <div className="space-y-0.5">
+                                    {m.items.map((item) => (
+                                      <div key={item.name} className="flex items-center justify-between text-sm">
+                                        <span className="text-shark-700">{item.name}</span>
+                                        <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="w-10 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed || "—"}</div>
                             </div>
-                            <div className="w-10 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed || "—"}</div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
