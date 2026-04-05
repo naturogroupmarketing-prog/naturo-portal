@@ -137,11 +137,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   };
 
   return (
-    <div className="space-y-8">
+    <div>
       {/* Onboarding overlay */}
       {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
 
-      <PageTransition>
+      <PageTransition className="space-y-6">
       {/* Header with settings gear */}
       <div className="flex items-center justify-between">
         <div>
@@ -522,15 +522,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "regional":
             return regionBreakdown && regionBreakdown.length > 0 ? (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center">
-              <Icon name="map-pin" size={14} className="text-action-500" />
-            </div>
-            <h2 className="text-lg font-semibold text-shark-900">Regional Breakdown</h2>
-          </div>
-          <div className="space-y-3">
-            {regionBreakdown.map((region, idx) => {
+              <div key="regional" className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center">
+                    <Icon name="map-pin" size={14} className="text-action-500" />
+                  </div>
+                  <h2 className="text-lg font-semibold text-shark-900">Regional Breakdown</h2>
+                </div>
+                <div className="space-y-3">
+                  {regionBreakdown.map((region, idx) => {
               const colors = REGION_COLORS[idx % REGION_COLORS.length];
               const isCollapsed = collapsedRegions.has(region.regionId);
               const totalIssues = region.damaged + region.lost + region.pendingRequests + region.pendingPOs;
@@ -612,9 +612,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   )}
                 </Card>
               );
-            })}
-          </div>
-        </div>
+                  })}
+                </div>
+              </div>
             ) : null;
 
           case "quick-links":
