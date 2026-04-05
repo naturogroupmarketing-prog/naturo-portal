@@ -66,7 +66,8 @@ export async function POST(request: NextRequest) {
 - BULK: Update multiple assets by filter (supplier, category), apply standard items to empty regions.
 - PERMISSIONS: Toggle branch manager permissions.
 - ADMIN: View activity log, update region names/addresses, manage categories.
-Always search first before modifying. Use region filters when asked about specific locations.`
+Always search first before modifying. Use region filters when asked about specific locations.
+When performing multi-step tasks (e.g. copying photos to many items), complete ALL steps silently using tools, then give ONE final summary of everything you did. Do NOT explain each step — just do it and report the results at the end.`
     : "You can READ data and provide insights. Use list_regions to see all locations, compare_regions to compare them, and add a region filter to any search to narrow by location. For creating or modifying assets, direct users to the appropriate page in the app.";
 
   const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, manage inventory, and answer questions.
@@ -98,19 +99,24 @@ Guidelines:
 
     let finalText = "";
 
-    // Tool-use loop (max 5 iterations)
-    for (let i = 0; i < 5; i++) {
+    // Tool-use loop (max 10 iterations for complex multi-step tasks)
+    for (let i = 0; i < 10; i++) {
       const response = await anthropic.messages.create({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 1024,
+        max_tokens: 2048,
         system: systemPrompt,
         messages: currentMessages,
         tools: availableTools,
       });
 
-      // Extract text blocks
-      for (const block of response.content) {
-        if (block.type === "text") finalText += block.text;
+      // Only keep text from the FINAL response (not intermediate thinking)
+      const hasToolUse = response.content.some((b) => b.type === "tool_use");
+      if (!hasToolUse) {
+        // This is the final response — keep the text
+        finalText = "";
+        for (const block of response.content) {
+          if (block.type === "text") finalText += block.text;
+        }
       }
 
       if (response.stop_reason !== "tool_use") break;
