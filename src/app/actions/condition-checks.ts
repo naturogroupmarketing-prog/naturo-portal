@@ -263,3 +263,106 @@ export async function getInspectionConfig() {
 
   return categories;
 }
+
+/**
+ * Super admin creates a scheduled inspection with due date
+ */
+export async function createInspectionSchedule(data: {
+  title: string;
+  dueDate: string; // ISO date string
+  notes?: string;
+}) {
+  const session = await auth();
+  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  if (!data.title?.trim()) throw new Error("Title is required");
+  if (!data.dueDate) throw new Error("Due date is required");
+
+  const dueDate = new Date(data.dueDate);
+  if (isNaN(dueDate.getTime())) throw new Error("Invalid date");
+
+  const schedule = await db.inspectionSchedule.create({
+    data: {
+      organizationId,
+      title: data.title.trim(),
+      dueDate,
+      notes: data.notes?.trim() || null,
+      createdById: session.user.id,
+    },
+  });
+
+  // Notify all staff with inspection-eligible items
+  const { createNotification } = await import("@/lib/notifications");
+  const inspectionCategories = await db.category.findMany({
+    where: { organizationId, requiresInspection: true },
+    select: { name: true },
+  });
+  const catNames = inspectionCategories.map((c) => c.name);
+
+  if (catNames.length > 0) {
+    const staffToNotify = await db.user.findMany({
+      where: {
+        organizationId,
+        isActive: true,
+        OR: [
+          { assetAssignments: { some: { isActive: true, asset: { category: { in: catNames } } } } },
+          { consumableAssignments: { some: { isActive: true, consumable: { category: { in: catNames } } } } },
+        ],
+      },
+      select: { id: true },
+    });
+
+    const formattedDate = dueDate.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+    for (const staff of staffToNotify) {
+      await createNotification({
+        userId: staff.id,
+        type: "MAINTENANCE_DUE",
+        title: `Inspection Scheduled: ${data.title.trim()}`,
+        message: `Equipment inspection due by ${formattedDate}.${data.notes ? ` Notes: ${data.notes.trim()}` : ""}`,
+        link: "/dashboard",
+      });
+    }
+  }
+
+  revalidatePath("/condition-checks");
+  revalidatePath("/dashboard");
+  return { success: true, id: schedule.id };
+}
+
+/**
+ * Get all inspection schedules for the org
+ */
+export async function getInspectionSchedules() {
+  const session = await auth();
+  if (!session?.user || !isAdminOrManager(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  return db.inspectionSchedule.findMany({
+    where: { organizationId, isActive: true },
+    include: { createdBy: { select: { name: true, email: true } } },
+    orderBy: { dueDate: "desc" },
+  });
+}
+
+/**
+ * Delete an inspection schedule
+ */
+export async function deleteInspectionSchedule(id: string) {
+  const session = await auth();
+  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  const schedule = await db.inspectionSchedule.findUnique({ where: { id } });
+  if (!schedule || schedule.organizationId !== organizationId) throw new Error("Not found");
+
+  await db.inspectionSchedule.update({ where: { id }, data: { isActive: false } });
+  revalidatePath("/condition-checks");
+  return { success: true };
+}

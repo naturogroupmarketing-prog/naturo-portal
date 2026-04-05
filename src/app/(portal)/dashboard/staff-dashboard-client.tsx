@@ -89,10 +89,11 @@ interface Props {
   individualConsumables?: IndividualConsumable[];
   conditionCheckItems?: ConditionCheckItem[];
   conditionCheckMonth?: string;
+  inspectionSchedules?: { id: string; title: string; dueDate: string; notes: string | null }[];
   consumableUsageHistory?: UsageMonth[];
 }
 
-export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [], activeKitApplications = [], individualAssets = [], individualConsumables = [], conditionCheckItems = [], conditionCheckMonth = "", consumableUsageHistory = [] }: Props) {
+export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [], activeKitApplications = [], individualAssets = [], individualConsumables = [], conditionCheckItems = [], conditionCheckMonth = "", inspectionSchedules = [], consumableUsageHistory = [] }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
   // Track item states: "received" | "not_received" | undefined (pending)
@@ -873,6 +874,65 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           </div>
         </div>
       )}
+
+      {/* Inspection Schedule Alerts */}
+      {inspectionSchedules.length > 0 && (() => {
+        const now = new Date();
+        const overdue = inspectionSchedules.filter((s) => new Date(s.dueDate) < now);
+        const upcoming = inspectionSchedules.filter((s) => {
+          const due = new Date(s.dueDate);
+          const daysLeft = Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+          return daysLeft >= 0 && daysLeft <= 14;
+        });
+        const checkedCount = conditionCheckItems.filter((i) => i.checked).length;
+        const allDone = checkedCount === conditionCheckItems.length && conditionCheckItems.length > 0;
+
+        return (
+          <>
+            {overdue.length > 0 && !allDone && (
+              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-red-500 flex items-center justify-center shrink-0">
+                  <Icon name="alert-triangle" size={18} className="text-white" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-red-800">Inspection Overdue!</p>
+                  <p className="text-xs text-red-600 mt-0.5">
+                    {overdue[0].title} was due {new Date(overdue[0].dueDate).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}.
+                    Complete your condition check below.
+                  </p>
+                </div>
+              </div>
+            )}
+            {upcoming.length > 0 && !allDone && overdue.length === 0 && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center shrink-0">
+                  <Icon name="clock" size={18} className="text-white" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-amber-800">Inspection Due Soon</p>
+                  <p className="text-xs text-amber-600 mt-0.5">
+                    {upcoming[0].title} — due by {new Date(upcoming[0].dueDate).toLocaleDateString("en-AU", { day: "numeric", month: "long" })}.
+                    {upcoming[0].notes && ` ${upcoming[0].notes}`}
+                  </p>
+                </div>
+              </div>
+            )}
+            {allDone && upcoming.length > 0 && (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0">
+                  <Icon name="check" size={18} className="text-white" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-emerald-800">Inspection Complete</p>
+                  <p className="text-xs text-emerald-600 mt-0.5">
+                    All {conditionCheckItems.length} items checked for {upcoming[0].title}. Well done!
+                  </p>
+                </div>
+              </div>
+            )}
+          </>
+        );
+      })()}
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

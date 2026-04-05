@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
-import { toggleCategoryInspection, updateCategoryInspectionPhotos } from "@/app/actions/condition-checks";
+import { toggleCategoryInspection, updateCategoryInspectionPhotos, createInspectionSchedule, deleteInspectionSchedule } from "@/app/actions/condition-checks";
 
 interface Check {
   id: string;
@@ -47,6 +47,16 @@ interface InspectionCategory {
   inspectionPhotos: string[];
 }
 
+interface Schedule {
+  id: string;
+  title: string;
+  dueDate: string;
+  notes: string | null;
+  isActive: boolean;
+  createdAt: string;
+  createdBy: { name: string | null; email: string };
+}
+
 interface Props {
   checks: Check[];
   staffStatus: StaffStatus[];
@@ -54,6 +64,7 @@ interface Props {
   regions: Region[];
   isSuperAdmin: boolean;
   inspectionConfig?: InspectionCategory[];
+  schedules?: Schedule[];
 }
 
 const CONDITION_COLORS: Record<string, string> = {
@@ -63,7 +74,7 @@ const CONDITION_COLORS: Record<string, string> = {
   DAMAGED: "bg-red-100 text-red-700",
 };
 
-export function ConditionChecksClient({ checks, staffStatus, monthYear, regions, isSuperAdmin, inspectionConfig = [] }: Props) {
+export function ConditionChecksClient({ checks, staffStatus, monthYear, regions, isSuperAdmin, inspectionConfig = [], schedules = [] }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
   const [search, setSearch] = useState("");
@@ -71,6 +82,34 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
   const [photoModal, setPhotoModal] = useState<Check | null>(null);
   const [statusFilter, setStatusFilter] = useState<"all" | "complete" | "incomplete">("all");
   const [showConfig, setShowConfig] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [scheduleTitle, setScheduleTitle] = useState("");
+  const [scheduleDueDate, setScheduleDueDate] = useState("");
+  const [scheduleNotes, setScheduleNotes] = useState("");
+  const [scheduleSaving, setScheduleSaving] = useState(false);
+
+  const handleCreateSchedule = async () => {
+    if (!scheduleTitle.trim() || !scheduleDueDate) { addToast("Title and due date are required", "error"); return; }
+    setScheduleSaving(true);
+    try {
+      await createInspectionSchedule({ title: scheduleTitle.trim(), dueDate: scheduleDueDate, notes: scheduleNotes.trim() || undefined });
+      addToast("Inspection scheduled — staff have been notified", "success");
+      setShowScheduleModal(false);
+      setScheduleTitle(""); setScheduleDueDate(""); setScheduleNotes("");
+      router.refresh();
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Failed to create schedule", "error");
+    }
+    setScheduleSaving(false);
+  };
+
+  const handleDeleteSchedule = async (id: string) => {
+    try {
+      await deleteInspectionSchedule(id);
+      addToast("Schedule removed", "success");
+      router.refresh();
+    } catch { addToast("Failed to remove", "error"); }
+  };
   const [newPhotoLabel, setNewPhotoLabel] = useState<Record<string, string>>({});
   const [savingConfig, setSavingConfig] = useState<Set<string>>(new Set());
   // Local optimistic state for toggles so UI updates instantly
@@ -129,12 +168,56 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
           <p className="text-sm text-shark-400 mt-1">{monthLabel} &middot; {totalChecked}/{staffStatus.length} staff completed</p>
         </div>
         {isSuperAdmin && (
-          <Button variant="outline" size="sm" onClick={() => setShowConfig(!showConfig)}>
-            <Icon name="settings" size={14} className="mr-1.5" />
-            Configure
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" onClick={() => setShowScheduleModal(true)}>
+              <Icon name="plus" size={14} className="mr-1.5" />
+              Schedule Inspection
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setShowConfig(!showConfig)}>
+              <Icon name="settings" size={14} className="mr-1.5" />
+              Configure
+            </Button>
+          </div>
         )}
       </div>
+
+      {/* Scheduled Inspections — Super Admin Only */}
+      {isSuperAdmin && schedules.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-shark-700">Scheduled Inspections</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {schedules.map((s) => {
+              const due = new Date(s.dueDate);
+              const now = new Date();
+              const isOverdue = due < now;
+              const daysUntil = Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+              return (
+                <Card key={s.id} className={isOverdue ? "border-l-4 border-l-red-500" : "border-l-4 border-l-action-500"}>
+                  <div className="px-4 py-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-shark-800">{s.title}</p>
+                        <p className="text-xs text-shark-400 mt-0.5">
+                          Due: {due.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
+                          {isOverdue ? (
+                            <span className="text-red-500 font-medium ml-1.5">Overdue</span>
+                          ) : daysUntil <= 7 ? (
+                            <span className="text-amber-500 font-medium ml-1.5">{daysUntil} day{daysUntil !== 1 ? "s" : ""} left</span>
+                          ) : null}
+                        </p>
+                        {s.notes && <p className="text-xs text-shark-400 mt-1">{s.notes}</p>}
+                      </div>
+                      <button onClick={() => handleDeleteSchedule(s.id)} className="text-shark-300 hover:text-red-500 p-1">
+                        <Icon name="x" size={14} />
+                      </button>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Configuration Panel — Super Admin Only */}
       {isSuperAdmin && showConfig && (
@@ -440,6 +523,37 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Schedule Inspection Modal */}
+      <Modal open={showScheduleModal} onClose={() => setShowScheduleModal(false)} title="Schedule Inspection">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Title *</label>
+            <Input value={scheduleTitle} onChange={(e) => setScheduleTitle(e.target.value)} placeholder="e.g. April Equipment Inspection" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Due Date *</label>
+            <Input type="date" value={scheduleDueDate} onChange={(e) => setScheduleDueDate(e.target.value)} min={new Date().toISOString().split("T")[0]} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Notes / Instructions</label>
+            <textarea
+              value={scheduleNotes}
+              onChange={(e) => setScheduleNotes(e.target.value)}
+              placeholder="Instructions for staff (optional)"
+              className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              rows={3}
+            />
+          </div>
+          <p className="text-xs text-shark-400">All staff with inspection-eligible items will be notified when you create this schedule.</p>
+          <div className="flex justify-end gap-3">
+            <Button variant="secondary" onClick={() => setShowScheduleModal(false)}>Cancel</Button>
+            <Button onClick={handleCreateSchedule} disabled={scheduleSaving} loading={scheduleSaving}>
+              Schedule & Notify Staff
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

@@ -70,8 +70,8 @@ export default async function DashboardPage() {
       }),
     ]);
 
-    // Condition checks: get config + submitted checks
-    const [conditionChecksThisMonth, inspectionCategories] = await Promise.all([
+    // Condition checks: get config + submitted checks + schedules
+    const [conditionChecksThisMonth, inspectionCategories, inspectionSchedules] = await Promise.all([
       db.conditionCheck.findMany({
         where: { userId: session.user.id, monthYear: currentMonthYear },
         select: { id: true, itemType: true, assetId: true, consumableId: true, condition: true, photoLabel: true },
@@ -79,6 +79,11 @@ export default async function DashboardPage() {
       db.category.findMany({
         where: { organizationId: session.user.organizationId!, requiresInspection: true },
         select: { name: true, type: true, inspectionPhotos: true },
+      }),
+      db.inspectionSchedule.findMany({
+        where: { organizationId: session.user.organizationId!, isActive: true },
+        select: { id: true, title: true, dueDate: true, notes: true },
+        orderBy: { dueDate: "asc" },
       }),
     ]);
 
@@ -227,6 +232,7 @@ export default async function DashboardPage() {
         individualConsumables={individualConsumables}
         conditionCheckItems={conditionCheckItems}
         conditionCheckMonth={currentMonthYear}
+        inspectionSchedules={JSON.parse(JSON.stringify(inspectionSchedules))}
         consumableUsageHistory={consumableUsageHistory}
       />
     );

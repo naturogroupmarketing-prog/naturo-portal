@@ -121,8 +121,9 @@ model Organization {
   purchaseOrders PurchaseOrder[]
   auditLogs      AuditLog[]
   damageReports   DamageReport[]
-  conditionChecks ConditionCheck[]
-  customFieldDefs CustomFieldDefinition[]
+  conditionChecks      ConditionCheck[]
+  inspectionSchedules  InspectionSchedule[]
+  customFieldDefs      CustomFieldDefinition[]
   starterKits    StarterKit[]
 
   createdAt DateTime @default(now())
@@ -234,6 +235,7 @@ model User {
   consumableRequests     ConsumableRequest[]
   damageReports          DamageReport[]
   conditionChecks        ConditionCheck[]
+  inspectionSchedules    InspectionSchedule[]    @relation("InspectionCreatedBy")
   auditLogsPerformed     AuditLog[]              @relation("PerformedBy")
   auditLogsTarget        AuditLog[]              @relation("TargetUser")
   permissions            ManagerPermission?
@@ -470,6 +472,26 @@ model ConditionCheck {
   @@index([organizationId, monthYear])
   @@index([assetId])
   @@index([consumableId])
+}
+
+// ─── INSPECTION SCHEDULES ──────────────────────────────
+
+model InspectionSchedule {
+  id             String   @id @default(cuid())
+  organizationId String
+  title          String
+  dueDate        DateTime
+  notes          String?  @db.Text
+  createdById    String
+  isActive       Boolean  @default(true)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User         @relation("InspectionCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([organizationId, dueDate])
+  @@index([organizationId, isActive])
 }
 
 // ─── CATEGORIES ────────────────────────────────────────
