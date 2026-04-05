@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/privacy-policy") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/webhooks") ||
+    pathname.startsWith("/api/cron") ||
     pathname.startsWith("/_next") ||
     pathname === "/favicon.ico"
   ) {
