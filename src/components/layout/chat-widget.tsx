@@ -16,13 +16,34 @@ const SUGGESTIONS = [
   "What assets are overdue?",
 ];
 
+const CHAT_STORAGE_KEY = "trackio-chat-messages";
+
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(CHAT_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Persist messages to localStorage
+  useEffect(() => {
+    try {
+      if (messages.length > 0) {
+        // Keep only last 50 messages to avoid localStorage limits
+        const toSave = messages.slice(-50);
+        localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(toSave));
+      } else {
+        localStorage.removeItem(CHAT_STORAGE_KEY);
+      }
+    } catch {}
+  }, [messages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -34,6 +55,11 @@ export function ChatWidget() {
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
+
+  function handleNewChat() {
+    setMessages([]);
+    localStorage.removeItem(CHAT_STORAGE_KEY);
+  }
 
   async function sendMessage(text: string) {
     if (!text.trim() || isLoading) return;
@@ -103,13 +129,25 @@ export function ChatWidget() {
               </div>
               <span className="text-sm font-semibold text-white">AI Assistant</span>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
-              aria-label="Close chat"
-            >
-              <Icon name="x" size={18} />
-            </button>
+            <div className="flex items-center gap-1">
+              {messages.length > 0 && (
+                <button
+                  onClick={handleNewChat}
+                  className="text-white/80 hover:text-white px-2 py-1 rounded-lg hover:bg-white/10 transition-colors text-xs font-medium"
+                  aria-label="Start new chat"
+                  title="New conversation"
+                >
+                  <Icon name="plus" size={14} />
+                </button>
+              )}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+                aria-label="Close chat"
+              >
+                <Icon name="x" size={18} />
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
