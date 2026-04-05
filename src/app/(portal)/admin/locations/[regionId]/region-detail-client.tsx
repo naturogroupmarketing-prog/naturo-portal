@@ -89,8 +89,8 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
   // Apply standard items
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [templates, setTemplates] = useState<{ assets: AssetTemplate[]; consumables: ConsumableTemplate[] } | null>(null);
-  const [selectedAssets, setSelectedAssets] = useState<Set<string>>(new Set());
-  const [selectedConsumables, setSelectedConsumables] = useState<Set<string>>(new Set());
+  const [assetQtys, setAssetQtys] = useState<Record<string, number>>({});
+  const [consumableQtys, setConsumableQtys] = useState<Record<string, number>>({});
   const [applying, setApplying] = useState(false);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
 
@@ -102,9 +102,13 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
     try {
       const result = await getItemTemplates();
       setTemplates(result);
-      // Select all by default
-      setSelectedAssets(new Set(result.assets.map((a: AssetTemplate) => `${a.category}|${a.name}`)));
-      setSelectedConsumables(new Set(result.consumables.map((c: ConsumableTemplate) => `${c.category}|${c.name}`)));
+      // Default all to qty 1
+      const aq: Record<string, number> = {};
+      result.assets.forEach((a: AssetTemplate) => { aq[`${a.category}|${a.name}`] = 1; });
+      setAssetQtys(aq);
+      const cq: Record<string, number> = {};
+      result.consumables.forEach((c: ConsumableTemplate) => { cq[`${c.category}|${c.name}`] = 1; });
+      setConsumableQtys(cq);
     } catch {
       addToast("Failed to load templates", "error");
     }
@@ -115,8 +119,17 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
     if (!templates) return;
     setApplying(true);
     try {
-      const assetItems = templates.assets.filter((a) => selectedAssets.has(`${a.category}|${a.name}`));
-      const consumableItems = templates.consumables.filter((c) => selectedConsumables.has(`${c.category}|${c.name}`));
+      // Expand assets by quantity
+      const assetItems: typeof templates.assets = [];
+      templates.assets.forEach((a) => {
+        const key = `${a.category}|${a.name}`;
+        const qty = assetQtys[key] || 0;
+        for (let i = 0; i < qty; i++) assetItems.push(a);
+      });
+      // Consumables — qty is initial stock, not duplicates
+      const consumableItems = templates.consumables
+        .filter((c) => (consumableQtys[`${c.category}|${c.name}`] || 0) > 0)
+        .map((c) => ({ ...c, initialStock: consumableQtys[`${c.category}|${c.name}`] || 0 }));
       const result = await applyItemsToRegion({
         regionId: region.id,
         assets: assetItems,
@@ -131,12 +144,15 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
     setApplying(false);
   };
 
-  const toggleAsset = (key: string) => {
-    setSelectedAssets((prev) => { const n = new Set(prev); if (n.has(key)) n.delete(key); else n.add(key); return n; });
+  const setAssetQty = (key: string, qty: number) => {
+    setAssetQtys((prev) => ({ ...prev, [key]: Math.max(0, Math.min(50, qty)) }));
   };
-  const toggleConsumable = (key: string) => {
-    setSelectedConsumables((prev) => { const n = new Set(prev); if (n.has(key)) n.delete(key); else n.add(key); return n; });
+  const setConsumableQty = (key: string, qty: number) => {
+    setConsumableQtys((prev) => ({ ...prev, [key]: Math.max(0, qty) }));
   };
+
+  const totalAssetCount = Object.values(assetQtys).reduce((sum, q) => sum + q, 0);
+  const totalConsumableCount = Object.values(consumableQtys).filter((q) => q > 0).length;
 
   const toggleSection = (key: string) => {
     setCollapsedSections((prev) => {
@@ -582,29 +598,29 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             {templates.assets.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-shark-700">Assets ({selectedAssets.size}/{templates.assets.length})</h3>
-                  <button
-                    onClick={() => {
-                      if (selectedAssets.size === templates.assets.length) setSelectedAssets(new Set());
-                      else setSelectedAssets(new Set(templates.assets.map((a) => `${a.category}|${a.name}`)));
-                    }}
-                    className="text-xs text-action-500 hover:text-action-600"
-                  >
-                    {selectedAssets.size === templates.assets.length ? "Deselect All" : "Select All"}
-                  </button>
+                  <h3 className="text-sm font-semibold text-shark-700">Assets ({totalAssetCount} items)</h3>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => { const q: Record<string, number> = {}; templates.assets.forEach((a) => { q[`${a.category}|${a.name}`] = 1; }); setAssetQtys(q); }} className="text-xs text-action-500 hover:text-action-600">All to 1</button>
+                    <button onClick={() => { const q: Record<string, number> = {}; templates.assets.forEach((a) => { q[`${a.category}|${a.name}`] = 0; }); setAssetQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600">Clear</button>
+                  </div>
                 </div>
                 <div className="space-y-1">
                   {templates.assets.map((a) => {
                     const key = `${a.category}|${a.name}`;
+                    const qty = assetQtys[key] || 0;
                     return (
-                      <label key={key} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-shark-50 cursor-pointer">
-                        <input type="checkbox" checked={selectedAssets.has(key)} onChange={() => toggleAsset(key)} className="rounded border-shark-300" />
+                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50"}`}>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button onClick={() => setAssetQty(key, qty - 1)} className="w-7 h-7 rounded-lg border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-sm font-bold">−</button>
+                          <span className="w-8 text-center text-sm font-semibold text-shark-800">{qty}</span>
+                          <button onClick={() => setAssetQty(key, qty + 1)} className="w-7 h-7 rounded-lg border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-sm font-bold">+</button>
+                        </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-shark-800">{a.name}</p>
                           <p className="text-xs text-shark-400">{a.category}{a.supplier ? ` · ${a.supplier}` : ""}{a.purchaseCost ? ` · $${a.purchaseCost}` : ""}</p>
                         </div>
-                        {a.isHighValue && <span className="text-xs text-amber-600 font-medium">High Value</span>}
-                      </label>
+                        {a.isHighValue && <span className="text-xs text-amber-600 font-medium">HV</span>}
+                      </div>
                     );
                   })}
                 </div>
@@ -615,28 +631,31 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             {templates.consumables.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-shark-700">Consumables ({selectedConsumables.size}/{templates.consumables.length})</h3>
-                  <button
-                    onClick={() => {
-                      if (selectedConsumables.size === templates.consumables.length) setSelectedConsumables(new Set());
-                      else setSelectedConsumables(new Set(templates.consumables.map((c) => `${c.category}|${c.name}`)));
-                    }}
-                    className="text-xs text-action-500 hover:text-action-600"
-                  >
-                    {selectedConsumables.size === templates.consumables.length ? "Deselect All" : "Select All"}
-                  </button>
+                  <h3 className="text-sm font-semibold text-shark-700">Consumables ({totalConsumableCount}/{templates.consumables.length})</h3>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 10; }); setConsumableQtys(q); }} className="text-xs text-action-500 hover:text-action-600">All to 10</button>
+                    <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 0; }); setConsumableQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600">Clear</button>
+                  </div>
                 </div>
+                <p className="text-xs text-shark-400 mb-2">Set initial stock quantity for each consumable</p>
                 <div className="space-y-1">
                   {templates.consumables.map((c) => {
                     const key = `${c.category}|${c.name}`;
+                    const qty = consumableQtys[key] || 0;
                     return (
-                      <label key={key} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-shark-50 cursor-pointer">
-                        <input type="checkbox" checked={selectedConsumables.has(key)} onChange={() => toggleConsumable(key)} className="rounded border-shark-300" />
+                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50"}`}>
+                        <input
+                          type="number"
+                          min="0"
+                          value={qty}
+                          onChange={(e) => setConsumableQty(key, parseInt(e.target.value) || 0)}
+                          className="w-16 text-center text-sm border border-shark-200 rounded-lg py-1 focus:border-action-400 focus:outline-none"
+                        />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-shark-800">{c.name}</p>
                           <p className="text-xs text-shark-400">{c.category} · {c.unitType}{c.supplier ? ` · ${c.supplier}` : ""}</p>
                         </div>
-                      </label>
+                      </div>
                     );
                   })}
                 </div>
@@ -652,12 +671,12 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
         {templates && (templates.assets.length > 0 || templates.consumables.length > 0) && (
           <div className="flex items-center justify-between border-t border-shark-100 pt-4 mt-4">
             <p className="text-xs text-shark-400">
-              {selectedAssets.size + selectedConsumables.size} items selected — each asset gets a unique code
+              {totalAssetCount} assets + {totalConsumableCount} consumables — each asset gets a unique code
             </p>
             <div className="flex gap-3">
               <Button variant="secondary" onClick={() => setShowApplyModal(false)}>Cancel</Button>
-              <Button onClick={handleApply} disabled={applying || (selectedAssets.size + selectedConsumables.size === 0)} loading={applying}>
-                Apply {selectedAssets.size + selectedConsumables.size} Items
+              <Button onClick={handleApply} disabled={applying || (totalAssetCount + totalConsumableCount === 0)} loading={applying}>
+                Apply Items
               </Button>
             </div>
           </div>
