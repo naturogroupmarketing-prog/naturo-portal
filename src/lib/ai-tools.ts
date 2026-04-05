@@ -472,6 +472,37 @@ export const AI_TOOLS: Tool[] = [
       name: { type: "string", description: "State name (e.g. 'Victoria', 'Queensland')" },
     }, required: ["name"] },
   },
+  {
+    name: "approve_consumable_request",
+    description: "Approve or reject a staff consumable request. Admin/Manager only.",
+    input_schema: { type: "object" as const, properties: {
+      staff_email: { type: "string", description: "Staff member who made the request" },
+      consumable_name: { type: "string", description: "Consumable name requested" },
+      action: { type: "string", enum: ["approve", "reject"], description: "Approve or reject" },
+    }, required: ["staff_email", "consumable_name", "action"] },
+  },
+  {
+    name: "create_maintenance_schedule",
+    description: "Schedule a maintenance task for an asset. E.g. 'Schedule vacuum service every 3 months'.",
+    input_schema: { type: "object" as const, properties: {
+      asset_code: { type: "string", description: "Asset code" },
+      task_name: { type: "string", description: "Maintenance task name (e.g. 'Motor service', 'Deep clean')" },
+      frequency_days: { type: "number", description: "Frequency in days (e.g. 90 for quarterly)" },
+      notes: { type: "string", description: "Instructions or notes" },
+    }, required: ["asset_code", "task_name", "frequency_days"] },
+  },
+  {
+    name: "create_starter_kit",
+    description: "Create a new starter kit template with specified items. Super Admin only.",
+    input_schema: { type: "object" as const, properties: {
+      name: { type: "string", description: "Kit name (e.g. 'Standard Cleaning Kit')" },
+      items: { type: "array", items: { type: "object", properties: {
+        name: { type: "string", description: "Item name" },
+        type: { type: "string", enum: ["ASSET", "CONSUMABLE"], description: "Asset or consumable" },
+        quantity: { type: "number", description: "Quantity (default 1)" },
+      } }, description: "List of items in the kit" },
+    }, required: ["name", "items"] },
+  },
 ];
 
 // ── Tool Executors ──────────────────────────────────────
@@ -483,13 +514,15 @@ function regionFilter(role: Role, regionId: string | null) {
 }
 
 async function resolveRegionId(regionName: string, organizationId: string) {
-  const region = await db.region.findFirst({
-    where: {
-      name: { contains: regionName, mode: "insensitive" },
-      state: { organizationId },
-    },
+  // Try exact match first, then fallback to contains
+  const exact = await db.region.findFirst({
+    where: { name: { equals: regionName, mode: "insensitive" }, state: { organizationId } },
   });
-  return region?.id || null;
+  if (exact) return exact.id;
+  const partial = await db.region.findFirst({
+    where: { name: { contains: regionName, mode: "insensitive" }, state: { organizationId } },
+  });
+  return partial?.id || null;
 }
 
 async function searchAssets(
@@ -1155,8 +1188,11 @@ async function adjustStockTool(
   });
   if (!consumable) return { error: `Consumable "${input.consumable_name}" not found.` };
 
+  if (!Number.isFinite(input.quantity) || input.quantity === 0) return { error: "Quantity must be a non-zero number." };
+  if (Math.abs(input.quantity) > 999999) return { error: "Quantity too large." };
+
   const isDeduct = input.quantity < 0;
-  const absQty = Math.abs(input.quantity);
+  const absQty = Math.abs(Math.round(input.quantity));
 
   if (isDeduct && absQty > consumable.quantityOnHand) {
     return { error: `Cannot deduct ${absQty} — only ${consumable.quantityOnHand} in stock.` };
@@ -1539,7 +1575,8 @@ async function copyPhotoTool(input: { source_type: string; source_name: string; 
   let regionId: string | undefined;
   if (input.target_region) {
     const region = await db.region.findFirst({ where: { name: { contains: input.target_region, mode: "insensitive" }, state: { organizationId } } });
-    if (region) regionId = region.id;
+    if (!region) return { error: `Region "${input.target_region}" not found. Use list_regions to see valid names.` };
+    regionId = region.id;
   }
 
   if (input.target_type === "ASSET") {
@@ -1779,6 +1816,44 @@ async function assignStarterKitTool(input: { user_email: string; kit_name?: stri
   return { success: true, message: `Assigned starter kit "${kit.name}" (${kit.items.length} items) to ${user.name}. Staff must confirm receipt on their dashboard.` };
 }
 
+async function approveConsumableRequestTool(input: { staff_email: string; consumable_name: string; action: string }, userId: string, organizationId: string) {
+  const user = await db.user.findFirst({ where: { email: input.staff_email.toLowerCase(), organizationId } });
+  if (!user) return { error: "Staff member not found" };
+  const request = await db.consumableRequest.findFirst({
+    where: { userId: user.id, status: "PENDING", consumable: { name: { contains: input.consumable_name, mode: "insensitive" } } },
+    include: { consumable: true },
+  });
+  if (!request) return { error: `No pending request found from ${user.name} for "${input.consumable_name}"` };
+  const status = input.action === "approve" ? "APPROVED" : "REJECTED";
+  await db.consumableRequest.update({ where: { id: request.id }, data: { status, approvedById: userId, approvedAt: new Date() } });
+  return { success: true, message: `${status} request from ${user.name} for ${request.quantity}x ${request.consumable.name}` };
+}
+
+async function createMaintenanceScheduleTool(input: { asset_code: string; task_name: string; frequency_days: number; notes?: string }, userId: string, organizationId: string) {
+  const asset = await db.asset.findFirst({ where: { assetCode: input.asset_code, organizationId } });
+  if (!asset) return { error: "Asset not found" };
+  const nextDue = new Date(Date.now() + input.frequency_days * 24 * 60 * 60 * 1000);
+  const freqMap: Record<number, string> = { 1: "DAILY", 7: "WEEKLY", 30: "MONTHLY", 90: "QUARTERLY", 365: "YEARLY" };
+  const freq = freqMap[input.frequency_days] || (input.frequency_days <= 7 ? "WEEKLY" : input.frequency_days <= 31 ? "MONTHLY" : input.frequency_days <= 92 ? "QUARTERLY" : "YEARLY");
+  await db.maintenanceSchedule.create({
+    data: { assetId: asset.id, title: input.task_name, frequency: freq, nextDueDate: nextDue, description: input.notes || null, isActive: true },
+  });
+  return { success: true, message: `Scheduled "${input.task_name}" for ${asset.name} every ${input.frequency_days} days. Next due: ${nextDue.toLocaleDateString("en-AU")}` };
+}
+
+async function createStarterKitTool(input: { name: string; items: { name: string; type: string; quantity?: number }[] }, organizationId: string) {
+  const existing = await db.starterKit.findFirst({ where: { name: { equals: input.name, mode: "insensitive" }, organizationId } });
+  if (existing) return { error: `Starter kit "${input.name}" already exists` };
+  const kit = await db.starterKit.create({
+    data: {
+      name: input.name, organizationId,
+      items: { create: input.items.map((item) => ({ itemName: item.name, itemType: item.type, quantity: item.quantity || 1 })) },
+    },
+    include: { items: true },
+  });
+  return { success: true, message: `Created starter kit "${kit.name}" with ${kit.items.length} items` };
+}
+
 async function createRegionTool(input: { state_name: string; region_name: string; address?: string }, organizationId: string) {
   const state = await db.state.findFirst({ where: { name: { contains: input.state_name, mode: "insensitive" }, organizationId } });
   if (!state) return { error: `State "${input.state_name}" not found. Use create_state first or check list_regions for existing states.` };
@@ -1919,6 +1994,15 @@ export async function executeAITool(
         break;
       case "assign_starter_kit":
         result = await assignStarterKitTool(toolInput as never, userId!, organizationId!);
+        break;
+      case "approve_consumable_request":
+        result = await approveConsumableRequestTool(toolInput as never, userId!, organizationId!);
+        break;
+      case "create_maintenance_schedule":
+        result = await createMaintenanceScheduleTool(toolInput as never, userId!, organizationId!);
+        break;
+      case "create_starter_kit":
+        result = userRole === "SUPER_ADMIN" ? await createStarterKitTool(toolInput as never, organizationId!) : { error: "Super Admin only" };
         break;
       case "create_region":
         result = userRole === "SUPER_ADMIN" ? await createRegionTool(toolInput as never, organizationId!) : { error: "Super Admin only" };

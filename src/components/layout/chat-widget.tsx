@@ -132,6 +132,20 @@ export function ChatWidget() {
     }
   }
 
+  const abortRef = useRef<AbortController | null>(null);
+
+  function cancelRequest() {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+      setIsLoading(false);
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), role: "assistant", content: "Request cancelled." },
+      ]);
+    }
+  }
+
   async function sendMessage(text: string) {
     if (!text.trim() || isLoading) return;
 
@@ -154,32 +168,54 @@ export function ChatWidget() {
     setInput("");
     setIsLoading(true);
 
+    // Create abort controller with 60s timeout
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
+
     try {
       const apiMessages = newMessages.map((m) => ({ role: m.role, content: m.content }));
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: apiMessages }),
+        signal: controller.signal,
       });
 
-      if (!res.ok) throw new Error("Request failed");
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        if (res.status === 429) throw new Error("Rate limit reached. Please wait a moment.");
+        if (res.status === 401) throw new Error("Session expired. Please refresh the page.");
+        throw new Error(errorData?.error || "Request failed. Please try again.");
+      }
+
       const data = await res.json();
 
       setMessages((prev) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "assistant", content: data.response },
+        { id: crypto.randomUUID(), role: "assistant", content: data.response || "Done." },
       ]);
 
-      // Auto-refresh the page if AI made changes to data
       if (data.dataChanged) {
         router.refresh();
       }
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        { id: crypto.randomUUID(), role: "assistant", content: "Sorry, something went wrong. Please try again." },
-      ]);
+    } catch (err) {
+      if ((err as Error).name === "AbortError") {
+        setMessages((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), role: "assistant", content: "Request timed out. The task may have been too complex. Try breaking it into smaller steps." },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), role: "assistant", content: (err as Error).message || "Something went wrong. Please try again." },
+        ]);
+      }
     } finally {
+      clearTimeout(timeoutId);
+      abortRef.current = null;
       setIsLoading(false);
     }
   }
@@ -338,9 +374,15 @@ export function ChatWidget() {
                   aria-label="Type your message"
                   className="flex-1 rounded-xl border border-shark-200 bg-white px-3.5 py-2 text-sm text-shark-900 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50"
                 />
-                <Button type="submit" size="sm" disabled={isLoading || !input.trim()}>
-                  <Icon name="arrow-right" size={16} />
-                </Button>
+                {isLoading ? (
+                  <Button type="button" size="sm" variant="outline" onClick={cancelRequest} className="text-red-500 border-red-200 hover:bg-red-50">
+                    <Icon name="x" size={16} />
+                  </Button>
+                ) : (
+                  <Button type="submit" size="sm" disabled={!input.trim()}>
+                    <Icon name="arrow-right" size={16} />
+                  </Button>
+                )}
               </form>
             </>
           )}

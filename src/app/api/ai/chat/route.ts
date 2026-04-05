@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
     "bulk_update_assets", "bulk_assign_consumables", "bulk_apply_items",
     "toggle_permission", "manage_category", "update_region", "assign_starter_kit",
     "create_region", "create_state",
+    "approve_consumable_request", "create_maintenance_schedule", "create_starter_kit",
   ];
   let canUseAIManagement = false;
 
