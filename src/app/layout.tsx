@@ -3,6 +3,8 @@ import { Inter, Exo } from "next/font/google";
 import { PWARegister } from "@/components/pwa-register";
 import { ToastProvider } from "@/components/ui/toast";
 import { CookieConsent } from "@/components/privacy/cookie-consent";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -41,6 +43,8 @@ export default function RootLayout({
           <PWARegister />
           {children}
           <CookieConsent />
+          <Analytics />
+          <SpeedInsights />
         </ToastProvider>
       </body>
     </html>

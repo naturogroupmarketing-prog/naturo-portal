@@ -15,7 +15,8 @@ export default async function SettingsPage() {
       email: true,
       phone: true,
       emailNotifications: true,
-      password: true, // just to check if they have one (won't expose)
+      password: true,
+      totpEnabled: true,
     },
   });
 
@@ -28,6 +29,7 @@ export default async function SettingsPage() {
       userPhone={user.phone || ""}
       emailNotifications={user.emailNotifications}
       hasPassword={!!user.password}
+      mfaEnabled={user.totpEnabled}
     />
   );
 }

@@ -11,6 +11,7 @@ import { Icon } from "@/components/ui/icon";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
 import { toggleEmailNotifications, changePassword, updateProfile, exportMyData, requestAccountDeletion } from "@/app/actions/user-settings";
+import { generateTOTPSecret, enableMFA, disableMFA } from "@/app/actions/mfa";
 
 interface Props {
   userName: string;
@@ -18,9 +19,10 @@ interface Props {
   userPhone: string;
   emailNotifications: boolean;
   hasPassword: boolean;
+  mfaEnabled: boolean;
 }
 
-export function SettingsClient({ userName, userEmail, userPhone, emailNotifications, hasPassword }: Props) {
+export function SettingsClient({ userName, userEmail, userPhone, emailNotifications, hasPassword, mfaEnabled }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
   const [emailEnabled, setEmailEnabled] = useState(emailNotifications);
@@ -45,6 +47,60 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
   const [deleting, setDeleting] = useState(false);
+
+  // MFA
+  const [showMfaSetup, setShowMfaSetup] = useState(false);
+  const [mfaQrUri, setMfaQrUri] = useState("");
+  const [mfaSecret, setMfaSecret] = useState("");
+  const [mfaCode, setMfaCode] = useState("");
+  const [mfaLoading, setMfaLoading] = useState(false);
+  const [mfaStep, setMfaStep] = useState<"qr" | "verify">("qr");
+  const [showDisableMfa, setShowDisableMfa] = useState(false);
+  const [disablePassword, setDisablePassword] = useState("");
+  const [disablingMfa, setDisablingMfa] = useState(false);
+
+  const handleSetupMfa = async () => {
+    setMfaLoading(true);
+    try {
+      const result = await generateTOTPSecret();
+      setMfaQrUri(result.uri);
+      setMfaSecret(result.secret);
+      setMfaStep("qr");
+      setShowMfaSetup(true);
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Failed to generate", "error");
+    }
+    setMfaLoading(false);
+  };
+
+  const handleVerifyMfa = async () => {
+    if (mfaCode.length !== 6) { addToast("Enter a 6-digit code", "error"); return; }
+    setMfaLoading(true);
+    try {
+      await enableMFA(mfaCode);
+      addToast("Two-factor authentication enabled!", "success");
+      setShowMfaSetup(false);
+      setMfaCode("");
+      router.refresh();
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Invalid code", "error");
+    }
+    setMfaLoading(false);
+  };
+
+  const handleDisableMfa = async () => {
+    setDisablingMfa(true);
+    try {
+      await disableMFA(disablePassword);
+      addToast("Two-factor authentication disabled", "success");
+      setShowDisableMfa(false);
+      setDisablePassword("");
+      router.refresh();
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Failed", "error");
+    }
+    setDisablingMfa(false);
+  };
 
   const handleToggleEmail = async () => {
     setTogglingEmail(true);
@@ -209,6 +265,39 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
         </Card>
       )}
 
+      {/* Two-Factor Authentication */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Icon name="shield" size={18} className="text-action-500" />
+            Two-Factor Authentication
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-shark-800">
+                {mfaEnabled ? "MFA is enabled" : "Add an extra layer of security"}
+              </p>
+              <p className="text-xs text-shark-400 mt-0.5">
+                {mfaEnabled
+                  ? "Your account is protected with an authenticator app"
+                  : "Use an authenticator app (Google Authenticator, Authy) for login verification"}
+              </p>
+            </div>
+            {mfaEnabled ? (
+              <Button variant="outline" size="sm" className="text-red-500 border-red-200 hover:bg-red-50" onClick={() => setShowDisableMfa(true)}>
+                Disable
+              </Button>
+            ) : (
+              <Button size="sm" onClick={handleSetupMfa} loading={mfaLoading}>
+                Enable MFA
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Privacy & Data */}
       <Card>
         <CardHeader>
@@ -269,6 +358,69 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
             <Button type="button" variant="secondary" onClick={() => { setShowDeleteModal(false); setDeletePassword(""); }}>Cancel</Button>
             <Button onClick={handleDeleteAccount} disabled={!deletePassword || deleting} loading={deleting} className="bg-red-600 hover:bg-red-700">
               Delete My Account
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* MFA Setup Modal */}
+      <Modal open={showMfaSetup} onClose={() => { setShowMfaSetup(false); setMfaCode(""); }} title="Set Up Two-Factor Authentication">
+        <div className="space-y-5">
+          {mfaStep === "qr" && (
+            <>
+              <div className="text-center">
+                <p className="text-sm text-shark-600 mb-4">Scan this QR code with your authenticator app:</p>
+                {/* QR Code rendered as a link to otpauth URI */}
+                <div className="bg-white p-4 rounded-xl inline-block border border-shark-200 mx-auto">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(mfaQrUri)}`}
+                    alt="MFA QR Code"
+                    width={200}
+                    height={200}
+                    className="mx-auto"
+                  />
+                </div>
+                <p className="text-xs text-shark-400 mt-3">Or enter this code manually:</p>
+                <code className="block mt-1.5 text-sm font-mono bg-shark-50 px-3 py-2 rounded-lg text-shark-700 select-all break-all">
+                  {mfaSecret}
+                </code>
+              </div>
+              <div className="flex justify-end">
+                <Button onClick={() => setMfaStep("verify")}>Next</Button>
+              </div>
+            </>
+          )}
+          {mfaStep === "verify" && (
+            <>
+              <p className="text-sm text-shark-600">Enter the 6-digit code from your authenticator app to verify:</p>
+              <Input
+                value={mfaCode}
+                onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                placeholder="000000"
+                className="text-center text-2xl font-mono tracking-[0.5em]"
+                maxLength={6}
+                autoFocus
+              />
+              <div className="flex justify-between">
+                <Button variant="secondary" onClick={() => setMfaStep("qr")}>Back</Button>
+                <Button onClick={handleVerifyMfa} disabled={mfaCode.length !== 6 || mfaLoading} loading={mfaLoading}>
+                  Verify & Enable
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </Modal>
+
+      {/* Disable MFA Modal */}
+      <Modal open={showDisableMfa} onClose={() => { setShowDisableMfa(false); setDisablePassword(""); }} title="Disable Two-Factor Authentication">
+        <div className="space-y-4">
+          <p className="text-sm text-shark-600">Enter your password to disable MFA. This will make your account less secure.</p>
+          <Input type="password" value={disablePassword} onChange={(e) => setDisablePassword(e.target.value)} placeholder="Your current password" />
+          <div className="flex justify-end gap-3">
+            <Button variant="secondary" onClick={() => { setShowDisableMfa(false); setDisablePassword(""); }}>Cancel</Button>
+            <Button onClick={handleDisableMfa} disabled={!disablePassword || disablingMfa} loading={disablingMfa} className="bg-red-600 hover:bg-red-700 text-white">
+              Disable MFA
             </Button>
           </div>
         </div>
