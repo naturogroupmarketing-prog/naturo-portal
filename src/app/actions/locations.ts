@@ -184,18 +184,33 @@ export async function getItemTemplates() {
   const organizationId = session.user.organizationId;
   if (!organizationId) throw new Error("No organization found");
 
-  const assets = await db.asset.findMany({
+  const allAssets = await db.asset.findMany({
     where: { organizationId },
     select: { name: true, category: true, description: true, isHighValue: true, supplier: true, purchaseCost: true },
-    distinct: ["name", "category"],
     orderBy: [{ category: "asc" }, { name: "asc" }],
   });
 
-  const consumables = await db.consumable.findMany({
+  // Deduplicate by name (case-insensitive) — keep first occurrence
+  const seenAssets = new Set<string>();
+  const assets = allAssets.filter((a) => {
+    const key = a.name.toLowerCase().trim();
+    if (seenAssets.has(key)) return false;
+    seenAssets.add(key);
+    return true;
+  });
+
+  const allConsumables = await db.consumable.findMany({
     where: { organizationId, isActive: true },
     select: { name: true, category: true, unitType: true, minimumThreshold: true, reorderLevel: true, supplier: true, unitCost: true },
-    distinct: ["name", "category"],
     orderBy: [{ category: "asc" }, { name: "asc" }],
+  });
+
+  const seenConsumables = new Set<string>();
+  const consumables = allConsumables.filter((c) => {
+    const key = c.name.toLowerCase().trim();
+    if (seenConsumables.has(key)) return false;
+    seenConsumables.add(key);
+    return true;
   });
 
   return { assets, consumables };
