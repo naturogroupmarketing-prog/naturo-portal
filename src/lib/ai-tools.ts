@@ -456,6 +456,22 @@ export const AI_TOOLS: Tool[] = [
       kit_name: { type: "string", description: "Starter kit name (optional — uses default if not specified)" },
     }, required: ["user_email"] },
   },
+  {
+    name: "create_region",
+    description: "Create a new region/location within an existing state. Super Admin only. Use list_regions first to see existing states.",
+    input_schema: { type: "object" as const, properties: {
+      state_name: { type: "string", description: "Name of the existing state (e.g. 'Victoria', 'New South Wales')" },
+      region_name: { type: "string", description: "Name of the new region (e.g. 'Blackburn 3130', 'Sydney CBD')" },
+      address: { type: "string", description: "Storage address (optional)" },
+    }, required: ["state_name", "region_name"] },
+  },
+  {
+    name: "create_state",
+    description: "Create a new state. Super Admin only. States contain regions.",
+    input_schema: { type: "object" as const, properties: {
+      name: { type: "string", description: "State name (e.g. 'Victoria', 'Queensland')" },
+    }, required: ["name"] },
+  },
 ];
 
 // ── Tool Executors ──────────────────────────────────────
@@ -1763,6 +1779,22 @@ async function assignStarterKitTool(input: { user_email: string; kit_name?: stri
   return { success: true, message: `Assigned starter kit "${kit.name}" (${kit.items.length} items) to ${user.name}. Staff must confirm receipt on their dashboard.` };
 }
 
+async function createRegionTool(input: { state_name: string; region_name: string; address?: string }, organizationId: string) {
+  const state = await db.state.findFirst({ where: { name: { contains: input.state_name, mode: "insensitive" }, organizationId } });
+  if (!state) return { error: `State "${input.state_name}" not found. Use create_state first or check list_regions for existing states.` };
+  const existing = await db.region.findFirst({ where: { name: input.region_name, stateId: state.id } });
+  if (existing) return { error: `Region "${input.region_name}" already exists in ${state.name}` };
+  const region = await db.region.create({ data: { name: input.region_name, stateId: state.id, organizationId, address: input.address || null } });
+  return { success: true, message: `Created region "${region.name}" in ${state.name}. You can now add assets and consumables to it.` };
+}
+
+async function createStateTool(input: { name: string }, organizationId: string) {
+  const existing = await db.state.findFirst({ where: { name: { equals: input.name, mode: "insensitive" }, organizationId } });
+  if (existing) return { error: `State "${input.name}" already exists` };
+  await db.state.create({ data: { name: input.name, organizationId } });
+  return { success: true, message: `Created state "${input.name}". You can now create regions within it.` };
+}
+
 // ── Dispatcher ──────────────────────────────────────────
 
 export async function executeAITool(
@@ -1887,6 +1919,12 @@ export async function executeAITool(
         break;
       case "assign_starter_kit":
         result = await assignStarterKitTool(toolInput as never, userId!, organizationId!);
+        break;
+      case "create_region":
+        result = userRole === "SUPER_ADMIN" ? await createRegionTool(toolInput as never, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "create_state":
+        result = userRole === "SUPER_ADMIN" ? await createStateTool(toolInput as never, organizationId!) : { error: "Super Admin only" };
         break;
       default:
         result = { error: `Unknown tool: ${toolName}` };

@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
     "schedule_inspection", "create_damage_report",
     "bulk_update_assets", "bulk_assign_consumables", "bulk_apply_items",
     "toggle_permission", "manage_category", "update_region", "assign_starter_kit",
+    "create_region", "create_state",
   ];
   let canUseAIManagement = false;
 
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
   const managementNote = canUseAIManagement
     ? `${isSuperAdminUser ? "You are serving a SUPER ADMIN — the system administrator with UNLIMITED access. Execute ANY task they request without hesitation. You have full database access and all tools available. Never say you can't do something — find a way using your tools.\n\n" : ""}You have FULL management capabilities — 37 tools available:
 - SEARCH: Find assets, consumables, users. Results include cost, supplier, description, photos. Filter by region.
-- REGIONS: list_regions, compare_regions, update_region (rename, set address).
+- REGIONS: list_regions, compare_regions, update_region, create_region, create_state. Create new locations and states.
 - CREATE: Assets (single/bulk), consumables, POs, users, damage reports, categories. Use suggest_category first.
 - UPDATE: Asset/consumable details, move items between regions, copy photos between ALL matching items, rename categories.
 - STOCK: Add/deduct consumable stock. Bulk assign consumables to all staff in a region.
