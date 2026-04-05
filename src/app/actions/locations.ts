@@ -186,7 +186,7 @@ export async function getItemTemplates() {
 
   const allAssets = await db.asset.findMany({
     where: { organizationId },
-    select: { name: true, category: true, description: true, isHighValue: true, supplier: true, purchaseCost: true },
+    select: { name: true, category: true, description: true, isHighValue: true, supplier: true, purchaseCost: true, imageUrl: true },
     orderBy: [{ category: "asc" }, { name: "asc" }],
   });
 
@@ -201,7 +201,7 @@ export async function getItemTemplates() {
 
   const allConsumables = await db.consumable.findMany({
     where: { organizationId, isActive: true },
-    select: { name: true, category: true, unitType: true, minimumThreshold: true, reorderLevel: true, supplier: true, unitCost: true },
+    select: { name: true, category: true, unitType: true, minimumThreshold: true, reorderLevel: true, supplier: true, unitCost: true, imageUrl: true },
     orderBy: [{ category: "asc" }, { name: "asc" }],
   });
 
@@ -221,8 +221,8 @@ export async function getItemTemplates() {
  */
 export async function applyItemsToRegion(data: {
   regionId: string;
-  assets: { name: string; category: string; description?: string | null; isHighValue?: boolean; supplier?: string | null; purchaseCost?: number | null }[];
-  consumables: { name: string; category: string; unitType: string; minimumThreshold?: number; reorderLevel?: number; supplier?: string | null; unitCost?: number | null; initialStock?: number }[];
+  assets: { name: string; category: string; description?: string | null; isHighValue?: boolean; supplier?: string | null; purchaseCost?: number | null; imageUrl?: string | null }[];
+  consumables: { name: string; category: string; unitType: string; minimumThreshold?: number; reorderLevel?: number; supplier?: string | null; unitCost?: number | null; imageUrl?: string | null; initialStock?: number }[];
 }) {
   const session = await auth();
   if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
@@ -244,6 +244,7 @@ export async function applyItemsToRegion(data: {
         assetCode, name: item.name, category: item.category,
         description: item.description || null, isHighValue: item.isHighValue || false,
         supplier: item.supplier || null, purchaseCost: item.purchaseCost || null,
+        imageUrl: item.imageUrl || null,
         qrCodeData, regionId: data.regionId, organizationId,
       },
     });
@@ -256,7 +257,8 @@ export async function applyItemsToRegion(data: {
         name: item.name, category: item.category, unitType: item.unitType || "units",
         quantityOnHand: item.initialStock || 0, minimumThreshold: item.minimumThreshold ?? 5,
         reorderLevel: item.reorderLevel ?? 10, supplier: item.supplier || null,
-        unitCost: item.unitCost || null, regionId: data.regionId, organizationId,
+        unitCost: item.unitCost || null, imageUrl: item.imageUrl || null,
+        regionId: data.regionId, organizationId,
       },
     });
     consumablesCreated++;
