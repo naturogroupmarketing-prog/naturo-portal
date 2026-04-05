@@ -21,18 +21,22 @@ export default async function PortalLayout({
     redirect("/login?error=disabled");
   }
 
-  // Count pending POs for sidebar badge (managers/admins only)
+  // Count pending POs and pending returns for sidebar badges (managers/admins only)
   let pendingPOCount = 0;
+  let pendingReturnsCount = 0;
   if (isAdminOrManager(session.user.role) && session.user.organizationId) {
-    pendingPOCount = await db.purchaseOrder.count({
-      where: {
-        organizationId: session.user.organizationId,
-        status: "PENDING",
-        ...(session.user.role === "BRANCH_MANAGER" && session.user.regionId
-          ? { regionId: session.user.regionId }
-          : {}),
-      },
-    });
+    const regionWhere = session.user.role === "BRANCH_MANAGER" && session.user.regionId
+      ? { regionId: session.user.regionId }
+      : {};
+
+    [pendingPOCount, pendingReturnsCount] = await Promise.all([
+      db.purchaseOrder.count({
+        where: { organizationId: session.user.organizationId, status: "PENDING", ...regionWhere },
+      }),
+      db.pendingReturn.count({
+        where: { organizationId: session.user.organizationId, isVerified: false, ...regionWhere },
+      }),
+    ]);
   }
 
   return (
@@ -42,6 +46,7 @@ export default async function PortalLayout({
         userName={session.user.name}
         userImage={session.user.image}
         pendingPOCount={pendingPOCount}
+        pendingReturnsCount={pendingReturnsCount}
       >
         {children}
       </AppShell>

@@ -11,9 +11,10 @@ interface AppShellProps {
   userName?: string | null;
   userImage?: string | null;
   pendingPOCount?: number;
+  pendingReturnsCount?: number;
 }
 
-export function AppShell({ children, role, userName, userImage, pendingPOCount = 0 }: AppShellProps) {
+export function AppShell({ children, role, userName, userImage, pendingPOCount = 0, pendingReturnsCount = 0 }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -21,7 +22,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:flex-shrink-0">
         <div className="flex w-64 flex-col bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 transition-colors">
-          <Sidebar role={role} pendingPOCount={pendingPOCount} />
+          <Sidebar role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} />
         </div>
       </aside>
 
@@ -33,7 +34,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
             onClick={() => setSidebarOpen(false)}
           />
           <div className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 z-50 shadow-xl transition-colors">
-            <Sidebar role={role} pendingPOCount={pendingPOCount} onClose={() => setSidebarOpen(false)} />
+            <Sidebar role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} onClose={() => setSidebarOpen(false)} />
           </div>
         </div>
       )}
