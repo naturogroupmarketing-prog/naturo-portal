@@ -268,6 +268,194 @@ export const AI_TOOLS: Tool[] = [
       required: ["name", "category", "region"],
     },
   },
+  // ── New Tools ──────────────────────────────────────────
+  {
+    name: "move_asset_to_region",
+    description: "Transfer an asset to a different region/location. Search for the asset first.",
+    input_schema: { type: "object" as const, properties: {
+      asset_code: { type: "string", description: "Asset code to move" },
+      target_region: { type: "string", description: "Target region name" },
+    }, required: ["asset_code", "target_region"] },
+  },
+  {
+    name: "move_consumable_to_region",
+    description: "Transfer a consumable to a different region. Search first to find the item.",
+    input_schema: { type: "object" as const, properties: {
+      consumable_name: { type: "string", description: "Consumable name to move" },
+      source_region: { type: "string", description: "Current region name" },
+      target_region: { type: "string", description: "Target region name" },
+    }, required: ["consumable_name", "target_region"] },
+  },
+  {
+    name: "copy_photo",
+    description: "Copy a photo from one item to another. Useful when items of the same type should share the same image.",
+    input_schema: { type: "object" as const, properties: {
+      source_type: { type: "string", enum: ["ASSET", "CONSUMABLE"], description: "Source item type" },
+      source_name: { type: "string", description: "Source item name (to copy photo FROM)" },
+      target_type: { type: "string", enum: ["ASSET", "CONSUMABLE"], description: "Target item type" },
+      target_name: { type: "string", description: "Target item name (to copy photo TO)" },
+      target_region: { type: "string", description: "Target region (to narrow down if multiple items with same name)" },
+    }, required: ["source_type", "source_name", "target_type", "target_name"] },
+  },
+  {
+    name: "create_user",
+    description: "Create a new staff member account. Super Admin only.",
+    input_schema: { type: "object" as const, properties: {
+      name: { type: "string", description: "Full name" },
+      email: { type: "string", description: "Email address" },
+      password: { type: "string", description: "Initial password (min 8 chars, 1 uppercase, 1 number)" },
+      role: { type: "string", enum: ["STAFF", "BRANCH_MANAGER"], description: "User role" },
+      region: { type: "string", description: "Region name to assign the user to" },
+      phone: { type: "string", description: "Phone number (optional)" },
+    }, required: ["name", "email", "password", "role", "region"] },
+  },
+  {
+    name: "deactivate_user",
+    description: "Deactivate a staff member's account. They won't be able to log in. Super Admin only.",
+    input_schema: { type: "object" as const, properties: {
+      email: { type: "string", description: "Email of the user to deactivate" },
+      confirm: { type: "boolean", description: "Must be true to confirm" },
+    }, required: ["email", "confirm"] },
+  },
+  {
+    name: "reset_user_password",
+    description: "Reset a user's password. Super Admin only.",
+    input_schema: { type: "object" as const, properties: {
+      email: { type: "string", description: "Email of the user" },
+      new_password: { type: "string", description: "New password (min 8 chars, 1 uppercase, 1 number)" },
+    }, required: ["email", "new_password"] },
+  },
+  {
+    name: "check_staff_equipment",
+    description: "View all assets and consumables assigned to a specific staff member.",
+    input_schema: { type: "object" as const, properties: {
+      email: { type: "string", description: "Staff member's email" },
+    }, required: ["email"] },
+  },
+  {
+    name: "approve_purchase_order",
+    description: "Approve or reject a pending purchase order. Super Admin only.",
+    input_schema: { type: "object" as const, properties: {
+      consumable_name: { type: "string", description: "Name of the consumable on the PO" },
+      action: { type: "string", enum: ["approve", "reject"], description: "Approve or reject" },
+      reason: { type: "string", description: "Reason (required for rejection)" },
+    }, required: ["consumable_name", "action"] },
+  },
+  {
+    name: "mark_po_received",
+    description: "Mark an ordered purchase order as received. Auto-restocks the consumable.",
+    input_schema: { type: "object" as const, properties: {
+      consumable_name: { type: "string", description: "Name of the consumable on the PO" },
+    }, required: ["consumable_name"] },
+  },
+  {
+    name: "verify_return",
+    description: "Verify a pending return item (restock it). Admin/Manager only.",
+    input_schema: { type: "object" as const, properties: {
+      item_name: { type: "string", description: "Name of the returned item" },
+      action: { type: "string", enum: ["verify", "reject"], description: "Verify (restock) or reject" },
+      reason: { type: "string", description: "Reason (for rejection)" },
+    }, required: ["item_name", "action"] },
+  },
+  {
+    name: "schedule_inspection",
+    description: "Create a scheduled inspection with a due date. Notifies all staff. Super Admin only.",
+    input_schema: { type: "object" as const, properties: {
+      title: { type: "string", description: "Inspection title (e.g. 'April Equipment Check')" },
+      due_date: { type: "string", description: "Due date in YYYY-MM-DD format" },
+      notes: { type: "string", description: "Instructions for staff (optional)" },
+    }, required: ["title", "due_date"] },
+  },
+  {
+    name: "create_damage_report",
+    description: "Report an asset as damaged or lost.",
+    input_schema: { type: "object" as const, properties: {
+      asset_code: { type: "string", description: "Asset code" },
+      type: { type: "string", enum: ["DAMAGE", "LOSS"], description: "Damage or loss" },
+      description: { type: "string", description: "Description of the damage/loss" },
+    }, required: ["asset_code", "type", "description"] },
+  },
+  {
+    name: "get_overdue_inspections",
+    description: "Check which staff haven't completed their inspection. Returns completion status per staff member.",
+    input_schema: { type: "object" as const, properties: {
+      month: { type: "string", description: "Month in YYYY-MM format (default: current month)" },
+    } },
+  },
+  {
+    name: "bulk_update_assets",
+    description: "Update multiple assets at once by filter. E.g. 'Set all vacuums in Sydney to supplier XYZ'. Super Admin only.",
+    input_schema: { type: "object" as const, properties: {
+      filter_category: { type: "string", description: "Category to filter by" },
+      filter_region: { type: "string", description: "Region to filter by" },
+      filter_name: { type: "string", description: "Name contains filter" },
+      update_supplier: { type: "string", description: "New supplier value" },
+      update_category: { type: "string", description: "New category value" },
+      update_description: { type: "string", description: "New description" },
+    }, required: [] },
+  },
+  {
+    name: "bulk_assign_consumables",
+    description: "Assign a consumable to all staff in a region. E.g. 'Give all Sydney staff 2x cloths'.",
+    input_schema: { type: "object" as const, properties: {
+      consumable_name: { type: "string", description: "Consumable name" },
+      region: { type: "string", description: "Region name — assign to all staff in this region" },
+      quantity: { type: "number", description: "Quantity per staff member" },
+    }, required: ["consumable_name", "region", "quantity"] },
+  },
+  {
+    name: "toggle_permission",
+    description: "Enable or disable a permission for a branch manager. Super Admin only.",
+    input_schema: { type: "object" as const, properties: {
+      manager_email: { type: "string", description: "Branch manager's email" },
+      permission: { type: "string", description: "Permission key (e.g. purchaseOrderApprove, returnsVerify, consumableStockAdjust)" },
+      enabled: { type: "boolean", description: "true to enable, false to disable" },
+    }, required: ["manager_email", "permission", "enabled"] },
+  },
+  {
+    name: "view_activity_log",
+    description: "Search the audit trail for recent actions. Shows who did what and when.",
+    input_schema: { type: "object" as const, properties: {
+      search: { type: "string", description: "Search term to filter actions" },
+      limit: { type: "number", description: "Number of results (default 10, max 50)" },
+    } },
+  },
+  {
+    name: "manage_category",
+    description: "Create or rename an asset/consumable category (section).",
+    input_schema: { type: "object" as const, properties: {
+      action: { type: "string", enum: ["create", "rename"], description: "Create new or rename existing" },
+      type: { type: "string", enum: ["ASSET", "CONSUMABLE"], description: "Category type" },
+      name: { type: "string", description: "Category name (current name if renaming)" },
+      new_name: { type: "string", description: "New name (only for rename)" },
+    }, required: ["action", "type", "name"] },
+  },
+  {
+    name: "update_region",
+    description: "Update a region's name or address. Super Admin only.",
+    input_schema: { type: "object" as const, properties: {
+      region_name: { type: "string", description: "Current region name" },
+      new_name: { type: "string", description: "New region name" },
+      address: { type: "string", description: "Storage address" },
+    }, required: ["region_name"] },
+  },
+  {
+    name: "bulk_apply_items",
+    description: "Apply standard items from existing regions to an empty region. Creates assets with unique codes and consumables with initial stock.",
+    input_schema: { type: "object" as const, properties: {
+      target_region: { type: "string", description: "Region name to apply items to" },
+      asset_quantity: { type: "number", description: "Quantity of each asset type (default 1)" },
+      consumable_stock: { type: "number", description: "Initial stock for each consumable (default 0)" },
+    }, required: ["target_region"] },
+  },
+  {
+    name: "assign_starter_kit",
+    description: "Assign a starter kit to a staff member. Creates all kit items as assignments.",
+    input_schema: { type: "object" as const, properties: {
+      user_email: { type: "string", description: "Staff member's email" },
+      kit_name: { type: "string", description: "Starter kit name (optional — uses default if not specified)" },
+    }, required: ["user_email"] },
+  },
 ];
 
 // ── Tool Executors ──────────────────────────────────────
@@ -1298,6 +1486,267 @@ async function createConsumableTool(
   };
 }
 
+// ── New Tool Executors ──────────────────────────────────
+
+async function moveAssetToRegion(input: { asset_code: string; target_region: string }, role: Role, userId: string, organizationId: string) {
+  if (role === "STAFF") return { error: "Unauthorized" };
+  const asset = await db.asset.findFirst({ where: { assetCode: input.asset_code, organizationId } });
+  if (!asset) return { error: "Asset not found" };
+  const region = await db.region.findFirst({ where: { name: { contains: input.target_region, mode: "insensitive" }, state: { organizationId } } });
+  if (!region) return { error: `Region "${input.target_region}" not found` };
+  await db.asset.update({ where: { id: asset.id }, data: { regionId: region.id } });
+  return { success: true, message: `Moved "${asset.name}" (${asset.assetCode}) to ${region.name}` };
+}
+
+async function moveConsumableToRegion(input: { consumable_name: string; source_region?: string; target_region: string }, role: Role, userId: string, organizationId: string) {
+  if (role === "STAFF") return { error: "Unauthorized" };
+  const where: Record<string, unknown> = { name: { contains: input.consumable_name, mode: "insensitive" }, organizationId, isActive: true };
+  if (input.source_region) {
+    const src = await db.region.findFirst({ where: { name: { contains: input.source_region, mode: "insensitive" }, state: { organizationId } } });
+    if (src) where.regionId = src.id;
+  }
+  const consumable = await db.consumable.findFirst({ where });
+  if (!consumable) return { error: "Consumable not found" };
+  const region = await db.region.findFirst({ where: { name: { contains: input.target_region, mode: "insensitive" }, state: { organizationId } } });
+  if (!region) return { error: `Region "${input.target_region}" not found` };
+  await db.consumable.update({ where: { id: consumable.id }, data: { regionId: region.id } });
+  return { success: true, message: `Moved "${consumable.name}" to ${region.name}` };
+}
+
+async function copyPhotoTool(input: { source_type: string; source_name: string; target_type: string; target_name: string; target_region?: string }, organizationId: string) {
+  const sourceItem = input.source_type === "ASSET"
+    ? await db.asset.findFirst({ where: { name: { contains: input.source_name, mode: "insensitive" }, organizationId }, select: { imageUrl: true, name: true } })
+    : await db.consumable.findFirst({ where: { name: { contains: input.source_name, mode: "insensitive" }, organizationId, isActive: true }, select: { imageUrl: true, name: true } });
+  if (!sourceItem?.imageUrl) return { error: `No photo found on "${input.source_name}"` };
+
+  const regionFilter = input.target_region ? { region: { name: { contains: input.target_region, mode: "insensitive" as const } } } : {};
+  if (input.target_type === "ASSET") {
+    const target = await db.asset.findFirst({ where: { name: { contains: input.target_name, mode: "insensitive" }, organizationId, ...regionFilter } });
+    if (!target) return { error: `Target asset "${input.target_name}" not found` };
+    await db.asset.update({ where: { id: target.id }, data: { imageUrl: sourceItem.imageUrl } });
+    return { success: true, message: `Copied photo from "${sourceItem.name}" to asset "${target.name}"` };
+  } else {
+    const target = await db.consumable.findFirst({ where: { name: { contains: input.target_name, mode: "insensitive" }, organizationId, isActive: true, ...regionFilter } });
+    if (!target) return { error: `Target consumable "${input.target_name}" not found` };
+    await db.consumable.update({ where: { id: target.id }, data: { imageUrl: sourceItem.imageUrl } });
+    return { success: true, message: `Copied photo from "${sourceItem.name}" to consumable "${target.name}"` };
+  }
+}
+
+async function createUserTool(input: { name: string; email: string; password: string; role: string; region: string; phone?: string }, userId: string, organizationId: string) {
+  const region = await db.region.findFirst({ where: { name: { contains: input.region, mode: "insensitive" }, state: { organizationId } } });
+  if (!region) return { error: `Region "${input.region}" not found` };
+  const existing = await db.user.findUnique({ where: { email: input.email.toLowerCase() } });
+  if (existing) return { error: "User already exists" };
+  if (input.password.length < 8) return { error: "Password must be at least 8 characters" };
+  const bcrypt = await import("bcryptjs");
+  const hashed = await bcrypt.hash(input.password, 12);
+  const user = await db.user.create({ data: { name: input.name, email: input.email.toLowerCase(), password: hashed, role: input.role as "STAFF" | "BRANCH_MANAGER", regionId: region.id, organizationId, phone: input.phone || null } });
+  return { success: true, message: `Created ${input.role} "${input.name}" (${input.email}) in ${region.name}` };
+}
+
+async function deactivateUserTool(input: { email: string; confirm: boolean }, organizationId: string) {
+  if (!input.confirm) return { error: "Must confirm with confirm: true" };
+  const user = await db.user.findFirst({ where: { email: input.email.toLowerCase(), organizationId } });
+  if (!user) return { error: "User not found" };
+  await db.user.update({ where: { id: user.id }, data: { isActive: false } });
+  return { success: true, message: `Deactivated "${user.name}" (${user.email})` };
+}
+
+async function resetUserPasswordTool(input: { email: string; new_password: string }, organizationId: string) {
+  const user = await db.user.findFirst({ where: { email: input.email.toLowerCase(), organizationId } });
+  if (!user) return { error: "User not found" };
+  if (input.new_password.length < 8) return { error: "Password must be at least 8 characters" };
+  const bcrypt = await import("bcryptjs");
+  const hashed = await bcrypt.hash(input.new_password, 12);
+  await db.user.update({ where: { id: user.id }, data: { password: hashed, sessionVersion: { increment: 1 } } });
+  return { success: true, message: `Password reset for "${user.name}" (${user.email})` };
+}
+
+async function checkStaffEquipment(input: { email: string }, organizationId: string) {
+  const user = await db.user.findFirst({ where: { email: input.email.toLowerCase(), organizationId }, select: { id: true, name: true, email: true } });
+  if (!user) return { error: "User not found" };
+  const [assets, consumables] = await Promise.all([
+    db.assetAssignment.findMany({ where: { userId: user.id, isActive: true }, include: { asset: { select: { name: true, assetCode: true, category: true, status: true } } } }),
+    db.consumableAssignment.findMany({ where: { userId: user.id, isActive: true }, include: { consumable: { select: { name: true, category: true, unitType: true } } } }),
+  ]);
+  return { staff: user.name, email: user.email, assets: assets.map((a) => ({ name: a.asset.name, code: a.asset.assetCode, category: a.asset.category, status: a.asset.status })), consumables: consumables.map((c) => ({ name: c.consumable.name, category: c.consumable.category, quantity: c.quantity, unit: c.consumable.unitType })) };
+}
+
+async function approvePOTool(input: { consumable_name: string; action: string; reason?: string }, userId: string, organizationId: string) {
+  const po = await db.purchaseOrder.findFirst({ where: { organizationId, status: "PENDING", consumable: { name: { contains: input.consumable_name, mode: "insensitive" } } }, include: { consumable: true } });
+  if (!po) return { error: `No pending PO found for "${input.consumable_name}"` };
+  const status = input.action === "approve" ? "APPROVED" : "REJECTED";
+  await db.purchaseOrder.update({ where: { id: po.id }, data: { status, approvedById: userId, approvedAt: new Date(), notes: input.action === "reject" ? `Rejected: ${input.reason || "No reason"}` : po.notes } });
+  return { success: true, message: `PO for ${po.quantity}x ${po.consumable.name} ${status.toLowerCase()}` };
+}
+
+async function markPOReceivedTool(input: { consumable_name: string }, userId: string, organizationId: string) {
+  const po = await db.purchaseOrder.findFirst({ where: { organizationId, status: "ORDERED", consumable: { name: { contains: input.consumable_name, mode: "insensitive" } } }, include: { consumable: true } });
+  if (!po) return { error: `No ordered PO found for "${input.consumable_name}"` };
+  await db.purchaseOrder.update({ where: { id: po.id }, data: { status: "RECEIVED" } });
+  await db.consumable.update({ where: { id: po.consumableId }, data: { quantityOnHand: { increment: po.quantity } } });
+  return { success: true, message: `Received ${po.quantity}x ${po.consumable.name}. Stock updated.` };
+}
+
+async function verifyReturnTool(input: { item_name: string; action: string; reason?: string }, userId: string, organizationId: string) {
+  // Find the pending return by looking up asset/consumable IDs first
+  const matchingAssets = await db.asset.findMany({ where: { name: { contains: input.item_name, mode: "insensitive" }, organizationId }, select: { id: true } });
+  const matchingConsumables = await db.consumable.findMany({ where: { name: { contains: input.item_name, mode: "insensitive" }, organizationId }, select: { id: true } });
+  const pr = await db.pendingReturn.findFirst({
+    where: { organizationId, isVerified: false, OR: [
+      ...(matchingAssets.length > 0 ? [{ assetId: { in: matchingAssets.map((a) => a.id) } }] : []),
+      ...(matchingConsumables.length > 0 ? [{ consumableId: { in: matchingConsumables.map((c) => c.id) } }] : []),
+    ] },
+  });
+  if (!pr) return { error: `No pending return found for "${input.item_name}"` };
+  await db.pendingReturn.update({ where: { id: pr.id }, data: { isVerified: true, verifiedById: userId, verifiedAt: new Date(), verificationNotes: input.action === "reject" ? `REJECTED: ${input.reason || ""}` : null } });
+  if (input.action === "verify" && pr.returnCondition !== "NOT_RETURNED") {
+    if (pr.itemType === "ASSET" && pr.assetId) await db.asset.update({ where: { id: pr.assetId }, data: { status: "AVAILABLE" } });
+    if (pr.itemType === "CONSUMABLE" && pr.consumableId) await db.consumable.update({ where: { id: pr.consumableId }, data: { quantityOnHand: { increment: pr.quantity } } });
+  }
+  const name = input.item_name;
+  return { success: true, message: `${input.action === "verify" ? "Verified and restocked" : "Rejected"}: ${name}` };
+}
+
+async function scheduleInspectionTool(input: { title: string; due_date: string; notes?: string }, userId: string, organizationId: string) {
+  const { createInspectionSchedule } = await import("@/app/actions/condition-checks");
+  // We can't call server actions directly from here, so create manually
+  const dueDate = new Date(input.due_date);
+  if (isNaN(dueDate.getTime())) return { error: "Invalid date format. Use YYYY-MM-DD" };
+  const schedule = await db.inspectionSchedule.create({ data: { organizationId, title: input.title, dueDate, notes: input.notes || null, createdById: userId } });
+  return { success: true, message: `Inspection "${input.title}" scheduled for ${dueDate.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}` };
+}
+
+async function createDamageReportTool(input: { asset_code: string; type: string; description: string }, userId: string, organizationId: string) {
+  const asset = await db.asset.findFirst({ where: { assetCode: input.asset_code, organizationId } });
+  if (!asset) return { error: "Asset not found" };
+  await db.damageReport.create({ data: { assetId: asset.id, reportedById: userId, organizationId, type: input.type, description: input.description } });
+  if (input.type === "DAMAGE") await db.asset.update({ where: { id: asset.id }, data: { status: "DAMAGED" } });
+  if (input.type === "LOSS") await db.asset.update({ where: { id: asset.id }, data: { status: "LOST" } });
+  return { success: true, message: `${input.type} report created for "${asset.name}" (${asset.assetCode})` };
+}
+
+async function getOverdueInspections(input: { month?: string }, organizationId: string) {
+  const monthYear = input.month || new Date().toISOString().slice(0, 7);
+  const checks = await db.conditionCheck.findMany({ where: { organizationId, monthYear }, select: { userId: true } });
+  const checkedUsers = new Set(checks.map((c) => c.userId));
+  const staff = await db.user.findMany({ where: { organizationId, isActive: true, OR: [{ assetAssignments: { some: { isActive: true } } }, { consumableAssignments: { some: { isActive: true } } }] }, select: { id: true, name: true, email: true } });
+  const incomplete = staff.filter((s) => !checkedUsers.has(s.id));
+  return { month: monthYear, totalStaff: staff.length, completed: staff.length - incomplete.length, incomplete: incomplete.map((s) => ({ name: s.name, email: s.email })) };
+}
+
+async function bulkUpdateAssets(input: { filter_category?: string; filter_region?: string; filter_name?: string; update_supplier?: string; update_category?: string; update_description?: string }, organizationId: string) {
+  const where: Record<string, unknown> = { organizationId };
+  if (input.filter_category) where.category = { contains: input.filter_category, mode: "insensitive" };
+  if (input.filter_name) where.name = { contains: input.filter_name, mode: "insensitive" };
+  if (input.filter_region) {
+    const region = await db.region.findFirst({ where: { name: { contains: input.filter_region, mode: "insensitive" }, state: { organizationId } } });
+    if (region) where.regionId = region.id;
+  }
+  const data: Record<string, unknown> = {};
+  if (input.update_supplier !== undefined) data.supplier = input.update_supplier;
+  if (input.update_category) data.category = input.update_category;
+  if (input.update_description !== undefined) data.description = input.update_description;
+  if (Object.keys(data).length === 0) return { error: "No update fields provided" };
+  const result = await db.asset.updateMany({ where, data });
+  return { success: true, message: `Updated ${result.count} assets`, count: result.count };
+}
+
+async function bulkAssignConsumables(input: { consumable_name: string; region: string; quantity: number }, userId: string, organizationId: string) {
+  const region = await db.region.findFirst({ where: { name: { contains: input.region, mode: "insensitive" }, state: { organizationId } } });
+  if (!region) return { error: `Region "${input.region}" not found` };
+  const consumable = await db.consumable.findFirst({ where: { name: { contains: input.consumable_name, mode: "insensitive" }, regionId: region.id, isActive: true } });
+  if (!consumable) return { error: `Consumable "${input.consumable_name}" not found in ${region.name}` };
+  const staff = await db.user.findMany({ where: { regionId: region.id, isActive: true, role: "STAFF" }, select: { id: true, name: true } });
+  if (staff.length === 0) return { error: `No staff found in ${region.name}` };
+  let assigned = 0;
+  for (const s of staff) {
+    await db.consumableAssignment.create({ data: { consumableId: consumable.id, userId: s.id, quantity: input.quantity, assignedDate: new Date() } });
+    assigned++;
+  }
+  return { success: true, message: `Assigned ${input.quantity}x "${consumable.name}" to ${assigned} staff in ${region.name}` };
+}
+
+async function togglePermissionTool(input: { manager_email: string; permission: string; enabled: boolean }, organizationId: string) {
+  const user = await db.user.findFirst({ where: { email: input.manager_email.toLowerCase(), organizationId, role: "BRANCH_MANAGER" } });
+  if (!user) return { error: "Branch manager not found" };
+  const perm = await db.managerPermission.findUnique({ where: { userId: user.id } });
+  if (!perm) return { error: "No permission record found for this manager" };
+  await db.managerPermission.update({ where: { userId: user.id }, data: { [input.permission]: input.enabled } });
+  return { success: true, message: `${input.enabled ? "Enabled" : "Disabled"} "${input.permission}" for ${user.name}` };
+}
+
+async function viewActivityLog(input: { search?: string; limit?: number }, organizationId: string) {
+  const limit = Math.min(input.limit || 10, 50);
+  const logs = await db.auditLog.findMany({
+    where: { organizationId, ...(input.search ? { description: { contains: input.search, mode: "insensitive" as const } } : {}) },
+    include: { performedBy: { select: { name: true, email: true } } },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+  });
+  return logs.map((l) => ({ action: l.action, description: l.description, by: l.performedBy.name || l.performedBy.email, date: l.createdAt.toISOString().slice(0, 16).replace("T", " ") }));
+}
+
+async function manageCategoryTool(input: { action: string; type: string; name: string; new_name?: string }, organizationId: string) {
+  if (input.action === "create") {
+    const existing = await db.category.findFirst({ where: { name: input.name, type: input.type, organizationId } });
+    if (existing) return { error: `"${input.name}" already exists` };
+    const maxSort = await db.category.findFirst({ where: { type: input.type, organizationId }, orderBy: { sortOrder: "desc" }, select: { sortOrder: true } });
+    await db.category.create({ data: { name: input.name, type: input.type, organizationId, sortOrder: (maxSort?.sortOrder ?? -1) + 1 } });
+    return { success: true, message: `Created ${input.type.toLowerCase()} category "${input.name}"` };
+  }
+  if (input.action === "rename" && input.new_name) {
+    const cat = await db.category.findFirst({ where: { name: input.name, type: input.type, organizationId } });
+    if (!cat) return { error: `Category "${input.name}" not found` };
+    await db.category.update({ where: { id: cat.id }, data: { name: input.new_name } });
+    if (input.type === "ASSET") await db.asset.updateMany({ where: { category: input.name, organizationId }, data: { category: input.new_name } });
+    else await db.consumable.updateMany({ where: { category: input.name, organizationId }, data: { category: input.new_name } });
+    return { success: true, message: `Renamed "${input.name}" to "${input.new_name}"` };
+  }
+  return { error: "Invalid action" };
+}
+
+async function updateRegionTool(input: { region_name: string; new_name?: string; address?: string }, organizationId: string) {
+  const region = await db.region.findFirst({ where: { name: { contains: input.region_name, mode: "insensitive" }, state: { organizationId } } });
+  if (!region) return { error: `Region "${input.region_name}" not found` };
+  const data: Record<string, string> = {};
+  if (input.new_name) data.name = input.new_name;
+  if (input.address !== undefined) data.address = input.address;
+  if (Object.keys(data).length === 0) return { error: "No updates provided" };
+  await db.region.update({ where: { id: region.id }, data });
+  return { success: true, message: `Updated region: ${input.new_name || region.name}${input.address ? ` — address: ${input.address}` : ""}` };
+}
+
+async function bulkApplyItemsTool(input: { target_region: string; asset_quantity?: number; consumable_stock?: number }, userId: string, organizationId: string) {
+  const { getItemTemplates, applyItemsToRegion } = await import("@/app/actions/locations");
+  const region = await db.region.findFirst({ where: { name: { contains: input.target_region, mode: "insensitive" }, state: { organizationId } } });
+  if (!region) return { error: `Region "${input.target_region}" not found` };
+  // Check if region is empty
+  const [ac, cc] = await Promise.all([db.asset.count({ where: { regionId: region.id } }), db.consumable.count({ where: { regionId: region.id, isActive: true } })]);
+  if (ac > 0 || cc > 0) return { error: `${region.name} already has ${ac} assets and ${cc} consumables. This tool is for empty regions only.` };
+  const templates = await getItemTemplates();
+  const qty = input.asset_quantity || 1;
+  const assets = templates.assets.flatMap((a) => Array.from({ length: qty }, () => a));
+  const consumables = templates.consumables.map((c) => ({ ...c, initialStock: input.consumable_stock || 0 }));
+  const result = await applyItemsToRegion({ regionId: region.id, assets, consumables });
+  return { success: true, message: `Applied ${result.assetsCreated} assets and ${result.consumablesCreated} consumables to ${region.name}` };
+}
+
+async function assignStarterKitTool(input: { user_email: string; kit_name?: string }, userId: string, organizationId: string) {
+  const user = await db.user.findFirst({ where: { email: input.user_email.toLowerCase(), organizationId, isActive: true } });
+  if (!user) return { error: "User not found" };
+  const kitWhere: Record<string, unknown> = { organizationId, isActive: true };
+  if (input.kit_name) kitWhere.name = { contains: input.kit_name, mode: "insensitive" };
+  const kit = await db.starterKit.findFirst({ where: kitWhere, include: { items: true } });
+  if (!kit) return { error: input.kit_name ? `Starter kit "${input.kit_name}" not found` : "No starter kits configured" };
+  // Check if already applied
+  const existing = await db.starterKitApplication.findFirst({ where: { userId: user.id, starterKitId: kit.id } });
+  if (existing) return { error: `"${kit.name}" is already assigned to ${user.name}` };
+  const app = await db.starterKitApplication.create({ data: { userId: user.id, starterKitId: kit.id, appliedById: userId } });
+  return { success: true, message: `Assigned starter kit "${kit.name}" (${kit.items.length} items) to ${user.name}. Staff must confirm receipt on their dashboard.` };
+}
+
 // ── Dispatcher ──────────────────────────────────────────
 
 export async function executeAITool(
@@ -1359,6 +1808,69 @@ export async function executeAITool(
         break;
       case "create_consumable":
         result = await createConsumableTool(toolInput as never, userRole, userRegionId, userId!);
+        break;
+      case "move_asset_to_region":
+        result = await moveAssetToRegion(toolInput as never, userRole, userId!, organizationId!);
+        break;
+      case "move_consumable_to_region":
+        result = await moveConsumableToRegion(toolInput as never, userRole, userId!, organizationId!);
+        break;
+      case "copy_photo":
+        result = await copyPhotoTool(toolInput as never, organizationId!);
+        break;
+      case "create_user":
+        result = userRole === "SUPER_ADMIN" ? await createUserTool(toolInput as never, userId!, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "deactivate_user":
+        result = userRole === "SUPER_ADMIN" ? await deactivateUserTool(toolInput as never, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "reset_user_password":
+        result = userRole === "SUPER_ADMIN" ? await resetUserPasswordTool(toolInput as never, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "check_staff_equipment":
+        result = await checkStaffEquipment(toolInput as never, organizationId!);
+        break;
+      case "approve_purchase_order":
+        result = userRole === "SUPER_ADMIN" ? await approvePOTool(toolInput as never, userId!, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "mark_po_received":
+        result = await markPOReceivedTool(toolInput as never, userId!, organizationId!);
+        break;
+      case "verify_return":
+        result = await verifyReturnTool(toolInput as never, userId!, organizationId!);
+        break;
+      case "schedule_inspection":
+        result = userRole === "SUPER_ADMIN" ? await scheduleInspectionTool(toolInput as never, userId!, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "create_damage_report":
+        result = await createDamageReportTool(toolInput as never, userId!, organizationId!);
+        break;
+      case "get_overdue_inspections":
+        result = await getOverdueInspections(toolInput as never, organizationId!);
+        break;
+      case "bulk_update_assets":
+        result = userRole === "SUPER_ADMIN" ? await bulkUpdateAssets(toolInput as never, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "bulk_assign_consumables":
+        result = await bulkAssignConsumables(toolInput as never, userId!, organizationId!);
+        break;
+      case "toggle_permission":
+        result = userRole === "SUPER_ADMIN" ? await togglePermissionTool(toolInput as never, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "view_activity_log":
+        result = await viewActivityLog(toolInput as never, organizationId!);
+        break;
+      case "manage_category":
+        result = await manageCategoryTool(toolInput as never, organizationId!);
+        break;
+      case "update_region":
+        result = userRole === "SUPER_ADMIN" ? await updateRegionTool(toolInput as never, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "bulk_apply_items":
+        result = userRole === "SUPER_ADMIN" ? await bulkApplyItemsTool(toolInput as never, userId!, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "assign_starter_kit":
+        result = await assignStarterKitTool(toolInput as never, userId!, organizationId!);
         break;
       default:
         result = { error: `Unknown tool: ${toolName}` };

@@ -31,6 +31,12 @@ export async function POST(request: NextRequest) {
   const AI_MANAGEMENT_TOOLS = [
     "create_asset", "create_consumable", "create_purchase_order", "suggest_category",
     "update_asset", "update_consumable", "adjust_stock", "delete_asset", "assign_asset",
+    "move_asset_to_region", "move_consumable_to_region", "copy_photo",
+    "create_user", "deactivate_user", "reset_user_password",
+    "approve_purchase_order", "mark_po_received", "verify_return",
+    "schedule_inspection", "create_damage_report",
+    "bulk_update_assets", "bulk_assign_consumables", "bulk_apply_items",
+    "toggle_permission", "manage_category", "update_region", "assign_starter_kit",
   ];
   let canUseAIManagement = false;
 
@@ -48,14 +54,19 @@ export async function POST(request: NextRequest) {
 
   const managementNote = canUseAIManagement
     ? `You have FULL management capabilities:
-- SEARCH: Find assets, consumables, users, and get inventory insights. All searches support a region filter. Search results include: purchase cost, supplier, description, serial number, unit cost, and whether the item has a photo.
-- REGIONS: Use list_regions to discover all locations and their inventory counts. Use compare_regions to see side-by-side differences between locations (e.g. what Sydney has vs Melbourne).
-- CREATE: Create assets (single or bulk), consumables, and purchase orders. Always use suggest_category first. You can copy supplier, cost, and other details from existing items by searching first.
-- UPDATE: Edit asset details (name, category, region, status, description, serial number, supplier, purchase cost, etc.) and consumable details (name, category, region, thresholds, supplier, unit cost, etc.).
-- STOCK: Add or deduct consumable stock (positive number = add, negative = deduct).
-- ASSIGN: Assign available assets to staff or unassign them.
-- DELETE: Delete unassigned assets (Super Admin only, requires confirm: true).
-When the user asks about a specific region, always use the region filter parameter. When asked to compare, use compare_regions. When modifying items, search for them first to confirm details before making changes.`
+- SEARCH: Find assets, consumables, users. Search results include cost, supplier, description, photos. Filter by region.
+- REGIONS: list_regions, compare_regions for side-by-side differences.
+- CREATE: Assets (single/bulk), consumables, purchase orders, users, damage reports. Use suggest_category first.
+- UPDATE: Asset/consumable details, move items between regions, copy photos between items, rename categories.
+- STOCK: Add/deduct consumable stock. Bulk assign consumables to all staff in a region.
+- USERS: Create accounts, deactivate, reset passwords, check staff equipment, assign starter kits.
+- PURCHASE ORDERS: Approve/reject pending POs, mark as received (auto-restocks).
+- RETURNS: Verify returned items (auto-restocks).
+- INSPECTIONS: Schedule inspections, check overdue/incomplete inspections.
+- BULK: Update multiple assets by filter (supplier, category), apply standard items to empty regions.
+- PERMISSIONS: Toggle branch manager permissions.
+- ADMIN: View activity log, update region names/addresses, manage categories.
+Always search first before modifying. Use region filters when asked about specific locations.`
     : "You can READ data and provide insights. Use list_regions to see all locations, compare_regions to compare them, and add a region filter to any search to narrow by location. For creating or modifying assets, direct users to the appropriate page in the app.";
 
   const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, manage inventory, and answer questions.
