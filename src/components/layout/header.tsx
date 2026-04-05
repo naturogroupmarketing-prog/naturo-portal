@@ -69,6 +69,9 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
             onBlur={() => setSearchFocused(false)}
             className="w-full bg-transparent border-none outline-none text-sm text-shark-700 placeholder-shark-400 ml-2.5"
           />
+          <kbd className="hidden sm:flex items-center gap-0.5 text-[10px] text-shark-400 bg-white dark:bg-shark-700 border border-shark-200 dark:border-shark-600 px-1.5 py-0.5 rounded font-mono shrink-0">
+            <span className="text-[9px]">&#8984;</span>K
+          </kbd>
         </div>
       </form>
 
@@ -85,7 +88,7 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
               <img src={userImage} alt="" className="w-8 h-8 rounded-full ring-2 ring-shark-100" />
             ) : (
               <div className="w-8 h-8 rounded-full bg-action-100 flex items-center justify-center">
-                <span className="text-sm font-semibold" style={{ color: "#1F3DD9" }}>
+                <span className="text-sm font-semibold text-action-500">
                   {userName?.charAt(0)?.toUpperCase() || "U"}
                 </span>
               </div>
@@ -130,8 +133,7 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
                 <div className="border-t border-shark-100 px-3 pt-2 pb-1.5">
                   <button
                     onClick={() => { setDropdownOpen(false); router.push("/admin/billing"); }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors"
-                    style={{ background: "linear-gradient(135deg, #1F3DD9 0%, #3B5BF5 100%)" }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-br from-action-500 to-action-300 hover:from-action-600 hover:to-action-400 transition-all"
                   >
                     <Icon name="award" size={16} className="text-white" />
                     Upgrade to Pro

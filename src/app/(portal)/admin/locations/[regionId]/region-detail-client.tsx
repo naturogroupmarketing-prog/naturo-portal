@@ -325,7 +325,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                 <td className="px-4 py-2.5">
                                   <div className="w-9 h-9 rounded-lg bg-shark-50 overflow-hidden flex items-center justify-center">
                                     {asset.imageUrl ? (
-                                      <img src={asset.imageUrl} alt="" className="w-full h-full object-cover" />
+                                      <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" />
                                     ) : (
                                       <Icon name="package" size={14} className="text-shark-300" />
                                     )}
@@ -411,7 +411,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                   <td className="px-4 py-2.5">
                                     <div className="w-9 h-9 rounded-lg bg-shark-50 overflow-hidden flex items-center justify-center">
                                       {item.imageUrl ? (
-                                        <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                                        <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                                       ) : (
                                         <Icon name="droplet" size={14} className="text-shark-300" />
                                       )}

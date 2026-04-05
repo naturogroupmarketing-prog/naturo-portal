@@ -135,10 +135,9 @@ export function Sidebar({ role, onClose, pendingPOCount = 0 }: SidebarProps) {
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-150",
                           active
-                            ? "text-white font-medium"
+                            ? "bg-action-500 text-white font-medium shadow-sm"
                             : "text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 hover:text-shark-900 dark:hover:text-shark-100"
                         )}
-                        style={active ? { backgroundColor: "#1F3DD9" } : undefined}
                       >
                         <Icon name={item.icon} size={18} className={active ? "text-white" : "text-shark-400"} />
                         <span className="flex-1">{item.label}</span>

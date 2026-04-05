@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/ui/icon";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import dynamic from "next/dynamic";
 import { DashboardSettingsModal } from "./dashboard-settings-modal";
 import { removeCustomShortcut } from "@/app/actions/dashboard";
@@ -155,8 +156,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <Icon name={s.icon} size={22} className={s.iconColor} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm text-shark-400">{s.label}</p>
-                            <p className="text-2xl font-bold text-shark-900">{s.value.toLocaleString()}</p>
+                            <p className="text-sm text-shark-500">{s.label}</p>
+                            <AnimatedCounter value={s.value} className="text-2xl font-bold text-shark-900" />
                           </div>
                           <Icon name="arrow-right" size={18} className="text-shark-300 group-hover:text-action-500 transition-colors flex-shrink-0" />
                         </div>

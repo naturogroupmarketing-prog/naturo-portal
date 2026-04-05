@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { isAdminOrManager } from "@/lib/permissions";
 import { AppShell } from "@/components/layout/app-shell";
 import { ChatWidget } from "@/components/layout/chat-widget";
+import { CommandPalette } from "@/components/ui/command-palette";
 
 export default async function PortalLayout({
   children,
@@ -45,6 +46,7 @@ export default async function PortalLayout({
         {children}
       </AppShell>
       <ChatWidget />
+      <CommandPalette />
     </>
   );
 }

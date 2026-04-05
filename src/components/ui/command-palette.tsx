@@ -1,0 +1,172 @@
+"use client";
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { Icon, type IconName } from "@/components/ui/icon";
+
+interface CommandItem {
+  label: string;
+  href: string;
+  icon: IconName;
+  section: string;
+  keywords?: string;
+}
+
+const COMMANDS: CommandItem[] = [
+  // Navigation
+  { label: "Dashboard", href: "/dashboard", icon: "dashboard", section: "Navigation", keywords: "home overview" },
+  { label: "Assets", href: "/assets", icon: "package", section: "Navigation", keywords: "equipment items" },
+  { label: "Consumables", href: "/consumables", icon: "droplet", section: "Navigation", keywords: "stock inventory" },
+  { label: "Staff", href: "/staff", icon: "users", section: "Navigation", keywords: "employees team" },
+  { label: "Purchase Orders", href: "/purchase-orders", icon: "truck", section: "Navigation", keywords: "PO buy order" },
+  { label: "Returns", href: "/returns", icon: "arrow-left", section: "Navigation", keywords: "return verify" },
+  { label: "Reports", href: "/reports", icon: "clipboard", section: "Navigation", keywords: "export csv" },
+  { label: "Inspections", href: "/condition-checks", icon: "search", section: "Navigation", keywords: "condition check photo" },
+  { label: "Starter Kits", href: "/starter-kits", icon: "box", section: "Navigation", keywords: "kit onboard" },
+  { label: "Maintenance", href: "/maintenance", icon: "settings", section: "Navigation", keywords: "schedule service" },
+  // Admin
+  { label: "Locations", href: "/admin/locations", icon: "map-pin", section: "Admin", keywords: "region state branch" },
+  { label: "Permissions", href: "/admin/permissions", icon: "lock", section: "Admin", keywords: "role access" },
+  { label: "Import Data", href: "/admin/import", icon: "upload", section: "Admin", keywords: "csv bulk" },
+  { label: "Activity Log", href: "/activity", icon: "clock", section: "Admin", keywords: "audit trail history" },
+  { label: "Billing", href: "/admin/billing", icon: "star", section: "Admin", keywords: "plan subscription upgrade" },
+  // Settings
+  { label: "Settings", href: "/settings", icon: "settings", section: "Account", keywords: "profile preferences password" },
+];
+
+export function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Cmd+K / Ctrl+K to open
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setOpen((prev) => !prev);
+        setQuery("");
+        setSelectedIndex(0);
+      }
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
+  // Focus input when opened
+  useEffect(() => {
+    if (open) {
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [open]);
+
+  const filtered = query.trim()
+    ? COMMANDS.filter((c) => {
+        const q = query.toLowerCase();
+        return c.label.toLowerCase().includes(q) || c.keywords?.toLowerCase().includes(q);
+      })
+    : COMMANDS;
+
+  // Group by section
+  const grouped = filtered.reduce<Record<string, CommandItem[]>>((acc, item) => {
+    if (!acc[item.section]) acc[item.section] = [];
+    acc[item.section].push(item);
+    return acc;
+  }, {});
+
+  const flatList = Object.values(grouped).flat();
+
+  const navigate = useCallback((href: string) => {
+    setOpen(false);
+    setQuery("");
+    router.push(href);
+  }, [router]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedIndex((prev) => Math.min(prev + 1, flatList.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIndex((prev) => Math.max(prev - 1, 0));
+    } else if (e.key === "Enter" && flatList[selectedIndex]) {
+      e.preventDefault();
+      navigate(flatList[selectedIndex].href);
+    }
+  };
+
+  if (!open) return null;
+
+  let flatIdx = -1;
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[15vh]">
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
+
+      {/* Panel */}
+      <div className="relative w-full max-w-lg bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-200 dark:border-shark-700 overflow-hidden animate-fade-in">
+        {/* Search input */}
+        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-shark-100 dark:border-shark-800">
+          <Icon name="search" size={18} className="text-shark-400 shrink-0" />
+          <input
+            ref={inputRef}
+            value={query}
+            onChange={(e) => { setQuery(e.target.value); setSelectedIndex(0); }}
+            onKeyDown={handleKeyDown}
+            placeholder="Search pages and actions..."
+            className="flex-1 bg-transparent text-sm text-shark-900 dark:text-shark-100 placeholder-shark-400 outline-none"
+          />
+          <kbd className="hidden sm:flex items-center gap-0.5 text-[10px] text-shark-400 bg-shark-100 dark:bg-shark-800 px-1.5 py-0.5 rounded font-mono">
+            ESC
+          </kbd>
+        </div>
+
+        {/* Results */}
+        <div className="max-h-[50vh] overflow-y-auto p-2">
+          {flatList.length === 0 ? (
+            <p className="text-sm text-shark-400 text-center py-8">No results found</p>
+          ) : (
+            Object.entries(grouped).map(([section, items]) => (
+              <div key={section}>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400 px-3 py-2">{section}</p>
+                {items.map((item) => {
+                  flatIdx++;
+                  const idx = flatIdx;
+                  return (
+                    <button
+                      key={item.href}
+                      onClick={() => navigate(item.href)}
+                      onMouseEnter={() => setSelectedIndex(idx)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                        selectedIndex === idx
+                          ? "bg-action-500 text-white"
+                          : "text-shark-700 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"
+                      }`}
+                    >
+                      <Icon name={item.icon} size={16} className={selectedIndex === idx ? "text-white" : "text-shark-400"} />
+                      <span className="flex-1 text-left">{item.label}</span>
+                      {selectedIndex === idx && (
+                        <span className="text-xs opacity-60">Enter</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Footer hint */}
+        <div className="border-t border-shark-100 dark:border-shark-800 px-4 py-2 flex items-center gap-4 text-[10px] text-shark-400">
+          <span className="flex items-center gap-1"><kbd className="bg-shark-100 dark:bg-shark-800 px-1 rounded">&uarr;</kbd><kbd className="bg-shark-100 dark:bg-shark-800 px-1 rounded">&darr;</kbd> Navigate</span>
+          <span className="flex items-center gap-1"><kbd className="bg-shark-100 dark:bg-shark-800 px-1 rounded">Enter</kbd> Open</span>
+          <span className="flex items-center gap-1"><kbd className="bg-shark-100 dark:bg-shark-800 px-1 rounded">Esc</kbd> Close</span>
+        </div>
+      </div>
+    </div>
+  );
+}

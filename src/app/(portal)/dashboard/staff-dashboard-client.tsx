@@ -997,7 +997,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           isChecked ? "ring-2 ring-emerald-400" : "bg-shark-50"
                         }`}>
                           {item.imageUrl ? (
-                            <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                            <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                           ) : isChecked ? (
                             <div className="w-full h-full bg-emerald-100 flex items-center justify-center">
                               <Icon name="check" size={16} className="text-emerald-600" />
@@ -1031,7 +1031,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           {/* Photo preview */}
                           {hasPhoto && (
                             <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-200">
-                              <img src={state.photoUrl} alt="" className="w-full h-full object-cover" />
+                              <img src={state.photoUrl} alt={`${item.name} condition photo`} className="w-full h-full object-cover" />
                             </div>
                           )}
 
