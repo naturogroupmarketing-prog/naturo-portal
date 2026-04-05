@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { ChatMessage } from "@/components/ui/chat-message";
@@ -49,6 +50,7 @@ function generateTitle(messages: Message[]): string {
 }
 
 export function ChatWidget() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>(loadConversations);
@@ -167,6 +169,11 @@ export function ChatWidget() {
         ...prev,
         { id: crypto.randomUUID(), role: "assistant", content: data.response },
       ]);
+
+      // Auto-refresh the page if AI made changes to data
+      if (data.dataChanged) {
+        router.refresh();
+      }
     } catch {
       setMessages((prev) => [
         ...prev,

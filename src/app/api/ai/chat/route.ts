@@ -98,6 +98,8 @@ Guidelines:
     }));
 
     let finalText = "";
+    let toolsUsed = false;
+    const READ_ONLY_TOOLS = new Set(["search_assets", "search_consumables", "search_users", "get_inventory_insights", "suggest_category", "view_purchase_orders", "list_regions", "compare_regions", "check_staff_equipment", "get_overdue_inspections", "view_activity_log"]);
 
     // Tool-use loop (max 10 iterations for complex multi-step tasks)
     for (let i = 0; i < 10; i++) {
@@ -127,6 +129,7 @@ Guidelines:
       const toolResults: { type: "tool_result"; tool_use_id: string; content: string }[] = [];
       for (const block of response.content) {
         if (block.type === "tool_use") {
+          if (!READ_ONLY_TOOLS.has(block.name)) toolsUsed = true;
           const result = await executeAITool(
             block.name,
             block.input as Record<string, unknown>,
@@ -142,7 +145,7 @@ Guidelines:
       currentMessages.push({ role: "user", content: toolResults as never });
     }
 
-    return Response.json({ response: finalText });
+    return Response.json({ response: finalText, dataChanged: toolsUsed });
   } catch (error) {
     console.error("AI chat error:", error);
     return Response.json(
