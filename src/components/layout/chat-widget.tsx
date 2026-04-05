@@ -133,6 +133,59 @@ export function ChatWidget() {
   }
 
   const abortRef = useRef<AbortController | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<unknown>(null);
+
+  function toggleVoiceInput() {
+    if (isListening) {
+      // Stop listening
+      if (recognitionRef.current) {
+        (recognitionRef.current as { stop: () => void }).stop();
+      }
+      setIsListening(false);
+      return;
+    }
+
+    // Check browser support
+    const SpeechRecognition = (window as unknown as Record<string, unknown>).SpeechRecognition || (window as unknown as Record<string, unknown>).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Voice input is not supported in this browser. Try Chrome or Edge." }]);
+      return;
+    }
+
+    const recognition = new (SpeechRecognition as new () => {
+      continuous: boolean;
+      interimResults: boolean;
+      lang: string;
+      onresult: (e: { results: { item: (i: number) => { item: (i: number) => { transcript: string } }; length: number } }) => void;
+      onerror: () => void;
+      onend: () => void;
+      start: () => void;
+      stop: () => void;
+    })();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-AU";
+
+    recognition.onresult = (event: unknown) => {
+      const e = event as { results: Array<Array<{ transcript: string }>> };
+      const transcript = e.results[0][0].transcript;
+      setInput((prev) => prev + (prev ? " " : "") + transcript);
+      setIsListening(false);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  }
 
   function cancelRequest() {
     if (abortRef.current) {
@@ -369,11 +422,27 @@ export function ChatWidget() {
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about assets, stock..."
+                  placeholder={isListening ? "Listening..." : "Ask about assets, stock..."}
                   disabled={isLoading}
                   aria-label="Type your message"
-                  className="flex-1 rounded-xl border border-shark-200 bg-white px-3.5 py-2 text-sm text-shark-900 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50"
+                  className={`flex-1 rounded-xl border bg-white px-3.5 py-2 text-sm text-shark-900 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50 ${isListening ? "border-red-400 ring-2 ring-red-200" : "border-shark-200"}`}
                 />
+                {/* Mic button */}
+                {!isLoading && (
+                  <button
+                    type="button"
+                    onClick={toggleVoiceInput}
+                    className={`rounded-xl px-2.5 py-2 transition-colors ${isListening ? "bg-red-500 text-white animate-pulse" : "text-shark-400 hover:text-shark-600 hover:bg-shark-50"}`}
+                    title={isListening ? "Stop listening" : "Voice input"}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+                      <path d="M19 10v2a7 7 0 01-14 0v-2" />
+                      <line x1="12" y1="19" x2="12" y2="23" />
+                      <line x1="8" y1="23" x2="16" y2="23" />
+                    </svg>
+                  </button>
+                )}
                 {isLoading ? (
                   <Button type="button" size="sm" variant="outline" onClick={cancelRequest} className="text-red-500 border-red-200 hover:bg-red-50">
                     <Icon name="x" size={16} />
