@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
+import { createAuditLog } from "@/lib/audit";
 
 function toCSV(headers: string[], rows: string[][]): string {
   const escape = (val: string) => {
@@ -252,10 +253,18 @@ export async function GET(
       return NextResponse.json({ error: "Unknown report type" }, { status: 400 });
   }
 
+  // Audit log — track who exports what
+  await createAuditLog({
+    action: "REPORT_EXPORTED" as never,
+    description: `Report exported: ${type}`,
+    performedById: session.user.id,
+    organizationId,
+  });
+
   return new NextResponse(csv, {
     headers: {
       "Content-Type": "text/csv",
-      "Content-Disposition": `attachment; filename="naturo-${type}-${new Date().toISOString().split("T")[0]}.csv"`,
+      "Content-Disposition": `attachment; filename="trackio-${type}-${new Date().toISOString().split("T")[0]}.csv"`,
     },
   });
 }

@@ -28,19 +28,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const user = await db.user.findUnique({ where: { email } });
 
-        // Log failed attempt if user not found or password wrong
         if (!user || !user.isActive || !user.password) {
           logSecurityEvent("LOGIN_FAILED", email, "Invalid credentials or inactive account");
           return null;
         }
 
-        const isValid = await bcrypt.compare(password, user.password);
-        if (!isValid) {
-          logSecurityEvent("LOGIN_FAILED", email, "Incorrect password");
+        // Check account lockout
+        if (user.lockedUntil && user.lockedUntil > new Date()) {
+          logSecurityEvent("LOGIN_FAILED", email, "Account locked");
           return null;
         }
 
-        // Successful login
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
+          // Increment failed attempts, lock after 5
+          const attempts = (user.failedLoginAttempts || 0) + 1;
+          const lockData: { failedLoginAttempts: number; lockedUntil?: Date } = { failedLoginAttempts: attempts };
+          if (attempts >= 5) {
+            lockData.lockedUntil = new Date(Date.now() + 30 * 60 * 1000); // 30 min lock
+          }
+          await db.user.update({ where: { id: user.id }, data: lockData });
+          logSecurityEvent("LOGIN_FAILED", email, `Incorrect password (attempt ${attempts})`);
+          return null;
+        }
+
+        // Successful login — reset failed attempts
+        if (user.failedLoginAttempts > 0 || user.lockedUntil) {
+          await db.user.update({ where: { id: user.id }, data: { failedLoginAttempts: 0, lockedUntil: null } });
+        }
         logSecurityEvent("LOGIN_SUCCESS", email);
 
         return {
@@ -59,18 +74,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Force immediate DB fetch on sign-in
         token.lastRefresh = 0;
       }
-      // Refresh role/region/org from DB every 5 minutes instead of every request
-      // This reduces DB calls from ~50/page-load to 1 every 5 minutes
+      // Refresh role/region/org from DB every 2 minutes
       const now = Date.now();
       const lastRefresh = (token.lastRefresh as number) || 0;
-      const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+      const REFRESH_INTERVAL = 2 * 60 * 1000; // 2 minutes
 
       if (token.sub && now - lastRefresh > REFRESH_INTERVAL) {
         const dbUser = await db.user.findUnique({
           where: { id: token.sub },
-          select: { role: true, regionId: true, isActive: true, organizationId: true },
+          select: { role: true, regionId: true, isActive: true, organizationId: true, sessionVersion: true },
         });
         if (dbUser) {
+          // Invalidate session if password was changed (sessionVersion mismatch)
+          if (token.sessionVersion && dbUser.sessionVersion !== token.sessionVersion) {
+            return { ...token, isActive: false }; // Force re-login
+          }
+          token.sessionVersion = dbUser.sessionVersion;
           token.role = dbUser.role;
           token.regionId = dbUser.regionId;
           token.isActive = dbUser.isActive;

@@ -60,7 +60,7 @@ When the user asks about a specific region, always use the region filter paramet
 
   const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, manage inventory, and answer questions.
 
-Current user: ${session.user.name || session.user.email}
+Current user: ${(session.user.name || session.user.email || "").replace(/["`'\\\n\r]/g, "")}
 Role: ${session.user.role}
 ${session.user.regionId ? "Region: restricted to their assigned region only" : "Region: all regions (Super Admin)"}
 

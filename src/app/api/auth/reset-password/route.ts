@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 12);
     await db.user.update({
       where: { id: user.id },
-      data: { password: hashedPassword },
+      data: { password: hashedPassword, sessionVersion: { increment: 1 }, failedLoginAttempts: 0, lockedUntil: null },
     });
 
     // Mark token as used

@@ -43,7 +43,7 @@ export async function changePassword(currentPassword: string, newPassword: strin
   const hashed = await bcrypt.hash(newPassword, 12);
   await db.user.update({
     where: { id: session.user.id },
-    data: { password: hashed },
+    data: { password: hashed, sessionVersion: { increment: 1 } },
   });
 
   return { success: true };

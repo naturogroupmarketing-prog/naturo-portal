@@ -42,8 +42,7 @@ export async function POST(request: NextRequest) {
     const dataUrl = `data:${file.type};base64,${base64}`;
 
     return NextResponse.json({ url: dataUrl });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Upload failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+  } catch {
+    return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 400 });
   }
 }
