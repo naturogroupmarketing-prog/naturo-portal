@@ -334,6 +334,11 @@ async function searchAssets(
     assignedTo: a.assignments[0]?.user.name || a.assignments[0]?.user.email || null,
     serialNumber: a.serialNumber,
     isHighValue: a.isHighValue,
+    purchaseCost: a.purchaseCost,
+    purchaseDate: a.purchaseDate ? a.purchaseDate.toISOString().split("T")[0] : null,
+    supplier: a.supplier,
+    description: a.description,
+    hasPhoto: !!a.imageUrl,
   }));
 }
 
@@ -379,6 +384,9 @@ async function searchConsumables(
     reorderLevel: c.reorderLevel,
     region: `${c.region.name} (${c.region.state.name})`,
     supplier: c.supplier,
+    unitCost: c.unitCost,
+    notes: c.notes,
+    hasPhoto: !!c.imageUrl,
     lowStock: c.quantityOnHand <= c.minimumThreshold,
   }));
 }

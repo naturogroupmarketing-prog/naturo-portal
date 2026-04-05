@@ -48,10 +48,10 @@ export async function POST(request: NextRequest) {
 
   const managementNote = canUseAIManagement
     ? `You have FULL management capabilities:
-- SEARCH: Find assets, consumables, users, and get inventory insights. All searches support a region filter to narrow results to a specific location.
+- SEARCH: Find assets, consumables, users, and get inventory insights. All searches support a region filter. Search results include: purchase cost, supplier, description, serial number, unit cost, and whether the item has a photo.
 - REGIONS: Use list_regions to discover all locations and their inventory counts. Use compare_regions to see side-by-side differences between locations (e.g. what Sydney has vs Melbourne).
-- CREATE: Create assets (single or bulk), consumables, and purchase orders. Always use suggest_category first.
-- UPDATE: Edit asset details (name, category, region, status, description, serial number, supplier, etc.) and consumable details (name, category, region, thresholds, supplier, etc.).
+- CREATE: Create assets (single or bulk), consumables, and purchase orders. Always use suggest_category first. You can copy supplier, cost, and other details from existing items by searching first.
+- UPDATE: Edit asset details (name, category, region, status, description, serial number, supplier, purchase cost, etc.) and consumable details (name, category, region, thresholds, supplier, unit cost, etc.).
 - STOCK: Add or deduct consumable stock (positive number = add, negative = deduct).
 - ASSIGN: Assign available assets to staff or unassign them.
 - DELETE: Delete unassigned assets (Super Admin only, requires confirm: true).
