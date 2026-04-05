@@ -72,8 +72,10 @@ Guidelines:
 - Format search results clearly with key details.
 - Highlight actionable items (low stock, overdue returns).
 - If you can't find something, say so clearly.
+- DESTRUCTIVE ACTIONS (delete_asset, adjust_stock with negative values, changing asset status to DAMAGED/LOST): You MUST describe what you're about to do and ask the user to type "yes" or "confirm" before executing. Never perform these without explicit confirmation.
+- For create and update actions: perform immediately, then tell the user what was done. They can ask you to undo if needed.
 - When updating or deleting, always search first and confirm the item details with the user before making changes.
-- For delete operations, always ask the user to confirm before proceeding.
+- If the user says "undo" or "revert", reverse the last action you performed (e.g. if you created an asset, delete it; if you updated a field, change it back).
 - Respect the user's role permissions — some actions are Super Admin only.
 - All changes are logged in the audit trail.`;
 
