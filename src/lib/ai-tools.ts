@@ -1521,15 +1521,33 @@ async function copyPhotoTool(input: { source_type: string; source_name: string; 
 
   const regionFilter = input.target_region ? { region: { name: { contains: input.target_region, mode: "insensitive" as const } } } : {};
   if (input.target_type === "ASSET") {
-    const target = await db.asset.findFirst({ where: { name: { contains: input.target_name, mode: "insensitive" }, organizationId, ...regionFilter } });
-    if (!target) return { error: `Target asset "${input.target_name}" not found` };
-    await db.asset.update({ where: { id: target.id }, data: { imageUrl: sourceItem.imageUrl } });
-    return { success: true, message: `Copied photo from "${sourceItem.name}" to asset "${target.name}"` };
+    // Update ALL matching assets (not just the first one)
+    const result = await db.asset.updateMany({
+      where: { name: { contains: input.target_name, mode: "insensitive" }, organizationId, imageUrl: null, ...regionFilter },
+      data: { imageUrl: sourceItem.imageUrl },
+    });
+    if (result.count === 0) {
+      // Try updating even those with existing photos
+      const result2 = await db.asset.updateMany({
+        where: { name: { contains: input.target_name, mode: "insensitive" }, organizationId, ...regionFilter },
+        data: { imageUrl: sourceItem.imageUrl },
+      });
+      return { success: true, message: `Updated photo on ${result2.count} "${input.target_name}" asset(s)` };
+    }
+    return { success: true, message: `Copied photo to ${result.count} "${input.target_name}" asset(s) that had no photo` };
   } else {
-    const target = await db.consumable.findFirst({ where: { name: { contains: input.target_name, mode: "insensitive" }, organizationId, isActive: true, ...regionFilter } });
-    if (!target) return { error: `Target consumable "${input.target_name}" not found` };
-    await db.consumable.update({ where: { id: target.id }, data: { imageUrl: sourceItem.imageUrl } });
-    return { success: true, message: `Copied photo from "${sourceItem.name}" to consumable "${target.name}"` };
+    const result = await db.consumable.updateMany({
+      where: { name: { contains: input.target_name, mode: "insensitive" }, organizationId, isActive: true, imageUrl: null, ...regionFilter },
+      data: { imageUrl: sourceItem.imageUrl },
+    });
+    if (result.count === 0) {
+      const result2 = await db.consumable.updateMany({
+        where: { name: { contains: input.target_name, mode: "insensitive" }, organizationId, isActive: true, ...regionFilter },
+        data: { imageUrl: sourceItem.imageUrl },
+      });
+      return { success: true, message: `Updated photo on ${result2.count} "${input.target_name}" consumable(s)` };
+    }
+    return { success: true, message: `Copied photo to ${result.count} "${input.target_name}" consumable(s) that had no photo` };
   }
 }
 
