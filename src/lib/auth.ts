@@ -27,12 +27,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!email || !password) return null;
 
         const user = await db.user.findUnique({ where: { email } });
-        if (!user) return null;
-        if (!user.isActive) return null;
-        if (!user.password) return null;
+
+        // Log failed attempt if user not found or password wrong
+        if (!user || !user.isActive || !user.password) {
+          logSecurityEvent("LOGIN_FAILED", email, "Invalid credentials or inactive account");
+          return null;
+        }
 
         const isValid = await bcrypt.compare(password, user.password);
-        if (!isValid) return null;
+        if (!isValid) {
+          logSecurityEvent("LOGIN_FAILED", email, "Incorrect password");
+          return null;
+        }
+
+        // Successful login
+        logSecurityEvent("LOGIN_SUCCESS", email);
 
         return {
           id: user.id,
@@ -117,5 +126,58 @@ declare module "@auth/core/jwt" {
     regionId?: string | null;
     organizationId?: string | null;
     isActive?: boolean;
+  }
+}
+
+/**
+ * Security event logger — tracks login attempts, password changes, etc.
+ * Non-blocking: errors are caught silently to avoid breaking auth flow.
+ */
+async function logSecurityEvent(event: string, email: string, details?: string) {
+  try {
+    // Find user's org for audit log
+    const user = await db.user.findUnique({
+      where: { email },
+      select: { id: true, organizationId: true },
+    });
+
+    if (user?.organizationId) {
+      await db.auditLog.create({
+        data: {
+          action: event === "LOGIN_SUCCESS" ? "USER_UPDATED" : "USER_UPDATED",
+          description: `Security: ${event}${details ? ` — ${details}` : ""} (${email})`,
+          performedById: user.id,
+          organizationId: user.organizationId,
+          metadata: JSON.stringify({ event, email, timestamp: new Date().toISOString() }),
+        },
+      });
+
+      // Alert admins on repeated failures (5+ in audit log today)
+      if (event === "LOGIN_FAILED") {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const failCount = await db.auditLog.count({
+          where: {
+            organizationId: user.organizationId,
+            description: { contains: "LOGIN_FAILED" },
+            createdAt: { gte: today },
+          },
+        });
+
+        if (failCount >= 5 && failCount % 5 === 0) {
+          // Notify admins every 5 failed attempts
+          const { notifyAdminsAndManagers } = await import("@/lib/notifications");
+          await notifyAdminsAndManagers({
+            organizationId: user.organizationId,
+            type: "GENERAL",
+            title: "Security Alert: Multiple Failed Logins",
+            message: `${failCount} failed login attempts detected today for ${email}. This may indicate a brute-force attack.`,
+            link: "/activity",
+          });
+        }
+      }
+    }
+  } catch {
+    // Never let security logging break the auth flow
   }
 }

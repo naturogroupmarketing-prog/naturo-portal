@@ -110,7 +110,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-shark-400 mt-6">
-          Internal use only. Unauthorized access is prohibited.
+          By signing in, you agree to our <Link href="/privacy-policy" className="text-action-500 hover:underline">Privacy Policy</Link>.
         </p>
       </div>
     </div>

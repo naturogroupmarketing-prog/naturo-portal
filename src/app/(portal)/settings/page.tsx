@@ -13,6 +13,7 @@ export default async function SettingsPage() {
       id: true,
       name: true,
       email: true,
+      phone: true,
       emailNotifications: true,
       password: true, // just to check if they have one (won't expose)
     },
@@ -24,6 +25,7 @@ export default async function SettingsPage() {
     <SettingsClient
       userName={user.name || ""}
       userEmail={user.email}
+      userPhone={user.phone || ""}
       emailNotifications={user.emailNotifications}
       hasPassword={!!user.password}
     />

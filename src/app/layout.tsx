@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Exo } from "next/font/google";
 import { PWARegister } from "@/components/pwa-register";
 import { ToastProvider } from "@/components/ui/toast";
+import { CookieConsent } from "@/components/privacy/cookie-consent";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -39,6 +40,7 @@ export default function RootLayout({
         <ToastProvider>
           <PWARegister />
           {children}
+          <CookieConsent />
         </ToastProvider>
       </body>
     </html>
