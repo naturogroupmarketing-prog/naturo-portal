@@ -9,7 +9,7 @@ interface EmailParams {
   html: string;
 }
 
-export async function sendEmail({ to, subject, html }: EmailParams) {
+export async function sendEmail({ to, subject, html }: EmailParams): Promise<{ success: boolean; error?: string }> {
   try {
     await resend.emails.send({
       from: `Trackio <${FROM}>`,
@@ -17,8 +17,14 @@ export async function sendEmail({ to, subject, html }: EmailParams) {
       subject,
       html: wrapTemplate(subject, html),
     });
+    return { success: true };
   } catch (error) {
-    console.error("Failed to send email:", error);
+    const msg = error instanceof Error ? error.message : "Unknown email error";
+    // Log but don't crash — email failures shouldn't break the main operation
+    if (process.env.NODE_ENV === "development") {
+      console.error("Failed to send email:", msg);
+    }
+    return { success: false, error: msg };
   }
 }
 

@@ -11,7 +11,6 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/webhooks") ||
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/api/upload/") ||
     pathname === "/favicon.ico"
   ) {
     return NextResponse.next();

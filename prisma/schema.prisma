@@ -345,7 +345,7 @@ model Consumable {
   sortOrder        Int     @default(0)
   customFields     Json?   // User-defined custom fields as JSON
 
-  region       Region       @relation(fields: [regionId], references: [id])
+  region       Region       @relation(fields: [regionId], references: [id], onDelete: Restrict)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   requests       ConsumableRequest[]
   assignments     ConsumableAssignment[]
@@ -504,8 +504,8 @@ model PurchaseOrder {
   consumable   Consumable   @relation(fields: [consumableId], references: [id])
   region       Region       @relation(fields: [regionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  createdBy    User?        @relation("POCreatedBy", fields: [createdById], references: [id])
-  approvedBy   User?        @relation("POApprovedBy", fields: [approvedById], references: [id])
+  createdBy    User?        @relation("POCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  approvedBy   User?        @relation("POApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

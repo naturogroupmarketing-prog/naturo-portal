@@ -38,6 +38,12 @@ export async function createUser(formData: FormData) {
     if (!password || password.length < 8) {
       return { error: "Password must be at least 8 characters" };
     }
+    if (!/[A-Z]/.test(password)) {
+      return { error: "Password must contain at least one uppercase letter" };
+    }
+    if (!/[0-9]/.test(password)) {
+      return { error: "Password must contain at least one number" };
+    }
 
     // Branch Managers can only create STAFF in their own region
     if (session.user.role === "BRANCH_MANAGER") {

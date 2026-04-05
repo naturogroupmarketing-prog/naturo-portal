@@ -85,6 +85,7 @@ const navSections: NavSection[] = [
   {
     roles: ["STAFF", "SUPER_ADMIN", "BRANCH_MANAGER"],
     items: [
+      { label: "Settings", href: "/settings", icon: "settings", roles: ["STAFF", "SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Help", href: "/help", icon: "help-circle", roles: ["STAFF", "SUPER_ADMIN", "BRANCH_MANAGER"] },
     ],
   },

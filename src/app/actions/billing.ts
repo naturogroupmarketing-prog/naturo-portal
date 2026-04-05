@@ -9,6 +9,9 @@ import {
 } from "@/lib/stripe";
 
 export async function getPlans() {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
   return Object.entries(PLANS).map(([key, plan]) => ({
     id: key,
     name: plan.name,
