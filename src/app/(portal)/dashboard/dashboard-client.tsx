@@ -7,6 +7,8 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import dynamic from "next/dynamic";
 import { DashboardSettingsModal } from "./dashboard-settings-modal";
+import { OnboardingOverlay } from "@/components/ui/onboarding";
+import { PageTransition, StaggerContainer, StaggerItem } from "@/components/ui/page-transition";
 import { removeCustomShortcut } from "@/app/actions/dashboard";
 import type { DashboardPreferences } from "@/lib/dashboard-types";
 
@@ -105,6 +107,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !localStorage.getItem("trackio-onboarding-complete");
+  });
+
+  const completeOnboarding = () => {
+    localStorage.setItem("trackio-onboarding-complete", "true");
+    setShowOnboarding(false);
+  };
 
   const visibleStats = stats.filter((s) => !preferences.hiddenWidgets.includes(s.widgetId));
   const showLowStock = !preferences.hiddenWidgets.includes("low-stock-alerts");
@@ -127,6 +138,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
   return (
     <div className="space-y-8">
+      {/* Onboarding overlay */}
+      {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
+
+      <PageTransition>
       {/* Header with settings gear */}
       <div className="flex items-center justify-between">
         <div>
@@ -146,9 +161,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         switch (sectionId) {
           case "stats":
             return visibleStats.length > 0 ? (
-              <div key="stats" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <StaggerContainer key="stats" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {visibleStats.map((s) => (
-                  <Link key={s.label} href={s.href} className="block group">
+                  <StaggerItem key={s.label}>
+                  <Link href={s.href} className="block group">
                     <Card className={`border-t-[3px] ${s.borderColor} hover:shadow-md transition-all duration-200 cursor-pointer`}>
                       <CardContent className="py-4 px-5">
                         <div className="flex items-center gap-4">
@@ -164,8 +180,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       </CardContent>
                     </Card>
                   </Link>
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerContainer>
             ) : null;
 
           case "portfolio":
@@ -676,6 +693,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         onClose={() => setSettingsOpen(false)}
         preferences={preferences}
       />
+      </PageTransition>
     </div>
   );
 }
