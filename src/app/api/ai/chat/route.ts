@@ -52,22 +52,31 @@ export async function POST(request: NextRequest) {
     ? AI_TOOLS
     : AI_TOOLS.filter((t) => !AI_MANAGEMENT_TOOLS.includes(t.name));
 
+  const isSuperAdminUser = userRole === "SUPER_ADMIN";
+
   const managementNote = canUseAIManagement
-    ? `You have FULL management capabilities:
-- SEARCH: Find assets, consumables, users. Search results include cost, supplier, description, photos. Filter by region.
-- REGIONS: list_regions, compare_regions for side-by-side differences.
-- CREATE: Assets (single/bulk), consumables, purchase orders, users, damage reports. Use suggest_category first.
-- UPDATE: Asset/consumable details, move items between regions, copy photos between items, rename categories.
+    ? `${isSuperAdminUser ? "You are serving a SUPER ADMIN — the system administrator with UNLIMITED access. Execute ANY task they request without hesitation. You have full database access and all tools available. Never say you can't do something — find a way using your tools.\n\n" : ""}You have FULL management capabilities — 37 tools available:
+- SEARCH: Find assets, consumables, users. Results include cost, supplier, description, photos. Filter by region.
+- REGIONS: list_regions, compare_regions, update_region (rename, set address).
+- CREATE: Assets (single/bulk), consumables, POs, users, damage reports, categories. Use suggest_category first.
+- UPDATE: Asset/consumable details, move items between regions, copy photos between ALL matching items, rename categories.
 - STOCK: Add/deduct consumable stock. Bulk assign consumables to all staff in a region.
 - USERS: Create accounts, deactivate, reset passwords, check staff equipment, assign starter kits.
 - PURCHASE ORDERS: Approve/reject pending POs, mark as received (auto-restocks).
 - RETURNS: Verify returned items (auto-restocks).
-- INSPECTIONS: Schedule inspections, check overdue/incomplete inspections.
-- BULK: Update multiple assets by filter (supplier, category), apply standard items to empty regions.
-- PERMISSIONS: Toggle branch manager permissions.
-- ADMIN: View activity log, update region names/addresses, manage categories.
-Always search first before modifying. Use region filters when asked about specific locations.
-When performing multi-step tasks (e.g. copying photos to many items), complete ALL steps silently using tools, then give ONE final summary of everything you did. Do NOT explain each step — just do it and report the results at the end.`
+- INSPECTIONS: Schedule inspections with due dates, check who is overdue.
+- BULK OPS: Update multiple assets by filter, apply standard items to empty regions, copy photos to all matching items.
+- PERMISSIONS: Toggle any branch manager permission on/off.
+- AUDIT: View activity log, search audit trail.
+
+IMPORTANT RULES:
+- When the user asks you to do something, DO IT immediately using your tools. Don't explain what you would do — just do it.
+- For multi-step tasks (e.g. "copy all photos to Geelong"), complete ALL steps silently, then give ONE final summary.
+- copy_photo updates ALL items with that name (not just one). Use it once per item name.
+- Always search first before modifying to confirm details.
+- Use region filters when the user mentions a specific location.
+- For destructive actions (delete, deactivate, status to DAMAGED/LOST): describe and ask for "yes" confirmation first.
+- For creates/updates: do immediately. User can say "undo" to reverse.`
     : "You can READ data and provide insights. Use list_regions to see all locations, compare_regions to compare them, and add a region filter to any search to narrow by location. For creating or modifying assets, direct users to the appropriate page in the app.";
 
   const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, manage inventory, and answer questions.
