@@ -2,11 +2,16 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { Modal } from "@/components/ui/modal";
+import { useToast } from "@/components/ui/toast";
+import { getItemTemplates, applyItemsToRegion } from "@/app/actions/locations";
 
 const SECTION_COLORS = [
   { bg: "bg-blue-50", color: "text-blue-600" },
@@ -69,12 +74,69 @@ interface Props {
   lowStockCount: number;
 }
 
+interface AssetTemplate { name: string; category: string; description: string | null; isHighValue: boolean; supplier: string | null; purchaseCost: number | null }
+interface ConsumableTemplate { name: string; category: string; unitType: string; minimumThreshold: number; reorderLevel: number; supplier: string | null; unitCost: number | null }
+
 export function RegionDetailClient({ region, assets, consumables, staff, lowStockCount }: Props) {
+  const router = useRouter();
+  const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<"assets" | "consumables" | "staff">("assets");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [stockFilter, setStockFilter] = useState("ALL");
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+
+  // Apply standard items
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [templates, setTemplates] = useState<{ assets: AssetTemplate[]; consumables: ConsumableTemplate[] } | null>(null);
+  const [selectedAssets, setSelectedAssets] = useState<Set<string>>(new Set());
+  const [selectedConsumables, setSelectedConsumables] = useState<Set<string>>(new Set());
+  const [applying, setApplying] = useState(false);
+  const [loadingTemplates, setLoadingTemplates] = useState(false);
+
+  const isEmpty = assets.length === 0 && consumables.length === 0;
+
+  const handleOpenApply = async () => {
+    setLoadingTemplates(true);
+    setShowApplyModal(true);
+    try {
+      const result = await getItemTemplates();
+      setTemplates(result);
+      // Select all by default
+      setSelectedAssets(new Set(result.assets.map((a: AssetTemplate) => `${a.category}|${a.name}`)));
+      setSelectedConsumables(new Set(result.consumables.map((c: ConsumableTemplate) => `${c.category}|${c.name}`)));
+    } catch {
+      addToast("Failed to load templates", "error");
+    }
+    setLoadingTemplates(false);
+  };
+
+  const handleApply = async () => {
+    if (!templates) return;
+    setApplying(true);
+    try {
+      const assetItems = templates.assets.filter((a) => selectedAssets.has(`${a.category}|${a.name}`));
+      const consumableItems = templates.consumables.filter((c) => selectedConsumables.has(`${c.category}|${c.name}`));
+      const result = await applyItemsToRegion({
+        regionId: region.id,
+        assets: assetItems,
+        consumables: consumableItems,
+      });
+      addToast(`Applied ${result.assetsCreated} assets and ${result.consumablesCreated} consumables to ${region.name}`, "success");
+      setShowApplyModal(false);
+      router.refresh();
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Failed to apply items", "error");
+    }
+    setApplying(false);
+  };
+
+  const toggleAsset = (key: string) => {
+    setSelectedAssets((prev) => { const n = new Set(prev); if (n.has(key)) n.delete(key); else n.add(key); return n; });
+  };
+  const toggleConsumable = (key: string) => {
+    setSelectedConsumables((prev) => { const n = new Set(prev); if (n.has(key)) n.delete(key); else n.add(key); return n; });
+  };
 
   const toggleSection = (key: string) => {
     setCollapsedSections((prev) => {
@@ -215,6 +277,25 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
           </Card>
         ))}
       </div>
+
+      {/* Apply Standard Items — shown when region is empty */}
+      {isEmpty && (
+        <Card className="border-2 border-dashed border-action-200 bg-action-50/30">
+          <div className="px-6 py-8 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-action-500 flex items-center justify-center mx-auto mb-4">
+              <Icon name="plus" size={24} className="text-white" />
+            </div>
+            <h3 className="text-lg font-semibold text-shark-900">Set Up This Location</h3>
+            <p className="text-sm text-shark-500 mt-1 max-w-md mx-auto">
+              This location has no assets or consumables. Apply standard items from your existing locations to get started quickly.
+            </p>
+            <Button className="mt-5" onClick={handleOpenApply}>
+              <Icon name="package" size={16} className="mr-2" />
+              Apply Standard Items
+            </Button>
+          </div>
+        </Card>
+      )}
 
       {/* Tabs */}
       <div className="border-b border-shark-100">
@@ -488,6 +569,100 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
           )}
         </>
       )}
+      {/* Apply Standard Items Modal */}
+      <Modal open={showApplyModal} onClose={() => setShowApplyModal(false)} title={`Apply Items to ${region.name}`} className="max-w-2xl">
+        {loadingTemplates ? (
+          <div className="py-12 text-center">
+            <div className="animate-spin w-8 h-8 border-2 border-action-500 border-t-transparent rounded-full mx-auto mb-3" />
+            <p className="text-sm text-shark-400">Loading available items...</p>
+          </div>
+        ) : templates ? (
+          <div className="space-y-5 max-h-[60vh] overflow-y-auto">
+            {/* Assets */}
+            {templates.assets.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-shark-700">Assets ({selectedAssets.size}/{templates.assets.length})</h3>
+                  <button
+                    onClick={() => {
+                      if (selectedAssets.size === templates.assets.length) setSelectedAssets(new Set());
+                      else setSelectedAssets(new Set(templates.assets.map((a) => `${a.category}|${a.name}`)));
+                    }}
+                    className="text-xs text-action-500 hover:text-action-600"
+                  >
+                    {selectedAssets.size === templates.assets.length ? "Deselect All" : "Select All"}
+                  </button>
+                </div>
+                <div className="space-y-1">
+                  {templates.assets.map((a) => {
+                    const key = `${a.category}|${a.name}`;
+                    return (
+                      <label key={key} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-shark-50 cursor-pointer">
+                        <input type="checkbox" checked={selectedAssets.has(key)} onChange={() => toggleAsset(key)} className="rounded border-shark-300" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-shark-800">{a.name}</p>
+                          <p className="text-xs text-shark-400">{a.category}{a.supplier ? ` · ${a.supplier}` : ""}{a.purchaseCost ? ` · $${a.purchaseCost}` : ""}</p>
+                        </div>
+                        {a.isHighValue && <span className="text-xs text-amber-600 font-medium">High Value</span>}
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Consumables */}
+            {templates.consumables.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-shark-700">Consumables ({selectedConsumables.size}/{templates.consumables.length})</h3>
+                  <button
+                    onClick={() => {
+                      if (selectedConsumables.size === templates.consumables.length) setSelectedConsumables(new Set());
+                      else setSelectedConsumables(new Set(templates.consumables.map((c) => `${c.category}|${c.name}`)));
+                    }}
+                    className="text-xs text-action-500 hover:text-action-600"
+                  >
+                    {selectedConsumables.size === templates.consumables.length ? "Deselect All" : "Select All"}
+                  </button>
+                </div>
+                <div className="space-y-1">
+                  {templates.consumables.map((c) => {
+                    const key = `${c.category}|${c.name}`;
+                    return (
+                      <label key={key} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-shark-50 cursor-pointer">
+                        <input type="checkbox" checked={selectedConsumables.has(key)} onChange={() => toggleConsumable(key)} className="rounded border-shark-300" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-shark-800">{c.name}</p>
+                          <p className="text-xs text-shark-400">{c.category} · {c.unitType}{c.supplier ? ` · ${c.supplier}` : ""}</p>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {templates.assets.length === 0 && templates.consumables.length === 0 && (
+              <p className="text-sm text-shark-400 text-center py-8">No items found in other locations to copy from.</p>
+            )}
+          </div>
+        ) : null}
+
+        {templates && (templates.assets.length > 0 || templates.consumables.length > 0) && (
+          <div className="flex items-center justify-between border-t border-shark-100 pt-4 mt-4">
+            <p className="text-xs text-shark-400">
+              {selectedAssets.size + selectedConsumables.size} items selected — each asset gets a unique code
+            </p>
+            <div className="flex gap-3">
+              <Button variant="secondary" onClick={() => setShowApplyModal(false)}>Cancel</Button>
+              <Button onClick={handleApply} disabled={applying || (selectedAssets.size + selectedConsumables.size === 0)} loading={applying}>
+                Apply {selectedAssets.size + selectedConsumables.size} Items
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

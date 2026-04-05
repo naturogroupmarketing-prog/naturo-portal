@@ -3,6 +3,9 @@
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { isSuperAdmin, hasPermission } from "@/lib/permissions";
+import { createAuditLog } from "@/lib/audit";
+import { generateAssetCode } from "@/lib/utils";
+import { generateQRCodeDataURL, buildAssetQRData } from "@/lib/qr";
 import { revalidatePath } from "next/cache";
 
 export async function createState(formData: FormData) {
@@ -169,4 +172,90 @@ export async function getRegions() {
     include: { state: true },
     orderBy: { name: "asc" },
   });
+}
+
+/**
+ * Get distinct asset/consumable templates from all regions (for cloning)
+ */
+export async function getItemTemplates() {
+  const session = await auth();
+  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  const assets = await db.asset.findMany({
+    where: { organizationId },
+    select: { name: true, category: true, description: true, isHighValue: true, supplier: true, purchaseCost: true },
+    distinct: ["name", "category"],
+    orderBy: [{ category: "asc" }, { name: "asc" }],
+  });
+
+  const consumables = await db.consumable.findMany({
+    where: { organizationId, isActive: true },
+    select: { name: true, category: true, unitType: true, minimumThreshold: true, reorderLevel: true, supplier: true, unitCost: true },
+    distinct: ["name", "category"],
+    orderBy: [{ category: "asc" }, { name: "asc" }],
+  });
+
+  return { assets, consumables };
+}
+
+/**
+ * Clone selected assets and consumables to a target region
+ */
+export async function applyItemsToRegion(data: {
+  regionId: string;
+  assets: { name: string; category: string; description?: string | null; isHighValue?: boolean; supplier?: string | null; purchaseCost?: number | null }[];
+  consumables: { name: string; category: string; unitType: string; minimumThreshold?: number; reorderLevel?: number; supplier?: string | null; unitCost?: number | null; initialStock?: number }[];
+}) {
+  const session = await auth();
+  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  const region = await db.region.findUnique({ where: { id: data.regionId } });
+  if (!region || region.organizationId !== organizationId) throw new Error("Region not found");
+
+  let assetsCreated = 0;
+  let consumablesCreated = 0;
+
+  for (const item of data.assets) {
+    const assetCode = generateAssetCode();
+    const qrCodeData = await generateQRCodeDataURL(buildAssetQRData(assetCode));
+    await db.asset.create({
+      data: {
+        assetCode, name: item.name, category: item.category,
+        description: item.description || null, isHighValue: item.isHighValue || false,
+        supplier: item.supplier || null, purchaseCost: item.purchaseCost || null,
+        qrCodeData, regionId: data.regionId, organizationId,
+      },
+    });
+    assetsCreated++;
+  }
+
+  for (const item of data.consumables) {
+    await db.consumable.create({
+      data: {
+        name: item.name, category: item.category, unitType: item.unitType || "units",
+        quantityOnHand: item.initialStock || 0, minimumThreshold: item.minimumThreshold ?? 5,
+        reorderLevel: item.reorderLevel ?? 10, supplier: item.supplier || null,
+        unitCost: item.unitCost || null, regionId: data.regionId, organizationId,
+      },
+    });
+    consumablesCreated++;
+  }
+
+  await createAuditLog({
+    action: "ASSET_CREATED",
+    description: `Bulk applied ${assetsCreated} assets and ${consumablesCreated} consumables to ${region.name}`,
+    performedById: session.user.id, organizationId,
+  });
+
+  revalidatePath(`/admin/locations/${data.regionId}`);
+  revalidatePath("/admin/locations");
+  revalidatePath("/assets");
+  revalidatePath("/consumables");
+  return { success: true, assetsCreated, consumablesCreated };
 }
