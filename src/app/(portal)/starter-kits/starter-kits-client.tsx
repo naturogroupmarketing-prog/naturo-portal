@@ -120,7 +120,23 @@ export function StarterKitsClient({
                     <Button size="sm" variant="outline" onClick={() => setShowApply(kit)} disabled={kit.items.length === 0}>
                       Apply to Staff
                     </Button>
-                    <Button size="sm" variant="outline" onClick={() => setEditKit(kit)}>Edit</Button>
+                    <Button size="sm" variant="outline" onClick={() => setShowAddItem(kit.id)}>
+                      <Icon name="plus" size={12} className="mr-1" />Add Item
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setEditKit(kit)}>
+                      <Icon name="edit" size={12} className="mr-1" />Settings
+                    </Button>
+                    <button
+                      onClick={async () => {
+                        if (!confirm(`Delete "${kit.name}"? This cannot be undone.`)) return;
+                        try { await deleteStarterKit(kit.id); addToast("Kit deleted", "success"); router.refresh(); }
+                        catch { addToast("Failed to delete", "error"); }
+                      }}
+                      className="p-1.5 text-shark-400 hover:text-red-500 transition-colors"
+                      title="Delete kit"
+                    >
+                      <Icon name="x" size={14} />
+                    </button>
                   </div>
                 </div>
 
@@ -170,9 +186,16 @@ export function StarterKitsClient({
                                             <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 flex items-center justify-center shrink-0">
                                               {photo ? <img src={photo} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                                             </div>
-                                            <span className="text-sm text-shark-700">{item.quantity}x {item.category}</span>
+                                            <span className="text-sm text-shark-700">{item.category}</span>
                                           </div>
-                                          <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Removed", "success"); router.refresh(); } catch { addToast("Failed", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
+                                          <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-1">
+                                              <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch {} } }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">−</button>
+                                              <span className="w-6 text-center text-sm font-semibold text-shark-800">{item.quantity}</span>
+                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch {} }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
+                                            </div>
+                                            <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Removed", "success"); router.refresh(); } catch { addToast("Failed", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
+                                          </div>
                                         </div>
                                       );
                                     })}
@@ -204,11 +227,18 @@ export function StarterKitsClient({
                                               {c?.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                                             </div>
                                             <div>
-                                              <span className="text-sm text-shark-700">{item.quantity}x {c?.name || "Unknown"}</span>
+                                              <span className="text-sm text-shark-700">{c?.name || "Unknown"}</span>
                                               <span className="text-xs text-shark-400 ml-1">({c?.unitType || ""})</span>
                                             </div>
                                           </div>
-                                          <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Removed", "success"); router.refresh(); } catch { addToast("Failed", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
+                                          <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-1">
+                                              <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch {} } }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">−</button>
+                                              <span className="w-6 text-center text-sm font-semibold text-shark-800">{item.quantity}</span>
+                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch {} }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
+                                            </div>
+                                            <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Removed", "success"); router.refresh(); } catch { addToast("Failed", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
+                                          </div>
                                         </div>
                                       );
                                     })}
