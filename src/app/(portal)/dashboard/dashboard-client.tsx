@@ -756,7 +756,44 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <LocationMap locations={mapLocations} className="h-[400px]" />
+            {/* Google Maps embed — no API key needed */}
+            <div className="h-[350px] rounded-xl overflow-hidden border border-shark-100">
+              <iframe
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                src={`https://maps.google.com/maps?q=${mapLocations.map((l) => `${l.latitude},${l.longitude}`).join("|")}&z=5&output=embed&ll=${mapLocations.length > 0 ? `${mapLocations.reduce((s, l) => s + l.latitude, 0) / mapLocations.length},${mapLocations.reduce((s, l) => s + l.longitude, 0) / mapLocations.length}` : "-33.8688,151.2093"}`}
+              />
+            </div>
+            {/* Location list */}
+            <div className="mt-3 space-y-1">
+              {mapLocations.map((loc) => (
+                <a
+                  key={loc.id}
+                  href={`https://www.google.com/maps?q=${loc.latitude},${loc.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-shark-50 transition-colors group"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-action-500 flex items-center justify-center">
+                      <Icon name="map-pin" size={13} className="text-white" />
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-shark-700 group-hover:text-action-500 transition-colors">{loc.name}</span>
+                      <span className="text-xs text-shark-400 ml-2">{loc.stateName}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-shark-400">
+                    <span>{loc.assetCount} assets</span>
+                    <span>{loc.consumableCount} consumables</span>
+                    <span>{loc.staffCount} staff</span>
+                  </div>
+                </a>
+              ))}
+            </div>
           </CardContent>
         </Card>
       )}
