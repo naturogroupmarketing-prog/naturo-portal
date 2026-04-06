@@ -64,6 +64,9 @@ interface RegionBreakdownItem {
   lost: number;
   pendingRequests: number;
   pendingPOs: number;
+  overdueReturns: number;
+  lowStockCount: number;
+  healthScore: number;
   lowStockItems: { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number }[];
 }
 
@@ -591,8 +594,12 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     className="w-full flex items-center justify-between px-5 py-3 hover:bg-shark-25 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-lg ${colors.bg} flex items-center justify-center`}>
-                        <Icon name="map-pin" size={16} className={colors.color} />
+                      {/* Health Score Circle */}
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 ${
+                        region.healthScore >= 80 ? "bg-emerald-500" :
+                        region.healthScore >= 50 ? "bg-amber-500" : "bg-red-500"
+                      }`}>
+                        {region.healthScore}
                       </div>
                       <div className="text-left">
                         <span className="font-semibold text-shark-900">{region.regionName}</span>

@@ -317,21 +317,23 @@ export default async function DashboardPage() {
             where: { isActive: true, organizationId },
             include: { region: true },
           }).then((items) => items.filter((i) => i.quantityOnHand <= i.minimumThreshold)),
+          db.pendingReturn.groupBy({ by: ["regionId"], where: { organizationId, isVerified: false }, _count: true }),
         ]
       : []),
   ]);
 
   // Build regional breakdown for Super Admin
-  let regionBreakdown: { regionId: string; regionName: string; stateName: string; damaged: number; lost: number; pendingRequests: number; pendingPOs: number; lowStockItems: { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number }[] }[] | undefined;
+  let regionBreakdown: { regionId: string; regionName: string; stateName: string; damaged: number; lost: number; pendingRequests: number; pendingPOs: number; overdueReturns: number; lowStockCount: number; healthScore: number; lowStockItems: { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number }[] }[] | undefined;
 
   if (isSuperAdmin && regionData.length > 0) {
-    const [regions, damagedByRegion, lostByRegion, pendingReqRaw, pendingPOsByRegion, allLowStock] = regionData as [
+    const [regions, damagedByRegion, lostByRegion, pendingReqRaw, pendingPOsByRegion, allLowStock, overdueReturnsByRegion] = regionData as [
       { id: string; name: string; latitude: number | null; longitude: number | null; state: { name: string }; _count: { assets: number; consumables: number; users: number } }[],
       { regionId: string; _count: number }[],
       { regionId: string; _count: number }[],
       { consumable: { regionId: string } }[],
       { regionId: string; _count: number }[],
       { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number; regionId: string }[],
+      { regionId: string | null; _count: number }[],
     ];
 
     // Count pending requests per region
@@ -344,20 +346,39 @@ export default async function DashboardPage() {
     const damagedMap = new Map(damagedByRegion.map((r) => [r.regionId, r._count]));
     const lostMap = new Map(lostByRegion.map((r) => [r.regionId, r._count]));
     const poMap = new Map(pendingPOsByRegion.map((r) => [r.regionId, r._count]));
+    const overdueReturnsMap = new Map(overdueReturnsByRegion.filter((r) => r.regionId).map((r) => [r.regionId!, r._count]));
 
-    regionBreakdown = regions.map((region) => ({
-      regionId: region.id,
-      regionName: region.name,
-      stateName: region.state.name,
-      damaged: damagedMap.get(region.id) ?? 0,
-      lost: lostMap.get(region.id) ?? 0,
-      pendingRequests: pendingReqByRegion.get(region.id) ?? 0,
-      pendingPOs: poMap.get(region.id) ?? 0,
-      lowStockItems: allLowStock
-        .filter((i) => i.regionId === region.id)
-        .slice(0, 5)
-        .map((i) => ({ id: i.id, name: i.name, unitType: i.unitType, quantityOnHand: i.quantityOnHand, minimumThreshold: i.minimumThreshold })),
-    }));
+    regionBreakdown = regions.map((region) => {
+      const regionDamaged = damagedMap.get(region.id) ?? 0;
+      const regionLowStock = allLowStock.filter((i) => i.regionId === region.id).length;
+      const regionOverdueReturns = overdueReturnsMap.get(region.id) ?? 0;
+      const regionPendingReq = pendingReqByRegion.get(region.id) ?? 0;
+
+      // Per-region health score
+      let regionHealth = 100;
+      regionHealth -= Math.min(30, regionLowStock * 5);
+      regionHealth -= Math.min(20, regionOverdueReturns * 4);
+      regionHealth -= Math.min(15, regionDamaged * 5);
+      regionHealth -= Math.min(10, regionPendingReq * 2);
+      regionHealth = Math.max(0, regionHealth);
+
+      return {
+        regionId: region.id,
+        regionName: region.name,
+        stateName: region.state.name,
+        damaged: regionDamaged,
+        lost: lostMap.get(region.id) ?? 0,
+        pendingRequests: regionPendingReq,
+        pendingPOs: poMap.get(region.id) ?? 0,
+        overdueReturns: regionOverdueReturns,
+        lowStockCount: regionLowStock,
+        healthScore: regionHealth,
+        lowStockItems: allLowStock
+          .filter((i) => i.regionId === region.id)
+          .slice(0, 5)
+          .map((i) => ({ id: i.id, name: i.name, unitType: i.unitType, quantityOnHand: i.quantityOnHand, minimumThreshold: i.minimumThreshold })),
+      };
+    });
   }
 
   // Map locations for Super Admin
