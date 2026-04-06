@@ -203,7 +203,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         </div>
                         {/* Health Score with hover tooltip */}
                         <div className="text-center relative group/health">
-                          <div className={`w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold text-white cursor-pointer ${
+                          <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold text-white cursor-pointer ${
                             operationsOverview.healthScore >= 80 ? "bg-emerald-500" :
                             operationsOverview.healthScore >= 50 ? "bg-amber-500" : "bg-red-500"
                           }`}>
@@ -596,7 +596,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     <div className="flex items-center gap-3">
                       {/* Health Score Circle with hover tooltip */}
                       <div className="relative group/rscore" onClick={(e) => e.stopPropagation()}>
-                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 cursor-pointer ${
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0 cursor-pointer ${
                           region.healthScore >= 80 ? "bg-emerald-500" :
                           region.healthScore >= 50 ? "bg-amber-500" : "bg-red-500"
                         }`}>
