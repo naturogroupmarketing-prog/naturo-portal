@@ -228,9 +228,11 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
       }) : [];
 
       for (const asset of availableAssets) {
-        await db.asset.update({ where: { id: asset.id }, data: { status: "ASSIGNED" } });
+        // Don't change status yet — stays AVAILABLE until staff confirms receipt
+        // Status changes to ASSIGNED only when staff acknowledges the item
         await db.assetAssignment.create({
           data: { assetId: asset.id, userId, assignmentType: "PERMANENT", checkoutDate: new Date(), starterKitApplicationId: application.id },
+          // acknowledgedAt is null by default — pending confirmation
         });
         results.push(`Assigned ${asset.name} (${asset.assetCode})`);
         appliedCount++;
@@ -323,12 +325,20 @@ export async function acknowledgeAssetItem(assignmentId: string) {
     data: { acknowledgedAt: new Date() },
   });
 
+  // Now set asset status to ASSIGNED — staff confirmed they have it
+  await db.asset.update({
+    where: { id: assignment.assetId },
+    data: { status: "ASSIGNED" },
+  });
+
   // Check if all items in this application are now acknowledged
   if (assignment.starterKitApplicationId) {
     await checkApplicationComplete(assignment.starterKitApplicationId);
   }
 
   revalidatePath("/my-assets");
+  revalidatePath("/assets");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { success: true };
 }
@@ -525,6 +535,18 @@ export async function batchConfirmKitReceipt(
       },
       data: { acknowledgedAt: new Date() },
     });
+
+    // Set asset status to ASSIGNED — staff confirmed receipt
+    const acknowledgedAssignments = await db.assetAssignment.findMany({
+      where: { id: { in: receivedAssets.map((i) => i.id) } },
+      select: { assetId: true },
+    });
+    if (acknowledgedAssignments.length > 0) {
+      await db.asset.updateMany({
+        where: { id: { in: acknowledgedAssignments.map((a) => a.assetId) } },
+        data: { status: "ASSIGNED" },
+      });
+    }
   }
 
   // 2. Acknowledge received consumables + deduct stock (per-item since each has different consumableId)
