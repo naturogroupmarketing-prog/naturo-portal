@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,7 @@ import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/components/ui/toast";
 import {
   createStarterKit,
   updateStarterKit,
@@ -64,6 +66,8 @@ export function StarterKitsClient({
   consumables: Consumable[];
   users: User[];
 }) {
+  const router = useRouter();
+  const { addToast } = useToast();
   const [showCreate, setShowCreate] = useState(false);
   const [editKit, setEditKit] = useState<StarterKit | null>(null);
   const [expandedKit, setExpandedKit] = useState<string | null>(null);
@@ -140,8 +144,17 @@ export function StarterKitsClient({
                                 </span>
                               </div>
                               <button
-                                onClick={async () => await removeStarterKitItem(item.id)}
-                                className="text-shark-400 hover:text-red-500"
+                                onClick={async () => {
+                                  try {
+                                    await removeStarterKitItem(item.id);
+                                    addToast("Item removed", "success");
+                                    router.refresh();
+                                  } catch (e) {
+                                    addToast(e instanceof Error ? e.message : "Failed to remove", "error");
+                                  }
+                                }}
+                                className="text-shark-400 hover:text-red-500 p-1 min-w-[28px] min-h-[28px] flex items-center justify-center"
+                                title="Remove item"
                               >
                                 <Icon name="x" size={14} />
                               </button>
@@ -246,7 +259,9 @@ function EditStarterKitForm({
 
   const handleRemoveItem = async (itemId: string) => {
     setRemovingId(itemId);
-    await removeStarterKitItem(itemId);
+    try {
+      await removeStarterKitItem(itemId);
+    } catch {}
     setRemovingId(null);
   };
 
