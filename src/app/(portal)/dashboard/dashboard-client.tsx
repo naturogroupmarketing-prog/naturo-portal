@@ -98,7 +98,7 @@ interface Props {
   portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
   portfolioChartData?: { month: string; assets: number; consumables: number; depreciation: number }[];
   activityChartData?: { month: string; consumablesUsed: number; staff: number }[];
-  operationsOverview?: { healthScore: number; consumableSpend: number; totalAssetValue: number; overdueReturns: number; incompleteInspections: number; unresolvedDamage: number; totalStaff: number; pendingRequests: number; lowStockCount: number };
+  operationsOverview?: { healthScore: number; ordersAwaitingApproval: number; ordersAwaitingReceival: number; overdueReturns: number; incompleteInspections: number; unresolvedDamage: number; totalStaff: number; pendingRequests: number; lowStockCount: number };
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
   mapLocations?: { id: string; name: string; stateName: string; latitude: number; longitude: number; assetCount: number; consumableCount: number; staffCount: number }[];
@@ -210,16 +210,18 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         </div>
                       </div>
 
-                      {/* Cost Summary */}
+                      {/* Order Summary */}
                       <div className="grid grid-cols-2 gap-3 mb-4">
-                        <div className="bg-shark-50 rounded-xl px-3 py-2.5">
-                          <p className="text-[10px] text-shark-400 uppercase tracking-wider">Asset Value</p>
-                          <p className="text-lg font-bold text-shark-900">${operationsOverview.totalAssetValue.toLocaleString()}</p>
-                        </div>
-                        <div className="bg-shark-50 rounded-xl px-3 py-2.5">
-                          <p className="text-[10px] text-shark-400 uppercase tracking-wider">Stock Value</p>
-                          <p className="text-lg font-bold text-shark-900">${operationsOverview.consumableSpend.toLocaleString()}</p>
-                        </div>
+                        <Link href="/purchase-orders" className="bg-shark-50 rounded-xl px-3 py-2.5 hover:bg-shark-100 transition-colors">
+                          <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Approval</p>
+                          <p className={`text-lg font-bold ${operationsOverview.ordersAwaitingApproval > 0 ? "text-[#E8532E]" : "text-shark-900"}`}>{operationsOverview.ordersAwaitingApproval}</p>
+                          <p className="text-[10px] text-shark-400">purchase orders</p>
+                        </Link>
+                        <Link href="/purchase-orders" className="bg-shark-50 rounded-xl px-3 py-2.5 hover:bg-shark-100 transition-colors">
+                          <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Receival</p>
+                          <p className={`text-lg font-bold ${operationsOverview.ordersAwaitingReceival > 0 ? "text-action-500" : "text-shark-900"}`}>{operationsOverview.ordersAwaitingReceival}</p>
+                          <p className="text-[10px] text-shark-400">purchase orders</p>
+                        </Link>
                       </div>
 
                       {/* Issue Breakdown */}

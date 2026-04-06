@@ -541,14 +541,15 @@ export default async function DashboardPage() {
   });
 
   // Operations overview data
-  const [overdueReturns, incompleteInspections, totalStaffCount, recentDamageCount] = await Promise.all([
-    db.pendingReturn.count({ where: { organizationId, isVerified: false, ...(isSuperAdmin ? {} : { regionId: session.user.regionId! }) } }),
+  const regionWhere = isSuperAdmin ? {} : { regionId: session.user.regionId! };
+  const [overdueReturns, incompleteInspections, totalStaffCount, recentDamageCount, ordersAwaitingApproval, ordersAwaitingReceival] = await Promise.all([
+    db.pendingReturn.count({ where: { organizationId, isVerified: false, ...regionWhere } }),
     db.inspectionSchedule.count({ where: { organizationId, isActive: true, dueDate: { lt: new Date() } } }),
     db.user.count({ where: { organizationId, isActive: true, role: "STAFF" } }),
     db.damageReport.count({ where: { organizationId, isResolved: false } }),
+    db.purchaseOrder.count({ where: { organizationId, status: "PENDING", ...regionWhere } }),
+    db.purchaseOrder.count({ where: { organizationId, status: "ORDERED", ...regionWhere } }),
   ]);
-
-  const consumableSpend = consumablesWithCost.reduce((sum, c) => sum + (c.unitCost || 0) * c.quantityOnHand, 0);
 
   // Health score: 100 = perfect, deduct for issues
   let healthScore = 100;
@@ -562,8 +563,8 @@ export default async function DashboardPage() {
 
   const operationsOverview = {
     healthScore,
-    consumableSpend: Math.round(consumableSpend),
-    totalAssetValue: Math.round(totalCurrentValue),
+    ordersAwaitingApproval,
+    ordersAwaitingReceival,
     overdueReturns,
     incompleteInspections,
     unresolvedDamage: recentDamageCount,
