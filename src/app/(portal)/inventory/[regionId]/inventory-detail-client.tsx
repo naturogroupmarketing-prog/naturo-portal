@@ -84,28 +84,48 @@ export function InventoryDetailClient({
         </div>
       </div>
 
-      {/* Summary Stats */}
+      {/* Summary Stats — clickable */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500" },
-          { label: "Consumables", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500" },
-          { label: "Staff", value: staff.length, icon: "users" as const, border: "border-action-500" },
-          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500" },
-        ].map((stat) => (
-          <Card key={stat.label} className={`border-t-[3px] ${stat.border}`}>
+          { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500", tab: "assets" as const, href: undefined },
+          { label: "Consumables", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500", tab: "consumables" as const, href: undefined },
+          { label: "Staff", value: staff.length, icon: "users" as const, border: "border-action-500", tab: "staff" as const, href: undefined },
+          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", tab: undefined, href: `/alerts/low-stock?region=${region.id}` },
+        ].map((stat) => {
+          const content = (
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-bold text-shark-900">{stat.value}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-action-500 flex items-center justify-center">
+                <div className={`w-10 h-10 rounded-xl ${stat.border === "border-[#E8532E]" && stat.value > 0 ? "bg-[#E8532E]" : "bg-action-500"} flex items-center justify-center`}>
                   <Icon name={stat.icon} size={18} className="text-white" />
                 </div>
               </div>
             </div>
-          </Card>
-        ))}
+          );
+
+          if (stat.href) {
+            return (
+              <Link key={stat.label} href={stat.href}>
+                <Card className={`border-t-[3px] ${stat.border} hover:shadow-md transition-all cursor-pointer`}>
+                  {content}
+                </Card>
+              </Link>
+            );
+          }
+
+          return (
+            <Card
+              key={stat.label}
+              className={`border-t-[3px] ${stat.border} hover:shadow-md transition-all cursor-pointer`}
+              onClick={() => stat.tab && setActiveTab(stat.tab)}
+            >
+              {content}
+            </Card>
+          );
+        })}
       </div>
 
       {/* Apply Standard Items — when empty */}
