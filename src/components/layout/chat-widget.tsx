@@ -138,53 +138,56 @@ export function ChatWidget() {
 
   function toggleVoiceInput() {
     if (isListening) {
-      // Stop listening
       if (recognitionRef.current) {
-        (recognitionRef.current as { stop: () => void }).stop();
+        try { (recognitionRef.current as { stop: () => void }).stop(); } catch {}
       }
       setIsListening(false);
       return;
     }
 
-    // Check browser support
-    const SpeechRecognition = (window as unknown as Record<string, unknown>).SpeechRecognition || (window as unknown as Record<string, unknown>).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Voice input is not supported in this browser. Try Chrome or Edge." }]);
-      return;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const W = window as any;
+      const SpeechRecognition = W.SpeechRecognition || W.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Voice input is not supported in this browser. Try Chrome, Edge, or Safari." }]);
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-AU";
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = (event: { results: { [key: number]: { [key: number]: { transcript: string } } } }) => {
+        try {
+          const transcript = event.results[0][0].transcript;
+          if (transcript) {
+            setInput((prev) => prev + (prev ? " " : "") + transcript);
+          }
+        } catch {}
+        setIsListening(false);
+      };
+
+      recognition.onerror = (event: { error: string }) => {
+        setIsListening(false);
+        if (event.error === "not-allowed") {
+          setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Microphone access denied. Please allow microphone in your browser settings." }]);
+        }
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+      setIsListening(true);
+    } catch (err) {
+      setIsListening(false);
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Voice input failed to start. Please check your microphone permissions." }]);
     }
-
-    const recognition = new (SpeechRecognition as new () => {
-      continuous: boolean;
-      interimResults: boolean;
-      lang: string;
-      onresult: (e: { results: { item: (i: number) => { item: (i: number) => { transcript: string } }; length: number } }) => void;
-      onerror: () => void;
-      onend: () => void;
-      start: () => void;
-      stop: () => void;
-    })();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = "en-AU";
-
-    recognition.onresult = (event: unknown) => {
-      const e = event as { results: Array<Array<{ transcript: string }>> };
-      const transcript = e.results[0][0].transcript;
-      setInput((prev) => prev + (prev ? " " : "") + transcript);
-      setIsListening(false);
-    };
-
-    recognition.onerror = () => {
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    recognitionRef.current = recognition;
-    recognition.start();
-    setIsListening(true);
   }
 
   function cancelRequest() {
