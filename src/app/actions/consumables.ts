@@ -227,10 +227,16 @@ export async function deductStock(formData: FormData) {
     throw new Error(`Cannot deduct ${quantity} — only ${consumable.quantityOnHand} ${consumable.unitType} in stock`);
   }
 
-  const updated = await db.consumable.update({
-    where: { id: consumableId },
+  // Atomic: only deduct if sufficient stock (prevents race condition)
+  const updated = await db.consumable.updateMany({
+    where: { id: consumableId, quantityOnHand: { gte: quantity } },
     data: { quantityOnHand: { decrement: quantity } },
   });
+  if (updated.count === 0) {
+    throw new Error("Insufficient stock — another operation may have reduced it. Please try again.");
+  }
+  const afterUpdate = await db.consumable.findUnique({ where: { id: consumableId } });
+  if (!afterUpdate) throw new Error("Consumable not found");
 
   await createAuditLog({
     action: "CONSUMABLE_STOCK_REDUCED",
@@ -238,7 +244,7 @@ export async function deductStock(formData: FormData) {
     performedById: session.user.id,
     consumableId,
     organizationId,
-    metadata: { quantity, previousQty: consumable.quantityOnHand, reason },
+    metadata: { quantity, previousQty: consumable.quantityOnHand, newQty: afterUpdate.quantityOnHand, reason },
   });
 
   // Trigger low stock alert + auto-PO if below threshold

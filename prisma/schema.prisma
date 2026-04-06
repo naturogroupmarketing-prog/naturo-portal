@@ -429,8 +429,12 @@ model DamageReport {
   organizationId String
   type           String // "DAMAGE" or "LOSS"
   description    String  @db.Text
-  photoUrl       String?
-  isResolved     Boolean @default(false)
+  photoUrl        String?
+  isResolved      Boolean  @default(false)
+  resolvedAt      DateTime?
+  resolvedById    String?
+  resolution      String?  // REPAIRED, REPLACED, WRITTEN_OFF, INSURANCE_CLAIM
+  resolutionNotes String?  @db.Text
 
   asset        Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
   reportedBy   User         @relation(fields: [reportedById], references: [id], onDelete: Cascade)

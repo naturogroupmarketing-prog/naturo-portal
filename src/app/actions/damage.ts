@@ -83,5 +83,60 @@ export async function reportDamage(formData: FormData) {
   revalidatePath("/my-assets");
   revalidatePath("/assets");
   revalidatePath("/dashboard");
+  revalidatePath("/inventory");
   return { success: true, reportId: report.id };
+}
+
+/**
+ * Resolve a damage report — mark as resolved with resolution type and notes
+ */
+export async function resolveDamageReport(data: {
+  reportId: string;
+  resolution: string; // "REPAIRED" | "REPLACED" | "WRITTEN_OFF" | "INSURANCE_CLAIM"
+  notes?: string;
+}) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization");
+
+  const report = await db.damageReport.findUnique({
+    where: { id: data.reportId },
+    include: { asset: true },
+  });
+  if (!report || report.organizationId !== organizationId) throw new Error("Not found");
+  if (report.isResolved) throw new Error("Already resolved");
+
+  await db.damageReport.update({
+    where: { id: data.reportId },
+    data: {
+      isResolved: true,
+      resolvedAt: new Date(),
+      resolvedById: session.user.id,
+      resolution: data.resolution,
+      resolutionNotes: data.notes || null,
+    },
+  });
+
+  // If repaired or replaced, set asset back to AVAILABLE
+  if ((data.resolution === "REPAIRED" || data.resolution === "REPLACED") && report.assetId) {
+    await db.asset.update({
+      where: { id: report.assetId },
+      data: { status: "AVAILABLE" },
+    });
+  }
+
+  await createAuditLog({
+    action: "ASSET_UPDATED",
+    description: `Damage report resolved: ${report.asset?.name || "Unknown"} — ${data.resolution}${data.notes ? ` (${data.notes})` : ""}`,
+    performedById: session.user.id,
+    assetId: report.assetId || undefined,
+    organizationId,
+  });
+
+  revalidatePath("/assets");
+  revalidatePath("/inventory");
+  revalidatePath("/dashboard");
+  return { success: true };
 }
