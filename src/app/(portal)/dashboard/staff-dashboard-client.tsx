@@ -652,7 +652,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                             }))}
                             className="rounded border-shark-300 text-action-600 focus:ring-action-500"
                           />
-                          <Icon name="package" size={12} className={isExcluded ? "text-shark-300 shrink-0" : "text-action-500 shrink-0"} />
+                          <Icon name="package" size={12} className={isExcluded ? "text-shark-400 shrink-0" : "text-action-500 shrink-0"} />
                           <span className={`text-sm ${isExcluded ? "text-shark-400 line-through" : "text-shark-700"}`}>{a.name} ({a.assetCode})</span>
                         </label>
                         {isExcluded && (
@@ -690,7 +690,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                             }))}
                             className="rounded border-shark-300 text-action-600 focus:ring-action-500"
                           />
-                          <Icon name="droplet" size={12} className={isExcluded ? "text-shark-300 shrink-0" : "text-blue-500 shrink-0"} />
+                          <Icon name="droplet" size={12} className={isExcluded ? "text-shark-400 shrink-0" : "text-blue-500 shrink-0"} />
                           <span className={`text-sm ${isExcluded ? "text-shark-400 line-through" : "text-shark-700"}`}>{c.quantity}x {c.name}</span>
                         </label>
                         {isExcluded && (
@@ -981,7 +981,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
                     <div className="flex-1">
                       {m.totalUsed === 0 ? (
-                        <span className="text-xs text-shark-300">No usage</span>
+                        <span className="text-xs text-shark-400">No usage</span>
                       ) : (
                         <div className="space-y-1">
                           {m.items.map((item) => (
@@ -1063,7 +1063,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                               <Icon name="check" size={16} className="text-emerald-600" />
                             </div>
                           ) : (
-                            <Icon name={item.type === "ASSET" ? "package" : "droplet"} size={16} className="text-shark-300" />
+                            <Icon name={item.type === "ASSET" ? "package" : "droplet"} size={16} className="text-shark-400" />
                           )}
                         </div>
                         <div className="min-w-0">

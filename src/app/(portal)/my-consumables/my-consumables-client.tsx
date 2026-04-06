@@ -477,7 +477,7 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
             />
           ) : (
             <div className="w-14 h-14 rounded-lg bg-shark-50 flex items-center justify-center flex-shrink-0">
-              <Icon name="droplet" size={20} className="text-shark-300" />
+              <Icon name="droplet" size={20} className="text-shark-400" />
             </div>
           )}
           <div className="flex-1 min-w-0">

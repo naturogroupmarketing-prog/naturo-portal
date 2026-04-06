@@ -424,7 +424,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                     {asset.imageUrl ? (
                                       <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" />
                                     ) : (
-                                      <Icon name="package" size={14} className="text-shark-300" />
+                                      <Icon name="package" size={14} className="text-shark-400" />
                                     )}
                                   </div>
                                 </td>
@@ -510,7 +510,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                       {item.imageUrl ? (
                                         <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                                       ) : (
-                                        <Icon name="droplet" size={14} className="text-shark-300" />
+                                        <Icon name="droplet" size={14} className="text-shark-400" />
                                       )}
                                     </div>
                                   </td>
