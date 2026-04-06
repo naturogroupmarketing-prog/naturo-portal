@@ -101,7 +101,7 @@ interface Props {
   portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
   portfolioChartData?: { month: string; assets: number; consumables: number; depreciation: number }[];
   activityChartData?: { month: string; consumablesUsed: number; staff: number }[];
-  operationsOverview?: { healthScore: number; ordersAwaitingApproval: number; ordersAwaitingReceival: number; overdueReturns: number; incompleteInspections: number; unresolvedDamage: number; totalStaff: number; pendingRequests: number; lowStockCount: number };
+  operationsOverview?: { healthScore: number; ordersAwaitingApproval: number; ordersAwaitingReceival: number; overdueReturns: number; incompleteInspections: number; unresolvedDamage: number; lostItems: number; totalStaff: number; pendingRequests: number; lowStockCount: number };
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
   mapLocations?: { id: string; name: string; stateName: string; latitude: number; longitude: number; assetCount: number; consumableCount: number; staffCount: number }[];
@@ -264,7 +264,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         {[
                           { label: "Overdue Returns", value: operationsOverview.overdueReturns, icon: "arrow-left" as const, href: "/returns", danger: true },
                           { label: "Low Stock Items", value: operationsOverview.lowStockCount, icon: "alert-triangle" as const, href: "/alerts/low-stock", danger: true },
-                          { label: "Unresolved Damage", value: operationsOverview.unresolvedDamage, icon: "shield" as const, href: "/alerts/damage", danger: true },
+                          { label: "Unresolved Damage", value: operationsOverview.unresolvedDamage, icon: "alert-triangle" as const, href: "/alerts/damage", danger: true },
+                          { label: "Lost Items", value: operationsOverview.lostItems, icon: "shield" as const, href: "/alerts/lost", danger: true },
                           { label: "Pending Requests", value: operationsOverview.pendingRequests, icon: "clipboard" as const, href: "/inventory", danger: false },
                           { label: "Overdue Inspections", value: operationsOverview.incompleteInspections, icon: "search" as const, href: "/condition-checks", danger: true },
                         ].filter((item) => item.value > 0).map((item) => (

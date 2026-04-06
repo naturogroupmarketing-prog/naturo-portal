@@ -585,6 +585,7 @@ export default async function DashboardPage() {
     overdueReturns,
     incompleteInspections,
     unresolvedDamage: recentDamageCount,
+    lostItems: lost,
     totalStaff: totalStaffCount,
     pendingRequests: pendingRequests as number,
     lowStockCount: (lowStockItems as unknown[]).length,
