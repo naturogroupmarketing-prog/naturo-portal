@@ -101,9 +101,8 @@ export function MyConsumablesClient({ assignments, categories, consumables, rece
     consumablesByCategory.get(c.category)!.push(c);
   }
 
-  // Build sections: all defined categories, plus any leftover categories from assignments/consumables
+  // Build sections: only categories that have actual items (assignments or consumables)
   const sectionNames = new Set<string>();
-  for (const cat of categories) sectionNames.add(cat.name);
   for (const cat of assignmentsByCategory.keys()) sectionNames.add(cat);
   for (const cat of consumablesByCategory.keys()) sectionNames.add(cat);
 

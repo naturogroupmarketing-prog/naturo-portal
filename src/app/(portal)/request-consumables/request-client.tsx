@@ -86,13 +86,11 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
     consumablesByCategory.get(c.category)!.push(c);
   }
 
-  // Build ordered sections
+  // Build ordered sections — only categories with actual consumables
   const sectionNames = new Set<string>();
-  for (const cat of categories) sectionNames.add(cat.name);
   for (const cat of consumablesByCategory.keys()) sectionNames.add(cat);
 
   const orderedSections = Array.from(sectionNames)
-    .filter((name) => consumablesByCategory.has(name))
     .sort((a, b) => {
       const aIdx = categories.findIndex((c) => c.name === a);
       const bIdx = categories.findIndex((c) => c.name === b);
