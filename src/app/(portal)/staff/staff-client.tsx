@@ -54,6 +54,11 @@ interface StaffUser {
     createdAt: string;
     asset: { name: string; assetCode: string } | null;
   }[];
+  conditionChecks?: {
+    id: string;
+    monthYear: string;
+    condition: string;
+  }[];
   consumableUsageHistory?: {
     month: string;
     label: string;
@@ -921,6 +926,31 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   ))}
                 </div>
               )}
+            </div>
+            {/* Performance Summary */}
+            <div className="border-t border-shark-100 pt-4">
+              <h3 className="text-sm font-semibold text-shark-700 mb-3 flex items-center gap-2">
+                <Icon name="bar-chart" size={14} className="text-action-500" />
+                Performance Summary
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
+                  <p className="text-lg font-bold text-shark-900">{detailUser.assetAssignments.length}</p>
+                  <p className="text-[10px] text-shark-400">Assets Assigned</p>
+                </div>
+                <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
+                  <p className="text-lg font-bold text-shark-900">{detailUser.consumableAssignments?.length || 0}</p>
+                  <p className="text-[10px] text-shark-400">Consumables</p>
+                </div>
+                <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
+                  <p className="text-lg font-bold text-shark-900">{detailUser.conditionChecks?.length || 0}</p>
+                  <p className="text-[10px] text-shark-400">Inspections Done</p>
+                </div>
+                <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
+                  <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-[#E8532E]" : "text-shark-900"}`}>{detailUser.damageReports?.length || 0}</p>
+                  <p className="text-[10px] text-shark-400">Damage Reports</p>
+                </div>
+              </div>
             </div>
           </div>
         )}

@@ -38,6 +38,11 @@ export default async function StaffPage() {
           orderBy: { createdAt: "desc" },
           take: 10,
         },
+        conditionChecks: {
+          select: { id: true, monthYear: true, condition: true },
+          orderBy: { createdAt: "desc" },
+          take: 10,
+        },
       },
       orderBy: { name: "asc" },
     }),

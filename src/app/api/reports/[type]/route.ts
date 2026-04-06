@@ -36,6 +36,25 @@ export async function GET(
     ? { regionId: session.user.regionId!, organizationId }
     : { organizationId };
 
+  // Optional date range filtering
+  const url = new URL(request.url);
+  const fromParam = url.searchParams.get("from");
+  const toParam = url.searchParams.get("to");
+  const dateFilter: { createdAt?: { gte?: Date; lte?: Date } } = {};
+  if (fromParam) {
+    const from = new Date(fromParam);
+    if (!isNaN(from.getTime())) {
+      dateFilter.createdAt = { ...dateFilter.createdAt, gte: from };
+    }
+  }
+  if (toParam) {
+    const to = new Date(toParam);
+    if (!isNaN(to.getTime())) {
+      to.setHours(23, 59, 59, 999);
+      dateFilter.createdAt = { ...dateFilter.createdAt, lte: to };
+    }
+  }
+
   let csv = "";
 
   switch (type) {
@@ -98,6 +117,7 @@ export async function GET(
         where: {
           action: { in: ["CONSUMABLE_STOCK_ADDED", "CONSUMABLE_STOCK_REDUCED", "CONSUMABLE_REQUEST_ISSUED"] },
           ...(session.user.role === "BRANCH_MANAGER" ? { consumable: { regionId: session.user.regionId! } } : {}),
+          ...dateFilter,
         },
         include: { performedBy: true, consumable: true },
         orderBy: { createdAt: "desc" },
@@ -115,7 +135,7 @@ export async function GET(
 
     case "requests": {
       const requests = await db.consumableRequest.findMany({
-        where: { consumable: regionFilter },
+        where: { consumable: regionFilter, ...dateFilter },
         include: { consumable: true, user: true },
         orderBy: { createdAt: "desc" },
         take: 1000,
@@ -202,19 +222,24 @@ export async function GET(
 
     case "damage-loss": {
       const reports = await db.damageReport.findMany({
-        where: session.user.role === "BRANCH_MANAGER"
-          ? { asset: { regionId: session.user.regionId!, organizationId } }
-          : { asset: { organizationId } },
+        where: {
+          ...dateFilter,
+          ...(session.user.role === "BRANCH_MANAGER"
+            ? { asset: { regionId: session.user.regionId!, organizationId } }
+            : { asset: { organizationId } }),
+        },
         include: { asset: true, reportedBy: true },
         orderBy: { createdAt: "desc" },
         take: 1000,
       });
       csv = toCSV(
-        ["Date", "Asset", "Asset Code", "Type", "Description", "Reported By", "Resolved"],
+        ["Date", "Asset", "Asset Code", "Type", "Description", "Reported By", "Resolved", "Resolution", "Resolved Date"],
         reports.map((r) => [
           r.createdAt.toISOString(), r.asset.name, r.asset.assetCode,
           r.type, r.description, r.reportedBy.name || r.reportedBy.email,
           r.isResolved ? "Yes" : "No",
+          r.resolution || "",
+          r.resolvedAt?.toISOString().split("T")[0] || "",
         ])
       );
       break;
