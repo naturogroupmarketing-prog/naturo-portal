@@ -28,8 +28,13 @@ export default async function StaffPage() {
           include: { consumable: { select: { name: true, unitType: true } } },
         },
         consumableRequests: {
-          where: { status: "PENDING" },
-          include: { consumable: { select: { name: true, unitType: true } } },
+          where: { status: { in: ["PENDING", "ISSUED", "CLOSED"] } },
+          include: { consumable: { select: { name: true, unitType: true, category: true } } },
+          orderBy: { createdAt: "desc" },
+          take: 20,
+        },
+        damageReports: {
+          include: { asset: { select: { name: true, assetCode: true } } },
           orderBy: { createdAt: "desc" },
           take: 10,
         },

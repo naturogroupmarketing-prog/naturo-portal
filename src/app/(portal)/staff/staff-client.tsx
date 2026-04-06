@@ -43,7 +43,16 @@ interface StaffUser {
     id: string;
     quantity: number;
     status: string;
-    consumable: { name: string; unitType: string };
+    createdAt: string;
+    consumable: { name: string; unitType: string; category: string };
+  }[];
+  damageReports?: {
+    id: string;
+    type: string;
+    description: string;
+    isResolved: boolean;
+    createdAt: string;
+    asset: { name: string; assetCode: string } | null;
   }[];
   consumableUsageHistory?: {
     month: string;
@@ -71,6 +80,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   const { addToast } = useToast();
   const [search, setSearch] = useState("");
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const [detailUser, setDetailUser] = useState<StaffUser | null>(null);
 
   // Create user modal state
   const [showCreate, setShowCreate] = useState(false);
@@ -300,6 +310,14 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </td>
                 <td className="px-5 py-3.5 text-center">
                   <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                </td>
+                <td className="px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    onClick={() => setDetailUser(user)}
+                    className="text-xs text-action-500 hover:text-action-600 font-medium px-2 py-1 rounded-lg hover:bg-action-50 transition-colors"
+                  >
+                    View
+                  </button>
                 </td>
               </tr>
             ))
@@ -774,6 +792,133 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </div>
               </>
             )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Staff Detail Modal */}
+      <Modal open={!!detailUser} onClose={() => setDetailUser(null)} title={detailUser?.name || "Staff Details"} className="max-w-2xl">
+        {detailUser && (
+          <div className="space-y-5 max-h-[70vh] overflow-y-auto">
+            {/* Profile header */}
+            <div className="flex items-center gap-3 pb-4 border-b border-shark-100">
+              <div className="w-12 h-12 rounded-full bg-action-100 flex items-center justify-center text-lg font-bold text-action-500">
+                {detailUser.name?.charAt(0)?.toUpperCase() || "?"}
+              </div>
+              <div>
+                <p className="text-base font-semibold text-shark-900">{detailUser.name || "—"}</p>
+                <p className="text-sm text-shark-400">{detailUser.email}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Badge status={detailUser.role} />
+                  <span className={`inline-flex items-center gap-1 text-xs ${detailUser.isActive ? "text-emerald-600" : "text-shark-400"}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${detailUser.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                    {detailUser.isActive ? "Active" : "Inactive"}
+                  </span>
+                  {detailUser.region && <span className="text-xs text-shark-400">{detailUser.region.name}</span>}
+                </div>
+              </div>
+            </div>
+
+            {/* Assets assigned */}
+            <div>
+              <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
+                <Icon name="package" size={14} className="text-action-500" />
+                Assets ({detailUser.assetAssignments.length})
+              </h3>
+              {detailUser.assetAssignments.length === 0 ? (
+                <p className="text-xs text-shark-400 pl-5">No assets assigned</p>
+              ) : (
+                <div className="space-y-1 pl-5">
+                  {detailUser.assetAssignments.map((a, i) => (
+                    <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-shark-50 last:border-0">
+                      <div>
+                        <span className="font-medium text-shark-800">{a.asset.name}</span>
+                        <span className="text-xs font-mono text-shark-400 ml-2">{a.asset.assetCode}</span>
+                      </div>
+                      <span className="text-xs text-shark-400">{a.asset.category}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Consumables assigned */}
+            <div>
+              <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
+                <Icon name="droplet" size={14} className="text-action-500" />
+                Consumables ({detailUser.consumableAssignments?.length || 0})
+              </h3>
+              {!detailUser.consumableAssignments?.length ? (
+                <p className="text-xs text-shark-400 pl-5">No consumables assigned</p>
+              ) : (
+                <div className="space-y-1 pl-5">
+                  {detailUser.consumableAssignments.map((c, i) => (
+                    <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-shark-50 last:border-0">
+                      <span className="font-medium text-shark-800">{c.consumable.name}</span>
+                      <span className="text-xs text-shark-400">{c.quantity} {c.consumable.unitType}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Consumable usage (requests history) */}
+            <div>
+              <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
+                <Icon name="clipboard" size={14} className="text-action-500" />
+                Consumable Usage ({detailUser.consumableRequests?.length || 0})
+              </h3>
+              {!detailUser.consumableRequests?.length ? (
+                <p className="text-xs text-shark-400 pl-5">No consumable requests</p>
+              ) : (
+                <div className="space-y-1 pl-5">
+                  {detailUser.consumableRequests.map((r) => (
+                    <div key={r.id} className="flex items-center justify-between text-sm py-1.5 border-b border-shark-50 last:border-0">
+                      <div>
+                        <span className="font-medium text-shark-800">{r.consumable.name}</span>
+                        <span className="text-xs text-shark-400 ml-2">{r.quantity} {r.consumable.unitType}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge status={r.status} />
+                        <span className="text-[10px] text-shark-300">{new Date(r.createdAt).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Damage / Loss reports */}
+            <div>
+              <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
+                <Icon name="alert-triangle" size={14} className="text-[#E8532E]" />
+                Damage & Loss ({detailUser.damageReports?.length || 0})
+              </h3>
+              {!detailUser.damageReports?.length ? (
+                <p className="text-xs text-shark-400 pl-5">No damage or loss reports</p>
+              ) : (
+                <div className="space-y-1.5 pl-5">
+                  {detailUser.damageReports.map((d) => (
+                    <div key={d.id} className="text-sm py-2 border-b border-shark-50 last:border-0">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${d.type === "DAMAGE" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}>
+                            {d.type}
+                          </span>
+                          <span className="font-medium text-shark-800">{d.asset?.name || "Unknown"}</span>
+                          {d.asset?.assetCode && <span className="text-xs font-mono text-shark-400">{d.asset.assetCode}</span>}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`w-1.5 h-1.5 rounded-full ${d.isResolved ? "bg-emerald-500" : "bg-red-500"}`} />
+                          <span className="text-[10px] text-shark-300">{new Date(d.createdAt).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}</span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-shark-500 mt-1">{d.description}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </Modal>
