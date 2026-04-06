@@ -220,53 +220,25 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
     }
 
     if (item.itemType === "ASSET_CATEGORY" && item.category) {
-      // Assign item.quantity assets from this category
-      const alreadyAssignedIds: string[] = [];
-      let assignedInCategory = 0;
+      // Batch-fetch all available assets for this category upfront (eliminates N+1)
+      const availableAssets = user.regionId ? await db.asset.findMany({
+        where: { category: item.category, regionId: user.regionId, organizationId, status: "AVAILABLE" },
+        orderBy: { createdAt: "asc" },
+        take: item.quantity,
+      }) : [];
 
-      for (let q = 0; q < item.quantity; q++) {
-        // Find an available asset in this category — restricted to user's region
-        let availableAsset = null;
-        if (user.regionId) {
-          availableAsset = await db.asset.findFirst({
-            where: {
-              category: item.category,
-              regionId: user.regionId,
-              organizationId,
-              status: "AVAILABLE",
-              id: { notIn: alreadyAssignedIds },
-            },
-            orderBy: { createdAt: "asc" },
-          });
-        }
+      for (const asset of availableAssets) {
+        await db.asset.update({ where: { id: asset.id }, data: { status: "ASSIGNED" } });
+        await db.assetAssignment.create({
+          data: { assetId: asset.id, userId, assignmentType: "PERMANENT", checkoutDate: new Date(), starterKitApplicationId: application.id },
+        });
+        results.push(`Assigned ${asset.name} (${asset.assetCode})`);
+        appliedCount++;
+      }
 
-        if (availableAsset) {
-          alreadyAssignedIds.push(availableAsset.id);
-          // Assign the asset — pending acknowledgment
-          await db.$transaction(async (tx) => {
-            await tx.asset.update({
-              where: { id: availableAsset.id },
-              data: { status: "ASSIGNED" },
-            });
-            await tx.assetAssignment.create({
-              data: {
-                assetId: availableAsset.id,
-                userId,
-                assignmentType: "PERMANENT",
-                checkoutDate: new Date(),
-                starterKitApplicationId: application.id,
-                // acknowledgedAt left null — pending confirmation
-              },
-            });
-          });
-          results.push(`Assigned ${availableAsset.name} (${availableAsset.assetCode})`);
-          assignedInCategory++;
-          appliedCount++;
-        } else {
-          const remaining = item.quantity - assignedInCategory;
-          results.push(`No available ${item.category} asset found (${remaining} of ${item.quantity} unfulfilled)`);
-          break; // No more available assets in this category
-        }
+      if (availableAssets.length < item.quantity) {
+        const unfulfilled = item.quantity - availableAssets.length;
+        results.push(`No available ${item.category} asset found (${unfulfilled} of ${item.quantity} unfulfilled)`);
       }
     } else if (item.itemType === "CONSUMABLE" && item.consumableId) {
       // Assign consumable
@@ -576,28 +548,30 @@ export async function batchConfirmKitReceipt(
     }
   }
 
-  // 3. Reject assets — deactivate assignment, return asset to AVAILABLE
-  for (const item of rejectedAssets) {
-    const assignment = await db.assetAssignment.findUnique({
-      where: { id: item.id },
+  // 3. Reject assets — batch fetch, then batch update
+  if (rejectedAssets.length > 0) {
+    const rejectedAssignments = await db.assetAssignment.findMany({
+      where: { id: { in: rejectedAssets.map((i) => i.id) }, userId: session.user.id },
       include: { asset: true },
     });
-    if (!assignment || assignment.userId !== session.user.id) continue;
 
-    await db.assetAssignment.update({
-      where: { id: item.id },
-      data: { isActive: false, acknowledgedAt: new Date(), actualReturnDate: new Date() },
-    });
-    await db.asset.update({
-      where: { id: assignment.assetId },
-      data: { status: "AVAILABLE" },
-    });
+    if (rejectedAssignments.length > 0) {
+      // Batch deactivate assignments
+      await db.assetAssignment.updateMany({
+        where: { id: { in: rejectedAssignments.map((a) => a.id) } },
+        data: { isActive: false, acknowledgedAt: new Date(), actualReturnDate: new Date() },
+      });
+      // Batch return assets to AVAILABLE
+      await db.asset.updateMany({
+        where: { id: { in: rejectedAssignments.map((a) => a.assetId) } },
+        data: { status: "AVAILABLE" },
+      });
 
-    rejectedAssetDetails.push({
-      name: assignment.asset.name,
-      code: assignment.asset.assetCode,
-      reason: item.reason || "Not received",
-    });
+      const reasonMap = new Map(rejectedAssets.map((i) => [i.id, i.reason]));
+      for (const a of rejectedAssignments) {
+        rejectedAssetDetails.push({ name: a.asset.name, code: a.asset.assetCode, reason: reasonMap.get(a.id) || "Not received" });
+      }
+    }
   }
 
   // 4. Batch reject consumables — deactivate assignments

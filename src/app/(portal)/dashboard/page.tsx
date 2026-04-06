@@ -15,28 +15,13 @@ export default async function DashboardPage() {
   // Staff dashboard
   if (session.user.role === "STAFF") {
     const currentMonthYear = new Date().toISOString().slice(0, 7);
-    const [assetCount, consumableCount, pendingRequestCount, unacknowledgedCount, recentAssets, recentConsumables, recentRequests, pendingAssetItems, pendingConsumableItems, kitApplications, allActiveAssets, allActiveConsumables] = await Promise.all([
-      db.assetAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } } }),
-      db.consumableAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } } }),
-      db.consumableRequest.count({ where: { userId: session.user.id, status: "PENDING" } }),
-      db.assetAssignment.count({ where: { userId: session.user.id, isActive: true, acknowledgedAt: null, starterKitApplicationId: { not: null } } }),
-      db.assetAssignment.findMany({
-        where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } },
-        include: { asset: true },
-        orderBy: { checkoutDate: "desc" },
-        take: 5,
-      }),
-      db.consumableAssignment.findMany({
-        where: { userId: session.user.id, isActive: true, acknowledgedAt: { not: null } },
-        include: { consumable: true },
-        orderBy: { assignedDate: "desc" },
-        take: 5,
-      }),
+    // Optimized: counts derived from findMany results (eliminated 4 redundant count queries)
+    const [recentRequests, pendingAssetItems, pendingConsumableItems, kitApplications, allActiveAssets, allActiveConsumables] = await Promise.all([
       db.consumableRequest.findMany({
         where: { userId: session.user.id },
         include: { consumable: true },
         orderBy: { createdAt: "desc" },
-        take: 5,
+        take: 20,
       }),
       // Pending kit items — assets not yet acknowledged
       db.assetAssignment.findMany({
@@ -69,6 +54,14 @@ export default async function DashboardPage() {
         orderBy: { assignedDate: "desc" },
       }),
     ]);
+
+    // Derive counts and subsets from findMany results (no extra DB calls needed)
+    const recentAssets = allActiveAssets.filter((a) => a.acknowledgedAt !== null).slice(0, 5);
+    const recentConsumables = allActiveConsumables.filter((c) => c.acknowledgedAt !== null).slice(0, 5);
+    const assetCount = allActiveAssets.filter((a) => a.acknowledgedAt !== null).length;
+    const consumableCount = allActiveConsumables.filter((c) => c.acknowledgedAt !== null).length;
+    const pendingRequestCount = recentRequests.filter((r) => r.status === "PENDING").length;
+    const unacknowledgedCount = allActiveAssets.filter((a) => a.acknowledgedAt === null && a.starterKitApplicationId).length;
 
     // Condition checks: get config + submitted checks + schedules
     const [conditionChecksThisMonth, inspectionCategories, inspectionSchedules] = await Promise.all([

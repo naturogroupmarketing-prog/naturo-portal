@@ -392,6 +392,7 @@ model ConsumableRequest {
   @@index([userId, status])
   @@index([consumableId])
   @@index([status])
+  @@index([approvedById])
 }
 
 model ConsumableAssignment {
@@ -573,6 +574,9 @@ model AuditLog {
   @@index([targetUserId])
   @@index([createdAt])
   @@index([organizationId])
+  @@index([organizationId, createdAt])
+  @@index([performedById, createdAt])
+  @@index([organizationId, action, createdAt])
 }
 
 // ─── PASSWORD RESET ─────────────────────────────────────
