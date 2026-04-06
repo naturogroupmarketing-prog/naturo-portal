@@ -45,7 +45,7 @@ interface LowStockItem {
   unitType: string;
   quantityOnHand: number;
   minimumThreshold: number;
-  region: { name: string };
+  region: { id: string; name: string };
 }
 
 interface QuickLink {
@@ -67,7 +67,7 @@ interface RegionBreakdownItem {
   overdueReturns: number;
   lowStockCount: number;
   healthScore: number;
-  lowStockItems: { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number }[];
+  lowStockItems: { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number; region?: { id: string; name: string } }[];
 }
 
 const REGION_COLORS = [
@@ -538,14 +538,19 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "low-stock":
             return showLowStock ? (
               <Card key="low-stock">
-                <CardHeader>
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center">
-                      <Icon name="alert-triangle" size={14} className="text-red-500" />
+                <Link href="/alerts/low-stock">
+                  <CardHeader className="hover:bg-shark-50/50 transition-colors cursor-pointer rounded-t-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center">
+                          <Icon name="alert-triangle" size={14} className="text-red-500" />
+                        </div>
+                        <CardTitle>Low Stock Alerts</CardTitle>
+                      </div>
+                      <Icon name="arrow-right" size={16} className="text-shark-400" />
                     </div>
-                    <CardTitle>Low Stock Alerts</CardTitle>
-                  </div>
-                </CardHeader>
+                  </CardHeader>
+                </Link>
                 <CardContent>
                   {lowStockItems.length === 0 ? (
                     <div className="flex items-center gap-3 py-4">
@@ -557,16 +562,19 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   ) : (
                     <div className="space-y-0">
                       {lowStockItems.map((item) => (
-                        <div key={item.id} className="flex items-center justify-between py-3 border-b border-shark-50 last:border-0">
+                        <Link key={item.id} href={`/alerts/low-stock${item.region?.id ? `?region=${item.region.id}` : ""}`} className="flex items-center justify-between py-3 border-b border-shark-50 last:border-0 hover:bg-shark-50/50 px-1 -mx-1 rounded-lg transition-colors cursor-pointer">
                           <div>
                             <p className="text-sm font-medium text-shark-800">{item.name}</p>
-                            <p className="text-xs text-shark-400">{item.region.name}</p>
+                            <p className="text-xs text-shark-400">{item.region?.name || ""}</p>
                           </div>
-                          <div className="text-right">
-                            <p className="text-sm font-bold text-red-500">{item.quantityOnHand} {item.unitType}</p>
-                            <p className="text-xs text-shark-400">min: {item.minimumThreshold}</p>
+                          <div className="text-right flex items-center gap-2">
+                            <div>
+                              <p className="text-sm font-bold text-red-500">{item.quantityOnHand} {item.unitType}</p>
+                              <p className="text-xs text-shark-400">min: {item.minimumThreshold}</p>
+                            </div>
+                            <Icon name="arrow-right" size={14} className="text-shark-400" />
                           </div>
-                        </div>
+                        </Link>
                       ))}
                     </div>
                   )}
