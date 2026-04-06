@@ -4,7 +4,7 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { LowStockClient } from "./low-stock-client";
 
-export default async function LowStockPage() {
+export default async function LowStockPage({ searchParams }: { searchParams: Promise<{ region?: string }> }) {
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/dashboard");
 
@@ -23,5 +23,6 @@ export default async function LowStockPage() {
   // Filter to only items at or below threshold
   const filtered = lowStockItems.filter((c) => c.quantityOnHand <= c.minimumThreshold);
 
-  return <LowStockClient items={JSON.parse(JSON.stringify(filtered))} />;
+  const { region: focusRegion } = await searchParams;
+  return <LowStockClient items={JSON.parse(JSON.stringify(filtered))} focusRegionId={focusRegion} />;
 }

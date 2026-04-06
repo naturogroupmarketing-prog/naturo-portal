@@ -17,10 +17,12 @@ interface LowStockItem {
   region: { id: string; name: string; state: { name: string } };
 }
 
-export function LowStockClient({ items }: { items: LowStockItem[] }) {
+export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]; focusRegionId?: string }) {
   const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set(
-    // Auto-expand all regions
-    [...new Set(items.map((i) => i.region.id))]
+    // If a specific region is focused, only expand that one; otherwise expand all
+    focusRegionId
+      ? [focusRegionId]
+      : [...new Set(items.map((i) => i.region.id))]
   ));
 
   const toggleRegion = (id: string) => {

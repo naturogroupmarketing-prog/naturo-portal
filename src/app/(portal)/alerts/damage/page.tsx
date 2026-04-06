@@ -4,7 +4,7 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { UnresolvedDamageClient } from "./damage-client";
 
-export default async function UnresolvedDamagePage() {
+export default async function UnresolvedDamagePage({ searchParams }: { searchParams: Promise<{ region?: string }> }) {
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/dashboard");
 
@@ -30,5 +30,6 @@ export default async function UnresolvedDamagePage() {
     ? reports.filter((r) => r.asset.regionId === session.user.regionId)
     : reports;
 
-  return <UnresolvedDamageClient reports={JSON.parse(JSON.stringify(filtered))} />;
+  const { region: focusRegion } = await searchParams;
+  return <UnresolvedDamageClient reports={JSON.parse(JSON.stringify(filtered))} focusRegionId={focusRegion} />;
 }

@@ -17,9 +17,11 @@ interface LostItem {
   report: { description: string; reportedBy: string; date: string; isResolved: boolean } | null;
 }
 
-export function LostItemsClient({ items }: { items: LostItem[] }) {
+export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; focusRegionId?: string }) {
   const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set(
-    [...new Set(items.map((i) => i.region.id))]
+    focusRegionId
+      ? [focusRegionId]
+      : [...new Set(items.map((i) => i.region.id))]
   ));
 
   const toggleRegion = (id: string) => {

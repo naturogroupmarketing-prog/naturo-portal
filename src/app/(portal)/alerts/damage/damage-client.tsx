@@ -22,11 +22,13 @@ interface DamageReport {
   reportedBy: { name: string | null; email: string };
 }
 
-export function UnresolvedDamageClient({ reports }: { reports: DamageReport[] }) {
+export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: DamageReport[]; focusRegionId?: string }) {
   const router = useRouter();
   const { addToast } = useToast();
   const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set(
-    [...new Set(reports.map((r) => r.asset.region.id))]
+    focusRegionId
+      ? [focusRegionId]
+      : [...new Set(reports.map((r) => r.asset.region.id))]
   ));
   const [resolvingReport, setResolvingReport] = useState<DamageReport | null>(null);
   const [resolution, setResolution] = useState("REPAIRED");

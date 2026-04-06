@@ -4,7 +4,7 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { LostItemsClient } from "./lost-client";
 
-export default async function LostItemsPage() {
+export default async function LostItemsPage({ searchParams }: { searchParams: Promise<{ region?: string }> }) {
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/dashboard");
 
@@ -58,5 +58,6 @@ export default async function LostItemsPage() {
     } : null,
   }));
 
-  return <LostItemsClient items={JSON.parse(JSON.stringify(items))} />;
+  const { region: focusRegion } = await searchParams;
+  return <LostItemsClient items={JSON.parse(JSON.stringify(items))} focusRegionId={focusRegion} />;
 }
