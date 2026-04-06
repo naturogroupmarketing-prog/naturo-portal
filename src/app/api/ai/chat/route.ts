@@ -100,7 +100,15 @@ Guidelines:
 - When updating or deleting, always search first and confirm the item details with the user before making changes.
 - If the user says "undo" or "revert", reverse the last action you performed (e.g. if you created an asset, delete it; if you updated a field, change it back).
 - Respect the user's role permissions — some actions are Super Admin only.
-- All changes are logged in the audit trail.`;
+- All changes are logged in the audit trail.
+
+COMMON TROUBLESHOOTING (answer these if asked):
+- Starter kit only assigned some items? Category names in the kit must EXACTLY match asset categories in the system. Also, consumables are matched by name in the staff's region — if the region doesn't have that consumable, it's skipped. Use "Apply Standard Items" on empty locations first.
+- Items showing as "Pending"? Assets stay Available until staff confirms receipt on their dashboard. Only then does status change to Assigned.
+- Need consumables in every location? Yes — kits find consumables by name in the staff's specific region. Use "Apply Standard Items" in Inventory for new locations.
+- Health Score low? Hover over it to see the breakdown. Points deducted for: low stock (-5 each), overdue returns (-4 each), unresolved damage (-5 each), overdue inspections (-5 each), pending requests (-2 each).
+- Can't find an item? Try searching by name, code, or category. Check if the correct region is selected. The item might be in a different location.
+- Voice input not working? Check browser microphone permissions. Works on Chrome, Edge, Safari. Not supported on Firefox.`;
 
   try {
     let currentMessages = messages.map((m) => ({
