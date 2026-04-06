@@ -91,11 +91,13 @@ interface Props {
   individualConsumables?: IndividualConsumable[];
   conditionCheckItems?: ConditionCheckItem[];
   conditionCheckMonth?: string;
+  conditionCheckFrequency?: string | null;
+  conditionCheckDueDate?: string | null;
   inspectionSchedules?: { id: string; title: string; dueDate: string; notes: string | null }[];
   consumableUsageHistory?: UsageMonth[];
 }
 
-export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [], activeKitApplications = [], individualAssets = [], individualConsumables = [], conditionCheckItems = [], conditionCheckMonth = "", inspectionSchedules = [], consumableUsageHistory = [] }: Props) {
+export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [], activeKitApplications = [], individualAssets = [], individualConsumables = [], conditionCheckItems = [], conditionCheckMonth = "", conditionCheckFrequency = null, conditionCheckDueDate = null, inspectionSchedules = [], consumableUsageHistory = [] }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
   // Track item states: "received" | "not_received" | undefined (pending)
@@ -1012,8 +1014,16 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         </Card>
       )}
 
-      {/* Monthly Condition Check */}
-      {conditionCheckItems.length > 0 && (
+      {/* Condition Check */}
+      {conditionCheckItems.length > 0 && (() => {
+        const freqLabel = conditionCheckFrequency === "FORTNIGHTLY" ? "Fortnightly" : conditionCheckFrequency === "QUARTERLY" ? "Quarterly" : conditionCheckFrequency === "BIANNUAL" ? "6-Monthly" : "Monthly";
+        const dueDate = conditionCheckDueDate ? new Date(conditionCheckDueDate) : null;
+        const now = new Date();
+        const daysUntilDue = dueDate ? Math.ceil((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : null;
+        const dueDateColor = daysUntilDue === null ? "" : daysUntilDue < 0 ? "text-red-600" : daysUntilDue <= 7 ? "text-[#E8532E]" : "text-action-600";
+        const dueDateLabel = dueDate ? `Due ${daysUntilDue !== null && daysUntilDue < 0 ? "overdue" : `by ${dueDate.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}`}` : null;
+
+        return (
         <Card className="border-l-4 border-l-action-500">
           <div
             className="px-6 py-4 flex items-center justify-between cursor-pointer"
@@ -1024,7 +1034,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <Icon name="search" size={20} className="text-white" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-shark-900">Monthly Condition Check</h3>
+                <h3 className="text-base font-semibold text-shark-900">{freqLabel} Condition Check</h3>
                 <p className="text-xs text-shark-400 mt-0.5">
                   {checkedCount === conditionCheckItems.length ? (
                     <span className="text-action-600 font-medium">All {conditionCheckItems.length} items checked ✓</span>
@@ -1032,6 +1042,11 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     <>{checkedCount} of {conditionCheckItems.length} items — take photos of your assigned equipment</>
                   )}
                 </p>
+                {dueDateLabel && checkedCount < conditionCheckItems.length && (
+                  <p className={`text-xs font-medium mt-0.5 ${dueDateColor}`}>
+                    {dueDateLabel}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -1170,7 +1185,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             </div>
           )}
         </Card>
-      )}
+        );
+      })()}
 
       {/* Quick Actions */}
       <div>

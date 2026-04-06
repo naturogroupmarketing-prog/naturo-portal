@@ -63,11 +63,10 @@ export default async function DashboardPage() {
     const pendingRequestCount = recentRequests.filter((r) => r.status === "PENDING").length;
     const unacknowledgedCount = allActiveAssets.filter((a) => a.acknowledgedAt === null && a.starterKitApplicationId).length;
 
-    // Condition checks: get config + submitted checks + schedules
-    const [conditionChecksThisMonth, inspectionCategories, inspectionSchedules] = await Promise.all([
-      db.conditionCheck.findMany({
-        where: { userId: session.user.id, monthYear: currentMonthYear },
-        select: { id: true, itemType: true, assetId: true, consumableId: true, condition: true, photoLabel: true },
+    // Condition checks: get config + submitted checks + schedules + user's personal schedule
+    const [conditionCheckSchedule, inspectionCategories, inspectionSchedules] = await Promise.all([
+      db.conditionCheckSchedule.findUnique({
+        where: { userId: session.user.id },
       }),
       db.category.findMany({
         where: { organizationId: session.user.organizationId!, requiresInspection: true },
@@ -79,6 +78,17 @@ export default async function DashboardPage() {
         orderBy: { dueDate: "asc" },
       }),
     ]);
+
+    // Determine which checks to fetch based on personal schedule or default monthly
+    const conditionChecksThisMonth = conditionCheckSchedule
+      ? await db.conditionCheck.findMany({
+          where: { userId: session.user.id, periodStart: conditionCheckSchedule.periodStart },
+          select: { id: true, itemType: true, assetId: true, consumableId: true, condition: true, photoLabel: true },
+        })
+      : await db.conditionCheck.findMany({
+          where: { userId: session.user.id, monthYear: currentMonthYear },
+          select: { id: true, itemType: true, assetId: true, consumableId: true, condition: true, photoLabel: true },
+        });
 
     // Build kit application groups (for "Return Kit" button)
     const activeKitApplications = kitApplications
@@ -225,6 +235,8 @@ export default async function DashboardPage() {
         individualConsumables={individualConsumables}
         conditionCheckItems={conditionCheckItems}
         conditionCheckMonth={currentMonthYear}
+        conditionCheckFrequency={conditionCheckSchedule?.frequency || null}
+        conditionCheckDueDate={conditionCheckSchedule?.nextDueDate?.toISOString() || null}
         inspectionSchedules={JSON.parse(JSON.stringify(inspectionSchedules))}
         consumableUsageHistory={consumableUsageHistory}
       />

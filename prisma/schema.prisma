@@ -99,6 +99,13 @@ enum SubscriptionStatus {
   TRIALING
 }
 
+enum ConditionCheckFrequency {
+  FORTNIGHTLY
+  MONTHLY
+  QUARTERLY
+  BIANNUAL
+}
+
 model Organization {
   id                 String             @id @default(cuid())
   name               String
@@ -122,8 +129,9 @@ model Organization {
   auditLogs      AuditLog[]
   damageReports   DamageReport[]
   conditionChecks      ConditionCheck[]
-  inspectionSchedules  InspectionSchedule[]
-  customFieldDefs      CustomFieldDefinition[]
+  inspectionSchedules        InspectionSchedule[]
+  conditionCheckSchedules    ConditionCheckSchedule[]
+  customFieldDefs            CustomFieldDefinition[]
   starterKits    StarterKit[]
 
   createdAt DateTime @default(now())
@@ -244,8 +252,10 @@ model User {
   notifications          Notification[]
   maintenanceAssigned    MaintenanceSchedule[]   @relation("MaintenanceAssignee")
   maintenancePerformed   MaintenanceLog[]        @relation("MaintenancePerformer")
-  starterKitApplications StarterKitApplication[]
-  appliedStarterKits     StarterKitApplication[] @relation("AppliedStarterKit")
+  starterKitApplications   StarterKitApplication[]
+  appliedStarterKits       StarterKitApplication[] @relation("AppliedStarterKit")
+  conditionCheckSchedule   ConditionCheckSchedule?
+  conditionCheckSchedulesCreated ConditionCheckSchedule[] @relation("ScheduleCreatedBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -462,7 +472,8 @@ model ConditionCheck {
   photoUrl       String   @db.Text
   photoLabel     String?  // Custom label e.g. "Front View", "Interior" — null = default check
   notes          String?  @db.Text
-  monthYear      String   // "2026-03" format for monthly tracking
+  monthYear      String   // "2026-03" format — kept for backward compat
+  periodStart    DateTime? // Start of the check period (for schedule-based frequency)
 
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -474,6 +485,7 @@ model ConditionCheck {
   @@unique([userId, itemType, assetId, photoLabel, monthYear])
   @@unique([userId, itemType, consumableId, photoLabel, monthYear])
   @@index([userId, monthYear])
+  @@index([userId, periodStart])
   @@index([organizationId, monthYear])
   @@index([assetId])
   @@index([consumableId])
@@ -497,6 +509,30 @@ model InspectionSchedule {
 
   @@index([organizationId, dueDate])
   @@index([organizationId, isActive])
+}
+
+// ─── CONDITION CHECK SCHEDULES (Per-Staff Frequency) ───
+
+model ConditionCheckSchedule {
+  id                String                   @id @default(cuid())
+  userId            String                   @unique
+  organizationId    String
+  frequency         ConditionCheckFrequency  @default(MONTHLY)
+  nextDueDate       DateTime
+  lastCompletedDate DateTime?
+  periodStart       DateTime
+  createdById       String
+  isActive          Boolean                  @default(true)
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User         @relation("ScheduleCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId, isActive])
+  @@index([nextDueDate])
 }
 
 // ─── CATEGORIES ────────────────────────────────────────

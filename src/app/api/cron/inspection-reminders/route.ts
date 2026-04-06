@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Also check for OVERDUE schedules and notify admins
+  // Also check for OVERDUE org-wide schedules and notify admins
   const overdueSchedules = await db.inspectionSchedule.findMany({
     where: {
       isActive: true,
@@ -147,12 +147,94 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  // ─── Per-Staff Condition Check Schedule Reminders ────
+  // Find staff whose personal condition check schedule is due within 48h
+  const staffDueSoon = await db.conditionCheckSchedule.findMany({
+    where: {
+      isActive: true,
+      nextDueDate: { gte: now, lte: in48h },
+    },
+    include: {
+      user: { select: { id: true, email: true, name: true, emailNotifications: true, organizationId: true } },
+    },
+  });
+
+  const FREQ_LABELS: Record<string, string> = {
+    FORTNIGHTLY: "fortnightly",
+    MONTHLY: "monthly",
+    QUARTERLY: "quarterly",
+    BIANNUAL: "6-monthly",
+  };
+
+  for (const sched of staffDueSoon) {
+    if (!sched.user.emailNotifications) continue;
+
+    const hoursLeft = Math.round((sched.nextDueDate.getTime() - now.getTime()) / (1000 * 60 * 60));
+    const is24h = hoursLeft <= 24;
+    const freqLabel = FREQ_LABELS[sched.frequency] || "scheduled";
+    const formattedDate = sched.nextDueDate.toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "long" });
+
+    const subject = is24h
+      ? `FINAL REMINDER: ${freqLabel} condition check — due tomorrow`
+      : `Reminder: ${freqLabel} condition check — due in 2 days`;
+
+    await sendEmail({
+      to: sched.user.email,
+      subject: `Trackio: ${subject}`,
+      html: buildReminderEmail(
+        sched.user.name || "Team Member",
+        `${freqLabel.charAt(0).toUpperCase() + freqLabel.slice(1)} Condition Check`,
+        formattedDate,
+        is24h,
+        null,
+      ),
+    });
+    emailsSent++;
+
+    await createNotification({
+      userId: sched.user.id,
+      type: "MAINTENANCE_DUE",
+      title: is24h ? "Final Reminder: Condition Check Due Tomorrow" : "Reminder: Condition Check Due Soon",
+      message: `Your ${freqLabel} condition check is due by ${formattedDate}. Please take photos of your assigned equipment.`,
+      link: "/dashboard",
+    });
+    notificationsSent++;
+  }
+
+  // Notify admins of overdue per-staff schedules
+  const overdueStaffSchedules = await db.conditionCheckSchedule.findMany({
+    where: {
+      isActive: true,
+      nextDueDate: {
+        lt: now,
+        gte: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+      },
+    },
+    include: {
+      user: { select: { name: true, email: true, organizationId: true } },
+    },
+  });
+
+  for (const sched of overdueStaffSchedules) {
+    if (!sched.user.organizationId) continue;
+    const { notifyAdminsAndManagers } = await import("@/lib/notifications");
+    await notifyAdminsAndManagers({
+      organizationId: sched.user.organizationId,
+      type: "MAINTENANCE_DUE",
+      title: `Overdue Condition Check: ${sched.user.name || sched.user.email}`,
+      message: `${sched.user.name || sched.user.email} has not completed their condition check by the due date.`,
+      link: "/condition-checks",
+    });
+  }
+
   return NextResponse.json({
     success: true,
     emailsSent,
     notificationsSent,
     schedulesProcessed: upcomingSchedules.length,
     overdueAlerts: overdueSchedules.length,
+    staffScheduleReminders: staffDueSoon.length,
+    overdueStaffSchedules: overdueStaffSchedules.length,
   });
 }
 

@@ -4,10 +4,41 @@ import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { isAdminOrManager, isSuperAdmin } from "@/lib/permissions";
 import { revalidatePath } from "next/cache";
+import type { ConditionCheckFrequency } from "@/generated/prisma/client";
 
-/**
- * Staff submits a monthly condition check photo for an assigned item
- */
+// ─── Helpers ────────────────────────────────────────────
+
+function addFrequencyInterval(date: Date, frequency: ConditionCheckFrequency): Date {
+  const d = new Date(date);
+  switch (frequency) {
+    case "FORTNIGHTLY": d.setDate(d.getDate() + 14); break;
+    case "MONTHLY": d.setMonth(d.getMonth() + 1); break;
+    case "QUARTERLY": d.setMonth(d.getMonth() + 3); break;
+    case "BIANNUAL": d.setMonth(d.getMonth() + 6); break;
+  }
+  return d;
+}
+
+function subtractFrequencyInterval(date: Date, frequency: ConditionCheckFrequency): Date {
+  const d = new Date(date);
+  switch (frequency) {
+    case "FORTNIGHTLY": d.setDate(d.getDate() - 14); break;
+    case "MONTHLY": d.setMonth(d.getMonth() - 1); break;
+    case "QUARTERLY": d.setMonth(d.getMonth() - 3); break;
+    case "BIANNUAL": d.setMonth(d.getMonth() - 6); break;
+  }
+  return d;
+}
+
+const FREQUENCY_LABELS: Record<ConditionCheckFrequency, string> = {
+  FORTNIGHTLY: "Fortnightly",
+  MONTHLY: "Monthly",
+  QUARTERLY: "Quarterly",
+  BIANNUAL: "6-Monthly",
+};
+
+// ─── Staff submits condition check ─────────────────────
+
 export async function submitConditionCheck(data: {
   itemType: "ASSET" | "CONSUMABLE";
   assetId?: string;
@@ -28,8 +59,6 @@ export async function submitConditionCheck(data: {
     throw new Error("Invalid condition");
   }
 
-  const monthYear = new Date().toISOString().slice(0, 7);
-
   // Verify the item is actually assigned to this user
   if (data.itemType === "ASSET" && data.assetId) {
     const assignment = await db.assetAssignment.findFirst({
@@ -47,17 +76,25 @@ export async function submitConditionCheck(data: {
 
   const photoLabel = data.photoLabel || null;
 
-  // Check if already submitted this month (for this specific photo label)
-  const existing = await db.conditionCheck.findFirst({
-    where: {
-      userId: session.user.id,
-      itemType: data.itemType,
-      ...(data.assetId ? { assetId: data.assetId } : {}),
-      ...(data.consumableId ? { consumableId: data.consumableId } : {}),
-      photoLabel,
-      monthYear,
-    },
+  // Check if user has a custom schedule
+  const schedule = await db.conditionCheckSchedule.findUnique({
+    where: { userId: session.user.id },
   });
+
+  const monthYear = new Date().toISOString().slice(0, 7);
+  const periodStart = schedule?.periodStart || null;
+
+  // Determine dedup query — use periodStart for scheduled users, monthYear for legacy
+  const dedupWhere = {
+    userId: session.user.id,
+    itemType: data.itemType,
+    ...(data.assetId ? { assetId: data.assetId } : {}),
+    ...(data.consumableId ? { consumableId: data.consumableId } : {}),
+    photoLabel,
+    ...(periodStart ? { periodStart } : { monthYear }),
+  };
+
+  const existing = await db.conditionCheck.findFirst({ where: dedupWhere });
 
   if (existing) {
     await db.conditionCheck.update({
@@ -81,13 +118,74 @@ export async function submitConditionCheck(data: {
         photoLabel,
         notes: data.notes || null,
         monthYear,
+        periodStart,
       },
     });
+  }
+
+  // Auto-advance schedule if all items are now complete
+  if (schedule) {
+    await maybeAdvanceSchedule(session.user.id, organizationId, schedule);
   }
 
   revalidatePath("/dashboard");
   revalidatePath("/condition-checks");
   return { success: true };
+}
+
+/**
+ * Check if all condition check items are complete for the current period, and auto-advance if so.
+ */
+async function maybeAdvanceSchedule(
+  userId: string,
+  organizationId: string,
+  schedule: { id: string; periodStart: Date; nextDueDate: Date; frequency: ConditionCheckFrequency },
+) {
+  // Get inspection categories
+  const inspectionCategories = await db.category.findMany({
+    where: { organizationId, requiresInspection: true },
+    select: { name: true, inspectionPhotos: true },
+  });
+  const catNames = new Set(inspectionCategories.map((c) => c.name));
+  const photosPerCat = new Map(inspectionCategories.map((c) => [c.name, c.inspectionPhotos]));
+
+  // Get user's active assignments in inspection categories
+  const [assets, consumables] = await Promise.all([
+    db.assetAssignment.findMany({
+      where: { userId, isActive: true, acknowledgedAt: { not: null }, asset: { category: { in: [...catNames] } } },
+      select: { asset: { select: { category: true } } },
+    }),
+    db.consumableAssignment.findMany({
+      where: { userId, isActive: true, acknowledgedAt: { not: null }, consumable: { category: { in: [...catNames] } } },
+      select: { consumable: { select: { category: true } } },
+    }),
+  ]);
+
+  // Count expected photos
+  let expectedPhotos = 0;
+  for (const a of assets) expectedPhotos += Math.max((photosPerCat.get(a.asset.category) || []).length, 1);
+  for (const c of consumables) expectedPhotos += Math.max((photosPerCat.get(c.consumable.category) || []).length, 1);
+
+  if (expectedPhotos === 0) return;
+
+  // Count submitted checks for this period
+  const submittedCount = await db.conditionCheck.count({
+    where: { userId, periodStart: schedule.periodStart },
+  });
+
+  if (submittedCount >= expectedPhotos) {
+    // All done — advance the schedule
+    const newPeriodStart = schedule.nextDueDate;
+    const newNextDueDate = addFrequencyInterval(newPeriodStart, schedule.frequency);
+    await db.conditionCheckSchedule.update({
+      where: { id: schedule.id },
+      data: {
+        lastCompletedDate: new Date(),
+        periodStart: newPeriodStart,
+        nextDueDate: newNextDueDate,
+      },
+    });
+  }
 }
 
 /**
@@ -364,5 +462,197 @@ export async function deleteInspectionSchedule(id: string) {
 
   await db.inspectionSchedule.update({ where: { id }, data: { isActive: false } });
   revalidatePath("/condition-checks");
+  return { success: true };
+}
+
+// ─── Per-Staff Condition Check Scheduling ──────────────
+
+/**
+ * Super admin sets/updates a staff member's condition check schedule
+ */
+export async function setStaffConditionSchedule(data: {
+  userId: string;
+  frequency: ConditionCheckFrequency;
+  nextDueDate: string; // ISO date
+}) {
+  const session = await auth();
+  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  // Validate target user
+  const targetUser = await db.user.findUnique({ where: { id: data.userId } });
+  if (!targetUser || targetUser.organizationId !== organizationId) throw new Error("User not found");
+
+  const nextDueDate = new Date(data.nextDueDate);
+  if (isNaN(nextDueDate.getTime())) throw new Error("Invalid date");
+
+  const periodStart = subtractFrequencyInterval(nextDueDate, data.frequency);
+
+  await db.conditionCheckSchedule.upsert({
+    where: { userId: data.userId },
+    create: {
+      userId: data.userId,
+      organizationId,
+      frequency: data.frequency,
+      nextDueDate,
+      periodStart,
+      createdById: session.user.id,
+    },
+    update: {
+      frequency: data.frequency,
+      nextDueDate,
+      periodStart,
+    },
+  });
+
+  // Notify the staff member
+  const { createNotification } = await import("@/lib/notifications");
+  const formattedDate = nextDueDate.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+  await createNotification({
+    userId: data.userId,
+    type: "MAINTENANCE_DUE",
+    title: `Condition Check Schedule Set`,
+    message: `Your condition checks are now ${FREQUENCY_LABELS[data.frequency].toLowerCase()}. Next due by ${formattedDate}.`,
+    link: "/dashboard",
+  });
+
+  revalidatePath("/condition-checks");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+/**
+ * Super admin sets the same schedule on multiple staff at once
+ */
+export async function bulkSetConditionSchedule(data: {
+  userIds: string[];
+  frequency: ConditionCheckFrequency;
+  nextDueDate: string;
+}) {
+  const session = await auth();
+  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  const nextDueDate = new Date(data.nextDueDate);
+  if (isNaN(nextDueDate.getTime())) throw new Error("Invalid date");
+
+  const periodStart = subtractFrequencyInterval(nextDueDate, data.frequency);
+  const { createNotification } = await import("@/lib/notifications");
+  const formattedDate = nextDueDate.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+
+  let updated = 0;
+  for (const userId of data.userIds) {
+    const user = await db.user.findUnique({ where: { id: userId } });
+    if (!user || user.organizationId !== organizationId) continue;
+
+    await db.conditionCheckSchedule.upsert({
+      where: { userId },
+      create: {
+        userId,
+        organizationId,
+        frequency: data.frequency,
+        nextDueDate,
+        periodStart,
+        createdById: session.user.id,
+      },
+      update: {
+        frequency: data.frequency,
+        nextDueDate,
+        periodStart,
+      },
+    });
+
+    await createNotification({
+      userId,
+      type: "MAINTENANCE_DUE",
+      title: `Condition Check Schedule Set`,
+      message: `Your condition checks are now ${FREQUENCY_LABELS[data.frequency].toLowerCase()}. Next due by ${formattedDate}.`,
+      link: "/dashboard",
+    });
+
+    updated++;
+  }
+
+  revalidatePath("/condition-checks");
+  revalidatePath("/dashboard");
+  return { success: true, updated };
+}
+
+/**
+ * Get all staff condition check schedules for the org (admin view)
+ */
+export async function getStaffSchedules() {
+  const session = await auth();
+  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  const schedules = await db.conditionCheckSchedule.findMany({
+    where: { organizationId, isActive: true },
+    include: {
+      user: { select: { id: true, name: true, email: true, regionId: true, region: { select: { name: true } } } },
+    },
+    orderBy: { nextDueDate: "asc" },
+  });
+
+  // Also get staff WITHOUT a schedule (they use default monthly)
+  const scheduledUserIds = schedules.map((s) => s.userId);
+  const unscheduledStaff = await db.user.findMany({
+    where: {
+      organizationId,
+      isActive: true,
+      id: { notIn: scheduledUserIds },
+      OR: [
+        { assetAssignments: { some: { isActive: true } } },
+        { consumableAssignments: { some: { isActive: true } } },
+      ],
+    },
+    select: { id: true, name: true, email: true, regionId: true, region: { select: { name: true } } },
+    orderBy: { name: "asc" },
+  });
+
+  return {
+    schedules: schedules.map((s) => ({
+      id: s.id,
+      userId: s.userId,
+      userName: s.user.name,
+      userEmail: s.user.email,
+      regionName: s.user.region?.name || "No region",
+      frequency: s.frequency,
+      nextDueDate: s.nextDueDate.toISOString(),
+      lastCompletedDate: s.lastCompletedDate?.toISOString() || null,
+      periodStart: s.periodStart.toISOString(),
+    })),
+    unscheduledStaff: unscheduledStaff.map((u) => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      regionName: u.region?.name || "No region",
+    })),
+  };
+}
+
+/**
+ * Remove a staff member's custom schedule (revert to default monthly)
+ */
+export async function removeStaffConditionSchedule(userId: string) {
+  const session = await auth();
+  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+
+  const schedule = await db.conditionCheckSchedule.findUnique({ where: { userId } });
+  if (!schedule || schedule.organizationId !== organizationId) throw new Error("Schedule not found");
+
+  await db.conditionCheckSchedule.delete({ where: { userId } });
+
+  revalidatePath("/condition-checks");
+  revalidatePath("/dashboard");
   return { success: true };
 }

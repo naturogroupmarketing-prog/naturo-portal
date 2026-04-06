@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
-import { toggleCategoryInspection, updateCategoryInspectionPhotos, createInspectionSchedule, deleteInspectionSchedule } from "@/app/actions/condition-checks";
+import { toggleCategoryInspection, updateCategoryInspectionPhotos, createInspectionSchedule, deleteInspectionSchedule, setStaffConditionSchedule, bulkSetConditionSchedule, removeStaffConditionSchedule } from "@/app/actions/condition-checks";
+import type { ConditionCheckFrequency } from "@/generated/prisma/client";
 
 interface Check {
   id: string;
@@ -57,6 +58,25 @@ interface Schedule {
   createdBy: { name: string | null; email: string };
 }
 
+interface StaffSchedule {
+  id: string;
+  userId: string;
+  userName: string | null;
+  userEmail: string;
+  regionName: string;
+  frequency: ConditionCheckFrequency;
+  nextDueDate: string;
+  lastCompletedDate: string | null;
+  periodStart: string;
+}
+
+interface UnscheduledStaffMember {
+  id: string;
+  name: string | null;
+  email: string;
+  regionName: string;
+}
+
 interface Props {
   checks: Check[];
   staffStatus: StaffStatus[];
@@ -65,6 +85,8 @@ interface Props {
   isSuperAdmin: boolean;
   inspectionConfig?: InspectionCategory[];
   schedules?: Schedule[];
+  staffSchedules?: StaffSchedule[];
+  unscheduledStaff?: UnscheduledStaffMember[];
 }
 
 const CONDITION_COLORS: Record<string, string> = {
@@ -74,7 +96,14 @@ const CONDITION_COLORS: Record<string, string> = {
   DAMAGED: "bg-red-100 text-red-700",
 };
 
-export function ConditionChecksClient({ checks, staffStatus, monthYear, regions, isSuperAdmin, inspectionConfig = [], schedules = [] }: Props) {
+const FREQUENCY_OPTIONS: { value: ConditionCheckFrequency; label: string }[] = [
+  { value: "FORTNIGHTLY", label: "Fortnightly" },
+  { value: "MONTHLY", label: "Monthly" },
+  { value: "QUARTERLY", label: "3 Months" },
+  { value: "BIANNUAL", label: "6 Months" },
+];
+
+export function ConditionChecksClient({ checks, staffStatus, monthYear, regions, isSuperAdmin, inspectionConfig = [], schedules = [], staffSchedules = [], unscheduledStaff = [] }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
   const [search, setSearch] = useState("");
@@ -87,6 +116,18 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
   const [scheduleDueDate, setScheduleDueDate] = useState("");
   const [scheduleNotes, setScheduleNotes] = useState("");
   const [scheduleSaving, setScheduleSaving] = useState(false);
+
+  // Staff schedule state
+  const [showStaffSchedules, setShowStaffSchedules] = useState(false);
+  const [editingScheduleUser, setEditingScheduleUser] = useState<{ userId: string; name: string | null; email: string } | null>(null);
+  const [editFrequency, setEditFrequency] = useState<ConditionCheckFrequency>("MONTHLY");
+  const [editDueDate, setEditDueDate] = useState("");
+  const [editSaving, setEditSaving] = useState(false);
+  const [bulkMode, setBulkMode] = useState(false);
+  const [bulkSelected, setBulkSelected] = useState<Set<string>>(new Set());
+  const [bulkFrequency, setBulkFrequency] = useState<ConditionCheckFrequency>("MONTHLY");
+  const [bulkDueDate, setBulkDueDate] = useState("");
+  const [bulkSaving, setBulkSaving] = useState(false);
 
   const handleCreateSchedule = async () => {
     if (!scheduleTitle.trim() || !scheduleDueDate) { addToast("Title and due date are required", "error"); return; }
@@ -168,10 +209,14 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
           <p className="text-sm text-shark-400 mt-1">{monthLabel} &middot; {totalChecked}/{staffStatus.length} staff completed</p>
         </div>
         {isSuperAdmin && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button size="sm" onClick={() => setShowScheduleModal(true)}>
               <Icon name="plus" size={14} className="mr-1.5" />
               Schedule Inspection
+            </Button>
+            <Button variant={showStaffSchedules ? "primary" : "outline"} size="sm" onClick={() => setShowStaffSchedules(!showStaffSchedules)}>
+              <Icon name="clock" size={14} className="mr-1.5" />
+              Staff Schedules
             </Button>
             <Button variant="outline" size="sm" onClick={() => setShowConfig(!showConfig)}>
               <Icon name="settings" size={14} className="mr-1.5" />
@@ -341,6 +386,193 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
           </div>
         </Card>
       )}
+
+      {/* Staff Schedules Panel — Super Admin Only */}
+      {isSuperAdmin && showStaffSchedules && (
+        <Card>
+          <div className="px-5 py-4 border-b border-shark-100 flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-shark-900">Staff Condition Check Schedules</h3>
+              <p className="text-xs text-shark-400 mt-0.5">Set how often each staff member must submit condition checks.</p>
+            </div>
+            {!bulkMode ? (
+              <Button size="sm" variant="outline" onClick={() => setBulkMode(true)}>
+                <Icon name="users" size={14} className="mr-1.5" />Bulk Set
+              </Button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Select value={bulkFrequency} onChange={(e) => setBulkFrequency(e.target.value as ConditionCheckFrequency)} className="text-xs w-32">
+                  {FREQUENCY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </Select>
+                <Input type="date" value={bulkDueDate} onChange={(e) => setBulkDueDate(e.target.value)} min={new Date().toISOString().split("T")[0]} className="text-xs w-36" />
+                <Button
+                  size="sm"
+                  disabled={bulkSelected.size === 0 || !bulkDueDate || bulkSaving}
+                  loading={bulkSaving}
+                  onClick={async () => {
+                    setBulkSaving(true);
+                    try {
+                      const res = await bulkSetConditionSchedule({ userIds: [...bulkSelected], frequency: bulkFrequency, nextDueDate: bulkDueDate });
+                      addToast(`Schedule set for ${res.updated} staff`, "success");
+                      setBulkMode(false); setBulkSelected(new Set()); setBulkDueDate("");
+                      router.refresh();
+                    } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                    setBulkSaving(false);
+                  }}
+                  className="text-xs"
+                >
+                  Apply ({bulkSelected.size})
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => { setBulkMode(false); setBulkSelected(new Set()); }} className="text-xs">Cancel</Button>
+              </div>
+            )}
+          </div>
+
+          <div className="divide-y divide-shark-50 max-h-[500px] overflow-y-auto">
+            {/* Staff with existing schedules */}
+            {staffSchedules.map((s) => {
+              const due = new Date(s.nextDueDate);
+              const now = new Date();
+              const daysUntil = Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+              const isOverdue = daysUntil < 0;
+              const freqLabel = FREQUENCY_OPTIONS.find((o) => o.value === s.frequency)?.label || s.frequency;
+
+              return (
+                <div key={s.id} className="px-5 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    {bulkMode && (
+                      <input
+                        type="checkbox"
+                        checked={bulkSelected.has(s.userId)}
+                        onChange={(e) => {
+                          setBulkSelected((prev) => { const n = new Set(prev); e.target.checked ? n.add(s.userId) : n.delete(s.userId); return n; });
+                        }}
+                        className="w-4 h-4 rounded border-shark-300 text-action-500 focus:ring-action-400/20"
+                      />
+                    )}
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-shark-800 truncate">{s.userName || s.userEmail}</p>
+                      <p className="text-xs text-shark-400">{s.regionName}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-xs font-medium text-action-600 bg-action-50 px-2 py-0.5 rounded-full">{freqLabel}</span>
+                    <span className={`text-xs ${isOverdue ? "text-red-600 font-medium" : daysUntil <= 7 ? "text-[#E8532E]" : "text-shark-500"}`}>
+                      Due: {due.toLocaleDateString("en-AU", { day: "numeric", month: "short" })}
+                      {isOverdue && " (overdue)"}
+                    </span>
+                    {s.lastCompletedDate && (
+                      <span className="text-xs text-shark-400 hidden sm:inline">
+                        Last: {new Date(s.lastCompletedDate).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}
+                      </span>
+                    )}
+                    {!bulkMode && (
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => { setEditingScheduleUser({ userId: s.userId, name: s.userName, email: s.userEmail }); setEditFrequency(s.frequency); setEditDueDate(s.nextDueDate.split("T")[0]); }}
+                          className="text-shark-400 hover:text-action-600 p-1"
+                        >
+                          <Icon name="edit" size={14} />
+                        </button>
+                        <button
+                          onClick={async () => {
+                            try {
+                              await removeStaffConditionSchedule(s.userId);
+                              addToast("Reverted to default monthly", "success");
+                              router.refresh();
+                            } catch { addToast("Failed to remove", "error"); }
+                          }}
+                          className="text-shark-300 hover:text-red-500 p-1"
+                        >
+                          <Icon name="x" size={14} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Staff without schedules (default monthly) */}
+            {unscheduledStaff.map((u) => (
+              <div key={u.id} className="px-5 py-3 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  {bulkMode && (
+                    <input
+                      type="checkbox"
+                      checked={bulkSelected.has(u.id)}
+                      onChange={(e) => {
+                        setBulkSelected((prev) => { const n = new Set(prev); e.target.checked ? n.add(u.id) : n.delete(u.id); return n; });
+                      }}
+                      className="w-4 h-4 rounded border-shark-300 text-action-500 focus:ring-action-400/20"
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-shark-800 truncate">{u.name || u.email}</p>
+                    <p className="text-xs text-shark-400">{u.regionName}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="text-xs text-shark-400 bg-shark-50 px-2 py-0.5 rounded-full">Default (Monthly)</span>
+                  {!bulkMode && (
+                    <button
+                      onClick={() => { setEditingScheduleUser({ userId: u.id, name: u.name, email: u.email }); setEditFrequency("MONTHLY"); setEditDueDate(""); }}
+                      className="text-shark-400 hover:text-action-600 p-1"
+                    >
+                      <Icon name="edit" size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {staffSchedules.length === 0 && unscheduledStaff.length === 0 && (
+              <div className="px-5 py-8 text-center">
+                <p className="text-sm text-shark-400">No staff with assigned items found.</p>
+              </div>
+            )}
+          </div>
+        </Card>
+      )}
+
+      {/* Edit Staff Schedule Modal */}
+      <Modal open={!!editingScheduleUser} onClose={() => setEditingScheduleUser(null)} title={`Set Schedule — ${editingScheduleUser?.name || editingScheduleUser?.email || ""}`}>
+        {editingScheduleUser && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Frequency</label>
+              <Select value={editFrequency} onChange={(e) => setEditFrequency(e.target.value as ConditionCheckFrequency)}>
+                {FREQUENCY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Next Due Date</label>
+              <Input type="date" value={editDueDate} onChange={(e) => setEditDueDate(e.target.value)} min={new Date().toISOString().split("T")[0]} />
+            </div>
+            <p className="text-xs text-shark-400">After the staff member completes all checks, the next due date will automatically advance based on the frequency.</p>
+            <div className="flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => setEditingScheduleUser(null)}>Cancel</Button>
+              <Button
+                onClick={async () => {
+                  if (!editDueDate) { addToast("Due date is required", "error"); return; }
+                  setEditSaving(true);
+                  try {
+                    await setStaffConditionSchedule({ userId: editingScheduleUser.userId, frequency: editFrequency, nextDueDate: editDueDate });
+                    addToast(`Schedule set for ${editingScheduleUser.name || editingScheduleUser.email}`, "success");
+                    setEditingScheduleUser(null);
+                    router.refresh();
+                  } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                  setEditSaving(false);
+                }}
+                disabled={editSaving || !editDueDate}
+                loading={editSaving}
+              >
+                Save Schedule
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

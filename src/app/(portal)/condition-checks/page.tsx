@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { isAdminOrManager, isSuperAdmin } from "@/lib/permissions";
-import { getConditionChecksForReview, getInspectionConfig, getInspectionSchedules } from "@/app/actions/condition-checks";
+import { getConditionChecksForReview, getInspectionConfig, getInspectionSchedules, getStaffSchedules } from "@/app/actions/condition-checks";
 import { db } from "@/lib/db";
 import { ConditionChecksClient } from "./condition-checks-client";
 
@@ -18,7 +18,7 @@ export default async function ConditionChecksPage() {
 
   // Get regions and config for super admin
   const isAdmin = isSuperAdmin(session.user.role);
-  const [regions, inspectionConfig, schedules] = await Promise.all([
+  const [regions, inspectionConfig, schedules, staffScheduleData] = await Promise.all([
     isAdmin
       ? db.region.findMany({
           where: { state: { organizationId } },
@@ -28,6 +28,7 @@ export default async function ConditionChecksPage() {
       : [],
     isAdmin ? getInspectionConfig() : [],
     isAdmin ? getInspectionSchedules() : [],
+    isAdmin ? getStaffSchedules() : null,
   ]);
 
   return (
@@ -39,6 +40,8 @@ export default async function ConditionChecksPage() {
       isSuperAdmin={isAdmin}
       inspectionConfig={JSON.parse(JSON.stringify(inspectionConfig))}
       schedules={JSON.parse(JSON.stringify(schedules))}
+      staffSchedules={staffScheduleData?.schedules || []}
+      unscheduledStaff={staffScheduleData?.unscheduledStaff || []}
     />
   );
 }

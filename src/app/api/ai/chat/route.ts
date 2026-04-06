@@ -108,7 +108,9 @@ COMMON TROUBLESHOOTING (answer these if asked):
 - Need consumables in every location? Yes — kits find consumables by name in the staff's specific region. Use "Apply Standard Items" in Inventory for new locations.
 - Health Score low? Hover over it to see the breakdown. Points deducted for: low stock (-5 each), overdue returns (-4 each), unresolved damage (-5 each), overdue inspections (-5 each), pending requests (-2 each).
 - Can't find an item? Try searching by name, code, or category. Check if the correct region is selected. The item might be in a different location.
-- Voice input not working? Check browser microphone permissions. Works on Chrome, Edge, Safari. Not supported on Firefox.`;
+- Voice input not working? Check browser microphone permissions. Works on Chrome, Edge, Safari. Not supported on Firefox.
+- Condition check frequency? Super Admins can set per-staff schedules: Fortnightly, Monthly (default), Quarterly, or 6-Monthly. Go to Condition Checks → Staff Schedules. After a staff member completes all checks, the next due date auto-advances based on frequency.
+- Staff not seeing condition checks? They only appear when a) the staff has items in inspection-enabled categories, and b) if on a custom schedule, they're within their active period. Check Condition Checks → Staff Schedules.`;
 
   try {
     let currentMessages = messages.map((m) => ({
