@@ -263,8 +263,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <div className="space-y-2">
                         {[
                           { label: "Overdue Returns", value: operationsOverview.overdueReturns, icon: "arrow-left" as const, href: "/returns", danger: true },
-                          { label: "Low Stock Items", value: operationsOverview.lowStockCount, icon: "alert-triangle" as const, href: "/inventory", danger: true },
-                          { label: "Unresolved Damage", value: operationsOverview.unresolvedDamage, icon: "shield" as const, href: "/reports", danger: true },
+                          { label: "Low Stock Items", value: operationsOverview.lowStockCount, icon: "alert-triangle" as const, href: "/alerts/low-stock", danger: true },
+                          { label: "Unresolved Damage", value: operationsOverview.unresolvedDamage, icon: "shield" as const, href: "/alerts/damage", danger: true },
                           { label: "Pending Requests", value: operationsOverview.pendingRequests, icon: "clipboard" as const, href: "/inventory", danger: false },
                           { label: "Overdue Inspections", value: operationsOverview.incompleteInspections, icon: "search" as const, href: "/condition-checks", danger: true },
                         ].filter((item) => item.value > 0).map((item) => (
