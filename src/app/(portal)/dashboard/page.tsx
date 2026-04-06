@@ -540,6 +540,38 @@ export default async function DashboardPage() {
     },
   });
 
+  // Operations overview data
+  const [overdueReturns, incompleteInspections, totalStaffCount, recentDamageCount] = await Promise.all([
+    db.pendingReturn.count({ where: { organizationId, isVerified: false, ...(isSuperAdmin ? {} : { regionId: session.user.regionId! }) } }),
+    db.inspectionSchedule.count({ where: { organizationId, isActive: true, dueDate: { lt: new Date() } } }),
+    db.user.count({ where: { organizationId, isActive: true, role: "STAFF" } }),
+    db.damageReport.count({ where: { organizationId, isResolved: false } }),
+  ]);
+
+  const consumableSpend = consumablesWithCost.reduce((sum, c) => sum + (c.unitCost || 0) * c.quantityOnHand, 0);
+
+  // Health score: 100 = perfect, deduct for issues
+  let healthScore = 100;
+  healthScore -= Math.min(30, (lowStockItems as unknown[]).length * 5); // -5 per low stock item, max -30
+  healthScore -= Math.min(20, overdueReturns * 4); // -4 per overdue return, max -20
+  healthScore -= Math.min(15, recentDamageCount * 5); // -5 per unresolved damage, max -15
+  healthScore -= Math.min(15, incompleteInspections * 5); // -5 per overdue inspection, max -15
+  healthScore -= Math.min(10, overdue * 2); // -2 per overdue checkout, max -10
+  healthScore -= Math.min(10, (pendingRequests as number) * 2); // -2 per pending request, max -10
+  healthScore = Math.max(0, healthScore);
+
+  const operationsOverview = {
+    healthScore,
+    consumableSpend: Math.round(consumableSpend),
+    totalAssetValue: Math.round(totalCurrentValue),
+    overdueReturns,
+    incompleteInspections,
+    unresolvedDamage: recentDamageCount,
+    totalStaff: totalStaffCount,
+    pendingRequests: pendingRequests as number,
+    lowStockCount: (lowStockItems as unknown[]).length,
+  };
+
   const preferences = parsePreferences(userPrefs?.dashboardPreferences);
 
   const stats: { widgetId: string; label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
@@ -575,6 +607,7 @@ export default async function DashboardPage() {
       portfolioValue={isSuperAdmin ? { purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100, consumableValue: Math.round(totalConsumableValue * 100) / 100 } : undefined}
       portfolioChartData={isSuperAdmin ? portfolioChartData : undefined}
       activityChartData={isSuperAdmin ? activityChartData : undefined}
+      operationsOverview={operationsOverview}
       upcomingMaintenance={upcomingMaintenance}
       isSuperAdmin={isSuperAdmin}
       mapLocations={mapLocations}

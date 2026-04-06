@@ -98,12 +98,13 @@ interface Props {
   portfolioValue?: { purchase: number; current: number; depreciation: number; consumableValue: number };
   portfolioChartData?: { month: string; assets: number; consumables: number; depreciation: number }[];
   activityChartData?: { month: string; consumablesUsed: number; staff: number }[];
+  operationsOverview?: { healthScore: number; consumableSpend: number; totalAssetValue: number; overdueReturns: number; incompleteInspections: number; unresolvedDamage: number; totalStaff: number; pendingRequests: number; lowStockCount: number };
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
   mapLocations?: { id: string; name: string; stateName: string; latitude: number; longitude: number; assetCount: number; consumableCount: number; staffCount: number }[];
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, upcomingMaintenance, isSuperAdmin, mapLocations = [] }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [] }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -188,53 +189,68 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "portfolio":
             return isSuperAdmin && showPortfolio ? (
               <div key="portfolio" className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* LEFT — Activity Bar Chart (Damaged, Lost, Staff) like Edaly Attendance */}
-                {activityChartData && activityChartData.length > 0 && (
+                {/* LEFT — Operations Overview */}
+                {operationsOverview && (
                   <Card>
                     <div className="p-6">
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h2 className="text-lg font-bold text-shark-900">Activity</h2>
-                          <p className="text-sm text-shark-400">Recent Activity</p>
+                          <h2 className="text-lg font-bold text-shark-900">Operations</h2>
+                          <p className="text-sm text-shark-400">Business health overview</p>
+                        </div>
+                        {/* Health Score */}
+                        <div className="text-center">
+                          <div className={`w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold text-white ${
+                            operationsOverview.healthScore >= 80 ? "bg-emerald-500" :
+                            operationsOverview.healthScore >= 50 ? "bg-amber-500" : "bg-red-500"
+                          }`}>
+                            {operationsOverview.healthScore}
+                          </div>
+                          <p className="text-[10px] text-shark-400 mt-1">Health</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-5 mb-4">
-                        <span className="flex items-center gap-1.5 text-xs text-shark-500"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#1F3DD9" }} /> Consumables Used</span>
-                        <span className="flex items-center gap-1.5 text-xs text-shark-500"><span className="w-2.5 h-2.5 rounded-full" style={{ background: "#10b981" }} /> Staff</span>
+
+                      {/* Cost Summary */}
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="bg-shark-50 rounded-xl px-3 py-2.5">
+                          <p className="text-[10px] text-shark-400 uppercase tracking-wider">Asset Value</p>
+                          <p className="text-lg font-bold text-shark-900">${operationsOverview.totalAssetValue.toLocaleString()}</p>
+                        </div>
+                        <div className="bg-shark-50 rounded-xl px-3 py-2.5">
+                          <p className="text-[10px] text-shark-400 uppercase tracking-wider">Stock Value</p>
+                          <p className="text-lg font-bold text-shark-900">${operationsOverview.consumableSpend.toLocaleString()}</p>
+                        </div>
                       </div>
-                      <div className="h-56">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={activityChartData} margin={{ top: 5, right: 5, left: -10, bottom: 0 }} barGap={2} barSize={14}>
-                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7080" }} />
-                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#8b8f96" }} allowDecimals={false} />
-                            <RechartsTooltip
-                              content={(props: Record<string, unknown>) => {
-                                const active = props.active as boolean;
-                                const payload = props.payload as Array<{ value: number; dataKey: string }> | undefined;
-                                const label = props.label as string;
-                                if (!active || !payload?.length) return null;
-                                return (
-                                  <div style={{ background: "#1a1c21", borderRadius: 10, padding: "10px 14px", border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
-                                    <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
-                                    {payload.map((p) => {
-                                      const color = p.dataKey === "consumablesUsed" ? "#1F3DD9" : "#10b981";
-                                      const name = p.dataKey === "consumablesUsed" ? "Consumables Used" : "Staff";
-                                      return (
-                                        <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
-                                          <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>{Number(p.value)}</span>
-                                          <span style={{ color: "#6b7080", fontSize: 11 }}>{name}</span>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                );
-                              }}
-                            />
-                            <Bar dataKey="consumablesUsed" fill="#1F3DD9" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="staff" fill="#10b981" radius={[4, 4, 0, 0]} />
-                          </BarChart>
-                        </ResponsiveContainer>
+
+                      {/* Issue Breakdown */}
+                      <div className="space-y-2">
+                        {[
+                          { label: "Overdue Returns", value: operationsOverview.overdueReturns, icon: "arrow-left" as const, href: "/returns", danger: true },
+                          { label: "Low Stock Items", value: operationsOverview.lowStockCount, icon: "alert-triangle" as const, href: "/inventory", danger: true },
+                          { label: "Unresolved Damage", value: operationsOverview.unresolvedDamage, icon: "shield" as const, href: "/reports", danger: true },
+                          { label: "Pending Requests", value: operationsOverview.pendingRequests, icon: "clipboard" as const, href: "/inventory", danger: false },
+                          { label: "Overdue Inspections", value: operationsOverview.incompleteInspections, icon: "search" as const, href: "/condition-checks", danger: true },
+                        ].filter((item) => item.value > 0).map((item) => (
+                          <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-shark-50 transition-colors -mx-1">
+                            <div className="flex items-center gap-2.5">
+                              <Icon name={item.icon} size={14} className={item.danger ? "text-[#E8532E]" : "text-action-500"} />
+                              <span className="text-sm text-shark-600">{item.label}</span>
+                            </div>
+                            <span className={`text-sm font-bold ${item.danger ? "text-[#E8532E]" : "text-shark-700"}`}>{item.value}</span>
+                          </Link>
+                        ))}
+                        {operationsOverview.overdueReturns === 0 && operationsOverview.lowStockCount === 0 && operationsOverview.unresolvedDamage === 0 && operationsOverview.pendingRequests === 0 && operationsOverview.incompleteInspections === 0 && (
+                          <div className="flex items-center gap-2 px-3 py-3">
+                            <Icon name="check" size={16} className="text-emerald-500" />
+                            <span className="text-sm text-emerald-600 font-medium">All clear — no outstanding issues</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Staff Summary */}
+                      <div className="mt-4 pt-3 border-t border-shark-100 flex items-center justify-between">
+                        <span className="text-xs text-shark-400">Active Staff</span>
+                        <span className="text-sm font-semibold text-shark-700">{operationsOverview.totalStaff}</span>
                       </div>
                     </div>
                   </Card>
