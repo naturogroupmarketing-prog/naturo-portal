@@ -15,8 +15,7 @@ interface CommandItem {
 const COMMANDS: CommandItem[] = [
   // Navigation
   { label: "Dashboard", href: "/dashboard", icon: "dashboard", section: "Navigation", keywords: "home overview" },
-  { label: "Assets", href: "/assets", icon: "package", section: "Navigation", keywords: "equipment items" },
-  { label: "Consumables", href: "/consumables", icon: "droplet", section: "Navigation", keywords: "stock inventory" },
+  { label: "Inventory", href: "/inventory", icon: "package", section: "Navigation", keywords: "assets consumables equipment items stock inventory locations regions" },
   { label: "Staff", href: "/staff", icon: "users", section: "Navigation", keywords: "employees team" },
   { label: "Purchase Orders", href: "/purchase-orders", icon: "truck", section: "Navigation", keywords: "PO buy order" },
   { label: "Returns", href: "/returns", icon: "arrow-left", section: "Navigation", keywords: "return verify" },
@@ -25,7 +24,6 @@ const COMMANDS: CommandItem[] = [
   { label: "Starter Kits", href: "/starter-kits", icon: "box", section: "Navigation", keywords: "kit onboard" },
   { label: "Maintenance", href: "/maintenance", icon: "settings", section: "Navigation", keywords: "schedule service" },
   // Admin
-  { label: "Locations", href: "/admin/locations", icon: "map-pin", section: "Admin", keywords: "region state branch" },
   { label: "Permissions", href: "/admin/permissions", icon: "lock", section: "Admin", keywords: "role access" },
   { label: "Import Data", href: "/admin/import", icon: "upload", section: "Admin", keywords: "csv bulk" },
   { label: "Activity Log", href: "/activity", icon: "clock", section: "Admin", keywords: "audit trail history" },

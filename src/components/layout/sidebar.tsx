@@ -38,8 +38,7 @@ const navSections: NavSection[] = [
     heading: "Management",
     roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
     items: [
-      { label: "Assets", href: "/assets", icon: "package", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
-      { label: "Consumables", href: "/consumables", icon: "droplet", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+      { label: "Inventory", href: "/inventory", icon: "package", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Purchase Orders", href: "/purchase-orders", icon: "truck", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Staff", href: "/staff", icon: "users", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Starter Kits", href: "/starter-kits", icon: "box", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
@@ -54,7 +53,6 @@ const navSections: NavSection[] = [
     roles: ["SUPER_ADMIN"],
     items: [
       { label: "Permissions", href: "/admin/permissions", icon: "lock", roles: ["SUPER_ADMIN"] },
-      { label: "Locations", href: "/admin/locations", icon: "map-pin", roles: ["SUPER_ADMIN"] },
       { label: "Import Data", href: "/admin/import", icon: "upload", roles: ["SUPER_ADMIN"] },
       { label: "Activity Log", href: "/activity", icon: "clock", roles: ["SUPER_ADMIN"] },
     ],
