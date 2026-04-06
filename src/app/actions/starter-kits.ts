@@ -243,30 +243,42 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
         results.push(`No available ${item.category} asset found (${unfulfilled} of ${item.quantity} unfulfilled)`);
       }
     } else if (item.itemType === "CONSUMABLE" && item.consumableId) {
-      // Assign consumable
-      const consumable = await db.consumable.findUnique({
+      // Find the template consumable (to get the name)
+      const templateConsumable = await db.consumable.findUnique({
         where: { id: item.consumableId },
       });
+      if (!templateConsumable) {
+        results.push("Consumable not found");
+        continue;
+      }
 
-      // Skip consumables not in user's region
-      if (consumable && user.regionId && consumable.regionId !== user.regionId) {
-        results.push(`Skipped ${consumable.name} (not in staff's region)`);
-      } else if (consumable && consumable.quantityOnHand >= item.quantity) {
-        // Don't deduct stock yet — only deduct when staff confirms receipt
+      // Find the same consumable BY NAME in the staff's region
+      let consumable = templateConsumable;
+      if (user.regionId && templateConsumable.regionId !== user.regionId) {
+        const regionMatch = await db.consumable.findFirst({
+          where: { name: templateConsumable.name, regionId: user.regionId, isActive: true },
+        });
+        if (regionMatch) {
+          consumable = regionMatch;
+        } else {
+          results.push(`No "${templateConsumable.name}" found in staff's region`);
+          continue;
+        }
+      }
+
+      if (consumable.quantityOnHand >= item.quantity) {
         await db.consumableAssignment.create({
           data: {
-            consumableId: item.consumableId!,
+            consumableId: consumable.id,
             userId,
             quantity: item.quantity,
             starterKitApplicationId: application.id,
-            // acknowledgedAt left null — pending confirmation
-            // Stock deducted in acknowledgeConsumableItem when staff confirms
           },
         });
         results.push(`Assigned ${item.quantity}x ${consumable.name}`);
         appliedCount++;
       } else {
-        results.push(`Insufficient stock for ${consumable?.name || "consumable"}`);
+        results.push(`Insufficient stock for ${consumable.name} (${consumable.quantityOnHand} available, ${item.quantity} needed)`);
       }
     }
   }
