@@ -33,6 +33,7 @@ export default async function InventoryDetailPage({ params, searchParams }: { pa
         assignments: { where: { isActive: true }, include: { user: { select: { name: true, email: true } } } },
       },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      take: 5000,
     }),
     db.consumable.findMany({
       where: { regionId, isActive: true },

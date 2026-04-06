@@ -367,6 +367,15 @@ export const AI_TOOLS: Tool[] = [
     }, required: ["title", "due_date"] },
   },
   {
+    name: "resolve_damage_report",
+    description: "Resolve an open damage report. Options: REPAIRED, REPLACED, WRITTEN_OFF, INSURANCE_CLAIM. Admin/Manager only.",
+    input_schema: { type: "object" as const, properties: {
+      asset_name: { type: "string", description: "Name or code of the damaged asset" },
+      resolution: { type: "string", enum: ["REPAIRED", "REPLACED", "WRITTEN_OFF", "INSURANCE_CLAIM"], description: "How was it resolved" },
+      notes: { type: "string", description: "Resolution notes" },
+    }, required: ["asset_name", "resolution"] },
+  },
+  {
     name: "create_damage_report",
     description: "Report an asset as damaged or lost.",
     input_schema: { type: "object" as const, properties: {
@@ -1687,6 +1696,16 @@ async function scheduleInspectionTool(input: { title: string; due_date: string; 
   return { success: true, message: `Inspection "${input.title}" scheduled for ${dueDate.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}` };
 }
 
+async function resolveDamageReportTool(input: { asset_name: string; resolution: string; notes?: string }, userId: string, organizationId: string) {
+  const asset = await db.asset.findFirst({ where: { OR: [{ name: { contains: input.asset_name, mode: "insensitive" } }, { assetCode: { contains: input.asset_name, mode: "insensitive" } }], organizationId } });
+  if (!asset) return { error: "Asset not found" };
+  const report = await db.damageReport.findFirst({ where: { assetId: asset.id, isResolved: false }, orderBy: { createdAt: "desc" } });
+  if (!report) return { error: `No unresolved damage report for "${asset.name}"` };
+  const { resolveDamageReport } = await import("@/app/actions/damage");
+  await resolveDamageReport({ reportId: report.id, resolution: input.resolution, notes: input.notes });
+  return { success: true, message: `Resolved damage report for "${asset.name}" as ${input.resolution}${input.notes ? ` — ${input.notes}` : ""}` };
+}
+
 async function createDamageReportTool(input: { asset_code: string; type: string; description: string }, userId: string, organizationId: string) {
   const asset = await db.asset.findFirst({ where: { assetCode: input.asset_code, organizationId } });
   if (!asset) return { error: "Asset not found" };
@@ -1964,6 +1983,9 @@ export async function executeAITool(
         break;
       case "schedule_inspection":
         result = userRole === "SUPER_ADMIN" ? await scheduleInspectionTool(toolInput as never, userId!, organizationId!) : { error: "Super Admin only" };
+        break;
+      case "resolve_damage_report":
+        result = await resolveDamageReportTool(toolInput as never, userId!, organizationId!);
         break;
       case "create_damage_report":
         result = await createDamageReportTool(toolInput as never, userId!, organizationId!);

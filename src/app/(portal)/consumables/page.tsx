@@ -26,6 +26,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
         },
       },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      take: 5000,
     }),
     db.consumableRequest.findMany({
       where: {

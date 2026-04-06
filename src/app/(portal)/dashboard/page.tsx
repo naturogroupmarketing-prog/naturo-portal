@@ -421,6 +421,7 @@ export default async function DashboardPage() {
   const allConsumables = await db.consumable.findMany({
     where: { ...regionFilter, isActive: true },
     select: { quantityOnHand: true, minimumThreshold: true, reorderLevel: true },
+    take: 10000,
   });
 
   const consumableStatusChart = (() => {
@@ -457,6 +458,7 @@ export default async function DashboardPage() {
   const assetsWithCost = await db.asset.findMany({
     where: { ...regionFilter, purchaseCost: { not: null } },
     select: { purchaseCost: true, purchaseDate: true, depreciationRate: true },
+    take: 10000,
   });
 
   const totalPurchaseValue = assetsWithCost.reduce((sum, a) => sum + (a.purchaseCost || 0), 0);
@@ -473,6 +475,7 @@ export default async function DashboardPage() {
   const consumablesWithCost = await db.consumable.findMany({
     where: { ...regionFilter, isActive: true, unitCost: { not: null } },
     select: { unitCost: true, quantityOnHand: true, createdAt: true },
+    take: 10000,
   });
   const totalConsumableValue = consumablesWithCost.reduce((sum, c) => sum + (c.unitCost || 0) * c.quantityOnHand, 0);
 

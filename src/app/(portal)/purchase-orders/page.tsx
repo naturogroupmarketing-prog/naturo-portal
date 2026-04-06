@@ -35,6 +35,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         approvedBy: { select: { name: true, email: true } },
       },
       orderBy: { createdAt: "desc" },
+      take: 1000,
     }),
     db.region.findMany({
       where: session.user.role === "BRANCH_MANAGER"

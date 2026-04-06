@@ -30,6 +30,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
         },
       },
       orderBy: { createdAt: "desc" },
+      take: 5000, // Safety limit — prevents timeout with huge datasets
     }),
     db.region.findMany({
       where: session.user.role === "BRANCH_MANAGER"

@@ -855,3 +855,58 @@ export async function markConsumableUsed(assignmentId: string, quantityUsed: num
   revalidatePath("/dashboard");
   return { success: true };
 }
+
+/**
+ * Batch approve or reject multiple consumable requests at once
+ */
+export async function batchApproveRequests(
+  requestIds: string[],
+  action: "approve" | "reject",
+  rejectionNote?: string
+) {
+  const session = await auth();
+  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableEdit"))) {
+    throw new Error("Unauthorized");
+  }
+
+  const organizationId = session.user.organizationId;
+  if (!organizationId) throw new Error("No organization found");
+  if (requestIds.length === 0) return { success: true, processed: 0 };
+
+  const requests = await db.consumableRequest.findMany({
+    where: { id: { in: requestIds }, status: "PENDING" },
+    include: { consumable: true, user: { select: { name: true, email: true, id: true } } },
+  });
+
+  let processed = 0;
+  for (const request of requests) {
+    if (request.consumable.organizationId !== organizationId) continue;
+    if (!canManageRegion(session.user.role, session.user.regionId, request.consumable.regionId)) continue;
+
+    if (action === "approve") {
+      await db.consumableRequest.update({
+        where: { id: request.id },
+        data: { status: "APPROVED", approvedById: session.user.id, approvedAt: new Date() },
+      });
+    } else {
+      await db.consumableRequest.update({
+        where: { id: request.id },
+        data: { status: "REJECTED", approvedById: session.user.id, approvedAt: new Date(), rejectionNote: rejectionNote || "Rejected" },
+      });
+    }
+    processed++;
+  }
+
+  await createAuditLog({
+    action: action === "approve" ? "CONSUMABLE_REQUEST_APPROVED" : "CONSUMABLE_REQUEST_REJECTED",
+    description: `Batch ${action}d ${processed} consumable request(s)`,
+    performedById: session.user.id,
+    organizationId,
+  });
+
+  revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/my-requests");
+  revalidatePath("/dashboard");
+  return { success: true, processed };
+}
