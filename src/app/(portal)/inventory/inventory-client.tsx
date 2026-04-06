@@ -41,7 +41,9 @@ interface Location {
   }>;
 }
 
-export function InventoryListClient({ locations, isSuperAdmin }: { locations: Location[]; isSuperAdmin: boolean }) {
+interface RegionAlerts { damaged: number; lost: number; lowStock: number; unresolvedDamage: number }
+
+export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin }: { locations: Location[]; regionAlerts?: Record<string, RegionAlerts>; isSuperAdmin: boolean }) {
   const router = useRouter();
   const { addToast } = useToast();
   const [modal, setModal] = useState<"state" | "region" | null>(null);
@@ -173,8 +175,8 @@ export function InventoryListClient({ locations, isSuperAdmin }: { locations: Lo
                                 )}
                               </Link>
 
-                              {/* Center — counts */}
-                              <div className="flex items-center gap-3 text-xs mx-4">
+                              {/* Center — counts + alerts */}
+                              <div className="flex items-center gap-2 text-xs mx-4">
                                 <span className="flex items-center gap-1 text-shark-500">
                                   <Icon name="package" size={12} className="text-action-400" />
                                   {region._count.assets}
@@ -187,6 +189,33 @@ export function InventoryListClient({ locations, isSuperAdmin }: { locations: Lo
                                   <Icon name="users" size={12} className="text-action-400" />
                                   {region._count.users}
                                 </span>
+                                {/* Alert badges */}
+                                {(() => {
+                                  const alerts = regionAlerts[region.id];
+                                  if (!alerts) return null;
+                                  return (
+                                    <div className="flex items-center gap-1.5 ml-1">
+                                      {alerts.unresolvedDamage > 0 && (
+                                        <span className="flex items-center gap-0.5 text-[#E8532E] bg-red-50 px-1.5 py-0.5 rounded-full font-medium" title={`${alerts.unresolvedDamage} unresolved damage`}>
+                                          <Icon name="alert-triangle" size={10} />
+                                          {alerts.unresolvedDamage}
+                                        </span>
+                                      )}
+                                      {alerts.lost > 0 && (
+                                        <span className="flex items-center gap-0.5 text-shark-600 bg-shark-100 px-1.5 py-0.5 rounded-full font-medium" title={`${alerts.lost} lost`}>
+                                          <Icon name="shield" size={10} />
+                                          {alerts.lost}
+                                        </span>
+                                      )}
+                                      {alerts.lowStock > 0 && (
+                                        <span className="flex items-center gap-0.5 text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full font-medium" title={`${alerts.lowStock} low stock`}>
+                                          <Icon name="alert-triangle" size={10} />
+                                          {alerts.lowStock}
+                                        </span>
+                                      )}
+                                    </div>
+                                  );
+                                })()}
                               </div>
 
                               {/* Right — quick action icons */}
