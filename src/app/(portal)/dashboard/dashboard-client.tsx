@@ -677,16 +677,19 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       </div>
                       {region.lowStockItems.length > 0 && (
                         <div className="mt-2">
-                          <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">Low Stock</p>
+                          <Link href={`/alerts/low-stock?region=${region.regionId}`} className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2 flex items-center gap-1 hover:text-action-500 transition-colors">
+                            Low Stock <Icon name="arrow-right" size={10} />
+                          </Link>
                           <div className="space-y-0">
                             {region.lowStockItems.map((item) => (
-                              <div key={item.id} className="flex items-center justify-between py-2 border-b border-shark-50 last:border-0">
+                              <Link key={item.id} href={`/alerts/low-stock?region=${region.regionId}`} className="flex items-center justify-between py-2 border-b border-shark-50 last:border-0 hover:bg-shark-50/50 rounded-lg px-1 -mx-1 transition-colors cursor-pointer">
                                 <p className="text-sm text-shark-700">{item.name}</p>
-                                <div className="text-right">
+                                <div className="text-right flex items-center gap-1.5">
                                   <span className="text-sm font-medium text-red-500">{item.quantityOnHand} {item.unitType}</span>
-                                  <span className="text-xs text-shark-400 ml-2">min: {item.minimumThreshold}</span>
+                                  <span className="text-xs text-shark-400">min: {item.minimumThreshold}</span>
+                                  <Icon name="arrow-right" size={12} className="text-shark-400" />
                                 </div>
-                              </div>
+                              </Link>
                             ))}
                           </div>
                         </div>
