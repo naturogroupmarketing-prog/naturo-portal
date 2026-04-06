@@ -638,14 +638,14 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   {!isCollapsed && (
                     <div className="px-5 pb-4 pt-1 border-t border-shark-50">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-                        <Link href={`/assets?status=DAMAGED&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
+                        <Link href="/alerts/damage" className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
                           <Icon name="alert-triangle" size={14} className="text-red-500" />
                           <div>
                             <p className="text-lg font-bold text-red-600">{region.damaged}</p>
                             <p className="text-xs text-red-400">Damaged</p>
                           </div>
                         </Link>
-                        <Link href={`/assets?status=LOST&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-shark-50 px-3 py-2 hover:bg-shark-100 transition-colors">
+                        <Link href="/alerts/lost" className="flex items-center gap-2 rounded-lg bg-shark-50 px-3 py-2 hover:bg-shark-100 transition-colors">
                           <Icon name="shield" size={14} className="text-shark-500" />
                           <div>
                             <p className="text-lg font-bold text-shark-700">{region.lost}</p>
