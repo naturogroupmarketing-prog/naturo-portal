@@ -46,6 +46,8 @@ interface Consumable {
   name: string;
   unitType: string;
   quantityOnHand: number;
+  category: string;
+  imageUrl: string | null;
 }
 
 interface User {
@@ -60,11 +62,13 @@ export function StarterKitsClient({
   categories,
   consumables,
   users,
+  assetPhotos = {},
 }: {
   kits: StarterKit[];
   categories: Category[];
   consumables: Consumable[];
   users: User[];
+  assetPhotos?: Record<string, string | null>;
 }) {
   const router = useRouter();
   const { addToast } = useToast();
@@ -124,45 +128,98 @@ export function StarterKitsClient({
                   <div className="mt-4 border-t border-shark-100 dark:border-shark-800 pt-4">
                     {kit.items.length === 0 ? (
                       <p className="text-sm text-shark-400 italic">No items in this kit yet.</p>
-                    ) : (
-                      <div className="space-y-2">
-                        {kit.items.map((item) => {
-                          const consumable = consumables.find((c) => c.id === item.consumableId);
-                          return (
-                            <div key={item.id} className="flex items-center justify-between bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2">
-                              <div className="flex items-center gap-2">
-                                <Icon
-                                  name={item.itemType === "ASSET_CATEGORY" ? "package" : "droplet"}
-                                  size={14}
-                                  className={item.itemType === "ASSET_CATEGORY" ? "text-action-500" : "text-blue-500"}
-                                />
-                                <span className="text-sm text-shark-700 dark:text-shark-300">
-                                  {item.itemType === "ASSET_CATEGORY"
-                                    ? `${item.quantity}x Asset from "${item.category}"`
-                                    : `${item.quantity}x ${consumable?.name || "Unknown"} (${consumable?.unitType || ""})`
-                                  }
-                                </span>
+                    ) : (() => {
+                      const assetItems = kit.items.filter((i) => i.itemType === "ASSET_CATEGORY");
+                      const consumableItems = kit.items.filter((i) => i.itemType === "CONSUMABLE");
+                      // Group assets by category
+                      const assetsByCategory = new Map<string, typeof assetItems>();
+                      assetItems.forEach((item) => {
+                        const cat = item.category || "Uncategorized";
+                        if (!assetsByCategory.has(cat)) assetsByCategory.set(cat, []);
+                        assetsByCategory.get(cat)!.push(item);
+                      });
+                      // Group consumables by category
+                      const consumablesByCategory = new Map<string, typeof consumableItems>();
+                      consumableItems.forEach((item) => {
+                        const c = consumables.find((con) => con.id === item.consumableId);
+                        const cat = c?.category || "Uncategorized";
+                        if (!consumablesByCategory.has(cat)) consumablesByCategory.set(cat, []);
+                        consumablesByCategory.get(cat)!.push(item);
+                      });
+
+                      return (
+                        <div className="space-y-5">
+                          {/* Assets Section */}
+                          {assetItems.length > 0 && (
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="w-6 h-6 rounded-lg bg-action-500 flex items-center justify-center">
+                                  <Icon name="package" size={12} className="text-white" />
+                                </div>
+                                <h4 className="text-sm font-semibold text-shark-700">Assets ({assetItems.reduce((s, i) => s + i.quantity, 0)})</h4>
                               </div>
-                              <button
-                                onClick={async () => {
-                                  try {
-                                    await removeStarterKitItem(item.id);
-                                    addToast("Item removed", "success");
-                                    router.refresh();
-                                  } catch (e) {
-                                    addToast(e instanceof Error ? e.message : "Failed to remove", "error");
-                                  }
-                                }}
-                                className="text-shark-400 hover:text-red-500 p-1 min-w-[28px] min-h-[28px] flex items-center justify-center"
-                                title="Remove item"
-                              >
-                                <Icon name="x" size={14} />
-                              </button>
+                              {[...assetsByCategory.entries()].map(([catName, items]) => (
+                                <div key={catName} className="mb-3">
+                                  <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-1.5 ml-8">{catName}</p>
+                                  <div className="space-y-1">
+                                    {items.map((item) => {
+                                      const photo = assetPhotos[item.category || ""];
+                                      return (
+                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 rounded-lg px-3 py-2">
+                                          <div className="flex items-center gap-2.5">
+                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 flex items-center justify-center shrink-0">
+                                              {photo ? <img src={photo} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
+                                            </div>
+                                            <span className="text-sm text-shark-700">{item.quantity}x {item.category}</span>
+                                          </div>
+                                          <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Removed", "success"); router.refresh(); } catch { addToast("Failed", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ))}
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                          )}
+
+                          {/* Consumables Section */}
+                          {consumableItems.length > 0 && (
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="w-6 h-6 rounded-lg bg-action-500 flex items-center justify-center">
+                                  <Icon name="droplet" size={12} className="text-white" />
+                                </div>
+                                <h4 className="text-sm font-semibold text-shark-700">Consumables ({consumableItems.reduce((s, i) => s + i.quantity, 0)})</h4>
+                              </div>
+                              {[...consumablesByCategory.entries()].map(([catName, items]) => (
+                                <div key={catName} className="mb-3">
+                                  <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-1.5 ml-8">{catName}</p>
+                                  <div className="space-y-1">
+                                    {items.map((item) => {
+                                      const c = consumables.find((con) => con.id === item.consumableId);
+                                      return (
+                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 rounded-lg px-3 py-2">
+                                          <div className="flex items-center gap-2.5">
+                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 flex items-center justify-center shrink-0">
+                                              {c?.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
+                                            </div>
+                                            <div>
+                                              <span className="text-sm text-shark-700">{item.quantity}x {c?.name || "Unknown"}</span>
+                                              <span className="text-xs text-shark-400 ml-1">({c?.unitType || ""})</span>
+                                            </div>
+                                          </div>
+                                          <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Removed", "success"); router.refresh(); } catch { addToast("Failed", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                     <Button size="sm" variant="outline" className="mt-3" onClick={() => setShowAddItem(kit.id)}>
                       + Add Item
                     </Button>

@@ -13,7 +13,7 @@ export default async function StarterKitsPage() {
 
   const organizationId = session.user.organizationId!;
 
-  const [kits, categories, consumables, users] = await Promise.all([
+  const [kits, categories, consumables, users, assetPhotos] = await Promise.all([
     db.starterKit.findMany({
       where: { organizationId },
       include: {
@@ -27,13 +27,19 @@ export default async function StarterKitsPage() {
     }),
     db.consumable.findMany({
       where: { organizationId, isActive: true },
-      select: { id: true, name: true, unitType: true, quantityOnHand: true },
-      orderBy: { name: "asc" },
+      select: { id: true, name: true, unitType: true, quantityOnHand: true, category: true, imageUrl: true },
+      orderBy: [{ category: "asc" }, { name: "asc" }],
     }),
     db.user.findMany({
       where: { organizationId, isActive: true, role: "STAFF" },
       select: { id: true, name: true, email: true, region: { select: { name: true } } },
       orderBy: { name: "asc" },
+    }),
+    // Get one photo per asset category for display
+    db.asset.findMany({
+      where: { organizationId, imageUrl: { not: null } },
+      select: { category: true, imageUrl: true },
+      distinct: ["category"],
     }),
   ]);
 
@@ -43,6 +49,7 @@ export default async function StarterKitsPage() {
       categories={JSON.parse(JSON.stringify(categories))}
       consumables={JSON.parse(JSON.stringify(consumables))}
       users={JSON.parse(JSON.stringify(users))}
+      assetPhotos={JSON.parse(JSON.stringify(Object.fromEntries(assetPhotos.map((a) => [a.category, a.imageUrl]))))}
     />
   );
 }
