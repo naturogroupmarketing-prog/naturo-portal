@@ -21,8 +21,8 @@ import {
 
 const STATE_COLORS = [
   { bg: "bg-blue-50", color: "text-blue-600" },
-  { bg: "bg-emerald-50", color: "text-emerald-600" },
-  { bg: "bg-amber-50", color: "text-amber-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
+  { bg: "bg-amber-50", color: "text-[#E8532E]" },
   { bg: "bg-cyan-50", color: "text-cyan-600" },
   { bg: "bg-violet-50", color: "text-violet-600" },
   { bg: "bg-rose-50", color: "text-rose-600" },
@@ -223,7 +223,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                         <Link
                                           href={`/alerts/low-stock?region=${region.id}`}
                                           onClick={(e) => e.stopPropagation()}
-                                          className="flex items-center gap-1 text-amber-700 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-lg font-semibold text-xs transition-colors"
+                                          className="flex items-center gap-1 text-[#E8532E] bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-lg font-semibold text-xs transition-colors"
                                           title={`${alerts.lowStock} low stock — click to view`}
                                         >
                                           <Icon name="alert-triangle" size={12} />

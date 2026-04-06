@@ -14,10 +14,10 @@ import { formatDate } from "@/lib/utils";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-amber-600", bg: "bg-amber-50" },
+  { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-emerald-600", bg: "bg-emerald-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-violet-600", bg: "bg-violet-50" },
 ];
 
@@ -325,7 +325,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           >
             {tab}
             {tab === "Pending" && pendingCount > 0 && (
-              <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-amber-500 rounded-full">
+              <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-[#E8532E] rounded-full">
                 {pendingCount}
               </span>
             )}

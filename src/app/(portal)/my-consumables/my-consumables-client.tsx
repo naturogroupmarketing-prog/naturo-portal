@@ -11,10 +11,10 @@ import { markConsumableUsed, requestConsumable } from "@/app/actions/consumables
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-amber-600", bg: "bg-amber-50" },
+  { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-emerald-600", bg: "bg-emerald-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-violet-600", bg: "bg-violet-50" },
   { color: "text-gray-600", bg: "bg-gray-100" },
   { color: "text-orange-600", bg: "bg-orange-50" },
@@ -314,7 +314,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment }) {
 
         {/* Success message */}
         {success && (
-          <div className="mt-3 flex items-center gap-2 text-xs text-emerald-600 font-medium">
+          <div className="mt-3 flex items-center gap-2 text-xs text-action-600 font-medium">
             <Icon name="check" size={14} />
             {success}
           </div>
@@ -356,7 +356,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment }) {
               </span>
             </div>
             {useQty >= ca.quantity && (
-              <p className="text-xs text-amber-600">All used — this will close the assignment.</p>
+              <p className="text-xs text-[#E8532E]">All used — this will close the assignment.</p>
             )}
             <div className="flex items-center gap-2 pt-1">
               <Button size="sm" onClick={handleMarkUsed} disabled={loading || useQty === 0} loading={loading} className="text-xs">
@@ -488,7 +488,7 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
         </div>
 
         {success && (
-          <div className="mt-3 flex items-center gap-2 text-xs text-emerald-600 font-medium">
+          <div className="mt-3 flex items-center gap-2 text-xs text-action-600 font-medium">
             <Icon name="check" size={14} />
             {success}
           </div>

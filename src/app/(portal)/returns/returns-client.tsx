@@ -134,7 +134,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
       <div
         key={item.id}
         className={`flex items-center gap-3 px-4 py-3 transition-all ${
-          isNotReturned ? "bg-amber-50/50 border-l-4 border-l-amber-400" : isVerified ? "bg-emerald-50/50" : isRejected ? "bg-red-50/50" : ""
+          isNotReturned ? "bg-amber-50/50 border-l-4 border-l-amber-400" : isVerified ? "bg-action-50/50" : isRejected ? "bg-red-50/50" : ""
         }`}
       >
         {/* Checkbox — toggles verified/acknowledged */}
@@ -143,7 +143,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
           checked={isVerified}
           onChange={() => toggleItem(item.id, "verified")}
           className={`w-5 h-5 rounded border-shark-300 cursor-pointer shrink-0 ${
-            isNotReturned ? "text-amber-500 focus:ring-amber-400" : "text-emerald-500 focus:ring-emerald-400"
+            isNotReturned ? "text-[#E8532E] focus:ring-amber-400" : "text-action-500 focus:ring-emerald-400"
           }`}
         />
 
@@ -151,20 +151,20 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         <Icon
           name={isNotReturned ? "alert-triangle" : item.itemType === "ASSET" ? "package" : "droplet"}
           size={16}
-          className={`shrink-0 ${isNotReturned ? "text-amber-500" : isVerified ? "text-emerald-400" : isRejected ? "text-red-400" : item.itemType === "ASSET" ? "text-action-500" : "text-blue-500"}`}
+          className={`shrink-0 ${isNotReturned ? "text-[#E8532E]" : isVerified ? "text-action-400" : isRejected ? "text-red-400" : item.itemType === "ASSET" ? "text-action-500" : "text-blue-500"}`}
         />
 
         {/* Details */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className={`text-sm font-medium ${isVerified ? "line-through text-emerald-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
+            <p className={`text-sm font-medium ${isVerified ? "line-through text-action-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
               {item.itemType === "ASSET"
                 ? `${item.assetDetails?.name || "Unknown"}`
                 : `${item.quantity}x ${item.consumableDetails?.name || "Unknown"}`
               }
             </p>
             {isNotReturned && (
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-700 uppercase tracking-wide">Not Returned</span>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-[#E8532E] uppercase tracking-wide">Not Returned</span>
             )}
             {item.assetDetails?.isHighValue && (
               <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 uppercase tracking-wide">High Value</span>
@@ -179,7 +179,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
             {item.returnReason && ` · ${item.returnReason}`}
           </p>
           {isNotReturned && item.returnNotes && (
-            <p className="text-xs text-amber-600 mt-0.5 font-medium">Staff note: {item.returnNotes}</p>
+            <p className="text-xs text-[#E8532E] mt-0.5 font-medium">Staff note: {item.returnNotes}</p>
           )}
           {isRejected && state.reason && (
             <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>
@@ -188,7 +188,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
         {/* Status label */}
         {isVerified ? (
-          <span className={`text-xs font-medium shrink-0 ${isNotReturned ? "text-amber-600" : "text-emerald-500"}`}>
+          <span className={`text-xs font-medium shrink-0 ${isNotReturned ? "text-[#E8532E]" : "text-action-500"}`}>
             {isNotReturned ? "Acknowledged" : "Restocked"}
           </span>
         ) : isRejected ? (
@@ -225,9 +225,9 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         <div>
           <h1 className="text-2xl font-bold text-shark-900">Return Checklist</h1>
         </div>
-        <div className="p-6 rounded-lg bg-emerald-50 border border-emerald-200 text-center animate-fade-in">
-          <Icon name="check-circle" size={32} className="text-emerald-400 mx-auto mb-3 animate-check-pop" />
-          <p className="text-sm font-medium text-emerald-700">
+        <div className="p-6 rounded-lg bg-action-50 border border-action-200 text-center animate-fade-in">
+          <Icon name="check-circle" size={32} className="text-action-400 mx-auto mb-3 animate-check-pop" />
+          <p className="text-sm font-medium text-action-700">
             All items processed. {restockedCount > 0 ? `${restockedCount} restocked` : ""}{acknowledgedCount > 0 ? `${restockedCount > 0 ? ", " : ""}${acknowledgedCount} not-returned acknowledged` : ""}{rejectedCount > 0 ? `, ${rejectedCount} rejected` : ""}.
           </p>
         </div>
@@ -272,7 +272,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
       {returns.length === 0 ? (
         <Card>
           <div className="py-12 text-center">
-            <Icon name="check-circle" size={32} className="text-emerald-400 mx-auto mb-3" />
+            <Icon name="check-circle" size={32} className="text-action-400 mx-auto mb-3" />
             <p className="text-sm text-shark-400">No returns pending. All clear.</p>
           </div>
         </Card>
@@ -304,8 +304,8 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
           {submitting && (
             <div className="p-6 border-t border-shark-100 animate-fade-in">
               <div className="flex flex-col items-center py-4">
-                <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mb-3">
-                  <svg className="animate-spinner text-emerald-500" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <div className="w-12 h-12 rounded-full bg-action-50 flex items-center justify-center mb-3">
+                  <svg className="animate-spinner text-action-500" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
                     <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                   </svg>

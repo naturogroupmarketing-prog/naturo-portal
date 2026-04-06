@@ -28,16 +28,16 @@ function timeAgo(dateStr: string) {
 }
 
 const TYPE_CONFIG: Record<string, { icon: string; color: string; bg: string }> = {
-  LOW_STOCK: { icon: "alert-triangle", color: "text-amber-500", bg: "bg-amber-50" },
+  LOW_STOCK: { icon: "alert-triangle", color: "text-[#E8532E]", bg: "bg-amber-50" },
   OVERDUE_RETURN: { icon: "clock", color: "text-red-500", bg: "bg-red-50" },
   PENDING_REQUEST: { icon: "inbox", color: "text-blue-500", bg: "bg-blue-50" },
   DAMAGE_REPORT: { icon: "alert-triangle", color: "text-red-500", bg: "bg-red-50" },
-  ASSET_ASSIGNED: { icon: "package", color: "text-emerald-500", bg: "bg-emerald-50" },
+  ASSET_ASSIGNED: { icon: "package", color: "text-action-500", bg: "bg-action-50" },
   ASSET_RETURNED: { icon: "arrow-left", color: "text-cyan-500", bg: "bg-cyan-50" },
-  REQUEST_APPROVED: { icon: "check", color: "text-emerald-500", bg: "bg-emerald-50" },
+  REQUEST_APPROVED: { icon: "check", color: "text-action-500", bg: "bg-action-50" },
   REQUEST_REJECTED: { icon: "x", color: "text-red-500", bg: "bg-red-50" },
-  MAINTENANCE_DUE: { icon: "settings", color: "text-amber-500", bg: "bg-amber-50" },
-  WARRANTY_EXPIRING: { icon: "shield", color: "text-amber-500", bg: "bg-amber-50" },
+  MAINTENANCE_DUE: { icon: "settings", color: "text-[#E8532E]", bg: "bg-amber-50" },
+  WARRANTY_EXPIRING: { icon: "shield", color: "text-[#E8532E]", bg: "bg-amber-50" },
   GENERAL: { icon: "bell", color: "text-shark-500", bg: "bg-shark-50" },
 };
 
@@ -132,7 +132,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
                     checked={isAcked}
                     disabled={isAcked}
                     onChange={() => handleAcknowledge(n.id)}
-                    className="w-5 h-5 rounded border-shark-300 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0 mt-0.5"
+                    className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-emerald-400 cursor-pointer shrink-0 mt-0.5"
                   />
 
                   {/* Icon */}
@@ -168,8 +168,8 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
 
                   {/* Status */}
                   {isAcked && (
-                    <span className="text-xs text-emerald-500 font-medium shrink-0 mt-1">
-                      <Icon name="check" size={14} className="text-emerald-400" />
+                    <span className="text-xs text-action-500 font-medium shrink-0 mt-1">
+                      <Icon name="check" size={14} className="text-action-400" />
                     </span>
                   )}
                 </div>

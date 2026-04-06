@@ -72,7 +72,7 @@ export default async function MyAssetsPage() {
                 )}
                 {a.acknowledgedAt ? (
                   <div className="mt-3 flex items-center justify-between">
-                    <p className="text-xs text-emerald-600 flex items-center gap-1">
+                    <p className="text-xs text-action-600 flex items-center gap-1">
                       <Icon name="check" size={12} />
                       Receipt confirmed {formatDate(a.acknowledgedAt)}
                     </p>

@@ -225,8 +225,8 @@ export function InventoryDetailClient({
                       <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
                       <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
                       <td className="px-4 py-3 hidden md:table-cell">
-                        <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-emerald-600" : "text-shark-400"}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                        <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-action-600" : "text-shark-400"}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
                           {user.isActive ? "Active" : "Inactive"}
                         </span>
                       </td>

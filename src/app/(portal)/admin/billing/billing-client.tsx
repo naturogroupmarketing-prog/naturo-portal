@@ -60,7 +60,7 @@ export function BillingClient({ org }: Props) {
               <div className="flex items-center gap-2 mt-1">
                 <Badge status={org.subscriptionStatus} />
                 {isTrialing && trialDaysLeft > 0 && (
-                  <span className="text-xs text-amber-600 font-medium">{trialDaysLeft} days left in trial</span>
+                  <span className="text-xs text-[#E8532E] font-medium">{trialDaysLeft} days left in trial</span>
                 )}
               </div>
             </div>

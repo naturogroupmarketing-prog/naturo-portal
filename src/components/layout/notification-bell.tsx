@@ -25,16 +25,16 @@ function timeAgo(dateStr: string) {
 }
 
 const TYPE_ICONS: Record<string, { icon: string; color: string }> = {
-  LOW_STOCK: { icon: "alert-triangle", color: "text-amber-500" },
+  LOW_STOCK: { icon: "alert-triangle", color: "text-[#E8532E]" },
   OVERDUE_RETURN: { icon: "clock", color: "text-red-500" },
   PENDING_REQUEST: { icon: "inbox", color: "text-blue-500" },
   DAMAGE_REPORT: { icon: "alert-triangle", color: "text-red-500" },
-  ASSET_ASSIGNED: { icon: "package", color: "text-emerald-500" },
-  ASSET_RETURNED: { icon: "check", color: "text-emerald-500" },
-  REQUEST_APPROVED: { icon: "check", color: "text-emerald-500" },
+  ASSET_ASSIGNED: { icon: "package", color: "text-action-500" },
+  ASSET_RETURNED: { icon: "check", color: "text-action-500" },
+  REQUEST_APPROVED: { icon: "check", color: "text-action-500" },
   REQUEST_REJECTED: { icon: "x", color: "text-red-500" },
-  MAINTENANCE_DUE: { icon: "settings", color: "text-amber-500" },
-  WARRANTY_EXPIRING: { icon: "shield", color: "text-amber-500" },
+  MAINTENANCE_DUE: { icon: "settings", color: "text-[#E8532E]" },
+  WARRANTY_EXPIRING: { icon: "shield", color: "text-[#E8532E]" },
   PO_STATUS_CHANGED: { icon: "file-text", color: "text-blue-500" },
   GENERAL: { icon: "bell", color: "text-shark-500" },
 };

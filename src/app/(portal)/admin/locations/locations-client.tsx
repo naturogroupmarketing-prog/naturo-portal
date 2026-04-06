@@ -20,8 +20,8 @@ import {
 
 const STATE_COLORS = [
   { bg: "bg-blue-50", color: "text-blue-600", ring: "ring-blue-200" },
-  { bg: "bg-emerald-50", color: "text-emerald-600", ring: "ring-emerald-200" },
-  { bg: "bg-amber-50", color: "text-amber-600", ring: "ring-amber-200" },
+  { bg: "bg-action-50", color: "text-action-600", ring: "ring-emerald-200" },
+  { bg: "bg-amber-50", color: "text-[#E8532E]", ring: "ring-amber-200" },
   { bg: "bg-cyan-50", color: "text-cyan-600", ring: "ring-cyan-200" },
   { bg: "bg-violet-50", color: "text-violet-600", ring: "ring-violet-200" },
   { bg: "bg-rose-50", color: "text-rose-600", ring: "ring-rose-200" },
@@ -322,7 +322,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                                       {region._count.consumables}
                                     </span>
                                     <span className="flex items-center gap-1 text-shark-500">
-                                      <Icon name="users" size={12} className="text-emerald-400" />
+                                      <Icon name="users" size={12} className="text-action-400" />
                                       {region._count.users}
                                     </span>
                                   </div>

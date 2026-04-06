@@ -79,7 +79,7 @@ export function MyActivityClient({
       type: "request" as const,
       icon: "clipboard" as IconName,
       iconBg: "bg-amber-50",
-      iconColor: "text-amber-500",
+      iconColor: "text-[#E8532E]",
       title: r.consumable.name,
       detail: `${r.quantity} ${r.consumable.unitType} requested`,
       date: r.createdAt,
@@ -119,7 +119,7 @@ export function MyActivityClient({
                   <div className="flex items-center gap-2 flex-shrink-0">
                     {item.badge && <Badge status={item.badge} />}
                     {item.isActive !== undefined && (
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${item.isActive ? "bg-emerald-50 text-emerald-600" : "bg-shark-100 text-shark-400"}`}>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${item.isActive ? "bg-action-50 text-action-600" : "bg-shark-100 text-shark-400"}`}>
                         {item.isActive ? "Active" : "Returned"}
                       </span>
                     )}

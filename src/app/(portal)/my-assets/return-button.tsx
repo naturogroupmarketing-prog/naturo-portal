@@ -26,7 +26,7 @@ export function ReturnAssetButton({ assignmentId, assetName }: { assignmentId: s
 
   if (returned) {
     return (
-      <p className="mt-3 text-xs text-amber-600 flex items-center gap-1">
+      <p className="mt-3 text-xs text-[#E8532E] flex items-center gap-1">
         <Icon name="clock" size={12} />
         Return pending manager verification
       </p>

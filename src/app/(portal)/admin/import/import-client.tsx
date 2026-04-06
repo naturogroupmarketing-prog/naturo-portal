@@ -620,7 +620,7 @@ export function ImportClient({ regions }: Props) {
             <div className="flex items-center justify-between">
               <CardTitle>Preview &amp; Validate</CardTitle>
               <div className="flex items-center gap-3">
-                <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20">
+                <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-action-50 text-action-700 ring-1 ring-emerald-600/20">
                   {mappedData.length - Object.keys(validationErrors).length} ready
                 </span>
                 {Object.keys(validationErrors).length > 0 && (
@@ -663,7 +663,7 @@ export function ImportClient({ regions }: Props) {
                           {hasError ? (
                             <span className="text-xs text-red-600">{hasError}</span>
                           ) : (
-                            <Icon name="check" size={14} className="text-emerald-500" />
+                            <Icon name="check" size={14} className="text-action-500" />
                           )}
                         </td>
                       </tr>
@@ -709,19 +709,19 @@ export function ImportClient({ regions }: Props) {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Icon name="check-circle" size={20} className="text-emerald-500" />
+              <Icon name="check-circle" size={20} className="text-action-500" />
               Import Complete
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4">
-              <div className="bg-emerald-50 rounded-xl p-4 text-center">
-                <p className="text-2xl font-bold text-emerald-700">{result.success}</p>
-                <p className="text-xs text-emerald-600">Imported</p>
+              <div className="bg-action-50 rounded-xl p-4 text-center">
+                <p className="text-2xl font-bold text-action-700">{result.success}</p>
+                <p className="text-xs text-action-600">Imported</p>
               </div>
               <div className="bg-amber-50 rounded-xl p-4 text-center">
-                <p className="text-2xl font-bold text-amber-700">{result.skipped}</p>
-                <p className="text-xs text-amber-600">Skipped (duplicates)</p>
+                <p className="text-2xl font-bold text-[#E8532E]">{result.skipped}</p>
+                <p className="text-xs text-[#E8532E]">Skipped (duplicates)</p>
               </div>
               <div className="bg-red-50 rounded-xl p-4 text-center">
                 <p className="text-2xl font-bold text-red-700">{result.errors.length}</p>

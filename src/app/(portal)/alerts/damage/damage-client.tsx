@@ -82,8 +82,8 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
       {reports.length === 0 ? (
         <Card>
           <div className="py-12 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-              <Icon name="check" size={24} className="text-emerald-600" />
+            <div className="w-14 h-14 rounded-2xl bg-action-100 flex items-center justify-center mx-auto mb-4">
+              <Icon name="check" size={24} className="text-action-600" />
             </div>
             <p className="text-lg font-semibold text-shark-900">No Unresolved Damage</p>
             <p className="text-sm text-shark-400 mt-1">All damage reports have been resolved.</p>
@@ -121,7 +121,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <span className={`text-xs font-semibold px-2 py-0.5 rounded ${report.type === "DAMAGE" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}>
+                              <span className={`text-xs font-semibold px-2 py-0.5 rounded ${report.type === "DAMAGE" ? "bg-amber-100 text-[#E8532E]" : "bg-red-100 text-red-700"}`}>
                                 {report.type}
                               </span>
                               <p className="text-sm font-semibold text-shark-800">{report.asset.name}</p>

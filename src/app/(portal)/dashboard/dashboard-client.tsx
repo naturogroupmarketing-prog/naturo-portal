@@ -72,8 +72,8 @@ interface RegionBreakdownItem {
 
 const REGION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-emerald-600", bg: "bg-emerald-50" },
-  { color: "text-amber-600", bg: "bg-amber-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-violet-600", bg: "bg-violet-50" },
@@ -204,8 +204,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         {/* Health Score with hover tooltip */}
                         <div className="text-center relative group/health">
                           <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold text-white cursor-pointer ${
-                            operationsOverview.healthScore >= 80 ? "bg-emerald-500" :
-                            operationsOverview.healthScore >= 50 ? "bg-amber-500" : "bg-red-500"
+                            operationsOverview.healthScore >= 80 ? "bg-action-500" :
+                            operationsOverview.healthScore >= 50 ? "bg-[#E8532E]" : "bg-red-500"
                           }`}>
                             {operationsOverview.healthScore}
                           </div>
@@ -230,11 +230,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                 <div className="flex justify-between"><span className="text-shark-400">Pending requests ({operationsOverview.pendingRequests})</span><span className="text-red-400">-{Math.min(10, operationsOverview.pendingRequests * 2)}</span></div>
                               )}
                               {operationsOverview.healthScore === 100 && (
-                                <p className="text-emerald-400">No deductions — perfect score!</p>
+                                <p className="text-action-400">No deductions — perfect score!</p>
                               )}
                               <div className="border-t border-shark-700 pt-1.5 mt-1.5 flex justify-between font-semibold">
                                 <span>Total</span>
-                                <span className={operationsOverview.healthScore >= 80 ? "text-emerald-400" : operationsOverview.healthScore >= 50 ? "text-amber-400" : "text-red-400"}>
+                                <span className={operationsOverview.healthScore >= 80 ? "text-action-400" : operationsOverview.healthScore >= 50 ? "text-amber-400" : "text-red-400"}>
                                   {operationsOverview.healthScore}/100
                                 </span>
                               </div>
@@ -279,8 +279,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         ))}
                         {operationsOverview.overdueReturns === 0 && operationsOverview.lowStockCount === 0 && operationsOverview.unresolvedDamage === 0 && operationsOverview.pendingRequests === 0 && operationsOverview.incompleteInspections === 0 && (
                           <div className="flex items-center gap-2 px-3 py-3">
-                            <Icon name="check" size={16} className="text-emerald-500" />
-                            <span className="text-sm text-emerald-600 font-medium">All clear — no outstanding issues</span>
+                            <Icon name="check" size={16} className="text-action-500" />
+                            <span className="text-sm text-action-600 font-medium">All clear — no outstanding issues</span>
                           </div>
                         )}
                       </div>
@@ -407,7 +407,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <Card className="hover:border-amber-300 transition-colors cursor-pointer">
                     <CardContent className="pt-5">
                       <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Maintenance Due</p>
-                      <p className="text-2xl font-bold text-amber-600 mt-1">{upcomingMaintenance}</p>
+                      <p className="text-2xl font-bold text-[#E8532E] mt-1">{upcomingMaintenance}</p>
                       <p className="text-xs text-shark-400 mt-1">Due within 7 days</p>
                     </CardContent>
                   </Card>
@@ -554,8 +554,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 <CardContent>
                   {lowStockItems.length === 0 ? (
                     <div className="flex items-center gap-3 py-4">
-                      <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
-                        <Icon name="check" size={16} className="text-emerald-500" />
+                      <div className="w-8 h-8 rounded-full bg-action-50 flex items-center justify-center">
+                        <Icon name="check" size={16} className="text-action-500" />
                       </div>
                       <p className="text-sm text-shark-500">All stock levels are OK.</p>
                     </div>
@@ -606,8 +606,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       {/* Health Score Circle with hover tooltip */}
                       <div className="relative group/rscore" onClick={(e) => e.stopPropagation()}>
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0 cursor-pointer ${
-                          region.healthScore >= 80 ? "bg-emerald-500" :
-                          region.healthScore >= 50 ? "bg-amber-500" : "bg-red-500"
+                          region.healthScore >= 80 ? "bg-action-500" :
+                          region.healthScore >= 50 ? "bg-[#E8532E]" : "bg-red-500"
                         }`}>
                           {region.healthScore}
                         </div>
@@ -618,10 +618,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             {region.overdueReturns > 0 && <div className="flex justify-between"><span className="text-shark-400">Overdue returns ({region.overdueReturns})</span><span className="text-red-400">-{Math.min(20, region.overdueReturns * 4)}</span></div>}
                             {region.damaged > 0 && <div className="flex justify-between"><span className="text-shark-400">Damaged ({region.damaged})</span><span className="text-red-400">-{Math.min(15, region.damaged * 5)}</span></div>}
                             {region.pendingRequests > 0 && <div className="flex justify-between"><span className="text-shark-400">Pending requests ({region.pendingRequests})</span><span className="text-red-400">-{Math.min(10, region.pendingRequests * 2)}</span></div>}
-                            {region.healthScore === 100 && <p className="text-emerald-400 text-[11px]">Perfect — no issues</p>}
+                            {region.healthScore === 100 && <p className="text-action-400 text-[11px]">Perfect — no issues</p>}
                             <div className="border-t border-shark-700 pt-1 mt-1 flex justify-between font-semibold">
                               <span>Score</span>
-                              <span className={region.healthScore >= 80 ? "text-emerald-400" : region.healthScore >= 50 ? "text-amber-400" : "text-red-400"}>{region.healthScore}/100</span>
+                              <span className={region.healthScore >= 80 ? "text-action-400" : region.healthScore >= 50 ? "text-amber-400" : "text-red-400"}>{region.healthScore}/100</span>
                             </div>
                           </div>
                           <div className="absolute -top-1.5 left-3 w-3 h-3 bg-[#1a1c21] rotate-45" />
@@ -661,17 +661,17 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </div>
                         </Link>
                         <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 hover:bg-amber-200 transition-colors">
-                          <Icon name="clipboard" size={14} className="text-amber-600" />
+                          <Icon name="clipboard" size={14} className="text-[#E8532E]" />
                           <div>
-                            <p className="text-lg font-bold text-amber-700">{region.pendingRequests}</p>
-                            <p className="text-xs text-amber-600">Requests</p>
+                            <p className="text-lg font-bold text-[#E8532E]">{region.pendingRequests}</p>
+                            <p className="text-xs text-[#E8532E]">Requests</p>
                           </div>
                         </Link>
-                        <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-purple-50 px-3 py-2 hover:bg-purple-100 transition-colors">
-                          <Icon name="truck" size={14} className="text-purple-500" />
+                        <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-action-50 px-3 py-2 hover:bg-action-100 transition-colors">
+                          <Icon name="truck" size={14} className="text-action-500" />
                           <div>
-                            <p className="text-lg font-bold text-purple-600">{region.pendingPOs}</p>
-                            <p className="text-xs text-purple-400">POs</p>
+                            <p className="text-lg font-bold text-action-600">{region.pendingPOs}</p>
+                            <p className="text-xs text-action-400">POs</p>
                           </div>
                         </Link>
                       </div>

@@ -12,10 +12,10 @@ import { requestConsumable } from "@/app/actions/consumables";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-amber-600", bg: "bg-amber-50" },
+  { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-emerald-600", bg: "bg-emerald-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-violet-600", bg: "bg-violet-50" },
   { color: "text-gray-600", bg: "bg-gray-100" },
   { color: "text-orange-600", bg: "bg-orange-50" },

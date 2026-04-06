@@ -68,9 +68,9 @@ interface Props {
 }
 
 const CONDITION_COLORS: Record<string, string> = {
-  GOOD: "bg-emerald-100 text-emerald-700",
+  GOOD: "bg-action-100 text-action-700",
   FAIR: "bg-blue-100 text-blue-700",
-  POOR: "bg-amber-100 text-amber-700",
+  POOR: "bg-amber-100 text-[#E8532E]",
   DAMAGED: "bg-red-100 text-red-700",
 };
 
@@ -202,7 +202,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                           {isOverdue ? (
                             <span className="text-red-500 font-medium ml-1.5">Overdue</span>
                           ) : daysUntil <= 7 ? (
-                            <span className="text-amber-500 font-medium ml-1.5">{daysUntil} day{daysUntil !== 1 ? "s" : ""} left</span>
+                            <span className="text-[#E8532E] font-medium ml-1.5">{daysUntil} day{daysUntil !== 1 ? "s" : ""} left</span>
                           ) : null}
                         </p>
                         {s.notes && <p className="text-xs text-shark-400 mt-1">{s.notes}</p>}
@@ -406,7 +406,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
-                      isComplete ? "bg-emerald-100 text-emerald-600" : "bg-shark-100 text-shark-500"
+                      isComplete ? "bg-action-100 text-action-600" : "bg-shark-100 text-shark-500"
                     }`}>
                       {isComplete ? <Icon name="check" size={16} /> : `${pct}%`}
                     </div>
@@ -417,14 +417,14 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   </div>
                   <div className="flex items-center gap-3">
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                      isComplete ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                      isComplete ? "bg-action-100 text-action-700" : "bg-amber-100 text-[#E8532E]"
                     }`}>
                       {staff.checkedItems}/{staff.totalItems} items
                     </span>
                     {/* Progress bar */}
                     <div className="w-20 h-1.5 bg-shark-100 rounded-full hidden sm:block overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all ${isComplete ? "bg-emerald-400" : "bg-amber-400"}`}
+                        className={`h-full rounded-full transition-all ${isComplete ? "bg-emerald-400" : "bg-[#E8532E]"}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>

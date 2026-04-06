@@ -60,8 +60,8 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
       {items.length === 0 ? (
         <Card>
           <div className="py-12 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-              <Icon name="check" size={24} className="text-emerald-600" />
+            <div className="w-14 h-14 rounded-2xl bg-action-100 flex items-center justify-center mx-auto mb-4">
+              <Icon name="check" size={24} className="text-action-600" />
             </div>
             <p className="text-lg font-semibold text-shark-900">No Lost Items</p>
             <p className="text-sm text-shark-400 mt-1">All assets are accounted for.</p>
@@ -103,7 +103,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                             <div className="flex items-center gap-2 flex-wrap">
                               <p className="text-sm font-semibold text-shark-800">{item.name}</p>
                               <span className="text-xs font-mono text-shark-400">{item.assetCode}</span>
-                              {item.isHighValue && <span className="text-xs text-amber-600 font-medium">High Value</span>}
+                              {item.isHighValue && <span className="text-xs text-[#E8532E] font-medium">High Value</span>}
                             </div>
                             <p className="text-xs text-shark-400 mt-0.5">{item.category}</p>
                             {item.report && (

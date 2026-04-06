@@ -57,8 +57,8 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
       {items.length === 0 ? (
         <Card>
           <div className="py-12 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-              <Icon name="check" size={24} className="text-emerald-600" />
+            <div className="w-14 h-14 rounded-2xl bg-action-100 flex items-center justify-center mx-auto mb-4">
+              <Icon name="check" size={24} className="text-action-600" />
             </div>
             <p className="text-lg font-semibold text-shark-900">All stock levels OK</p>
             <p className="text-sm text-shark-400 mt-1">No consumables are below their minimum threshold.</p>
@@ -76,13 +76,13 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
-                      <Icon name="alert-triangle" size={16} className="text-amber-600" />
+                      <Icon name="alert-triangle" size={16} className="text-[#E8532E]" />
                     </div>
                     <div className="text-left">
                       <span className="font-semibold text-shark-900">{group.name}</span>
                       <span className="ml-2 text-xs text-shark-400">{group.stateName}</span>
                     </div>
-                    <span className="ml-2 text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+                    <span className="ml-2 text-xs font-semibold text-[#E8532E] bg-amber-50 px-2 py-0.5 rounded-full">
                       {group.items.length} item{group.items.length !== 1 ? "s" : ""}
                     </span>
                   </div>
@@ -112,7 +112,7 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
                                 <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>
                               </td>
                               <td className="px-5 py-3 text-right">
-                                <span className={`text-sm font-bold ${isOut ? "text-red-600" : isCritical ? "text-[#E8532E]" : "text-amber-600"}`}>
+                                <span className={`text-sm font-bold ${isOut ? "text-red-600" : isCritical ? "text-[#E8532E]" : "text-[#E8532E]"}`}>
                                   {item.quantityOnHand}
                                 </span>
                                 {isOut && <span className="ml-1.5 text-[10px] font-semibold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">OUT</span>}

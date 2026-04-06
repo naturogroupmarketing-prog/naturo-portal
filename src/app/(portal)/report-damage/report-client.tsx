@@ -47,7 +47,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
         <Card>
           <CardContent className="py-12 text-center animate-fade-in">
             <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4 animate-check-pop">
-              <Icon name="alert-triangle" size={28} className="text-amber-500" />
+              <Icon name="alert-triangle" size={28} className="text-[#E8532E]" />
             </div>
             <h2 className="text-lg font-semibold text-shark-900">Report Submitted</h2>
             <p className="text-sm text-shark-400 mt-2">
@@ -147,7 +147,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                 />
                 {uploading && <p className="text-xs text-shark-400 mt-1">Uploading...</p>}
                 {uploadError && <p className="text-xs text-red-500 mt-1">{uploadError}</p>}
-                {photoUrl && !uploadError && <p className="text-xs text-emerald-600 mt-1">Photo uploaded successfully.</p>}
+                {photoUrl && !uploadError && <p className="text-xs text-action-600 mt-1">Photo uploaded successfully.</p>}
               </div>
               <input type="hidden" name="photoUrl" value={photoUrl} />
               {error && (
@@ -156,7 +156,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
               {submitting ? (
                 <div className="flex flex-col items-center py-4 animate-fade-in">
                   <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center mb-2">
-                    <svg className="animate-spinner text-amber-500" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <svg className="animate-spinner text-[#E8532E]" width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
                       <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                     </svg>

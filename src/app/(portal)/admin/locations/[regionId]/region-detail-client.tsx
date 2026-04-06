@@ -15,8 +15,8 @@ import { getItemTemplates, applyItemsToRegion } from "@/app/actions/locations";
 
 const SECTION_COLORS = [
   { bg: "bg-blue-50", color: "text-blue-600" },
-  { bg: "bg-emerald-50", color: "text-emerald-600" },
-  { bg: "bg-amber-50", color: "text-amber-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
+  { bg: "bg-amber-50", color: "text-[#E8532E]" },
   { bg: "bg-cyan-50", color: "text-cyan-600" },
   { bg: "bg-red-50", color: "text-red-600" },
   { bg: "bg-violet-50", color: "text-violet-600" },
@@ -431,7 +431,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                 <td className="px-4 py-2.5 text-xs font-mono text-shark-500">{asset.assetCode}</td>
                                 <td className="px-4 py-2.5 text-sm font-medium text-shark-800">
                                   {asset.name}
-                                  {asset.isHighValue && <span className="text-amber-500 ml-1">★</span>}
+                                  {asset.isHighValue && <span className="text-[#E8532E] ml-1">★</span>}
                                 </td>
                                 <td className="px-4 py-2.5 hidden md:table-cell"><Badge status={asset.status} /></td>
                                 <td className="px-4 py-2.5 text-sm text-shark-500 hidden lg:table-cell">
@@ -519,11 +519,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                     <p className="text-xs text-shark-400">{item.unitType}</p>
                                   </td>
                                   <td className="px-4 py-2.5">
-                                    <span className={`text-sm font-semibold ${isOut ? "text-red-600" : isLow ? "text-amber-600" : "text-shark-700"}`}>
+                                    <span className={`text-sm font-semibold ${isOut ? "text-red-600" : isLow ? "text-[#E8532E]" : "text-shark-700"}`}>
                                       {item.quantityOnHand}
                                     </span>
                                     {isOut && <span className="ml-1.5 text-xs text-red-500 font-medium">OUT</span>}
-                                    {isLow && !isOut && <span className="ml-1.5 text-xs text-amber-500 font-medium">LOW</span>}
+                                    {isLow && !isOut && <span className="ml-1.5 text-xs text-[#E8532E] font-medium">LOW</span>}
                                   </td>
                                   <td className="px-4 py-2.5 text-sm text-shark-400 hidden md:table-cell">{item.minimumThreshold}</td>
                                   <td className="px-4 py-2.5 text-sm text-shark-400 hidden lg:table-cell">{item.supplier || "—"}</td>
@@ -571,8 +571,8 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                         <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
                         <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
                         <td className="px-4 py-3 hidden md:table-cell">
-                          <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-emerald-600" : "text-shark-400"}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                          <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-action-600" : "text-shark-400"}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
                             {user.isActive ? "Active" : "Inactive"}
                           </span>
                         </td>
@@ -619,7 +619,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                           <p className="text-sm font-medium text-shark-800">{a.name}</p>
                           <p className="text-xs text-shark-400">{a.category}{a.supplier ? ` · ${a.supplier}` : ""}{a.purchaseCost ? ` · $${a.purchaseCost}` : ""}</p>
                         </div>
-                        {a.isHighValue && <span className="text-xs text-amber-600 font-medium">HV</span>}
+                        {a.isHighValue && <span className="text-xs text-[#E8532E] font-medium">HV</span>}
                       </div>
                     );
                   })}

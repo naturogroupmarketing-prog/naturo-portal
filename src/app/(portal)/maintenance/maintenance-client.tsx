@@ -42,9 +42,9 @@ function getDueStatus(dueDate: string) {
   const daysUntil = Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
   if (daysUntil < 0) return { label: "Overdue", color: "bg-red-100 text-red-700", urgent: true };
-  if (daysUntil === 0) return { label: "Due Today", color: "bg-amber-100 text-amber-700", urgent: true };
-  if (daysUntil <= 7) return { label: `Due in ${daysUntil}d`, color: "bg-amber-50 text-amber-600", urgent: false };
-  return { label: `Due in ${daysUntil}d`, color: "bg-emerald-50 text-emerald-600", urgent: false };
+  if (daysUntil === 0) return { label: "Due Today", color: "bg-amber-100 text-[#E8532E]", urgent: true };
+  if (daysUntil <= 7) return { label: `Due in ${daysUntil}d`, color: "bg-amber-50 text-[#E8532E]", urgent: false };
+  return { label: `Due in ${daysUntil}d`, color: "bg-action-50 text-action-600", urgent: false };
 }
 
 const FREQ_LABELS: Record<string, string> = {

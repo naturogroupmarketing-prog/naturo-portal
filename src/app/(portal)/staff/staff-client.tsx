@@ -13,8 +13,8 @@ import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive } f
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-emerald-600", bg: "bg-emerald-50" },
-  { color: "text-amber-600", bg: "bg-amber-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-violet-600", bg: "bg-violet-50" },
@@ -315,7 +315,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </td>
                 <td className="px-5 py-3.5 text-center">
                   <span className={`inline-flex items-center gap-1.5`} aria-label={user.isActive ? "Active" : "Inactive"} title={user.isActive ? "Active" : "Inactive"}>
-                    <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                    <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
                     <span className="text-xs text-shark-400 hidden sm:inline">{user.isActive ? "Active" : "Inactive"}</span>
                   </span>
                 </td>
@@ -519,7 +519,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 {/* Status */}
                 <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-shark-50">
                   <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                    <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-action-500" : "bg-shark-300"}`} />
                     <span className="text-sm text-shark-700">{editUser.isActive ? "Active" : "Disabled"}</span>
                   </div>
                   <Button size="sm" variant="outline" onClick={handleToggleActive}>
@@ -661,7 +661,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-0.5">Status</label>
                     <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                      <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-action-500" : "bg-shark-300"}`} />
                       <span className="text-sm text-shark-800">{editUser.isActive ? "Active" : "Disabled"}</span>
                     </div>
                   </div>
@@ -772,7 +772,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   />
                 </div>
                 {resetError && <p className="text-sm text-red-500">{resetError}</p>}
-                {resetSuccess && <p className="text-sm text-emerald-600">Password reset successfully!</p>}
+                {resetSuccess && <p className="text-sm text-action-600">Password reset successfully!</p>}
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => setShowResetPassword(false)}>Back</Button>
                   <Button onClick={handleResetPassword} disabled={resetSaving || newPassword.length < 8}>
@@ -787,7 +787,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </p>
                 <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
                 {editUser.assetAssignments.length > 0 && (
-                  <p className="text-sm text-amber-600 font-medium">
+                  <p className="text-sm text-[#E8532E] font-medium">
                     This user has {editUser.assetAssignments.length} active asset assignment(s). Please return all assets before deleting.
                   </p>
                 )}
@@ -818,8 +818,8 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 <p className="text-sm text-shark-400">{detailUser.email}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge status={detailUser.role} />
-                  <span className={`inline-flex items-center gap-1 text-xs ${detailUser.isActive ? "text-emerald-600" : "text-shark-400"}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${detailUser.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                  <span className={`inline-flex items-center gap-1 text-xs ${detailUser.isActive ? "text-action-600" : "text-shark-400"}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${detailUser.isActive ? "bg-action-500" : "bg-shark-300"}`} />
                     {detailUser.isActive ? "Active" : "Inactive"}
                   </span>
                   {detailUser.region && <span className="text-xs text-shark-400">{detailUser.region.name}</span>}
@@ -910,14 +910,14 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     <div key={d.id} className="text-sm py-2 border-b border-shark-50 last:border-0">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${d.type === "DAMAGE" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}>
+                          <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${d.type === "DAMAGE" ? "bg-amber-100 text-[#E8532E]" : "bg-red-100 text-red-700"}`}>
                             {d.type}
                           </span>
                           <span className="font-medium text-shark-800">{d.asset?.name || "Unknown"}</span>
                           {d.asset?.assetCode && <span className="text-xs font-mono text-shark-400">{d.asset.assetCode}</span>}
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className={`w-1.5 h-1.5 rounded-full ${d.isResolved ? "bg-emerald-500" : "bg-red-500"}`} />
+                          <span className={`w-1.5 h-1.5 rounded-full ${d.isResolved ? "bg-action-500" : "bg-red-500"}`} />
                           <span className="text-[10px] text-shark-300">{new Date(d.createdAt).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}</span>
                         </div>
                       </div>

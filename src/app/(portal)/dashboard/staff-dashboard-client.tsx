@@ -317,7 +317,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           <CardHeader>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                <Icon name="clipboard" size={16} className="text-amber-600" />
+                <Icon name="clipboard" size={16} className="text-[#E8532E]" />
               </div>
               <div>
                 <CardTitle>Equipment Checklist</CardTitle>
@@ -352,18 +352,18 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   <div
                     key={key}
                     className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
-                      isReceived ? "bg-emerald-50/50" : isNotReceived ? "bg-red-50/50" : ""
+                      isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""
                     }`}
                   >
                     <input
                       type="checkbox"
                       checked={isReceived}
                       onChange={() => toggleItem(key, "received")}
-                      className="w-5 h-5 rounded border-shark-300 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0"
+                      className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-emerald-400 cursor-pointer shrink-0"
                     />
-                    <Icon name="package" size={16} className={`shrink-0 ${isReceived ? "text-emerald-400" : isNotReceived ? "text-red-400" : "text-action-500"}`} />
+                    <Icon name="package" size={16} className={`shrink-0 ${isReceived ? "text-action-400" : isNotReceived ? "text-red-400" : "text-action-500"}`} />
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isReceived ? "line-through text-emerald-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>
+                      <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>
                         {item.asset.name}
                       </p>
                       <p className="text-xs text-shark-400">{item.asset.assetCode} · {item.asset.category}</p>
@@ -401,18 +401,18 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   <div
                     key={key}
                     className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
-                      isReceived ? "bg-emerald-50/50" : isNotReceived ? "bg-red-50/50" : ""
+                      isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""
                     }`}
                   >
                     <input
                       type="checkbox"
                       checked={isReceived}
                       onChange={() => toggleItem(key, "received")}
-                      className="w-5 h-5 rounded border-shark-300 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0"
+                      className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-emerald-400 cursor-pointer shrink-0"
                     />
-                    <Icon name="droplet" size={16} className={`shrink-0 ${isReceived ? "text-emerald-400" : isNotReceived ? "text-red-400" : "text-blue-500"}`} />
+                    <Icon name="droplet" size={16} className={`shrink-0 ${isReceived ? "text-action-400" : isNotReceived ? "text-red-400" : "text-blue-500"}`} />
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isReceived ? "line-through text-emerald-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>
+                      <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>
                         {item.quantity}x {item.consumable.name}
                       </p>
                       <p className="text-xs text-shark-400">{item.consumable.unitType}</p>
@@ -665,7 +665,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                                 [key]: { excluded: true, note: e.target.value },
                               }))}
                               placeholder="Reason not returning (e.g., lost, damaged, used up)..."
-                              className="w-full border border-amber-200 bg-amber-50 rounded-md px-2.5 py-1.5 text-xs text-shark-700 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 placeholder:text-shark-400"
+                              className="w-full border border-amber-200 bg-amber-50 rounded-md px-2.5 py-1.5 text-xs text-shark-700 focus:ring-2 focus:ring-amber-400 focus:border-[#E8532E] placeholder:text-shark-400"
                             />
                             {kitItemExclusions[key]?.note === "" && (
                               <p className="text-xs text-red-500 mt-0.5">Please provide a reason</p>
@@ -703,7 +703,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                                 [key]: { excluded: true, note: e.target.value },
                               }))}
                               placeholder="Reason not returning (e.g., lost, damaged, used up)..."
-                              className="w-full border border-amber-200 bg-amber-50 rounded-md px-2.5 py-1.5 text-xs text-shark-700 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 placeholder:text-shark-400"
+                              className="w-full border border-amber-200 bg-amber-50 rounded-md px-2.5 py-1.5 text-xs text-shark-700 focus:ring-2 focus:ring-amber-400 focus:border-[#E8532E] placeholder:text-shark-400"
                             />
                             {kitItemExclusions[key]?.note === "" && (
                               <p className="text-xs text-red-500 mt-0.5">Please provide a reason</p>
@@ -905,12 +905,12 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             )}
             {upcoming.length > 0 && !allDone && overdue.length === 0 && (
               <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-lg bg-[#E8532E] flex items-center justify-center shrink-0">
                   <Icon name="clock" size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-amber-800">Inspection Due Soon</p>
-                  <p className="text-xs text-amber-600 mt-0.5">
+                  <p className="text-xs text-[#E8532E] mt-0.5">
                     {upcoming[0].title} — due by {new Date(upcoming[0].dueDate).toLocaleDateString("en-AU", { day: "numeric", month: "long" })}.
                     {upcoming[0].notes && ` ${upcoming[0].notes}`}
                   </p>
@@ -918,13 +918,13 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               </div>
             )}
             {allDone && upcoming.length > 0 && (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0">
+              <div className="bg-action-50 border border-action-200 rounded-xl px-4 py-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-action-500 flex items-center justify-center shrink-0">
                   <Icon name="check" size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-emerald-800">Inspection Complete</p>
-                  <p className="text-xs text-emerald-600 mt-0.5">
+                  <p className="text-xs text-action-600 mt-0.5">
                     All {conditionCheckItems.length} items checked for {upcoming[0].title}. Well done!
                   </p>
                 </div>
@@ -1017,7 +1017,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <h3 className="text-base font-semibold text-shark-900">Monthly Condition Check</h3>
                 <p className="text-xs text-shark-400 mt-0.5">
                   {checkedCount === conditionCheckItems.length ? (
-                    <span className="text-emerald-600 font-medium">All {conditionCheckItems.length} items checked ✓</span>
+                    <span className="text-action-600 font-medium">All {conditionCheckItems.length} items checked ✓</span>
                   ) : (
                     <>{checkedCount} of {conditionCheckItems.length} items — take photos of your assigned equipment</>
                   )}
@@ -1049,7 +1049,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 const hasPhoto = !!state?.photoUrl;
 
                 return (
-                  <div key={`${key}-${idx}`} className={`px-6 py-4 ${isChecked ? "bg-emerald-50/30" : ""}`}>
+                  <div key={`${key}-${idx}`} className={`px-6 py-4 ${isChecked ? "bg-action-50/30" : ""}`}>
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
                         {/* Item photo or status indicator */}
@@ -1059,8 +1059,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           {item.imageUrl ? (
                             <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                           ) : isChecked ? (
-                            <div className="w-full h-full bg-emerald-100 flex items-center justify-center">
-                              <Icon name="check" size={16} className="text-emerald-600" />
+                            <div className="w-full h-full bg-action-100 flex items-center justify-center">
+                              <Icon name="check" size={16} className="text-action-600" />
                             </div>
                           ) : (
                             <Icon name={item.type === "ASSET" ? "package" : "droplet"} size={16} className="text-shark-400" />
@@ -1074,9 +1074,9 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           {item.code && <p className="text-xs font-mono text-shark-400">{item.code}</p>}
                           {isChecked && item.condition && (
                             <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${
-                              item.condition === "GOOD" ? "bg-emerald-100 text-emerald-700" :
+                              item.condition === "GOOD" ? "bg-action-100 text-action-700" :
                               item.condition === "FAIR" ? "bg-blue-100 text-blue-700" :
-                              item.condition === "POOR" ? "bg-amber-100 text-amber-700" :
+                              item.condition === "POOR" ? "bg-amber-100 text-[#E8532E]" :
                               "bg-red-100 text-red-700"
                             }`}>
                               {item.condition}

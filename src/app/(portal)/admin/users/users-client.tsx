@@ -13,8 +13,8 @@ import { useToast } from "@/components/ui/toast";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
-  { color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200" },
-  { color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-[#E8532E]", bg: "bg-amber-50", border: "border-amber-200" },
   { color: "text-cyan-600", bg: "bg-cyan-50", border: "border-cyan-200" },
   { color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
   { color: "text-violet-600", bg: "bg-violet-50", border: "border-violet-200" },
@@ -180,7 +180,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                 <td className="px-5 py-3.5 text-shark-500">{user.email}</td>
                 <td className="px-5 py-3.5"><Badge status={user.role} /></td>
                 <td className="px-5 py-3.5 text-center">
-                  <span className={`inline-block w-2.5 h-2.5 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-red-400"}`} />
+                  <span className={`inline-block w-2.5 h-2.5 rounded-full ${user.isActive ? "bg-action-500" : "bg-red-400"}`} />
                 </td>
                 <td className="px-5 py-3.5 text-right">
                   <Button size="sm" variant="secondary" onClick={() => setEditUser(user)}>
