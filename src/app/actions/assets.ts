@@ -75,6 +75,7 @@ export async function createAsset(formData: FormData) {
   });
 
   revalidatePath("/assets");
+  revalidatePath("/inventory");
   return { success: true, assetId: asset.id };
 }
 
@@ -168,6 +169,7 @@ export async function assignAsset(formData: FormData) {
   });
 
   revalidatePath("/assets");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { success: true };
 }
@@ -257,6 +259,7 @@ export async function returnAsset(formData: FormData) {
   }
 
   revalidatePath("/assets");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { success: true };
 }
@@ -336,6 +339,7 @@ export async function deleteAsset(formData: FormData) {
   ]);
 
   revalidatePath("/assets");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { success: true };
 }
@@ -392,6 +396,7 @@ export async function bulkDeleteAssets(assetIds: string[]) {
   }
 
   revalidatePath("/assets");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { deleted, errors };
 }
@@ -486,7 +491,10 @@ export async function updateAsset(formData: FormData) {
   });
 
   revalidatePath("/assets");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
+  revalidatePath("/starter-kits");
+  revalidatePath("/returns");
   return { success: true };
 }
 
@@ -558,6 +566,7 @@ export async function bulkCreateAssets(formData: FormData) {
   });
 
   revalidatePath("/assets");
+  revalidatePath("/inventory");
   return { success: true, count: created.length, assets: created };
 }
 

@@ -89,7 +89,7 @@ export async function updateCategory(formData: FormData) {
   // Update category name
   await db.category.update({ where: { id }, data: { name: newName } });
 
-  // Also update all assets/consumables that reference the old name
+  // Sync all assets/consumables that reference the old category name
   if (cat.type === "ASSET") {
     await db.asset.updateMany({
       where: { category: cat.name, organizationId },
@@ -102,8 +102,17 @@ export async function updateCategory(formData: FormData) {
     });
   }
 
+  // Sync starter kit items that reference the old category name
+  await db.starterKitItem.updateMany({
+    where: { category: cat.name, starterKit: { organizationId } },
+    data: { category: newName },
+  });
+
   revalidatePath("/assets");
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/starter-kits");
+  revalidatePath("/dashboard");
   return { success: true };
 }
 

@@ -60,6 +60,8 @@ export async function createConsumable(formData: FormData) {
   });
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   return { success: true, consumableId: consumable.id };
 }
 
@@ -155,7 +157,10 @@ export async function updateConsumable(formData: FormData) {
   }
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
+  revalidatePath("/starter-kits");
 }
 
 export async function addStock(formData: FormData) {
@@ -195,6 +200,8 @@ export async function addStock(formData: FormData) {
   });
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   return { success: true };
 }
 
@@ -254,6 +261,8 @@ export async function deductStock(formData: FormData) {
   });
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   return { success: true };
 }
 
@@ -337,6 +346,8 @@ export async function requestConsumable(formData: FormData) {
 
   revalidatePath("/my-requests");
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   return { success: true, requestId: request.id };
 }
 
@@ -381,6 +392,8 @@ export async function closeRequest(formData: FormData) {
 
   revalidatePath("/my-requests");
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   return { success: true };
 }
 
@@ -468,6 +481,8 @@ export async function approveRequest(formData: FormData) {
   }
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   return { success: true };
 }
 
@@ -537,6 +552,8 @@ export async function issueConsumable(formData: FormData) {
   });
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   revalidatePath("/purchase-orders");
   revalidatePath("/my-consumables");
   return { success: true };
@@ -577,6 +594,8 @@ export async function deleteConsumable(formData: FormData) {
   ]);
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { success: true };
 }
@@ -632,6 +651,8 @@ export async function bulkDeleteConsumables(consumableIds: string[]) {
   }
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { deleted, errors };
 }
@@ -718,6 +739,8 @@ export async function assignConsumable(formData: FormData) {
   });
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   revalidatePath("/purchase-orders");
   revalidatePath("/my-consumables");
   return { success: true };
@@ -791,6 +814,8 @@ export async function returnConsumable(formData: FormData) {
   });
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
+  revalidatePath("/inventory");
   return { success: true };
 }
 
@@ -905,6 +930,7 @@ export async function batchApproveRequests(
   });
 
   revalidatePath("/consumables");
+  revalidatePath("/inventory");
   revalidatePath("/inventory");
   revalidatePath("/my-requests");
   revalidatePath("/dashboard");
