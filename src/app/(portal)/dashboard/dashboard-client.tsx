@@ -179,7 +179,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <p className="text-sm text-shark-500">{s.label}</p>
                             <AnimatedCounter value={s.value} className="text-2xl font-bold text-shark-900" />
                           </div>
-                          <Icon name="arrow-right" size={18} className="text-shark-300 group-hover:text-action-500 transition-colors flex-shrink-0" />
+                          <Icon name="arrow-right" size={18} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
                         </div>
                       </CardContent>
                     </Card>
@@ -211,8 +211,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </div>
                           <p className="text-[10px] text-shark-400 mt-1">Health</p>
                           {/* Black tooltip on hover */}
-                          <div className="absolute right-0 top-full mt-2 w-64 bg-[#1a1c21] text-white rounded-xl p-4 shadow-2xl opacity-0 invisible group-hover/health:opacity-100 group-hover/health:visible transition-all duration-200 z-50 text-left">
-                            <p className="text-xs font-semibold mb-2 text-shark-300">Health Score Breakdown</p>
+                          <div className="absolute right-0 sm:right-0 top-full mt-2 w-56 sm:w-64 bg-[#1a1c21] text-white rounded-xl p-3.5 sm:p-4 shadow-2xl opacity-0 invisible group-hover/health:opacity-100 group-hover/health:visible transition-all duration-200 z-50 text-left">
+                            <p className="text-xs font-semibold mb-2 text-shark-400">Health Score Breakdown</p>
                             <div className="space-y-1.5 text-xs">
                               {operationsOverview.lowStockCount > 0 && (
                                 <div className="flex justify-between"><span className="text-shark-400">Low stock items ({operationsOverview.lowStockCount})</span><span className="text-red-400">-{Math.min(30, operationsOverview.lowStockCount * 5)}</span></div>
@@ -603,7 +603,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           {region.healthScore}
                         </div>
                         <div className="absolute left-0 top-full mt-2 w-56 bg-[#1a1c21] text-white rounded-xl p-3.5 shadow-2xl opacity-0 invisible group-hover/rscore:opacity-100 group-hover/rscore:visible transition-all duration-200 z-50 text-left">
-                          <p className="text-[10px] font-semibold mb-1.5 text-shark-300">{region.regionName} Health</p>
+                          <p className="text-[10px] font-semibold mb-1.5 text-shark-400">{region.regionName} Health</p>
                           <div className="space-y-1 text-[11px]">
                             {region.lowStockCount > 0 && <div className="flex justify-between"><span className="text-shark-400">Low stock ({region.lowStockCount})</span><span className="text-red-400">-{Math.min(30, region.lowStockCount * 5)}</span></div>}
                             {region.overdueReturns > 0 && <div className="flex justify-between"><span className="text-shark-400">Overdue returns ({region.overdueReturns})</span><span className="text-red-400">-{Math.min(20, region.overdueReturns * 4)}</span></div>}

@@ -52,9 +52,18 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
         <Icon name="menu" size={20} />
       </button>
 
-      <div className="lg:hidden text-center flex-1">
+      <div className="lg:hidden flex items-center flex-1 justify-center gap-2">
         <Logo size={28} />
       </div>
+
+      {/* Mobile search button — opens command palette */}
+      <button
+        onClick={() => { document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true })); }}
+        className="lg:hidden p-2 text-shark-400 hover:text-shark-700 rounded-lg hover:bg-shark-50 transition-colors"
+        aria-label="Search"
+      >
+        <Icon name="search" size={18} />
+      </button>
 
       {/* Search box */}
       <form onSubmit={handleSearch} className="hidden lg:flex items-center flex-1 max-w-md">
@@ -69,8 +78,8 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
             onBlur={() => setSearchFocused(false)}
             className="w-full bg-transparent border-none outline-none text-sm text-shark-700 placeholder-shark-400 ml-2.5"
           />
-          <kbd className="hidden sm:flex items-center gap-0.5 text-[10px] text-shark-400 bg-white dark:bg-shark-700 border border-shark-200 dark:border-shark-600 px-1.5 py-0.5 rounded font-mono shrink-0">
-            <span className="text-[9px]">&#8984;</span>K
+          <kbd className="hidden sm:flex items-center gap-0.5 text-[10px] text-shark-400 bg-shark-100 dark:bg-shark-700 border border-shark-200 dark:border-shark-600 px-1.5 py-0.5 rounded font-mono shrink-0">
+            {typeof navigator !== "undefined" && navigator.userAgent.includes("Mac") ? "⌘" : "Ctrl+"}K
           </kbd>
         </div>
       </form>

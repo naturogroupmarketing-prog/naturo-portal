@@ -309,7 +309,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   )}
                 </td>
                 <td className="px-5 py-3.5 text-center">
-                  <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                  <span className={`inline-flex items-center gap-1.5`} aria-label={user.isActive ? "Active" : "Inactive"} title={user.isActive ? "Active" : "Inactive"}>
+                    <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-emerald-500" : "bg-shark-300"}`} />
+                    <span className="text-xs text-shark-400 hidden sm:inline">{user.isActive ? "Active" : "Inactive"}</span>
+                  </span>
                 </td>
                 <td className="px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
                   <button

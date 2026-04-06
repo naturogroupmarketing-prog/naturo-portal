@@ -105,7 +105,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
@@ -113,12 +113,12 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       <div
         ref={contentRef}
         className={cn(
-          "w-full max-w-lg rounded-2xl bg-white dark:bg-shark-900 shadow-2xl max-h-[90vh] overflow-y-auto transition-colors",
+          "w-full max-w-[92vw] sm:max-w-lg rounded-2xl bg-white dark:bg-shark-900 shadow-2xl max-h-[90vh] overflow-y-auto transition-all duration-200",
           className
         )}
       >
         <div className="flex items-center justify-between border-b border-shark-100 dark:border-shark-800 px-6 py-4">
-          <h2 id={titleId} className="text-lg font-semibold text-shark-900 dark:text-shark-100">{title}</h2>
+          <h2 id={titleId} className="text-lg font-semibold text-shark-900 dark:text-shark-100 truncate pr-2">{title}</h2>
           <button
             onClick={onClose}
             aria-label="Close dialog"
