@@ -49,12 +49,24 @@ export default async function MyAssetsPage() {
           {assignments.map((a) => (
             <Card key={a.id}>
               <CardContent className="py-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-semibold text-shark-900">{a.asset.name}</h3>
-                    <p className="text-xs font-mono text-shark-400 mt-0.5">{a.asset.assetCode}</p>
+                <div className="flex items-start gap-3">
+                  {/* Photo */}
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
+                    {a.asset.imageUrl ? (
+                      <img src={a.asset.imageUrl} alt={a.asset.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <Icon name="package" size={20} className="text-shark-300" />
+                    )}
                   </div>
-                  <Badge status={a.assignmentType} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-semibold text-shark-900">{a.asset.name}</h3>
+                        <p className="text-xs font-mono text-shark-400 mt-0.5">{a.asset.assetCode}</p>
+                      </div>
+                      <Badge status={a.assignmentType} />
+                    </div>
+                  </div>
                 </div>
                 <div className="mt-3 space-y-1 text-sm text-shark-500">
                   <p>Category: {a.asset.category}</p>

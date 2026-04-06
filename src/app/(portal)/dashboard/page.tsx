@@ -88,20 +88,20 @@ export default async function DashboardPage() {
         appliedAt: app.appliedAt.toISOString(),
         assets: allActiveAssets
           .filter((a) => a.starterKitApplicationId === app.id)
-          .map((a) => ({ id: a.id, name: a.asset.name, assetCode: a.asset.assetCode, category: a.asset.category })),
+          .map((a) => ({ id: a.id, name: a.asset.name, assetCode: a.asset.assetCode, category: a.asset.category, imageUrl: a.asset.imageUrl })),
         consumables: allActiveConsumables
           .filter((c) => c.starterKitApplicationId === app.id)
-          .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity })),
+          .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity, imageUrl: c.consumable.imageUrl })),
       }))
       .filter((app) => app.assets.length > 0 || app.consumables.length > 0);
 
     // Non-kit individual assignments (items assigned directly, not through a kit)
     const individualAssets = allActiveAssets
       .filter((a) => !a.starterKitApplicationId)
-      .map((a) => ({ id: a.id, name: a.asset.name, assetCode: a.asset.assetCode, category: a.asset.category }));
+      .map((a) => ({ id: a.id, name: a.asset.name, assetCode: a.asset.assetCode, category: a.asset.category, imageUrl: a.asset.imageUrl }));
     const individualConsumables = allActiveConsumables
       .filter((c) => !c.starterKitApplicationId)
-      .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity }));
+      .map((c) => ({ id: c.id, name: c.consumable.name, unitType: c.consumable.unitType, quantity: c.quantity, imageUrl: c.consumable.imageUrl }));
 
     // Build condition check items — only show items from enabled categories
     const inspectionCatNames = new Set(inspectionCategories.map((c) => c.name));
