@@ -311,8 +311,14 @@ export default async function DashboardPage() {
     ...(isSuperAdmin
       ? [
           db.region.findMany({ where: { organizationId }, include: { state: true, _count: { select: { assets: true, consumables: true, users: true } } }, orderBy: { name: "asc" } }),
-          db.asset.groupBy({ by: ["regionId"], where: { status: "DAMAGED", organizationId }, _count: true }),
-          db.asset.groupBy({ by: ["regionId"], where: { status: "LOST", organizationId }, _count: true }),
+          db.damageReport.findMany({
+            where: { organizationId, isResolved: false, type: "DAMAGE" },
+            select: { asset: { select: { regionId: true } } },
+          }),
+          db.damageReport.findMany({
+            where: { organizationId, isResolved: false, type: "LOSS" },
+            select: { asset: { select: { regionId: true } } },
+          }),
           db.consumableRequest.findMany({
             where: { status: "PENDING", consumable: { organizationId } },
             select: { consumable: { select: { regionId: true } } },
@@ -331,10 +337,10 @@ export default async function DashboardPage() {
   let regionBreakdown: { regionId: string; regionName: string; stateName: string; damaged: number; lost: number; pendingRequests: number; pendingPOs: number; overdueReturns: number; lowStockCount: number; healthScore: number; lowStockItems: { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number }[] }[] | undefined;
 
   if (isSuperAdmin && regionData.length > 0) {
-    const [regions, damagedByRegion, lostByRegion, pendingReqRaw, pendingPOsByRegion, allLowStock, overdueReturnsByRegion] = regionData as [
+    const [regions, damageReportsRaw, lossReportsRaw, pendingReqRaw, pendingPOsByRegion, allLowStock, overdueReturnsByRegion] = regionData as [
       { id: string; name: string; latitude: number | null; longitude: number | null; state: { name: string }; _count: { assets: number; consumables: number; users: number } }[],
-      { regionId: string; _count: number }[],
-      { regionId: string; _count: number }[],
+      { asset: { regionId: string } }[],
+      { asset: { regionId: string } }[],
       { consumable: { regionId: string } }[],
       { regionId: string; _count: number }[],
       { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number; regionId: string }[],
@@ -348,8 +354,17 @@ export default async function DashboardPage() {
       pendingReqByRegion.set(rid, (pendingReqByRegion.get(rid) ?? 0) + 1);
     }
 
-    const damagedMap = new Map(damagedByRegion.map((r) => [r.regionId, r._count]));
-    const lostMap = new Map(lostByRegion.map((r) => [r.regionId, r._count]));
+    // Count unresolved damage/loss reports per region
+    const damagedMap = new Map<string, number>();
+    for (const r of damageReportsRaw) {
+      const rid = r.asset?.regionId;
+      if (rid) damagedMap.set(rid, (damagedMap.get(rid) ?? 0) + 1);
+    }
+    const lostMap = new Map<string, number>();
+    for (const r of lossReportsRaw) {
+      const rid = r.asset?.regionId;
+      if (rid) lostMap.set(rid, (lostMap.get(rid) ?? 0) + 1);
+    }
     const poMap = new Map(pendingPOsByRegion.map((r) => [r.regionId, r._count]));
     const overdueReturnsMap = new Map(overdueReturnsByRegion.filter((r) => r.regionId).map((r) => [r.regionId!, r._count]));
 
