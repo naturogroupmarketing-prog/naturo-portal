@@ -294,11 +294,9 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     };
   });
 
-  // Super Admin can delete any consumable; others can only delete unassigned
+  // Only unassigned consumables can be deleted
   const deletableIds = new Set(
-    isSuperAdmin
-      ? consumables.map((c) => c.id)
-      : consumables.filter((c) => (c.assignments || []).length === 0).map((c) => c.id)
+    consumables.filter((c) => (c.assignments || []).length === 0).map((c) => c.id)
   );
 
   const toggleSelect = (id: string) => {
@@ -876,32 +874,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
       {/* Bulk Delete Confirmation Modal */}
       <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Consumables">
-        {(() => {
-          const selectedItems = consumables.filter((c) => selectedIds.has(c.id));
-          const assignedCount = selectedItems.filter((c) => (c.assignments || []).length > 0).length;
-          return (
         <div className="space-y-4">
           <div className="bg-red-50 border border-red-200 rounded-xl p-4">
             <p className="text-sm text-red-800 font-medium">
               Are you sure you want to delete {selectedIds.size} consumable{selectedIds.size > 1 ? "s" : ""}?
             </p>
             <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
-            {assignedCount > 0 && (
-              <p className="text-sm text-red-700 font-semibold mt-2">
-                ⚠ {assignedCount} item{assignedCount > 1 ? "s are" : " is"} currently assigned to staff and will be unassigned.
-              </p>
-            )}
           </div>
           <div className="bg-shark-50 rounded-xl p-4 max-h-40 overflow-y-auto">
-            {selectedItems.map((c) => (
-                <div key={c.id} className="flex items-center justify-between py-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-shark-800 text-sm">{c.name}</span>
-                    <span className="text-xs text-shark-400">{c.category}</span>
-                  </div>
-                  {(c.assignments || []).length > 0 && (
-                    <span className="text-xs text-red-500 font-medium">Assigned</span>
-                  )}
+            {consumables.filter((c) => selectedIds.has(c.id)).map((c) => (
+                <div key={c.id} className="flex items-center gap-2 py-1">
+                  <span className="font-medium text-shark-800 text-sm">{c.name}</span>
+                  <span className="text-xs text-shark-400">{c.category}</span>
                 </div>
               ))}
           </div>
@@ -916,8 +900,6 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </Button>
           </div>
         </div>
-          );
-        })()}
       </Modal>
 
       {/* Manage Sections Modal */}

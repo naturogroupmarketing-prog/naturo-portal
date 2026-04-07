@@ -277,11 +277,9 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     };
   });
 
-  // Super Admin can delete any asset; others can only delete unassigned
+  // Only AVAILABLE (unassigned) assets can be deleted
   const deletableIds = new Set(
-    isSuperAdmin
-      ? assets.map((a) => a.id)
-      : assets.filter((a) => a.assignments.length === 0).map((a) => a.id)
+    assets.filter((a) => a.status === "AVAILABLE" && a.assignments.length === 0).map((a) => a.id)
   );
 
   const toggleSelect = (id: string) => {
@@ -915,32 +913,18 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
       {/* Bulk Delete Confirmation Modal */}
       <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Assets">
-        {(() => {
-          const selectedAssets = assets.filter((a) => selectedIds.has(a.id));
-          const assignedCount = selectedAssets.filter((a) => a.assignments.length > 0).length;
-          return (
         <div className="space-y-4">
           <div className="bg-red-50 border border-red-200 rounded-xl p-4">
             <p className="text-sm text-red-800 font-medium">
               Are you sure you want to delete {selectedIds.size} asset{selectedIds.size > 1 ? "s" : ""}?
             </p>
             <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
-            {assignedCount > 0 && (
-              <p className="text-sm text-red-700 font-semibold mt-2">
-                ⚠ {assignedCount} asset{assignedCount > 1 ? "s are" : " is"} currently assigned to staff and will be unassigned.
-              </p>
-            )}
           </div>
           <div className="bg-shark-50 rounded-xl p-4 max-h-40 overflow-y-auto">
-            {selectedAssets.map((a) => (
-                <div key={a.id} className="flex items-center justify-between py-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-shark-800 text-sm">{a.name}</span>
-                    <span className="text-xs text-shark-400 font-mono">{a.assetCode}</span>
-                  </div>
-                  {a.assignments.length > 0 && (
-                    <span className="text-xs text-red-500 font-medium">Assigned</span>
-                  )}
+            {assets.filter((a) => selectedIds.has(a.id)).map((a) => (
+                <div key={a.id} className="flex items-center gap-2 py-1">
+                  <span className="font-medium text-shark-800 text-sm">{a.name}</span>
+                  <span className="text-xs text-shark-400 font-mono">{a.assetCode}</span>
                 </div>
               ))}
           </div>
@@ -955,8 +939,6 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </Button>
           </div>
         </div>
-          );
-        })()}
       </Modal>
 
       {/* Manage Sections Modal */}
