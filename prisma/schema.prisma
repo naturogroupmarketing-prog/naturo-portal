@@ -88,6 +88,7 @@ enum AuditAction {
 
 enum SubscriptionPlan {
   FREE
+  ADMIN
   PRO
   ENTERPRISE
 }
@@ -116,7 +117,7 @@ model Organization {
   stripeCustomerId   String?            @unique
   stripeSubscriptionId String?          @unique
   trialEndsAt        DateTime?
-  maxUsers           Int                @default(5)
+  maxUsers           Int                @default(3)
   maxAssets          Int                @default(50)
 
   users          User[]

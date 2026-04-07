@@ -150,7 +150,7 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-br from-action-500 to-action-300 hover:from-action-600 hover:to-action-400 transition-all"
                   >
                     <Icon name="award" size={16} className="text-white" />
-                    Upgrade to Pro
+                    Upgrade Plan
                   </button>
                 </div>
               )}

@@ -168,7 +168,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                     <Icon name="award" size={24} className="text-white" />
                   </div>
                   <p className="text-xs font-semibold text-white">Upgrade Your</p>
-                  <p className="text-xs font-semibold text-white mb-3">Account To Pro</p>
+                  <p className="text-xs font-semibold text-white mb-3">Plan</p>
                   <div className="bg-white rounded-xl py-2 px-4 text-xs font-semibold" style={{ color: "#1F3DD9" }}>
                     Upgrade Now
                   </div>

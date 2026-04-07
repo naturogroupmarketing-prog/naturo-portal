@@ -17,18 +17,28 @@ interface Props {
 
 const PLANS = [
   {
-    name: "Starter",
-    price: "$29",
-    period: "/month",
-    features: ["Up to 10 users", "100 assets", "Basic reporting", "Email support"],
+    name: "Free",
+    price: "$0",
+    period: "",
+    features: ["Up to 3 users", "50 assets", "Basic reporting", "Community support"],
     highlighted: false,
+    current: "FREE",
+  },
+  {
+    name: "Admin",
+    price: "$47",
+    period: "/month",
+    features: ["Up to 15 users", "500 assets", "AI assistant", "Advanced reporting", "Email support"],
+    highlighted: false,
+    current: "ADMIN",
   },
   {
     name: "Professional",
     price: "$79",
     period: "/month",
-    features: ["Up to 50 users", "500 assets", "AI assistant", "Advanced reporting", "Priority support"],
+    features: ["Up to 75 users", "2,000 assets", "AI assistant", "Full reporting", "Priority support", "Condition checks"],
     highlighted: true,
+    current: "PRO",
   },
   {
     name: "Enterprise",
@@ -36,6 +46,7 @@ const PLANS = [
     period: "",
     features: ["Unlimited users", "Unlimited assets", "Custom onboarding", "Dedicated support", "SLA guarantee", "API access"],
     highlighted: false,
+    current: "ENTERPRISE",
   },
 ];
 
