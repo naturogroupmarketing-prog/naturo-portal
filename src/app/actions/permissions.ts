@@ -1,18 +1,18 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isSuperAdmin, MANAGER_DEFAULTS, type PermissionKey } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 export async function updatePermission(
   userId: string,
   permission: PermissionKey,
   enabled: boolean
 ) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) {
     throw new Error("Unauthorized");
   }
 

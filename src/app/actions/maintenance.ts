@@ -1,13 +1,13 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isAdminOrManager } from "@/lib/permissions";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 export async function createMaintenanceSchedule(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) throw new Error("Unauthorized");
 
   const assetId = formData.get("assetId") as string;
   const title = formData.get("title") as string;
@@ -35,11 +35,9 @@ export async function createMaintenanceSchedule(formData: FormData) {
 }
 
 export async function completeMaintenanceTask(formData: FormData) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const scheduleId = formData.get("scheduleId") as string;
   const notes = formData.get("notes") as string | null;
@@ -90,11 +88,10 @@ export async function completeMaintenanceTask(formData: FormData) {
 }
 
 export async function deleteMaintenanceSchedule(scheduleId: string) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const schedule = await db.maintenanceSchedule.findUnique({
     where: { id: scheduleId },
@@ -112,11 +109,9 @@ export async function deleteMaintenanceSchedule(scheduleId: string) {
 }
 
 export async function getMaintenanceSchedules(regionId?: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const where: Record<string, unknown> = {
     isActive: true,

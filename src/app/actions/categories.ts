@@ -58,13 +58,12 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function updateCategory(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const id = formData.get("id") as string;
   const newName = (formData.get("name") as string)?.trim();
@@ -114,13 +113,12 @@ export async function updateCategory(formData: FormData) {
 }
 
 export async function deleteCategory(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const id = formData.get("id") as string;
   const cat = await db.category.findUnique({ where: { id } });
@@ -144,13 +142,12 @@ export async function deleteCategory(formData: FormData) {
 }
 
 export async function addEquipmentItem(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") {
+  const session = await withAuth();
+  if (session.user.role !== "SUPER_ADMIN") {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const categoryId = formData.get("categoryId") as string;
   const name = (formData.get("name") as string)?.trim();
@@ -176,13 +173,12 @@ export async function addEquipmentItem(formData: FormData) {
 }
 
 export async function reorderCategories(orderedIds: string[]) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   // Verify all categories belong to this org, then update sortOrder
   const categories = await db.category.findMany({ where: { id: { in: orderedIds }, organizationId } });
@@ -199,13 +195,12 @@ export async function reorderCategories(orderedIds: string[]) {
 }
 
 export async function reorderItems(orderedIds: string[], type: "ASSET" | "CONSUMABLE") {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   if (type === "ASSET") {
     const assets = await db.asset.findMany({ where: { id: { in: orderedIds }, organizationId } });
@@ -231,13 +226,12 @@ export async function reorderItems(orderedIds: string[], type: "ASSET" | "CONSUM
 }
 
 export async function removeEquipmentItem(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") {
+  const session = await withAuth();
+  if (session.user.role !== "SUPER_ADMIN") {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const categoryId = formData.get("categoryId") as string;
   const name = formData.get("name") as string;

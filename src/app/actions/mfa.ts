@@ -1,15 +1,14 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 /**
  * Generate a new TOTP secret for the current user
  */
 export async function generateTOTPSecret() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const { TOTP, Secret } = await import("otpauth");
 
@@ -39,8 +38,7 @@ export async function generateTOTPSecret() {
  * Verify TOTP code and enable MFA
  */
 export async function enableMFA(code: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const user = await db.user.findUnique({
     where: { id: session.user.id },
@@ -75,8 +73,7 @@ export async function enableMFA(code: string) {
  * Disable MFA for the current user
  */
 export async function disableMFA(password: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   // Verify password first
   const user = await db.user.findUnique({

@@ -1,14 +1,12 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 export async function getCustomFieldDefinitions(entityType: "ASSET" | "CONSUMABLE") {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const organizationId = session.user.organizationId;
-  if (!organizationId) return [];
+  const session = await withAuth();
+  const organizationId = session.user.organizationId!;
 
   return db.customFieldDefinition.findMany({
     where: { organizationId, entityType },
@@ -17,11 +15,10 @@ export async function getCustomFieldDefinitions(entityType: "ASSET" | "CONSUMABL
 }
 
 export async function createCustomField(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const entityType = formData.get("entityType") as string;
   const fieldName = (formData.get("fieldName") as string)?.trim();
@@ -54,11 +51,10 @@ export async function createCustomField(formData: FormData) {
 }
 
 export async function deleteCustomField(fieldId: string) {
-  const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const field = await db.customFieldDefinition.findUnique({ where: { id: fieldId } });
   if (!field || field.organizationId !== organizationId) throw new Error("Not found");

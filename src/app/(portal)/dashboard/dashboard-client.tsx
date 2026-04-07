@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 import { DashboardSettingsModal } from "./dashboard-settings-modal";
 import { OnboardingOverlay } from "@/components/ui/onboarding";
 import { PageTransition, StaggerContainer, StaggerItem } from "@/components/ui/page-transition";
+import { OperationsWidget } from "./widgets/operations-widget";
 import { removeCustomShortcut } from "@/app/actions/dashboard";
 import type { DashboardPreferences } from "@/lib/dashboard-types";
 
@@ -201,104 +202,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               <div key="portfolio" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* LEFT — Operations Overview */}
                 {operationsOverview && showOperations && (
-                  <Card>
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <h2 className="text-lg font-bold text-shark-900">Operations</h2>
-                          <p className="text-sm text-shark-400">Business health overview</p>
-                        </div>
-                        {/* Health Score with hover tooltip */}
-                        <div className="text-center relative group/health">
-                          <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold text-white cursor-pointer ${
-                            operationsOverview.healthScore >= 80 ? "bg-action-500" :
-                            operationsOverview.healthScore >= 50 ? "bg-[#E8532E]" : "bg-red-500"
-                          }`}>
-                            {operationsOverview.healthScore}
-                          </div>
-                          <p className="text-[10px] text-shark-400 mt-1">Health</p>
-                          {/* Black tooltip on hover */}
-                          <div className="absolute right-0 sm:right-0 top-full mt-2 w-56 sm:w-64 bg-[#1a1c21] text-white rounded-xl p-3.5 sm:p-4 shadow-2xl opacity-0 invisible group-hover/health:opacity-100 group-hover/health:visible transition-all duration-200 z-50 text-left">
-                            <p className="text-xs font-semibold mb-2 text-shark-400">Health Score Breakdown</p>
-                            <div className="space-y-1.5 text-xs">
-                              {operationsOverview.lowStockCount > 0 && (
-                                <div className="flex justify-between"><span className="text-shark-400">Low stock items ({operationsOverview.lowStockCount})</span><span className="text-red-400">-{Math.min(30, operationsOverview.lowStockCount * 5)}</span></div>
-                              )}
-                              {operationsOverview.overdueReturns > 0 && (
-                                <div className="flex justify-between"><span className="text-shark-400">Overdue returns ({operationsOverview.overdueReturns})</span><span className="text-red-400">-{Math.min(20, operationsOverview.overdueReturns * 4)}</span></div>
-                              )}
-                              {operationsOverview.unresolvedDamage > 0 && (
-                                <div className="flex justify-between"><span className="text-shark-400">Unresolved damage ({operationsOverview.unresolvedDamage})</span><span className="text-red-400">-{Math.min(15, operationsOverview.unresolvedDamage * 5)}</span></div>
-                              )}
-                              {operationsOverview.incompleteInspections > 0 && (
-                                <div className="flex justify-between"><span className="text-shark-400">Overdue inspections ({operationsOverview.incompleteInspections})</span><span className="text-red-400">-{Math.min(15, operationsOverview.incompleteInspections * 5)}</span></div>
-                              )}
-                              {operationsOverview.pendingRequests > 0 && (
-                                <div className="flex justify-between"><span className="text-shark-400">Pending requests ({operationsOverview.pendingRequests})</span><span className="text-red-400">-{Math.min(10, operationsOverview.pendingRequests * 2)}</span></div>
-                              )}
-                              {operationsOverview.healthScore === 100 && (
-                                <p className="text-action-400">No deductions — perfect score!</p>
-                              )}
-                              <div className="border-t border-shark-700 pt-1.5 mt-1.5 flex justify-between font-semibold">
-                                <span>Total</span>
-                                <span className={operationsOverview.healthScore >= 80 ? "text-action-400" : operationsOverview.healthScore >= 50 ? "text-amber-400" : "text-red-400"}>
-                                  {operationsOverview.healthScore}/100
-                                </span>
-                              </div>
-                            </div>
-                            {/* Arrow */}
-                            <div className="absolute -top-1.5 right-5 w-3 h-3 bg-[#1a1c21] rotate-45" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Order Summary */}
-                      <div className="grid grid-cols-2 gap-3 mb-4">
-                        <Link href="/purchase-orders" className="bg-shark-50 rounded-xl px-3 py-2.5 hover:bg-shark-100 transition-colors">
-                          <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Approval</p>
-                          <p className={`text-lg font-bold ${operationsOverview.ordersAwaitingApproval > 0 ? "text-[#E8532E]" : "text-shark-900"}`}>{operationsOverview.ordersAwaitingApproval}</p>
-                          <p className="text-[10px] text-shark-400">purchase orders</p>
-                        </Link>
-                        <Link href="/purchase-orders" className="bg-shark-50 rounded-xl px-3 py-2.5 hover:bg-shark-100 transition-colors">
-                          <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Receival</p>
-                          <p className={`text-lg font-bold ${operationsOverview.ordersAwaitingReceival > 0 ? "text-action-500" : "text-shark-900"}`}>{operationsOverview.ordersAwaitingReceival}</p>
-                          <p className="text-[10px] text-shark-400">purchase orders</p>
-                        </Link>
-                      </div>
-
-                      {/* Issue Breakdown */}
-                      <div className="space-y-2">
-                        {[
-                          { label: "Overdue Returns", value: operationsOverview.overdueReturns, icon: "arrow-left" as const, href: "/returns", danger: true },
-                          { label: "Low Stock Items", value: operationsOverview.lowStockCount, icon: "alert-triangle" as const, href: "/alerts/low-stock", danger: true },
-                          { label: "Unresolved Damage", value: operationsOverview.unresolvedDamage, icon: "alert-triangle" as const, href: "/alerts/damage", danger: true },
-                          { label: "Lost Items", value: operationsOverview.lostItems, icon: "shield" as const, href: "/alerts/lost", danger: true },
-                          { label: "Pending Requests", value: operationsOverview.pendingRequests, icon: "clipboard" as const, href: "/inventory", danger: false },
-                          { label: "Overdue Inspections", value: operationsOverview.incompleteInspections, icon: "search" as const, href: "/condition-checks", danger: true },
-                        ].filter((item) => item.value > 0).map((item) => (
-                          <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-shark-50 transition-colors -mx-1">
-                            <div className="flex items-center gap-2.5">
-                              <Icon name={item.icon} size={14} className={item.danger ? "text-[#E8532E]" : "text-action-500"} />
-                              <span className="text-sm text-shark-600">{item.label}</span>
-                            </div>
-                            <span className={`text-sm font-bold ${item.danger ? "text-[#E8532E]" : "text-shark-700"}`}>{item.value}</span>
-                          </Link>
-                        ))}
-                        {operationsOverview.overdueReturns === 0 && operationsOverview.lowStockCount === 0 && operationsOverview.unresolvedDamage === 0 && operationsOverview.pendingRequests === 0 && operationsOverview.incompleteInspections === 0 && (
-                          <div className="flex items-center gap-2 px-3 py-3">
-                            <Icon name="check" size={16} className="text-action-500" />
-                            <span className="text-sm text-action-600 font-medium">All clear — no outstanding issues</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Staff Summary */}
-                      <div className="mt-4 pt-3 border-t border-shark-100 flex items-center justify-between">
-                        <span className="text-xs text-shark-400">Active Staff</span>
-                        <span className="text-sm font-semibold text-shark-700">{operationsOverview.totalStaff}</span>
-                      </div>
-                    </div>
-                  </Card>
+                  <OperationsWidget data={operationsOverview} />
                 )}
 
                 {/* RIGHT — Portfolio Line Chart (Assets vs Consumables value) */}

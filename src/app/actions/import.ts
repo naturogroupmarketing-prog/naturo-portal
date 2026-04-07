@@ -1,8 +1,8 @@
 "use server";
 
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { isAdminOrManager, isSuperAdmin, canManageRegion } from "@/lib/permissions";
+import { withAuth } from "@/lib/action-utils";
 import { generateAssetCode } from "@/lib/utils";
 import { generateQRCodeDataURL, buildAssetQRData } from "@/lib/qr";
 import { createAuditLog } from "@/lib/audit";
@@ -93,8 +93,8 @@ function generateRandomPassword(length = 12): string {
 // ─── Bulk Import Assets ───────────────────────────────
 
 export async function bulkImportAssets(rows: AssetImportRow[]): Promise<ImportResult> {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -201,8 +201,8 @@ export async function bulkImportAssets(rows: AssetImportRow[]): Promise<ImportRe
 // ─── Bulk Import Consumables ──────────────────────────
 
 export async function bulkImportConsumables(rows: ConsumableImportRow[]): Promise<ImportResult> {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -320,8 +320,8 @@ export async function bulkImportConsumables(rows: ConsumableImportRow[]): Promis
 // ─── Bulk Import Staff ────────────────────────────────
 
 export async function bulkImportStaff(rows: StaffImportRow[]): Promise<ImportResult> {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) {
     throw new Error("Unauthorized — Super Admin only");
   }
 

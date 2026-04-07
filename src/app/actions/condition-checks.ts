@@ -1,10 +1,10 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isAdminOrManager, isSuperAdmin } from "@/lib/permissions";
 import { revalidatePath } from "next/cache";
 import type { ConditionCheckFrequency } from "@/generated/prisma/client";
+import { withAuth } from "@/lib/action-utils";
 
 // ─── Helpers ────────────────────────────────────────────
 
@@ -48,11 +48,9 @@ export async function submitConditionCheck(data: {
   photoLabel?: string;
   notes?: string;
 }) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   if (!data.photoUrl) throw new Error("Photo is required");
   if (!["GOOD", "FAIR", "POOR", "DAMAGED"].includes(data.condition)) {
@@ -192,11 +190,10 @@ async function maybeAdvanceSchedule(
  * Super admin toggles which categories require inspection
  */
 export async function toggleCategoryInspection(categoryId: string, enabled: boolean) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const cat = await db.category.findUnique({ where: { id: categoryId } });
   if (!cat || cat.organizationId !== organizationId) throw new Error("Category not found");
@@ -215,11 +212,10 @@ export async function toggleCategoryInspection(categoryId: string, enabled: bool
  * Super admin manages custom photo labels for a category
  */
 export async function updateCategoryInspectionPhotos(categoryId: string, photos: string[]) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const cat = await db.category.findUnique({ where: { id: categoryId } });
   if (!cat || cat.organizationId !== organizationId) throw new Error("Category not found");
@@ -244,13 +240,12 @@ export async function getConditionChecksForReview(filters?: {
   monthYear?: string;
   regionId?: string;
 }) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const monthYear = filters?.monthYear || new Date().toISOString().slice(0, 7);
 
@@ -341,11 +336,10 @@ export async function getConditionChecksForReview(filters?: {
  * Get inspection configuration (categories + photo types)
  */
 export async function getInspectionConfig() {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const categories = await db.category.findMany({
     where: { organizationId },
@@ -370,11 +364,10 @@ export async function createInspectionSchedule(data: {
   dueDate: string; // ISO date string
   notes?: string;
 }) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   if (!data.title?.trim()) throw new Error("Title is required");
   if (!data.dueDate) throw new Error("Due date is required");
@@ -434,11 +427,10 @@ export async function createInspectionSchedule(data: {
  * Get all inspection schedules for the org
  */
 export async function getInspectionSchedules() {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   return db.inspectionSchedule.findMany({
     where: { organizationId, isActive: true },
@@ -451,11 +443,10 @@ export async function getInspectionSchedules() {
  * Delete an inspection schedule
  */
 export async function deleteInspectionSchedule(id: string) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const schedule = await db.inspectionSchedule.findUnique({ where: { id } });
   if (!schedule || schedule.organizationId !== organizationId) throw new Error("Not found");
@@ -475,11 +466,10 @@ export async function setStaffConditionSchedule(data: {
   frequency: ConditionCheckFrequency;
   nextDueDate: string; // ISO date
 }) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   // Validate target user
   const targetUser = await db.user.findUnique({ where: { id: data.userId } });
@@ -531,11 +521,10 @@ export async function bulkSetConditionSchedule(data: {
   frequency: ConditionCheckFrequency;
   nextDueDate: string;
 }) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const nextDueDate = new Date(data.nextDueDate);
   if (isNaN(nextDueDate.getTime())) throw new Error("Invalid date");
@@ -586,11 +575,10 @@ export async function bulkSetConditionSchedule(data: {
  * Get all staff condition check schedules for the org (admin view)
  */
 export async function getStaffSchedules() {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const schedules = await db.conditionCheckSchedule.findMany({
     where: { organizationId, isActive: true },
@@ -641,11 +629,10 @@ export async function getStaffSchedules() {
  * Remove a staff member's custom schedule (revert to default monthly)
  */
 export async function removeStaffConditionSchedule(userId: string) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const schedule = await db.conditionCheckSchedule.findUnique({ where: { userId } });
   if (!schedule || schedule.organizationId !== organizationId) throw new Error("Schedule not found");

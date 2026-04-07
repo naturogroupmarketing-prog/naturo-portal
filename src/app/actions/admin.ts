@@ -1,21 +1,20 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isSuperAdmin } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 /**
  * Archive old audit logs — delete entries older than specified months
  * Super Admin only
  */
 export async function archiveOldAuditLogs(olderThanMonths: number = 12) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const cutoffDate = new Date();
   cutoffDate.setMonth(cutoffDate.getMonth() - olderThanMonths);
@@ -42,11 +41,10 @@ export async function archiveOldAuditLogs(olderThanMonths: number = 12) {
  * Clean up resolved damage reports older than specified months
  */
 export async function archiveResolvedDamageReports(olderThanMonths: number = 6) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const cutoffDate = new Date();
   cutoffDate.setMonth(cutoffDate.getMonth() - olderThanMonths);
@@ -74,11 +72,10 @@ export async function archiveResolvedDamageReports(olderThanMonths: number = 6) 
  * Get data health statistics for the organization
  */
 export async function getDataHealth() {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);

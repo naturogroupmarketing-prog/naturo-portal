@@ -1,10 +1,10 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isAdminOrManager } from "@/lib/permissions";
 import { revalidatePath } from "next/cache";
 import { type DashboardPreferences, parsePreferences } from "@/lib/dashboard-types";
+import { withAuth } from "@/lib/action-utils";
 
 async function getPreferences(userId: string): Promise<DashboardPreferences> {
   const user = await db.user.findUnique({
@@ -23,8 +23,8 @@ async function savePreferences(userId: string, prefs: DashboardPreferences) {
 }
 
 export async function updateWidgetVisibility(widgetId: string, visible: boolean) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -43,8 +43,8 @@ export async function updateWidgetVisibility(widgetId: string, visible: boolean)
 }
 
 export async function addCustomShortcut(label: string, href: string, icon: string) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -62,8 +62,8 @@ export async function addCustomShortcut(label: string, href: string, icon: strin
 }
 
 export async function removeCustomShortcut(shortcutId: string) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -75,8 +75,8 @@ export async function removeCustomShortcut(shortcutId: string) {
 }
 
 export async function reorderSections(newOrder: string[]) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 

@@ -1,15 +1,14 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 /**
  * Toggle email notifications for the current user
  */
 export async function toggleEmailNotifications(enabled: boolean) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   await db.user.update({
     where: { id: session.user.id },
@@ -24,8 +23,7 @@ export async function toggleEmailNotifications(enabled: boolean) {
  * Change the current user's password
  */
 export async function changePassword(currentPassword: string, newPassword: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   if (newPassword.length < 8) throw new Error("New password must be at least 8 characters");
 
@@ -53,8 +51,7 @@ export async function changePassword(currentPassword: string, newPassword: strin
  * Update the current user's profile (name, email, phone)
  */
 export async function updateProfile(data: { name?: string; email?: string; phone?: string }) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const updates: Record<string, string | null> = {};
   if (data.name?.trim()) updates.name = data.name.trim();
@@ -80,8 +77,7 @@ export async function updateProfile(data: { name?: string; email?: string; phone
  * Export all personal data for the current user (APP 12 compliance)
  */
 export async function exportMyData() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const user = await db.user.findUnique({
     where: { id: session.user.id },
@@ -161,8 +157,7 @@ export async function exportMyData() {
  * Request account deletion (marks account for deletion, admin must confirm)
  */
 export async function requestAccountDeletion(password: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   // Verify password
   const user = await db.user.findUnique({

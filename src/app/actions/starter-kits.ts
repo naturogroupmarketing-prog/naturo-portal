@@ -1,19 +1,17 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { hasPermission } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { notifyAdminsAndManagers } from "@/lib/notifications";
 import { handleLowStockAlert } from "@/lib/low-stock-handler";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 export async function getStarterKits() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
-  const organizationId = session.user.organizationId;
-  if (!organizationId) return [];
+  const organizationId = session.user.organizationId!;
 
   return db.starterKit.findMany({
     where: { organizationId },
@@ -23,11 +21,9 @@ export async function getStarterKits() {
 }
 
 export async function createStarterKit(formData: FormData) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const name = (formData.get("name") as string)?.trim();
   const description = (formData.get("description") as string)?.trim() || null;
@@ -53,11 +49,9 @@ export async function createStarterKit(formData: FormData) {
 }
 
 export async function updateStarterKit(formData: FormData) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const id = formData.get("id") as string;
   const name = (formData.get("name") as string)?.trim();
@@ -82,12 +76,10 @@ export async function updateStarterKit(formData: FormData) {
 }
 
 export async function deleteStarterKit(id: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const kit = await db.starterKit.findUnique({ where: { id } });
   if (!kit || kit.organizationId !== organizationId) throw new Error("Not found");
@@ -100,12 +92,10 @@ export async function deleteStarterKit(id: string) {
 }
 
 export async function addStarterKitItem(formData: FormData) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const starterKitId = formData.get("starterKitId") as string;
   const itemType = formData.get("itemType") as string;
@@ -127,12 +117,10 @@ export async function addStarterKitItem(formData: FormData) {
 }
 
 export async function removeStarterKitItem(itemId: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const item = await db.starterKitItem.findUnique({ where: { id: itemId }, include: { starterKit: true } });
   if (!item || item.starterKit.organizationId !== organizationId) throw new Error("Not found");
@@ -145,12 +133,10 @@ export async function removeStarterKitItem(itemId: string) {
 }
 
 export async function updateStarterKitItemQuantity(itemId: string, quantity: number) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   if (quantity < 1) throw new Error("Quantity must be at least 1");
 
@@ -171,11 +157,9 @@ export async function updateStarterKitItemQuantity(itemId: string, quantity: num
  * Apply a starter kit to a user — assigns available assets and deducts consumables
  */
 export async function applyStarterKit(userId: string, starterKitId?: string, excludedItemIds?: string[]) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
@@ -321,8 +305,7 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
  * Staff acknowledges receipt of an individual asset assignment
  */
 export async function acknowledgeAssetItem(assignmentId: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const assignment = await db.assetAssignment.findUnique({
     where: { id: assignmentId },
@@ -359,8 +342,7 @@ export async function acknowledgeAssetItem(assignmentId: string) {
  * Staff acknowledges receipt of an individual consumable assignment
  */
 export async function acknowledgeConsumableItem(assignmentId: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const assignment = await db.consumableAssignment.findUnique({
     where: { id: assignmentId },
@@ -426,8 +408,7 @@ async function checkApplicationComplete(applicationId: string) {
  * Manager is notified to investigate.
  */
 export async function rejectKitAssetItem(assignmentId: string, reason: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const assignment = await db.assetAssignment.findUnique({
     where: { id: assignmentId },
@@ -478,8 +459,7 @@ export async function rejectKitAssetItem(assignmentId: string, reason: string) {
  * The item was never physically given, so nothing to return or deduct.
  */
 export async function rejectKitConsumableItem(assignmentId: string, reason: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const assignment = await db.consumableAssignment.findUnique({
     where: { id: assignmentId },
@@ -526,8 +506,7 @@ export async function batchConfirmKitReceipt(
   applicationId: string,
   items: { id: string; type: "asset" | "consumable"; status: "received" | "not_received"; reason?: string }[]
 ) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const receivedAssets = items.filter((i) => i.type === "asset" && i.status === "received");
   const receivedConsumables = items.filter((i) => i.type === "consumable" && i.status === "received");
@@ -670,8 +649,7 @@ export async function returnStarterKit(
   notes: string,
   excludedItems?: { itemType: string; itemId: string; note: string }[]
 ) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const application = await db.starterKitApplication.findUnique({
     where: { id: applicationId },
@@ -682,8 +660,7 @@ export async function returnStarterKit(
     throw new Error("Application not found");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   // Build sets of excluded item IDs
   const excludedAssetIds = new Set(
