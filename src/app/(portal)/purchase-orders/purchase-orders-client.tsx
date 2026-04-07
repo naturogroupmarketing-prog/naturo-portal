@@ -323,6 +323,16 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         region,
         orders: filtered.filter((po) => po.regionId === region.id),
       }))
+      .sort((a, b) => {
+        // Count pending (most urgent) orders per region
+        const aPending = a.orders.filter((o) => o.status === "PENDING").length;
+        const bPending = b.orders.filter((o) => o.status === "PENDING").length;
+        if (bPending !== aPending) return bPending - aPending;
+        // Then by total outstanding (non-received/rejected)
+        const aOutstanding = a.orders.filter((o) => o.status !== "RECEIVED" && o.status !== "REJECTED").length;
+        const bOutstanding = b.orders.filter((o) => o.status !== "RECEIVED" && o.status !== "REJECTED").length;
+        return bOutstanding - aOutstanding;
+      })
     : [];
 
   return (
