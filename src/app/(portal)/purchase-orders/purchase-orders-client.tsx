@@ -33,7 +33,7 @@ type PurchaseOrder = {
   createdAt: string;
   updatedAt: string;
   approvedAt: string | null;
-  consumable: { name: string; unitType: string; category: string };
+  consumable: { name: string; unitType: string; category: string; imageUrl: string | null };
   region: { id: string; name: string; state: { name: string } };
   createdBy: { name: string | null; email: string } | null;
   approvedBy: { name: string | null; email: string } | null;
@@ -216,34 +216,16 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     }
   };
 
-  // Status action — Super Admin can advance status, Branch Manager only "Received"
-  const renderStatusAction = (po: PurchaseOrder) => {
-    // Super Admin: clickable status buttons to advance
-    if (isSuperAdmin || canApprovePO) {
-      if (po.status === "PENDING") return (
-        <div className="flex gap-1.5" onClick={(e) => e.stopPropagation()}>
-          <Button size="sm" onClick={() => handleAction(po.id, "approve")} disabled={!!loading} loading={loading === po.id + "approve"}>Approve</Button>
-          <Button size="sm" variant="ghost" className="text-red-500 hover:bg-red-50" onClick={() => handleAction(po.id, "reject")} disabled={!!loading}>Reject</Button>
-        </div>
-      );
-      if (po.status === "APPROVED") return (
-        <div onClick={(e) => e.stopPropagation()}>
-          <Button size="sm" variant="outline" onClick={() => handleAction(po.id, "ordered")} disabled={!!loading} loading={loading === po.id + "ordered"}>Mark Ordered</Button>
-        </div>
-      );
-      if (po.status === "ORDERED") return (
-        <div onClick={(e) => e.stopPropagation()}>
-          <Button size="sm" variant="outline" onClick={() => handleAction(po.id, "received")} disabled={!!loading} loading={loading === po.id + "received"}>Received</Button>
-        </div>
-      );
-      return <Badge status={po.status} />;
-    }
-    // Branch Manager: only "Received" button when ORDERED
-    if (canManagePO && po.status === "ORDERED") return (
-      <div onClick={(e) => e.stopPropagation()}>
+  // Status display — Badge for all, plus "Received" button for Branch Manager when ORDERED
+  const renderStatus = (po: PurchaseOrder) => {
+    // Branch Manager: show "Received" button when item arrives
+    if (!isSuperAdmin && canManagePO && po.status === "ORDERED") return (
+      <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+        <Badge status={po.status} />
         <Button size="sm" onClick={() => handleAction(po.id, "received")} disabled={!!loading} loading={loading === po.id + "received"}>Received</Button>
       </div>
     );
+    // Everyone else: just the badge (click row to edit)
     return <Badge status={po.status} />;
   };
 
@@ -281,20 +263,29 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           orders.map((po) => (
             <div
               key={po.id}
-              className={`border rounded-xl p-4 bg-white transition-shadow ${selected.has(po.id) ? "border-action-400 bg-action-50/20" : "border-shark-100 hover:shadow-sm"}`}
+              onClick={() => setViewOrder(po)}
+              className={`border rounded-xl p-4 bg-white transition-shadow cursor-pointer ${selected.has(po.id) ? "border-action-400 bg-action-50/20" : "border-shark-100 hover:shadow-sm"}`}
             >
               <div className="flex items-start gap-3">
                 {canApprovePO && (
-                  <input type="checkbox" checked={selected.has(po.id)} onChange={() => toggleSelect(po.id)} className="w-4 h-4 mt-1 rounded border-shark-300 text-action-500 focus:ring-action-400 shrink-0" />
+                  <input type="checkbox" checked={selected.has(po.id)} onChange={(e) => { e.stopPropagation(); toggleSelect(po.id); }} className="w-4 h-4 mt-1 rounded border-shark-300 text-action-500 focus:ring-action-400 shrink-0" />
                 )}
-                <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setViewOrder(po)}>
-                  <p className="text-sm font-semibold text-shark-800 truncate">{po.consumable.name}</p>
-                  <p className="text-xs text-shark-400 mt-0.5">{po.consumable.category} · Qty: {po.quantity}</p>
-                  {po.supplier && <p className="text-xs text-shark-400">Supplier: {po.supplier}</p>}
+                {po.consumable.imageUrl ? (
+                  <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100 shrink-0">
+                    <img src={po.consumable.imageUrl} alt={po.consumable.name} className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                    <Icon name="droplet" size={16} className="text-shark-300" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-semibold text-shark-800 truncate">{po.consumable.name}</p>
+                    {renderStatus(po)}
+                  </div>
+                  <p className="text-xs text-shark-400 mt-0.5">Qty: {po.quantity} · {po.region.name}</p>
                 </div>
-              </div>
-              <div className="mt-3 pt-3 border-t border-shark-50 flex justify-end">
-                {renderStatusAction(po)}
               </div>
             </div>
           ))
@@ -329,13 +320,26 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                     </td>
                   )}
                   <td className="px-5 py-3.5">
-                    <span className="font-medium text-shark-800">{po.consumable.name}</span>
-                    <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
+                    <div className="flex items-center gap-3">
+                      {po.consumable.imageUrl ? (
+                        <div className="w-8 h-8 rounded-lg overflow-hidden border border-shark-100 shrink-0">
+                          <img src={po.consumable.imageUrl} alt={po.consumable.name} className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="w-8 h-8 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                          <Icon name="droplet" size={14} className="text-shark-300" />
+                        </div>
+                      )}
+                      <div>
+                        <span className="font-medium text-shark-800">{po.consumable.name}</span>
+                        <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity}</td>
                   <td className="px-5 py-3.5 text-shark-500">{po.region.name}</td>
                   <td className="px-5 py-3.5 text-right">
-                    {renderStatusAction(po)}
+                    {renderStatus(po)}
                   </td>
                 </tr>
               ))

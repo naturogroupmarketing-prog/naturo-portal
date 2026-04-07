@@ -35,7 +35,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         NOT: { status: "REJECTED", approvedAt: { lt: twentyFourHoursAgo } },
       },
       include: {
-        consumable: { select: { name: true, unitType: true, category: true } },
+        consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
         region: { include: { state: true } },
         createdBy: { select: { name: true, email: true } },
         approvedBy: { select: { name: true, email: true } },
