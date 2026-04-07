@@ -101,8 +101,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<string>(mapStatusToTab(initialStatus));
   const [search, setSearch] = useState("");
-  const [regionFilter, setRegionFilter] = useState(initialRegion || "ALL");
-  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const [regionFilter, setRegionFilter] = useState("ALL");
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
+    if (!initialRegion) return new Set();
+    // Collapse all regions except the one linked from dashboard
+    return new Set(regions.filter((r) => r.id !== initialRegion).map((r) => r.id));
+  });
   const [loading, setLoading] = useState<string | null>(null);
   const [viewOrder, setViewOrder] = useState<PurchaseOrder | null>(null);
   const [error, setError] = useState<string | null>(null);
