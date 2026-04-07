@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 
 interface Props {
   org: {
@@ -51,9 +54,40 @@ const PLANS = [
 ];
 
 export function BillingClient({ org }: Props) {
+  const { addToast } = useToast();
+  const [backingUp, setBackingUp] = useState(false);
   const trialEnds = org.trialEndsAt ? new Date(org.trialEndsAt) : null;
   const isTrialing = org.subscriptionStatus === "TRIALING";
   const trialDaysLeft = trialEnds ? Math.max(0, Math.ceil((trialEnds.getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0;
+
+  const handleBackup = async () => {
+    setBackingUp(true);
+    try {
+      const res = await fetch("/api/backup");
+      if (!res.ok) throw new Error("Backup failed");
+      const data = await res.json();
+
+      // Download each CSV file
+      for (const key of ["assets", "consumables", "staff", "regions"] as const) {
+        const file = data.files[key];
+        if (file.count === 0) continue;
+        const blob = new Blob([file.content], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = file.filename;
+        a.click();
+        URL.revokeObjectURL(url);
+        // Small delay between downloads so browser doesn't block them
+        await new Promise((r) => setTimeout(r, 300));
+      }
+
+      addToast(`Backup downloaded: ${data.files.assets.count} assets, ${data.files.consumables.count} consumables, ${data.files.staff.count} staff`, "success");
+    } catch (e) {
+      addToast(e instanceof Error ? e.message : "Backup failed", "error");
+    }
+    setBackingUp(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -139,6 +173,36 @@ export function BillingClient({ org }: Props) {
           ))}
         </div>
       </div>
+
+      {/* Data Backup */}
+      <Card>
+        <div className="px-4 sm:px-6 py-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <Icon name="download" size={18} className="text-action-500" />
+                <h3 className="text-lg font-semibold text-shark-900">Data Backup</h3>
+              </div>
+              <p className="text-sm text-shark-400 mt-1">
+                Download all your assets, consumables, and staff data as CSV files. These files can be re-uploaded via Import Data if needed.
+              </p>
+            </div>
+            <Button onClick={handleBackup} loading={backingUp} disabled={backingUp} className="shrink-0">
+              <Icon name="download" size={14} className="mr-1.5" />
+              {backingUp ? "Downloading..." : "Download Backup"}
+            </Button>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs text-shark-400">
+            <span className="bg-shark-50 px-2 py-1 rounded">Assets CSV</span>
+            <span className="bg-shark-50 px-2 py-1 rounded">Consumables CSV</span>
+            <span className="bg-shark-50 px-2 py-1 rounded">Staff CSV</span>
+            <span className="bg-shark-50 px-2 py-1 rounded">Regions CSV</span>
+          </div>
+          <p className="text-xs text-shark-400 mt-3">
+            To restore from backup, go to <a href="/admin/import" className="text-action-500 hover:text-action-600 font-medium">Import Data</a> and upload the CSV files.
+          </p>
+        </div>
+      </Card>
 
       <p className="text-xs text-shark-400 text-center">
         Need help choosing a plan? Contact us at support@trackio.com.au
