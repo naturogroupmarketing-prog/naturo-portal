@@ -4,6 +4,8 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { StaffClient } from "./staff-client";
 
+export const dynamic = "force-dynamic";
+
 export default async function StaffPage({ searchParams }: { searchParams: Promise<{ region?: string }> }) {
   const params = await searchParams;
   const session = await auth();

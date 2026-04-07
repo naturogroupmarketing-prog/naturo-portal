@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
@@ -83,6 +84,7 @@ interface StaffClientProps {
 }
 
 export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion }: StaffClientProps) {
+  const router = useRouter();
   const { addToast } = useToast();
   const [search, setSearch] = useState("");
   // If initialRegion is set, collapse all OTHER regions so the target region is visible
@@ -481,9 +483,14 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
         <form action={async (fd) => {
           setCreating(true);
           try {
-            await createUser(fd);
-            addToast("User created successfully", "success");
-            setShowCreate(false);
+            const result = await createUser(fd);
+            if (result.error) {
+              addToast(result.error, "error");
+            } else {
+              addToast("User created successfully", "success");
+              setShowCreate(false);
+              router.refresh();
+            }
           } catch (e) {
             addToast(e instanceof Error ? e.message : "Failed to create user", "error");
           } finally {
