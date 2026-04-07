@@ -44,7 +44,16 @@ type Region = {
   state: { name: string };
 };
 
-const TABS = ["All", "Pending", "Approved", "Ordered", "Received", "Rejected"] as const;
+const TABS = ["Pending", "Approved", "Ordered", "Rejected", "Received", "All"] as const;
+
+// Priority order for sorting — items needing action first
+const STATUS_PRIORITY: Record<string, number> = {
+  PENDING: 0,
+  APPROVED: 1,
+  ORDERED: 2,
+  REJECTED: 3,
+  RECEIVED: 4,
+};
 
 const PO_COLS_KEY = "trackio-purchase-orders-columns";
 type POCols = { item: boolean; category: boolean; supplier: boolean; qty: boolean; status: boolean; createdBy: boolean; date: boolean };
@@ -83,9 +92,9 @@ interface Props {
 }
 
 function mapStatusToTab(status?: string): string {
-  if (!status) return "All";
+  if (!status) return "Pending";
   const map: Record<string, string> = { PENDING: "Pending", APPROVED: "Approved", ORDERED: "Ordered", RECEIVED: "Received", REJECTED: "Rejected" };
-  return map[status.toUpperCase()] || "All";
+  return map[status.toUpperCase()] || "Pending";
 }
 
 export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion }: Props) {
@@ -142,7 +151,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     });
   };
 
-  // Filter by tab + search + region
+  // Filter by tab + search + region, then sort by priority (most urgent first)
   const filtered = purchaseOrders.filter((po) => {
     if (activeTab !== "All" && po.status !== activeTab.toUpperCase()) return false;
     if (regionFilter !== "ALL" && po.region.id !== regionFilter) return false;
@@ -155,6 +164,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       );
     }
     return true;
+  }).sort((a, b) => {
+    const pa = STATUS_PRIORITY[a.status] ?? 99;
+    const pb = STATUS_PRIORITY[b.status] ?? 99;
+    if (pa !== pb) return pa - pb;
+    // Within same status, newest first
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
   const pendingCount = purchaseOrders.filter((po) => po.status === "PENDING").length;

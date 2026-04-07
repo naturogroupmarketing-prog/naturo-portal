@@ -4,6 +4,8 @@ import { isAdminOrManager, hasPermission } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { PurchaseOrdersClient } from "./purchase-orders-client";
 
+export const dynamic = "force-dynamic";
+
 export default async function PurchaseOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string }> }) {
   const params = await searchParams;
   const session = await auth();
