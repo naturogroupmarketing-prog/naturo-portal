@@ -155,9 +155,10 @@ export function ChatWidget() {
         return;
       }
 
-      // Request microphone permission first
+      // Request microphone permission first, then release the stream
       try {
-        await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach((t) => t.stop()); // Release mic so SpeechRecognition can use it
       } catch {
         const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
         const isAndroid = /Android/.test(navigator.userAgent);
@@ -331,7 +332,7 @@ export function ChatWidget() {
 
       {/* Chat panel — floating on all screens */}
       {isOpen && (
-        <div className="fixed bottom-16 right-3 sm:bottom-6 sm:right-6 z-40 w-[calc(100vw-1.5rem)] sm:w-96 h-[70vh] sm:h-[32rem] max-h-[32rem] flex flex-col rounded-2xl border border-shark-100 bg-white shadow-2xl overflow-hidden">
+        <div className="fixed bottom-20 right-3 sm:bottom-6 sm:right-6 z-40 w-[calc(100vw-1.5rem)] sm:w-96 h-[60vh] sm:h-[32rem] max-h-[32rem] flex flex-col rounded-2xl border border-shark-100 bg-white shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 bg-action-400 rounded-t-2xl">
             <div className="flex items-center gap-2">
@@ -441,7 +442,7 @@ export function ChatWidget() {
               </div>
 
               {/* Input */}
-              <form onSubmit={handleSubmit} className="border-t border-shark-100 px-4 py-3 flex gap-2 safe-bottom">
+              <form onSubmit={handleSubmit} className="border-t border-shark-100 px-3 py-2.5 flex items-center gap-1.5">
                 <input
                   ref={inputRef}
                   value={input}
@@ -449,14 +450,13 @@ export function ChatWidget() {
                   placeholder={isListening ? "Listening..." : "Ask about assets, stock..."}
                   disabled={isLoading}
                   aria-label="Type your message"
-                  className={`flex-1 rounded-xl border bg-white px-3.5 py-2 text-sm text-shark-900 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50 ${isListening ? "border-red-400 ring-2 ring-red-200" : "border-shark-200"}`}
+                  className={`flex-1 min-w-0 rounded-xl border bg-white px-3 py-2 text-sm text-shark-900 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50 ${isListening ? "border-red-400 ring-2 ring-red-200" : "border-shark-200"}`}
                 />
-                {/* Mic button */}
                 {!isLoading && (
                   <button
                     type="button"
                     onClick={toggleVoiceInput}
-                    className={`rounded-xl px-2.5 py-2 transition-colors ${isListening ? "bg-red-500 text-white animate-pulse" : "text-shark-400 hover:text-shark-600 hover:bg-shark-50"}`}
+                    className={`shrink-0 w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${isListening ? "bg-red-500 text-white animate-pulse" : "text-shark-400 hover:text-shark-600 hover:bg-shark-50"}`}
                     title={isListening ? "Stop listening" : "Voice input"}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -468,13 +468,13 @@ export function ChatWidget() {
                   </button>
                 )}
                 {isLoading ? (
-                  <Button type="button" size="sm" variant="outline" onClick={cancelRequest} className="text-red-500 border-red-200 hover:bg-red-50">
+                  <button type="button" onClick={cancelRequest} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-xl border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
                     <Icon name="x" size={16} />
-                  </Button>
+                  </button>
                 ) : (
-                  <Button type="submit" size="sm" disabled={!input.trim()}>
+                  <button type="submit" disabled={!input.trim()} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-xl bg-action-400 text-white hover:bg-action-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                     <Icon name="arrow-right" size={16} />
-                  </Button>
+                  </button>
                 )}
               </form>
             </>
