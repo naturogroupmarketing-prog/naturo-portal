@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,18 +9,11 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
-import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder } from "@/app/actions/purchase-orders";
+import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder, batchUpdatePOStatus } from "@/app/actions/purchase-orders";
 import { useToast } from "@/components/ui/toast";
 import { formatDate } from "@/lib/utils";
 
-const SECTION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50" },
-  { color: "text-cyan-600", bg: "bg-cyan-50" },
-  { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-violet-600", bg: "bg-violet-50" },
-];
+// Section colors removed — using flat list now
 
 type PurchaseOrder = {
   id: string;
@@ -55,18 +49,7 @@ const STATUS_PRIORITY: Record<string, number> = {
   RECEIVED: 4,
 };
 
-const PO_COLS_KEY = "trackio-purchase-orders-columns";
-type POCols = { item: boolean; category: boolean; supplier: boolean; qty: boolean; status: boolean; createdBy: boolean; date: boolean };
-const defaultPOCols: POCols = { item: true, category: false, supplier: false, qty: true, status: true, createdBy: false, date: false };
-const PO_COL_LABELS: [keyof POCols, string][] = [
-  ["item", "Item"],
-  ["category", "Category"],
-  ["supplier", "Supplier"],
-  ["qty", "Qty"],
-  ["status", "Status"],
-  ["createdBy", "Created By"],
-  ["date", "Date"],
-];
+// Column visibility removed — all key info shown on cards
 
 type ConsumableOption = {
   id: string;
@@ -99,72 +82,27 @@ function mapStatusToTab(status?: string): string {
 
 export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion }: Props) {
   const { addToast } = useToast();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<string>(mapStatusToTab(initialStatus));
   const [search, setSearch] = useState("");
-  const [regionFilter, setRegionFilter] = useState("ALL");
-  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
-    if (!initialRegion) return new Set();
-    // Collapse all regions except the one linked from dashboard
-    return new Set(regions.filter((r) => r.id !== initialRegion).map((r) => r.id));
-  });
   const [loading, setLoading] = useState<string | null>(null);
   const [viewOrder, setViewOrder] = useState<PurchaseOrder | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkLoading, setBulkLoading] = useState(false);
 
-  // Column visibility
-  const [visibleColumns, setVisibleColumns] = useState<POCols>(() => {
-    if (typeof window === "undefined") return defaultPOCols;
-    try {
-      const saved = localStorage.getItem(PO_COLS_KEY);
-      if (saved) return { ...defaultPOCols, ...JSON.parse(saved) };
-    } catch {}
-    return defaultPOCols;
-  });
-  const [showColumnMenu, setShowColumnMenu] = useState(false);
-  const columnMenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!showColumnMenu) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (columnMenuRef.current && !columnMenuRef.current.contains(e.target as Node)) {
-        setShowColumnMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showColumnMenu]);
-
-  const toggleColumn = (col: keyof POCols) => {
-    setVisibleColumns((prev) => {
-      const next = { ...prev, [col]: !prev[col] };
-      try { localStorage.setItem(PO_COLS_KEY, JSON.stringify(next)); } catch {}
-      return next;
-    });
-  };
-
-  const visibleCount = Object.values(visibleColumns).filter(Boolean).length + 1; // +1 for actions
-
-  const toggleSection = (key: string) => {
-    setCollapsedSections((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
-
-  // Filter by tab + search + region, then sort by priority (most urgent first)
+  // Filter by tab + search, sort by priority
   const filtered = purchaseOrders.filter((po) => {
     if (activeTab !== "All" && po.status !== activeTab.toUpperCase()) return false;
-    if (regionFilter !== "ALL" && po.region.id !== regionFilter) return false;
     if (search) {
       const q = search.toLowerCase();
       return (
         po.consumable.name.toLowerCase().includes(q) ||
         po.consumable.category.toLowerCase().includes(q) ||
-        (po.supplier || "").toLowerCase().includes(q)
+        (po.supplier || "").toLowerCase().includes(q) ||
+        po.region.name.toLowerCase().includes(q)
       );
     }
     return true;
@@ -172,9 +110,41 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     const pa = STATUS_PRIORITY[a.status] ?? 99;
     const pb = STATUS_PRIORITY[b.status] ?? 99;
     if (pa !== pb) return pa - pb;
-    // Within same status, newest first
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
+
+  const toggleSelect = (id: string) => {
+    setSelected((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const toggleSelectAll = () => {
+    if (selected.size === filtered.length) setSelected(new Set());
+    else setSelected(new Set(filtered.map((po) => po.id)));
+  };
+
+  // Bulk action helpers
+  const selectedPOs = filtered.filter((po) => selected.has(po.id));
+  const pendingSelected = selectedPOs.filter((po) => po.status === "PENDING").length;
+  const approvedSelected = selectedPOs.filter((po) => po.status === "APPROVED").length;
+  const orderedSelected = selectedPOs.filter((po) => po.status === "ORDERED").length;
+
+  const handleBulkAction = async (newStatus: string) => {
+    setBulkLoading(true);
+    try {
+      const ids = selectedPOs.filter((po) => {
+        if (newStatus === "APPROVED") return po.status === "PENDING";
+        if (newStatus === "ORDERED") return po.status === "APPROVED";
+        if (newStatus === "RECEIVED") return po.status === "ORDERED";
+        if (newStatus === "REJECTED") return po.status === "PENDING";
+        return false;
+      }).map((po) => po.id);
+      if (ids.length === 0) return;
+      const result = await batchUpdatePOStatus(ids, newStatus);
+      addToast(`${result.updated} order${result.updated > 1 ? "s" : ""} updated`, "success");
+      setSelected(new Set());
+      router.refresh();
+    } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+    setBulkLoading(false);
+  };
 
   const pendingCount = purchaseOrders.filter((po) => po.status === "PENDING").length;
   const tabCounts: Record<string, number> = {
@@ -212,140 +182,24 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     }
   };
 
-  const renderActionButtons = (po: PurchaseOrder) => {
+  const renderNextAction = (po: PurchaseOrder) => {
     if (!canManagePO) return null;
-    return (
+    if (po.status === "PENDING" && canApprovePO) return (
       <div className="flex gap-1.5">
-        {po.status === "PENDING" && canApprovePO && (
-          <>
-            <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "approve"); }} disabled={loading === po.id + "approve"}>
-              {loading === po.id + "approve" ? "..." : "Approve"}
-            </Button>
-            <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "reject"); }} disabled={loading === po.id + "reject"}>
-              {loading === po.id + "reject" ? "..." : "Reject"}
-            </Button>
-          </>
-        )}
-        {po.status === "APPROVED" && canApprovePO && (
-          <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "ordered"); }} disabled={loading === po.id + "ordered"}>
-            {loading === po.id + "ordered" ? "..." : "Ordered"}
-          </Button>
-        )}
-        {po.status === "ORDERED" && canManagePO && (
-          <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "received"); }} disabled={loading === po.id + "received"}>
-            {loading === po.id + "received" ? "..." : "Received"}
-          </Button>
-        )}
+        <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "approve"); }} disabled={loading === po.id + "approve"} loading={loading === po.id + "approve"}>Approve</Button>
+        <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-600 hover:bg-red-50" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "reject"); }} disabled={loading === po.id + "reject"}>Reject</Button>
       </div>
     );
+    if (po.status === "APPROVED" && canApprovePO) return (
+      <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "ordered"); }} disabled={loading === po.id + "ordered"} loading={loading === po.id + "ordered"}>Mark Ordered</Button>
+    );
+    if (po.status === "ORDERED") return (
+      <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "received"); }} disabled={loading === po.id + "received"} loading={loading === po.id + "received"}>Mark Received</Button>
+    );
+    return null;
   };
 
-  const renderTable = (orders: PurchaseOrder[]) => (
-    <>
-      {/* Mobile: card layout */}
-      <div className="sm:hidden space-y-2">
-        {orders.length === 0 ? (
-          <p className="text-center text-shark-400 py-8">No purchase orders found.</p>
-        ) : (
-          orders.map((po) => (
-            <div
-              key={po.id}
-              onClick={() => setViewOrder(po)}
-              className="border border-shark-100 rounded-xl p-4 bg-white hover:shadow-sm transition-shadow cursor-pointer"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-shark-800 truncate">{po.consumable.name}</p>
-                  <p className="text-xs text-shark-400 mt-0.5">{po.consumable.category} · Qty: {po.quantity}</p>
-                  {po.supplier && <p className="text-xs text-shark-400">Supplier: {po.supplier}</p>}
-                </div>
-                <Badge status={po.status} />
-              </div>
-              {renderActionButtons(po) && (
-                <div className="mt-3 pt-3 border-t border-shark-50 flex justify-end">
-                  {renderActionButtons(po)}
-                </div>
-              )}
-            </div>
-          ))
-        )}
-      </div>
-
-      {/* Desktop: table layout */}
-      <div className="hidden sm:block overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-shark-100 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
-              {visibleColumns.item && <th className="px-5 py-3">Item</th>}
-              {visibleColumns.category && <th className="px-5 py-3">Category</th>}
-              {visibleColumns.supplier && <th className="px-5 py-3">Supplier</th>}
-              {visibleColumns.qty && <th className="px-5 py-3">Qty</th>}
-              {visibleColumns.status && <th className="px-5 py-3">Status</th>}
-              {visibleColumns.createdBy && <th className="px-5 py-3">Created By</th>}
-              {visibleColumns.date && <th className="px-5 py-3">Date</th>}
-              <th className="px-5 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-shark-50">
-            {orders.length === 0 ? (
-              <tr>
-                <td colSpan={visibleCount} className="px-5 py-8 text-center text-shark-400">
-                  No purchase orders found.
-                </td>
-              </tr>
-            ) : (
-              orders.map((po) => (
-                <tr key={po.id} onClick={() => setViewOrder(po)} className="hover:bg-shark-25 transition-colors cursor-pointer">
-                  {visibleColumns.item && (
-                    <td className="px-5 py-3.5 font-medium text-shark-800">
-                      {po.consumable.name}
-                      <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
-                    </td>
-                  )}
-                  {visibleColumns.category && <td className="px-5 py-3.5 text-shark-500">{po.consumable.category}</td>}
-                  {visibleColumns.supplier && <td className="px-5 py-3.5 text-shark-500">{po.supplier || "—"}</td>}
-                  {visibleColumns.qty && <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity}</td>}
-                  {visibleColumns.status && <td className="px-5 py-3.5"><Badge status={po.status} /></td>}
-                  {visibleColumns.createdBy && (
-                    <td className="px-5 py-3.5 text-shark-500">
-                      {po.createdBy ? (po.createdBy.name || po.createdBy.email) : (
-                        <span className="inline-flex items-center gap-1 text-action-600 font-medium">
-                          <Icon name="star" size={14} />
-                          AI
-                        </span>
-                      )}
-                    </td>
-                  )}
-                  {visibleColumns.date && <td className="px-5 py-3.5 text-shark-400">{formatDate(po.createdAt)}</td>}
-                  <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
-                    {renderActionButtons(po) || <span className="text-xs text-shark-400">View only</span>}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </>
-  );
-
-  // Group by region for super admin
-  const regionGroups = isSuperAdmin
-    ? regions.map((region) => ({
-        region,
-        orders: filtered.filter((po) => po.regionId === region.id),
-      }))
-      .sort((a, b) => {
-        // Count pending (most urgent) orders per region
-        const aPending = a.orders.filter((o) => o.status === "PENDING").length;
-        const bPending = b.orders.filter((o) => o.status === "PENDING").length;
-        if (bPending !== aPending) return bPending - aPending;
-        // Then by total outstanding (non-received/rejected)
-        const aOutstanding = a.orders.filter((o) => o.status !== "RECEIVED" && o.status !== "REJECTED").length;
-        const bOutstanding = b.orders.filter((o) => o.status !== "RECEIVED" && o.status !== "REJECTED").length;
-        return bOutstanding - aOutstanding;
-      })
-    : [];
+  // No renderTable or regionGroups — using flat list below
 
   return (
     <div className="space-y-6">
@@ -366,15 +220,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         )}
       </div>
 
-      {/* Mobile: compact status dropdown + search in one row */}
-      {/* Desktop: full tab bar */}
+      {/* Controls: status tabs + search */}
       <div className="space-y-3">
-        {/* Row 1: Status + Search */}
         <div className="flex items-center gap-2">
-          {/* Mobile: dropdown for status */}
           <Select
             value={activeTab}
-            onChange={(e) => setActiveTab(e.target.value as typeof activeTab)}
+            onChange={(e) => { setActiveTab(e.target.value as typeof activeTab); setSelected(new Set()); }}
             className="sm:hidden w-auto min-w-[120px] shrink-0"
           >
             {TABS.map((tab) => (
@@ -384,62 +235,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             ))}
           </Select>
           <Input
-            placeholder="Search..."
+            placeholder="Search items, regions..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1"
           />
-          {isSuperAdmin && regions.length > 1 && (
-            <Select
-              value={regionFilter}
-              onChange={(e) => setRegionFilter(e.target.value)}
-              className="w-auto min-w-[100px] sm:min-w-[160px] shrink-0 hidden sm:block"
-            >
-              <option value="ALL">All regions</option>
-              {regions.map((r) => (
-                <option key={r.id} value={r.id}>{r.name}</option>
-              ))}
-            </Select>
-          )}
-          <div className="relative shrink-0" ref={columnMenuRef}>
-            <button
-              onClick={() => setShowColumnMenu(!showColumnMenu)}
-              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-shark-200 text-shark-500 hover:bg-shark-50 transition-colors"
-              title="Columns"
-            >
-              <Icon name="settings" size={16} />
-            </button>
-            {showColumnMenu && (
-              <div className="absolute right-0 top-full mt-1 bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
-                {PO_COL_LABELS.map(([key, label]) => (
-                  <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 dark:hover:bg-shark-800 cursor-pointer text-sm text-shark-700 dark:text-shark-300">
-                    <input
-                      type="checkbox"
-                      checked={visibleColumns[key]}
-                      onChange={() => toggleColumn(key)}
-                      className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                    />
-                    {label}
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
-
-        {/* Mobile: region filter (below search if super admin) */}
-        {isSuperAdmin && regions.length > 1 && (
-          <Select
-            value={regionFilter}
-            onChange={(e) => setRegionFilter(e.target.value)}
-            className="sm:hidden"
-          >
-            <option value="ALL">All regions</option>
-            {regions.map((r) => (
-              <option key={r.id} value={r.id}>{r.name}</option>
-            ))}
-          </Select>
-        )}
 
         {/* Desktop: full tab bar */}
         <div className="hidden sm:flex gap-1 bg-shark-50 p-1 rounded-lg w-fit">
@@ -475,48 +276,80 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         </div>
       )}
 
-      {/* Content */}
-      {isSuperAdmin ? (
-        // Region-grouped view
-        <div className="space-y-4">
-          {regionGroups.map(({ region, orders }, idx) => {
-            const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
-            const isCollapsed = collapsedSections.has(region.id);
-
-            return (
-              <Card key={region.id} className="overflow-hidden">
-                <button
-                  onClick={() => toggleSection(region.id)}
-                  className="w-full flex items-center justify-between px-5 py-3 hover:bg-shark-25 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center`}>
-                      <Icon name="map-pin" size={14} className={colors.color} />
-                    </div>
-                    <div className="text-left">
-                      <span className="font-semibold text-shark-900">{region.name}</span>
-                      <span className="ml-2 text-xs text-shark-400">{region.state.name}</span>
-                    </div>
-                    <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-shark-100 text-shark-600 rounded-full">
-                      {orders.length}
-                    </span>
-                  </div>
-                  <Icon
-                    name="chevron-down"
-                    size={16}
-                    className={`text-shark-400 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
-                  />
-                </button>
-                {!isCollapsed && renderTable(orders)}
-              </Card>
-            );
-          })}
+      {/* Bulk Action Bar */}
+      {selected.size > 0 && (
+        <div className="sticky top-14 z-20 bg-action-500 text-white rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">{selected.size} selected</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {pendingSelected > 0 && canApprovePO && (
+              <>
+                <Button size="sm" variant="secondary" onClick={() => handleBulkAction("APPROVED")} disabled={bulkLoading} loading={bulkLoading}>
+                  Approve ({pendingSelected})
+                </Button>
+                <Button size="sm" variant="ghost" className="text-white hover:bg-white/20" onClick={() => handleBulkAction("REJECTED")} disabled={bulkLoading}>
+                  Reject ({pendingSelected})
+                </Button>
+              </>
+            )}
+            {approvedSelected > 0 && (
+              <Button size="sm" variant="secondary" onClick={() => handleBulkAction("ORDERED")} disabled={bulkLoading} loading={bulkLoading}>
+                Mark Ordered ({approvedSelected})
+              </Button>
+            )}
+            {orderedSelected > 0 && (
+              <Button size="sm" variant="secondary" onClick={() => handleBulkAction("RECEIVED")} disabled={bulkLoading} loading={bulkLoading}>
+                Mark Received ({orderedSelected})
+              </Button>
+            )}
+            <button onClick={() => setSelected(new Set())} className="text-white/80 hover:text-white p-1 ml-1">
+              <Icon name="x" size={16} />
+            </button>
+          </div>
         </div>
-      ) : (
-        // Single region view
-        <Card className="overflow-hidden">
-          {renderTable(filtered)}
+      )}
+
+      {/* Flat PO List */}
+      {filtered.length === 0 ? (
+        <Card>
+          <div className="py-12 text-center">
+            <Icon name="truck" size={40} className="text-shark-200 mx-auto mb-3" />
+            <p className="text-shark-500">No purchase orders found</p>
+          </div>
         </Card>
+      ) : (
+        <div className="space-y-2">
+          {filtered.map((po) => (
+            <Card key={po.id} className={`transition-all ${selected.has(po.id) ? "ring-2 ring-action-400 bg-action-50/20" : "hover:shadow-sm"}`}>
+              <div className="px-4 py-3 flex items-center gap-3">
+                {canManagePO && (
+                  <input
+                    type="checkbox"
+                    checked={selected.has(po.id)}
+                    onChange={() => toggleSelect(po.id)}
+                    className="w-4 h-4 rounded border-shark-300 text-action-500 focus:ring-action-400 shrink-0"
+                  />
+                )}
+                <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setViewOrder(po)}>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-sm font-semibold text-shark-800">{po.consumable.name}</p>
+                    <span className="text-xs text-shark-500 font-medium">× {po.quantity}</span>
+                    <Badge status={po.status} />
+                  </div>
+                  <div className="flex items-center gap-2 mt-1 text-xs text-shark-400 flex-wrap">
+                    <span className="bg-shark-100 px-1.5 py-0.5 rounded text-shark-500">{po.region.name}</span>
+                    {po.supplier && <span>· {po.supplier}</span>}
+                    <span>· {formatDate(po.createdAt)}</span>
+                  </div>
+                </div>
+                <div className="shrink-0">
+                  {renderNextAction(po)}
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       )}
       {/* Order Detail / Edit Modal */}
       {viewOrder && (
