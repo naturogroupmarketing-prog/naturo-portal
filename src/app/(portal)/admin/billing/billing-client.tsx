@@ -93,17 +93,21 @@ export function BillingClient({ org }: Props) {
           <div className="grid grid-cols-2 gap-4 mt-5">
             <div className="bg-shark-50 rounded-xl px-4 py-3">
               <p className="text-xs text-shark-400">Users</p>
-              <p className="text-lg font-bold text-shark-900">{org._count.users} <span className="text-sm font-normal text-shark-400">/ {org.maxUsers}</span></p>
-              <div className="w-full h-1.5 bg-shark-200 rounded-full mt-2 overflow-hidden">
-                <div className="h-full bg-action-500 rounded-full" style={{ width: `${Math.min(100, (org._count.users / org.maxUsers) * 100)}%` }} />
-              </div>
+              <p className="text-lg font-bold text-shark-900">{org._count.users} <span className="text-sm font-normal text-shark-400">/ {currentPlan.users === Infinity ? "Unlimited" : currentPlan.users}</span></p>
+              {currentPlan.users !== Infinity && (
+                <div className="w-full h-1.5 bg-shark-200 rounded-full mt-2 overflow-hidden">
+                  <div className="h-full bg-action-500 rounded-full" style={{ width: `${Math.min(100, (org._count.users / currentPlan.users) * 100)}%` }} />
+                </div>
+              )}
             </div>
             <div className="bg-shark-50 rounded-xl px-4 py-3">
               <p className="text-xs text-shark-400">Assets</p>
-              <p className="text-lg font-bold text-shark-900">{org._count.assets} <span className="text-sm font-normal text-shark-400">/ {org.maxAssets}</span></p>
-              <div className="w-full h-1.5 bg-shark-200 rounded-full mt-2 overflow-hidden">
-                <div className="h-full bg-action-500 rounded-full" style={{ width: `${Math.min(100, (org._count.assets / org.maxAssets) * 100)}%` }} />
-              </div>
+              <p className="text-lg font-bold text-shark-900">{org._count.assets} <span className="text-sm font-normal text-shark-400">/ {currentPlan.assets === Infinity ? "Unlimited" : currentPlan.assets}</span></p>
+              {currentPlan.assets !== Infinity && (
+                <div className="w-full h-1.5 bg-shark-200 rounded-full mt-2 overflow-hidden">
+                  <div className="h-full bg-action-500 rounded-full" style={{ width: `${Math.min(100, (org._count.assets / currentPlan.assets) * 100)}%` }} />
+                </div>
+              )}
             </div>
           </div>
         </div>
