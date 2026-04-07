@@ -161,115 +161,69 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                     state.regions.map((region) => {
                       const isEmpty = region._count.assets === 0 && region._count.consumables === 0;
                       return (
-                        <Card key={region.id} className="hover:shadow-md hover:border-action-200 transition-all">
+                        <Link key={region.id} href={`/inventory/${region.id}`} className="block">
+                        <Card className="hover:shadow-md hover:border-action-200 transition-all cursor-pointer">
                           <div className="px-4 py-3.5">
-                            <div className="flex flex-wrap items-center justify-between gap-2">
-                              {/* Left — clickable name */}
-                              <Link href={`/inventory/${region.id}`} className="flex-1 min-w-0">
-                                <h3 className="text-sm font-semibold text-shark-800 hover:text-action-500 transition-colors">{region.name}</h3>
+                            <div className="flex items-center justify-between gap-3">
+                              {/* Left — name + counts */}
+                              <div className="flex-1 min-w-0">
+                                <h3 className="text-sm font-semibold text-shark-800">{region.name}</h3>
+                                <p className="text-xs text-shark-400 mt-0.5">
+                                  {region._count.assets} assets · {region._count.consumables} consumables · {region._count.users} staff
+                                </p>
                                 {region.address && (
                                   <p className="hidden lg:flex text-xs text-shark-400 mt-0.5 items-center gap-1">
                                     <Icon name="map-pin" size={10} className="text-shark-300" />
                                     {region.address}
                                   </p>
                                 )}
-                              </Link>
+                              </div>
 
-                              {/* Center — counts + alerts */}
-                              <div className="flex flex-wrap items-center gap-2 text-xs">
-                                <span className="flex items-center gap-1 text-shark-500">
-                                  <Icon name="package" size={12} className="text-action-400" />
-                                  {region._count.assets}
-                                </span>
-                                <span className="flex items-center gap-1 text-shark-500">
-                                  <Icon name="droplet" size={12} className="text-action-400" />
-                                  {region._count.consumables}
-                                </span>
-                                <span className="flex items-center gap-1 text-shark-500">
-                                  <Icon name="users" size={12} className="text-action-400" />
-                                  {region._count.users}
-                                </span>
-                                {/* Alert badges — larger, clickable */}
+                              {/* Right — alert badges + edit icon */}
+                              <div className="flex items-center gap-1.5 shrink-0">
                                 {(() => {
                                   const alerts = regionAlerts[region.id];
                                   if (!alerts) return null;
-                                  const hasAlerts = alerts.unresolvedDamage > 0 || alerts.lost > 0 || alerts.lowStock > 0;
-                                  if (!hasAlerts) return null;
                                   return (
-                                    <div className="flex flex-wrap items-center gap-1.5">
+                                    <>
                                       {alerts.unresolvedDamage > 0 && (
-                                        <Link
-                                          href={`/alerts/damage?region=${region.id}`}
-                                          onClick={(e) => e.stopPropagation()}
+                                        <span
+                                          onClick={(e) => { e.preventDefault(); window.location.href = `/alerts/damage?region=${region.id}`; }}
                                           className="flex items-center gap-1 text-[#E8532E] bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded-lg font-semibold text-xs transition-colors"
-                                          title={`${alerts.unresolvedDamage} unresolved damage — click to view`}
+                                          title={`${alerts.unresolvedDamage} unresolved damage`}
                                         >
                                           <Icon name="alert-triangle" size={12} />
                                           {alerts.unresolvedDamage}
-                                        </Link>
-                                      )}
-                                      {alerts.lost > 0 && (
-                                        <Link
-                                          href={`/alerts/lost?region=${region.id}`}
-                                          onClick={(e) => e.stopPropagation()}
-                                          className="flex items-center gap-1 text-shark-600 bg-shark-100 hover:bg-shark-200 px-2 py-0.5 rounded-lg font-semibold text-xs transition-colors"
-                                          title={`${alerts.lost} lost items — click to view`}
-                                        >
-                                          <Icon name="shield" size={12} />
-                                          {alerts.lost}
-                                        </Link>
+                                        </span>
                                       )}
                                       {alerts.lowStock > 0 && (
-                                        <Link
-                                          href={`/alerts/low-stock?region=${region.id}`}
-                                          onClick={(e) => e.stopPropagation()}
+                                        <span
+                                          onClick={(e) => { e.preventDefault(); window.location.href = `/alerts/low-stock?region=${region.id}`; }}
                                           className="flex items-center gap-1 text-[#E8532E] bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded-lg font-semibold text-xs transition-colors"
-                                          title={`${alerts.lowStock} low stock — click to view`}
+                                          title={`${alerts.lowStock} low stock`}
                                         >
                                           <Icon name="alert-triangle" size={12} />
                                           {alerts.lowStock}
-                                        </Link>
+                                        </span>
                                       )}
-                                    </div>
+                                    </>
                                   );
                                 })()}
-                              </div>
-
-                              {/* Right — quick action icons */}
-                              <div className="flex items-center gap-1">
-                                <Link
-                                  href={`/inventory/${region.id}?action=addAsset`}
-                                  className="p-1.5 rounded-lg text-shark-300 hover:text-action-500 hover:bg-action-50 transition-colors"
-                                  title="Add Asset"
-                                >
-                                  <Icon name="package" size={14} />
-                                </Link>
-                                <Link
-                                  href={`/inventory/${region.id}?action=addConsumable`}
-                                  className="p-1.5 rounded-lg text-shark-300 hover:text-action-500 hover:bg-action-50 transition-colors"
-                                  title="Add Consumable"
-                                >
-                                  <Icon name="droplet" size={14} />
-                                </Link>
                                 {isSuperAdmin && (
                                   <button
-                                    onClick={() => setEditLocationRegion(region)}
+                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditLocationRegion(region); }}
                                     className="p-1.5 rounded-lg text-shark-300 hover:text-action-500 hover:bg-action-50 transition-colors"
                                     title="Edit Location"
                                   >
                                     <Icon name="edit" size={14} />
                                   </button>
                                 )}
-                                <Link
-                                  href={`/inventory/${region.id}`}
-                                  className="p-1.5 rounded-lg text-shark-300 hover:text-action-500 transition-colors"
-                                >
-                                  <Icon name="arrow-right" size={14} />
-                                </Link>
+                                <Icon name="arrow-right" size={14} className="text-shark-300" />
                               </div>
                             </div>
                           </div>
                         </Card>
+                        </Link>
                       );
                     })
                   )}
