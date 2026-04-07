@@ -173,6 +173,14 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   });
 
   const pendingCount = purchaseOrders.filter((po) => po.status === "PENDING").length;
+  const tabCounts: Record<string, number> = {
+    Pending: pendingCount,
+    Approved: purchaseOrders.filter((po) => po.status === "APPROVED").length,
+    Ordered: purchaseOrders.filter((po) => po.status === "ORDERED").length,
+    Rejected: purchaseOrders.filter((po) => po.status === "REJECTED").length,
+    Received: purchaseOrders.filter((po) => po.status === "RECEIVED").length,
+    All: purchaseOrders.length,
+  };
 
   const handleAction = async (purchaseOrderId: string, action: string) => {
     setLoading(purchaseOrderId + action);
@@ -367,7 +375,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           >
             {TABS.map((tab) => (
               <option key={tab} value={tab}>
-                {tab}{tab === "Pending" && pendingCount > 0 ? ` (${pendingCount})` : ""}
+                {tab}{tabCounts[tab] > 0 ? ` (${tabCounts[tab]})` : ""}
               </option>
             ))}
           </Select>
@@ -442,9 +450,11 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               }`}
             >
               {tab}
-              {tab === "Pending" && pendingCount > 0 && (
-                <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-[#E8532E] rounded-full">
-                  {pendingCount}
+              {tabCounts[tab] > 0 && (
+                <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
+                  tab === "Pending" ? "text-white bg-[#E8532E]" : "text-shark-500 bg-shark-200"
+                }`}>
+                  {tabCounts[tab]}
                 </span>
               )}
             </button>
