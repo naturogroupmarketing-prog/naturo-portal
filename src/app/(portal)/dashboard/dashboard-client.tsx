@@ -165,7 +165,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         switch (sectionId) {
           case "stats":
             return visibleStats.length > 0 ? (
-              <StaggerContainer key="stats" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <StaggerContainer key="stats" className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
@@ -769,7 +769,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           </CardHeader>
           <CardContent>
             {/* Google Maps embed — no API key needed */}
-            <div className="h-[350px] rounded-xl overflow-hidden border border-shark-100">
+            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-xl overflow-hidden border border-shark-100">
               <iframe
                 width="100%"
                 height="100%"

@@ -3,6 +3,7 @@ import { Inter, Exo } from "next/font/google";
 import { PWARegister } from "@/components/pwa-register";
 import { ToastProvider } from "@/components/ui/toast";
 import { CookieConsent } from "@/components/privacy/cookie-consent";
+import { OfflineIndicator } from "@/components/ui/offline-indicator";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body className={`${inter.className} ${exo.variable} antialiased`}>
         <ToastProvider>
           <PWARegister />
+          <OfflineIndicator />
           {children}
           <CookieConsent />
           <Analytics />

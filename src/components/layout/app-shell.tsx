@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
+import { BottomNav } from "./bottom-nav";
 import { Role } from "@/generated/prisma/browser";
 
 interface AppShellProps {
@@ -17,8 +18,33 @@ interface AppShellProps {
 export function AppShell({ children, role, userName, userImage, pendingPOCount = 0, pendingReturnsCount = 0 }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Swipe-to-close sidebar
+  const touchStartX = useRef(0);
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (delta < -60) setSidebarOpen(false); // Swipe left to close
+  }, []);
+
+  // Swipe from left edge to open sidebar
+  const mainTouchStartX = useRef(0);
+  const handleMainTouchStart = useCallback((e: React.TouchEvent) => {
+    mainTouchStartX.current = e.touches[0].clientX;
+  }, []);
+  const handleMainTouchEnd = useCallback((e: React.TouchEvent) => {
+    const startX = mainTouchStartX.current;
+    const delta = e.changedTouches[0].clientX - startX;
+    if (startX < 20 && delta > 60) setSidebarOpen(true); // Swipe right from edge to open
+  }, []);
+
   return (
-    <div className="flex h-dvh bg-shark-50 dark:bg-shark-950 transition-colors">
+    <div
+      className="flex h-dvh bg-shark-50 dark:bg-shark-950 transition-colors"
+      onTouchStart={handleMainTouchStart}
+      onTouchEnd={handleMainTouchEnd}
+    >
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:flex-shrink-0">
         <div className="flex w-64 flex-col bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 transition-colors">
@@ -33,7 +59,11 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
             className="fixed inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
-          <div className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 z-50 shadow-xl transition-colors">
+          <div
+            className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 z-50 shadow-xl transition-colors"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <Sidebar role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} onClose={() => setSidebarOpen(false)} />
           </div>
         </div>
@@ -47,9 +77,11 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
           role={role}
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
         />
-        <main className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-3 sm:p-5 lg:p-10">{children}</main>
+        <main className={`flex-1 overflow-y-auto overflow-x-hidden px-2 py-3 sm:p-5 lg:p-10 ${role === "STAFF" ? "pb-20 lg:pb-10" : ""}`}>{children}</main>
       </div>
 
+      {/* Bottom navigation for Staff on mobile/tablet */}
+      {role === "STAFF" && <BottomNav />}
     </div>
   );
 }

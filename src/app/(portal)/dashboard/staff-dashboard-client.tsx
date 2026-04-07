@@ -11,6 +11,7 @@ import { batchConfirmKitReceipt, returnStarterKit } from "@/app/actions/starter-
 import { staffReturnAsset, staffReturnConsumable } from "@/app/actions/returns";
 import { submitConditionCheck } from "@/app/actions/condition-checks";
 import { Select } from "@/components/ui/select";
+import { PullToRefresh } from "@/components/ui/pull-to-refresh";
 
 interface StatCard {
   label: string;
@@ -308,6 +309,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
   const hasEquipment = visibleKitApplications.length > 0 || visibleIndividualAssets.length > 0 || visibleIndividualConsumables.length > 0;
 
   return (
+    <PullToRefresh>
     <div className="space-y-6">
       {/* Header */}
       <div>
@@ -947,7 +949,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       })()}
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href}>
             <Card className={`border-l-4 ${stat.borderColor} hover:shadow-md transition-shadow cursor-pointer`}>
@@ -1221,5 +1223,6 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         </div>
       </div>
     </div>
+    </PullToRefresh>
   );
 }

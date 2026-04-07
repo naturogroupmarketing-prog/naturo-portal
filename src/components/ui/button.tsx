@@ -40,7 +40,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-action-400/40 focus:ring-offset-2 dark:focus:ring-offset-shark-900 disabled:opacity-50 disabled:pointer-events-none cursor-pointer",
+          "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-action-400/40 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-shark-900 disabled:opacity-50 disabled:pointer-events-none cursor-pointer active:scale-[0.98]",
           {
             "bg-action-400 text-white hover:bg-action-500 shadow-sm hover:shadow": variant === "primary",
             "bg-shark-50 dark:bg-shark-800 text-shark-700 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700 border border-shark-200 dark:border-shark-700": variant === "secondary",
