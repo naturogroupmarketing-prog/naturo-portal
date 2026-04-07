@@ -235,7 +235,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 <Badge status={po.status} />
               </div>
               {renderActionButtons(po) && (
-                <div className="mt-3 pt-3 border-t border-shark-50">
+                <div className="mt-3 pt-3 border-t border-shark-50 flex justify-end">
                   {renderActionButtons(po)}
                 </div>
               )}
