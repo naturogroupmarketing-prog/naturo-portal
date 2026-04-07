@@ -312,7 +312,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-50 p-1 rounded-lg w-fit">
+      <div className="flex gap-1 bg-shark-50 p-1 rounded-lg w-fit max-w-full overflow-x-auto">
         {TABS.map((tab) => (
           <button
             key={tab}
@@ -368,7 +368,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             Columns
           </Button>
           {showColumnMenu && (
-            <div className="absolute right-0 top-full mt-1 bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
+            <div className="absolute right-0 sm:right-0 left-0 sm:left-auto top-full mt-1 bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
               {PO_COL_LABELS.map(([key, label]) => (
                 <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 dark:hover:bg-shark-800 cursor-pointer text-sm text-shark-700 dark:text-shark-300">
                   <input

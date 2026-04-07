@@ -111,7 +111,7 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
 
           {/* Dropdown menu */}
           {dropdownOpen && (
-            <div className="absolute right-0 top-full mt-1.5 w-56 bg-white rounded-xl shadow-lg border border-shark-100 py-1.5 z-50">
+            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 bg-white rounded-xl shadow-lg border border-shark-100 py-1.5 z-50">
               {/* User info */}
               <div className="px-4 py-2.5 border-b border-shark-100">
                 <p className="text-sm font-semibold text-shark-800">{userName}</p>

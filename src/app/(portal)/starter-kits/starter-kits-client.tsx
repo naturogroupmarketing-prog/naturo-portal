@@ -102,8 +102,8 @@ export function StarterKitsClient({
           {kits.map((kit) => (
             <Card key={kit.id}>
               <div className="p-5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 cursor-pointer flex-1" onClick={() => setExpandedKit(expandedKit === kit.id ? null : kit.id)}>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onClick={() => setExpandedKit(expandedKit === kit.id ? null : kit.id)}>
                     <Icon name={expandedKit === kit.id ? "chevron-down" : "arrow-right"} size={16} className="text-shark-400" />
                     <div>
                       <div className="flex items-center gap-2">
@@ -116,7 +116,7 @@ export function StarterKitsClient({
                       <p className="text-xs text-shark-400 mt-0.5">{kit.items.length} items</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <Button size="sm" variant="outline" onClick={() => setShowApply(kit)} disabled={kit.items.length === 0}>
                       Apply to Staff
                     </Button>

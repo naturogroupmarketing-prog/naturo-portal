@@ -163,7 +163,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                       return (
                         <Card key={region.id} className="hover:shadow-md hover:border-action-200 transition-all">
                           <div className="px-4 py-3.5">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
                               {/* Left — clickable name */}
                               <Link href={`/inventory/${region.id}`} className="flex-1 min-w-0">
                                 <h3 className="text-sm font-semibold text-shark-800 hover:text-action-500 transition-colors">{region.name}</h3>
@@ -176,7 +176,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                               </Link>
 
                               {/* Center — counts + alerts */}
-                              <div className="flex items-center gap-2 text-xs mx-4">
+                              <div className="flex flex-wrap items-center gap-2 text-xs">
                                 <span className="flex items-center gap-1 text-shark-500">
                                   <Icon name="package" size={12} className="text-action-400" />
                                   {region._count.assets}
@@ -196,38 +196,38 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                   const hasAlerts = alerts.unresolvedDamage > 0 || alerts.lost > 0 || alerts.lowStock > 0;
                                   if (!hasAlerts) return null;
                                   return (
-                                    <div className="flex items-center gap-2 ml-2">
+                                    <div className="flex flex-wrap items-center gap-1.5">
                                       {alerts.unresolvedDamage > 0 && (
                                         <Link
                                           href={`/alerts/damage?region=${region.id}`}
                                           onClick={(e) => e.stopPropagation()}
-                                          className="flex items-center gap-1 text-[#E8532E] bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg font-semibold text-xs transition-colors"
+                                          className="flex items-center gap-1 text-[#E8532E] bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded-lg font-semibold text-xs transition-colors"
                                           title={`${alerts.unresolvedDamage} unresolved damage — click to view`}
                                         >
                                           <Icon name="alert-triangle" size={12} />
-                                          {alerts.unresolvedDamage} Damage
+                                          {alerts.unresolvedDamage}
                                         </Link>
                                       )}
                                       {alerts.lost > 0 && (
                                         <Link
                                           href={`/alerts/lost?region=${region.id}`}
                                           onClick={(e) => e.stopPropagation()}
-                                          className="flex items-center gap-1 text-shark-600 bg-shark-100 hover:bg-shark-200 px-2.5 py-1 rounded-lg font-semibold text-xs transition-colors"
+                                          className="flex items-center gap-1 text-shark-600 bg-shark-100 hover:bg-shark-200 px-2 py-0.5 rounded-lg font-semibold text-xs transition-colors"
                                           title={`${alerts.lost} lost items — click to view`}
                                         >
                                           <Icon name="shield" size={12} />
-                                          {alerts.lost} Lost
+                                          {alerts.lost}
                                         </Link>
                                       )}
                                       {alerts.lowStock > 0 && (
                                         <Link
                                           href={`/alerts/low-stock?region=${region.id}`}
                                           onClick={(e) => e.stopPropagation()}
-                                          className="flex items-center gap-1 text-[#E8532E] bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-lg font-semibold text-xs transition-colors"
+                                          className="flex items-center gap-1 text-[#E8532E] bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded-lg font-semibold text-xs transition-colors"
                                           title={`${alerts.lowStock} low stock — click to view`}
                                         >
                                           <Icon name="alert-triangle" size={12} />
-                                          {alerts.lowStock} Low Stock
+                                          {alerts.lowStock}
                                         </Link>
                                       )}
                                     </div>
