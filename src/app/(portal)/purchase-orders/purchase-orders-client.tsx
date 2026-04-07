@@ -162,13 +162,13 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   // Filter by tab + search + region, then sort by priority (most urgent first)
   const filtered = purchaseOrders.filter((po) => {
     if (activeTab !== "All" && po.status !== activeTab.toUpperCase()) return false;
-    if (regionFilter !== "ALL" && po.region.id !== regionFilter) return false;
     if (search) {
       const q = search.toLowerCase();
       return (
         po.consumable.name.toLowerCase().includes(q) ||
         po.consumable.category.toLowerCase().includes(q) ||
-        (po.supplier || "").toLowerCase().includes(q)
+        (po.supplier || "").toLowerCase().includes(q) ||
+        po.region.name.toLowerCase().includes(q)
       );
     }
     return true;
@@ -405,62 +405,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             ))}
           </Select>
           <Input
-            placeholder="Search..."
+            placeholder="Search items, regions..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1"
           />
-          {isSuperAdmin && regions.length > 1 && (
-            <Select
-              value={regionFilter}
-              onChange={(e) => setRegionFilter(e.target.value)}
-              className="w-auto min-w-[100px] sm:min-w-[160px] shrink-0 hidden sm:block"
-            >
-              <option value="ALL">All regions</option>
-              {regions.map((r) => (
-                <option key={r.id} value={r.id}>{r.name}</option>
-              ))}
-            </Select>
-          )}
-          <div className="relative shrink-0" ref={columnMenuRef}>
-            <button
-              onClick={() => setShowColumnMenu(!showColumnMenu)}
-              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-shark-200 text-shark-500 hover:bg-shark-50 transition-colors"
-              title="Columns"
-            >
-              <Icon name="settings" size={16} />
-            </button>
-            {showColumnMenu && (
-              <div className="absolute right-0 top-full mt-1 bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
-                {PO_COL_LABELS.map(([key, label]) => (
-                  <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 dark:hover:bg-shark-800 cursor-pointer text-sm text-shark-700 dark:text-shark-300">
-                    <input
-                      type="checkbox"
-                      checked={visibleColumns[key]}
-                      onChange={() => toggleColumn(key)}
-                      className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                    />
-                    {label}
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
-
-        {/* Mobile: region filter (below search if super admin) */}
-        {isSuperAdmin && regions.length > 1 && (
-          <Select
-            value={regionFilter}
-            onChange={(e) => setRegionFilter(e.target.value)}
-            className="sm:hidden"
-          >
-            <option value="ALL">All regions</option>
-            {regions.map((r) => (
-              <option key={r.id} value={r.id}>{r.name}</option>
-            ))}
-          </Select>
-        )}
 
         {/* Desktop: full tab bar */}
         <div className="hidden sm:flex gap-1 bg-shark-50 p-1 rounded-lg w-fit">
