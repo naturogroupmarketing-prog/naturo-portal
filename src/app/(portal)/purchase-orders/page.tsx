@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager, hasPermission } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { PurchaseOrdersClient } from "./purchase-orders-client";
+import { autoSyncLowStockPOs } from "@/lib/auto-sync-pos";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,9 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/login");
 
   const organizationId = session.user.organizationId!;
+
+  // Auto-sync: create missing POs for low-stock items
+  await autoSyncLowStockPOs(organizationId);
 
   const regionFilter = session.user.role === "BRANCH_MANAGER"
     ? { regionId: session.user.regionId!, organizationId }
