@@ -586,11 +586,12 @@ export default async function DashboardPage() {
 
   // Operations overview data
   const regionWhere = isSuperAdmin ? {} : { regionId: session.user.regionId! };
-  const [overdueReturns, incompleteInspections, totalStaffCount, recentDamageCount, ordersAwaitingApproval, ordersAwaitingReceival] = await Promise.all([
+  const [overdueReturns, incompleteInspections, totalStaffCount, unresolvedDamageReports, unresolvedLossReports, ordersAwaitingApproval, ordersAwaitingReceival] = await Promise.all([
     db.pendingReturn.count({ where: { organizationId, isVerified: false, ...regionWhere } }),
     db.inspectionSchedule.count({ where: { organizationId, isActive: true, dueDate: { lt: new Date() } } }),
     db.user.count({ where: { organizationId, isActive: true, role: "STAFF" } }),
-    db.damageReport.count({ where: { organizationId, isResolved: false } }),
+    db.damageReport.count({ where: { organizationId, isResolved: false, type: "DAMAGE" } }),
+    db.damageReport.count({ where: { organizationId, isResolved: false, type: "LOSS" } }),
     db.purchaseOrder.count({ where: { organizationId, status: "PENDING", ...regionWhere } }),
     db.purchaseOrder.count({ where: { organizationId, status: "ORDERED", ...regionWhere } }),
   ]);
@@ -599,7 +600,7 @@ export default async function DashboardPage() {
   let healthScore = 100;
   healthScore -= Math.min(30, (lowStockItems as unknown[]).length * 5); // -5 per low stock item, max -30
   healthScore -= Math.min(20, overdueReturns * 4); // -4 per overdue return, max -20
-  healthScore -= Math.min(15, recentDamageCount * 5); // -5 per unresolved damage, max -15
+  healthScore -= Math.min(15, (unresolvedDamageReports + unresolvedLossReports) * 5); // -5 per unresolved report, max -15
   healthScore -= Math.min(15, incompleteInspections * 5); // -5 per overdue inspection, max -15
   healthScore -= Math.min(10, overdue * 2); // -2 per overdue checkout, max -10
   healthScore -= Math.min(10, (pendingRequests as number) * 2); // -2 per pending request, max -10
@@ -611,8 +612,8 @@ export default async function DashboardPage() {
     ordersAwaitingReceival,
     overdueReturns,
     incompleteInspections,
-    unresolvedDamage: recentDamageCount,
-    lostItems: lost,
+    unresolvedDamage: unresolvedDamageReports,
+    lostItems: unresolvedLossReports,
     totalStaff: totalStaffCount,
     pendingRequests: pendingRequests as number,
     lowStockCount: (lowStockItems as unknown[]).length,
@@ -624,7 +625,7 @@ export default async function DashboardPage() {
     { widgetId: "stat-total-assets", label: "Total Assets", value: totalAssets, icon: "package", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
     { widgetId: "stat-checked-out", label: "Checked Out", value: checkedOut, icon: "arrow-right", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
     { widgetId: "stat-overdue", label: "Overdue", value: overdue, icon: "clock", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/assets" },
-    { widgetId: "stat-damaged", label: "Damage", value: recentDamageCount, icon: "alert-triangle", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/alerts/damage" },
+    { widgetId: "stat-damaged", label: "Damage", value: unresolvedDamageReports + unresolvedLossReports, icon: "alert-triangle", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/alerts/damage" },
     { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables" },
     { widgetId: "stat-pending-pos", label: "POs", value: pendingPOs, icon: "truck", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/purchase-orders" },
     { widgetId: "stat-pending-returns", label: "Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/returns" },
