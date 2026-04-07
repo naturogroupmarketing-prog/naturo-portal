@@ -101,7 +101,7 @@ export async function updatePurchaseOrder(formData: FormData) {
     throw new Error("You don't have permission to adjust purchase order quantities");
   }
 
-  const validStatuses = ["PENDING", "APPROVED", "ORDERED", "REJECTED"];
+  const validStatuses = ["PENDING", "APPROVED", "ORDERED", "RECEIVED", "REJECTED"];
   if (!validStatuses.includes(status)) {
     throw new Error("Invalid status");
   }

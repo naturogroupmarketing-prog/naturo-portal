@@ -570,8 +570,10 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                     <option value="PENDING">Pending</option>
                     <option value="APPROVED">Approved</option>
                     <option value="ORDERED">Ordered</option>
+                    <option value="RECEIVED">Received</option>
                     <option value="REJECTED">Rejected</option>
                   </Select>
+                  <p className="text-xs text-shark-400 mt-1">Change status to correct mistakes</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-shark-700 mb-1">Quantity</label>
