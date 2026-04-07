@@ -182,21 +182,40 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
       <hr className="my-5 border-shark-100" />
 
       {/* Widget Visibility */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         <h3 className="text-xs font-semibold text-shark-400 uppercase tracking-wider">Widget Visibility</h3>
-        {(Object.entries(WIDGET_LABELS) as [WidgetId, string][]).map(([id, label]) => {
-          const isVisible = !preferences.hiddenWidgets.includes(id);
-          return (
-            <div key={id} className="flex items-center justify-between py-1.5">
-              <span className="text-sm text-shark-700">{label}</span>
-              <Toggle
-                checked={isVisible}
-                onChange={() => handleToggle(id, isVisible)}
-                disabled={isPending}
-              />
-            </div>
-          );
-        })}
+
+        {/* Stat Cards */}
+        <div>
+          <p className="text-xs font-medium text-shark-500 mb-2">Stat Cards</p>
+          <div className="space-y-1">
+            {(["stat-total-assets", "stat-checked-out", "stat-overdue", "stat-damaged", "stat-lost", "stat-pending-requests", "stat-pending-pos"] as WidgetId[]).map((id) => {
+              const isVisible = !preferences.hiddenWidgets.includes(id);
+              return (
+                <div key={id} className="flex items-center justify-between py-1.5">
+                  <span className="text-sm text-shark-700">{WIDGET_LABELS[id]}</span>
+                  <Toggle checked={isVisible} onChange={() => handleToggle(id, isVisible)} disabled={isPending} />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Sections */}
+        <div>
+          <p className="text-xs font-medium text-shark-500 mb-2">Sections</p>
+          <div className="space-y-1">
+            {(["operations-overview", "portfolio-valuation", "maintenance-due", "asset-charts", "consumable-charts", "low-stock-alerts", "regional-breakdown", "location-map", "quick-links"] as WidgetId[]).map((id) => {
+              const isVisible = !preferences.hiddenWidgets.includes(id);
+              return (
+                <div key={id} className="flex items-center justify-between py-1.5">
+                  <span className="text-sm text-shark-700">{WIDGET_LABELS[id]}</span>
+                  <Toggle checked={isVisible} onChange={() => handleToggle(id, isVisible)} disabled={isPending} />
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       <hr className="my-5 border-shark-100" />

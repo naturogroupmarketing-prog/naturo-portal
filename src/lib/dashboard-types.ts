@@ -40,6 +40,12 @@ export const WIDGET_IDS = {
   LOW_STOCK_ALERTS: "low-stock-alerts",
   QUICK_LINKS: "quick-links",
   PORTFOLIO_VALUATION: "portfolio-valuation",
+  OPERATIONS_OVERVIEW: "operations-overview",
+  MAINTENANCE_DUE: "maintenance-due",
+  ASSET_CHARTS: "asset-charts",
+  CONSUMABLE_CHARTS: "consumable-charts",
+  REGIONAL_BREAKDOWN: "regional-breakdown",
+  LOCATION_MAP: "location-map",
 } as const;
 
 export type WidgetId = (typeof WIDGET_IDS)[keyof typeof WIDGET_IDS];
@@ -55,6 +61,12 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   "low-stock-alerts": "Low Stock Alerts",
   "quick-links": "Quick Links",
   "portfolio-valuation": "Portfolio Valuation",
+  "operations-overview": "Operations Overview",
+  "maintenance-due": "Maintenance Due",
+  "asset-charts": "Asset Charts",
+  "consumable-charts": "Consumable Charts",
+  "regional-breakdown": "Regional Breakdown",
+  "location-map": "Location Map",
 };
 
 export const DEFAULT_PREFERENCES: DashboardPreferences = {

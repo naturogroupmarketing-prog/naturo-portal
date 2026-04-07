@@ -121,10 +121,17 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
     setShowOnboarding(false);
   };
 
-  const visibleStats = stats.filter((s) => !preferences.hiddenWidgets.includes(s.widgetId));
-  const showLowStock = !preferences.hiddenWidgets.includes("low-stock-alerts");
-  const showQuickLinks = !preferences.hiddenWidgets.includes("quick-links");
-  const showPortfolio = !preferences.hiddenWidgets.includes("portfolio-valuation");
+  const h = preferences.hiddenWidgets;
+  const visibleStats = stats.filter((s) => !h.includes(s.widgetId));
+  const showLowStock = !h.includes("low-stock-alerts");
+  const showQuickLinks = !h.includes("quick-links");
+  const showPortfolio = !h.includes("portfolio-valuation");
+  const showOperations = !h.includes("operations-overview");
+  const showMaintenance = !h.includes("maintenance-due");
+  const showAssetCharts = !h.includes("asset-charts");
+  const showConsumableCharts = !h.includes("consumable-charts");
+  const showRegional = !h.includes("regional-breakdown");
+  const showMap = !h.includes("location-map");
 
   const handleRemoveShortcut = (id: string) => {
     startTransition(async () => {
@@ -190,10 +197,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "portfolio":
-            return isSuperAdmin && showPortfolio ? (
+            return isSuperAdmin && (showPortfolio || showOperations) ? (
               <div key="portfolio" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* LEFT — Operations Overview */}
-                {operationsOverview && (
+                {operationsOverview && showOperations && (
                   <Card>
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-4">
@@ -294,8 +301,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Card>
                 )}
 
-                {/* RIGHT — Portfolio Line Chart (Assets vs Consumables value) like Edaly Finance */}
-                {portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
+                {/* RIGHT — Portfolio Line Chart (Assets vs Consumables value) */}
+                {showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
                   <Card>
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-2">
@@ -401,7 +408,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "maintenance":
-            return upcomingMaintenance !== undefined && upcomingMaintenance > 0 ? (
+            return showMaintenance && upcomingMaintenance !== undefined && upcomingMaintenance > 0 ? (
               <div key="maintenance" className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <Link href="/maintenance">
                   <Card className="hover:border-amber-300 transition-colors cursor-pointer">
@@ -416,7 +423,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "asset-charts":
-            return (assetStatusChart && assetStatusChart.length > 0) || (categoryChart && categoryChart.length > 0) ? (
+            return showAssetCharts && ((assetStatusChart && assetStatusChart.length > 0) || (categoryChart && categoryChart.length > 0)) ? (
               <div key="asset-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {assetStatusChart && assetStatusChart.length > 0 && (
                   <Card>
@@ -476,7 +483,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "consumable-charts":
-            return (consumableStatusChart && consumableStatusChart.length > 0) || (consumableCategoryChart && consumableCategoryChart.length > 0) ? (
+            return showConsumableCharts && ((consumableStatusChart && consumableStatusChart.length > 0) || (consumableCategoryChart && consumableCategoryChart.length > 0)) ? (
               <div key="consumable-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {consumableStatusChart && consumableStatusChart.length > 0 && (
                   <Card>
@@ -583,7 +590,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "regional":
-            return regionBreakdown && regionBreakdown.length > 0 ? (
+            return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
               <div key="regional" className="space-y-4">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center">
@@ -757,7 +764,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       })}
 
       {/* Storage Locations Map */}
-      {isSuperAdmin && mapLocations.length > 0 && (
+      {isSuperAdmin && showMap && mapLocations.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
