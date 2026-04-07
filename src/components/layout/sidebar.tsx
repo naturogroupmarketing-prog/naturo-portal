@@ -160,22 +160,17 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
             );
           })}
 
-        {/* Upgrade Card — inside scroll area so it doesn't block menu in landscape */}
+        {/* Upgrade button — compact */}
         {role === "SUPER_ADMIN" && (
           <div className="mt-4 pt-3 border-t border-shark-100">
-            <Link href="/admin/billing" onClick={onClose}>
-              <div className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #1F3DD9 0%, #3B5BF5 100%)" }}>
-                <div className="pt-5 pb-4 px-4 text-center">
-                  <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-2.5">
-                    <Icon name="award" size={24} className="text-white" />
-                  </div>
-                  <p className="text-xs font-semibold text-white">Upgrade Your</p>
-                  <p className="text-xs font-semibold text-white mb-3">Plan</p>
-                  <div className="bg-white rounded-xl py-2 px-4 text-xs font-semibold" style={{ color: "#1F3DD9" }}>
-                    Upgrade Now
-                  </div>
-                </div>
-              </div>
+            <Link
+              href="/admin/billing"
+              onClick={onClose}
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-white min-h-[44px] transition-all"
+              style={{ background: "linear-gradient(135deg, #1F3DD9 0%, #3B5BF5 100%)" }}
+            >
+              <Icon name="award" size={16} className="text-white" />
+              Upgrade Now
             </Link>
           </div>
         )}

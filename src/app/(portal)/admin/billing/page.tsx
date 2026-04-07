@@ -12,6 +12,7 @@ export default async function BillingPage() {
     where: { id: session.user.organizationId! },
     select: {
       name: true,
+      plan: true,
       subscriptionStatus: true,
       maxUsers: true,
       maxAssets: true,
