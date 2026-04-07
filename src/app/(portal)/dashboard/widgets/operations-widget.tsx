@@ -83,7 +83,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
         <div className="space-y-2">
           {[
             { label: "Overdue Returns", value: data.overdueReturns, icon: "arrow-left" as const, href: "/returns", danger: true },
-            { label: "Low Stock Items", value: data.lowStockCount, icon: "alert-triangle" as const, href: "/alerts/low-stock", danger: true },
+            { label: "Low Stock Items", value: data.lowStockCount, icon: "alert-triangle" as const, href: "/purchase-orders", danger: true },
             { label: "Damage", value: data.unresolvedDamage + data.lostItems, icon: "alert-triangle" as const, href: "/alerts/damage", danger: true },
             { label: "Pending Requests", value: data.pendingRequests, icon: "clipboard" as const, href: "/inventory", danger: false },
             { label: "Overdue Inspections", value: data.incompleteInspections, icon: "search" as const, href: "/condition-checks", danger: true },
