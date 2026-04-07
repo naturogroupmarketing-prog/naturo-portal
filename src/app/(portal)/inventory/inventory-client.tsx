@@ -168,7 +168,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                               <Link href={`/inventory/${region.id}`} className="flex-1 min-w-0">
                                 <h3 className="text-sm font-semibold text-shark-800 hover:text-action-500 transition-colors">{region.name}</h3>
                                 {region.address && (
-                                  <p className="text-xs text-shark-400 mt-0.5 flex items-center gap-1">
+                                  <p className="hidden lg:flex text-xs text-shark-400 mt-0.5 items-center gap-1">
                                     <Icon name="map-pin" size={10} className="text-shark-300" />
                                     {region.address}
                                   </p>
