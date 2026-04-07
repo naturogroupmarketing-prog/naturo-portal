@@ -137,7 +137,7 @@ export function ChatWidget() {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<unknown>(null);
 
-  function toggleVoiceInput() {
+  async function toggleVoiceInput() {
     if (isListening) {
       if (recognitionRef.current) {
         try { (recognitionRef.current as { stop: () => void }).stop(); } catch {}
@@ -152,6 +152,21 @@ export function ChatWidget() {
       const SpeechRecognition = W.SpeechRecognition || W.webkitSpeechRecognition;
       if (!SpeechRecognition) {
         setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Voice input is not supported in this browser. Try Chrome, Edge, or Safari." }]);
+        return;
+      }
+
+      // Request microphone permission first
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch {
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        const isAndroid = /Android/.test(navigator.userAgent);
+        const hint = isIOS
+          ? "Go to Settings → Safari → Microphone → Allow for this site. Or install Trackio as an app: tap Share → Add to Home Screen."
+          : isAndroid
+          ? "Tap the lock icon in the address bar → Permissions → Microphone → Allow. Or install Trackio: tap ⋮ → Install app."
+          : "Click the lock/site icon in the address bar → Site settings → Microphone → Allow. Or install Trackio as a desktop app for permanent access.";
+        setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: `🎤 Microphone access required.\n\n${hint}` }]);
         return;
       }
 
@@ -174,7 +189,7 @@ export function ChatWidget() {
       recognition.onerror = (event: { error: string }) => {
         setIsListening(false);
         if (event.error === "not-allowed") {
-          setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Microphone access denied. Please allow microphone in your browser settings." }]);
+          setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "🎤 Microphone blocked. Check your browser permissions or install Trackio as an app for permanent mic access." }]);
         }
       };
 
@@ -187,7 +202,7 @@ export function ChatWidget() {
       setIsListening(true);
     } catch (err) {
       setIsListening(false);
-      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Voice input failed to start. Please check your microphone permissions." }]);
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Voice input failed. Please check microphone permissions in your browser settings." }]);
     }
   }
 
