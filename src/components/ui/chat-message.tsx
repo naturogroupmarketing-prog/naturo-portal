@@ -7,6 +7,8 @@ interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
   isLoading?: boolean;
+  isLast?: boolean;
+  onOptionClick?: (text: string) => void;
 }
 
 const WORKING_MESSAGES = [
@@ -17,7 +19,49 @@ const WORKING_MESSAGES = [
   "Almost there...",
 ];
 
-export function ChatMessage({ role, content, isLoading }: ChatMessageProps) {
+/**
+ * Extract clickable options from the end of an assistant message.
+ * Matches patterns like:
+ * - "1. Create a purchase order"
+ * - "- Check stock levels"
+ * - "• Add more items"
+ * Only extracts from the LAST list block in the message.
+ */
+function extractOptions(content: string): { mainContent: string; options: string[] } {
+  const lines = content.trim().split("\n");
+  const options: string[] = [];
+
+  // Walk backwards to find the trailing list
+  let i = lines.length - 1;
+  while (i >= 0) {
+    const line = lines[i].trim();
+    // Match: "1. text", "- text", "* text", "• text"
+    const match = line.match(/^(?:\d+[\.\)]\s*|[-*•]\s+)(.+)$/);
+    if (match) {
+      options.unshift(match[1].replace(/\*\*/g, "").trim());
+      i--;
+    } else {
+      break;
+    }
+  }
+
+  // Only extract if we found 2+ options
+  if (options.length < 2) return { mainContent: content, options: [] };
+
+  // Check if the line before the list is a question/prompt
+  const mainLines = lines.slice(0, i + 1);
+  const lastMain = mainLines[mainLines.length - 1]?.trim() || "";
+  const isQuestion = /\?$|:$|like me to|would you|do you want|shall I|should I|options|choose/i.test(lastMain);
+
+  if (!isQuestion && options.length < 3) return { mainContent: content, options: [] };
+
+  return {
+    mainContent: mainLines.join("\n").trim(),
+    options,
+  };
+}
+
+export function ChatMessage({ role, content, isLoading, isLast, onOptionClick }: ChatMessageProps) {
   const [workingIdx, setWorkingIdx] = useState(0);
   const [dots, setDots] = useState(1);
 
@@ -60,13 +104,28 @@ export function ChatMessage({ role, content, isLoading }: ChatMessageProps) {
     );
   }
 
-  // Assistant message — render with markdown
+  // Extract options from assistant message (only for the last message)
+  const { mainContent, options } = isLast && onOptionClick ? extractOptions(content) : { mainContent: content, options: [] };
+
   return (
     <div className="flex justify-start">
       <div className="rounded-2xl px-4 py-2.5 max-w-[85%] text-sm leading-relaxed bg-shark-50 text-shark-900 rounded-bl-md">
         <div className="prose prose-sm prose-shark max-w-none [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_li]:my-0.5 [&_h1]:text-base [&_h1]:font-bold [&_h1]:my-2 [&_h2]:text-sm [&_h2]:font-bold [&_h2]:my-1.5 [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:my-1 [&_strong]:font-semibold [&_code]:bg-shark-200 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_code]:font-mono [&_pre]:bg-shark-800 [&_pre]:text-shark-100 [&_pre]:p-3 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:text-xs [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_a]:text-action-500 [&_a]:underline [&_table]:text-xs [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_th]:border-b [&_th]:border-shark-200 [&_td]:px-2 [&_td]:py-1 [&_td]:border-b [&_td]:border-shark-100 [&_blockquote]:border-l-2 [&_blockquote]:border-action-300 [&_blockquote]:pl-3 [&_blockquote]:text-shark-500 [&_hr]:my-2 [&_hr]:border-shark-200">
-          <ReactMarkdown>{content}</ReactMarkdown>
+          <ReactMarkdown>{mainContent}</ReactMarkdown>
         </div>
+        {options.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-shark-200/50">
+            {options.map((option, i) => (
+              <button
+                key={i}
+                onClick={() => onOptionClick?.(option)}
+                className="text-xs text-action-600 bg-white border border-action-200 hover:bg-action-50 hover:border-action-300 px-2.5 py-1.5 rounded-lg transition-colors text-left"
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

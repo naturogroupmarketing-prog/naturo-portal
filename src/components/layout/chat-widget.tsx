@@ -434,8 +434,8 @@ export function ChatWidget() {
                     </div>
                   </div>
                 )}
-                {messages.map((msg) => (
-                  <ChatMessage key={msg.id} role={msg.role} content={msg.content} />
+                {messages.map((msg, idx) => (
+                  <ChatMessage key={msg.id} role={msg.role} content={msg.content} isLast={idx === messages.length - 1} onOptionClick={(text) => sendMessage(text)} />
                 ))}
                 {isLoading && <ChatMessage role="assistant" content="" isLoading />}
                 <div ref={messagesEndRef} />
