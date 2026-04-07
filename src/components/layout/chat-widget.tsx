@@ -86,8 +86,9 @@ export function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
+  // Only auto-focus on desktop — on mobile the keyboard should not open automatically
   useEffect(() => {
-    if (isOpen && !showHistory) {
+    if (isOpen && !showHistory && window.innerWidth >= 640) {
       const timer = setTimeout(() => inputRef.current?.focus(), 100);
       return () => clearTimeout(timer);
     }
@@ -294,11 +295,11 @@ export function ChatWidget() {
 
   return (
     <>
-      {/* Floating button */}
+      {/* Floating button — positioned above bottom nav on mobile */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-action-400 text-white shadow-lg hover:bg-action-500 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
+          className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 w-14 h-14 rounded-full bg-action-400 text-white shadow-lg hover:bg-action-500 hover:shadow-xl transition-all duration-200 flex items-center justify-center safe-bottom"
           aria-label="Open AI Assistant"
           title="AI Assistant"
         >
@@ -310,9 +311,9 @@ export function ChatWidget() {
 
       {/* Chat panel */}
       {isOpen && (
-        <div className="fixed bottom-3 right-3 sm:bottom-6 sm:right-6 z-40 w-[calc(100vw-1.5rem)] sm:w-96 h-[calc(100vh-4rem)] max-h-[85vh] sm:h-[32rem] sm:max-h-[32rem] flex flex-col rounded-2xl border border-shark-100 bg-white shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-40 w-full sm:w-96 h-full sm:h-[32rem] sm:max-h-[32rem] flex flex-col sm:rounded-2xl sm:border sm:border-shark-100 bg-white shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 bg-action-400">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 bg-action-400 safe-top">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -420,7 +421,7 @@ export function ChatWidget() {
               </div>
 
               {/* Input */}
-              <form onSubmit={handleSubmit} className="border-t border-shark-100 px-4 py-3 flex gap-2">
+              <form onSubmit={handleSubmit} className="border-t border-shark-100 px-4 py-3 flex gap-2 safe-bottom">
                 <input
                   ref={inputRef}
                   value={input}
