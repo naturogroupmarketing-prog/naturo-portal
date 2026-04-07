@@ -4,7 +4,8 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { StaffClient } from "./staff-client";
 
-export default async function StaffPage() {
+export default async function StaffPage({ searchParams }: { searchParams: Promise<{ region?: string }> }) {
+  const params = await searchParams;
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/login");
 
@@ -125,6 +126,7 @@ export default async function StaffPage() {
       allRegions={JSON.parse(JSON.stringify(allRegions))}
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
       canViewStaffDetails={canViewStaffDetails}
+      initialRegion={params.region}
     />
   );
 }

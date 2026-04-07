@@ -79,12 +79,23 @@ interface StaffClientProps {
   allRegions: Region[];
   isSuperAdmin: boolean;
   canViewStaffDetails?: boolean;
+  initialRegion?: string;
 }
 
-export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true }: StaffClientProps) {
+export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion }: StaffClientProps) {
   const { addToast } = useToast();
   const [search, setSearch] = useState("");
-  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  // If initialRegion is set, collapse all OTHER regions so the target region is visible
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
+    if (!initialRegion) return new Set();
+    const allIds = new Set<string>();
+    // Collapse head-office and all regions except the target
+    allIds.add("head-office");
+    for (const r of regions) {
+      if (r.id !== initialRegion) allIds.add(r.id);
+    }
+    return allIds;
+  });
   const [detailUser, setDetailUser] = useState<StaffUser | null>(null);
 
   // Create user modal state
