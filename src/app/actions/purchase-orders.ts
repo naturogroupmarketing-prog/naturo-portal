@@ -363,3 +363,54 @@ export async function syncLowStockPOs() {
   revalidatePath("/dashboard");
   return { success: true, created, alreadyHadPO: belowThreshold.length - created };
 }
+
+/**
+ * Batch update PO statuses — approve, order, or receive multiple POs at once.
+ */
+export async function batchUpdatePOStatus(poIds: string[], newStatus: string) {
+  const session = await withAuth();
+  const organizationId = session.user.organizationId!;
+
+  const validStatuses = ["PENDING", "APPROVED", "ORDERED", "RECEIVED", "REJECTED"];
+  if (!validStatuses.includes(newStatus)) throw new Error("Invalid status");
+
+  if (newStatus === "APPROVED" || newStatus === "REJECTED" || newStatus === "ORDERED") {
+    const canApprove = session.user.role === "SUPER_ADMIN" || await hasPermission(session.user.id, session.user.role, "purchaseOrderApprove");
+    if (!canApprove) throw new Error("You don't have permission for this action");
+  }
+
+  const pos = await db.purchaseOrder.findMany({
+    where: { id: { in: poIds }, organizationId },
+    include: { consumable: true },
+  });
+
+  let updated = 0;
+  for (const po of pos) {
+    await db.purchaseOrder.update({
+      where: { id: po.id },
+      data: {
+        status: newStatus as PurchaseOrderStatus,
+        ...(newStatus === "APPROVED" ? { approvedById: session.user.id, approvedAt: new Date() } : {}),
+      },
+    });
+    if (newStatus === "RECEIVED") {
+      await db.consumable.update({
+        where: { id: po.consumableId },
+        data: { quantityOnHand: { increment: po.quantity } },
+      });
+    }
+    updated++;
+  }
+
+  await createAuditLog({
+    action: newStatus === "APPROVED" ? "PURCHASE_ORDER_APPROVED" : newStatus === "ORDERED" ? "PURCHASE_ORDER_ORDERED" : newStatus === "RECEIVED" ? "PURCHASE_ORDER_RECEIVED" : "PURCHASE_ORDER_UPDATED",
+    description: `Batch ${newStatus.toLowerCase()} ${updated} purchase order${updated > 1 ? "s" : ""}`,
+    performedById: session.user.id,
+    organizationId,
+  });
+
+  revalidatePath("/purchase-orders");
+  revalidatePath("/consumables");
+  revalidatePath("/dashboard");
+  return { success: true, updated };
+}

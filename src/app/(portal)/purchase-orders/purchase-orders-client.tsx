@@ -8,8 +8,9 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
-import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder } from "@/app/actions/purchase-orders";
+import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder, batchUpdatePOStatus } from "@/app/actions/purchase-orders";
 import { useToast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/utils";
 
 const SECTION_COLORS = [
@@ -99,6 +100,9 @@ function mapStatusToTab(status?: string): string {
 
 export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion }: Props) {
   const { addToast } = useToast();
+  const router = useRouter();
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkLoading, setBulkLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>(mapStatusToTab(initialStatus));
   const [search, setSearch] = useState("");
   const [regionFilter, setRegionFilter] = useState("ALL");
@@ -212,32 +216,59 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     }
   };
 
-  const renderActionButtons = (po: PurchaseOrder) => {
-    if (!canManagePO) return null;
-    return (
-      <div className="flex gap-1.5">
-        {po.status === "PENDING" && canApprovePO && (
-          <>
-            <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "approve"); }} disabled={loading === po.id + "approve"}>
-              {loading === po.id + "approve" ? "..." : "Approve"}
-            </Button>
-            <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "reject"); }} disabled={loading === po.id + "reject"}>
-              {loading === po.id + "reject" ? "..." : "Reject"}
-            </Button>
-          </>
-        )}
-        {po.status === "APPROVED" && canApprovePO && (
-          <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "ordered"); }} disabled={loading === po.id + "ordered"}>
-            {loading === po.id + "ordered" ? "..." : "Ordered"}
-          </Button>
-        )}
-        {po.status === "ORDERED" && canManagePO && (
-          <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "received"); }} disabled={loading === po.id + "received"}>
-            {loading === po.id + "received" ? "..." : "Received"}
-          </Button>
-        )}
+  // Status action — Super Admin can advance status, Branch Manager only "Received"
+  const renderStatusAction = (po: PurchaseOrder) => {
+    // Super Admin: clickable status buttons to advance
+    if (isSuperAdmin || canApprovePO) {
+      if (po.status === "PENDING") return (
+        <div className="flex gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <Button size="sm" onClick={() => handleAction(po.id, "approve")} disabled={!!loading} loading={loading === po.id + "approve"}>Approve</Button>
+          <Button size="sm" variant="ghost" className="text-red-500 hover:bg-red-50" onClick={() => handleAction(po.id, "reject")} disabled={!!loading}>Reject</Button>
+        </div>
+      );
+      if (po.status === "APPROVED") return (
+        <div onClick={(e) => e.stopPropagation()}>
+          <Button size="sm" variant="outline" onClick={() => handleAction(po.id, "ordered")} disabled={!!loading} loading={loading === po.id + "ordered"}>Mark Ordered</Button>
+        </div>
+      );
+      if (po.status === "ORDERED") return (
+        <div onClick={(e) => e.stopPropagation()}>
+          <Button size="sm" variant="outline" onClick={() => handleAction(po.id, "received")} disabled={!!loading} loading={loading === po.id + "received"}>Received</Button>
+        </div>
+      );
+      return <Badge status={po.status} />;
+    }
+    // Branch Manager: only "Received" button when ORDERED
+    if (canManagePO && po.status === "ORDERED") return (
+      <div onClick={(e) => e.stopPropagation()}>
+        <Button size="sm" onClick={() => handleAction(po.id, "received")} disabled={!!loading} loading={loading === po.id + "received"}>Received</Button>
       </div>
     );
+    return <Badge status={po.status} />;
+  };
+
+  // Bulk selection
+  const toggleSelect = (id: string) => setSelected((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const selectedPending = filtered.filter((po) => selected.has(po.id) && po.status === "PENDING").length;
+  const selectedApproved = filtered.filter((po) => selected.has(po.id) && po.status === "APPROVED").length;
+  const selectedOrdered = filtered.filter((po) => selected.has(po.id) && po.status === "ORDERED").length;
+
+  const handleBulk = async (newStatus: string) => {
+    setBulkLoading(true);
+    try {
+      const ids = filtered.filter((po) => selected.has(po.id) && (
+        (newStatus === "APPROVED" && po.status === "PENDING") ||
+        (newStatus === "ORDERED" && po.status === "APPROVED") ||
+        (newStatus === "RECEIVED" && po.status === "ORDERED") ||
+        (newStatus === "REJECTED" && po.status === "PENDING")
+      )).map((po) => po.id);
+      if (ids.length === 0) return;
+      const result = await batchUpdatePOStatus(ids, newStatus);
+      addToast(`${result.updated} order${result.updated > 1 ? "s" : ""} updated`, "success");
+      setSelected(new Set());
+      router.refresh();
+    } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+    setBulkLoading(false);
   };
 
   const renderTable = (orders: PurchaseOrder[]) => (
@@ -250,22 +281,21 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           orders.map((po) => (
             <div
               key={po.id}
-              onClick={() => setViewOrder(po)}
-              className="border border-shark-100 rounded-xl p-4 bg-white hover:shadow-sm transition-shadow cursor-pointer"
+              className={`border rounded-xl p-4 bg-white transition-shadow ${selected.has(po.id) ? "border-action-400 bg-action-50/20" : "border-shark-100 hover:shadow-sm"}`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
+              <div className="flex items-start gap-3">
+                {canApprovePO && (
+                  <input type="checkbox" checked={selected.has(po.id)} onChange={() => toggleSelect(po.id)} className="w-4 h-4 mt-1 rounded border-shark-300 text-action-500 focus:ring-action-400 shrink-0" />
+                )}
+                <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setViewOrder(po)}>
                   <p className="text-sm font-semibold text-shark-800 truncate">{po.consumable.name}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{po.consumable.category} · Qty: {po.quantity}</p>
                   {po.supplier && <p className="text-xs text-shark-400">Supplier: {po.supplier}</p>}
                 </div>
-                <Badge status={po.status} />
               </div>
-              {renderActionButtons(po) && (
-                <div className="mt-3 pt-3 border-t border-shark-50 flex justify-end">
-                  {renderActionButtons(po)}
-                </div>
-              )}
+              <div className="mt-3 pt-3 border-t border-shark-50 flex justify-end">
+                {renderStatusAction(po)}
+              </div>
             </div>
           ))
         )}
@@ -276,49 +306,36 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-shark-100 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
-              {visibleColumns.item && <th className="px-5 py-3">Item</th>}
-              {visibleColumns.category && <th className="px-5 py-3">Category</th>}
-              {visibleColumns.supplier && <th className="px-5 py-3">Supplier</th>}
-              {visibleColumns.qty && <th className="px-5 py-3">Qty</th>}
-              {visibleColumns.status && <th className="px-5 py-3">Status</th>}
-              {visibleColumns.createdBy && <th className="px-5 py-3">Created By</th>}
-              {visibleColumns.date && <th className="px-5 py-3">Date</th>}
-              <th className="px-5 py-3">Actions</th>
+              {canApprovePO && <th className="px-3 py-3 w-10"><input type="checkbox" checked={selected.size > 0 && selected.size === orders.length} onChange={() => { if (selected.size === orders.length) setSelected(new Set()); else setSelected(new Set(orders.map((o) => o.id))); }} className="rounded border-shark-300 text-action-500" /></th>}
+              <th className="px-5 py-3">Item</th>
+              <th className="px-5 py-3">Qty</th>
+              <th className="px-5 py-3">Region</th>
+              <th className="px-5 py-3 text-right">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-shark-50">
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={visibleCount} className="px-5 py-8 text-center text-shark-400">
+                <td colSpan={canApprovePO ? 5 : 4} className="px-5 py-8 text-center text-shark-400">
                   No purchase orders found.
                 </td>
               </tr>
             ) : (
               orders.map((po) => (
-                <tr key={po.id} onClick={() => setViewOrder(po)} className="hover:bg-shark-25 transition-colors cursor-pointer">
-                  {visibleColumns.item && (
-                    <td className="px-5 py-3.5 font-medium text-shark-800">
-                      {po.consumable.name}
-                      <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
+                <tr key={po.id} onClick={() => setViewOrder(po)} className={`hover:bg-shark-25 transition-colors cursor-pointer ${selected.has(po.id) ? "bg-action-50/30" : ""}`}>
+                  {canApprovePO && (
+                    <td className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                      <input type="checkbox" checked={selected.has(po.id)} onChange={() => toggleSelect(po.id)} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
                     </td>
                   )}
-                  {visibleColumns.category && <td className="px-5 py-3.5 text-shark-500">{po.consumable.category}</td>}
-                  {visibleColumns.supplier && <td className="px-5 py-3.5 text-shark-500">{po.supplier || "—"}</td>}
-                  {visibleColumns.qty && <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity}</td>}
-                  {visibleColumns.status && <td className="px-5 py-3.5"><Badge status={po.status} /></td>}
-                  {visibleColumns.createdBy && (
-                    <td className="px-5 py-3.5 text-shark-500">
-                      {po.createdBy ? (po.createdBy.name || po.createdBy.email) : (
-                        <span className="inline-flex items-center gap-1 text-action-600 font-medium">
-                          <Icon name="star" size={14} />
-                          AI
-                        </span>
-                      )}
-                    </td>
-                  )}
-                  {visibleColumns.date && <td className="px-5 py-3.5 text-shark-400">{formatDate(po.createdAt)}</td>}
-                  <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
-                    {renderActionButtons(po) || <span className="text-xs text-shark-400">View only</span>}
+                  <td className="px-5 py-3.5">
+                    <span className="font-medium text-shark-800">{po.consumable.name}</span>
+                    <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
+                  </td>
+                  <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity}</td>
+                  <td className="px-5 py-3.5 text-shark-500">{po.region.name}</td>
+                  <td className="px-5 py-3.5 text-right">
+                    {renderStatusAction(po)}
                   </td>
                 </tr>
               ))
@@ -465,6 +482,28 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           ))}
         </div>
       </div>
+
+      {/* Bulk Action Bar */}
+      {selected.size > 0 && canApprovePO && (
+        <div className="sticky top-14 z-20 bg-action-500 text-white rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+          <span className="text-sm font-medium">{selected.size} selected</span>
+          <div className="flex items-center gap-2">
+            {selectedPending > 0 && (
+              <>
+                <Button size="sm" variant="secondary" onClick={() => handleBulk("APPROVED")} disabled={bulkLoading} loading={bulkLoading}>Approve ({selectedPending})</Button>
+                <Button size="sm" variant="ghost" className="text-white hover:bg-white/20" onClick={() => handleBulk("REJECTED")} disabled={bulkLoading}>Reject ({selectedPending})</Button>
+              </>
+            )}
+            {selectedApproved > 0 && (
+              <Button size="sm" variant="secondary" onClick={() => handleBulk("ORDERED")} disabled={bulkLoading} loading={bulkLoading}>Mark Ordered ({selectedApproved})</Button>
+            )}
+            {selectedOrdered > 0 && (
+              <Button size="sm" variant="secondary" onClick={() => handleBulk("RECEIVED")} disabled={bulkLoading} loading={bulkLoading}>Mark Received ({selectedOrdered})</Button>
+            )}
+            <button onClick={() => setSelected(new Set())} className="text-white/80 hover:text-white p-1 ml-1"><Icon name="x" size={16} /></button>
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg flex items-center justify-between">
