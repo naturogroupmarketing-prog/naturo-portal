@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { Icon } from "@/components/ui/icon";
-import { Logo } from "@/components/ui/logo";
 import { NotificationBell } from "./notification-bell";
 import type { Role } from "@/generated/prisma/browser";
 
@@ -52,9 +51,7 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
         <Icon name="menu" size={20} />
       </button>
 
-      <div className="lg:hidden flex items-center flex-1 justify-center gap-2">
-        <Logo size={28} />
-      </div>
+      <div className="lg:hidden flex-1" />
 
       {/* Mobile search button — opens command palette */}
       <button
