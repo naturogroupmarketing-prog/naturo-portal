@@ -506,7 +506,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   {regionBreakdown.map((region, idx) => {
               const colors = REGION_COLORS[idx % REGION_COLORS.length];
               const isCollapsed = collapsedRegions.has(region.regionId);
-              const totalIssues = region.damaged + region.lost + region.pendingRequests + region.pendingPOs;
+              const totalIssues = (region.damaged + region.lost) + region.pendingRequests + region.pendingPOs;
               return (
                 <Card key={region.regionId} className="overflow-hidden">
                   <button
@@ -556,19 +556,12 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </button>
                   {!isCollapsed && (
                     <div className="px-5 pb-4 pt-1 border-t border-shark-50">
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                      <div className="grid grid-cols-3 gap-3 mb-3">
                         <Link href={`/alerts/damage?region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
                           <Icon name="alert-triangle" size={14} className="text-red-500" />
                           <div>
-                            <p className="text-lg font-bold text-red-600">{region.damaged}</p>
-                            <p className="text-xs text-red-400">Damaged</p>
-                          </div>
-                        </Link>
-                        <Link href={`/alerts/lost?region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-shark-50 px-3 py-2 hover:bg-shark-100 transition-colors">
-                          <Icon name="shield" size={14} className="text-shark-500" />
-                          <div>
-                            <p className="text-lg font-bold text-shark-700">{region.lost}</p>
-                            <p className="text-xs text-shark-400">Lost</p>
+                            <p className="text-lg font-bold text-red-600">{region.damaged + region.lost}</p>
+                            <p className="text-xs text-red-400">Damaged / Lost</p>
                           </div>
                         </Link>
                         <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 hover:bg-amber-200 transition-colors">
