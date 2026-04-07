@@ -247,7 +247,7 @@ export default async function DashboardPage() {
 
   const regionFilter = session.user.role === "BRANCH_MANAGER"
     ? { regionId: session.user.regionId!, organizationId }
-    : { organizationId };
+    : { organizationId, region: { archivedAt: null } };
 
   const isSuperAdmin = session.user.role === "SUPER_ADMIN";
 

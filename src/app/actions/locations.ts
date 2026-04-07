@@ -132,6 +132,70 @@ export async function deleteRegion(formData: FormData) {
 
   await db.region.delete({ where: { id } });
   revalidatePath("/admin/locations");
+  revalidatePath("/inventory");
+  return { success: true };
+}
+
+/**
+ * Archive a region — soft-delete that preserves all assets, consumables, and staff.
+ * Can be restored later.
+ */
+export async function archiveRegion(regionId: string) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId!;
+
+  const region = await db.region.findUnique({ where: { id: regionId } });
+  if (!region) throw new Error("Region not found");
+  if (region.organizationId !== organizationId) throw new Error("Region not found");
+  if (region.archivedAt) throw new Error("Region is already archived");
+
+  await db.region.update({
+    where: { id: regionId },
+    data: { archivedAt: new Date() },
+  });
+
+  await createAuditLog({
+    action: "REGION_ARCHIVED",
+    description: `Region "${region.name}" archived`,
+    performedById: session.user.id,
+    organizationId,
+  });
+
+  revalidatePath("/inventory");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+/**
+ * Restore an archived region — brings it back to active status.
+ */
+export async function restoreRegion(regionId: string) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId!;
+
+  const region = await db.region.findUnique({ where: { id: regionId } });
+  if (!region) throw new Error("Region not found");
+  if (region.organizationId !== organizationId) throw new Error("Region not found");
+  if (!region.archivedAt) throw new Error("Region is not archived");
+
+  await db.region.update({
+    where: { id: regionId },
+    data: { archivedAt: null },
+  });
+
+  await createAuditLog({
+    action: "REGION_RESTORED",
+    description: `Region "${region.name}" restored from archive`,
+    performedById: session.user.id,
+    organizationId,
+  });
+
+  revalidatePath("/inventory");
+  revalidatePath("/dashboard");
   return { success: true };
 }
 
@@ -143,6 +207,7 @@ export async function getLocations() {
     where: { organizationId },
     include: {
       regions: {
+        where: { archivedAt: null },
         include: {
           _count: {
             select: { assets: true, consumables: true, users: true },
@@ -152,6 +217,22 @@ export async function getLocations() {
       },
     },
     orderBy: { name: "asc" },
+  });
+}
+
+export async function getArchivedRegions() {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) return [];
+
+  const organizationId = session.user.organizationId!;
+
+  return db.region.findMany({
+    where: { organizationId, archivedAt: { not: null } },
+    include: {
+      state: { select: { name: true } },
+      _count: { select: { assets: true, consumables: true, users: true } },
+    },
+    orderBy: { archivedAt: "desc" },
   });
 }
 

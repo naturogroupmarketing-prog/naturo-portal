@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
-import { getLocations } from "@/app/actions/locations";
+import { getLocations, getArchivedRegions } from "@/app/actions/locations";
 import { InventoryListClient } from "./inventory-client";
 
 export default async function InventoryPage() {
@@ -16,8 +16,9 @@ export default async function InventoryPage() {
 
   const organizationId = session.user.organizationId!;
 
-  const [locations, damagedByRegion, lostByRegion, lowStockByRegion, unresolvedDamageByRegion] = await Promise.all([
+  const [locations, archivedRegions, damagedByRegion, lostByRegion, lowStockByRegion, unresolvedDamageByRegion] = await Promise.all([
     getLocations(),
+    getArchivedRegions(),
     db.asset.groupBy({ by: ["regionId"], where: { organizationId, status: "DAMAGED" }, _count: true }),
     db.asset.groupBy({ by: ["regionId"], where: { organizationId, status: "LOST" }, _count: true }),
     db.consumable.groupBy({
@@ -73,6 +74,7 @@ export default async function InventoryPage() {
       locations={JSON.parse(JSON.stringify(locations))}
       regionAlerts={regionAlerts}
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
+      archivedRegions={JSON.parse(JSON.stringify(archivedRegions))}
     />
   );
 }

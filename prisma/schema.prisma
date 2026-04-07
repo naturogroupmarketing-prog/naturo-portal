@@ -82,6 +82,8 @@ enum AuditAction {
   PURCHASE_ORDER_ORDERED
   PURCHASE_ORDER_RECEIVED
   PURCHASE_ORDER_UPDATED
+  REGION_ARCHIVED
+  REGION_RESTORED
 }
 
 // ─── ORGANIZATION (Multi-Tenancy) ──────────────────────────
@@ -205,6 +207,7 @@ model Region {
   users          User[]
   purchaseOrders PurchaseOrder[]
   createdAt      DateTime       @default(now())
+  archivedAt     DateTime?
 
   @@unique([name, stateId])
   @@index([organizationId])
