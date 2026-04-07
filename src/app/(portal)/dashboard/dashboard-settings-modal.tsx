@@ -189,7 +189,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         <div>
           <p className="text-xs font-medium text-shark-500 mb-2">Stat Cards</p>
           <div className="space-y-1">
-            {(["stat-total-assets", "stat-checked-out", "stat-overdue", "stat-damaged", "stat-lost", "stat-pending-requests", "stat-pending-pos"] as WidgetId[]).map((id) => {
+            {(["stat-total-assets", "stat-checked-out", "stat-overdue", "stat-damaged", "stat-pending-requests", "stat-pending-pos"] as WidgetId[]).map((id) => {
               const isVisible = !preferences.hiddenWidgets.includes(id);
               return (
                 <div key={id} className="flex items-center justify-between py-1.5">
