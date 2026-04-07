@@ -11,28 +11,16 @@ import { createNotification } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
 import { AssetStatus, AssignmentType } from "@/generated/prisma/client";
 import { enforceAssetLimit } from "@/lib/tenant";
+import { withAuth, validateForm } from "@/lib/action-utils";
+import { createAssetSchema, assignAssetSchema, returnAssetSchema, deleteAssetSchema } from "@/lib/validations";
 
 export async function createAsset(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "assetAdd"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "assetAdd"))) {
     throw new Error("Unauthorized");
   }
 
-  const name = (formData.get("name") as string)?.trim();
-  const category = (formData.get("category") as string)?.trim();
-  const description = (formData.get("description") as string)?.trim();
-  const serialNumber = (formData.get("serialNumber") as string)?.trim();
-  const regionId = formData.get("regionId") as string;
-  const isHighValue = formData.get("isHighValue") === "true";
-  const purchaseDate = formData.get("purchaseDate") as string;
-  const purchaseCost = formData.get("purchaseCost") as string;
-  const supplier = (formData.get("supplier") as string)?.trim();
-  const notes = (formData.get("notes") as string)?.trim();
-  const imageUrl = formData.get("imageUrl") as string;
-
-  if (!name) throw new Error("Asset name is required");
-  if (!category) throw new Error("Category is required");
-  if (!regionId) throw new Error("Region is required");
+  const { name, category, description, serialNumber, regionId, isHighValue, purchaseDate, purchaseCost, supplier, notes, imageUrl } = validateForm(createAssetSchema, formData);
 
   // Verify region access
   if (!canManageRegion(session.user.role, session.user.regionId, regionId)) {
@@ -60,7 +48,7 @@ export async function createAsset(formData: FormData) {
       organizationId,
       isHighValue,
       purchaseDate: purchaseDate ? new Date(purchaseDate) : null,
-      purchaseCost: purchaseCost ? parseFloat(purchaseCost) : null,
+      purchaseCost: purchaseCost ?? null,
       supplier: supplier || null,
       notes: notes || null,
     },
@@ -80,22 +68,13 @@ export async function createAsset(formData: FormData) {
 }
 
 export async function assignAsset(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "assetEdit"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "assetEdit"))) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
-
-  const assetId = formData.get("assetId") as string;
-  const userId = formData.get("userId") as string;
-  const assignmentType = formData.get("assignmentType") as AssignmentType;
-  const expectedReturnDate = formData.get("expectedReturnDate") as string;
-
-  if (!assetId) throw new Error("Asset is required");
-  if (!userId) throw new Error("Staff member is required");
-  if (!assignmentType) throw new Error("Assignment type is required");
+  const organizationId = session.user.organizationId!;
+  const { assetId, userId, assignmentType, expectedReturnDate } = validateForm(assignAssetSchema, formData);
 
   const asset = await db.asset.findUnique({
     where: { id: assetId },

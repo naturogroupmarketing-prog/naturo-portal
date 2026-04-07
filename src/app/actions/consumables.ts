@@ -8,31 +8,22 @@ import { sendEmail, emailConsumableRequested } from "@/lib/email";
 import { handleLowStockAlert } from "@/lib/low-stock-handler";
 import { createNotification, notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
+import { withAuth, validateForm } from "@/lib/action-utils";
+import { createConsumableSchema } from "@/lib/validations";
 
 export async function createConsumable(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableAdd"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "consumableAdd"))) {
     throw new Error("Unauthorized");
   }
 
-  const name = (formData.get("name") as string)?.trim();
-  const category = (formData.get("category") as string)?.trim();
-  const unitType = (formData.get("unitType") as string)?.trim();
-  const quantityOnHand = parseInt(formData.get("quantityOnHand") as string) || 0;
-  const minimumThreshold = parseInt(formData.get("minimumThreshold") as string) || 5;
-  const reorderLevel = parseInt(formData.get("reorderLevel") as string) || 10;
-  const regionId = formData.get("regionId") as string;
-  const supplier = (formData.get("supplier") as string)?.trim();
-  const unitCost = formData.get("unitCost") as string;
-  const notes = (formData.get("notes") as string)?.trim();
-  const imageUrl = formData.get("imageUrl") as string;
+  const { name, category, unitType, quantityOnHand, minimumThreshold, reorderLevel, regionId, supplier, unitCost, notes, imageUrl } = validateForm(createConsumableSchema, formData);
 
   if (!canManageRegion(session.user.role, session.user.regionId, regionId)) {
     throw new Error("Cannot manage this region");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const consumable = await db.consumable.create({
     data: {
@@ -46,7 +37,7 @@ export async function createConsumable(formData: FormData) {
       organizationId,
       imageUrl: imageUrl || null,
       supplier: supplier || null,
-      unitCost: unitCost ? parseFloat(unitCost) : null,
+      unitCost: unitCost ?? null,
       notes: notes || null,
     },
   });
