@@ -157,27 +157,27 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
               </div>
             );
           })}
-      </div>
 
-      {/* Upgrade Card — bottom of sidebar, like Edaly */}
-      {role === "SUPER_ADMIN" && (
-        <div className="px-3 pb-4 pt-2 border-t border-shark-100">
-          <Link href="/admin/billing" onClick={onClose}>
-            <div className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #1F3DD9 0%, #3B5BF5 100%)" }}>
-              <div className="pt-5 pb-4 px-4 text-center">
-                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-2.5">
-                  <Icon name="award" size={24} className="text-white" />
-                </div>
-                <p className="text-xs font-semibold text-white">Upgrade Your</p>
-                <p className="text-xs font-semibold text-white mb-3">Account To Pro</p>
-                <div className="bg-white rounded-xl py-2 px-4 text-xs font-semibold" style={{ color: "#1F3DD9" }}>
-                  Upgrade Now
+        {/* Upgrade Card — inside scroll area so it doesn't block menu in landscape */}
+        {role === "SUPER_ADMIN" && (
+          <div className="mt-4 pt-3 border-t border-shark-100">
+            <Link href="/admin/billing" onClick={onClose}>
+              <div className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #1F3DD9 0%, #3B5BF5 100%)" }}>
+                <div className="pt-5 pb-4 px-4 text-center">
+                  <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-2.5">
+                    <Icon name="award" size={24} className="text-white" />
+                  </div>
+                  <p className="text-xs font-semibold text-white">Upgrade Your</p>
+                  <p className="text-xs font-semibold text-white mb-3">Account To Pro</p>
+                  <div className="bg-white rounded-xl py-2 px-4 text-xs font-semibold" style={{ color: "#1F3DD9" }}>
+                    Upgrade Now
+                  </div>
                 </div>
               </div>
-            </div>
-          </Link>
-        </div>
-      )}
+            </Link>
+          </div>
+        )}
+      </div>
     </nav>
   );
 }
