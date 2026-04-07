@@ -40,23 +40,27 @@ export async function checkPlanLimits(orgId: string) {
 
   if (!org) throw new Error("Organization not found");
 
-  // Check if trial has expired
-  if (
-    org.subscriptionStatus === "TRIALING" &&
-    org.trialEndsAt &&
-    new Date() > org.trialEndsAt
-  ) {
-    throw new Error("Your free trial has expired. Please upgrade your plan.");
-  }
+  // Skip subscription checks for paid plans — they're always active
+  const paidPlans = ["ADMIN", "PRO", "ENTERPRISE"];
+  if (!paidPlans.includes(org.plan)) {
+    // Free plan: check if trial has expired
+    if (
+      org.subscriptionStatus === "TRIALING" &&
+      org.trialEndsAt &&
+      new Date() > org.trialEndsAt
+    ) {
+      throw new Error("Your free trial has expired. Please upgrade your plan.");
+    }
 
-  // Check if subscription is active
-  if (
-    org.subscriptionStatus === "CANCELED" ||
-    org.subscriptionStatus === "PAST_DUE"
-  ) {
-    throw new Error(
-      "Your subscription is inactive. Please update your billing information."
-    );
+    // Check if subscription is canceled
+    if (
+      org.subscriptionStatus === "CANCELED" ||
+      org.subscriptionStatus === "PAST_DUE"
+    ) {
+      throw new Error(
+        "Your subscription is inactive. Please update your billing information."
+      );
+    }
   }
 
   // Plan-based limits (source of truth) — override database maxUsers/maxAssets
