@@ -91,41 +91,67 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
 
                 {isExpanded && (
                   <div className="border-t border-shark-100">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="bg-shark-50/50">
-                          <th className="px-5 py-2.5 text-left text-xs font-semibold text-shark-400">Item</th>
-                          <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400">Stock</th>
-                          <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400 hidden sm:table-cell">Threshold</th>
-                          <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400 hidden md:table-cell">Reorder Level</th>
-                          <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400 hidden lg:table-cell">Supplier</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {group.items.map((item) => {
-                          const isOut = item.quantityOnHand === 0;
-                          const isCritical = item.quantityOnHand <= Math.floor(item.minimumThreshold / 2);
-                          return (
-                            <tr key={item.id} className="border-t border-shark-50 hover:bg-shark-50/30">
-                              <td className="px-5 py-3">
-                                <p className="text-sm font-medium text-shark-800">{item.name}</p>
-                                <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>
-                              </td>
-                              <td className="px-5 py-3 text-right">
-                                <span className={`text-sm font-bold ${isOut ? "text-red-600" : isCritical ? "text-[#E8532E]" : "text-[#E8532E]"}`}>
-                                  {item.quantityOnHand}
-                                </span>
-                                {isOut && <span className="ml-1.5 text-[10px] font-semibold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">OUT</span>}
-                                {isCritical && !isOut && <span className="ml-1.5 text-[10px] font-semibold text-[#E8532E] bg-red-50 px-1.5 py-0.5 rounded">CRITICAL</span>}
-                              </td>
-                              <td className="px-5 py-3 text-right text-sm text-shark-500 hidden sm:table-cell">{item.minimumThreshold}</td>
-                              <td className="px-5 py-3 text-right text-sm text-shark-500 hidden md:table-cell">{item.reorderLevel}</td>
-                              <td className="px-5 py-3 text-right text-sm text-shark-500 hidden lg:table-cell">{item.supplier || "—"}</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                    {/* Mobile: card layout */}
+                    <div className="sm:hidden divide-y divide-shark-50">
+                      {group.items.map((item) => {
+                        const isOut = item.quantityOnHand === 0;
+                        const isCritical = item.quantityOnHand <= Math.floor(item.minimumThreshold / 2);
+                        return (
+                          <div key={item.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium text-shark-800">{item.name}</p>
+                              <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>
+                            </div>
+                            <div className="shrink-0 text-right">
+                              <span className={`text-sm font-bold ${isOut ? "text-red-600" : "text-[#E8532E]"}`}>
+                                {item.quantityOnHand}
+                              </span>
+                              {isOut && <span className="ml-1 text-[10px] font-semibold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">OUT</span>}
+                              {isCritical && !isOut && <span className="ml-1 text-[10px] font-semibold text-[#E8532E] bg-red-50 px-1.5 py-0.5 rounded">LOW</span>}
+                              <p className="text-[10px] text-shark-400 mt-0.5">Min: {item.minimumThreshold}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {/* Desktop: table layout */}
+                    <div className="hidden sm:block">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="bg-shark-50/50">
+                            <th className="px-5 py-2.5 text-left text-xs font-semibold text-shark-400">Item</th>
+                            <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400">Stock</th>
+                            <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400">Threshold</th>
+                            <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400 hidden md:table-cell">Reorder Level</th>
+                            <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400 hidden lg:table-cell">Supplier</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {group.items.map((item) => {
+                            const isOut = item.quantityOnHand === 0;
+                            const isCritical = item.quantityOnHand <= Math.floor(item.minimumThreshold / 2);
+                            return (
+                              <tr key={item.id} className="border-t border-shark-50 hover:bg-shark-50/30">
+                                <td className="px-5 py-3">
+                                  <p className="text-sm font-medium text-shark-800">{item.name}</p>
+                                  <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>
+                                </td>
+                                <td className="px-5 py-3 text-right">
+                                  <span className={`text-sm font-bold ${isOut ? "text-red-600" : "text-[#E8532E]"}`}>
+                                    {item.quantityOnHand}
+                                  </span>
+                                  {isOut && <span className="ml-1.5 text-[10px] font-semibold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">OUT</span>}
+                                  {isCritical && !isOut && <span className="ml-1.5 text-[10px] font-semibold text-[#E8532E] bg-red-50 px-1.5 py-0.5 rounded">CRITICAL</span>}
+                                </td>
+                                <td className="px-5 py-3 text-right text-sm text-shark-500">{item.minimumThreshold}</td>
+                                <td className="px-5 py-3 text-right text-sm text-shark-500 hidden md:table-cell">{item.reorderLevel}</td>
+                                <td className="px-5 py-3 text-right text-sm text-shark-500 hidden lg:table-cell">{item.supplier || "—"}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
               </Card>

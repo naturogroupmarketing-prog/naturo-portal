@@ -202,40 +202,58 @@ export function InventoryDetailClient({
 
       {activeTab === "staff" && (
         <Card>
-          <div className="overflow-x-auto">
-            {staff.length === 0 ? (
-              <div className="py-12 text-center">
-                <Icon name="users" size={40} className="text-shark-200 mx-auto mb-3" />
-                <p className="text-shark-400">No staff assigned to this location.</p>
+          {staff.length === 0 ? (
+            <div className="py-12 text-center">
+              <Icon name="users" size={40} className="text-shark-200 mx-auto mb-3" />
+              <p className="text-shark-400">No staff assigned to this location.</p>
+            </div>
+          ) : (
+            <>
+              {/* Mobile: card layout */}
+              <div className="sm:hidden divide-y divide-shark-50">
+                {staff.map((user) => (
+                  <div key={user.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-shark-800 truncate">{user.name || "—"}</p>
+                        <p className="text-xs text-shark-400 truncate">{user.email}</p>
+                      </div>
+                    </div>
+                    <Badge status={user.role} />
+                  </div>
+                ))}
               </div>
-            ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-shark-100">
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Role</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {staff.map((user) => (
-                    <tr key={user.id} className="border-b border-shark-50 hover:bg-shark-50/50">
-                      <td className="px-4 py-3 text-sm font-medium text-shark-800">{user.name || "—"}</td>
-                      <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
-                      <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
-                      <td className="px-4 py-3 hidden md:table-cell">
-                        <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-action-600" : "text-shark-400"}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                          {user.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
+              {/* Desktop: table layout */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-shark-100">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Role</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+                  </thead>
+                  <tbody>
+                    {staff.map((user) => (
+                      <tr key={user.id} className="border-b border-shark-50 hover:bg-shark-50/50">
+                        <td className="px-4 py-3 text-sm font-medium text-shark-800">{user.name || "—"}</td>
+                        <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
+                        <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
+                        <td className="px-4 py-3 hidden md:table-cell">
+                          <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-action-600" : "text-shark-400"}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
+                            {user.isActive ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </Card>
       )}
     </div>

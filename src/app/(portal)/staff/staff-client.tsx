@@ -258,81 +258,121 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   };
 
   const renderTable = (sectionUsers: StaffUser[]) => (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-shark-100">
-            <th className="px-1 py-3 w-6"></th>
-            <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-            {canViewStaffDetails && <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Email</th>}
-            {canViewStaffDetails && <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Phone</th>}
-            <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
-            <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Assets</th>
-            <th className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sectionUsers.length === 0 ? (
-            <tr>
-              <td colSpan={7} className="px-5 py-8 text-center text-sm text-shark-400">
-                No staff in this section.
-              </td>
+    <>
+      {/* Mobile: card layout */}
+      <div className="sm:hidden space-y-2">
+        {sectionUsers.length === 0 ? (
+          <p className="text-center text-shark-400 py-8 text-sm">No staff in this section.</p>
+        ) : (
+          sectionUsers.map((user) => (
+            <div
+              key={user.id}
+              onClick={() => (isSuperAdmin || canViewStaffDetails) && openEdit(user)}
+              className="border border-shark-100 rounded-xl p-4 bg-white hover:shadow-sm transition-shadow cursor-pointer"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full shrink-0 ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
+                    <p className="text-sm font-semibold text-shark-800 truncate">{user.name || "—"}</p>
+                  </div>
+                  {canViewStaffDetails && <p className="text-xs text-shark-400 mt-0.5 truncate">{user.email}</p>}
+                </div>
+                <Badge status={user.role} />
+              </div>
+              <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-shark-50">
+                <span className="text-xs text-shark-500">
+                  {user.assetAssignments.length} asset{user.assetAssignments.length !== 1 ? "s" : ""} assigned
+                </span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setDetailUser(user); }}
+                  className="text-xs text-action-500 font-medium px-2 py-1 rounded-lg hover:bg-action-50 transition-colors"
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop: table layout */}
+      <div className="hidden sm:block overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-shark-100">
+              <th className="px-1 py-3 w-6"></th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
+              {canViewStaffDetails && <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Email</th>}
+              {canViewStaffDetails && <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Phone</th>}
+              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
+              <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Assets</th>
+              <th className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
             </tr>
-          ) : (
-            sectionUsers.map((user) => (
-              <tr
-                key={user.id}
-                onClick={() => (isSuperAdmin || canViewStaffDetails) && openEdit(user)}
-                draggable={isSuperAdmin}
-                onDragStart={() => setDragItemId(user.id)}
-                onDragOver={(e) => { e.preventDefault(); setDragOverItemId(user.id); }}
-                onDragEnd={() => { setDragItemId(null); setDragOverItemId(null); }}
-                className={`border-b border-shark-50 hover:bg-shark-50/50 ${(isSuperAdmin || canViewStaffDetails) ? "cursor-pointer" : ""} ${dragItemId === user.id ? "opacity-40" : ""} ${dragOverItemId === user.id ? "border-t-2 border-t-action-500" : ""}`}
-              >
-                <td className="px-1 py-2" onClick={(e) => e.stopPropagation()}>
-                  {isSuperAdmin && (
-                    <div className="cursor-grab active:cursor-grabbing p-0.5">
-                      <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
-                    </div>
-                  )}
-                </td>
-                <td className="px-5 py-3.5 font-medium text-shark-800">{user.name || "—"}</td>
-                {canViewStaffDetails && <td className="px-5 py-3.5 text-shark-500 hidden md:table-cell">{user.email}</td>}
-                {canViewStaffDetails && <td className="px-5 py-3.5 text-shark-500 hidden lg:table-cell">{user.phone || "—"}</td>}
-                <td className="px-5 py-3.5"><Badge status={user.role} /></td>
-                <td className="px-5 py-3.5 text-right">
-                  {user.assetAssignments.length > 0 ? (
-                    <div>
-                      <span className="font-medium text-shark-700">{user.assetAssignments.length}</span>
-                      <div className="text-xs text-shark-400 mt-0.5">
-                        {user.assetAssignments.slice(0, 2).map((a) => a.asset.name).join(", ")}
-                        {user.assetAssignments.length > 2 && ` +${user.assetAssignments.length - 2} more`}
-                      </div>
-                    </div>
-                  ) : (
-                    <span className="text-shark-300">0</span>
-                  )}
-                </td>
-                <td className="px-5 py-3.5 text-center">
-                  <span className={`inline-flex items-center gap-1.5`} aria-label={user.isActive ? "Active" : "Inactive"} title={user.isActive ? "Active" : "Inactive"}>
-                    <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                    <span className="text-xs text-shark-400 hidden sm:inline">{user.isActive ? "Active" : "Inactive"}</span>
-                  </span>
-                </td>
-                <td className="px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    onClick={() => setDetailUser(user)}
-                    className="text-xs text-action-500 hover:text-action-600 font-medium px-2 py-1 rounded-lg hover:bg-action-50 transition-colors"
-                  >
-                    View
-                  </button>
+          </thead>
+          <tbody>
+            {sectionUsers.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-5 py-8 text-center text-sm text-shark-400">
+                  No staff in this section.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
+            ) : (
+              sectionUsers.map((user) => (
+                <tr
+                  key={user.id}
+                  onClick={() => (isSuperAdmin || canViewStaffDetails) && openEdit(user)}
+                  draggable={isSuperAdmin}
+                  onDragStart={() => setDragItemId(user.id)}
+                  onDragOver={(e) => { e.preventDefault(); setDragOverItemId(user.id); }}
+                  onDragEnd={() => { setDragItemId(null); setDragOverItemId(null); }}
+                  className={`border-b border-shark-50 hover:bg-shark-50/50 ${(isSuperAdmin || canViewStaffDetails) ? "cursor-pointer" : ""} ${dragItemId === user.id ? "opacity-40" : ""} ${dragOverItemId === user.id ? "border-t-2 border-t-action-500" : ""}`}
+                >
+                  <td className="px-1 py-2" onClick={(e) => e.stopPropagation()}>
+                    {isSuperAdmin && (
+                      <div className="cursor-grab active:cursor-grabbing p-0.5">
+                        <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-5 py-3.5 font-medium text-shark-800">{user.name || "—"}</td>
+                  {canViewStaffDetails && <td className="px-5 py-3.5 text-shark-500 hidden md:table-cell">{user.email}</td>}
+                  {canViewStaffDetails && <td className="px-5 py-3.5 text-shark-500 hidden lg:table-cell">{user.phone || "—"}</td>}
+                  <td className="px-5 py-3.5"><Badge status={user.role} /></td>
+                  <td className="px-5 py-3.5 text-right">
+                    {user.assetAssignments.length > 0 ? (
+                      <div>
+                        <span className="font-medium text-shark-700">{user.assetAssignments.length}</span>
+                        <div className="text-xs text-shark-400 mt-0.5">
+                          {user.assetAssignments.slice(0, 2).map((a) => a.asset.name).join(", ")}
+                          {user.assetAssignments.length > 2 && ` +${user.assetAssignments.length - 2} more`}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-shark-300">0</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-3.5 text-center">
+                    <span className={`inline-flex items-center gap-1.5`} aria-label={user.isActive ? "Active" : "Inactive"} title={user.isActive ? "Active" : "Inactive"}>
+                      <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
+                      <span className="text-xs text-shark-400 hidden sm:inline">{user.isActive ? "Active" : "Inactive"}</span>
+                    </span>
+                  </td>
+                  <td className="px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => setDetailUser(user)}
+                      className="text-xs text-action-500 hover:text-action-600 font-medium px-2 py-1 rounded-lg hover:bg-action-50 transition-colors"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 
   return (

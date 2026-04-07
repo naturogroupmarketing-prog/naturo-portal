@@ -454,131 +454,119 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     const someSelected = deletableInSection.some((c) => selectedIds.has(c.id));
 
     return (
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-shark-100">
-              <th className="px-1 py-3 w-6"></th>
-              <th className="px-3 py-3 text-left w-10">
-                {deletableInSection.length > 0 && (
-                  <input
-                    type="checkbox"
-                    checked={allSelected}
-                    ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }}
-                    onChange={() => toggleSelectAll(sectionItems)}
-                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                  />
-                )}
-              </th>
-              {visibleColumns.photo && <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
-              {visibleColumns.item && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>}
-              {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
-              {visibleColumns.qty && <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>}
-              {visibleColumns.assignedTo && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
-              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sectionItems.map((c) => {
+      <>
+        {/* Mobile: card layout */}
+        <div className="sm:hidden space-y-2">
+          {sectionItems.length === 0 ? (
+            <p className="text-center text-shark-400 py-6 text-sm">No items in this section.</p>
+          ) : (
+            sectionItems.map((c) => {
               const activeAssignments = c.assignments || [];
-              const canDelete = deletableIds.has(c.id);
+              const isLow = c.quantityOnHand <= c.minimumThreshold;
               return (
-                <tr
+                <div
                   key={c.id}
                   onClick={() => setEditConsumable(c)}
-                  draggable
-                  onDragStart={() => handleItemDragStart(c.id)}
-                  onDragOver={(e) => handleItemDragOver(e, c.id)}
-                  onDragEnd={() => handleItemDragEnd(sectionItems)}
-                  className={`border-b border-shark-50 hover:bg-shark-50/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}
+                  className="border border-shark-100 rounded-xl p-4 bg-white hover:shadow-sm transition-shadow cursor-pointer"
                 >
-                  <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
-                    <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
-                  </td>
-                  <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
-                    {canDelete ? (
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.has(c.id)}
-                        onChange={() => toggleSelect(c.id)}
-                        className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                      />
-                    ) : (
-                      <div className="w-4" />
-                    )}
-                  </td>
-                  {visibleColumns.photo && (
-                  <td className="px-3 py-2">
+                  <div className="flex items-start gap-3">
                     {c.imageUrl ? (
-                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100">
+                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-shark-100 shrink-0">
                         <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" />
                       </div>
                     ) : (
-                      <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center">
-                        <svg className="w-5 h-5 text-shark-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
-                        </svg>
+                      <div className="w-11 h-11 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                        <Icon name="droplet" size={18} className="text-shark-300" />
                       </div>
                     )}
-                  </td>
-                  )}
-                  {visibleColumns.item && (
-                  <td className="px-4 py-3">
-                    <span className="font-medium text-shark-800">{c.name}</span>
-                    <span className="text-shark-400 ml-1 text-xs">({c.unitType})</span>
-                  </td>
-                  )}
-                  {visibleColumns.location && (
-                  <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">
-                    {c.region.state.name} / {c.region.name}
-                  </td>
-                  )}
-                  {visibleColumns.qty && (
-                  <td className="px-4 py-3 text-right">
-                    <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>
-                      {c.quantityOnHand}
-                    </span>
-                  </td>
-                  )}
-                  {visibleColumns.assignedTo && (
-                  <td className="px-4 py-3 text-shark-500 hidden md:table-cell">
-                    {activeAssignments.length > 0 ? (
-                      <div className="space-y-0.5">
-                        {activeAssignments.map((a) => (
-                          <div key={a.id} className="text-xs">
-                            {a.user.name || a.user.email} <span className="text-shark-400">({a.quantity})</span>
-                          </div>
-                        ))}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-shark-800 truncate">{c.name}</p>
+                          <p className="text-xs text-shark-400">{c.unitType}</p>
+                        </div>
+                        <span className={`text-sm font-bold shrink-0 ${isLow ? "text-red-500" : "text-shark-800"}`}>
+                          {c.quantityOnHand}
+                        </span>
                       </div>
-                    ) : (
-                      <span className="text-shark-400">{"\u2014"}</span>
-                    )}
-                  </td>
-                  )}
-                  <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center justify-end gap-1">
-                      <Button size="sm" variant="outline" onClick={() => { setStockMode("add"); setShowAddStock(c); }}>{canAdjustStock ? "Stock" : "+ Stock"}</Button>
-                      <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
                       {activeAssignments.length > 0 && (
-                        <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}>
-                          Return
-                        </Button>
+                        <p className="text-xs text-shark-500 mt-1">Assigned to {activeAssignments.length} staff</p>
                       )}
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-shark-50" onClick={(e) => e.stopPropagation()}>
+                    <Button size="sm" variant="outline" onClick={() => { setStockMode("add"); setShowAddStock(c); }}>Stock</Button>
+                    <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
+                    {activeAssignments.length > 0 && (
+                      <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}>Return</Button>
+                    )}
+                  </div>
+                </div>
               );
-            })}
-            {sectionItems.length === 0 && (
-              <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-shark-400 text-sm">
-                  No items in this section.
-                </td>
+            })
+          )}
+        </div>
+
+        {/* Desktop: table layout */}
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-shark-100">
+                <th className="px-1 py-3 w-6"></th>
+                <th className="px-3 py-3 text-left w-10">
+                  {deletableInSection.length > 0 && (
+                    <input type="checkbox" checked={allSelected} ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }} onChange={() => toggleSelectAll(sectionItems)} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
+                  )}
+                </th>
+                {visibleColumns.photo && <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
+                {visibleColumns.item && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>}
+                {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
+                {visibleColumns.qty && <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>}
+                {visibleColumns.assignedTo && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
+                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {sectionItems.map((c) => {
+                const activeAssignments = c.assignments || [];
+                const canDelete = deletableIds.has(c.id);
+                return (
+                  <tr key={c.id} onClick={() => setEditConsumable(c)} draggable onDragStart={() => handleItemDragStart(c.id)} onDragOver={(e) => handleItemDragOver(e, c.id)} onDragEnd={() => handleItemDragEnd(sectionItems)} className={`border-b border-shark-50 hover:bg-shark-50/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}>
+                    <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
+                      <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                    </td>
+                    <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
+                      {canDelete ? <input type="checkbox" checked={selectedIds.has(c.id)} onChange={() => toggleSelect(c.id)} className="rounded border-shark-300 text-action-500 focus:ring-action-400" /> : <div className="w-4" />}
+                    </td>
+                    {visibleColumns.photo && (
+                    <td className="px-3 py-2">
+                      {c.imageUrl ? <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100"><img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" /></div>
+                      : <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center"><Icon name="droplet" size={18} className="text-shark-300" /></div>}
+                    </td>
+                    )}
+                    {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
+                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
+                    {visibleColumns.qty && <td className="px-4 py-3 text-right"><span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>{c.quantityOnHand}</span></td>}
+                    {visibleColumns.assignedTo && (
+                    <td className="px-4 py-3 text-shark-500 hidden md:table-cell">
+                      {activeAssignments.length > 0 ? <div className="space-y-0.5">{activeAssignments.map((a) => <div key={a.id} className="text-xs">{a.user.name || a.user.email} <span className="text-shark-400">({a.quantity})</span></div>)}</div> : <span className="text-shark-400">{"\u2014"}</span>}
+                    </td>
+                    )}
+                    <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button size="sm" variant="outline" onClick={() => { setStockMode("add"); setShowAddStock(c); }}>{canAdjustStock ? "Stock" : "+ Stock"}</Button>
+                        <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
+                        {activeAssignments.length > 0 && <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}>Return</Button>}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+              {sectionItems.length === 0 && <tr><td colSpan={7} className="px-4 py-6 text-center text-shark-400 text-sm">No items in this section.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </>
     );
   };
 
@@ -805,7 +793,40 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
       {tab === "requests" && (
         <Card>
-          <div className="overflow-x-auto">
+          {/* Mobile: card layout */}
+          <div className="sm:hidden divide-y divide-shark-50">
+            {pendingRequests.length === 0 ? (
+              <p className="text-center text-shark-400 py-8 text-sm">No pending requests.</p>
+            ) : (
+              pendingRequests.map((r) => (
+                <div key={r.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-shark-800">{r.consumable.name}</p>
+                      <p className="text-xs text-shark-400">{r.user.name || r.user.email} · {r.quantity} {r.consumable.unitType}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-3">
+                    {r.consumable.quantityOnHand < r.quantity ? (
+                      <span className="text-xs text-red-500 font-medium">Out of stock ({r.consumable.quantityOnHand} available)</span>
+                    ) : (
+                      <form action={async (fd) => { setIssuingId(r.id); try { await issueConsumable(fd); addToast("Assigned", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); } finally { setIssuingId(null); } }}>
+                        <input type="hidden" name="requestId" value={r.id} />
+                        <Button size="sm" type="submit" disabled={issuingId === r.id} loading={issuingId === r.id}>Assign</Button>
+                      </form>
+                    )}
+                    <form action={async (fd) => { setRejectingId(r.id); try { await approveRequest(fd); addToast("Rejected", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); } finally { setRejectingId(null); } }}>
+                      <input type="hidden" name="requestId" value={r.id} />
+                      <input type="hidden" name="action" value="reject" />
+                      <Button size="sm" variant="danger" type="submit" disabled={rejectingId === r.id} loading={rejectingId === r.id}>Reject</Button>
+                    </form>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          {/* Desktop: table layout */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-shark-100">
@@ -826,26 +847,14 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     <td className="px-5 py-3.5 text-right">
                       <div className="flex items-center justify-end gap-1">
                         {r.consumable.quantityOnHand < r.quantity ? (
-                          <span className="text-xs text-red-500 font-medium">
-                            Out of stock ({r.consumable.quantityOnHand} available)
-                          </span>
+                          <span className="text-xs text-red-500 font-medium">Out of stock ({r.consumable.quantityOnHand} available)</span>
                         ) : (
-                          <form action={async (fd) => {
-                            setIssuingId(r.id);
-                            try { await issueConsumable(fd); addToast("Consumable assigned successfully", "success"); }
-                            catch (e) { addToast(e instanceof Error ? e.message : "Failed to assign", "error"); }
-                            finally { setIssuingId(null); }
-                          }}>
+                          <form action={async (fd) => { setIssuingId(r.id); try { await issueConsumable(fd); addToast("Assigned", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); } finally { setIssuingId(null); } }}>
                             <input type="hidden" name="requestId" value={r.id} />
                             <Button size="sm" variant="primary" type="submit" disabled={issuingId === r.id} loading={issuingId === r.id}>Assign</Button>
                           </form>
                         )}
-                        <form action={async (fd) => {
-                          setRejectingId(r.id);
-                          try { await approveRequest(fd); addToast("Request rejected", "success"); }
-                          catch (e) { addToast(e instanceof Error ? e.message : "Failed to reject", "error"); }
-                          finally { setRejectingId(null); }
-                        }}>
+                        <form action={async (fd) => { setRejectingId(r.id); try { await approveRequest(fd); addToast("Rejected", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); } finally { setRejectingId(null); } }}>
                           <input type="hidden" name="requestId" value={r.id} />
                           <input type="hidden" name="action" value="reject" />
                           <Button size="sm" variant="danger" type="submit" disabled={rejectingId === r.id} loading={rejectingId === r.id}>Reject</Button>
@@ -855,9 +864,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   </tr>
                 ))}
                 {pendingRequests.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-gray-400">No pending requests.</td>
-                  </tr>
+                  <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400">No pending requests.</td></tr>
                 )}
               </tbody>
             </table>

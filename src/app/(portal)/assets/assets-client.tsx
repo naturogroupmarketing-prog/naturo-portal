@@ -509,131 +509,148 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     const someSelected = deletableInSection.some((a) => selectedIds.has(a.id));
 
     return (
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-shark-100">
-              {permissions.canEdit && <th className="px-1 py-3 w-6"></th>}
-              <th className="px-3 py-3 text-left w-10">
-                {deletableInSection.length > 0 && (
-                  <input
-                    type="checkbox"
-                    checked={allSelected}
-                    ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }}
-                    onChange={() => toggleSelectAll(sectionAssets)}
-                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                  />
-                )}
-              </th>
-              {visibleColumns.photo && <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
-              {visibleColumns.code && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Code</th>}
-              {visibleColumns.name && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>}
-              {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
-              {visibleColumns.status && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>}
-              {visibleColumns.assignedTo && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
-              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sectionAssets.map((asset) => {
+      <>
+        {/* Mobile: card layout */}
+        <div className="sm:hidden space-y-2">
+          {sectionAssets.length === 0 ? (
+            <p className="text-center text-shark-400 py-6 text-sm">No assets in this section.</p>
+          ) : (
+            sectionAssets.map((asset) => {
               const activeAssignment = asset.assignments[0];
-              const canDelete = deletableIds.has(asset.id);
               return (
-                <tr
+                <div
                   key={asset.id}
                   onClick={() => permissions.canEdit && setEditAsset(asset)}
-                  draggable={permissions.canEdit}
-                  onDragStart={() => handleItemDragStart(asset.id)}
-                  onDragOver={(e) => handleItemDragOver(e, asset.id)}
-                  onDragEnd={() => handleItemDragEnd(sectionAssets)}
-                  className={`border-b border-shark-50 hover:bg-shark-50/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""} ${dragItemId === asset.id ? "opacity-40" : ""} ${dragOverItemId === asset.id ? "border-t-2 border-t-action-500" : ""}`}
+                  className="border border-shark-100 rounded-xl p-4 bg-white hover:shadow-sm transition-shadow cursor-pointer"
                 >
-                  {permissions.canEdit && (
-                    <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
-                      <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
-                    </td>
-                  )}
-                  <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
-                    {canDelete ? (
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.has(asset.id)}
-                        onChange={() => toggleSelect(asset.id)}
-                        className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                      />
-                    ) : (
-                      <div className="w-4" />
-                    )}
-                  </td>
-                  {visibleColumns.photo && (
-                  <td className="px-3 py-2">
+                  <div className="flex items-start gap-3">
                     {asset.imageUrl ? (
-                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100">
+                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-shark-100 shrink-0">
                         <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" />
                       </div>
                     ) : (
-                      <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center">
-                        <svg className="w-5 h-5 text-shark-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
-                        </svg>
+                      <div className="w-11 h-11 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                        <Icon name="package" size={18} className="text-shark-300" />
                       </div>
                     )}
-                  </td>
-                  )}
-                  {visibleColumns.code && <td className="px-4 py-3 font-mono text-xs text-shark-800">{asset.assetCode}</td>}
-                  {visibleColumns.name && (
-                  <td className="px-4 py-3 max-w-[200px]">
-                    <div className="truncate">
-                      <span className="font-medium text-shark-800">{asset.name}</span>
-                      {asset.isHighValue && (
-                        <span className="ml-1 text-gold-500 text-xs" title="High value">&#9733;</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-shark-800 truncate">{asset.name}</p>
+                          <p className="text-xs text-shark-400 font-mono">{asset.assetCode}</p>
+                        </div>
+                        <Badge status={asset.status} />
+                      </div>
+                      {activeAssignment && (
+                        <p className="text-xs text-shark-500 mt-1">Assigned: {activeAssignment.user.name || activeAssignment.user.email}</p>
                       )}
                     </div>
-                  </td>
-                  )}
-                  {visibleColumns.location && (
-                  <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">
-                    {asset.region.state.name} / {asset.region.name}
-                  </td>
-                  )}
-                  {visibleColumns.status && <td className="px-4 py-3"><Badge status={asset.status} /></td>}
-                  {visibleColumns.assignedTo && (
-                  <td className="px-4 py-3 text-shark-500 hidden md:table-cell">
-                    {activeAssignment
-                      ? activeAssignment.user.name || activeAssignment.user.email
-                      : "\u2014"}
-                  </td>
-                  )}
-                  <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center justify-end gap-1">
-                      <Button size="sm" variant="ghost" onClick={() => setShowQR(asset)} title="QR Code">
-                        QR
-                      </Button>
-                      {permissions.canEdit && asset.status === "AVAILABLE" && (
-                        <Button size="sm" variant="outline" onClick={() => setShowAssign(asset)}>
-                          Assign
-                        </Button>
-                      )}
-                      {permissions.canEdit && activeAssignment && (
-                        <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignmentId: activeAssignment.id, asset })}>
-                          Return
-                        </Button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-shark-50" onClick={(e) => e.stopPropagation()}>
+                    <Button size="sm" variant="ghost" onClick={() => setShowQR(asset)}>QR</Button>
+                    {permissions.canEdit && asset.status === "AVAILABLE" && (
+                      <Button size="sm" variant="outline" onClick={() => setShowAssign(asset)}>Assign</Button>
+                    )}
+                    {permissions.canEdit && activeAssignment && (
+                      <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignmentId: activeAssignment.id, asset })}>Return</Button>
+                    )}
+                  </div>
+                </div>
               );
-            })}
-            {sectionAssets.length === 0 && (
-              <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-shark-400 text-sm">
-                  No assets in this section.
-                </td>
+            })
+          )}
+        </div>
+
+        {/* Desktop: table layout */}
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-shark-100">
+                {permissions.canEdit && <th className="px-1 py-3 w-6"></th>}
+                <th className="px-3 py-3 text-left w-10">
+                  {deletableInSection.length > 0 && (
+                    <input
+                      type="checkbox"
+                      checked={allSelected}
+                      ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }}
+                      onChange={() => toggleSelectAll(sectionAssets)}
+                      className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                    />
+                  )}
+                </th>
+                {visibleColumns.photo && <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
+                {visibleColumns.code && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Code</th>}
+                {visibleColumns.name && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>}
+                {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
+                {visibleColumns.status && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>}
+                {visibleColumns.assignedTo && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
+                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {sectionAssets.map((asset) => {
+                const activeAssignment = asset.assignments[0];
+                const canDelete = deletableIds.has(asset.id);
+                return (
+                  <tr
+                    key={asset.id}
+                    onClick={() => permissions.canEdit && setEditAsset(asset)}
+                    draggable={permissions.canEdit}
+                    onDragStart={() => handleItemDragStart(asset.id)}
+                    onDragOver={(e) => handleItemDragOver(e, asset.id)}
+                    onDragEnd={() => handleItemDragEnd(sectionAssets)}
+                    className={`border-b border-shark-50 hover:bg-shark-50/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""} ${dragItemId === asset.id ? "opacity-40" : ""} ${dragOverItemId === asset.id ? "border-t-2 border-t-action-500" : ""}`}
+                  >
+                    {permissions.canEdit && (
+                      <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
+                        <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                      </td>
+                    )}
+                    <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
+                      {canDelete ? (
+                        <input type="checkbox" checked={selectedIds.has(asset.id)} onChange={() => toggleSelect(asset.id)} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
+                      ) : ( <div className="w-4" /> )}
+                    </td>
+                    {visibleColumns.photo && (
+                    <td className="px-3 py-2">
+                      {asset.imageUrl ? (
+                        <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100"><img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /></div>
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center"><Icon name="package" size={18} className="text-shark-300" /></div>
+                      )}
+                    </td>
+                    )}
+                    {visibleColumns.code && <td className="px-4 py-3 font-mono text-xs text-shark-800">{asset.assetCode}</td>}
+                    {visibleColumns.name && (
+                    <td className="px-4 py-3 max-w-[200px]">
+                      <div className="truncate">
+                        <span className="font-medium text-shark-800">{asset.name}</span>
+                        {asset.isHighValue && <span className="ml-1 text-gold-500 text-xs" title="High value">&#9733;</span>}
+                      </div>
+                    </td>
+                    )}
+                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{asset.region.state.name} / {asset.region.name}</td>}
+                    {visibleColumns.status && <td className="px-4 py-3"><Badge status={asset.status} /></td>}
+                    {visibleColumns.assignedTo && (
+                    <td className="px-4 py-3 text-shark-500 hidden md:table-cell">{activeAssignment ? activeAssignment.user.name || activeAssignment.user.email : "\u2014"}</td>
+                    )}
+                    <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button size="sm" variant="ghost" onClick={() => setShowQR(asset)} title="QR Code">QR</Button>
+                        {permissions.canEdit && asset.status === "AVAILABLE" && <Button size="sm" variant="outline" onClick={() => setShowAssign(asset)}>Assign</Button>}
+                        {permissions.canEdit && activeAssignment && <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignmentId: activeAssignment.id, asset })}>Return</Button>}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+              {sectionAssets.length === 0 && (
+                <tr><td colSpan={8} className="px-4 py-6 text-center text-shark-400 text-sm">No assets in this section.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </>
     );
   };
 
