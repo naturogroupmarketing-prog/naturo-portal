@@ -113,11 +113,11 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       <div
         ref={contentRef}
         className={cn(
-          "w-full max-w-[92vw] sm:max-w-lg rounded-2xl bg-white dark:bg-shark-900 shadow-2xl max-h-[90vh] overflow-y-auto transition-all duration-200",
+          "w-[calc(100vw-1rem)] sm:max-w-lg rounded-2xl bg-white dark:bg-shark-900 shadow-2xl max-h-[85vh] sm:max-h-[90vh] overflow-y-auto safe-bottom transition-all duration-200",
           className
         )}
       >
-        <div className="flex items-center justify-between border-b border-shark-100 dark:border-shark-800 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-shark-100 dark:border-shark-800 px-4 sm:px-6 py-4">
           <h2 id={titleId} className="text-lg font-semibold text-shark-900 dark:text-shark-100 truncate pr-2">{title}</h2>
           <button
             onClick={onClose}
@@ -127,7 +127,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
             &times;
           </button>
         </div>
-        <div className="px-6 py-4">{children}</div>
+        <div className="px-4 sm:px-6 py-4">{children}</div>
       </div>
     </div>
   );

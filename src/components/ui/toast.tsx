@@ -63,7 +63,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: () => void }) 
     >
       {ICONS[toast.type]}
       <p className="text-sm font-medium text-shark-800 flex-1">{toast.message}</p>
-      <button onClick={onRemove} aria-label="Dismiss" className="text-shark-400 hover:text-shark-600 transition-colors shrink-0">
+      <button onClick={onRemove} aria-label="Dismiss" className="text-shark-400 hover:text-shark-600 transition-colors shrink-0 min-w-[44px] min-h-[44px] -mr-2 flex items-center justify-center">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -90,8 +90,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
       {children}
-      {/* Toast container — fixed bottom-right */}
-      <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+      {/* Toast container — fixed bottom-right, respects safe areas */}
+      <div className="fixed bottom-4 right-4 left-4 sm:left-auto z-[100] flex flex-col gap-2 max-w-sm w-auto sm:w-full pointer-events-none safe-bottom">
         {toasts.map((toast) => (
           <div key={toast.id} className="pointer-events-auto">
             <ToastItem toast={toast} onRemove={() => removeToast(toast.id)} />

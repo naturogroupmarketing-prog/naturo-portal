@@ -49,9 +49,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             "border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 text-shark-700 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700": variant === "outline",
           },
           {
-            "px-3 py-1.5 text-xs": size === "sm",
-            "px-4 py-2 text-sm": size === "md",
-            "px-6 py-2.5 text-sm": size === "lg",
+            "px-3 py-2 text-xs min-h-[36px] sm:min-h-[32px]": size === "sm",
+            "px-4 py-2.5 text-sm min-h-[44px] sm:min-h-[40px]": size === "md",
+            "px-6 py-3 text-sm min-h-[48px] sm:min-h-[44px]": size === "lg",
           },
           className
         )}

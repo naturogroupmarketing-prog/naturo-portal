@@ -69,6 +69,35 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Safe area insets for notched phones (iPhone X+, Pixel, etc.) */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-top { padding-top: env(safe-area-inset-top); }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  .safe-x { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+}
+
+/* Prevent iOS zoom on input focus (font-size < 16px triggers zoom) */
+@media screen and (max-width: 767px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch-friendly hover — only show hover effects on devices that support it */
+@media (hover: none) {
+  .hover\:bg-shark-50:active { background-color: var(--color-shark-50); }
+  .hover\:bg-shark-100:active { background-color: var(--color-shark-100); }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Visible scrollbar for horizontal-scrolling tables on iOS/mobile */
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;

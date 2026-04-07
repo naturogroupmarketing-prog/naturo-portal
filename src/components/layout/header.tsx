@@ -43,10 +43,10 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-shark-100 bg-white/80 backdrop-blur-md px-4 lg:px-8 transition-colors">
+    <header className="sticky top-0 z-30 flex min-h-14 items-center justify-between border-b border-shark-100 bg-white/80 backdrop-blur-md px-3 sm:px-4 lg:px-8 safe-top transition-colors">
       <button
         onClick={onMenuToggle}
-        className="lg:hidden p-2 text-shark-500 hover:text-shark-900 rounded-lg hover:bg-shark-50 transition-colors"
+        className="lg:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-shark-500 hover:text-shark-900 rounded-lg hover:bg-shark-50 transition-colors"
         aria-label="Toggle menu"
       >
         <Icon name="menu" size={20} />
@@ -59,7 +59,7 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
       {/* Mobile search button — opens command palette */}
       <button
         onClick={() => { document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true })); }}
-        className="lg:hidden p-2 text-shark-400 hover:text-shark-700 rounded-lg hover:bg-shark-50 transition-colors"
+        className="lg:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-shark-400 hover:text-shark-700 rounded-lg hover:bg-shark-50 transition-colors"
         aria-label="Search"
       >
         <Icon name="search" size={18} />

@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="theme-color" content="#0f172a" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className={`${inter.className} ${exo.variable} antialiased`}>
         <ToastProvider>

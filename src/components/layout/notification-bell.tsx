@@ -105,7 +105,7 @@ export function NotificationBell() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-lg hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
+        className="relative p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
         title="Notifications"
         aria-label="Notifications"
       >
