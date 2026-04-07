@@ -54,7 +54,7 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   "stat-total-assets": "Total Assets",
   "stat-checked-out": "Checked Out",
   "stat-overdue": "Overdue",
-  "stat-damaged": "Damaged / Lost",
+  "stat-damaged": "Damage",
   "stat-lost": "Lost (legacy)",
   "stat-pending-requests": "Pending Requests",
   "stat-pending-pos": "Pending POs",

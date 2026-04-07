@@ -44,7 +44,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
                   <div className="flex justify-between"><span className="text-shark-400">Overdue returns ({data.overdueReturns})</span><span className="text-red-400">-{Math.min(20, data.overdueReturns * 4)}</span></div>
                 )}
                 {(data.unresolvedDamage + data.lostItems) > 0 && (
-                  <div className="flex justify-between"><span className="text-shark-400">Damaged/lost ({data.unresolvedDamage + data.lostItems})</span><span className="text-red-400">-{Math.min(15, (data.unresolvedDamage + data.lostItems) * 5)}</span></div>
+                  <div className="flex justify-between"><span className="text-shark-400">Damage reports ({data.unresolvedDamage + data.lostItems})</span><span className="text-red-400">-{Math.min(15, (data.unresolvedDamage + data.lostItems) * 5)}</span></div>
                 )}
                 {data.incompleteInspections > 0 && (
                   <div className="flex justify-between"><span className="text-shark-400">Overdue inspections ({data.incompleteInspections})</span><span className="text-red-400">-{Math.min(15, data.incompleteInspections * 5)}</span></div>
@@ -84,7 +84,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
           {[
             { label: "Overdue Returns", value: data.overdueReturns, icon: "arrow-left" as const, href: "/returns", danger: true },
             { label: "Low Stock Items", value: data.lowStockCount, icon: "alert-triangle" as const, href: "/alerts/low-stock", danger: true },
-            { label: "Damaged / Lost", value: data.unresolvedDamage + data.lostItems, icon: "alert-triangle" as const, href: "/alerts/damage", danger: true },
+            { label: "Damage", value: data.unresolvedDamage + data.lostItems, icon: "alert-triangle" as const, href: "/alerts/damage", danger: true },
             { label: "Pending Requests", value: data.pendingRequests, icon: "clipboard" as const, href: "/inventory", danger: false },
             { label: "Overdue Inspections", value: data.incompleteInspections, icon: "search" as const, href: "/condition-checks", danger: true },
           ].filter((item) => item.value > 0).map((item) => (

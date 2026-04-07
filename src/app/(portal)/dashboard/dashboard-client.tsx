@@ -561,7 +561,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="alert-triangle" size={14} className="text-red-500" />
                           <div>
                             <p className="text-lg font-bold text-red-600">{region.damaged + region.lost}</p>
-                            <p className="text-xs text-red-400">Damaged / Lost</p>
+                            <p className="text-xs text-red-400">Damage</p>
                           </div>
                         </Link>
                         <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 hover:bg-amber-200 transition-colors">
