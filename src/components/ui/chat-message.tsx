@@ -31,29 +31,27 @@ function extractOptions(content: string): { mainContent: string; options: string
   const lines = content.trim().split("\n");
   const options: string[] = [];
 
-  // Walk backwards to find the trailing list
+  // Walk backwards to find the trailing list, skipping empty lines
   let i = lines.length - 1;
   while (i >= 0) {
     const line = lines[i].trim();
-    // Match: "1. text", "- text", "* text", "• text"
-    const match = line.match(/^(?:\d+[\.\)]\s*|[-*•]\s+)(.+)$/);
+    if (line === "") { i--; continue; } // skip empty lines
+    // Match: "1. text", "1) text", "- text", "* text", "• text", "— text"
+    const match = line.match(/^(?:\d+[\.\)]\s*|[-*•—]\s*)(.+)$/);
     if (match) {
-      options.unshift(match[1].replace(/\*\*/g, "").trim());
+      const text = match[1].replace(/\*\*/g, "").replace(/`/g, "").trim();
+      if (text) options.unshift(text);
       i--;
     } else {
       break;
     }
   }
 
-  // Only extract if we found 2+ options
+  // Need at least 2 options
   if (options.length < 2) return { mainContent: content, options: [] };
 
-  // Check if the line before the list is a question/prompt
+  // Keep everything before the list as main content
   const mainLines = lines.slice(0, i + 1);
-  const lastMain = mainLines[mainLines.length - 1]?.trim() || "";
-  const isQuestion = /\?$|:$|like me to|would you|do you want|shall I|should I|options|choose/i.test(lastMain);
-
-  if (!isQuestion && options.length < 3) return { mainContent: content, options: [] };
 
   return {
     mainContent: mainLines.join("\n").trim(),
@@ -104,8 +102,8 @@ export function ChatMessage({ role, content, isLoading, isLast, onOptionClick }:
     );
   }
 
-  // Extract options from assistant message (only for the last message)
-  const { mainContent, options } = isLast && onOptionClick ? extractOptions(content) : { mainContent: content, options: [] };
+  // Extract clickable options from assistant messages with lists
+  const { mainContent, options } = onOptionClick ? extractOptions(content) : { mainContent: content, options: [] };
 
   return (
     <div className="flex justify-start">
