@@ -77,7 +77,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
           role={role}
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
         />
-        <main className={`flex-1 overflow-y-auto overflow-x-hidden px-2 py-3 sm:p-5 lg:p-10 ${role === "STAFF" ? "pb-20 lg:pb-10" : ""}`}>{children}</main>
+        <main className={`flex-1 overflow-y-auto overflow-x-hidden px-2 py-3 sm:p-5 lg:p-10 ${role === "STAFF" ? "pb-20 lg:pb-10" : "pb-16 sm:pb-5 lg:pb-10"}`}>{children}</main>
       </div>
 
       {/* Bottom navigation for Staff on mobile/tablet */}
