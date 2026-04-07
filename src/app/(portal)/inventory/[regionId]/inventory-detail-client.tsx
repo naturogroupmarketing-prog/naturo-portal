@@ -36,17 +36,10 @@ export function InventoryDetailClient({
 }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
-  const [activeTab, setActiveTab] = useState<"assets" | "consumables" | "staff">(initialTab || "assets");
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [applying, setApplying] = useState(false);
 
   const isEmpty = (assets as unknown[]).length === 0 && (consumables as unknown[]).length === 0;
-
-  const tabs = [
-    { key: "assets" as const, label: "Assets", count: (assets as unknown[]).length, icon: "package" as const },
-    { key: "consumables" as const, label: "Consumables", count: (consumables as unknown[]).length, icon: "droplet" as const },
-    { key: "staff" as const, label: "Staff", count: staff.length, icon: "users" as const },
-  ];
 
   const handleApplyStandard = async () => {
     setApplying(true);
@@ -84,13 +77,13 @@ export function InventoryDetailClient({
         </div>
       </div>
 
-      {/* Summary Stats — clickable */}
+      {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500", tab: "assets" as const, href: undefined },
-          { label: "Consumables", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500", tab: "consumables" as const, href: undefined },
-          { label: "Staff", value: staff.length, icon: "users" as const, border: "border-action-500", tab: "staff" as const, href: undefined },
-          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", tab: undefined, href: `/alerts/low-stock?region=${region.id}` },
+          { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500", href: undefined },
+          { label: "Consumables", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500", href: undefined },
+          { label: "Staff", value: staff.length, icon: "users" as const, border: "border-action-500", href: undefined },
+          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", href: lowStockCount > 0 ? `/alerts/low-stock?region=${region.id}` : undefined },
         ].map((stat) => {
           const content = (
             <div className="px-4 py-4">
@@ -117,11 +110,7 @@ export function InventoryDetailClient({
           }
 
           return (
-            <Card
-              key={stat.label}
-              className={`border-t-[3px] ${stat.border} hover:shadow-md transition-all cursor-pointer`}
-              onClick={() => stat.tab && setActiveTab(stat.tab)}
-            >
+            <Card key={stat.label} className={`border-t-[3px] ${stat.border}`}>
               {content}
             </Card>
           );
@@ -145,115 +134,82 @@ export function InventoryDetailClient({
         </Card>
       )}
 
-      {/* Tabs */}
-      <div className="border-b border-shark-100">
-        <div className="flex gap-6">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === tab.key
-                  ? "border-action-500 text-action-600"
-                  : "border-transparent text-shark-400 hover:text-shark-600"
-              }`}
-            >
-              <Icon name={tab.icon} size={15} />
-              {tab.label}
-              <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                activeTab === tab.key ? "bg-action-50 text-action-600" : "bg-shark-100 text-shark-400"
-              }`}>
-                {tab.count}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Assets */}
+      <AssetsClient
+        assets={assets as never}
+        regions={[{ id: region.id, name: region.name, state: region.state }] as never}
+        users={users as never}
+        categories={assetCategories as never}
+        isSuperAdmin={isSuperAdmin}
+        permissions={{ canAdd: permissions.canAddAsset, canEdit: permissions.canEditAsset, canDelete: permissions.canDeleteAsset }}
+        initialStatus={undefined}
+        initialRegion={region.id}
+        initialCategory={undefined}
+      />
 
-      {/* Tab Content */}
-      {activeTab === "assets" && (
-        <AssetsClient
-          assets={assets as never}
-          regions={[{ id: region.id, name: region.name, state: region.state }] as never}
-          users={users as never}
-          categories={assetCategories as never}
-          isSuperAdmin={isSuperAdmin}
-          permissions={{ canAdd: permissions.canAddAsset, canEdit: permissions.canEditAsset, canDelete: permissions.canDeleteAsset }}
-          initialStatus={undefined}
-          initialRegion={region.id}
-          initialCategory={undefined}
-        />
-      )}
+      {/* Consumables */}
+      <ConsumablesClient
+        consumables={consumables as never}
+        pendingRequests={pendingRequests as never}
+        regions={[{ id: region.id, name: region.name, state: region.state }] as never}
+        users={users as never}
+        categories={consumableCategories as never}
+        isSuperAdmin={isSuperAdmin}
+        canAdjustStock={permissions.canAdjustStock}
+        initialTab={undefined}
+        initialStock={undefined}
+        initialCategory={undefined}
+      />
 
-      {activeTab === "consumables" && (
-        <ConsumablesClient
-          consumables={consumables as never}
-          pendingRequests={pendingRequests as never}
-          regions={[{ id: region.id, name: region.name, state: region.state }] as never}
-          users={users as never}
-          categories={consumableCategories as never}
-          isSuperAdmin={isSuperAdmin}
-          canAdjustStock={permissions.canAdjustStock}
-          initialTab={undefined}
-          initialStock={undefined}
-          initialCategory={undefined}
-        />
-      )}
-
-      {activeTab === "staff" && (
+      {/* Staff */}
+      {staff.length > 0 && (
         <Card>
-          {staff.length === 0 ? (
-            <div className="py-12 text-center">
-              <Icon name="users" size={40} className="text-shark-200 mx-auto mb-3" />
-              <p className="text-shark-400">No staff assigned to this location.</p>
-            </div>
-          ) : (
-            <>
-              {/* Mobile: card layout */}
-              <div className="sm:hidden divide-y divide-shark-50">
-                {staff.map((user) => (
-                  <div key={user.id} className="px-4 py-3 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <span className={`w-2 h-2 rounded-full shrink-0 ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-shark-800 truncate">{user.name || "—"}</p>
-                        <p className="text-xs text-shark-400 truncate">{user.email}</p>
-                      </div>
-                    </div>
-                    <Badge status={user.role} />
+          <div className="px-4 sm:px-6 py-3 border-b border-shark-100">
+            <h3 className="text-sm font-semibold text-shark-900">Staff ({staff.length})</h3>
+          </div>
+          {/* Mobile: card layout */}
+          <div className="sm:hidden divide-y divide-shark-50">
+            {staff.map((user) => (
+              <div key={user.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-shark-800 truncate">{user.name || "—"}</p>
+                    <p className="text-xs text-shark-400 truncate">{user.email}</p>
                   </div>
+                </div>
+                <Badge status={user.role} />
+              </div>
+            ))}
+          </div>
+          {/* Desktop: table layout */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-shark-100">
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Role</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {staff.map((user) => (
+                  <tr key={user.id} className="border-b border-shark-50 hover:bg-shark-50/50">
+                    <td className="px-4 py-3 text-sm font-medium text-shark-800">{user.name || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
+                    <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
+                    <td className="px-4 py-3 hidden md:table-cell">
+                      <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-action-600" : "text-shark-400"}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
+                        {user.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                  </tr>
                 ))}
-              </div>
-              {/* Desktop: table layout */}
-              <div className="hidden sm:block overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-shark-100">
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Role</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {staff.map((user) => (
-                      <tr key={user.id} className="border-b border-shark-50 hover:bg-shark-50/50">
-                        <td className="px-4 py-3 text-sm font-medium text-shark-800">{user.name || "—"}</td>
-                        <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
-                        <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
-                        <td className="px-4 py-3 hidden md:table-cell">
-                          <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-action-600" : "text-shark-400"}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                            {user.isActive ? "Active" : "Inactive"}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
+              </tbody>
+            </table>
+          </div>
         </Card>
       )}
     </div>
