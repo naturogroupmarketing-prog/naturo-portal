@@ -74,7 +74,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
           <Icon name="arrow-left" size={18} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-shark-900">Unresolved Damage</h1>
+          <h1 className="text-2xl font-bold text-shark-900">Damaged / Lost</h1>
           <p className="text-sm text-shark-400 mt-0.5">{reports.length} unresolved report{reports.length !== 1 ? "s" : ""}</p>
         </div>
       </div>
@@ -85,8 +85,8 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
             <div className="w-14 h-14 rounded-2xl bg-action-100 flex items-center justify-center mx-auto mb-4">
               <Icon name="check" size={24} className="text-action-600" />
             </div>
-            <p className="text-lg font-semibold text-shark-900">No Unresolved Damage</p>
-            <p className="text-sm text-shark-400 mt-1">All damage reports have been resolved.</p>
+            <p className="text-lg font-semibold text-shark-900">No Unresolved Reports</p>
+            <p className="text-sm text-shark-400 mt-1">All damage and loss reports have been resolved.</p>
           </div>
         </Card>
       ) : (

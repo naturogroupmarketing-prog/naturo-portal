@@ -198,16 +198,17 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                 {(() => {
                                   const alerts = regionAlerts[region.id];
                                   if (!alerts) return null;
+                                  const damageLost = alerts.unresolvedDamage + alerts.lost;
                                   return (
                                     <>
-                                      {alerts.unresolvedDamage > 0 && (
+                                      {damageLost > 0 && (
                                         <span
                                           onClick={(e) => { e.preventDefault(); window.location.href = `/alerts/damage?region=${region.id}`; }}
                                           className="flex items-center gap-1 text-[#E8532E] bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded-lg font-semibold text-xs transition-colors"
-                                          title={`${alerts.unresolvedDamage} unresolved damage`}
+                                          title={`${damageLost} damaged/lost`}
                                         >
                                           <Icon name="alert-triangle" size={12} />
-                                          {alerts.unresolvedDamage}
+                                          {damageLost}
                                         </span>
                                       )}
                                       {alerts.lowStock > 0 && (
