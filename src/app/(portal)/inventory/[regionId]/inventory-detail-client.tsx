@@ -80,10 +80,10 @@ export function InventoryDetailClient({
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500", href: undefined },
-          { label: "Consumables", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500", href: undefined },
-          { label: "Staff", value: staff.length, icon: "users" as const, border: "border-action-500", href: undefined },
-          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", href: lowStockCount > 0 ? `/alerts/low-stock?region=${region.id}` : undefined },
+          { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500", href: `/assets?region=${region.id}` },
+          { label: "Consumables", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500", href: `/consumables?region=${region.id}` },
+          { label: "Staff", value: staff.length, icon: "users" as const, border: "border-action-500", href: `/staff` },
+          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", href: `/alerts/low-stock?region=${region.id}` },
         ].map((stat) => {
           const content = (
             <div className="px-4 py-4">
@@ -99,20 +99,12 @@ export function InventoryDetailClient({
             </div>
           );
 
-          if (stat.href) {
-            return (
-              <Link key={stat.label} href={stat.href}>
-                <Card className={`border-t-[3px] ${stat.border} hover:shadow-md transition-all cursor-pointer`}>
-                  {content}
-                </Card>
-              </Link>
-            );
-          }
-
           return (
-            <Card key={stat.label} className={`border-t-[3px] ${stat.border}`}>
-              {content}
-            </Card>
+            <Link key={stat.label} href={stat.href}>
+              <Card className={`border-t-[3px] ${stat.border} hover:shadow-md transition-all cursor-pointer`}>
+                {content}
+              </Card>
+            </Link>
           );
         })}
       </div>
