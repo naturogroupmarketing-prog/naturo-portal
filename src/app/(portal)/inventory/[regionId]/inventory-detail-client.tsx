@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -38,6 +38,15 @@ export function InventoryDetailClient({
   const { addToast } = useToast();
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [applying, setApplying] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const main = document.querySelector("main");
+    if (!main) return;
+    const handleScroll = () => setShowBackToTop(main.scrollTop > 400);
+    main.addEventListener("scroll", handleScroll);
+    return () => main.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const isEmpty = (assets as unknown[]).length === 0 && (consumables as unknown[]).length === 0;
 
@@ -213,6 +222,17 @@ export function InventoryDetailClient({
             </table>
           </div>
         </Card>
+      )}
+
+      {/* Back to top button */}
+      {showBackToTop && (
+        <button
+          onClick={() => document.querySelector("main")?.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-16 sm:bottom-6 right-16 sm:right-20 z-30 w-10 h-10 rounded-full bg-white border border-shark-200 shadow-lg flex items-center justify-center text-shark-500 hover:text-action-500 hover:border-action-300 transition-all"
+          title="Back to top"
+        >
+          <Icon name="chevron-up" size={18} />
+        </button>
       )}
     </div>
   );
