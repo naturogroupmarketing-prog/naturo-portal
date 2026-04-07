@@ -2,8 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
+import { syncLowStockPOs } from "@/app/actions/purchase-orders";
 
 interface LowStockItem {
   id: string;
@@ -17,7 +21,10 @@ interface LowStockItem {
   region: { id: string; name: string; state: { name: string } };
 }
 
-export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]; focusRegionId?: string }) {
+export function LowStockClient({ items, focusRegionId, isSuperAdmin = false }: { items: LowStockItem[]; focusRegionId?: string; isSuperAdmin?: boolean }) {
+  const router = useRouter();
+  const { addToast } = useToast();
+  const [syncing, setSyncing] = useState(false);
   const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set(
     // If a specific region is focused, only expand that one; otherwise expand all
     focusRegionId
@@ -44,14 +51,39 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Link href="/dashboard" className="text-shark-400 hover:text-action-500 transition-colors">
-          <Icon name="arrow-left" size={18} />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-shark-900">Low Stock Items</h1>
-          <p className="text-sm text-shark-400 mt-0.5">{items.length} item{items.length !== 1 ? "s" : ""} at or below threshold</p>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard" className="text-shark-400 hover:text-action-500 transition-colors">
+            <Icon name="arrow-left" size={18} />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-shark-900">Low Stock Items</h1>
+            <p className="text-sm text-shark-400 mt-0.5">{items.length} item{items.length !== 1 ? "s" : ""} at or below threshold</p>
+          </div>
         </div>
+        {isSuperAdmin && items.length > 0 && (
+          <Button
+            size="sm"
+            onClick={async () => {
+              setSyncing(true);
+              try {
+                const result = await syncLowStockPOs();
+                if (result.created > 0) {
+                  addToast(`Created ${result.created} purchase order${result.created > 1 ? "s" : ""} for low-stock items`, "success");
+                } else {
+                  addToast("All low-stock items already have purchase orders", "info");
+                }
+                router.refresh();
+              } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+              setSyncing(false);
+            }}
+            loading={syncing}
+            disabled={syncing}
+          >
+            <Icon name="truck" size={14} className="mr-1.5" />
+            Create Missing POs
+          </Button>
+        )}
       </div>
 
       {items.length === 0 ? (

@@ -24,5 +24,5 @@ export default async function LowStockPage({ searchParams }: { searchParams: Pro
   const filtered = lowStockItems.filter((c) => c.quantityOnHand <= c.minimumThreshold);
 
   const { region: focusRegion } = await searchParams;
-  return <LowStockClient items={JSON.parse(JSON.stringify(filtered))} focusRegionId={focusRegion} />;
+  return <LowStockClient items={JSON.parse(JSON.stringify(filtered))} focusRegionId={focusRegion} isSuperAdmin={session.user.role === "SUPER_ADMIN"} />;
 }

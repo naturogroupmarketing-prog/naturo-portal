@@ -294,3 +294,72 @@ export async function receivePurchaseOrder(formData: FormData) {
   revalidatePath("/dashboard");
   return { success: true };
 }
+
+/**
+ * Sync: create PENDING purchase orders for any low-stock consumables
+ * that don't already have a PENDING or ORDERED PO.
+ */
+export async function syncLowStockPOs() {
+  const session = await withAuth();
+  if (session.user.role !== "SUPER_ADMIN") throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId!;
+
+  // Find all low-stock consumables
+  const lowStock = await db.consumable.findMany({
+    where: { organizationId, isActive: true, deletedAt: null },
+    select: {
+      id: true, name: true, unitType: true, quantityOnHand: true,
+      minimumThreshold: true, reorderLevel: true, regionId: true,
+      supplier: true, organizationId: true,
+    },
+  });
+
+  const belowThreshold = lowStock.filter((c) => c.quantityOnHand <= c.minimumThreshold);
+
+  // Find existing PENDING or ORDERED POs
+  const existingPOs = await db.purchaseOrder.findMany({
+    where: {
+      organizationId,
+      status: { in: ["PENDING", "ORDERED", "APPROVED"] },
+    },
+    select: { consumableId: true },
+  });
+  const hasActivePO = new Set(existingPOs.map((po) => po.consumableId));
+
+  // Create POs for items without one
+  let created = 0;
+  for (const item of belowThreshold) {
+    if (hasActivePO.has(item.id)) continue;
+
+    const suggestedQty = Math.max(item.reorderLevel - item.quantityOnHand, 1);
+
+    await db.purchaseOrder.create({
+      data: {
+        consumableId: item.id,
+        regionId: item.regionId,
+        organizationId: item.organizationId,
+        quantity: suggestedQty,
+        supplier: item.supplier,
+        status: "PENDING",
+        createdById: null,
+        notes: `Auto-generated: Stock (${item.quantityOnHand}) is at or below threshold (${item.minimumThreshold}). Suggested reorder to level ${item.reorderLevel}.`,
+      },
+    });
+    created++;
+  }
+
+  if (created > 0) {
+    await createAuditLog({
+      action: "PURCHASE_ORDER_CREATED",
+      description: `Synced ${created} missing purchase orders for low-stock items`,
+      performedById: session.user.id,
+      organizationId,
+    });
+  }
+
+  revalidatePath("/purchase-orders");
+  revalidatePath("/alerts/low-stock");
+  revalidatePath("/dashboard");
+  return { success: true, created, alreadyHadPO: belowThreshold.length - created };
+}
