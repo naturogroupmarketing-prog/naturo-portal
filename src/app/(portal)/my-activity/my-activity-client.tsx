@@ -59,7 +59,7 @@ export function MyActivityClient({
       iconBg: "bg-action-50",
       iconColor: "text-action-500",
       title: a.asset.name,
-      detail: `${a.asset.assetCode} · ${a.asset.category} · ${a.assignmentType.toLowerCase()}`,
+      detail: `${a.asset.category} · ${a.assignmentType.toLowerCase()}`,
       date: a.checkoutDate,
       isActive: a.isActive,
     })),
@@ -116,7 +116,7 @@ export function MyActivityClient({
                     <p className="text-sm font-medium text-shark-800 truncate">{item.title}</p>
                     <p className="text-xs text-shark-400">{item.detail}</p>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex flex-col items-end gap-1 shrink-0">
                     {item.badge && <Badge status={item.badge} />}
                     {item.isActive !== undefined && (
                       <span className={`text-xs px-2 py-0.5 rounded-full ${item.isActive ? "bg-action-50 text-action-600" : "bg-shark-100 text-shark-400"}`}>

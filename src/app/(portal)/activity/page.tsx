@@ -3,35 +3,48 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const PAGE_SIZE = 50;
 
-const actionIcons: Record<string, { icon: "package" | "droplet" | "users" | "check" | "alert-triangle" | "clipboard" | "clock"; color: string; bg: string }> = {
-  ASSET_CREATED: { icon: "package", color: "text-action-500", bg: "bg-action-50" },
-  ASSET_ASSIGNED: { icon: "package", color: "text-blue-500", bg: "bg-blue-50" },
-  ASSET_CHECKED_OUT: { icon: "package", color: "text-blue-500", bg: "bg-blue-50" },
-  ASSET_RETURNED: { icon: "check", color: "text-action-500", bg: "bg-action-50" },
-  ASSET_DAMAGED: { icon: "alert-triangle", color: "text-red-500", bg: "bg-red-50" },
-  ASSET_LOST: { icon: "alert-triangle", color: "text-red-500", bg: "bg-red-50" },
-  CONSUMABLE_CREATED: { icon: "droplet", color: "text-action-500", bg: "bg-action-50" },
-  CONSUMABLE_STOCK_ADDED: { icon: "droplet", color: "text-action-500", bg: "bg-action-50" },
-  CONSUMABLE_REQUEST_CREATED: { icon: "clipboard", color: "text-[#E8532E]", bg: "bg-amber-50" },
-  CONSUMABLE_REQUEST_APPROVED: { icon: "check", color: "text-action-500", bg: "bg-action-50" },
-  CONSUMABLE_REQUEST_REJECTED: { icon: "alert-triangle", color: "text-red-500", bg: "bg-red-50" },
-  CONSUMABLE_REQUEST_ISSUED: { icon: "droplet", color: "text-blue-500", bg: "bg-blue-50" },
-  CONSUMABLE_ASSIGNED: { icon: "droplet", color: "text-blue-500", bg: "bg-blue-50" },
-  CONSUMABLE_RETURNED: { icon: "check", color: "text-action-500", bg: "bg-action-50" },
-  USER_CREATED: { icon: "users", color: "text-action-500", bg: "bg-action-50" },
-  USER_UPDATED: { icon: "users", color: "text-blue-500", bg: "bg-blue-50" },
-  USER_DEACTIVATED: { icon: "users", color: "text-red-500", bg: "bg-red-50" },
+const ACTION_CONFIG: Record<string, { icon: "package" | "droplet" | "users" | "check" | "alert-triangle" | "clipboard" | "clock" | "plus" | "arrow-left" | "star"; label: string; color: string; bg: string }> = {
+  ASSET_CREATED: { icon: "plus", label: "Created", color: "text-action-500", bg: "bg-action-50" },
+  ASSET_ASSIGNED: { icon: "package", label: "Assigned", color: "text-blue-500", bg: "bg-blue-50" },
+  ASSET_CHECKED_OUT: { icon: "package", label: "Checked Out", color: "text-blue-500", bg: "bg-blue-50" },
+  ASSET_RETURNED: { icon: "arrow-left", label: "Returned", color: "text-action-500", bg: "bg-action-50" },
+  ASSET_DAMAGED: { icon: "alert-triangle", label: "Damaged", color: "text-red-500", bg: "bg-red-50" },
+  ASSET_LOST: { icon: "alert-triangle", label: "Lost", color: "text-red-500", bg: "bg-red-50" },
+  ASSET_UPDATED: { icon: "package", label: "Updated", color: "text-shark-500", bg: "bg-shark-50" },
+  ASSET_DELETED: { icon: "package", label: "Deleted", color: "text-red-500", bg: "bg-red-50" },
+  CONSUMABLE_CREATED: { icon: "plus", label: "Created", color: "text-action-500", bg: "bg-action-50" },
+  CONSUMABLE_STOCK_ADDED: { icon: "droplet", label: "Restocked", color: "text-action-500", bg: "bg-action-50" },
+  CONSUMABLE_REQUEST_CREATED: { icon: "clipboard", label: "Requested", color: "text-[#E8532E]", bg: "bg-amber-50" },
+  CONSUMABLE_REQUEST_APPROVED: { icon: "check", label: "Approved", color: "text-action-500", bg: "bg-action-50" },
+  CONSUMABLE_REQUEST_REJECTED: { icon: "alert-triangle", label: "Rejected", color: "text-red-500", bg: "bg-red-50" },
+  CONSUMABLE_REQUEST_ISSUED: { icon: "check", label: "Issued", color: "text-blue-500", bg: "bg-blue-50" },
+  CONSUMABLE_ASSIGNED: { icon: "droplet", label: "Assigned", color: "text-blue-500", bg: "bg-blue-50" },
+  CONSUMABLE_RETURNED: { icon: "arrow-left", label: "Returned", color: "text-action-500", bg: "bg-action-50" },
+  USER_CREATED: { icon: "users", label: "User Added", color: "text-action-500", bg: "bg-action-50" },
+  USER_UPDATED: { icon: "users", label: "User Updated", color: "text-blue-500", bg: "bg-blue-50" },
+  USER_DEACTIVATED: { icon: "users", label: "Deactivated", color: "text-red-500", bg: "bg-red-50" },
+  STARTER_KIT_APPLIED: { icon: "star", label: "Kit Applied", color: "text-action-500", bg: "bg-action-50" },
+  BULK_ITEMS_APPLIED: { icon: "star", label: "Items Applied", color: "text-action-500", bg: "bg-action-50" },
 };
 
-const defaultIcon = { icon: "clock" as const, color: "text-shark-400", bg: "bg-shark-50" };
+const defaultConfig = { icon: "clock" as const, label: "Activity", color: "text-shark-400", bg: "bg-shark-50" };
+
+/** Strip asset codes like (AST-001) from description to keep it clean */
+function cleanDescription(desc: string): string {
+  return desc
+    .replace(/\s*\([A-Z]{2,5}-\d{3,6}\)/g, "") // remove (AST-001) patterns
+    .replace(/\s*\([A-Z]+-[A-Z0-9-]+\)/g, "")  // remove other code patterns
+    .replace(/"{1,2}/g, "")                       // remove quotes around names
+    .trim();
+}
 
 export default async function ActivityPage({
   searchParams,
@@ -116,34 +129,33 @@ export default async function ActivityPage({
               <Card>
                 <div className="divide-y divide-shark-50">
                   {entries.map((log) => {
-                    const style = actionIcons[log.action] || defaultIcon;
+                    const config = ACTION_CONFIG[log.action] || defaultConfig;
+                    const time = new Date(log.createdAt).toLocaleTimeString("en-AU", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    });
+                    const performer = log.performedBy.name || log.performedBy.email;
+                    const cleaned = cleanDescription(log.description);
+
                     return (
-                      <div key={log.id} className="flex items-start gap-3 px-5 py-4">
-                        <div className={`w-8 h-8 rounded-lg ${style.bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                          <Icon name={style.icon} size={16} className={style.color} />
+                      <div key={log.id} className="flex items-center gap-3 px-4 sm:px-5 py-3">
+                        {/* Icon */}
+                        <div className={`w-8 h-8 rounded-lg ${config.bg} flex items-center justify-center shrink-0`}>
+                          <Icon name={config.icon} size={15} className={config.color} />
                         </div>
+
+                        {/* Content */}
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-shark-800">{log.description}</p>
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
-                            <span className="text-xs text-shark-400">
-                              {log.performedBy.name || log.performedBy.email}
-                            </span>
-                            <span className="text-xs text-shark-300">&middot;</span>
-                            <span className="text-xs text-shark-400">
-                              {new Date(log.createdAt).toLocaleTimeString("en-AU", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </span>
-                            {log.asset && (
-                              <>
-                                <span className="text-xs text-shark-300">&middot;</span>
-                                <span className="text-xs font-mono text-shark-400">{log.asset.assetCode}</span>
-                              </>
-                            )}
-                          </div>
+                          <p className="text-sm text-shark-800 truncate">{cleaned}</p>
+                          <p className="text-xs text-shark-400 mt-0.5">
+                            {performer} · {time}
+                          </p>
                         </div>
-                        <Badge status={log.action.replace(/_/g, " ")} />
+
+                        {/* Action label */}
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${config.bg} ${config.color}`}>
+                          {config.label}
+                        </span>
                       </div>
                     );
                   })}
@@ -153,9 +165,9 @@ export default async function ActivityPage({
           ))}
 
           {/* Pagination */}
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
             <p className="text-sm text-shark-400">
-              Showing {skip + 1}&ndash;{Math.min(skip + PAGE_SIZE, totalCount)} of {totalCount} entries
+              Showing {skip + 1}&ndash;{Math.min(skip + PAGE_SIZE, totalCount)} of {totalCount}
             </p>
             <div className="flex items-center gap-2">
               {hasPrevious ? (
@@ -172,7 +184,7 @@ export default async function ActivityPage({
                 </Button>
               )}
               <span className="text-sm text-shark-500 px-2">
-                Page {currentPage} of {totalPages}
+                {currentPage} / {totalPages}
               </span>
               {hasNext ? (
                 <Link href={`/activity?page=${currentPage + 1}`}>
