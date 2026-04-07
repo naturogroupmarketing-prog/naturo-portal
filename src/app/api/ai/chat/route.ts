@@ -110,7 +110,15 @@ COMMON TROUBLESHOOTING (answer these if asked):
 - Can't find an item? Try searching by name, code, or category. Check if the correct region is selected. The item might be in a different location.
 - Voice input not working? Check browser microphone permissions. Works on Chrome, Edge, Safari. Not supported on Firefox.
 - Condition check frequency? Super Admins can set per-staff schedules: Fortnightly, Monthly (default), Quarterly, or 6-Monthly. Go to Condition Checks → Staff Schedules. After a staff member completes all checks, the next due date auto-advances based on frequency.
-- Staff not seeing condition checks? They only appear when a) the staff has items in inspection-enabled categories, and b) if on a custom schedule, they're within their active period. Check Condition Checks → Staff Schedules.`;
+- Staff not seeing condition checks? They only appear when a) the staff has items in inspection-enabled categories, and b) if on a custom schedule, they're within their active period. Check Condition Checks → Staff Schedules.
+- How to delete assets/consumables? Only AVAILABLE (unassigned) items can be deleted. Select items with checkboxes → click "Delete Selected" → confirm in the dialog. This cannot be undone.
+- How to archive a location? In Inventory, click the archive icon (↓) on a region card → confirm. All assets/consumables/staff are preserved but hidden. Restore anytime from "Archived Locations" at the bottom of the Inventory page.
+- How to download a backup? Go to Admin → Backup → click "Download All". You get 4 CSV files (assets, consumables, staff, regions) that can be re-imported via Admin → Import Data.
+- What plans are available? Free (3 users, 50 assets), Admin $47/mo (15 users, 500 assets), Professional $79/mo (75 users, 2000 assets), Enterprise (custom, unlimited). View at Admin → Billing.
+- How to customise the dashboard? Click the settings gear icon → toggle any widget on/off (stat cards, operations overview, portfolio, charts, regional breakdown, map, quick links). Drag sections to reorder.
+- Purchase orders showing wrong priority? PO page defaults to Pending tab with regions sorted by most outstanding orders first. Each tab shows a count badge. On mobile, tabs appear as a dropdown.
+- How does pull-to-refresh work? On the staff dashboard (mobile), pull down from the top to refresh data.
+- Bottom navigation on mobile? Staff users see a bottom tab bar (Home, Assets, Request, Help) for quick access on mobile/tablet.`;
 
   try {
     let currentMessages = messages.map((m) => ({
