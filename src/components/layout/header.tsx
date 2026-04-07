@@ -134,6 +134,14 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
                 </button>
 
                 <button
+                  onClick={() => { setDropdownOpen(false); router.push("/help"); }}
+                  className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 hover:bg-shark-50 transition-colors"
+                >
+                  <Icon name="help-circle" size={15} className="text-shark-400" />
+                  Help
+                </button>
+
+                <button
                   onClick={() => { setDropdownOpen(false); router.push("/changelog"); }}
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 hover:bg-shark-50 transition-colors"
                 >
@@ -142,15 +150,29 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
                 </button>
               </div>
 
-              {/* Upgrade — admin only */}
+              {/* Admin items */}
               {isSuperAdmin && (
-                <div className="border-t border-shark-100 px-3 pt-2 pb-1.5">
+                <div className="border-t border-shark-100 py-1">
+                  <button
+                    onClick={() => { setDropdownOpen(false); router.push("/admin/company"); }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 hover:bg-shark-50 transition-colors"
+                  >
+                    <Icon name="shield" size={15} className="text-shark-400" />
+                    Company
+                  </button>
                   <button
                     onClick={() => { setDropdownOpen(false); router.push("/admin/billing"); }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-br from-action-500 to-action-300 hover:from-action-600 hover:to-action-400 transition-all"
+                    className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 hover:bg-shark-50 transition-colors"
                   >
-                    <Icon name="award" size={16} className="text-white" />
-                    Upgrade Plan
+                    <Icon name="award" size={15} className="text-shark-400" />
+                    Billing
+                  </button>
+                  <button
+                    onClick={() => { setDropdownOpen(false); router.push("/admin/backup"); }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 hover:bg-shark-50 transition-colors"
+                  >
+                    <Icon name="download" size={15} className="text-shark-400" />
+                    Backup
                   </button>
                 </div>
               )}

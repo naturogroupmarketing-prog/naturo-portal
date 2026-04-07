@@ -52,12 +52,9 @@ const navSections: NavSection[] = [
     heading: "Admin",
     roles: ["SUPER_ADMIN"],
     items: [
-      { label: "Company", href: "/admin/company", icon: "shield", roles: ["SUPER_ADMIN"] },
       { label: "Permissions", href: "/admin/permissions", icon: "lock", roles: ["SUPER_ADMIN"] },
       { label: "Import Data", href: "/admin/import", icon: "upload", roles: ["SUPER_ADMIN"] },
       { label: "Activity Log", href: "/activity", icon: "clock", roles: ["SUPER_ADMIN"] },
-      { label: "Billing", href: "/admin/billing", icon: "award", roles: ["SUPER_ADMIN"] },
-      { label: "Backup", href: "/admin/backup", icon: "download", roles: ["SUPER_ADMIN"] },
     ],
   },
   {
@@ -82,13 +79,6 @@ const navSections: NavSection[] = [
       { label: "Request Consumables", href: "/request-consumables", icon: "plus", roles: ["STAFF"] },
       { label: "Report Damage", href: "/report-damage", icon: "alert-triangle", roles: ["STAFF"] },
       { label: "Recent Activity", href: "/my-activity", icon: "clock", roles: ["STAFF"] },
-    ],
-  },
-  {
-    roles: ["STAFF", "SUPER_ADMIN", "BRANCH_MANAGER"],
-    items: [
-      { label: "Settings", href: "/settings", icon: "settings", roles: ["STAFF", "SUPER_ADMIN", "BRANCH_MANAGER"] },
-      { label: "Help", href: "/help", icon: "help-circle", roles: ["STAFF", "SUPER_ADMIN", "BRANCH_MANAGER"] },
     ],
   },
 ];
