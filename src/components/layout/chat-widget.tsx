@@ -309,11 +309,16 @@ export function ChatWidget() {
         </button>
       )}
 
-      {/* Chat panel */}
+      {/* Backdrop — click to close */}
       {isOpen && (
-        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-40 w-full sm:w-96 h-full sm:h-[32rem] sm:max-h-[32rem] flex flex-col sm:rounded-2xl sm:border sm:border-shark-100 bg-white shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 z-30" onClick={() => setIsOpen(false)} />
+      )}
+
+      {/* Chat panel — floating on all screens */}
+      {isOpen && (
+        <div className="fixed bottom-16 right-3 sm:bottom-6 sm:right-6 z-40 w-[calc(100vw-1.5rem)] sm:w-96 h-[70vh] sm:h-[32rem] max-h-[32rem] flex flex-col rounded-2xl border border-shark-100 bg-white shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 bg-action-400 safe-top">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 bg-action-400 rounded-t-2xl">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
