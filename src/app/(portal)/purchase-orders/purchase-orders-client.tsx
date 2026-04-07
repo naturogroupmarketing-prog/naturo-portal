@@ -185,103 +185,121 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     }
   };
 
+  const renderActionButtons = (po: PurchaseOrder) => {
+    if (!canManagePO) return null;
+    return (
+      <div className="flex gap-1.5">
+        {po.status === "PENDING" && canApprovePO && (
+          <>
+            <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "approve"); }} disabled={loading === po.id + "approve"}>
+              {loading === po.id + "approve" ? "..." : "Approve"}
+            </Button>
+            <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "reject"); }} disabled={loading === po.id + "reject"}>
+              {loading === po.id + "reject" ? "..." : "Reject"}
+            </Button>
+          </>
+        )}
+        {po.status === "APPROVED" && canApprovePO && (
+          <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "ordered"); }} disabled={loading === po.id + "ordered"}>
+            {loading === po.id + "ordered" ? "..." : "Ordered"}
+          </Button>
+        )}
+        {po.status === "ORDERED" && canManagePO && (
+          <Button size="sm" onClick={(e) => { e.stopPropagation(); handleAction(po.id, "received"); }} disabled={loading === po.id + "received"}>
+            {loading === po.id + "received" ? "..." : "Received"}
+          </Button>
+        )}
+      </div>
+    );
+  };
+
   const renderTable = (orders: PurchaseOrder[]) => (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-shark-100 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
-            {visibleColumns.item && <th className="px-5 py-3">Item</th>}
-            {visibleColumns.category && <th className="px-5 py-3">Category</th>}
-            {visibleColumns.supplier && <th className="px-5 py-3">Supplier</th>}
-            {visibleColumns.qty && <th className="px-5 py-3">Qty</th>}
-            {visibleColumns.status && <th className="px-5 py-3">Status</th>}
-            {visibleColumns.createdBy && <th className="px-5 py-3">Created By</th>}
-            {visibleColumns.date && <th className="px-5 py-3">Date</th>}
-            <th className="px-5 py-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-shark-50">
-          {orders.length === 0 ? (
-            <tr>
-              <td colSpan={visibleCount} className="px-5 py-8 text-center text-shark-400">
-                No purchase orders found.
-              </td>
+    <>
+      {/* Mobile: card layout */}
+      <div className="sm:hidden space-y-2">
+        {orders.length === 0 ? (
+          <p className="text-center text-shark-400 py-8">No purchase orders found.</p>
+        ) : (
+          orders.map((po) => (
+            <div
+              key={po.id}
+              onClick={() => setViewOrder(po)}
+              className="border border-shark-100 rounded-xl p-4 bg-white hover:shadow-sm transition-shadow cursor-pointer"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-shark-800 truncate">{po.consumable.name}</p>
+                  <p className="text-xs text-shark-400 mt-0.5">{po.consumable.category} · Qty: {po.quantity}</p>
+                  {po.supplier && <p className="text-xs text-shark-400">Supplier: {po.supplier}</p>}
+                </div>
+                <Badge status={po.status} />
+              </div>
+              {renderActionButtons(po) && (
+                <div className="mt-3 pt-3 border-t border-shark-50">
+                  {renderActionButtons(po)}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop: table layout */}
+      <div className="hidden sm:block overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-shark-100 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
+              {visibleColumns.item && <th className="px-5 py-3">Item</th>}
+              {visibleColumns.category && <th className="px-5 py-3">Category</th>}
+              {visibleColumns.supplier && <th className="px-5 py-3">Supplier</th>}
+              {visibleColumns.qty && <th className="px-5 py-3">Qty</th>}
+              {visibleColumns.status && <th className="px-5 py-3">Status</th>}
+              {visibleColumns.createdBy && <th className="px-5 py-3">Created By</th>}
+              {visibleColumns.date && <th className="px-5 py-3">Date</th>}
+              <th className="px-5 py-3">Actions</th>
             </tr>
-          ) : (
-            orders.map((po) => (
-              <tr key={po.id} onClick={() => setViewOrder(po)} className="hover:bg-shark-25 transition-colors cursor-pointer">
-                {visibleColumns.item && (
-                  <td className="px-5 py-3.5 font-medium text-shark-800">
-                    {po.consumable.name}
-                    <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
-                  </td>
-                )}
-                {visibleColumns.category && <td className="px-5 py-3.5 text-shark-500">{po.consumable.category}</td>}
-                {visibleColumns.supplier && <td className="px-5 py-3.5 text-shark-500">{po.supplier || "—"}</td>}
-                {visibleColumns.qty && <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity}</td>}
-                {visibleColumns.status && <td className="px-5 py-3.5"><Badge status={po.status} /></td>}
-                {visibleColumns.createdBy && (
-                  <td className="px-5 py-3.5 text-shark-500">
-                    {po.createdBy ? (po.createdBy.name || po.createdBy.email) : (
-                      <span className="inline-flex items-center gap-1 text-action-600 font-medium">
-                        <Icon name="star" size={14} />
-                        AI
-                      </span>
-                    )}
-                  </td>
-                )}
-                {visibleColumns.date && <td className="px-5 py-3.5 text-shark-400">{formatDate(po.createdAt)}</td>}
-                <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
-                  {canManagePO ? (
-                    <div className="flex gap-1.5">
-                      {po.status === "PENDING" && canApprovePO && (
-                        <>
-                          <Button
-                            size="sm"
-                            onClick={() => handleAction(po.id, "approve")}
-                            disabled={loading === po.id + "approve"}
-                          >
-                            {loading === po.id + "approve" ? "..." : "Approve"}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleAction(po.id, "reject")}
-                            disabled={loading === po.id + "reject"}
-                          >
-                            {loading === po.id + "reject" ? "..." : "Reject"}
-                          </Button>
-                        </>
-                      )}
-                      {po.status === "APPROVED" && canApprovePO && (
-                        <Button
-                          size="sm"
-                          onClick={() => handleAction(po.id, "ordered")}
-                          disabled={loading === po.id + "ordered"}
-                        >
-                          {loading === po.id + "ordered" ? "..." : "Ordered"}
-                        </Button>
-                      )}
-                      {po.status === "ORDERED" && canManagePO && (
-                        <Button
-                          size="sm"
-                          onClick={() => handleAction(po.id, "received")}
-                          disabled={loading === po.id + "received"}
-                        >
-                          {loading === po.id + "received" ? "..." : "Received"}
-                        </Button>
-                      )}
-                    </div>
-                  ) : (
-                    <span className="text-xs text-shark-400">View only</span>
-                  )}
+          </thead>
+          <tbody className="divide-y divide-shark-50">
+            {orders.length === 0 ? (
+              <tr>
+                <td colSpan={visibleCount} className="px-5 py-8 text-center text-shark-400">
+                  No purchase orders found.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
+            ) : (
+              orders.map((po) => (
+                <tr key={po.id} onClick={() => setViewOrder(po)} className="hover:bg-shark-25 transition-colors cursor-pointer">
+                  {visibleColumns.item && (
+                    <td className="px-5 py-3.5 font-medium text-shark-800">
+                      {po.consumable.name}
+                      <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
+                    </td>
+                  )}
+                  {visibleColumns.category && <td className="px-5 py-3.5 text-shark-500">{po.consumable.category}</td>}
+                  {visibleColumns.supplier && <td className="px-5 py-3.5 text-shark-500">{po.supplier || "—"}</td>}
+                  {visibleColumns.qty && <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity}</td>}
+                  {visibleColumns.status && <td className="px-5 py-3.5"><Badge status={po.status} /></td>}
+                  {visibleColumns.createdBy && (
+                    <td className="px-5 py-3.5 text-shark-500">
+                      {po.createdBy ? (po.createdBy.name || po.createdBy.email) : (
+                        <span className="inline-flex items-center gap-1 text-action-600 font-medium">
+                          <Icon name="star" size={14} />
+                          AI
+                        </span>
+                      )}
+                    </td>
+                  )}
+                  {visibleColumns.date && <td className="px-5 py-3.5 text-shark-400">{formatDate(po.createdAt)}</td>}
+                  <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
+                    {renderActionButtons(po) || <span className="text-xs text-shark-400">View only</span>}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 
   // Group by region for super admin
