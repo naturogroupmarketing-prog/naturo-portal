@@ -581,12 +581,12 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       </div>
                       {region.lowStockItems.length > 0 && (
                         <div className="mt-2">
-                          <Link href={`/alerts/low-stock?region=${region.regionId}`} className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2 flex items-center gap-1 hover:text-action-500 transition-colors">
+                          <Link href={`/purchase-orders?region=${region.regionId}`} className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2 flex items-center gap-1 hover:text-action-500 transition-colors">
                             Low Stock <Icon name="arrow-right" size={10} />
                           </Link>
                           <div className="space-y-0">
                             {region.lowStockItems.map((item) => (
-                              <Link key={item.id} href={`/alerts/low-stock?region=${region.regionId}`} className="flex items-center justify-between py-2 border-b border-shark-50 last:border-0 hover:bg-shark-50/50 rounded-lg px-1 -mx-1 transition-colors cursor-pointer">
+                              <Link key={item.id} href={`/purchase-orders?region=${region.regionId}`} className="flex items-center justify-between py-2 border-b border-shark-50 last:border-0 hover:bg-shark-50/50 rounded-lg px-1 -mx-1 transition-colors cursor-pointer">
                                 <p className="text-sm text-shark-700">{item.name}</p>
                                 <div className="text-right flex items-center gap-1.5">
                                   <span className="text-sm font-medium text-red-500">{item.quantityOnHand} {item.unitType}</span>
