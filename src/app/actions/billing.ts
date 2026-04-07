@@ -66,7 +66,10 @@ export async function changePlan(newPlan: string) {
 
   await db.organization.update({
     where: { id: orgId },
-    data: { plan: newPlan as SubscriptionPlan },
+    data: {
+      plan: newPlan as SubscriptionPlan,
+      subscriptionStatus: newPlan === "FREE" ? "TRIALING" : "ACTIVE",
+    },
   });
 
   revalidatePath("/admin/billing");
