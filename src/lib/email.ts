@@ -122,3 +122,32 @@ export function emailLowStock(itemName: string, currentQty: number, threshold: n
     <p style="color:#c0392b;font-weight:600;">Please reorder soon.</p>
   `;
 }
+
+export function emailWelcome(staffName: string, email: string, password: string, companyName: string, role: string) {
+  const appUrl = process.env.AUTH_URL || "https://naturo-portal.vercel.app";
+  return `
+    <p style="color:#495057;">Hi ${staffName},</p>
+    <p style="color:#495057;">Welcome to <strong>${companyName}</strong>! Your Trackio account has been created. You can now log in to manage your assigned equipment and consumables.</p>
+
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+      <tr><td style="padding:10px 14px;background:#f8f9fa;border:1px solid #e9ecef;font-weight:600;color:#0f1b3d;width:100px;">Email</td>
+          <td style="padding:10px 14px;border:1px solid #e9ecef;color:#495057;">${email}</td></tr>
+      <tr><td style="padding:10px 14px;background:#f8f9fa;border:1px solid #e9ecef;font-weight:600;color:#0f1b3d;">Password</td>
+          <td style="padding:10px 14px;border:1px solid #e9ecef;color:#495057;font-family:monospace;">${password}</td></tr>
+      <tr><td style="padding:10px 14px;background:#f8f9fa;border:1px solid #e9ecef;font-weight:600;color:#0f1b3d;">Role</td>
+          <td style="padding:10px 14px;border:1px solid #e9ecef;color:#495057;">${role.replace(/_/g, " ")}</td></tr>
+    </table>
+
+    <p style="color:#868e96;font-size:13px;">For security, please change your password after your first login.</p>
+
+    <div style="text-align:center;margin:24px 0 8px;">
+      <a href="${appUrl}/login" style="display:inline-block;padding:12px 32px;background:#1F3DD9;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">
+        Log In to Trackio
+      </a>
+    </div>
+
+    <p style="color:#868e96;font-size:12px;text-align:center;margin-top:16px;">
+      Or open this link: <a href="${appUrl}/login" style="color:#1F3DD9;">${appUrl}/login</a>
+    </p>
+  `;
+}

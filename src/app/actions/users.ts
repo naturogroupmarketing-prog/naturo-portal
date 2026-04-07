@@ -9,6 +9,7 @@ import bcrypt from "bcryptjs";
 import { enforceUserLimit } from "@/lib/tenant";
 import { applyStarterKit } from "@/app/actions/starter-kits";
 import { withAuth } from "@/lib/action-utils";
+import { sendEmail, emailWelcome } from "@/lib/email";
 
 export async function createUser(formData: FormData) {
   try {
@@ -74,6 +75,21 @@ export async function createUser(formData: FormData) {
       targetUserId: user.id,
       organizationId,
     });
+
+    // Send welcome email with login details
+    const sendWelcome = formData.get("sendWelcomeEmail") !== "false";
+    if (sendWelcome) {
+      try {
+        const org = await db.organization.findUnique({ where: { id: organizationId }, select: { name: true } });
+        await sendEmail({
+          to: email,
+          subject: `Welcome to ${org?.name || "Trackio"} — Your Account is Ready`,
+          html: emailWelcome(name, email, password, org?.name || "Trackio", role),
+        });
+      } catch {
+        // Don't fail user creation if email fails
+      }
+    }
 
     // Auto-apply default starter kit if user has a region
     const applyKit = formData.get("applyStarterKit") !== "false";

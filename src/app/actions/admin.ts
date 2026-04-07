@@ -102,3 +102,32 @@ export async function getDataHealth() {
     totalConsumables,
   };
 }
+
+/**
+ * Update company/organisation details
+ */
+export async function updateCompanyDetails(formData: FormData) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) return { error: "Unauthorized" };
+
+  const organizationId = session.user.organizationId!;
+  const name = (formData.get("name") as string)?.trim();
+  if (!name) return { error: "Company name is required" };
+
+  await db.organization.update({
+    where: { id: organizationId },
+    data: {
+      name,
+      phone: (formData.get("phone") as string)?.trim() || null,
+      email: (formData.get("email") as string)?.trim() || null,
+      address: (formData.get("address") as string)?.trim() || null,
+      website: (formData.get("website") as string)?.trim() || null,
+      abn: (formData.get("abn") as string)?.trim() || null,
+      logo: (formData.get("logo") as string)?.trim() || null,
+    },
+  });
+
+  revalidatePath("/admin/company");
+  revalidatePath("/dashboard");
+  return { success: true };
+}

@@ -530,6 +530,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               ))}
             </Select>
           </div>
+          <label className="flex items-center gap-2.5 cursor-pointer py-1">
+            <input type="checkbox" name="sendWelcomeEmail" value="true" defaultChecked className="w-4 h-4 rounded border-shark-300 text-action-500 focus:ring-action-400" />
+            <span className="text-sm text-shark-700">Send welcome email with login details</span>
+          </label>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
             <Button type="submit" disabled={creating} loading={creating}>Create User</Button>

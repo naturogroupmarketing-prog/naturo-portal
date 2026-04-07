@@ -121,6 +121,11 @@ model Organization {
   trialEndsAt        DateTime?
   maxUsers           Int                @default(3)
   maxAssets          Int                @default(50)
+  phone              String?
+  email              String?
+  address            String?
+  website            String?
+  abn                String?            // Australian Business Number
 
   users          User[]
   states         State[]
