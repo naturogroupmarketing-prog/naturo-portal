@@ -1,18 +1,18 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isAdminOrManager } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 /**
  * Manager verifies a returned item and restocks it
  */
 export async function verifyReturn(returnId: string, notes?: string) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -76,13 +76,12 @@ export async function verifyReturn(returnId: string, notes?: string) {
  * Manager verifies all pending returns at once
  */
 export async function verifyAllReturns() {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const regionFilter = session.user.role === "BRANCH_MANAGER"
     ? { regionId: session.user.regionId!, organizationId, isVerified: false }
@@ -104,8 +103,8 @@ export async function verifyAllReturns() {
 export async function batchProcessReturns(
   items: { id: string; status: "verified" | "rejected"; reason?: string }[]
 ) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -201,8 +200,8 @@ export async function batchProcessReturns(
  * Reject a return — mark as damaged or discard
  */
 export async function rejectReturn(returnId: string, reason: string) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -245,8 +244,7 @@ export async function rejectReturn(returnId: string, reason: string) {
  * Staff initiates a return — creates PendingReturn for manager to verify
  */
 export async function staffReturnAsset(assignmentId: string, condition: string, notes: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const assignment = await db.assetAssignment.findUnique({
     where: { id: assignmentId },
@@ -316,8 +314,7 @@ export async function staffReturnAsset(assignmentId: string, condition: string, 
  * Staff initiates a consumable return
  */
 export async function staffReturnConsumable(assignmentId: string, quantity: number, condition: string, notes: string) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const assignment = await db.consumableAssignment.findUnique({
     where: { id: assignmentId },

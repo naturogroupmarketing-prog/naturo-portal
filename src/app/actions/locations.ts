@@ -1,21 +1,20 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isSuperAdmin, hasPermission } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { generateAssetCode } from "@/lib/utils";
 import { generateQRCodeDataURL, buildAssetQRData } from "@/lib/qr";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 export async function createState(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
   const name = (formData.get("name") as string)?.trim();
   if (!name) throw new Error("State name is required");
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   await db.state.create({ data: { name, organizationId } });
   revalidatePath("/admin/locations");
@@ -23,15 +22,14 @@ export async function createState(formData: FormData) {
 }
 
 export async function createRegion(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "regionAdd"))) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "regionAdd"))) throw new Error("Unauthorized");
 
   const name = (formData.get("name") as string)?.trim();
   const stateId = formData.get("stateId") as string;
   if (!name) throw new Error("Region name is required");
   if (!stateId) throw new Error("State is required");
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const address = (formData.get("address") as string)?.trim() || null;
   const lat = formData.get("latitude") as string;
@@ -46,11 +44,10 @@ export async function createRegion(formData: FormData) {
 }
 
 export async function updateState(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
@@ -66,11 +63,10 @@ export async function updateState(formData: FormData) {
 }
 
 export async function updateRegion(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
@@ -93,11 +89,10 @@ export async function updateRegion(formData: FormData) {
 }
 
 export async function deleteState(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const id = formData.get("id") as string;
 
@@ -114,11 +109,10 @@ export async function deleteState(formData: FormData) {
 }
 
 export async function deleteRegion(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "regionDelete"))) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "regionDelete"))) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const id = formData.get("id") as string;
 
@@ -142,8 +136,7 @@ export async function deleteRegion(formData: FormData) {
 }
 
 export async function getLocations() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
   const organizationId = session.user.organizationId!;
 
   return db.state.findMany({
@@ -163,8 +156,7 @@ export async function getLocations() {
 }
 
 export async function getRegions() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
   const organizationId = session.user.organizationId!;
 
   return db.region.findMany({
@@ -178,11 +170,10 @@ export async function getRegions() {
  * Get distinct asset/consumable templates from all regions (for cloning)
  */
 export async function getItemTemplates() {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const allAssets = await db.asset.findMany({
     where: { organizationId },
@@ -224,11 +215,10 @@ export async function applyItemsToRegion(data: {
   assets: { name: string; category: string; description?: string | null; isHighValue?: boolean; supplier?: string | null; purchaseCost?: number | null; imageUrl?: string | null }[];
   consumables: { name: string; category: string; unitType: string; minimumThreshold?: number; reorderLevel?: number; supplier?: string | null; unitCost?: number | null; imageUrl?: string | null; initialStock?: number }[];
 }) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const region = await db.region.findUnique({ where: { id: data.regionId } });
   if (!region || region.organizationId !== organizationId) throw new Error("Region not found");

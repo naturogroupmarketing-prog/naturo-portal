@@ -1,7 +1,6 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isSuperAdmin, isAdminOrManager, hasPermission } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
@@ -9,16 +8,16 @@ import { Role } from "@/generated/prisma/client";
 import bcrypt from "bcryptjs";
 import { enforceUserLimit } from "@/lib/tenant";
 import { applyStarterKit } from "@/app/actions/starter-kits";
+import { withAuth } from "@/lib/action-utils";
 
 export async function createUser(formData: FormData) {
   try {
-    const session = await auth();
-    if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "staffAdd"))) {
+    const session = await withAuth();
+    if (!(await hasPermission(session.user.id, session.user.role, "staffAdd"))) {
       return { error: "Unauthorized" };
     }
 
-    const organizationId = session.user.organizationId;
-    if (!organizationId) return { error: "No organization found" };
+    const organizationId = session.user.organizationId!;
 
     try {
       await enforceUserLimit(organizationId);
@@ -99,13 +98,12 @@ export async function createUser(formData: FormData) {
 
 export async function updateUser(formData: FormData) {
   try {
-    const session = await auth();
-    if (!session?.user || !isSuperAdmin(session.user.role)) {
+    const session = await withAuth();
+    if (!isSuperAdmin(session.user.role)) {
       return { error: "Unauthorized" };
     }
 
-    const organizationId = session.user.organizationId;
-    if (!organizationId) return { error: "No organization found" };
+    const organizationId = session.user.organizationId!;
 
     const userId = formData.get("userId") as string;
     const name = formData.get("name") as string;
@@ -149,13 +147,12 @@ export async function updateUser(formData: FormData) {
 }
 
 export async function toggleUserActive(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "staffDelete"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "staffDelete"))) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const userId = formData.get("userId") as string;
   const user = await db.user.findUnique({ where: { id: userId } });
@@ -188,13 +185,12 @@ export async function toggleUserActive(formData: FormData) {
 }
 
 export async function batchDisableUsers(userIds: string[]) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "staffDelete"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "staffDelete"))) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   if (userIds.length === 0) return { success: true, count: 0 };
 
@@ -227,8 +223,8 @@ export async function batchDisableUsers(userIds: string[]) {
 }
 
 export async function getUsers(regionId?: string) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -249,13 +245,12 @@ export async function getUsers(regionId?: string) {
 }
 
 export async function deleteUser(userId: string) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) {
     return { success: false, error: "Unauthorized" };
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) return { success: false, error: "No organization found" };
+  const organizationId = session.user.organizationId!;
 
   try {
   // Prevent deleting yourself
@@ -388,13 +383,12 @@ export async function deleteUser(userId: string) {
 }
 
 export async function resetPassword(userId: string, newPassword: string) {
-  const session = await auth();
-  if (!session?.user || !isSuperAdmin(session.user.role)) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   if (!newPassword || newPassword.length < 8) {
     throw new Error("Password must be at least 8 characters");

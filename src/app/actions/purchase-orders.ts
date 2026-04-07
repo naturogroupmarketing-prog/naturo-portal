@@ -1,22 +1,21 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { canManageRegion, hasPermission } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import type { PurchaseOrderStatus } from "@/generated/prisma/client";
+import { withAuth } from "@/lib/action-utils";
 
 export async function approvePurchaseOrder(formData: FormData) {
-  const session = await auth();
+  const session = await withAuth();
   // Super admin can always approve; branch managers need purchaseOrderApprove permission
-  const canApprove = session?.user?.role === "SUPER_ADMIN" || (session?.user && await hasPermission(session.user.id, session.user.role, "purchaseOrderApprove"));
+  const canApprove = session.user.role === "SUPER_ADMIN" || await hasPermission(session.user.id, session.user.role, "purchaseOrderApprove");
   if (!canApprove) {
     throw new Error("Unauthorized — only super admins or managers with approve permission can approve/reject orders");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const purchaseOrderId = formData.get("purchaseOrderId") as string;
   const action = formData.get("action") as string; // "approve" | "reject"
@@ -77,13 +76,12 @@ export async function approvePurchaseOrder(formData: FormData) {
 }
 
 export async function updatePurchaseOrder(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "purchaseOrderManage"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "purchaseOrderManage"))) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const purchaseOrderId = formData.get("purchaseOrderId") as string;
   const quantity = parseInt(formData.get("quantity") as string, 10);
@@ -152,14 +150,13 @@ export async function updatePurchaseOrder(formData: FormData) {
 }
 
 export async function markPurchaseOrderOrdered(formData: FormData) {
-  const session = await auth();
-  const canOrder = session?.user?.role === "SUPER_ADMIN" || (session?.user && await hasPermission(session.user.id, session.user.role, "purchaseOrderApprove"));
+  const session = await withAuth();
+  const canOrder = session.user.role === "SUPER_ADMIN" || await hasPermission(session.user.id, session.user.role, "purchaseOrderApprove");
   if (!canOrder) {
     throw new Error("Unauthorized — only super admins or managers with approve permission can mark orders");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const purchaseOrderId = formData.get("purchaseOrderId") as string;
 
@@ -198,13 +195,12 @@ export async function markPurchaseOrderOrdered(formData: FormData) {
  * Super admin or permitted manager manually creates a purchase order
  */
 export async function createPurchaseOrder(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "purchaseOrderManage"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "purchaseOrderManage"))) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const consumableId = formData.get("consumableId") as string;
   const quantity = parseInt(formData.get("quantity") as string);
@@ -252,13 +248,12 @@ export async function createPurchaseOrder(formData: FormData) {
  * Mark an ordered PO as received — auto-adds stock to consumable
  */
 export async function receivePurchaseOrder(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "purchaseOrderManage"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "purchaseOrderManage"))) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const purchaseOrderId = formData.get("purchaseOrderId") as string;
   const receivedQuantity = formData.get("receivedQuantity") as string;

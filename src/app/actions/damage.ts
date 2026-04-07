@@ -1,14 +1,13 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
 import { notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 export async function reportDamage(formData: FormData) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
   const assetId = formData.get("assetId") as string;
   const type = formData.get("type") as string; // "DAMAGE" or "LOSS"
@@ -28,8 +27,7 @@ export async function reportDamage(formData: FormData) {
   const asset = assignment?.asset || await db.asset.findUnique({ where: { id: assetId } });
   if (!asset) throw new Error("Asset not found");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   const report = await db.damageReport.create({
     data: {
@@ -95,11 +93,9 @@ export async function resolveDamageReport(data: {
   resolution: string; // "REPAIRED" | "REPLACED" | "WRITTEN_OFF" | "INSURANCE_CLAIM"
   notes?: string;
 }) {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization");
+  const organizationId = session.user.organizationId!;
 
   const report = await db.damageReport.findUnique({
     where: { id: data.reportId },

@@ -9,7 +9,7 @@ import { handleLowStockAlert } from "@/lib/low-stock-handler";
 import { createNotification, notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
 import { withAuth, validateForm } from "@/lib/action-utils";
-import { createConsumableSchema } from "@/lib/validations";
+import { createConsumableSchema, addStockSchema } from "@/lib/validations";
 
 export async function createConsumable(formData: FormData) {
   const session = await withAuth();
@@ -155,17 +155,13 @@ export async function updateConsumable(formData: FormData) {
 }
 
 export async function addStock(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableEdit"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "consumableEdit"))) {
     throw new Error("Unauthorized");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
-
-  const consumableId = formData.get("consumableId") as string;
-  const quantity = parseInt(formData.get("quantity") as string);
-  if (!quantity || quantity <= 0) throw new Error("Invalid quantity");
+  const organizationId = session.user.organizationId!;
+  const { consumableId, quantity } = validateForm(addStockSchema, formData);
 
   const consumable = await db.consumable.findUnique({
     where: { id: consumableId },
@@ -200,14 +196,12 @@ export async function addStock(formData: FormData) {
  * Super Admin: deduct stock directly (for corrections, write-offs, etc.)
  */
 export async function deductStock(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableStockAdjust"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "consumableStockAdjust"))) {
     throw new Error("You do not have permission to adjust stock");
   }
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
-
+  const organizationId = session.user.organizationId!;
   const consumableId = formData.get("consumableId") as string;
   const quantity = parseInt(formData.get("quantity") as string);
   const reason = (formData.get("reason") as string)?.trim();

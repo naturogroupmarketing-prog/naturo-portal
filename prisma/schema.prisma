@@ -233,6 +233,7 @@ model User {
   totpSecret            String?
   totpEnabled           Boolean  @default(false)
   onboardingComplete    Boolean  @default(false)
+  deletedAt             DateTime?
 
   region       Region?       @relation(fields: [regionId], references: [id])
   organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -289,6 +290,7 @@ model Asset {
   warrantyExpiry DateTime?
   depreciationRate Float?    // annual percentage
   customFields   Json?       // User-defined custom fields as JSON
+  deletedAt      DateTime?
 
   region       Region       @relation(fields: [regionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -363,6 +365,7 @@ model Consumable {
   isActive         Boolean @default(true)
   sortOrder        Int     @default(0)
   customFields     Json?   // User-defined custom fields as JSON
+  deletedAt        DateTime?
 
   region       Region       @relation(fields: [regionId], references: [id], onDelete: Restrict)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)

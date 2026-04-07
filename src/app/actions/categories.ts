@@ -1,16 +1,14 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isAdminOrManager } from "@/lib/permissions";
 import { revalidatePath } from "next/cache";
+import { withAuth } from "@/lib/action-utils";
 
 export async function getCategories(type: "ASSET" | "CONSUMABLE") {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  const session = await withAuth();
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   return db.category.findMany({
     where: { type, organizationId },
@@ -19,8 +17,8 @@ export async function getCategories(type: "ASSET" | "CONSUMABLE") {
 }
 
 export async function createCategory(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !isAdminOrManager(session.user.role)) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -30,8 +28,7 @@ export async function createCategory(formData: FormData) {
   if (!name) throw new Error("Name is required");
   if (!["ASSET", "CONSUMABLE"].includes(type)) throw new Error("Invalid type");
 
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
+  const organizationId = session.user.organizationId!;
 
   // Check for duplicate
   const existing = await db.category.findUnique({
