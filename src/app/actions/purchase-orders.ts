@@ -307,7 +307,7 @@ export async function syncLowStockPOs() {
 
   // Find all low-stock consumables
   const lowStock = await db.consumable.findMany({
-    where: { organizationId, isActive: true, deletedAt: null },
+    where: { organizationId, isActive: true },
     select: {
       id: true, name: true, unitType: true, quantityOnHand: true,
       minimumThreshold: true, reorderLevel: true, regionId: true,

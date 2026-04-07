@@ -1,8 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/components/ui/toast";
+import { changePlan } from "@/app/actions/billing";
 
 interface Props {
   org: {
@@ -56,6 +60,9 @@ const PLANS = [
 ];
 
 export function BillingClient({ org }: Props) {
+  const router = useRouter();
+  const { addToast } = useToast();
+  const [changing, setChanging] = useState<string | null>(null);
   const trialEnds = org.trialEndsAt ? new Date(org.trialEndsAt) : null;
   const isTrialing = org.subscriptionStatus === "TRIALING";
   const trialDaysLeft = trialEnds ? Math.max(0, Math.ceil((trialEnds.getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0;
@@ -156,7 +163,17 @@ export function BillingClient({ org }: Props) {
                     ))}
                   </ul>
                   <button
-                    disabled={isCurrent}
+                    disabled={isCurrent || changing === plan.key}
+                    onClick={async () => {
+                      if (isCurrent || plan.price === "Custom") return;
+                      setChanging(plan.key);
+                      try {
+                        await changePlan(plan.key);
+                        addToast(`Plan changed to ${plan.name}`, "success");
+                        router.refresh();
+                      } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                      setChanging(null);
+                    }}
                     className={`w-full mt-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
                       isCurrent
                         ? "bg-action-50 text-action-600 cursor-default"
@@ -167,7 +184,8 @@ export function BillingClient({ org }: Props) {
                             : "border-2 border-shark-200 text-shark-700 hover:border-action-500 hover:text-action-500"
                     }`}
                   >
-                    {isCurrent ? "Current Plan" :
+                    {changing === plan.key ? "Changing..." :
+                     isCurrent ? "Current Plan" :
                      plan.price === "Custom" ? "Contact Sales" :
                      isUpgrade ? "Upgrade" : "Downgrade"}
                   </button>

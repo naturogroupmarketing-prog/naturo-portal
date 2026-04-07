@@ -40,7 +40,7 @@ export async function GET() {
   // Fetch all data in parallel
   const [assets, consumables, staff, regions] = await Promise.all([
     db.asset.findMany({
-      where: { organizationId, deletedAt: null },
+      where: { organizationId },
       include: {
         region: { select: { name: true, state: { select: { name: true } } } },
         assignments: {
@@ -51,14 +51,14 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     }),
     db.consumable.findMany({
-      where: { organizationId, deletedAt: null, isActive: true },
+      where: { organizationId, isActive: true },
       include: {
         region: { select: { name: true, state: { select: { name: true } } } },
       },
       orderBy: { name: "asc" },
     }),
     db.user.findMany({
-      where: { organizationId, isActive: true, deletedAt: null },
+      where: { organizationId, isActive: true },
       include: {
         region: { select: { id: true, name: true } },
       },

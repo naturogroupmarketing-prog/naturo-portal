@@ -13,9 +13,9 @@ export default async function BackupPage() {
   const organizationId = session.user.organizationId!;
 
   const [assetCount, consumableCount, staffCount, regionCount] = await Promise.all([
-    db.asset.count({ where: { organizationId, deletedAt: null } }),
-    db.consumable.count({ where: { organizationId, deletedAt: null, isActive: true } }),
-    db.user.count({ where: { organizationId, isActive: true, deletedAt: null } }),
+    db.asset.count({ where: { organizationId } }),
+    db.consumable.count({ where: { organizationId, isActive: true } }),
+    db.user.count({ where: { organizationId, isActive: true } }),
     db.region.count({ where: { organizationId, archivedAt: null } }),
   ]);
 

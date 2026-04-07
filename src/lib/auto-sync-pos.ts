@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
  */
 export async function autoSyncLowStockPOs(organizationId: string) {
   const lowStock = await db.consumable.findMany({
-    where: { organizationId, isActive: true, deletedAt: null },
+    where: { organizationId, isActive: true },
     select: { id: true, quantityOnHand: true, minimumThreshold: true, reorderLevel: true, regionId: true, supplier: true, organizationId: true },
   });
 

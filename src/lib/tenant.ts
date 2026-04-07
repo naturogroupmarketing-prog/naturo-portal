@@ -59,12 +59,23 @@ export async function checkPlanLimits(orgId: string) {
     );
   }
 
+  // Plan-based limits (source of truth) — override database maxUsers/maxAssets
+  const PLAN_LIMITS: Record<string, { users: number; assets: number }> = {
+    FREE: { users: 3, assets: 50 },
+    ADMIN: { users: 15, assets: 500 },
+    PRO: { users: 75, assets: 2000 },
+    ENTERPRISE: { users: 999999, assets: 999999 },
+  };
+  const limits = PLAN_LIMITS[org.plan] || PLAN_LIMITS.FREE;
+
   return {
     org,
-    withinUserLimit: org._count.users < org.maxUsers,
-    withinAssetLimit: org._count.assets < org.maxAssets,
+    withinUserLimit: org._count.users < limits.users,
+    withinAssetLimit: org._count.assets < limits.assets,
     userCount: org._count.users,
     assetCount: org._count.assets,
+    maxUsers: limits.users,
+    maxAssets: limits.assets,
   };
 }
 
@@ -76,7 +87,7 @@ export async function enforceUserLimit(orgId: string) {
   const limits = await checkPlanLimits(orgId);
   if (!limits.withinUserLimit) {
     throw new Error(
-      `User limit reached (${limits.userCount}/${limits.org.maxUsers}). Please upgrade your plan to add more users.`
+      `User limit reached (${limits.userCount}/${limits.maxUsers}). Please upgrade your plan to add more users.`
     );
   }
 }
@@ -89,7 +100,7 @@ export async function enforceAssetLimit(orgId: string) {
   const limits = await checkPlanLimits(orgId);
   if (!limits.withinAssetLimit) {
     throw new Error(
-      `Asset limit reached (${limits.assetCount}/${limits.org.maxAssets}). Please upgrade your plan to add more assets.`
+      `Asset limit reached (${limits.assetCount}/${limits.maxAssets}). Please upgrade your plan to add more assets.`
     );
   }
 }

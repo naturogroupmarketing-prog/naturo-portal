@@ -17,7 +17,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
 
   const [consumables, pendingRequests, regions, users, categories, canAdjustStock] = await Promise.all([
     db.consumable.findMany({
-      where: { ...regionFilter, isActive: true, deletedAt: null },
+      where: { ...regionFilter, isActive: true },
       include: {
         region: { include: { state: true } },
         assignments: {

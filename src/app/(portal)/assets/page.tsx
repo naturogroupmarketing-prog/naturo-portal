@@ -18,7 +18,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
   const PAGE_LIMIT = 5000;
   const [assets, totalAssetCount, regions, users, categories, perms] = await Promise.all([
     db.asset.findMany({
-      where: { ...regionFilter, deletedAt: null },
+      where: { ...regionFilter },
       select: {
         id: true, name: true, assetCode: true, category: true, status: true,
         serialNumber: true, isHighValue: true, imageUrl: true, description: true,
@@ -33,7 +33,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
       orderBy: { createdAt: "desc" },
       take: PAGE_LIMIT,
     }),
-    db.asset.count({ where: { ...regionFilter, deletedAt: null } }),
+    db.asset.count({ where: { ...regionFilter } }),
     db.region.findMany({
       where: session.user.role === "BRANCH_MANAGER"
         ? { id: session.user.regionId!, organizationId }

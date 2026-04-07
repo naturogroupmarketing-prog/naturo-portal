@@ -1,12 +1,15 @@
 "use server";
 
+import { db } from "@/lib/db";
 import { isSuperAdmin } from "@/lib/permissions";
 import { withAuth } from "@/lib/action-utils";
+import { revalidatePath } from "next/cache";
 import {
   createCheckoutSession,
   createBillingPortalSession,
   PLANS,
 } from "@/lib/stripe";
+import type { SubscriptionPlan } from "@/generated/prisma/client";
 
 export async function getPlans() {
   const session = await withAuth();
@@ -45,4 +48,28 @@ export async function openBillingPortal(returnUrl: string) {
 
   const portalSession = await createBillingPortalSession(orgId, returnUrl);
   return { url: portalSession.url };
+}
+
+/**
+ * Change the organization's plan directly (before Stripe is fully wired).
+ */
+export async function changePlan(newPlan: string) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) {
+    throw new Error("Unauthorized");
+  }
+
+  const validPlans = ["FREE", "ADMIN", "PRO", "ENTERPRISE"];
+  if (!validPlans.includes(newPlan)) throw new Error("Invalid plan");
+
+  const orgId = session.user.organizationId!;
+
+  await db.organization.update({
+    where: { id: orgId },
+    data: { plan: newPlan as SubscriptionPlan },
+  });
+
+  revalidatePath("/admin/billing");
+  revalidatePath("/dashboard");
+  return { success: true };
 }
