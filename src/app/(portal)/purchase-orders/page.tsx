@@ -40,6 +40,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
           notes: true,
           createdById: true,
           approvedById: true,
+          approvedAt: true,
           createdAt: true,
           updatedAt: true,
           consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
