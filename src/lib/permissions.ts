@@ -53,12 +53,17 @@ export async function hasPermission(
   if (isSuperAdmin(userRole)) return true;
   if (!isBranchManager(userRole)) return false;
 
-  const perms = await db.managerPermission.findUnique({
-    where: { userId },
-  });
+  try {
+    const perms = await db.managerPermission.findUnique({
+      where: { userId },
+    });
 
-  if (!perms) return MANAGER_DEFAULTS[permission];
-  return perms[permission];
+    if (!perms) return MANAGER_DEFAULTS[permission];
+    // Fall back to default if column doesn't exist yet
+    return (perms as unknown as Record<string, boolean>)[permission] ?? MANAGER_DEFAULTS[permission];
+  } catch {
+    return MANAGER_DEFAULTS[permission];
+  }
 }
 
 /**
@@ -82,12 +87,16 @@ export async function hasPermissions(
   }
 
   // Single DB query for all permissions
-  const perms = await db.managerPermission.findUnique({
-    where: { userId },
-  });
+  try {
+    const perms = await db.managerPermission.findUnique({
+      where: { userId },
+    });
 
-  for (const p of permissions) {
-    result[p] = perms ? perms[p] : MANAGER_DEFAULTS[p];
+    for (const p of permissions) {
+      result[p] = perms ? ((perms as unknown as Record<string, boolean>)[p] ?? MANAGER_DEFAULTS[p]) : MANAGER_DEFAULTS[p];
+    }
+  } catch {
+    for (const p of permissions) result[p] = MANAGER_DEFAULTS[p];
   }
   return result;
 }
