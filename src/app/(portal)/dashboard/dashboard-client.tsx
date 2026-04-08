@@ -173,7 +173,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         switch (sectionId) {
           case "stats":
             return visibleStats.length > 0 ? (
-              <StaggerContainer key="stats" className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <StaggerContainer key="stats" className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
