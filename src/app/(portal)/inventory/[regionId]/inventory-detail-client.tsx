@@ -96,14 +96,14 @@ export function InventoryDetailClient({
         ].map((stat) => {
           const cardContent = (
             <Card className={`border-t-[3px] ${stat.border} hover:shadow-md transition-all cursor-pointer`}>
-              <div className="px-4 py-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-2xl font-bold text-shark-900">{stat.value}</p>
-                    <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
+              <div className="px-4 sm:px-5 py-4">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-xl ${stat.border === "border-[#E8532E]" && stat.value > 0 ? "bg-[#E8532E]" : "bg-action-500"} flex items-center justify-center shrink-0`}>
+                    <Icon name={stat.icon} size={22} className="text-white" />
                   </div>
-                  <div className={`w-10 h-10 rounded-xl ${stat.border === "border-[#E8532E]" && stat.value > 0 ? "bg-[#E8532E]" : "bg-action-500"} flex items-center justify-center`}>
-                    <Icon name={stat.icon} size={18} className="text-white" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-shark-500">{stat.label}</p>
+                    <p className="text-2xl font-bold text-shark-900">{stat.value}</p>
                   </div>
                 </div>
               </div>
