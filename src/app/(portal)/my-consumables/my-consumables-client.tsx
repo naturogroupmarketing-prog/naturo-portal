@@ -464,7 +464,7 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
   };
 
   return (
-    <Card className="border-dashed">
+    <Card className="border-dashed opacity-50">
       <CardContent className="py-4">
         <div className="flex items-start gap-3">
           {/* Photo */}
