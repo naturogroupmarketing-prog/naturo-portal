@@ -17,8 +17,8 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
   // Auto-sync: create missing POs for low-stock items (don't crash page if this fails)
   try { await autoSyncLowStockPOs(organizationId); } catch {}
 
-  const regionFilter = session.user.role === "BRANCH_MANAGER"
-    ? { regionId: session.user.regionId!, organizationId }
+  const regionFilter = session.user.role === "BRANCH_MANAGER" && session.user.regionId
+    ? { regionId: session.user.regionId, organizationId }
     : { organizationId };
 
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -28,7 +28,18 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
     where: { organizationId, status: "REJECTED", approvedAt: { lt: twentyFourHoursAgo } },
   }); } catch {}
 
-  const [purchaseOrders, regions, canManagePO, canApprovePO, canEditQty, consumables] = await Promise.all([
+  let canManagePO = false;
+  let canApprovePO = false;
+  let canEditQty = false;
+  try {
+    [canManagePO, canApprovePO, canEditQty] = await Promise.all([
+      hasPermission(session.user.id, session.user.role, "purchaseOrderManage"),
+      session.user.role === "SUPER_ADMIN" ? true : hasPermission(session.user.id, session.user.role, "purchaseOrderApprove"),
+      session.user.role === "SUPER_ADMIN" ? true : hasPermission(session.user.id, session.user.role, "purchaseOrderEditQty"),
+    ]);
+  } catch {}
+
+  const [purchaseOrders, regions, consumables] = await Promise.all([
     db.purchaseOrder.findMany({
       where: {
         ...regionFilter,
@@ -43,15 +54,12 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       take: 1000,
     }),
     db.region.findMany({
-      where: session.user.role === "BRANCH_MANAGER"
-        ? { id: session.user.regionId!, organizationId }
+      where: session.user.role === "BRANCH_MANAGER" && session.user.regionId
+        ? { id: session.user.regionId, organizationId }
         : { organizationId },
       include: { state: true },
       orderBy: { name: "asc" },
     }),
-    hasPermission(session.user.id, session.user.role, "purchaseOrderManage"),
-    session.user.role === "SUPER_ADMIN" ? true : hasPermission(session.user.id, session.user.role, "purchaseOrderApprove"),
-    session.user.role === "SUPER_ADMIN" ? true : hasPermission(session.user.id, session.user.role, "purchaseOrderEditQty"),
     db.consumable.findMany({
       where: { ...regionFilter, isActive: true },
       select: { id: true, name: true, category: true, unitType: true, supplier: true, regionId: true, quantityOnHand: true, minimumThreshold: true },
