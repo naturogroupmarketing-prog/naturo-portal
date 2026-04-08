@@ -398,6 +398,33 @@ export async function deleteUser(userId: string) {
   }
 }
 
+export async function restoreUser(userId: string) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) return { error: "Unauthorized" };
+
+  const organizationId = session.user.organizationId!;
+  const user = await db.user.findUnique({ where: { id: userId } });
+  if (!user || user.organizationId !== organizationId) return { error: "User not found" };
+  if (!user.deletedAt) return { error: "User is not deleted" };
+
+  await db.user.update({
+    where: { id: userId },
+    data: { deletedAt: null, isActive: true },
+  });
+
+  await createAuditLog({
+    action: "USER_ENABLED",
+    description: `User "${user.name || user.email}" restored from deleted`,
+    performedById: session.user.id,
+    targetUserId: userId,
+    organizationId,
+  });
+
+  revalidatePath("/staff");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
 export async function resetPassword(userId: string, newPassword: string) {
   const session = await withAuth();
   if (!isSuperAdmin(session.user.role)) {

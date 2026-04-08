@@ -121,6 +121,15 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
     consumableUsageHistory: usageMap.get(u.id) || [],
   }));
 
+  // Fetch deleted users for Super Admin
+  const deletedUsers = session.user.role === "SUPER_ADMIN"
+    ? await db.user.findMany({
+        where: { organizationId, deletedAt: { not: null } },
+        select: { id: true, name: true, email: true, role: true, deletedAt: true, region: { select: { name: true } } },
+        orderBy: { deletedAt: "desc" },
+      })
+    : [];
+
   return (
     <StaffClient
       users={JSON.parse(JSON.stringify(usersWithUsage))}
@@ -129,6 +138,7 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
       canViewStaffDetails={canViewStaffDetails}
       initialRegion={params.region}
+      deletedUsers={JSON.parse(JSON.stringify(deletedUsers))}
     />
   );
 }

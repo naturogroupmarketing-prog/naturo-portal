@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
-import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive } from "@/app/actions/users";
+import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive, restoreUser } from "@/app/actions/users";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
@@ -74,6 +74,15 @@ interface Region {
   state: { name: string };
 }
 
+interface DeletedUser {
+  id: string;
+  name: string | null;
+  email: string;
+  role: string;
+  deletedAt: string;
+  region: { name: string } | null;
+}
+
 interface StaffClientProps {
   users: StaffUser[];
   regions: Region[];
@@ -81,11 +90,14 @@ interface StaffClientProps {
   isSuperAdmin: boolean;
   canViewStaffDetails?: boolean;
   initialRegion?: string;
+  deletedUsers?: DeletedUser[];
 }
 
-export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion }: StaffClientProps) {
+export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion, deletedUsers = [] }: StaffClientProps) {
   const router = useRouter();
   const { addToast } = useToast();
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [restoringId, setRestoringId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   // If initialRegion is set, collapse all OTHER regions so the target region is visible
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
@@ -1019,6 +1031,60 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           </div>
         )}
       </Modal>
+
+      {/* Deleted Users */}
+      {isSuperAdmin && deletedUsers.length > 0 && (
+        <div className="mt-6">
+          <button
+            onClick={() => setShowDeleted(!showDeleted)}
+            className="flex items-center gap-2 text-sm text-shark-400 hover:text-shark-600 transition-colors"
+          >
+            <Icon name="clock" size={14} />
+            <span>{deletedUsers.length} deleted user{deletedUsers.length !== 1 ? "s" : ""}</span>
+            <Icon name="chevron-down" size={14} className={`transition-transform ${showDeleted ? "" : "-rotate-90"}`} />
+          </button>
+          {showDeleted && (
+            <div className="mt-3 space-y-2">
+              {deletedUsers.map((u) => (
+                <Card key={u.id} className="border-dashed border-shark-200 bg-shark-50/50">
+                  <div className="px-4 py-3 flex items-center justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-shark-600">{u.name || u.email}</p>
+                      <p className="text-xs text-shark-400">
+                        {u.email} · {u.role.replace(/_/g, " ")} · {u.region?.name || "Head Office"}
+                      </p>
+                      <p className="text-xs text-shark-400 mt-0.5">
+                        Deleted {new Date(u.deletedAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      loading={restoringId === u.id}
+                      disabled={!!restoringId}
+                      onClick={async () => {
+                        setRestoringId(u.id);
+                        try {
+                          const result = await restoreUser(u.id);
+                          if (result.success) {
+                            addToast(`${u.name || u.email} restored`, "success");
+                            router.refresh();
+                          } else {
+                            addToast(result.error || "Failed", "error");
+                          }
+                        } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                        setRestoringId(null);
+                      }}
+                    >
+                      Restore
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
