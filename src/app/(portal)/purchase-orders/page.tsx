@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { PurchaseOrdersClient } from "./purchase-orders-client";
-import { autoSyncLowStockPOs } from "@/lib/auto-sync-pos";
 
 export const dynamic = "force-dynamic";
 
@@ -14,23 +13,37 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
 
   const organizationId = session.user.organizationId!;
   const isSuperAdmin = session.user.role === "SUPER_ADMIN";
+  const isBM = session.user.role === "BRANCH_MANAGER" && session.user.regionId;
 
   try {
-    // Auto-sync (non-blocking)
-    try { await autoSyncLowStockPOs(organizationId); } catch {}
-
     // Build region filter
-    const regionWhere = session.user.role === "BRANCH_MANAGER" && session.user.regionId
-      ? { regionId: session.user.regionId, organizationId }
+    const poWhere = isBM
+      ? { regionId: session.user.regionId!, organizationId }
       : { organizationId };
 
-    // Fetch POs and regions
+    const regionWhere = isBM
+      ? { id: session.user.regionId!, organizationId }
+      : { organizationId };
+
+    // Fetch POs, regions, consumables — using explicit select to avoid column mismatches
     const [purchaseOrders, regions, consumables] = await Promise.all([
       db.purchaseOrder.findMany({
-        where: regionWhere,
-        include: {
+        where: poWhere,
+        select: {
+          id: true,
+          consumableId: true,
+          regionId: true,
+          organizationId: true,
+          quantity: true,
+          supplier: true,
+          status: true,
+          notes: true,
+          createdById: true,
+          approvedById: true,
+          createdAt: true,
+          updatedAt: true,
           consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
-          region: { include: { state: true } },
+          region: { select: { id: true, name: true, state: { select: { id: true, name: true, abbreviation: true } } } },
           createdBy: { select: { name: true, email: true } },
           approvedBy: { select: { name: true, email: true } },
         },
@@ -38,14 +51,16 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         take: 1000,
       }),
       db.region.findMany({
-        where: session.user.role === "BRANCH_MANAGER" && session.user.regionId
-          ? { id: session.user.regionId, organizationId }
-          : { organizationId },
-        include: { state: true },
+        where: regionWhere,
+        select: {
+          id: true,
+          name: true,
+          state: { select: { id: true, name: true, abbreviation: true } },
+        },
         orderBy: { name: "asc" },
       }),
       db.consumable.findMany({
-        where: { ...regionWhere, isActive: true },
+        where: { regionId: isBM ? session.user.regionId! : undefined, organizationId, isActive: true },
         select: { id: true, name: true, category: true, unitType: true, supplier: true, regionId: true, quantityOnHand: true, minimumThreshold: true },
         orderBy: [{ category: "asc" }, { name: "asc" }],
       }),
@@ -70,7 +85,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       <div className="p-8">
         <h1 className="text-2xl font-bold text-red-600 mb-4">Purchase Orders Error</h1>
         <pre className="bg-red-50 p-4 rounded-lg text-sm text-red-800 overflow-auto">
-          {error instanceof Error ? error.message : "Unknown error"}
+          {error instanceof Error ? `${error.message}\n\nStack: ${error.stack}` : JSON.stringify(error)}
         </pre>
       </div>
     );
