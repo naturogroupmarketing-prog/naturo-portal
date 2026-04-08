@@ -216,16 +216,15 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     }
   };
 
-  // Status display — Badge for all, plus "Received" button for Branch Manager when ORDERED
+  // Status display — Badge for all, plus "Received" button when ORDERED
   const renderStatus = (po: PurchaseOrder) => {
-    // Branch Manager: show "Received" button when item arrives
-    if (!isSuperAdmin && canManagePO && po.status === "ORDERED") return (
+    // Show "Received" button for any manager when item is ORDERED
+    if (po.status === "ORDERED") return (
       <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
         <Badge status={po.status} />
         <Button size="sm" onClick={() => handleAction(po.id, "received")} disabled={!!loading} loading={loading === po.id + "received"}>Received</Button>
       </div>
     );
-    // Everyone else: just the badge (click row to edit)
     return <Badge status={po.status} />;
   };
 
