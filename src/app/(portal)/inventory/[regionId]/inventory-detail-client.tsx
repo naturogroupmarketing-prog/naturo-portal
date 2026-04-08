@@ -92,7 +92,7 @@ export function InventoryDetailClient({
           { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500", scrollTo: "section-assets" },
           { label: "Consumables", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500", scrollTo: "section-consumables" },
           { label: "Staff", value: staff.length, icon: "users" as const, border: "border-action-500", href: `/staff?region=${region.id}` },
-          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", href: `/alerts/low-stock?region=${region.id}` },
+          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", href: `/purchase-orders?region=${region.id}` },
         ].map((stat) => {
           const cardContent = (
             <Card className="hover:shadow-md transition-all cursor-pointer">
