@@ -607,6 +607,31 @@ export default async function DashboardPage() {
   healthScore -= Math.min(10, (pendingRequests as number) * 2); // -2 per pending request, max -10
   healthScore = Math.max(0, healthScore);
 
+  // Build regional breakdown for Branch Manager (their single region)
+  if (!isSuperAdmin && session.user.regionId) {
+    const bmRegion = await db.region.findUnique({
+      where: { id: session.user.regionId },
+      select: { id: true, name: true, state: { select: { name: true } } },
+    });
+    if (bmRegion) {
+      regionBreakdown = [{
+        regionId: bmRegion.id,
+        regionName: bmRegion.name,
+        stateName: bmRegion.state.name,
+        damaged: unresolvedDamageReports,
+        lost: unresolvedLossReports,
+        pendingRequests: pendingRequests as number,
+        pendingPOs: pendingPOs,
+        overdueReturns: overdueReturns,
+        lowStockCount: (lowStockItems as unknown[]).length,
+        healthScore,
+        lowStockItems: (lowStockItems as { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number }[])
+          .slice(0, 5)
+          .map((i) => ({ id: i.id, name: i.name, unitType: i.unitType, quantityOnHand: i.quantityOnHand, minimumThreshold: i.minimumThreshold })),
+      }];
+    }
+  }
+
   const operationsOverview = {
     healthScore,
     ordersAwaitingApproval,
@@ -622,12 +647,12 @@ export default async function DashboardPage() {
 
   let preferences = parsePreferences(userPrefs?.dashboardPreferences);
 
-  // Branch Manager default: only show Overview, Operations, Finance, Low Stock
+  // Branch Manager default: show Overview, Operations, Finance, Region, Low Stock
   if (!isSuperAdmin && !userPrefs?.dashboardPreferences) {
     preferences = {
       ...preferences,
-      sectionOrder: ["stats", "portfolio", "low-stock"],
-      hiddenWidgets: ["asset-charts", "consumable-charts", "regional-breakdown", "location-map", "maintenance-due", "quick-links"],
+      sectionOrder: ["stats", "portfolio", "regional", "low-stock"],
+      hiddenWidgets: ["asset-charts", "consumable-charts", "location-map", "maintenance-due", "quick-links"],
     };
   }
 
