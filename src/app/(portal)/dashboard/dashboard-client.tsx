@@ -509,39 +509,19 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     className="w-full flex items-center justify-between px-5 py-3 hover:bg-shark-25 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      {/* Health Score Circle with hover tooltip */}
-                      <div className="relative group/rscore" onClick={(e) => e.stopPropagation()}>
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0 cursor-pointer ${
-                          region.healthScore >= 80 ? "bg-action-500" :
-                          region.healthScore >= 50 ? "bg-[#E8532E]" : "bg-red-500"
-                        }`}>
-                          {region.healthScore}
-                        </div>
-                        <div className="absolute left-0 top-full mt-2 w-56 bg-[#1a1c21] text-white rounded-xl p-3.5 shadow-2xl opacity-0 invisible group-hover/rscore:opacity-100 group-hover/rscore:visible transition-all duration-200 z-50 text-left">
-                          <p className="text-[10px] font-semibold mb-1.5 text-shark-400">{region.regionName} Health</p>
-                          <div className="space-y-1 text-[11px]">
-                            {region.lowStockCount > 0 && <div className="flex justify-between"><span className="text-shark-400">Low stock ({region.lowStockCount})</span><span className="text-red-400">-{Math.min(30, region.lowStockCount * 5)}</span></div>}
-                            {region.overdueReturns > 0 && <div className="flex justify-between"><span className="text-shark-400">Overdue returns ({region.overdueReturns})</span><span className="text-red-400">-{Math.min(20, region.overdueReturns * 4)}</span></div>}
-                            {region.damaged > 0 && <div className="flex justify-between"><span className="text-shark-400">Damaged ({region.damaged})</span><span className="text-red-400">-{Math.min(15, region.damaged * 5)}</span></div>}
-                            {region.pendingRequests > 0 && <div className="flex justify-between"><span className="text-shark-400">Pending requests ({region.pendingRequests})</span><span className="text-red-400">-{Math.min(10, region.pendingRequests * 2)}</span></div>}
-                            {region.healthScore === 100 && <p className="text-action-400 text-[11px]">Perfect — no issues</p>}
-                            <div className="border-t border-shark-700 pt-1 mt-1 flex justify-between font-semibold">
-                              <span>Score</span>
-                              <span className={region.healthScore >= 80 ? "text-action-400" : region.healthScore >= 50 ? "text-amber-400" : "text-red-400"}>{region.healthScore}/100</span>
-                            </div>
-                          </div>
-                          <div className="absolute -top-1.5 left-3 w-3 h-3 bg-[#1a1c21] rotate-45" />
-                        </div>
-                      </div>
-                      <div className="text-left">
+                      <div className="text-left flex-1 min-w-0">
                         <span className="font-semibold text-shark-900">{region.regionName}</span>
                         <span className="ml-2 text-xs text-shark-400">{region.stateName}</span>
                       </div>
-                      {totalIssues > 0 && (
-                        <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-shark-100 text-shark-600 rounded-full">
-                          {totalIssues} {totalIssues === 1 ? "issue" : "issues"}
-                        </span>
-                      )}
+                      <div className="flex items-center gap-2 shrink-0">
+                        {totalIssues > 0 && (
+                          <span className="text-xs font-medium text-shark-500">{totalIssues} {totalIssues === 1 ? "issue" : "issues"}</span>
+                        )}
+                        <span className={`text-sm font-bold ${
+                          region.healthScore >= 80 ? "text-action-500" :
+                          region.healthScore >= 50 ? "text-[#E8532E]" : "text-red-500"
+                        }`}>{region.healthScore}</span>
+                      </div>
                     </div>
                     <Icon
                       name="chevron-down"
@@ -552,26 +532,17 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   {!isCollapsed && (
                     <div className="px-5 pb-4 pt-1 border-t border-shark-50">
                       <div className="grid grid-cols-3 gap-3 mb-3">
-                        <Link href={`/alerts/damage?region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
-                          <Icon name="alert-triangle" size={14} className="text-red-500" />
-                          <div>
-                            <p className="text-lg font-bold text-red-600">{region.damaged + region.lost}</p>
-                            <p className="text-xs text-red-400">Damage</p>
-                          </div>
+                        <Link href={`/alerts/damage?region=${region.regionId}`} className="rounded-lg px-3 py-2.5 hover:bg-shark-50 transition-colors">
+                          <p className="text-lg font-bold text-shark-900">{region.damaged + region.lost}</p>
+                          <p className="text-xs text-shark-400">Damage</p>
                         </Link>
-                        <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 hover:bg-amber-200 transition-colors">
-                          <Icon name="clipboard" size={14} className="text-[#E8532E]" />
-                          <div>
-                            <p className="text-lg font-bold text-[#E8532E]">{region.pendingRequests}</p>
-                            <p className="text-xs text-[#E8532E]">Requests</p>
-                          </div>
+                        <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="rounded-lg px-3 py-2.5 hover:bg-shark-50 transition-colors">
+                          <p className="text-lg font-bold text-shark-900">{region.pendingRequests}</p>
+                          <p className="text-xs text-shark-400">Requests</p>
                         </Link>
-                        <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-action-50 px-3 py-2 hover:bg-action-100 transition-colors">
-                          <Icon name="truck" size={14} className="text-action-500" />
-                          <div>
-                            <p className="text-lg font-bold text-action-600">{region.pendingPOs}</p>
-                            <p className="text-xs text-action-400">POs</p>
-                          </div>
+                        <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="rounded-lg px-3 py-2.5 hover:bg-shark-50 transition-colors">
+                          <p className="text-lg font-bold text-shark-900">{region.pendingPOs}</p>
+                          <p className="text-xs text-shark-400">POs</p>
                         </Link>
                       </div>
                       {region.lowStockItems.length > 0 && (

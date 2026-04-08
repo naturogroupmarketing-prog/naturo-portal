@@ -26,14 +26,12 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
             <h2 className="text-lg font-bold text-shark-900">Operations</h2>
             <p className="text-sm text-shark-400">Business health overview</p>
           </div>
-          <div className="text-center relative group/health">
-            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold text-white cursor-pointer ${
-              data.healthScore >= 80 ? "bg-action-500" :
-              data.healthScore >= 50 ? "bg-[#E8532E]" : "bg-red-500"
-            }`}>
-              {data.healthScore}
-            </div>
-            <p className="text-[10px] text-shark-400 mt-1">Health</p>
+          <div className="text-right relative group/health cursor-pointer">
+            <p className={`text-3xl font-bold ${
+              data.healthScore >= 80 ? "text-action-500" :
+              data.healthScore >= 50 ? "text-[#E8532E]" : "text-red-500"
+            }`}>{data.healthScore}</p>
+            <p className="text-[10px] text-shark-400">/ 100</p>
             <div className="absolute right-0 sm:right-0 top-full mt-2 w-56 sm:w-64 bg-[#1a1c21] text-white rounded-xl p-3.5 sm:p-4 shadow-2xl opacity-0 invisible group-hover/health:opacity-100 group-hover/health:visible transition-all duration-200 z-50 text-left">
               <p className="text-xs font-semibold mb-2 text-shark-400">Health Score Breakdown</p>
               <div className="space-y-1.5 text-xs">
