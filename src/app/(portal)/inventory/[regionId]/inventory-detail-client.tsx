@@ -68,7 +68,7 @@ export function InventoryDetailClient({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-shark-400">
         <Link href="/inventory" className="hover:text-action-500 transition-colors">Inventory</Link>
@@ -87,6 +87,7 @@ export function InventoryDetailClient({
       </div>
 
       {/* Summary Stats */}
+      <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500", scrollTo: "section-assets" },

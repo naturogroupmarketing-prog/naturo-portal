@@ -221,7 +221,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
   if (submitted) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Return Checklist</h1>
         </div>
@@ -236,7 +236,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
           <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Return Checklist</h1>

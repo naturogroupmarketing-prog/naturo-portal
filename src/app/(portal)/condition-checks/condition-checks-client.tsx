@@ -201,7 +201,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
   const totalChecked = staffStatus.filter((s) => s.checkedItems >= s.totalItems).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -575,6 +575,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       </Modal>
 
       {/* Summary Stats */}
+      <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Staff with Items", value: staffStatus.length, icon: "users" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },

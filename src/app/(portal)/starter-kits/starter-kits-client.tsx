@@ -79,7 +79,7 @@ export function StarterKitsClient({
   const [showApply, setShowApply] = useState<StarterKit | null>(null);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-shark-900 dark:text-shark-100">Starter Kits</h1>

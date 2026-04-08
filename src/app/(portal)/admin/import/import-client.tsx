@@ -311,7 +311,7 @@ export function ImportClient({ regions }: Props) {
   // ─── Render ───────────────────────────────────────
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Import Data</h1>

@@ -313,7 +313,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
   return (
     <PullToRefresh>
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Dashboard</h1>
@@ -952,6 +952,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       })()}
 
       {/* Stat Cards */}
+      <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href}>
@@ -1195,7 +1196,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-lg font-semibold text-shark-900 mb-3">Quick Actions</h2>
+        <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest mb-4">Quick Actions</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Link href="/request-consumables">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">

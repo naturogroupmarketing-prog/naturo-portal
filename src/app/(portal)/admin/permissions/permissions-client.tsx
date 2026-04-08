@@ -95,7 +95,7 @@ function ManagerCard({ manager }: { manager: Manager }) {
       </CardHeader>
       {expanded && (
         <CardContent>
-          <div className="space-y-6">
+          <div className="space-y-8">
             {GROUPS.map((group) => {
               const groupKeys = allKeys.filter((k) => PERMISSION_INFO[k].group === group);
               if (groupKeys.length === 0) return null;
@@ -140,7 +140,7 @@ export function PermissionsClient({ managers }: { managers: Manager[] }) {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Permission Management</h1>
         <p className="text-sm text-shark-400 mt-1">Manage granular permissions for Branch Managers. Click a manager to expand.</p>

@@ -105,7 +105,7 @@ export default async function ActivityPage({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Recent Activity</h1>
         <p className="text-sm text-shark-400 mt-1">
@@ -120,7 +120,7 @@ export default async function ActivityPage({
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-8">
           {Object.entries(grouped).map(([date, entries]) => (
             <div key={date}>
               <h2 className="text-xs font-semibold uppercase tracking-wider text-shark-400 mb-3 px-1">

@@ -257,7 +257,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-shark-400">
         <Link href="/admin/locations" className="hover:text-action-500 transition-colors">
