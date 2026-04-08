@@ -556,12 +556,12 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </button>
                   {!isCollapsed && (
                     <div className="px-5 pb-4 pt-1 border-t border-shark-50">
-                      <div className="grid grid-cols-3 gap-3 mb-3">
-                        <Link href={`/alerts/damage?region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
+                      <div className="grid grid-cols-3 gap-3">
+                        <Link href={`/purchase-orders?region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
                           <Icon name="alert-triangle" size={14} className="text-red-500" />
                           <div>
-                            <p className="text-lg font-bold text-red-600">{region.damaged + region.lost}</p>
-                            <p className="text-xs text-red-400">Damage</p>
+                            <p className="text-lg font-bold text-red-600">{region.lowStockCount}</p>
+                            <p className="text-xs text-red-400">Low Stock</p>
                           </div>
                         </Link>
                         <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 hover:bg-amber-200 transition-colors">
@@ -579,25 +579,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </div>
                         </Link>
                       </div>
-                      {region.lowStockItems.length > 0 && (
-                        <div className="mt-2">
-                          <Link href={`/purchase-orders?region=${region.regionId}`} className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2 flex items-center gap-1 hover:text-action-500 transition-colors">
-                            Low Stock <Icon name="arrow-right" size={10} />
-                          </Link>
-                          <div className="space-y-0">
-                            {region.lowStockItems.map((item) => (
-                              <Link key={item.id} href={`/purchase-orders?region=${region.regionId}`} className="flex items-center justify-between py-2 border-b border-shark-50 last:border-0 hover:bg-shark-50/50 rounded-lg px-1 -mx-1 transition-colors cursor-pointer">
-                                <p className="text-sm text-shark-700">{item.name}</p>
-                                <div className="text-right flex items-center gap-1.5">
-                                  <span className="text-sm font-medium text-red-500">{item.quantityOnHand} {item.unitType}</span>
-                                  <span className="text-xs text-shark-400">min: {item.minimumThreshold}</span>
-                                  <Icon name="arrow-right" size={12} className="text-shark-400" />
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   )}
                 </Card>
