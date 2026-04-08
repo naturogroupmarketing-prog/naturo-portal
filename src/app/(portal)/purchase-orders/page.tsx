@@ -14,8 +14,8 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
 
   const organizationId = session.user.organizationId!;
 
-  // Auto-sync: create missing POs for low-stock items
-  await autoSyncLowStockPOs(organizationId);
+  // Auto-sync: create missing POs for low-stock items (don't crash page if this fails)
+  try { await autoSyncLowStockPOs(organizationId); } catch {}
 
   const regionFilter = session.user.role === "BRANCH_MANAGER"
     ? { regionId: session.user.regionId!, organizationId }
@@ -32,7 +32,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
     db.purchaseOrder.findMany({
       where: {
         ...regionFilter,
-        NOT: { status: "REJECTED", approvedAt: { lt: twentyFourHoursAgo } },
+        NOT: { status: "REJECTED", approvedAt: { not: null, lt: twentyFourHoursAgo } },
       },
       include: {
         consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
