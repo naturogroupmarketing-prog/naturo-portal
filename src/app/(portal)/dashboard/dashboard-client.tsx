@@ -153,12 +153,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* Onboarding overlay */}
       {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
 
-      <PageTransition className="space-y-8">
+      <PageTransition className="space-y-10">
       {/* Header with settings gear */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Dashboard</h1>
-          <p className="text-sm text-shark-400 mt-1">{subtitle}</p>
         </div>
         <button
           onClick={() => setSettingsOpen(true)}
@@ -173,7 +172,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         switch (sectionId) {
           case "stats":
             return visibleStats.length > 0 ? (
-              <StaggerContainer key="stats" className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div key="stats" className="space-y-4">
+              <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
+              <StaggerContainer className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
@@ -195,6 +196,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </StaggerItem>
                 ))}
               </StaggerContainer>
+              </div>
             ) : null;
 
           case "portfolio":
@@ -496,12 +498,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "regional":
             return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
               <div key="regional" className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center">
-                    <Icon name="map-pin" size={14} className="text-action-500" />
-                  </div>
-                  <h2 className="text-lg font-semibold text-shark-900">Regional Breakdown</h2>
-                </div>
+                <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Regions</p>
                 <div className="space-y-3">
                   {regionBreakdown.map((region, idx) => {
               const colors = REGION_COLORS[idx % REGION_COLORS.length];
@@ -566,12 +563,14 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "quick-links":
             return showQuickLinks ? (
-              <div key="quick-links" className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div key="quick-links" className="space-y-4">
+              <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Quick Links</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {quickLinks.map((link) => (
                   <Link key={link.href} href={link.href} className="block group">
                     <Card className="hover:shadow-md transition-all duration-200 cursor-pointer hover:border-shark-200">
-                      <CardContent className="py-6 flex flex-col items-center gap-3">
-                        <div className={`w-11 h-11 rounded-xl ${link.iconBg} flex items-center justify-center group-hover:scale-105 transition-transform`}>
+                      <CardContent className="py-5 flex flex-col items-center gap-2.5">
+                        <div className={`w-11 h-11 rounded-xl ${link.iconBg} flex items-center justify-center transition-transform`}>
                           <Icon name={link.icon} size={20} className={link.iconColor} />
                         </div>
                         <p className="text-sm font-medium text-shark-700">{link.label}</p>
@@ -579,6 +578,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     </Card>
                   </Link>
                 ))}
+              </div>
               </div>
             ) : null;
 
