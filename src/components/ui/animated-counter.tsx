@@ -67,7 +67,7 @@ export function AnimatedCounter({
   const formatted = formatFn ? formatFn(display) : display.toLocaleString();
 
   return (
-    <span ref={ref} className={className}>
+    <span ref={ref} className={`tabular-nums ${className}`}>
       {prefix}{formatted}{suffix}
     </span>
   );

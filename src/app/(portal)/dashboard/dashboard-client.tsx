@@ -153,7 +153,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* Onboarding overlay */}
       {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
 
-      <PageTransition className="space-y-6">
+      <PageTransition className="space-y-8">
       {/* Header with settings gear */}
       <div className="flex items-center justify-between">
         <div>
