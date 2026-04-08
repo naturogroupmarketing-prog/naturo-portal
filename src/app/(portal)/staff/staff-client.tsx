@@ -224,7 +224,9 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
       if (result && !result.success) {
         setDeleteError(result.error || "Failed to delete");
       } else {
+        addToast("User deleted", "success");
         closeEdit();
+        router.refresh();
       }
     } catch (e: unknown) {
       setDeleteError(e instanceof Error ? e.message : "Failed to delete");

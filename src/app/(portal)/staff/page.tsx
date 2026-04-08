@@ -14,8 +14,8 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
   const organizationId = session.user.organizationId!;
 
   const where = session.user.role === "BRANCH_MANAGER"
-    ? { regionId: session.user.regionId!, organizationId }
-    : { organizationId };
+    ? { regionId: session.user.regionId!, organizationId, deletedAt: null }
+    : { organizationId, deletedAt: null };
 
   const [users, regions] = await Promise.all([
     db.user.findMany({
