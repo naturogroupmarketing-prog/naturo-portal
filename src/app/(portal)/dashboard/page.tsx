@@ -620,7 +620,16 @@ export default async function DashboardPage() {
     lowStockCount: (lowStockItems as unknown[]).length,
   };
 
-  const preferences = parsePreferences(userPrefs?.dashboardPreferences);
+  let preferences = parsePreferences(userPrefs?.dashboardPreferences);
+
+  // Branch Manager default: only show Overview, Operations, Finance, Low Stock
+  if (!isSuperAdmin && !userPrefs?.dashboardPreferences) {
+    preferences = {
+      ...preferences,
+      sectionOrder: ["stats", "portfolio", "low-stock"],
+      hiddenWidgets: ["asset-charts", "consumable-charts", "regional-breakdown", "location-map", "maintenance-due", "quick-links"],
+    };
+  }
 
   const stats: { widgetId: string; label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = isSuperAdmin ? [
     { widgetId: "stat-total-assets", label: "Total Assets", value: totalAssets, icon: "package", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
