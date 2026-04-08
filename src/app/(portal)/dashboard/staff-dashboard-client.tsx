@@ -322,7 +322,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
       {/* Pending Starter Kit Checklist */}
       {hasPendingKit && (
-        <Card className="border-l-4 border-l-amber-400">
+        <Card className="">
           <CardHeader>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
@@ -492,7 +492,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
       {/* Starter Kit — All assigned items */}
       {hasEquipment && (
-        <Card className="border-l-4 border-l-action-400">
+        <Card className="">
           <CardHeader
             className="cursor-pointer select-none"
             onClick={() => setEquipmentExpanded((prev) => !prev)}
@@ -955,7 +955,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href}>
-            <Card className={`border-l-4 ${stat.borderColor} hover:shadow-md transition-shadow cursor-pointer`}>
+            <Card className={` hover:shadow-md transition-shadow cursor-pointer`}>
               <CardContent className="py-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -1029,7 +1029,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         const dueDateLabel = dueDate ? `Due ${daysUntilDue !== null && daysUntilDue < 0 ? "overdue" : `by ${dueDate.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}`}` : null;
 
         return (
-        <Card className="border-l-4 border-l-action-500">
+        <Card className="">
           <div
             className="px-6 py-4 flex items-center justify-between cursor-pointer"
             onClick={() => setShowConditionChecks(!showConditionChecks)}

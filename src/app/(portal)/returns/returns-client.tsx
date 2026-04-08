@@ -134,7 +134,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
       <div
         key={item.id}
         className={`flex items-center gap-3 px-4 py-3 transition-all ${
-          isNotReturned ? "bg-amber-50/50 border-l-4 border-l-amber-400" : isVerified ? "bg-action-50/50" : isRejected ? "bg-red-50/50" : ""
+          isNotReturned ? "bg-amber-50/50" : isVerified ? "bg-action-50/50" : isRejected ? "bg-red-50/50" : ""
         }`}
       >
         {/* Checkbox — toggles verified/acknowledged */}

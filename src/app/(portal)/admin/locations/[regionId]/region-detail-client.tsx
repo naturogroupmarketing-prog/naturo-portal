@@ -278,7 +278,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
-          <Card key={stat.label} className={`border-l-4 ${stat.border}`}>
+          <Card key={stat.label} className="">
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>

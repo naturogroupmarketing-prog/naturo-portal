@@ -237,7 +237,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
               const isOverdue = due < now;
               const daysUntil = Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
               return (
-                <Card key={s.id} className={isOverdue ? "border-l-4 border-l-red-500" : "border-l-4 border-l-action-500"}>
+                <Card key={s.id} className={isOverdue ? "" : ""}>
                   <div className="px-4 py-3">
                     <div className="flex items-start justify-between">
                       <div>
@@ -582,7 +582,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
           { label: "Incomplete", value: staffStatus.length - totalChecked, icon: "clock" as const, color: "text-white", bg: "bg-[#E8532E]", border: "border-[#E8532E]" },
           { label: "Photos Submitted", value: checks.length, icon: "search" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
         ].map((stat) => (
-          <Card key={stat.label} className={`border-l-4 ${stat.border}`}>
+          <Card key={stat.label} className="">
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>

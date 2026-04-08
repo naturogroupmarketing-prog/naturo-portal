@@ -78,7 +78,7 @@ export function BillingClient({ org }: Props) {
       </div>
 
       {/* Current Plan */}
-      <Card className="border-l-4 border-l-action-500">
+      <Card className="">
         <div className="px-4 sm:px-6 py-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>

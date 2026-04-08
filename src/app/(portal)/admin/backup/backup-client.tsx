@@ -66,7 +66,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
       </div>
 
       {/* Full Backup */}
-      <Card className="border-l-4 border-l-action-500">
+      <Card className="">
         <CardContent className="py-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>

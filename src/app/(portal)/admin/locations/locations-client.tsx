@@ -157,7 +157,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
           { label: "Total Consumables", value: totalConsumables, icon: "droplet" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
           { label: "Total Staff", value: totalStaff, icon: "users" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
         ].map((stat) => (
-          <Card key={stat.label} className={`border-l-4 ${stat.border}`}>
+          <Card key={stat.label} className="">
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
