@@ -177,7 +177,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
-                    <Card className={`border-t-[3px] ${s.borderColor} hover:shadow-md transition-all duration-200 cursor-pointer`}>
+                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
                       <CardContent>
                         <div className="flex items-center gap-4">
                           <div className={`w-12 h-12 rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>

@@ -95,7 +95,7 @@ export function InventoryDetailClient({
           { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", href: `/alerts/low-stock?region=${region.id}` },
         ].map((stat) => {
           const cardContent = (
-            <Card className={`border-t-[3px] ${stat.border} hover:shadow-md transition-all cursor-pointer`}>
+            <Card className="hover:shadow-md transition-all cursor-pointer">
               <div className="px-4 sm:px-5 py-4">
                 <div className="flex items-center gap-4">
                   <div className={`w-12 h-12 rounded-xl ${stat.border === "border-[#E8532E]" && stat.value > 0 ? "bg-[#E8532E]" : "bg-action-500"} flex items-center justify-center shrink-0`}>
