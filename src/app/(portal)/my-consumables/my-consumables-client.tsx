@@ -277,7 +277,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment }) {
   };
 
   return (
-    <Card>
+    <Card className={ca.quantity === 0 ? "opacity-40" : ""}>
       <CardContent className="py-4">
         <div className="flex items-start gap-3">
           {/* Photo */}
@@ -298,7 +298,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment }) {
                 <h3 className="font-semibold text-shark-900 truncate">{ca.consumable.name}</h3>
                 <p className="text-xs text-shark-400 mt-0.5">{ca.consumable.unitType} · {ca.consumable.region.name}</p>
               </div>
-              <span className="text-lg font-bold text-shark-800 ml-2">×{ca.quantity}</span>
+              <span className={`text-lg font-bold ml-2 ${ca.quantity === 0 ? "text-shark-400" : "text-shark-800"}`}>×{ca.quantity}</span>
             </div>
             <p className="text-xs text-shark-400 mt-1">Assigned: {formatDate(ca.assignedDate)}</p>
           </div>
