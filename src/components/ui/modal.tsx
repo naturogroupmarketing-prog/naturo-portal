@@ -105,7 +105,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 p-4 animate-fade-in"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
@@ -113,7 +113,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       <div
         ref={contentRef}
         className={cn(
-          "w-[calc(100vw-1rem)] sm:max-w-lg rounded-2xl bg-white dark:bg-shark-900 shadow-2xl max-h-[85vh] sm:max-h-[90vh] overflow-y-auto safe-bottom transition-all duration-200",
+          "w-[calc(100vw-1rem)] sm:max-w-lg rounded-xl bg-white dark:bg-shark-900 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] max-h-[85vh] sm:max-h-[90vh] overflow-y-auto safe-bottom transition-all duration-200",
           className
         )}
       >

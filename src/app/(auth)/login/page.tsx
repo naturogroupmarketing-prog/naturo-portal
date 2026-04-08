@@ -50,7 +50,7 @@ export default function LoginPage() {
           <p className="text-sm text-shark-400 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-shark-100 dark:border-shark-800 overflow-hidden transition-colors">
+        <div className="bg-white dark:bg-shark-900 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] border border-shark-100 dark:border-shark-800 overflow-hidden transition-colors">
           <div className="p-8">
             <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 text-center mb-1">
               Sign In
