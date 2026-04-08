@@ -626,7 +626,7 @@ export default async function DashboardPage() {
     { widgetId: "stat-checked-out", label: "Checked Out", value: checkedOut, icon: "arrow-right", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
     { widgetId: "stat-overdue", label: "Overdue", value: overdue, icon: "clock", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/assets" },
     { widgetId: "stat-damaged", label: "Damage", value: unresolvedDamageReports + unresolvedLossReports, icon: "alert-triangle", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/alerts/damage" },
-    { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables" },
+    { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables?tab=requests" },
     { widgetId: "stat-pending-pos", label: "POs", value: pendingPOs, icon: "truck", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/purchase-orders" },
     { widgetId: "stat-pending-returns", label: "Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/returns" },
   ];
