@@ -586,12 +586,13 @@ export default async function DashboardPage() {
 
   // Operations overview data
   const regionWhere = isSuperAdmin ? {} : { regionId: session.user.regionId! };
+  const assetRegionWhere = isSuperAdmin ? { organizationId } : { organizationId, asset: { regionId: session.user.regionId! } };
   const [overdueReturns, incompleteInspections, totalStaffCount, unresolvedDamageReports, unresolvedLossReports, ordersAwaitingApproval, ordersAwaitingReceival] = await Promise.all([
     db.pendingReturn.count({ where: { organizationId, isVerified: false, ...regionWhere } }),
     db.inspectionSchedule.count({ where: { organizationId, isActive: true, dueDate: { lt: new Date() } } }),
-    db.user.count({ where: { organizationId, isActive: true, role: "STAFF" } }),
-    db.damageReport.count({ where: { organizationId, isResolved: false, type: "DAMAGE" } }),
-    db.damageReport.count({ where: { organizationId, isResolved: false, type: "LOSS" } }),
+    db.user.count({ where: { organizationId, isActive: true, role: "STAFF", ...(isSuperAdmin ? {} : { regionId: session.user.regionId! }) } }),
+    db.damageReport.count({ where: { ...assetRegionWhere, isResolved: false, type: "DAMAGE" } }),
+    db.damageReport.count({ where: { ...assetRegionWhere, isResolved: false, type: "LOSS" } }),
     db.purchaseOrder.count({ where: { organizationId, status: "PENDING", ...regionWhere } }),
     db.purchaseOrder.count({ where: { organizationId, status: "ORDERED", ...regionWhere } }),
   ]);
