@@ -557,7 +557,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   {!isCollapsed && (
                     <div className="px-5 pb-4 pt-1 border-t border-shark-50">
                       <div className="grid grid-cols-3 gap-3">
-                        <Link href={`/purchase-orders?region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
+                        <Link href={`/alerts/low-stock?region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
                           <Icon name="alert-triangle" size={14} className="text-red-500" />
                           <div>
                             <p className="text-lg font-bold text-red-600">{region.lowStockCount}</p>
