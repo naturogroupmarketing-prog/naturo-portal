@@ -199,7 +199,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-shark-900">User Management</h1>
+          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">User Management</h1>
           <p className="text-sm text-shark-400 mt-1">{filtered.length} total users</p>
         </div>
         <Button onClick={() => setShowCreate(true)}>+ New User</Button>

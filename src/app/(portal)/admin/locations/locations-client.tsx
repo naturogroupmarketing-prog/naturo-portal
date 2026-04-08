@@ -134,7 +134,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-shark-900">Locations</h1>
+          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Locations</h1>
           <p className="text-sm text-shark-400 mt-1">{locations.length} states &middot; {totalRegions} regions</p>
         </div>
         <div className="flex items-center gap-2">

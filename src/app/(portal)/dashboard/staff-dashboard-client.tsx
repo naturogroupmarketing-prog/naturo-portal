@@ -316,7 +316,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Dashboard</h1>
         <p className="text-sm text-shark-400 mt-1">Your personal overview</p>
       </div>
 
@@ -955,18 +955,18 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href}>
-            <Card className={`border-l-4 ${stat.borderColor} hover:shadow-md transition-shadow cursor-pointer`}>
-              <CardContent className="py-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-shark-400">{stat.label}</p>
-                    <p className="text-3xl font-bold text-shark-900 mt-1">{stat.value}</p>
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <div className="px-4 py-3 sm:px-5 sm:py-4">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${stat.iconBg} flex items-center justify-center shrink-0`}>
+                    <Icon name={stat.icon} size={20} className={stat.iconColor} />
                   </div>
-                  <div className={`w-12 h-12 rounded-xl ${stat.iconBg} flex items-center justify-center`}>
-                    <Icon name={stat.icon} size={24} className={stat.iconColor} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xl sm:text-2xl font-bold text-shark-900">{stat.value}</p>
+                    <p className="text-xs sm:text-sm text-shark-400">{stat.label}</p>
                   </div>
                 </div>
-              </CardContent>
+              </div>
             </Card>
           </Link>
         ))}

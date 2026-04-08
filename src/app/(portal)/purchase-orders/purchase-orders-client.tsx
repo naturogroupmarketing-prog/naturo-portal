@@ -373,7 +373,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-shark-900">Purchase Orders</h1>
+          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Purchase Orders</h1>
           <p className="text-sm text-shark-400 mt-1">
             {purchaseOrders.length} total orders
             {pendingCount > 0 && ` · ${pendingCount} pending`}

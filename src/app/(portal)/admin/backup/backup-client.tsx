@@ -61,7 +61,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">Data Backup</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Data Backup</h1>
         <p className="text-sm text-shark-400 mt-1">Download your data as CSV files that can be re-imported anytime</p>
       </div>
 

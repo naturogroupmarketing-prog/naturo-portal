@@ -107,7 +107,7 @@ export default async function ActivityPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">Recent Activity</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Recent Activity</h1>
         <p className="text-sm text-shark-400 mt-1">
           {session.user.role === "SUPER_ADMIN" ? "All activity across locations" : "Activity in your region"}
         </p>

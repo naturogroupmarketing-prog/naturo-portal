@@ -314,7 +314,7 @@ export function ImportClient({ regions }: Props) {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">Import Data</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Import Data</h1>
         <p className="text-sm text-shark-400 mt-1">
           Bulk import assets, consumables, or staff from CSV or Excel files
         </p>

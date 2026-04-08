@@ -38,7 +38,7 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">Reports</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Reports</h1>
         <p className="text-sm text-shark-400 mt-1">Export data as CSV or printable reports</p>
       </div>
 

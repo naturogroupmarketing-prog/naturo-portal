@@ -43,7 +43,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
   if (submitted) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-shark-900">Report Damage / Loss</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Report Damage / Loss</h1>
         <Card>
           <CardContent className="py-12 text-center animate-fade-in">
             <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4 animate-check-pop">
@@ -65,7 +65,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">Report Damage / Loss</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Report Damage / Loss</h1>
         <p className="text-sm text-shark-400 mt-1">Report a damaged or lost asset assigned to you.</p>
       </div>
 

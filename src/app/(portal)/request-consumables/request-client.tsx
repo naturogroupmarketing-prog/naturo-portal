@@ -104,7 +104,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">Request Consumables</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Request Consumables</h1>
         <p className="text-sm text-shark-400 mt-1">
           Browse items and request what you need
         </p>

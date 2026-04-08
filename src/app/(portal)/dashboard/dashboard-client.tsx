@@ -157,7 +157,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* Header with settings gear */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-shark-900">Dashboard</h1>
+          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Dashboard</h1>
           <p className="text-sm text-shark-400 mt-1">{subtitle}</p>
         </div>
         <button
@@ -177,19 +177,18 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
-                    <Card className={`border-t-[3px] ${s.borderColor} hover:shadow-md transition-all duration-200 cursor-pointer`}>
-                      <CardContent>
-                        <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
-                            <Icon name={s.icon} size={22} className={s.iconColor} />
+                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
+                      <div className="px-4 py-3 sm:px-5 sm:py-4">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                            <Icon name={s.icon} size={20} className={s.iconColor} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm text-shark-500">{s.label}</p>
-                            <AnimatedCounter value={s.value} className="text-2xl font-bold text-shark-900" />
+                            <AnimatedCounter value={s.value} className="text-xl sm:text-2xl font-bold text-shark-900" />
+                            <p className="text-xs sm:text-sm text-shark-400">{s.label}</p>
                           </div>
-                          <Icon name="arrow-right" size={18} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
                         </div>
-                      </CardContent>
+                      </div>
                     </Card>
                   </Link>
                   </StaggerItem>

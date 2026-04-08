@@ -271,7 +271,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">{region.name}</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">{region.name}</h1>
         <p className="text-sm text-shark-400 mt-1">{region.state.name}</p>
       </div>
 

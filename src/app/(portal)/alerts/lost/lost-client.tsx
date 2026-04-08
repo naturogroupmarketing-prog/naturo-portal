@@ -49,7 +49,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
           <Icon name="arrow-left" size={18} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-shark-900">Lost Items</h1>
+          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Lost Items</h1>
           <p className="text-sm text-shark-400 mt-0.5">
             {items.length} lost asset{items.length !== 1 ? "s" : ""}
             {totalCost > 0 && <span> · Est. value: ${totalCost.toLocaleString()}</span>}

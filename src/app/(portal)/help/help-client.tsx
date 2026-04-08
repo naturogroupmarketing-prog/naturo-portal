@@ -184,7 +184,7 @@ export function HelpClient({ role }: { role: string }) {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">Help & Support</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Help & Support</h1>
         <p className="text-sm text-shark-400 mt-1">Find answers to common questions</p>
       </div>
 

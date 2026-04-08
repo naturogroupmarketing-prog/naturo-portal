@@ -223,7 +223,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-shark-900">Return Checklist</h1>
+          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Return Checklist</h1>
         </div>
         <div className="p-6 rounded-lg bg-action-50 border border-action-200 text-center animate-fade-in">
           <Icon name="check-circle" size={32} className="text-action-400 mx-auto mb-3 animate-check-pop" />
@@ -239,7 +239,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
-          <h1 className="text-2xl font-bold text-shark-900">Return Checklist</h1>
+          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Return Checklist</h1>
           <p className="text-sm text-shark-400 mt-1">
             {totalItems} items to process
             {processedCount > 0 && (

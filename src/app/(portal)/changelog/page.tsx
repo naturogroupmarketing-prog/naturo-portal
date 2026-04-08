@@ -100,7 +100,7 @@ export default async function ChangelogPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-shark-900">What&apos;s New</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">What&apos;s New</h1>
         <p className="text-sm text-shark-400 mt-1">Latest updates and improvements to Trackio</p>
       </div>
 
