@@ -425,6 +425,42 @@ export async function restoreUser(userId: string) {
   return { success: true };
 }
 
+export async function permanentlyDeleteUser(userId: string) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) return { error: "Unauthorized" };
+
+  const organizationId = session.user.organizationId!;
+  const user = await db.user.findUnique({ where: { id: userId } });
+  if (!user || user.organizationId !== organizationId) return { error: "User not found" };
+  if (!user.deletedAt) return { error: "User must be soft-deleted first" };
+
+  // Clean up all related data then hard delete
+  await db.$transaction([
+    db.auditLog.updateMany({ where: { performedById: userId }, data: { performedById: session.user.id } }),
+    db.auditLog.updateMany({ where: { targetUserId: userId }, data: { targetUserId: null } }),
+    db.purchaseOrder.updateMany({ where: { createdById: userId }, data: { createdById: null } }),
+    db.purchaseOrder.updateMany({ where: { approvedById: userId }, data: { approvedById: null } }),
+    db.managerPermission.deleteMany({ where: { userId } }),
+    db.conditionCheck.deleteMany({ where: { userId } }),
+    db.notification.deleteMany({ where: { userId } }),
+    db.consumableRequest.deleteMany({ where: { userId } }),
+    db.consumableAssignment.deleteMany({ where: { userId } }),
+    db.assetAssignment.deleteMany({ where: { userId } }),
+    db.damageReport.deleteMany({ where: { reportedById: userId } }),
+    db.user.delete({ where: { id: userId } }),
+  ]);
+
+  await createAuditLog({
+    action: "USER_DELETED",
+    description: `User "${user.name || user.email}" permanently deleted`,
+    performedById: session.user.id,
+    organizationId,
+  });
+
+  revalidatePath("/staff");
+  return { success: true };
+}
+
 export async function resetPassword(userId: string, newPassword: string) {
   const session = await withAuth();
   if (!isSuperAdmin(session.user.role)) {

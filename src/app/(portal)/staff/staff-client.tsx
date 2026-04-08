@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
-import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive, restoreUser } from "@/app/actions/users";
+import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive, restoreUser, permanentlyDeleteUser } from "@/app/actions/users";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
@@ -1057,27 +1057,50 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                         Deleted {new Date(u.deletedAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
                       </p>
                     </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      loading={restoringId === u.id}
-                      disabled={!!restoringId}
-                      onClick={async () => {
-                        setRestoringId(u.id);
-                        try {
-                          const result = await restoreUser(u.id);
-                          if (result.success) {
-                            addToast(`${u.name || u.email} restored`, "success");
-                            router.refresh();
-                          } else {
-                            addToast(result.error || "Failed", "error");
-                          }
-                        } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
-                        setRestoringId(null);
-                      }}
-                    >
-                      Restore
-                    </Button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        loading={restoringId === u.id}
+                        disabled={!!restoringId}
+                        onClick={async () => {
+                          setRestoringId(u.id);
+                          try {
+                            const result = await restoreUser(u.id);
+                            if (result.success) {
+                              addToast(`${u.name || u.email} restored`, "success");
+                              router.refresh();
+                            } else {
+                              addToast(result.error || "Failed", "error");
+                            }
+                          } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                          setRestoringId(null);
+                        }}
+                      >
+                        Restore
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        disabled={!!restoringId}
+                        onClick={async () => {
+                          if (!confirm(`Permanently delete ${u.name || u.email}? This cannot be undone.`)) return;
+                          setRestoringId(u.id);
+                          try {
+                            const result = await permanentlyDeleteUser(u.id);
+                            if (result.success) {
+                              addToast("Permanently deleted", "success");
+                              router.refresh();
+                            } else {
+                              addToast(result.error || "Failed", "error");
+                            }
+                          } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                          setRestoringId(null);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               ))}
