@@ -255,16 +255,16 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
   // Filter assets
   const filtered = assets.filter((a) => {
-    const matchSearch =
-      a.name.toLowerCase().includes(search.toLowerCase()) ||
-      a.assetCode.toLowerCase().includes(search.toLowerCase()) ||
-      (a.serialNumber || "").toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "ALL" || a.status === statusFilter;
-    const matchRegion = regionFilter === "ALL" || a.region.id === regionFilter;
-    const matchCategory = categoryFilter === "ALL" || a.category === categoryFilter;
-    const matchDateFrom = !dateFrom || new Date(a.createdAt) >= new Date(dateFrom);
-    const matchDateTo = !dateTo || new Date(a.createdAt) <= new Date(dateTo + "T23:59:59");
-    return matchSearch && matchStatus && matchRegion && matchCategory && matchDateFrom && matchDateTo;
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      a.name.toLowerCase().includes(q) ||
+      a.assetCode.toLowerCase().includes(q) ||
+      (a.serialNumber || "").toLowerCase().includes(q) ||
+      a.status.toLowerCase().includes(q) ||
+      a.category.toLowerCase().includes(q) ||
+      a.region.name.toLowerCase().includes(q)
+    );
   });
 
   // Group filtered assets by category (using dynamic categories)
@@ -681,22 +681,8 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           placeholder="Search assets..."
           value={search}
           onChange={(e) => setSearchAndClear(e.target.value)}
-          className="sm:max-w-xs"
+          className="flex-1 sm:max-w-md"
         />
-        <Select
-          value={statusFilter}
-          onChange={(e) => setStatusFilterAndClear(e.target.value)}
-          className="sm:max-w-[180px]"
-        >
-          <option value="ALL">All statuses</option>
-          <option value="AVAILABLE">Available</option>
-          <option value="ASSIGNED">Assigned</option>
-          <option value="CHECKED_OUT">Checked Out</option>
-          <option value="PENDING_RETURN">Pending Return</option>
-          <option value="DAMAGED">Damaged</option>
-          <option value="LOST">Lost</option>
-          <option value="UNAVAILABLE">Unavailable</option>
-        </Select>
         {isSuperAdmin && regions.length > 1 && (
           <Select
             value={regionFilter}

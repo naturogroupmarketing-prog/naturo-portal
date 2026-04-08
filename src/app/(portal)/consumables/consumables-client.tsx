@@ -272,16 +272,15 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const setSearchAndClear = (v: string) => { setSearch(v); setSelectedIds(new Set()); };
 
   const filtered = consumables.filter((c) => {
-    const matchSearch =
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.category.toLowerCase().includes(search.toLowerCase());
-    if (!matchSearch) return false;
-    if (stockFilter === "ALL") return true;
-    if (stockFilter === "out") return c.quantityOnHand === 0;
-    if (stockFilter === "critical") return c.quantityOnHand > 0 && c.quantityOnHand <= c.minimumThreshold;
-    if (stockFilter === "low") return c.quantityOnHand > c.minimumThreshold && c.quantityOnHand <= c.reorderLevel;
-    if (stockFilter === "adequate") return c.quantityOnHand > c.reorderLevel;
-    return true;
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      c.name.toLowerCase().includes(q) ||
+      c.category.toLowerCase().includes(q) ||
+      c.unitType.toLowerCase().includes(q) ||
+      c.region.name.toLowerCase().includes(q) ||
+      (c.supplier || "").toLowerCase().includes(q)
+    );
   });
 
   // Group filtered consumables by category (using dynamic categories)
@@ -618,41 +617,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               placeholder="Search consumables..."
               value={search}
               onChange={(e) => setSearchAndClear(e.target.value)}
-              className="max-w-xs"
+              className="flex-1 sm:max-w-md"
             />
-            <Select value={stockFilter} onChange={(e) => setStockFilter(e.target.value)} className="text-sm max-w-[160px]">
-              <option value="ALL">All Stock</option>
-              <option value="adequate">Adequate</option>
-              <option value="low">Low Stock</option>
-              <option value="critical">Critical</option>
-              <option value="out">Out of Stock</option>
-            </Select>
-            <div className="relative" ref={columnMenuRef}>
-              <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
-                Columns
-              </Button>
-              {showColumnMenu && (
-                <div className="absolute right-0 top-full mt-1 bg-white border border-shark-200 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
-                  {([
-                    ["photo", "Photo"],
-                    ["item", "Item"],
-                    ["location", "Location"],
-                    ["qty", "Qty"],
-                    ["assignedTo", "Assigned To"],
-                  ] as [keyof typeof visibleColumns, string][]).map(([key, label]) => (
-                    <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 cursor-pointer text-sm">
-                      <input
-                        type="checkbox"
-                        checked={visibleColumns[key]}
-                        onChange={() => toggleColumn(key)}
-                        className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                      />
-                      {label}
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
             {selectedIds.size > 0 && (
               <Button
                 variant="danger"
