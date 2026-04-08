@@ -90,7 +90,7 @@ const REGION_COLORS = [
 interface AssetsClientProps {
   assets: Asset[];
   regions: Array<{ id: string; name: string; state: { name: string } }>;
-  users: Array<{ id: string; name: string | null; email: string }>;
+  users: Array<{ id: string; name: string | null; email: string; regionId: string | null }>;
   categories: CategoryDef[];
   isSuperAdmin: boolean;
   permissions: { canAdd: boolean; canEdit: boolean; canDelete: boolean };
@@ -1192,12 +1192,17 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               <label className="block text-sm font-medium text-shark-700 mb-1">Assign to *</label>
               <Select name="userId" required>
                 <option value="">Select staff member</option>
-                {users.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.name || u.email}
-                  </option>
-                ))}
+                {users
+                  .filter((u) => !showAssign?.region?.id || u.regionId === showAssign.region.id)
+                  .map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.name || u.email}
+                    </option>
+                  ))}
               </Select>
+              {showAssign?.region?.id && users.filter((u) => u.regionId === showAssign.region.id).length === 0 && (
+                <p className="text-xs text-[#E8532E]">No staff assigned to this region</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 mb-1">Assignment Type *</label>

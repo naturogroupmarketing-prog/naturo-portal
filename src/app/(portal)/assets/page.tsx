@@ -49,7 +49,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
           ? { regionId: session.user.regionId! }
           : {}),
       },
-      select: { id: true, name: true, email: true },
+      select: { id: true, name: true, email: true, regionId: true },
       orderBy: { name: "asc" },
     }),
     db.category.findMany({

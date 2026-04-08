@@ -54,7 +54,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
           ? { regionId: session.user.regionId! }
           : {}),
       },
-      select: { id: true, name: true, email: true },
+      select: { id: true, name: true, email: true, regionId: true },
       orderBy: { name: "asc" },
     }),
     db.category.findMany({
