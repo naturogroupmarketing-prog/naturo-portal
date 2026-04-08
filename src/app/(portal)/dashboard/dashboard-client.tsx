@@ -177,17 +177,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
-                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
-                      <div className="px-4 py-3 sm:px-5 sm:py-4">
-                        <div className="flex items-center gap-3 sm:gap-4">
-                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
-                            <Icon name={s.icon} size={20} className={s.iconColor} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <AnimatedCounter value={s.value} className="text-xl sm:text-2xl font-bold text-shark-900" />
-                            <p className="text-xs sm:text-sm text-shark-400">{s.label}</p>
-                          </div>
+                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer group">
+                      <div className="px-4 py-4 sm:px-5 sm:py-5">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Icon name={s.icon} size={14} className="text-shark-300" />
+                          <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">{s.label}</p>
                         </div>
+                        <AnimatedCounter value={s.value} className="text-2xl sm:text-3xl font-bold text-shark-900" />
                       </div>
                     </Card>
                   </Link>

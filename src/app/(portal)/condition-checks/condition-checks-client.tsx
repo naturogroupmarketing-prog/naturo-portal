@@ -582,17 +582,13 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
           { label: "Incomplete", value: staffStatus.length - totalChecked, icon: "clock" as const, color: "text-white", bg: "bg-[#E8532E]", border: "border-[#E8532E]" },
           { label: "Photos Submitted", value: checks.length, icon: "search" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
         ].map((stat) => (
-          <Card key={stat.label} className={`border-l-4 ${stat.border}`}>
-            <div className="px-4 py-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-shark-900">{stat.value}</p>
-                  <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
-                </div>
-                <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
-                  <Icon name={stat.icon} size={18} className={stat.color} />
-                </div>
+          <Card key={stat.label}>
+            <div className="px-4 py-4 sm:px-5 sm:py-5">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Icon name={stat.icon} size={14} className="text-shark-300" />
+                <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">{stat.label}</p>
               </div>
+              <p className="text-2xl sm:text-3xl font-bold text-shark-900">{stat.value}</p>
             </div>
           </Card>
         ))}

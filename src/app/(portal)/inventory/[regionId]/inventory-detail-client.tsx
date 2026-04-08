@@ -95,17 +95,13 @@ export function InventoryDetailClient({
           { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", href: `/alerts/low-stock?region=${region.id}` },
         ].map((stat) => {
           const cardContent = (
-            <Card className={`border-t-[3px] ${stat.border} hover:shadow-md transition-all cursor-pointer`}>
-              <div className="px-4 sm:px-5 py-4">
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl ${stat.border === "border-[#E8532E]" && stat.value > 0 ? "bg-[#E8532E]" : "bg-action-500"} flex items-center justify-center shrink-0`}>
-                    <Icon name={stat.icon} size={22} className="text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-shark-500">{stat.label}</p>
-                    <p className="text-2xl font-bold text-shark-900">{stat.value}</p>
-                  </div>
+            <Card className="hover:shadow-md transition-all cursor-pointer">
+              <div className="px-4 py-4 sm:px-5 sm:py-5">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Icon name={stat.icon} size={14} className={stat.value > 0 && stat.label === "Low Stock" ? "text-[#E8532E]" : "text-shark-300"} />
+                  <p className={`text-xs font-medium uppercase tracking-wider ${stat.value > 0 && stat.label === "Low Stock" ? "text-[#E8532E]" : "text-shark-400"}`}>{stat.label}</p>
                 </div>
+                <p className="text-2xl sm:text-3xl font-bold text-shark-900">{stat.value}</p>
               </div>
             </Card>
           );

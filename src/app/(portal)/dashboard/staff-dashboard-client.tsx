@@ -956,16 +956,12 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href}>
             <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <div className="px-4 py-3 sm:px-5 sm:py-4">
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${stat.iconBg} flex items-center justify-center shrink-0`}>
-                    <Icon name={stat.icon} size={20} className={stat.iconColor} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xl sm:text-2xl font-bold text-shark-900">{stat.value}</p>
-                    <p className="text-xs sm:text-sm text-shark-400">{stat.label}</p>
-                  </div>
+              <div className="px-4 py-4 sm:px-5 sm:py-5">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Icon name={stat.icon} size={14} className="text-shark-300" />
+                  <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">{stat.label}</p>
                 </div>
+                <p className="text-2xl sm:text-3xl font-bold text-shark-900">{stat.value}</p>
               </div>
             </Card>
           </Link>
