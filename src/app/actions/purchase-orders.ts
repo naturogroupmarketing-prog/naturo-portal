@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { canManageRegion, hasPermission } from "@/lib/permissions";
+import { canManageRegion, hasPermission, isAdminOrManager } from "@/lib/permissions";
 import { createAuditLog } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import type { PurchaseOrderStatus } from "@/generated/prisma/client";
@@ -249,7 +249,8 @@ export async function createPurchaseOrder(formData: FormData) {
  */
 export async function receivePurchaseOrder(formData: FormData) {
   const session = await withAuth();
-  if (!(await hasPermission(session.user.id, session.user.role, "purchaseOrderManage"))) {
+  // Any admin or manager can confirm receipt — no special permission needed
+  if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -263,6 +264,10 @@ export async function receivePurchaseOrder(formData: FormData) {
     include: { consumable: true },
   });
   if (!po || po.organizationId !== organizationId) throw new Error("PO not found");
+  // Branch managers can only receive POs for their own region
+  if (session.user.role === "BRANCH_MANAGER" && session.user.regionId && po.regionId !== session.user.regionId) {
+    throw new Error("You can only receive orders for your region");
+  }
   if (po.status !== "ORDERED") throw new Error("Can only receive ordered POs");
 
   const qty = receivedQuantity ? parseInt(receivedQuantity) : po.quantity;
