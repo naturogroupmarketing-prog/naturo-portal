@@ -200,7 +200,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "portfolio":
-            return isSuperAdmin && (showPortfolio || showOperations) ? (
+            return (showPortfolio || showOperations || !isSuperAdmin) ? (
               <div key="portfolio" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* LEFT — Operations Overview */}
                 {operationsOverview && showOperations && (
@@ -449,7 +449,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "low-stock":
-            return showLowStock ? (
+            return (showLowStock || !isSuperAdmin) ? (
               <Card key="low-stock">
                 <Link href="/alerts/low-stock">
                   <CardHeader className="hover:bg-shark-50/50 transition-colors cursor-pointer rounded-t-xl">
