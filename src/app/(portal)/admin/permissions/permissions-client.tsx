@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -48,10 +49,13 @@ function Toggle({
 }
 
 function ManagerCard({ manager }: { manager: Manager }) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [expanded, setExpanded] = useState(false);
+  const [localOverrides, setLocalOverrides] = useState<Record<string, boolean>>({});
 
   const getPermValue = (key: PermissionKey): boolean => {
+    if (key in localOverrides) return localOverrides[key];
     if (manager.permissions && key in manager.permissions) {
       return manager.permissions[key];
     }
@@ -59,8 +63,17 @@ function ManagerCard({ manager }: { manager: Manager }) {
   };
 
   const handleToggle = (key: PermissionKey, newValue: boolean) => {
+    // Optimistic update — toggle instantly
+    setLocalOverrides((prev) => ({ ...prev, [key]: newValue }));
     startTransition(async () => {
-      await updatePermission(manager.id, key, newValue);
+      try {
+        await updatePermission(manager.id, key, newValue);
+        router.refresh();
+      } catch (e) {
+        // Revert on failure
+        setLocalOverrides((prev) => ({ ...prev, [key]: !newValue }));
+        console.error("Permission update failed:", e);
+      }
     });
   };
 

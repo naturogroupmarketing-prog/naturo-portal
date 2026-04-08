@@ -38,7 +38,7 @@ export async function updatePermission(
     description: `Permission "${permission}" ${enabled ? "granted to" : "revoked from"} Branch Manager "${user.name || user.email}"`,
     performedById: session.user.id,
     targetUserId: userId,
-    organizationId: session.user.organizationId || undefined,
+    organizationId: session.user.organizationId!,
   });
 
   revalidatePath("/admin/permissions");
