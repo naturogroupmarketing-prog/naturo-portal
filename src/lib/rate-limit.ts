@@ -108,7 +108,7 @@ export const RATE_LIMITS = {
   /** Auth attempts */
   auth: { maxRequests: 5, windowSec: 300 } as RateLimitConfig,
   /** Server actions (mutations) */
-  action: { maxRequests: 30, windowSec: 60 } as RateLimitConfig,
+  action: { maxRequests: 60, windowSec: 60 } as RateLimitConfig,
 };
 
 /**

@@ -231,6 +231,9 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       await batchConfirmKitReceipt(applicationId, batchItems);
       setSubmitted(true);
       addToast("Kit receipt confirmed successfully", "success");
+      router.refresh();
+    } catch (e) {
+      addToast(e instanceof Error ? e.message : "Failed to confirm receipt. Please try again.", "error");
     } finally {
       setSubmitting(false);
     }
