@@ -44,7 +44,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
           createdAt: true,
           updatedAt: true,
           consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
-          region: { select: { id: true, name: true, state: { select: { id: true, name: true, abbreviation: true } } } },
+          region: { select: { id: true, name: true, state: { select: { id: true, name: true } } } },
           createdBy: { select: { name: true, email: true } },
           approvedBy: { select: { name: true, email: true } },
         },
@@ -56,7 +56,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         select: {
           id: true,
           name: true,
-          state: { select: { id: true, name: true, abbreviation: true } },
+          state: { select: { id: true, name: true } },
         },
         orderBy: { name: "asc" },
       }),
