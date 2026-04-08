@@ -15,52 +15,64 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
   const organizationId = session.user.organizationId!;
   const isSuperAdmin = session.user.role === "SUPER_ADMIN";
 
-  // Auto-sync (non-blocking)
-  try { await autoSyncLowStockPOs(organizationId); } catch {}
+  try {
+    // Auto-sync (non-blocking)
+    try { await autoSyncLowStockPOs(organizationId); } catch {}
 
-  // Build region filter
-  const regionWhere = session.user.role === "BRANCH_MANAGER" && session.user.regionId
-    ? { regionId: session.user.regionId, organizationId }
-    : { organizationId };
+    // Build region filter
+    const regionWhere = session.user.role === "BRANCH_MANAGER" && session.user.regionId
+      ? { regionId: session.user.regionId, organizationId }
+      : { organizationId };
 
-  // Fetch POs and regions
-  const [purchaseOrders, regions, consumables] = await Promise.all([
-    db.purchaseOrder.findMany({
-      where: regionWhere,
-      include: {
-        consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
-        region: { include: { state: true } },
-        createdBy: { select: { name: true, email: true } },
-        approvedBy: { select: { name: true, email: true } },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 1000,
-    }),
-    db.region.findMany({
-      where: session.user.role === "BRANCH_MANAGER" && session.user.regionId
-        ? { id: session.user.regionId, organizationId }
-        : { organizationId },
-      include: { state: true },
-      orderBy: { name: "asc" },
-    }),
-    db.consumable.findMany({
-      where: { ...regionWhere, isActive: true },
-      select: { id: true, name: true, category: true, unitType: true, supplier: true, regionId: true, quantityOnHand: true, minimumThreshold: true },
-      orderBy: [{ category: "asc" }, { name: "asc" }],
-    }),
-  ]);
+    // Fetch POs and regions
+    const [purchaseOrders, regions, consumables] = await Promise.all([
+      db.purchaseOrder.findMany({
+        where: regionWhere,
+        include: {
+          consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
+          region: { include: { state: true } },
+          createdBy: { select: { name: true, email: true } },
+          approvedBy: { select: { name: true, email: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 1000,
+      }),
+      db.region.findMany({
+        where: session.user.role === "BRANCH_MANAGER" && session.user.regionId
+          ? { id: session.user.regionId, organizationId }
+          : { organizationId },
+        include: { state: true },
+        orderBy: { name: "asc" },
+      }),
+      db.consumable.findMany({
+        where: { ...regionWhere, isActive: true },
+        select: { id: true, name: true, category: true, unitType: true, supplier: true, regionId: true, quantityOnHand: true, minimumThreshold: true },
+        orderBy: [{ category: "asc" }, { name: "asc" }],
+      }),
+    ]);
 
-  return (
-    <PurchaseOrdersClient
-      purchaseOrders={JSON.parse(JSON.stringify(purchaseOrders))}
-      regions={JSON.parse(JSON.stringify(regions))}
-      isSuperAdmin={isSuperAdmin}
-      canManagePO={isSuperAdmin}
-      canApprovePO={isSuperAdmin}
-      canEditQty={isSuperAdmin}
-      consumables={JSON.parse(JSON.stringify(consumables))}
-      initialStatus={params.status}
-      initialRegion={params.region}
-    />
-  );
+    return (
+      <PurchaseOrdersClient
+        purchaseOrders={JSON.parse(JSON.stringify(purchaseOrders))}
+        regions={JSON.parse(JSON.stringify(regions))}
+        isSuperAdmin={isSuperAdmin}
+        canManagePO={isSuperAdmin}
+        canApprovePO={isSuperAdmin}
+        canEditQty={isSuperAdmin}
+        consumables={JSON.parse(JSON.stringify(consumables))}
+        initialStatus={params.status}
+        initialRegion={params.region}
+      />
+    );
+  } catch (error) {
+    // Show the actual error so we can debug
+    return (
+      <div className="p-8">
+        <h1 className="text-2xl font-bold text-red-600 mb-4">Purchase Orders Error</h1>
+        <pre className="bg-red-50 p-4 rounded-lg text-sm text-red-800 overflow-auto">
+          {error instanceof Error ? error.message : "Unknown error"}
+        </pre>
+      </div>
+    );
+  }
 }
