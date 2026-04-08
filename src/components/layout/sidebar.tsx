@@ -159,8 +159,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
           <Link
             href="/admin/billing"
             onClick={onClose}
-            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold text-white min-h-[44px] transition-all"
-            style={{ background: "linear-gradient(135deg, #1F3DD9 0%, #3B5BF5 100%)" }}
+            className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-white min-h-[44px] transition-all bg-shark-900 hover:bg-shark-800"
           >
             <Icon name="award" size={16} className="text-white" />
             Upgrade Now
