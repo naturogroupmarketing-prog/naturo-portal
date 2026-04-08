@@ -556,7 +556,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     </div>
                   ))}
                   {app.consumables.map((consumable) => (
-                    <div key={consumable.id} className="flex items-center gap-3 px-4 py-2.5">
+                    <div key={consumable.id} className={`flex items-center gap-3 px-4 py-2.5 ${consumable.quantity === 0 ? "opacity-40" : ""}`}>
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
                         {consumable.imageUrl ? <img src={consumable.imageUrl} alt={consumable.name} className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                       </div>
@@ -602,9 +602,9 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     </div>
                   ))}
                   {visibleIndividualConsumables.map((consumable) => (
-                    <div key={consumable.id} className="flex items-center gap-3 px-4 py-2.5">
+                    <div key={consumable.id} className={`flex items-center gap-3 px-4 py-2.5 ${consumable.quantity === 0 ? "opacity-40" : ""}`}>
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
-                        {consumable.imageUrl ? <img src={consumable.imageUrl} alt={consumable.name} className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-blue-500" />}
+                        {consumable.imageUrl ? <img src={consumable.imageUrl} alt={consumable.name} className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-action-500" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-shark-800">{consumable.quantity}x {consumable.name}</p>
