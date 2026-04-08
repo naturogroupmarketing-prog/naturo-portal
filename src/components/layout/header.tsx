@@ -174,6 +174,15 @@ export function Header({ userName, userImage, role, onMenuToggle }: HeaderProps)
                     <Icon name="download" size={15} className="text-shark-400" />
                     Backup
                   </button>
+                  <div className="px-3 pt-1 pb-0.5">
+                    <button
+                      onClick={() => { setDropdownOpen(false); router.push("/admin/billing"); }}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-white bg-shark-900 hover:bg-shark-800 transition-colors"
+                    >
+                      <Icon name="award" size={14} className="text-white" />
+                      Upgrade Now
+                    </button>
+                  </div>
                 </div>
               )}
 

@@ -153,42 +153,6 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
 
       </div>
 
-      {/* Upgrade — pinned to bottom, hover to expand */}
-      {role === "SUPER_ADMIN" && (
-        <div className="shrink-0 border-t border-shark-100 px-3 py-3 group/upgrade relative">
-          <Link
-            href="/admin/billing"
-            onClick={onClose}
-            className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-white min-h-[44px] transition-all bg-shark-900 hover:bg-shark-800"
-          >
-            <Icon name="award" size={16} className="text-white" />
-            Upgrade Now
-          </Link>
-
-          {/* Hover popup — plan summary */}
-          <div className="absolute bottom-full left-3 right-3 mb-2 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-xl shadow-xl p-4 opacity-0 invisible group-hover/upgrade:opacity-100 group-hover/upgrade:visible transition-all duration-200 z-50">
-            <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-3">Plans</p>
-            <div className="space-y-2.5">
-              {[
-                { name: "Free", price: "$0", desc: "3 users · 50 assets" },
-                { name: "Admin", price: "$47/mo", desc: "15 users · 500 assets" },
-                { name: "Pro", price: "$79/mo", desc: "75 users · 2,000 assets" },
-                { name: "Enterprise", price: "Custom", desc: "Unlimited everything" },
-              ].map((p) => (
-                <div key={p.name} className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{p.name}</p>
-                    <p className="text-xs text-shark-400">{p.desc}</p>
-                  </div>
-                  <span className="text-sm font-bold text-shark-700 dark:text-shark-300">{p.price}</span>
-                </div>
-              ))}
-            </div>
-            {/* Arrow */}
-            <div className="absolute -bottom-1.5 left-6 w-3 h-3 bg-white dark:bg-shark-900 border-r border-b border-shark-100 dark:border-shark-800 rotate-45" />
-          </div>
-        </div>
-      )}
     </nav>
   );
 }
