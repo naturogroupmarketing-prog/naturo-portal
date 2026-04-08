@@ -24,15 +24,14 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
   // Clean up rejected POs older than 24 hours
-  db.purchaseOrder.deleteMany({
+  try { await db.purchaseOrder.deleteMany({
     where: { organizationId, status: "REJECTED", approvedAt: { lt: twentyFourHoursAgo } },
-  }).catch(() => {});
+  }); } catch {}
 
   const [purchaseOrders, regions, canManagePO, canApprovePO, canEditQty, consumables] = await Promise.all([
     db.purchaseOrder.findMany({
       where: {
         ...regionFilter,
-        NOT: { status: "REJECTED", approvedAt: { not: null, lt: twentyFourHoursAgo } },
       },
       include: {
         consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
