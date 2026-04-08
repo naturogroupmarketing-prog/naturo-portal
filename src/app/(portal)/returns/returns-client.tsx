@@ -143,7 +143,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
           checked={isVerified}
           onChange={() => toggleItem(item.id, "verified")}
           className={`w-5 h-5 rounded border-shark-300 cursor-pointer shrink-0 ${
-            isNotReturned ? "text-[#E8532E] focus:ring-amber-400" : "text-action-500 focus:ring-emerald-400"
+            isNotReturned ? "text-[#E8532E] focus:ring-amber-400" : "text-action-500 focus:ring-action-400"
           }`}
         />
 
@@ -317,7 +317,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                   {rejectedCount > 0 && `, rejecting ${rejectedCount} items`}
                 </p>
                 <div className="w-48 h-1.5 bg-shark-100 rounded-full mt-3 overflow-hidden">
-                  <div className="h-full bg-emerald-400 rounded-full animate-progress-bar" />
+                  <div className="h-full bg-action-400 rounded-full animate-progress-bar" />
                 </div>
               </div>
             </div>

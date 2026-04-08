@@ -132,7 +132,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
                     checked={isAcked}
                     disabled={isAcked}
                     onChange={() => handleAcknowledge(n.id)}
-                    className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-emerald-400 cursor-pointer shrink-0 mt-0.5"
+                    className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0 mt-0.5"
                   />
 
                   {/* Icon */}

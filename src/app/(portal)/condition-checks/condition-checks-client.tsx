@@ -656,7 +656,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                     {/* Progress bar */}
                     <div className="w-20 h-1.5 bg-shark-100 rounded-full hidden sm:block overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all ${isComplete ? "bg-emerald-400" : "bg-[#E8532E]"}`}
+                        className={`h-full rounded-full transition-all ${isComplete ? "bg-action-400" : "bg-[#E8532E]"}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>

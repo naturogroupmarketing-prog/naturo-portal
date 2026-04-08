@@ -77,7 +77,7 @@ const REGION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-violet-600", bg: "bg-violet-50" },
+  { color: "text-shark-600", bg: "bg-shark-50" },
   { color: "text-pink-600", bg: "bg-pink-50" },
   { color: "text-orange-600", bg: "bg-orange-50" },
 ];
@@ -173,12 +173,12 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         switch (sectionId) {
           case "stats":
             return visibleStats.length > 0 ? (
-              <StaggerContainer key="stats" className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <StaggerContainer key="stats" className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
                     <Card className={`border-t-[3px] ${s.borderColor} hover:shadow-md transition-all duration-200 cursor-pointer`}>
-                      <CardContent className="py-4 px-5">
+                      <CardContent>
                         <div className="flex items-center gap-4">
                           <div className={`w-12 h-12 rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
                             <Icon name={s.icon} size={22} className={s.iconColor} />

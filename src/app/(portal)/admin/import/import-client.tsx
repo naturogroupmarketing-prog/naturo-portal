@@ -620,7 +620,7 @@ export function ImportClient({ regions }: Props) {
             <div className="flex items-center justify-between">
               <CardTitle>Preview &amp; Validate</CardTitle>
               <div className="flex items-center gap-3">
-                <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-action-50 text-action-700 ring-1 ring-emerald-600/20">
+                <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-action-50 text-action-700 ring-1 ring-action-600/20">
                   {mappedData.length - Object.keys(validationErrors).length} ready
                 </span>
                 {Object.keys(validationErrors).length > 0 && (

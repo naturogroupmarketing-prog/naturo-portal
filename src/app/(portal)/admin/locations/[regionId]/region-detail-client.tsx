@@ -19,7 +19,7 @@ const SECTION_COLORS = [
   { bg: "bg-amber-50", color: "text-[#E8532E]" },
   { bg: "bg-cyan-50", color: "text-cyan-600" },
   { bg: "bg-red-50", color: "text-red-600" },
-  { bg: "bg-violet-50", color: "text-violet-600" },
+  { bg: "bg-shark-50", color: "text-shark-600" },
   { bg: "bg-pink-50", color: "text-pink-600" },
   { bg: "bg-orange-50", color: "text-orange-600" },
   { bg: "bg-teal-50", color: "text-teal-600" },

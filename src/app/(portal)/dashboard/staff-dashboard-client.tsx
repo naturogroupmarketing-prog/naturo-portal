@@ -365,7 +365,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                       type="checkbox"
                       checked={isReceived}
                       onChange={() => toggleItem(key, "received")}
-                      className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-emerald-400 cursor-pointer shrink-0"
+                      className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0"
                     />
                     <Icon name="package" size={16} className={`shrink-0 ${isReceived ? "text-action-400" : isNotReceived ? "text-red-400" : "text-action-500"}`} />
                     <div className="flex-1 min-w-0">
@@ -414,7 +414,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                       type="checkbox"
                       checked={isReceived}
                       onChange={() => toggleItem(key, "received")}
-                      className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-emerald-400 cursor-pointer shrink-0"
+                      className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0"
                     />
                     <Icon name="droplet" size={16} className={`shrink-0 ${isReceived ? "text-action-400" : isNotReceived ? "text-red-400" : "text-blue-500"}`} />
                     <div className="flex-1 min-w-0">
@@ -937,7 +937,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   <Icon name="check" size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-emerald-800">Inspection Complete</p>
+                  <p className="text-sm font-semibold text-action-800">Inspection Complete</p>
                   <p className="text-xs text-action-600 mt-0.5">
                     All {conditionCheckItems.length} items checked for {upcoming[0].title}. Well done!
                   </p>
@@ -1081,7 +1081,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                       <div className="flex items-center gap-3 min-w-0">
                         {/* Item photo or status indicator */}
                         <div className={`w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center shrink-0 ${
-                          isChecked ? "ring-2 ring-emerald-400" : "bg-shark-50"
+                          isChecked ? "ring-2 ring-action-400" : "bg-shark-50"
                         }`}>
                           {item.imageUrl ? (
                             <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
