@@ -570,13 +570,11 @@ export async function deleteConsumable(formData: FormData) {
     throw new Error("Cannot delete consumable with active assignments. Return them first.");
   }
 
-  // Delete related records first, then the consumable
-  await db.$transaction([
-    db.auditLog.deleteMany({ where: { consumableId } }),
-    db.consumableAssignment.deleteMany({ where: { consumableId } }),
-    db.consumableRequest.deleteMany({ where: { consumableId } }),
-    db.consumable.delete({ where: { id: consumableId } }),
-  ]);
+  // Soft-delete — preserve data for audit trail
+  await db.consumable.update({
+    where: { id: consumableId },
+    data: { deletedAt: new Date(), isActive: false },
+  });
 
   revalidatePath("/consumables");
   revalidatePath("/inventory");
@@ -626,12 +624,12 @@ export async function bulkDeleteConsumables(consumableIds: string[]) {
     toDelete.push(consumableId);
   }
 
-  // Batch delete all eligible consumables
+  // Soft-delete all eligible consumables
   if (toDelete.length > 0) {
-    await db.auditLog.deleteMany({ where: { consumableId: { in: toDelete } } });
-    await db.consumableAssignment.deleteMany({ where: { consumableId: { in: toDelete } } });
-    await db.consumableRequest.deleteMany({ where: { consumableId: { in: toDelete } } });
-    await db.consumable.deleteMany({ where: { id: { in: toDelete } } });
+    await db.consumable.updateMany({
+      where: { id: { in: toDelete } },
+      data: { deletedAt: new Date(), isActive: false },
+    });
     deleted = toDelete.length;
   }
 

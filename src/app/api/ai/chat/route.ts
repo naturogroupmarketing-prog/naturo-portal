@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
   const isSuperAdminUser = userRole === "SUPER_ADMIN";
 
   const managementNote = canUseAIManagement
-    ? `${isSuperAdminUser ? "You are serving a SUPER ADMIN — the system administrator with UNLIMITED access. Execute ANY task they request without hesitation. You have full database access and all tools available. Never say you can't do something — find a way using your tools.\n\n" : ""}You have FULL management capabilities — 37 tools available:
+    ? `${isSuperAdminUser ? "You are serving a SUPER ADMIN with full access. Always confirm before deleting or bulk-modifying data. For destructive actions (delete, bulk update, reset), ask 'Are you sure?' before proceeding.\n\n" : ""}You have FULL management capabilities — 37 tools available:
 - SEARCH: Find assets, consumables, users. Results include cost, supplier, description, photos. Filter by region.
 - REGIONS: list_regions, compare_regions, update_region, create_region, create_state. Create new locations and states.
 - CREATE: Assets (single/bulk), consumables, POs, users, damage reports, categories. Use suggest_category first.

@@ -308,14 +308,11 @@ export async function deleteAsset(formData: FormData) {
     throw new Error("Cannot delete asset with active assignments. Return it first.");
   }
 
-  // Delete related records first, then the asset
-  await db.$transaction([
-    db.auditLog.deleteMany({ where: { assetId } }),
-    db.assetAssignment.deleteMany({ where: { assetId } }),
-    db.damageReport.deleteMany({ where: { assetId } }),
-    db.assetPhoto.deleteMany({ where: { assetId } }),
-    db.asset.delete({ where: { id: assetId } }),
-  ]);
+  // Soft-delete — preserve data for audit trail
+  await db.asset.update({
+    where: { id: assetId },
+    data: { deletedAt: new Date(), status: "UNAVAILABLE" },
+  });
 
   revalidatePath("/assets");
   revalidatePath("/inventory");
@@ -364,13 +361,12 @@ export async function bulkDeleteAssets(assetIds: string[]) {
     toDelete.push(assetId);
   }
 
-  // Batch delete all eligible assets
+  // Soft-delete all eligible assets
   if (toDelete.length > 0) {
-    await db.auditLog.deleteMany({ where: { assetId: { in: toDelete } } });
-    await db.assetAssignment.deleteMany({ where: { assetId: { in: toDelete } } });
-    await db.damageReport.deleteMany({ where: { assetId: { in: toDelete } } });
-    await db.assetPhoto.deleteMany({ where: { assetId: { in: toDelete } } });
-    await db.asset.deleteMany({ where: { id: { in: toDelete } } });
+    await db.asset.updateMany({
+      where: { id: { in: toDelete } },
+      data: { deletedAt: new Date(), status: "UNAVAILABLE" },
+    });
     deleted = toDelete.length;
   }
 

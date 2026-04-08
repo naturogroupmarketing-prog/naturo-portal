@@ -86,8 +86,8 @@ export async function createUser(formData: FormData) {
           subject: `Welcome to ${org?.name || "Trackio"} — Your Account is Ready`,
           html: emailWelcome(name, email, password, org?.name || "Trackio", role),
         });
-      } catch {
-        // Don't fail user creation if email fails
+      } catch (e) {
+        console.error("Welcome email failed:", e instanceof Error ? e.message : e);
       }
     }
 
@@ -97,8 +97,8 @@ export async function createUser(formData: FormData) {
       const starterKitId = formData.get("starterKitId") as string | null;
       try {
         await applyStarterKit(user.id, starterKitId || undefined);
-      } catch {
-        // Don't fail user creation if starter kit fails
+      } catch (e) {
+        console.error("Starter kit application failed:", e instanceof Error ? e.message : e);
       }
     }
 
@@ -376,12 +376,12 @@ export async function deleteUser(userId: string) {
   // Remove manager permissions
   await db.managerPermission.deleteMany({ where: { userId } });
 
-  // Delete user — cascade will remove assignments and requests
-  await db.user.delete({ where: { id: userId } });
+  // Soft-delete user — preserve data for audit trail
+  await db.user.update({ where: { id: userId }, data: { deletedAt: new Date(), isActive: false } });
 
   await createAuditLog({
     action: "USER_DELETED",
-    description: `User "${user.name || user.email}" (${user.email}) permanently deleted. History archived.`,
+    description: `User "${user.name || user.email}" (${user.email}) deleted. Data archived.`,
     performedById: session.user.id,
     organizationId,
     metadata: archiveData,
