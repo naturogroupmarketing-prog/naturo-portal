@@ -69,8 +69,8 @@ export async function createAsset(formData: FormData) {
 
 export async function assignAsset(formData: FormData) {
   const session = await withAuth();
-  if (!(await hasPermission(session.user.id, session.user.role, "assetEdit"))) {
-    throw new Error("Unauthorized");
+  if (!(await hasPermission(session.user.id, session.user.role, "assetAssign"))) {
+    throw new Error("Unauthorized — you don't have permission to assign assets");
   }
 
   const organizationId = session.user.organizationId!;

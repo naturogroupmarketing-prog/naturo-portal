@@ -9,10 +9,12 @@ export type PermissionKey =
   | "assetAdd"
   | "assetEdit"
   | "assetDelete"
+  | "assetAssign"
   // Consumables
   | "consumableAdd"
   | "consumableEdit"
   | "consumableDelete"
+  | "consumableAssign"
   | "consumableStockAdjust"
   // Features
   | "purchaseOrderManage"
@@ -40,9 +42,11 @@ export const MANAGER_DEFAULTS: Record<PermissionKey, boolean> = {
   assetAdd: true,
   assetEdit: true,
   assetDelete: true,
+  assetAssign: true,
   consumableAdd: true,
   consumableEdit: true,
   consumableDelete: true,
+  consumableAssign: true,
   consumableStockAdjust: false,
   purchaseOrderManage: false,
   purchaseOrderApprove: false,
@@ -68,9 +72,11 @@ export const PERMISSION_INFO: Record<PermissionKey, { label: string; description
   assetAdd: { label: "Add Assets", description: "Create new assets", group: "Assets" },
   assetEdit: { label: "Edit Assets", description: "Modify asset details and status", group: "Assets" },
   assetDelete: { label: "Delete Assets", description: "Remove assets from the system", group: "Assets" },
+  assetAssign: { label: "Assign Assets", description: "Assign and return assets to staff", group: "Assets" },
   consumableAdd: { label: "Add Consumables", description: "Create new consumable items", group: "Consumables" },
   consumableEdit: { label: "Edit Consumables", description: "Modify consumable details and stock", group: "Consumables" },
   consumableDelete: { label: "Delete Consumables", description: "Remove consumable items", group: "Consumables" },
+  consumableAssign: { label: "Assign Consumables", description: "Assign and return consumables to staff", group: "Consumables" },
   consumableStockAdjust: { label: "Adjust Stock", description: "Add and deduct consumable stock quantities", group: "Consumables" },
   purchaseOrderManage: { label: "Purchase Orders", description: "View, create, and mark POs as received", group: "Features" },
   purchaseOrderApprove: { label: "Approve Orders", description: "Approve, reject, and mark POs as ordered", group: "Features" },

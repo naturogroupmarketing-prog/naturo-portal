@@ -641,9 +641,9 @@ export async function bulkDeleteConsumables(consumableIds: string[]) {
 }
 
 export async function assignConsumable(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableEdit"))) {
-    throw new Error("Unauthorized");
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "consumableAssign"))) {
+    throw new Error("Unauthorized — you don't have permission to assign consumables");
   }
 
   const organizationId = session.user.organizationId;
