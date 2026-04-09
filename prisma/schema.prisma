@@ -273,6 +273,7 @@ model User {
   @@index([regionId])
   @@index([role])
   @@index([organizationId])
+  @@index([organizationId, isActive, deletedAt])
 }
 
 // ─── ASSETS ─────────────────────────────────────────────
@@ -414,6 +415,7 @@ model ConsumableRequest {
   @@index([userId, status])
   @@index([consumableId])
   @@index([status])
+  @@index([status, createdAt])
   @@index([approvedById])
 }
 
@@ -657,6 +659,7 @@ model PendingReturn {
   createdAt        DateTime  @default(now())
 
   @@index([organizationId, isVerified])
+  @@index([organizationId, isVerified, createdAt])
   @@index([regionId])
 }
 

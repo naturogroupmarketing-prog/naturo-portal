@@ -71,6 +71,7 @@ export async function GET(
           region: { include: { state: true } },
           assignments: { where: { isActive: true }, include: { user: true } },
         },
+        take: 10000,
       });
       csv = toCSV(
         ["Asset Code", "Name", "Category", "Serial Number", "Status", "State", "Region", "Assigned To", "High Value", "Purchase Date", "Cost"],

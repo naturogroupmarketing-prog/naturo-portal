@@ -88,10 +88,26 @@ export async function verifyAllReturns() {
     : { organizationId, isVerified: false };
 
   const pendingReturns = await db.pendingReturn.findMany({ where: regionFilter });
+  if (pendingReturns.length === 0) return { success: true, count: 0 };
 
-  for (const pr of pendingReturns) {
-    await verifyReturn(pr.id);
-  }
+  await db.$transaction(async (tx) => {
+    // Mark all as verified in one query
+    await tx.pendingReturn.updateMany({
+      where: { id: { in: pendingReturns.map((pr) => pr.id) } },
+      data: { isVerified: true, verifiedById: session.user.id, verifiedAt: new Date() },
+    });
+    // Restock assets — set all to AVAILABLE
+    const assetIds = pendingReturns.filter((pr) => pr.itemType === "ASSET" && pr.assetId && pr.returnReason !== "STOCK_ALREADY_HANDLED").map((pr) => pr.assetId!);
+    if (assetIds.length > 0) {
+      await tx.asset.updateMany({ where: { id: { in: assetIds } }, data: { status: "AVAILABLE" } });
+    }
+    // Restock consumables — increment each
+    for (const pr of pendingReturns) {
+      if (pr.itemType === "CONSUMABLE" && pr.consumableId && pr.returnReason !== "STOCK_ALREADY_HANDLED") {
+        await tx.consumable.update({ where: { id: pr.consumableId }, data: { quantityOnHand: { increment: pr.quantity } } });
+      }
+    }
+  });
 
   return { success: true, count: pendingReturns.length };
 }

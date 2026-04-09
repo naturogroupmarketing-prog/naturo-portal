@@ -275,59 +275,57 @@ export async function deleteUser(userId: string) {
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
 
-  // Auto-return all active asset assignments — set to PENDING_RETURN for manager checklist
-  const activeAssetAssignments = await db.assetAssignment.findMany({
-    where: { userId, isActive: true },
-    include: { asset: true },
-  });
-  for (const assignment of activeAssetAssignments) {
-    await db.$transaction(async (tx) => {
-      await tx.assetAssignment.update({
-        where: { id: assignment.id },
-        data: { isActive: false, actualReturnDate: new Date(), returnNotes: "Auto-returned: user deleted" },
-      });
-      await tx.asset.update({
-        where: { id: assignment.assetId },
-        data: { status: "PENDING_RETURN" },
-      });
-      await tx.pendingReturn.create({
-        data: {
-          itemType: "ASSET",
-          assetId: assignment.assetId,
-          returnedByName: user.name || user.email,
-          returnedByEmail: user.email,
-          returnReason: "User deleted",
-          organizationId: organizationId!,
-          regionId: assignment.asset.regionId,
-        },
-      });
-    });
-  }
+  // Auto-return all active assignments in a single transaction
+  const [activeAssetAssignments, activeConsumableAssignments] = await Promise.all([
+    db.assetAssignment.findMany({ where: { userId, isActive: true }, include: { asset: true } }),
+    db.consumableAssignment.findMany({ where: { userId, isActive: true }, include: { consumable: true } }),
+  ]);
 
-  // Auto-return all active consumable assignments — pending manager checklist
-  const activeConsumableAssignments = await db.consumableAssignment.findMany({
-    where: { userId, isActive: true },
-    include: { consumable: true },
-  });
-  for (const assignment of activeConsumableAssignments) {
+  if (activeAssetAssignments.length > 0 || activeConsumableAssignments.length > 0) {
     await db.$transaction(async (tx) => {
-      await tx.consumableAssignment.update({
-        where: { id: assignment.id },
-        data: { isActive: false, returnedDate: new Date(), returnNotes: "Auto-returned: user deleted" },
-      });
-      // Don't restock yet — pending verification
-      await tx.pendingReturn.create({
-        data: {
-          itemType: "CONSUMABLE",
-          consumableId: assignment.consumableId,
-          quantity: assignment.quantity,
-          returnedByName: user.name || user.email,
-          returnedByEmail: user.email,
-          returnReason: "User deleted",
-          organizationId: organizationId!,
-          regionId: assignment.consumable.regionId,
-        },
-      });
+      // Batch deactivate all asset assignments
+      if (activeAssetAssignments.length > 0) {
+        await tx.assetAssignment.updateMany({
+          where: { userId, isActive: true },
+          data: { isActive: false, actualReturnDate: new Date(), returnNotes: "Auto-returned: user deleted" },
+        });
+        // Set all assets to PENDING_RETURN
+        await tx.asset.updateMany({
+          where: { id: { in: activeAssetAssignments.map((a) => a.assetId) } },
+          data: { status: "PENDING_RETURN" },
+        });
+        // Create pending returns in bulk
+        await tx.pendingReturn.createMany({
+          data: activeAssetAssignments.map((a) => ({
+            itemType: "ASSET",
+            assetId: a.assetId,
+            returnedByName: user.name || user.email,
+            returnedByEmail: user.email,
+            returnReason: "User deleted",
+            organizationId: organizationId!,
+            regionId: a.asset.regionId,
+          })),
+        });
+      }
+      // Batch deactivate all consumable assignments
+      if (activeConsumableAssignments.length > 0) {
+        await tx.consumableAssignment.updateMany({
+          where: { userId, isActive: true },
+          data: { isActive: false, returnedDate: new Date(), returnNotes: "Auto-returned: user deleted" },
+        });
+        await tx.pendingReturn.createMany({
+          data: activeConsumableAssignments.map((a) => ({
+            itemType: "CONSUMABLE",
+            consumableId: a.consumableId,
+            quantity: a.quantity,
+            returnedByName: user.name || user.email,
+            returnedByEmail: user.email,
+            returnReason: "User deleted",
+            organizationId: organizationId!,
+            regionId: a.consumable.regionId,
+          })),
+        });
+      }
     });
   }
 
