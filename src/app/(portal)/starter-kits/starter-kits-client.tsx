@@ -306,6 +306,7 @@ export function StarterKitsClient({
             existingItems={kits.find((k) => k.id === showAddItem)?.items || []}
             categories={categories}
             consumables={consumables}
+            assetPhotos={assetPhotos}
             onDone={() => setShowAddItem(null)}
           />
         )}
@@ -497,18 +498,17 @@ function EditStarterKitForm({
           })()}
         </div>
 
-        {/* Inline Add Items */}
-        {showAddItems && (
-          <div className="border border-action-200 rounded-xl p-3 bg-action-50/30">
-            <AddItemsChecklist
-              starterKitId={kit.id}
-              existingItems={kit.items}
-              categories={categories}
-              consumables={consumables}
-              onDone={() => setShowAddItems(false)}
-            />
-          </div>
-        )}
+        {/* Add Items Modal */}
+        <Modal open={showAddItems} onClose={() => setShowAddItems(false)} title="Add Items to Kit">
+          <AddItemsChecklist
+            starterKitId={kit.id}
+            existingItems={kit.items}
+            categories={categories}
+            consumables={consumables}
+            assetPhotos={assetPhotos}
+            onDone={() => setShowAddItems(false)}
+          />
+        </Modal>
 
         {/* Footer */}
         <div className="flex justify-between pt-4 border-t border-shark-100">
@@ -540,12 +540,14 @@ function AddItemsChecklist({
   existingItems,
   categories,
   consumables,
+  assetPhotos = {},
   onDone,
 }: {
   starterKitId: string;
   existingItems: StarterKitItem[];
   categories: Category[];
   consumables: Consumable[];
+  assetPhotos?: Record<string, string | null>;
   onDone: () => void;
 }) {
   const existingCategories = new Set(existingItems.filter((i) => i.itemType === "ASSET_CATEGORY").map((i) => i.category));
@@ -644,6 +646,13 @@ function AddItemsChecklist({
                     onChange={() => !alreadyAdded && toggleCategory(cat.name)}
                     className="rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer"
                   />
+                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-shark-100 flex items-center justify-center shrink-0">
+                    {assetPhotos[cat.name] ? (
+                      <img src={assetPhotos[cat.name]!} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <Icon name="package" size={12} className="text-action-500" />
+                    )}
+                  </div>
                   <label
                     className={`text-sm text-shark-700 flex-1 ${alreadyAdded ? "cursor-not-allowed" : "cursor-pointer"}`}
                     onClick={() => !alreadyAdded && toggleCategory(cat.name)}
@@ -671,57 +680,69 @@ function AddItemsChecklist({
         </div>
       )}
 
-      {/* Consumables */}
-      {consumables.length > 0 && (
-        <div>
-          <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">
-            <Icon name="droplet" size={12} className="inline mr-1 text-blue-500" />
-            Consumables
-          </p>
-          <div className="space-y-1 max-h-48 overflow-y-auto">
-            {consumables.map((c) => {
-              const alreadyAdded = existingConsumableIds.has(c.id);
-              const isSelected = selectedConsumables.has(c.id);
-              return (
-                <div
-                  key={c.id}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
-                    alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 border border-transparent"
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={isSelected || alreadyAdded}
-                    disabled={alreadyAdded}
-                    onChange={() => !alreadyAdded && toggleConsumable(c.id)}
-                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                  />
-                  <label
-                    className={`text-sm text-shark-700 flex-1 ${alreadyAdded ? "cursor-not-allowed" : "cursor-pointer"}`}
-                    onClick={() => !alreadyAdded && toggleConsumable(c.id)}
+      {/* Consumables — grouped by category */}
+      {consumables.length > 0 && (() => {
+        const grouped = new Map<string, Consumable[]>();
+        for (const c of consumables) {
+          const cat = c.category || "Other";
+          if (!grouped.has(cat)) grouped.set(cat, []);
+          grouped.get(cat)!.push(c);
+        }
+        return Array.from(grouped.entries()).map(([cat, items]) => (
+          <div key={cat}>
+            <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">{cat}</p>
+            <div className="space-y-1 max-h-48 overflow-y-auto">
+              {items.map((c) => {
+                const alreadyAdded = existingConsumableIds.has(c.id);
+                const isSelected = selectedConsumables.has(c.id);
+                return (
+                  <div
+                    key={c.id}
+                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
+                      alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 border border-transparent"
+                    }`}
                   >
-                    {c.name} <span className="text-shark-400 text-xs">({c.unitType}) · {c.quantityOnHand} in stock</span>
-                  </label>
-                  {alreadyAdded && <span className="text-xs text-shark-400">Added</span>}
-                  {isSelected && !alreadyAdded && (
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs text-shark-500">Qty:</span>
-                      <input
-                        type="number"
-                        min="1"
-                        value={selectedConsumables.get(c.id) || 1}
-                        onChange={(e) => setConsumableQty(c.id, parseInt(e.target.value) || 1)}
-                        className="w-14 text-center text-sm rounded-lg border border-shark-200 py-0.5"
-                        onClick={(e) => e.stopPropagation()}
-                      />
+                    <input
+                      type="checkbox"
+                      checked={isSelected || alreadyAdded}
+                      disabled={alreadyAdded}
+                      onChange={() => !alreadyAdded && toggleConsumable(c.id)}
+                      className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                    />
+                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-shark-100 flex items-center justify-center shrink-0">
+                      {c.imageUrl ? (
+                        <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <Icon name="droplet" size={12} className="text-blue-500" />
+                      )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                    <label
+                      className={`text-sm text-shark-700 flex-1 truncate ${alreadyAdded ? "cursor-not-allowed" : "cursor-pointer"}`}
+                      onClick={() => !alreadyAdded && toggleConsumable(c.id)}
+                    >
+                      {c.name} <span className="text-shark-400 text-xs">({c.unitType})</span>
+                    </label>
+                    {alreadyAdded && <span className="text-xs text-shark-400 shrink-0">Added</span>}
+                    {isSelected && !alreadyAdded && (
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span className="text-xs text-shark-500">Qty:</span>
+                        <input
+                          type="number"
+                          min="1"
+                          value={selectedConsumables.get(c.id) || 1}
+                          onChange={(e) => setConsumableQty(c.id, parseInt(e.target.value) || 1)}
+                          className="w-14 text-center text-sm rounded-lg border border-shark-200 py-0.5"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        ));
+      })()}
 
       <div className="flex justify-between items-center pt-3 border-t border-shark-100">
         <span className="text-sm text-shark-400">{totalSelected} item{totalSelected !== 1 ? "s" : ""} selected</span>
