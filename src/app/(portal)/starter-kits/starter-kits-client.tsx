@@ -476,12 +476,22 @@ function EditStarterKitForm({
                     <div className="space-y-1.5">{assetItems.map(renderItem)}</div>
                   </div>
                 )}
-                {consumableItems.length > 0 && (
-                  <div>
-                    <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">Consumables ({consumableItems.length})</p>
-                    <div className="space-y-1.5">{consumableItems.map(renderItem)}</div>
-                  </div>
-                )}
+                {consumableItems.length > 0 && (() => {
+                  // Group consumables by category
+                  const grouped = new Map<string, StarterKitItem[]>();
+                  for (const item of consumableItems) {
+                    const c = consumables.find((con) => con.id === item.consumableId);
+                    const cat = c?.category || "Other";
+                    if (!grouped.has(cat)) grouped.set(cat, []);
+                    grouped.get(cat)!.push(item);
+                  }
+                  return Array.from(grouped.entries()).map(([cat, items]) => (
+                    <div key={cat}>
+                      <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">{cat} ({items.length})</p>
+                      <div className="space-y-1.5">{items.map(renderItem)}</div>
+                    </div>
+                  ));
+                })()}
               </div>
             );
           })()}
