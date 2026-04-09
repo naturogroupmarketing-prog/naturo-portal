@@ -95,7 +95,8 @@ export async function assignAsset(formData: FormData) {
     throw new Error("Staff can only be assigned items from their region");
   }
 
-  const newStatus: AssetStatus = assignmentType === "PERMANENT" ? "ASSIGNED" : "CHECKED_OUT";
+  // Always start as CHECKED_OUT (pending) — changes to ASSIGNED when staff confirms receipt
+  const newStatus: AssetStatus = "CHECKED_OUT";
 
   await db.$transaction([
     db.asset.update({
@@ -250,9 +251,19 @@ export async function acknowledgeAsset(assignmentId: string) {
     throw new Error("Already acknowledged");
   }
 
-  await db.assetAssignment.update({
-    where: { id: assignmentId },
-    data: { acknowledgedAt: new Date() },
+  await db.$transaction(async (tx) => {
+    await tx.assetAssignment.update({
+      where: { id: assignmentId },
+      data: { acknowledgedAt: new Date() },
+    });
+
+    // Change asset status from CHECKED_OUT to ASSIGNED once staff confirms receipt
+    if (assignment.asset.status === "CHECKED_OUT") {
+      await tx.asset.update({
+        where: { id: assignment.assetId },
+        data: { status: "ASSIGNED" },
+      });
+    }
   });
 
   await createAuditLog({
@@ -264,6 +275,8 @@ export async function acknowledgeAsset(assignmentId: string) {
   });
 
   revalidatePath("/my-assets");
+  revalidatePath("/assets");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { success: true };
 }

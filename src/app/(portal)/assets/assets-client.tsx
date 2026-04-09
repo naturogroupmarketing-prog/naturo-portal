@@ -93,7 +93,7 @@ const REGION_COLORS = [
 const STATUS_BADGE: Record<string, { label: string; bg: string; text: string }> = {
   AVAILABLE: { label: "Available", bg: "bg-green-100", text: "text-green-700" },
   ASSIGNED: { label: "Assigned", bg: "bg-blue-100", text: "text-blue-700" },
-  CHECKED_OUT: { label: "Checked Out", bg: "bg-indigo-100", text: "text-indigo-700" },
+  CHECKED_OUT: { label: "Pending", bg: "bg-amber-100", text: "text-amber-700" },
   PENDING_RETURN: { label: "Pending Return", bg: "bg-amber-100", text: "text-amber-700" },
   DAMAGED: { label: "Damaged", bg: "bg-red-100", text: "text-red-700" },
   LOST: { label: "Lost", bg: "bg-shark-100", text: "text-shark-700" },
