@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
 import { AssetsClient } from "@/app/(portal)/assets/assets-client";
 import { ConsumablesClient } from "@/app/(portal)/consumables/consumables-client";
+import { StaffClient } from "@/app/(portal)/staff/staff-client";
 import { getItemTemplates, applyItemsToRegion } from "@/app/actions/locations";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
@@ -18,12 +19,8 @@ interface Props {
   region: { id: string; name: string; state: { id: string; name: string } };
   assets: unknown[];
   consumables: unknown[];
-  staff: {
-    id: string; name: string | null; email: string; phone?: string | null; role: string; isActive: boolean;
-    region?: { id: string; name: string } | null;
-    assetAssignments: { asset: { name: string; assetCode: string; category: string } }[];
-    consumableAssignments?: { quantity: number; consumable: { name: string; unitType: string } }[];
-  }[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  staff: any[];
   users: unknown[];
   assetCategories: unknown[];
   consumableCategories: unknown[];
@@ -31,19 +28,19 @@ interface Props {
   lowStockCount: number;
   permissions: { canAddAsset: boolean; canEditAsset: boolean; canDeleteAsset: boolean; canAssignAsset: boolean; canAddConsumable: boolean; canEditConsumable: boolean; canDeleteConsumable: boolean; canAdjustStock: boolean };
   isSuperAdmin: boolean;
+  allRegions?: { id: string; name: string; state: { name: string } }[];
   initialTab?: "assets" | "consumables" | "staff";
   initialAction?: string;
 }
 
 export function InventoryDetailClient({
   region, assets, consumables, staff, users, assetCategories, consumableCategories,
-  pendingRequests, lowStockCount, permissions, isSuperAdmin, initialTab, initialAction,
+  pendingRequests, lowStockCount, permissions, isSuperAdmin, allRegions = [], initialTab, initialAction,
 }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [applying, setApplying] = useState(false);
-  const [viewStaff, setViewStaff] = useState<Props["staff"][number] | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -179,149 +176,17 @@ export function InventoryDetailClient({
         initialCategory={undefined}
       />
 
-      {/* Staff */}
+      {/* Staff — uses the same StaffClient as the Staff Overview page */}
       <div id="section-staff" className="scroll-mt-20" />
       {staff.length > 0 && (
-        <>
-        <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Staff</p>
-        <div className="space-y-2">
-          {/* Mobile: card layout */}
-          <div className="sm:hidden space-y-2">
-            {staff.map((user) => (
-              <Card key={user.id} className="cursor-pointer hover:shadow-md transition-all" onClick={() => setViewStaff(user)}>
-                <div className="px-4 py-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-9 h-9 rounded-full bg-action-500 flex items-center justify-center shrink-0">
-                        <span className="text-white text-sm font-semibold">{(user.name || user.email)[0].toUpperCase()}</span>
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-shark-800 truncate">{user.name || "—"}</p>
-                        <p className="text-xs text-shark-400 truncate">{user.email}</p>
-                      </div>
-                    </div>
-                    <Badge status={user.role} />
-                  </div>
-                  <div className="flex items-center gap-3 mt-2 text-xs text-shark-400">
-                    <span>{user.assetAssignments.length} assets</span>
-                    <span>{user.consumableAssignments?.length || 0} consumables</span>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-          {/* Desktop: table layout */}
-          <Card>
-            <div className="hidden sm:block">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-shark-100">
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Role</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Assets</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Consumables</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {staff.map((user) => (
-                    <tr key={user.id} className="border-b border-shark-50 hover:bg-shark-50/50 cursor-pointer transition-colors" onClick={() => setViewStaff(user)}>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-action-500 flex items-center justify-center shrink-0">
-                            <span className="text-white text-xs font-semibold">{(user.name || user.email)[0].toUpperCase()}</span>
-                          </div>
-                          <span className="text-sm font-medium text-shark-800">{user.name || "—"}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
-                      <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
-                      <td className="px-4 py-3 hidden lg:table-cell text-sm text-shark-500">{user.assetAssignments.length}</td>
-                      <td className="px-4 py-3 hidden lg:table-cell text-sm text-shark-500">{user.consumableAssignments?.length || 0}</td>
-                      <td className="px-4 py-3 hidden md:table-cell">
-                        <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-action-600" : "text-shark-400"}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                          {user.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        </div>
-        </>
-      )}
-
-      {/* Staff Detail Modal */}
-      {viewStaff && (
-        <Modal open onClose={() => setViewStaff(null)} title={viewStaff.name || viewStaff.email}>
-          <div className="space-y-5">
-            {/* Basic info */}
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <p className="text-xs text-shark-400 mb-0.5">Email</p>
-                <p className="text-shark-800">{viewStaff.email}</p>
-              </div>
-              {viewStaff.phone && (
-                <div>
-                  <p className="text-xs text-shark-400 mb-0.5">Phone</p>
-                  <p className="text-shark-800">{viewStaff.phone}</p>
-                </div>
-              )}
-              <div>
-                <p className="text-xs text-shark-400 mb-0.5">Role</p>
-                <Badge status={viewStaff.role} />
-              </div>
-              <div>
-                <p className="text-xs text-shark-400 mb-0.5">Status</p>
-                <span className={`inline-flex items-center gap-1 text-xs ${viewStaff.isActive ? "text-action-600" : "text-shark-400"}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${viewStaff.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                  {viewStaff.isActive ? "Active" : "Inactive"}
-                </span>
-              </div>
-            </div>
-
-            {/* Assigned Assets */}
-            {viewStaff.assetAssignments.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">Assigned Assets ({viewStaff.assetAssignments.length})</p>
-                <div className="space-y-1">
-                  {viewStaff.assetAssignments.map((a, i) => (
-                    <div key={i} className="flex items-center justify-between px-3 py-2 bg-shark-50 rounded-lg">
-                      <div>
-                        <p className="text-sm font-medium text-shark-800">{a.asset.name}</p>
-                        <p className="text-xs text-shark-400 font-mono">{a.asset.assetCode}</p>
-                      </div>
-                      <span className="text-xs text-shark-400">{a.asset.category}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Assigned Consumables */}
-            {viewStaff.consumableAssignments && viewStaff.consumableAssignments.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">Assigned Consumables ({viewStaff.consumableAssignments.length})</p>
-                <div className="space-y-1">
-                  {viewStaff.consumableAssignments.map((c, i) => (
-                    <div key={i} className="flex items-center justify-between px-3 py-2 bg-shark-50 rounded-lg">
-                      <p className="text-sm font-medium text-shark-800">{c.consumable.name}</p>
-                      <span className="text-xs text-shark-500">{c.quantity} {c.consumable.unitType}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {viewStaff.assetAssignments.length === 0 && (!viewStaff.consumableAssignments || viewStaff.consumableAssignments.length === 0) && (
-              <p className="text-sm text-shark-400 text-center py-4">No items currently assigned.</p>
-            )}
-          </div>
-        </Modal>
+        <StaffClient
+          users={staff}
+          regions={[{ id: region.id, name: region.name, state: region.state }]}
+          allRegions={allRegions}
+          isSuperAdmin={isSuperAdmin}
+          canViewStaffDetails={true}
+          initialRegion={region.id}
+        />
       )}
 
       {/* Back to top button */}
