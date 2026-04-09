@@ -657,6 +657,7 @@ function ApplyToStaffForm({
   users: User[];
   onDone: () => void;
 }) {
+  const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [applying, setApplying] = useState(false);
   const [result, setResult] = useState<{ applied: number; details: string[] } | null>(null);
@@ -697,8 +698,30 @@ function ApplyToStaffForm({
     );
   }
 
+  // Build unique regions from users
+  const regions = Array.from(
+    new Map(users.filter((u) => u.region).map((u) => [u.region!.name, u.region!.name])).values()
+  ).sort();
+
+  const filteredUsers = selectedRegion
+    ? users.filter((u) => u.region?.name === selectedRegion)
+    : users;
+
   return (
     <div className="space-y-5">
+      <div>
+        <label className="block text-sm font-medium text-shark-700 mb-1.5">Region</label>
+        <Select
+          value={selectedRegion}
+          onChange={(e) => { setSelectedRegion(e.target.value); setSelectedUserId(""); }}
+        >
+          <option value="">All regions</option>
+          {regions.map((r) => (
+            <option key={r} value={r}>{r}</option>
+          ))}
+        </Select>
+      </div>
+
       <div>
         <label className="block text-sm font-medium text-shark-700 mb-1.5">Assign to</label>
         <Select
@@ -706,9 +729,9 @@ function ApplyToStaffForm({
           onChange={(e) => setSelectedUserId(e.target.value)}
         >
           <option value="">Select staff member</option>
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <option key={user.id} value={user.id}>
-              {user.name || user.email}{user.region ? ` — ${user.region.name}` : ""}
+              {user.name || user.email}{!selectedRegion && user.region ? ` — ${user.region.name}` : ""}
             </option>
           ))}
         </Select>
