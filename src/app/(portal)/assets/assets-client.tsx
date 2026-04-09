@@ -270,10 +270,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   // Quick status change for PENDING_RETURN assets
   const handleQuickStatusChange = async (assetId: string, newStatus: string) => {
     try {
-      const fd = new FormData();
-      fd.set("assetId", assetId);
-      fd.set("status", newStatus);
-      await updateAsset(fd);
+      await changeAssetStatus(assetId, newStatus);
       addToast(`Asset status changed to ${newStatus.replace(/_/g, " ").toLowerCase()}`, "success");
       router.refresh();
     } catch (err) {
