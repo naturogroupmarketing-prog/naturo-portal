@@ -384,7 +384,7 @@ export async function closeRequest(formData: FormData) {
 
 export async function approveRequest(formData: FormData) {
   const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableEdit"))) {
+  if (!session?.user || !isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
@@ -473,7 +473,7 @@ export async function approveRequest(formData: FormData) {
 
 export async function issueConsumable(formData: FormData) {
   const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableEdit"))) {
+  if (!session?.user || !isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
   }
 
