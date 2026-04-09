@@ -456,6 +456,14 @@ export async function updateAsset(formData: FormData) {
     data: updateData,
   });
 
+  // Sync photo to all other items with the same name across regions
+  if (formData.has("imageUrl") && updated.name) {
+    await db.asset.updateMany({
+      where: { name: updated.name, organizationId, id: { not: assetId } },
+      data: { imageUrl: updated.imageUrl },
+    });
+  }
+
   await createAuditLog({
     action: "ASSET_UPDATED",
     description: `Asset "${updated.name}" (${updated.assetCode}) updated`,

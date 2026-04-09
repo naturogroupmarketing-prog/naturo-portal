@@ -130,6 +130,14 @@ export async function updateConsumable(formData: FormData) {
     },
   });
 
+  // Sync photo to all other consumables with the same name across regions
+  if (imageUrl !== null && name) {
+    await db.consumable.updateMany({
+      where: { name, organizationId, id: { not: consumableId } },
+      data: { imageUrl: imageUrl || null },
+    });
+  }
+
   const stockChangeNote = stockUpdate.quantityOnHand !== undefined
     ? ` Stock changed: ${consumable.quantityOnHand} → ${stockUpdate.quantityOnHand}`
     : "";
