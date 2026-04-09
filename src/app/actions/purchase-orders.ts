@@ -301,6 +301,61 @@ export async function receivePurchaseOrder(formData: FormData) {
 }
 
 /**
+ * Undo a received PO — reverts back to ORDERED and decrements stock
+ */
+export async function undoReceivedPurchaseOrder(formData: FormData) {
+  const session = await withAuth();
+  if (!isAdminOrManager(session.user.role)) {
+    throw new Error("Unauthorized");
+  }
+
+  const organizationId = session.user.organizationId!;
+  const purchaseOrderId = formData.get("purchaseOrderId") as string;
+
+  const po = await db.purchaseOrder.findUnique({
+    where: { id: purchaseOrderId },
+    include: { consumable: true },
+  });
+  if (!po || po.organizationId !== organizationId) throw new Error("PO not found");
+  if (session.user.role === "BRANCH_MANAGER" && session.user.regionId && po.regionId !== session.user.regionId) {
+    throw new Error("You can only manage orders for your region");
+  }
+  if (po.status !== "RECEIVED") throw new Error("Can only undo received POs");
+
+  // Revert status and decrement stock in a transaction
+  await db.$transaction(async (tx) => {
+    await tx.purchaseOrder.update({
+      where: { id: purchaseOrderId },
+      data: { status: "ORDERED" },
+    });
+
+    // Decrement stock (don't go below 0)
+    const consumable = await tx.consumable.findUnique({ where: { id: po.consumableId } });
+    const decrementBy = Math.min(po.quantity, consumable?.quantityOnHand ?? 0);
+    if (decrementBy > 0) {
+      await tx.consumable.update({
+        where: { id: po.consumableId },
+        data: { quantityOnHand: { decrement: decrementBy } },
+      });
+    }
+  });
+
+  await createAuditLog({
+    action: "PURCHASE_ORDER_UPDATED",
+    description: `PO receipt undone: ${po.quantity}x ${po.consumable.name} removed from stock`,
+    performedById: session.user.id,
+    consumableId: po.consumableId,
+    organizationId,
+    metadata: { purchaseOrderId, quantity: po.quantity },
+  });
+
+  revalidatePath("/purchase-orders");
+  revalidatePath("/consumables");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+/**
  * Sync: create PENDING purchase orders for any low-stock consumables
  * that don't already have a PENDING or ORDERED PO.
  */

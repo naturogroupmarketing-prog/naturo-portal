@@ -8,7 +8,7 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
-import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder, batchUpdatePOStatus } from "@/app/actions/purchase-orders";
+import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder, undoReceivedPurchaseOrder, batchUpdatePOStatus } from "@/app/actions/purchase-orders";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/utils";
@@ -204,12 +204,18 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         fd.set("purchaseOrderId", purchaseOrderId);
         await receivePurchaseOrder(fd);
         addToast("PO received — stock updated", "success");
+      } else if (action === "undo-received") {
+        const fd = new FormData();
+        fd.set("purchaseOrderId", purchaseOrderId);
+        await undoReceivedPurchaseOrder(fd);
+        addToast("Receipt undone — stock reverted", "success");
       } else {
         const fd = new FormData();
         fd.set("purchaseOrderId", purchaseOrderId);
         fd.set("action", action);
         await approvePurchaseOrder(fd);
       }
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Action failed. Please try again.");
     } finally {
@@ -217,7 +223,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     }
   };
 
-  // Status display — Badge for all, plus "Received" button when ORDERED
+  // Status display — Badge for all, plus action buttons
   const renderStatus = (po: PurchaseOrder) => {
     // Show "Received" button for any manager when item is ORDERED
     if (po.status === "ORDERED") return (
@@ -226,6 +232,19 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         <Button size="sm" onClick={() => handleAction(po.id, "received")} disabled={!!loading} loading={loading === po.id + "received"}>Received</Button>
       </div>
     );
+    // Show "Undo" button on recently received items (within 7 days)
+    if (po.status === "RECEIVED") {
+      const receivedDate = new Date(po.updatedAt);
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      if (receivedDate >= sevenDaysAgo) {
+        return (
+          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+            <Badge status={po.status} />
+            <Button size="sm" variant="secondary" onClick={() => handleAction(po.id, "undo-received")} disabled={!!loading} loading={loading === po.id + "undo-received"}>Undo</Button>
+          </div>
+        );
+      }
+    }
     return <Badge status={po.status} />;
   };
 
