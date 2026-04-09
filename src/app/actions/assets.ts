@@ -407,7 +407,7 @@ export async function updateAsset(formData: FormData) {
       AVAILABLE: ["UNAVAILABLE", "DAMAGED", "LOST"],           // Can't directly assign via edit
       ASSIGNED: ["DAMAGED", "LOST"],                           // Must use return flow to make available
       CHECKED_OUT: ["DAMAGED", "LOST"],                        // Must use return flow
-      PENDING_RETURN: ["DAMAGED", "LOST"],                     // Manager can mark damaged/lost
+      PENDING_RETURN: ["AVAILABLE", "DAMAGED", "LOST"],         // Manager can confirm return or mark damaged/lost
       DAMAGED: ["AVAILABLE", "UNAVAILABLE"],                   // Can restore to available or unavailable
       LOST: ["AVAILABLE"],                                     // Can restore if found
       UNAVAILABLE: ["AVAILABLE", "DAMAGED", "LOST"],           // Can reactivate

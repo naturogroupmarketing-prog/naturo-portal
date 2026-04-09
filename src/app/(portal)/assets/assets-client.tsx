@@ -12,6 +12,7 @@ import { useToast } from "@/components/ui/toast";
 import dynamic from "next/dynamic";
 import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets } from "@/app/actions/assets";
 import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem, reorderCategories, reorderItems } from "@/app/actions/categories";
+import { useRouter } from "next/navigation";
 
 // Lazy-load QR scanner (~100KB html5-qrcode) — only needed when modal opens
 const QRScanner = dynamic(
@@ -87,6 +88,52 @@ const REGION_COLORS = [
   { color: "text-teal-600", bg: "bg-teal-50" },
 ];
 
+// Inline status selector for PENDING_RETURN assets — lets managers quickly change status
+function StatusSelector({ asset, onStatusChange }: { asset: { id: string; status: string }; onStatusChange: (assetId: string, newStatus: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handle = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [open]);
+
+  const options: { value: string; label: string; color: string }[] = [
+    { value: "AVAILABLE", label: "Available", color: "text-green-600 bg-green-50" },
+    { value: "DAMAGED", label: "Damaged", color: "text-red-600 bg-red-50" },
+    { value: "LOST", label: "Lost", color: "text-shark-600 bg-shark-50" },
+  ];
+
+  return (
+    <div className="relative" ref={ref} onClick={(e) => e.stopPropagation()}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 hover:bg-amber-200 transition-colors cursor-pointer"
+      >
+        Pending Return
+        <Icon name="chevron-down" size={12} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-shark-100 py-1 z-50 min-w-[140px]">
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => { onStatusChange(asset.id, opt.value); setOpen(false); }}
+              className={`w-full text-left px-3 py-1.5 text-xs font-medium hover:bg-shark-50 transition-colors ${opt.color}`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface AssetsClientProps {
   assets: Asset[];
   regions: Array<{ id: string; name: string; state: { name: string } }>;
@@ -101,6 +148,7 @@ interface AssetsClientProps {
 
 export function AssetsClient({ assets, regions, users, categories, isSuperAdmin, permissions, initialStatus, initialRegion, initialCategory }: AssetsClientProps) {
   const { addToast } = useToast();
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState(initialStatus || "ALL");
   const [showCreate, setShowCreate] = useState(false);
@@ -111,6 +159,20 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const [showQR, setShowQR] = useState<Asset | null>(null);
   const [showImage, setShowImage] = useState<Asset | null>(null);
   const [editAsset, setEditAsset] = useState<Asset | null>(null);
+
+  // Quick status change for PENDING_RETURN assets
+  const handleQuickStatusChange = async (assetId: string, newStatus: string) => {
+    try {
+      const fd = new FormData();
+      fd.set("assetId", assetId);
+      fd.set("status", newStatus);
+      await updateAsset(fd);
+      addToast(`Asset status changed to ${newStatus.replace(/_/g, " ").toLowerCase()}`, "success");
+      router.refresh();
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Failed to update status", "error");
+    }
+  };
 
   // Collapsed sections state
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -539,7 +601,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                           <p className="text-sm font-semibold text-shark-800 truncate">{asset.name}</p>
                           <p className="text-xs text-shark-400 font-mono">{asset.assetCode}</p>
                         </div>
-                        <Badge status={asset.status} />
+                        {asset.status === "PENDING_RETURN" && permissions.canAssign ? (
+                          <StatusSelector asset={asset} onStatusChange={handleQuickStatusChange} />
+                        ) : (
+                          <Badge status={asset.status} />
+                        )}
                       </div>
                       {activeAssignment && (
                         <p className="text-xs text-shark-500 mt-1">Assigned: {activeAssignment.user.name || activeAssignment.user.email}</p>
@@ -630,7 +696,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     </td>
                     )}
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{asset.region.state.name} / {asset.region.name}</td>}
-                    {visibleColumns.status && <td className="px-4 py-3"><Badge status={asset.status} /></td>}
+                    {visibleColumns.status && <td className="px-4 py-3">{asset.status === "PENDING_RETURN" && permissions.canAssign ? <StatusSelector asset={asset} onStatusChange={handleQuickStatusChange} /> : <Badge status={asset.status} />}</td>}
                     {visibleColumns.assignedTo && (
                     <td className="px-4 py-3 text-shark-500 hidden md:table-cell">{activeAssignment ? activeAssignment.user.name || activeAssignment.user.email : "\u2014"}</td>
                     )}
