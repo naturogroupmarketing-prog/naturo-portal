@@ -25,47 +25,47 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       ? { id: session.user.regionId!, organizationId }
       : { organizationId };
 
-    // Fetch POs, regions, consumables — using explicit select to avoid column mismatches
-    const [purchaseOrders, regions, consumables] = await Promise.all([
-      db.purchaseOrder.findMany({
-        where: poWhere,
-        select: {
-          id: true,
-          consumableId: true,
-          regionId: true,
-          organizationId: true,
-          quantity: true,
-          supplier: true,
-          status: true,
-          notes: true,
-          createdById: true,
-          approvedById: true,
-          approvedAt: true,
-          createdAt: true,
-          updatedAt: true,
-          consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
-          region: { select: { id: true, name: true, state: { select: { id: true, name: true } } } },
-          createdBy: { select: { name: true, email: true } },
-          approvedBy: { select: { name: true, email: true } },
-        },
-        orderBy: { createdAt: "desc" },
-        take: 1000,
-      }),
-      db.region.findMany({
-        where: regionWhere,
-        select: {
-          id: true,
-          name: true,
-          state: { select: { id: true, name: true } },
-        },
-        orderBy: { name: "asc" },
-      }),
-      db.consumable.findMany({
-        where: { regionId: isBM ? session.user.regionId! : undefined, organizationId, isActive: true },
-        select: { id: true, name: true, category: true, unitType: true, supplier: true, regionId: true, quantityOnHand: true, minimumThreshold: true },
-        orderBy: [{ category: "asc" }, { name: "asc" }],
-      }),
-    ]);
+    // Fetch sequentially to avoid exhausting Neon connection pool
+    const purchaseOrders = await db.purchaseOrder.findMany({
+      where: poWhere,
+      select: {
+        id: true,
+        consumableId: true,
+        regionId: true,
+        organizationId: true,
+        quantity: true,
+        supplier: true,
+        status: true,
+        notes: true,
+        createdById: true,
+        approvedById: true,
+        approvedAt: true,
+        createdAt: true,
+        updatedAt: true,
+        consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } },
+        region: { select: { id: true, name: true, state: { select: { id: true, name: true } } } },
+        createdBy: { select: { name: true, email: true } },
+        approvedBy: { select: { name: true, email: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 1000,
+    });
+
+    const regions = await db.region.findMany({
+      where: regionWhere,
+      select: {
+        id: true,
+        name: true,
+        state: { select: { id: true, name: true } },
+      },
+      orderBy: { name: "asc" },
+    });
+
+    const consumables = await db.consumable.findMany({
+      where: { regionId: isBM ? session.user.regionId! : undefined, organizationId, isActive: true },
+      select: { id: true, name: true, category: true, unitType: true, supplier: true, regionId: true, quantityOnHand: true, minimumThreshold: true },
+      orderBy: [{ category: "asc" }, { name: "asc" }],
+    });
 
     return (
       <PurchaseOrdersClient
