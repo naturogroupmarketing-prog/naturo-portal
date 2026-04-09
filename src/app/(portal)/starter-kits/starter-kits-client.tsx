@@ -553,6 +553,14 @@ function AddItemsChecklist({
   const existingCategories = new Set(existingItems.filter((i) => i.itemType === "ASSET_CATEGORY").map((i) => i.category));
   const existingConsumableIds = new Set(existingItems.filter((i) => i.itemType === "CONSUMABLE").map((i) => i.consumableId));
 
+  // Deduplicate consumables by name — kits are org-wide, same item exists per region
+  const uniqueConsumables = Array.from(
+    consumables.reduce((map, c) => {
+      if (!map.has(c.name)) map.set(c.name, c);
+      return map;
+    }, new Map<string, Consumable>()).values()
+  );
+
   const [selectedCategories, setSelectedCategories] = useState<Map<string, number>>(new Map());
   const [selectedConsumables, setSelectedConsumables] = useState<Map<string, number>>(new Map());
   const [saving, setSaving] = useState(false);
@@ -681,9 +689,9 @@ function AddItemsChecklist({
       )}
 
       {/* Consumables — grouped by category */}
-      {consumables.length > 0 && (() => {
+      {uniqueConsumables.length > 0 && (() => {
         const grouped = new Map<string, Consumable[]>();
-        for (const c of consumables) {
+        for (const c of uniqueConsumables) {
           const cat = c.category || "Other";
           if (!grouped.has(cat)) grouped.set(cat, []);
           grouped.get(cat)!.push(c);
