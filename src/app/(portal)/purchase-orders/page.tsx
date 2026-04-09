@@ -25,9 +25,18 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       ? { id: session.user.regionId!, organizationId }
       : { organizationId };
 
+    // Hide received POs older than 7 days
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
     // Fetch sequentially to avoid exhausting Neon connection pool
     const purchaseOrders = await db.purchaseOrder.findMany({
-      where: poWhere,
+      where: {
+        ...poWhere,
+        OR: [
+          { status: { not: "RECEIVED" } },
+          { status: "RECEIVED", updatedAt: { gte: sevenDaysAgo } },
+        ],
+      },
       select: {
         id: true,
         consumableId: true,
