@@ -43,8 +43,16 @@ export default async function ReturnsPage() {
   const assetMap = Object.fromEntries(assets.map((a) => [a.id, a]));
   const consumableMap = Object.fromEntries(consumables.map((c) => [c.id, c]));
 
+  // Fetch region names
+  const regionIds = [...new Set(pendingReturns.filter((r) => r.regionId).map((r) => r.regionId!))];
+  const regions = regionIds.length > 0
+    ? await db.region.findMany({ where: { id: { in: regionIds } }, select: { id: true, name: true } })
+    : [];
+  const regionMap = Object.fromEntries(regions.map((r) => [r.id, r.name]));
+
   const enrichedReturns = pendingReturns.map((r) => ({
     ...r,
+    regionName: r.regionId ? regionMap[r.regionId] || "" : "",
     assetDetails: r.assetId ? assetMap[r.assetId] || null : null,
     consumableDetails: r.consumableId ? consumableMap[r.consumableId] || null : null,
   }));
