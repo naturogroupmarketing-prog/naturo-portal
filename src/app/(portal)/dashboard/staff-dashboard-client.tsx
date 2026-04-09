@@ -502,7 +502,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <Icon name="package" size={16} className="text-action-600" />
               </div>
               <div className="flex-1">
-                <CardTitle>Starter Kit</CardTitle>
+                <CardTitle>My Equipment</CardTitle>
                 <p className="text-xs text-shark-400 mt-0.5">
                   Equipment currently assigned to you · {visibleKitApplications.reduce((n, a) => n + a.assets.length + a.consumables.length, 0) + visibleIndividualAssets.length + visibleIndividualConsumables.length} items
                 </p>
@@ -573,11 +573,10 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             {/* Individual (non-kit) assignments */}
             {(visibleIndividualAssets.length > 0 || visibleIndividualConsumables.length > 0) && (
               <div className="border border-shark-100 rounded-lg overflow-hidden">
-                {visibleKitApplications.length > 0 && (
-                  <div className="px-4 py-3 bg-shark-50/50">
-                    <p className="text-sm font-semibold text-shark-900">Other Assigned Items</p>
-                  </div>
-                )}
+                <div className="px-4 py-3 bg-shark-50/50">
+                  <p className="text-sm font-semibold text-shark-900">Individually Assigned Items</p>
+                  <p className="text-xs text-shark-400">These items are not part of a starter kit</p>
+                </div>
                 <div className="divide-y divide-shark-50">
                   {visibleIndividualAssets.map((asset) => (
                     <div key={asset.id} className="flex items-center gap-3 px-4 py-2.5">
