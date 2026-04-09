@@ -1,18 +1,20 @@
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM = process.env.EMAIL_FROM || "admin@naturogroup.com.au";
+const DEFAULT_FROM = process.env.EMAIL_FROM || "noreply@trackio.com.au";
 
 interface EmailParams {
   to: string;
   subject: string;
   html: string;
+  from?: string;
 }
 
-export async function sendEmail({ to, subject, html }: EmailParams): Promise<{ success: boolean; error?: string }> {
+export async function sendEmail({ to, subject, html, from }: EmailParams): Promise<{ success: boolean; error?: string }> {
   try {
+    const sender = from || DEFAULT_FROM;
     await resend.emails.send({
-      from: `Trackio <${FROM}>`,
+      from: `Trackio <${sender}>`,
       to,
       subject,
       html: wrapTemplate(subject, html),

@@ -41,11 +41,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) {
-          // Increment failed attempts, lock after 5
+          // Progressive lockout: 5→30min, 10→2hr, 15→24hr
           const attempts = (user.failedLoginAttempts || 0) + 1;
           const lockData: { failedLoginAttempts: number; lockedUntil?: Date } = { failedLoginAttempts: attempts };
-          if (attempts >= 5) {
-            lockData.lockedUntil = new Date(Date.now() + 30 * 60 * 1000); // 30 min lock
+          if (attempts >= 15) {
+            lockData.lockedUntil = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24hr lock
+          } else if (attempts >= 10) {
+            lockData.lockedUntil = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2hr lock
+          } else if (attempts >= 5) {
+            lockData.lockedUntil = new Date(Date.now() + 30 * 60 * 1000); // 30min lock
           }
           await db.user.update({ where: { id: user.id }, data: lockData });
           logSecurityEvent("LOGIN_FAILED", email, `Incorrect password (attempt ${attempts})`);
