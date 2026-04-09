@@ -917,10 +917,6 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-shark-800 truncate">{item.type === "consumable" && item.quantity ? `${item.quantity}x ` : ""}{item.name}</p>
-                    <p className="text-xs text-shark-400 truncate">
-                      {item.category || item.unitType || ""}
-                      {item.kitName && <span className="ml-1 text-action-500">· {item.kitName}</span>}
-                    </p>
                   </div>
                 </label>
               ))}
