@@ -250,20 +250,17 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
         }
       }
 
-      if (consumable.quantityOnHand >= item.quantity) {
-        await db.consumableAssignment.create({
-          data: {
-            consumableId: consumable.id,
-            userId,
-            quantity: item.quantity,
-            starterKitApplicationId: application.id,
-          },
-        });
-        results.push(`Assigned ${item.quantity}x ${consumable.name}`);
-        appliedCount++;
-      } else {
-        results.push(`Insufficient stock for ${consumable.name} (${consumable.quantityOnHand} available, ${item.quantity} needed)`);
-      }
+      // Assign consumable — stock is deducted when staff acknowledges receipt
+      await db.consumableAssignment.create({
+        data: {
+          consumableId: consumable.id,
+          userId,
+          quantity: item.quantity,
+          starterKitApplicationId: application.id,
+        },
+      });
+      results.push(`Assigned ${item.quantity}x ${consumable.name}`);
+      appliedCount++;
     }
   }
 

@@ -90,9 +90,23 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
     });
   };
 
-  // Group assignments by category
-  const assignmentsByCategory = new Map<string, Assignment[]>();
+  // Merge assignments for the same consumable (combine quantities)
+  const mergedMap = new Map<string, Assignment & { totalQuantity: number; assignmentIds: string[] }>();
   for (const a of assignments) {
+    const key = a.consumableId;
+    if (mergedMap.has(key)) {
+      const existing = mergedMap.get(key)!;
+      existing.totalQuantity += a.quantity;
+      existing.assignmentIds.push(a.id);
+    } else {
+      mergedMap.set(key, { ...a, totalQuantity: a.quantity, assignmentIds: [a.id] });
+    }
+  }
+  const mergedAssignments = Array.from(mergedMap.values());
+
+  // Group merged assignments by category
+  const assignmentsByCategory = new Map<string, (typeof mergedAssignments)[number][]>();
+  for (const a of mergedAssignments) {
     const cat = a.consumable.category;
     if (!assignmentsByCategory.has(cat)) assignmentsByCategory.set(cat, []);
     assignmentsByCategory.get(cat)!.push(a);
@@ -119,7 +133,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
     return a.localeCompare(b);
   });
 
-  const totalAssigned = assignments.length;
+  const totalAssigned = mergedAssignments.length;
 
   return (
     <div className="space-y-8">
@@ -287,10 +301,11 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
 
 // ─── Assignment Card (has items assigned) ─────────────────────
 
-function AssignmentCard({ assignment: ca }: { assignment: Assignment }) {
+function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQuantity?: number; assignmentIds?: string[] } }) {
+  const displayQty = ca.totalQuantity ?? ca.quantity;
   const [mode, setMode] = useState<"idle" | "use" | "request">("idle");
   const [loading, setLoading] = useState(false);
-  const [useQty, setUseQty] = useState(ca.quantity);
+  const [useQty, setUseQty] = useState(displayQty);
   const [reqQty, setReqQty] = useState(1);
   const [reqNotes, setReqNotes] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
@@ -329,7 +344,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment }) {
   };
 
   return (
-    <Card className={ca.quantity === 0 ? "opacity-40" : ""}>
+    <Card className={displayQty === 0 ? "opacity-40" : ""}>
       <CardContent className="py-4">
         <div className="flex items-start gap-3">
           {/* Photo */}
@@ -350,7 +365,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment }) {
                 <h3 className="font-semibold text-shark-900 truncate">{ca.consumable.name}</h3>
                 <p className="text-xs text-shark-400 mt-0.5">{ca.consumable.unitType} · {ca.consumable.region.name}</p>
               </div>
-              <span className={`text-lg font-bold ml-2 ${ca.quantity === 0 ? "text-shark-400" : "text-shark-800"}`}>×{ca.quantity}</span>
+              <span className={`text-lg font-bold ml-2 ${displayQty === 0 ? "text-shark-400" : "text-shark-800"}`}>×{displayQty}</span>
             </div>
             <p className="text-xs text-shark-400 mt-1">Assigned: {formatDate(ca.assignedDate)}</p>
           </div>
