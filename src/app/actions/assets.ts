@@ -155,7 +155,7 @@ export async function assignAsset(formData: FormData) {
 
 export async function returnAsset(formData: FormData) {
   const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "assetEdit"))) {
+  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "assetAssign"))) {
     throw new Error("Unauthorized");
   }
 
