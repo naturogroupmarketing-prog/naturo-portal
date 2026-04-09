@@ -8,7 +8,7 @@ import type { Role } from "@/generated/prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 24 * 60 * 60 },
   trustHost: true,
   providers: [
     Google({

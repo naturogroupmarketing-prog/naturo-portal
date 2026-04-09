@@ -132,6 +132,24 @@ export const deleteConsumableSchema = z.object({
   consumableId: cuid(),
 });
 
+// ─── Password ───────────────────────────────────────────
+
+const COMMON_PASSWORDS = new Set([
+  "password", "password1", "password123", "123456789", "1234567890",
+  "qwerty123", "iloveyou", "admin123", "welcome1", "letmein",
+  "monkey123", "dragon123", "master123", "abc12345", "changeme",
+  "trustno1", "sunshine1", "princess1", "football1", "shadow123",
+]);
+
+export const passwordSchema = z.string()
+  .min(10, "Password must be at least 10 characters")
+  .max(128, "Password must be at most 128 characters")
+  .refine((p) => /[A-Z]/.test(p), "Password must contain at least one uppercase letter")
+  .refine((p) => /[a-z]/.test(p), "Password must contain at least one lowercase letter")
+  .refine((p) => /[0-9]/.test(p), "Password must contain at least one number")
+  .refine((p) => /[^A-Za-z0-9]/.test(p), "Password must contain at least one special character")
+  .refine((p) => !COMMON_PASSWORDS.has(p.toLowerCase()), "This password is too common");
+
 // ─── Users ──────────────────────────────────────────────
 
 export const createUserSchema = z.object({
@@ -139,7 +157,7 @@ export const createUserSchema = z.object({
   name: safeString(200),
   role: z.enum(["SUPER_ADMIN", "BRANCH_MANAGER", "STAFF"]),
   regionId: optionalString(),
-  password: z.string().min(8, "Password must be at least 8 characters").max(128),
+  password: passwordSchema,
 });
 
 export const updateUserSchema = z.object({

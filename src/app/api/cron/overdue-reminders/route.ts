@@ -7,9 +7,13 @@ import { createNotification } from "@/lib/notifications";
  * Daily cron — sends reminders for overdue returns and pending approvals
  */
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
+  // Verify cron secret — block ALL requests if secret is not configured
   const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  if (!cronSecret) {
+    return NextResponse.json({ error: "Cron not configured" }, { status: 503 });
+  }
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

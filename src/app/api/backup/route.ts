@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { isSuperAdmin } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { createAuditLog } from "@/lib/audit";
+import { rateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 function toCSV(headers: string[], rows: string[][]): string {
   const escape = (val: string) => {
@@ -30,6 +31,11 @@ export async function GET() {
   const session = await auth();
   if (!session?.user || !isSuperAdmin(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = await rateLimit(`backup:${session.user.id}`, RATE_LIMITS.export);
+  if (!rl.success) {
+    return NextResponse.json({ error: "Too many backup requests" }, { status: 429 });
   }
 
   const organizationId = session.user.organizationId;

@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { createAuditLog } from "@/lib/audit";
+import { rateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 function toCSV(headers: string[], rows: string[][]): string {
   const escape = (val: string) => {
@@ -25,6 +26,11 @@ export async function GET(
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = await rateLimit(`export:${session.user.id}`, RATE_LIMITS.export);
+  if (!rl.success) {
+    return NextResponse.json({ error: "Too many export requests" }, { status: 429 });
   }
 
   const { type } = await params;
