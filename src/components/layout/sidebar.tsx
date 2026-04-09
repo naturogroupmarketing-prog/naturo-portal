@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { Logo } from "@/components/ui/logo";
+import { MenuWalkthrough } from "@/components/ui/menu-walkthrough";
 import { Role } from "@/generated/prisma/browser";
 
 interface SidebarProps {
@@ -153,6 +154,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
 
       </div>
 
+      <MenuWalkthrough role={role} />
     </nav>
   );
 }
