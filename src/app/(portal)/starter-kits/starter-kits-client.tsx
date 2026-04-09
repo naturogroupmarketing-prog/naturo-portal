@@ -116,32 +116,22 @@ export function StarterKitsClient({
                       <p className="text-xs text-shark-400 mt-0.5">{kit.items.length} items</p>
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Button size="sm" variant="outline" onClick={() => setShowApply(kit)} disabled={kit.items.length === 0}>
-                      Assign to Staff
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setShowAddItem(kit.id)}>
-                      <Icon name="plus" size={12} className="mr-1" />Add Item
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setEditKit(kit)}>
-                      <Icon name="edit" size={12} className="mr-1" />Settings
-                    </Button>
-                    <button
-                      onClick={async () => {
-                        if (!confirm(`Delete "${kit.name}"? This cannot be undone.`)) return;
-                        try { await deleteStarterKit(kit.id); addToast("Kit deleted", "success"); router.refresh(); }
-                        catch { addToast("Failed to delete", "error"); }
-                      }}
-                      className="p-1.5 text-shark-400 hover:text-red-500 transition-colors"
-                      title="Delete kit"
-                    >
-                      <Icon name="x" size={14} />
-                    </button>
-                  </div>
                 </div>
 
                 {expandedKit === kit.id && (
                   <div className="mt-4 border-t border-shark-100 dark:border-shark-800 pt-4">
+                    {/* Action buttons inside expanded view */}
+                    <div className="flex flex-wrap items-center justify-end gap-2 mb-4">
+                      <Button size="sm" variant="outline" onClick={() => setShowApply(kit)} disabled={kit.items.length === 0}>
+                        Assign to Staff
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setShowAddItem(kit.id)}>
+                        <Icon name="plus" size={12} className="mr-1" />Add Item
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setEditKit(kit)}>
+                        <Icon name="edit" size={12} className="mr-1" />Settings
+                      </Button>
+                    </div>
                     {kit.items.length === 0 ? (
                       <p className="text-sm text-shark-400 italic">No items in this kit yet.</p>
                     ) : (() => {
