@@ -45,7 +45,18 @@ export default async function InventoryDetailPage({ params, searchParams }: { pa
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }),
     db.user.findMany({
-      where: { regionId, isActive: true },
+      where: { regionId, isActive: true, deletedAt: null },
+      include: {
+        region: true,
+        assetAssignments: {
+          where: { isActive: true },
+          include: { asset: { select: { name: true, assetCode: true, category: true } } },
+        },
+        consumableAssignments: {
+          where: { isActive: true },
+          include: { consumable: { select: { name: true, unitType: true } } },
+        },
+      },
       orderBy: { name: "asc" },
     }),
     db.user.findMany({
