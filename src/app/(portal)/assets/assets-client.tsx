@@ -138,7 +138,7 @@ const STATUS_ACTIONS: Record<string, { value: string; label: string }[]> = {
 };
 
 // Universal status dropdown — renders menu via portal so it's never clipped by overflow
-function StatusDropdown({ asset, canAssign, canEdit, activeAssignment, onStatusChange, onAssign, onReturn, onQR }: {
+function StatusDropdown({ asset, canAssign, canEdit, activeAssignment, onStatusChange, onAssign, onReturn }: {
   asset: { id: string; status: string };
   canAssign: boolean;
   canEdit: boolean;
@@ -146,7 +146,6 @@ function StatusDropdown({ asset, canAssign, canEdit, activeAssignment, onStatusC
   onStatusChange: (assetId: string, newStatus: string) => void;
   onAssign: () => void;
   onReturn: () => void;
-  onQR: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -187,13 +186,6 @@ function StatusDropdown({ asset, canAssign, canEdit, activeAssignment, onStatusC
       className="bg-white rounded-xl shadow-lg border border-shark-100 py-1 min-w-[160px]"
       onClick={(e) => e.stopPropagation()}
     >
-      <button
-        onClick={() => { onQR(); setOpen(false); }}
-        className="w-full text-left px-3 py-2 text-xs font-medium text-shark-600 hover:bg-shark-50 transition-colors flex items-center gap-2"
-      >
-        <Icon name="box" size={12} /> View QR Code
-      </button>
-      <div className="border-t border-shark-100 my-1" />
       {actions.map((action) => {
         if (action.value === "_assign") {
           if (!canAssign || asset.status !== "AVAILABLE") return null;
@@ -703,7 +695,9 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-shark-800 truncate">{asset.name}</p>
-                          <p className="text-xs text-shark-400 font-mono">{asset.assetCode}</p>
+                          <button onClick={(e) => { e.stopPropagation(); setShowQR(asset); }} className="text-xs text-action-500 hover:text-action-600 transition-colors flex items-center gap-1">
+                            <Icon name="qr-code" size={12} /> QR
+                          </button>
                         </div>
                         <StatusDropdown
                           asset={asset}
@@ -713,7 +707,6 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                           onStatusChange={handleQuickStatusChange}
                           onAssign={() => setShowAssign(asset)}
                           onReturn={() => activeAssignment && setShowReturn({ assignmentId: activeAssignment.id, asset })}
-                          onQR={() => setShowQR(asset)}
                         />
                       </div>
                       {activeAssignment && (
@@ -745,7 +738,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   )}
                 </th>
                 {visibleColumns.photo && <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
-                {visibleColumns.code && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Code</th>}
+                {visibleColumns.code && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">QR</th>}
                 {visibleColumns.name && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>}
                 {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
                 {visibleColumns.status && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>}
@@ -785,7 +778,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       )}
                     </td>
                     )}
-                    {visibleColumns.code && <td className="px-4 py-3 font-mono text-xs text-shark-800">{asset.assetCode}</td>}
+                    {visibleColumns.code && <td className="px-4 py-3">
+                      <button onClick={(e) => { e.stopPropagation(); setShowQR(asset); }} className="text-xs text-action-500 hover:text-action-600 transition-colors flex items-center gap-1" title={asset.assetCode}>
+                        <Icon name="qr-code" size={14} /> QR
+                      </button>
+                    </td>}
                     {visibleColumns.name && (
                     <td className="px-4 py-3 max-w-[200px]">
                       <div className="truncate">
@@ -804,7 +801,6 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                         onStatusChange={handleQuickStatusChange}
                         onAssign={() => setShowAssign(asset)}
                         onReturn={() => activeAssignment && setShowReturn({ assignmentId: activeAssignment.id, asset })}
-                        onQR={() => setShowQR(asset)}
                       />
                     </td>}
                     {visibleColumns.assignedTo && (
