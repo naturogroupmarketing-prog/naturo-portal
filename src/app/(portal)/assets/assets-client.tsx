@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -136,7 +137,7 @@ const STATUS_ACTIONS: Record<string, { value: string; label: string }[]> = {
   ],
 };
 
-// Universal status dropdown — shows current status as a clickable badge with context actions
+// Universal status dropdown — renders menu via portal so it's never clipped by overflow
 function StatusDropdown({ asset, canAssign, canEdit, activeAssignment, onStatusChange, onAssign, onReturn, onQR }: {
   asset: { id: string; status: string };
   canAssign: boolean;
@@ -148,71 +149,94 @@ function StatusDropdown({ asset, canAssign, canEdit, activeAssignment, onStatusC
   onQR: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const hasActions = canAssign || canEdit;
+
+  const updatePos = useCallback(() => {
+    if (!btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    setPos({ top: rect.bottom + 4, left: Math.max(8, rect.right - 160) });
+  }, []);
 
   useEffect(() => {
     if (!open) return;
-    const handle = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    updatePos();
+    const handleClick = (e: MouseEvent) => {
+      if (btnRef.current?.contains(e.target as Node)) return;
+      if (menuRef.current?.contains(e.target as Node)) return;
+      setOpen(false);
     };
-    document.addEventListener("mousedown", handle);
-    return () => document.removeEventListener("mousedown", handle);
-  }, [open]);
+    const handleScroll = () => setOpen(false);
+    document.addEventListener("mousedown", handleClick);
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [open, updatePos]);
 
   const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600" };
   const actions = STATUS_ACTIONS[asset.status] || [];
 
-  return (
-    <div className="relative" ref={ref} onClick={(e) => e.stopPropagation()}>
+  const menuContent = open && typeof document !== "undefined" ? createPortal(
+    <div
+      ref={menuRef}
+      style={{ position: "fixed", top: pos.top, left: pos.left, zIndex: 9999 }}
+      className="bg-white rounded-xl shadow-lg border border-shark-100 py-1 min-w-[160px]"
+      onClick={(e) => e.stopPropagation()}
+    >
       <button
+        onClick={() => { onQR(); setOpen(false); }}
+        className="w-full text-left px-3 py-2 text-xs font-medium text-shark-600 hover:bg-shark-50 transition-colors flex items-center gap-2"
+      >
+        <Icon name="box" size={12} /> View QR Code
+      </button>
+      <div className="border-t border-shark-100 my-1" />
+      {actions.map((action) => {
+        if (action.value === "_assign") {
+          if (!canAssign || asset.status !== "AVAILABLE") return null;
+          return (
+            <button key={action.value} onClick={() => { onAssign(); setOpen(false); }}
+              className="w-full text-left px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors flex items-center gap-2">
+              <Icon name="user" size={12} /> {action.label}
+            </button>
+          );
+        }
+        if (action.value === "_return") {
+          if (!canAssign || !activeAssignment) return null;
+          return (
+            <button key={action.value} onClick={() => { onReturn(); setOpen(false); }}
+              className="w-full text-left px-3 py-2 text-xs font-medium text-action-600 hover:bg-action-50 transition-colors flex items-center gap-2">
+              <Icon name="arrow-left" size={12} /> {action.label}
+            </button>
+          );
+        }
+        if (!canAssign && !canEdit) return null;
+        const isDestructive = action.value === "DAMAGED" || action.value === "LOST";
+        return (
+          <button key={action.value} onClick={() => { onStatusChange(asset.id, action.value); setOpen(false); }}
+            className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${isDestructive ? "text-red-600 hover:bg-red-50" : "text-green-600 hover:bg-green-50"}`}>
+            <Icon name={isDestructive ? "alert-triangle" : "check"} size={12} /> {action.label}
+          </button>
+        );
+      })}
+    </div>,
+    document.body
+  ) : null;
+
+  return (
+    <div onClick={(e) => e.stopPropagation()}>
+      <button
+        ref={btnRef}
         onClick={() => hasActions && setOpen(!open)}
         className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.bg} ${badge.text} ${hasActions ? "hover:opacity-80 cursor-pointer" : ""} transition-colors`}
       >
         {badge.label}
         {hasActions && <Icon name="chevron-down" size={10} className={`transition-transform ${open ? "rotate-180" : ""}`} />}
       </button>
-      {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-lg border border-shark-100 py-1 z-50 min-w-[160px]">
-          <button
-            onClick={() => { onQR(); setOpen(false); }}
-            className="w-full text-left px-3 py-2 text-xs font-medium text-shark-600 hover:bg-shark-50 transition-colors flex items-center gap-2"
-          >
-            <Icon name="box" size={12} /> View QR Code
-          </button>
-          <div className="border-t border-shark-100 my-1" />
-          {actions.map((action) => {
-            // _assign and _return are special workflow actions
-            if (action.value === "_assign") {
-              if (!canAssign || asset.status !== "AVAILABLE") return null;
-              return (
-                <button key={action.value} onClick={() => { onAssign(); setOpen(false); }}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors flex items-center gap-2">
-                  <Icon name="user" size={12} /> {action.label}
-                </button>
-              );
-            }
-            if (action.value === "_return") {
-              if (!canAssign || !activeAssignment) return null;
-              return (
-                <button key={action.value} onClick={() => { onReturn(); setOpen(false); }}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-action-600 hover:bg-action-50 transition-colors flex items-center gap-2">
-                  <Icon name="arrow-left" size={12} /> {action.label}
-                </button>
-              );
-            }
-            // Status change actions
-            if (!canAssign && !canEdit) return null;
-            const isDestructive = action.value === "DAMAGED" || action.value === "LOST";
-            return (
-              <button key={action.value} onClick={() => { onStatusChange(asset.id, action.value); setOpen(false); }}
-                className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${isDestructive ? "text-red-600 hover:bg-red-50" : "text-green-600 hover:bg-green-50"}`}>
-                <Icon name={isDestructive ? "alert-triangle" : "check"} size={12} /> {action.label}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {menuContent}
     </div>
   );
 }
