@@ -11,6 +11,8 @@ import { batchConfirmKitReceipt, returnStarterKit } from "@/app/actions/starter-
 import { staffReturnAsset, staffReturnConsumable } from "@/app/actions/returns";
 import { submitConditionCheck } from "@/app/actions/condition-checks";
 import { Select } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/modal";
 import { PullToRefresh } from "@/components/ui/pull-to-refresh";
 
 interface StatCard {
@@ -239,6 +241,10 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
     }
   };
 
+  // Return All state
+  const [showReturnAll, setShowReturnAll] = useState(false);
+  const [returnAllSelected, setReturnAllSelected] = useState<Set<string>>(new Set());
+
   // Individual item return state
   const [returningItemId, setReturningItemId] = useState<string | null>(null);
   const [returningItemType, setReturningItemType] = useState<"asset" | "consumable">("asset");
@@ -300,6 +306,76 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       setReturnNotes("");
     } catch (err) {
       setReturnError(err instanceof Error ? err.message : "Failed to return item. Please try again.");
+    } finally {
+      setReturnSubmitting(false);
+    }
+  };
+
+  // Build all returnable items list for "Return All"
+  const allReturnableItems: { key: string; type: "asset" | "consumable"; id: string; name: string; code?: string; category?: string; quantity?: number; unitType?: string; kitName?: string; imageUrl?: string | null }[] = [];
+  for (const app of activeKitApplications) {
+    if (returnedKitIds.has(app.id)) continue;
+    for (const a of app.assets) allReturnableItems.push({ key: `kit-asset-${a.id}`, type: "asset", id: a.id, name: a.name, code: a.assetCode, category: a.category, kitName: app.kitName, imageUrl: a.imageUrl });
+    for (const c of app.consumables) allReturnableItems.push({ key: `kit-consumable-${c.id}`, type: "consumable", id: c.id, name: c.name, quantity: c.quantity, unitType: c.unitType, kitName: app.kitName, imageUrl: c.imageUrl });
+  }
+  for (const a of individualAssets) {
+    if (returnedItemIds.has(a.id)) continue;
+    allReturnableItems.push({ key: `ind-asset-${a.id}`, type: "asset", id: a.id, name: a.name, code: a.assetCode, category: a.category, imageUrl: a.imageUrl });
+  }
+  for (const c of individualConsumables) {
+    if (returnedItemIds.has(c.id)) continue;
+    allReturnableItems.push({ key: `ind-consumable-${c.id}`, type: "consumable", id: c.id, name: c.name, quantity: c.quantity, unitType: c.unitType, imageUrl: c.imageUrl });
+  }
+
+  const openReturnAll = () => {
+    setReturnAllSelected(new Set(allReturnableItems.map((i) => i.key)));
+    setReturnCondition("GOOD");
+    setReturnNotes("");
+    setShowReturnAll(true);
+  };
+
+  const handleReturnAll = async () => {
+    setReturnSubmitting(true);
+    setReturnError(null);
+    try {
+      // Return kits that have ALL their items selected
+      for (const app of activeKitApplications) {
+        if (returnedKitIds.has(app.id)) continue;
+        const kitAssetKeys = app.assets.map((a) => `kit-asset-${a.id}`);
+        const kitConsumableKeys = app.consumables.map((c) => `kit-consumable-${c.id}`);
+        const allKitKeys = [...kitAssetKeys, ...kitConsumableKeys];
+        const selectedKitKeys = allKitKeys.filter((k) => returnAllSelected.has(k));
+
+        if (selectedKitKeys.length > 0) {
+          // Build exclusion list for unselected kit items
+          const excludedItems = allKitKeys
+            .filter((k) => !returnAllSelected.has(k))
+            .map((k) => {
+              const [, itemType, itemId] = k.split("-");
+              return { itemType: itemType === "asset" ? "ASSET" : "CONSUMABLE", itemId, note: "Not returned" };
+            });
+          await returnStarterKit(app.id, returnCondition, returnNotes, excludedItems.length > 0 ? excludedItems : undefined);
+          setReturnedKitIds((prev) => new Set(prev).add(app.id));
+        }
+      }
+
+      // Return selected individual items
+      for (const item of allReturnableItems) {
+        if (!returnAllSelected.has(item.key)) continue;
+        if (item.key.startsWith("kit-")) continue; // handled above
+        if (item.type === "asset") {
+          await staffReturnAsset(item.id, returnCondition, returnNotes);
+        } else {
+          await staffReturnConsumable(item.id, item.quantity || 1, returnCondition, returnNotes);
+        }
+        setReturnedItemIds((prev) => new Set(prev).add(item.id));
+      }
+
+      setShowReturnAll(false);
+      addToast("Items returned successfully", "success");
+      router.refresh();
+    } catch (err) {
+      setReturnError(err instanceof Error ? err.message : "Failed to return items.");
     } finally {
       setReturnSubmitting(false);
     }
@@ -507,6 +583,15 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   Equipment currently assigned to you · {visibleKitApplications.reduce((n, a) => n + a.assets.length + a.consumables.length, 0) + visibleIndividualAssets.length + visibleIndividualConsumables.length} items
                 </p>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 shrink-0"
+                onClick={(e) => { e.stopPropagation(); openReturnAll(); }}
+              >
+                <Icon name="arrow-left" size={14} className="mr-1.5" />
+                Return All
+              </Button>
               <Icon
                 name="chevron-down"
                 size={18}
@@ -800,6 +885,82 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             )}
           </div>
         </div>
+      )}
+
+      {/* Return All Modal */}
+      {showReturnAll && (
+        <Modal open onClose={() => setShowReturnAll(false)} title="Return All Items">
+          <div className="space-y-4">
+            <p className="text-sm text-shark-500">Select the items you are returning. Deselect any items you don&apos;t have.</p>
+
+            {/* Select/Deselect All */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-shark-500">{returnAllSelected.size} of {allReturnableItems.length} selected</span>
+              <div className="flex gap-2">
+                <button onClick={() => setReturnAllSelected(new Set(allReturnableItems.map((i) => i.key)))} className="text-xs text-action-500 hover:underline">Select All</button>
+                <button onClick={() => setReturnAllSelected(new Set())} className="text-xs text-shark-400 hover:underline">Deselect All</button>
+              </div>
+            </div>
+
+            {/* Items list */}
+            <div className="max-h-72 overflow-y-auto space-y-1 -mx-1 px-1">
+              {allReturnableItems.map((item) => (
+                <label key={item.key} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${returnAllSelected.has(item.key) ? "bg-action-50/50" : "bg-shark-50/50 opacity-60"}`}>
+                  <input
+                    type="checkbox"
+                    checked={returnAllSelected.has(item.key)}
+                    onChange={() => setReturnAllSelected((prev) => {
+                      const next = new Set(prev);
+                      next.has(item.key) ? next.delete(item.key) : next.add(item.key);
+                      return next;
+                    })}
+                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
+                  />
+                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
+                    {item.imageUrl ? <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" /> : <Icon name={item.type === "asset" ? "package" : "droplet"} size={14} className="text-shark-400" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-shark-800 truncate">{item.type === "consumable" && item.quantity ? `${item.quantity}x ` : ""}{item.name}</p>
+                    <p className="text-xs text-shark-400 truncate">
+                      {item.code || item.unitType || ""}
+                      {item.kitName && <span className="ml-1 text-action-500">· {item.kitName}</span>}
+                    </p>
+                  </div>
+                </label>
+              ))}
+            </div>
+
+            {/* Condition */}
+            <div>
+              <label className="text-xs font-medium text-shark-600 block mb-1">Return Condition</label>
+              <select value={returnCondition} onChange={(e) => setReturnCondition(e.target.value)} className="w-full rounded-lg border border-shark-200 px-3 py-2 text-sm">
+                <option value="GOOD">Good</option>
+                <option value="FAIR">Fair</option>
+                <option value="POOR">Poor</option>
+                <option value="DAMAGED">Damaged</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-shark-600 block mb-1">Notes (optional)</label>
+              <Input value={returnNotes} onChange={(e) => setReturnNotes(e.target.value)} placeholder="Any notes about the return..." />
+            </div>
+
+            {returnError && <p className="text-sm text-red-600">{returnError}</p>}
+
+            <div className="flex gap-2 pt-2">
+              <Button variant="secondary" className="flex-1" onClick={() => setShowReturnAll(false)}>Cancel</Button>
+              <Button
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                onClick={handleReturnAll}
+                loading={returnSubmitting}
+                disabled={returnSubmitting || returnAllSelected.size === 0}
+              >
+                Return {returnAllSelected.size} Item{returnAllSelected.size !== 1 ? "s" : ""}
+              </Button>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {/* Return Individual Item Modal */}
