@@ -791,7 +791,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       </div>
                     </td>
                     )}
-                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{asset.region.state.name} / {asset.region.name}</td>}
+                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{asset.region.name}</td>}
                     {visibleColumns.status && <td className="px-4 py-3">
                       <StatusDropdown
                         asset={asset}
