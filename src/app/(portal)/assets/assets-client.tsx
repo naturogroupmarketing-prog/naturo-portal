@@ -93,7 +93,7 @@ interface AssetsClientProps {
   users: Array<{ id: string; name: string | null; email: string; regionId: string | null }>;
   categories: CategoryDef[];
   isSuperAdmin: boolean;
-  permissions: { canAdd: boolean; canEdit: boolean; canDelete: boolean };
+  permissions: { canAdd: boolean; canEdit: boolean; canDelete: boolean; canAssign: boolean };
   initialStatus?: string;
   initialRegion?: string;
   initialCategory?: string;
@@ -548,10 +548,10 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   </div>
                   <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-shark-50" onClick={(e) => e.stopPropagation()}>
                     <Button size="sm" variant="ghost" onClick={() => setShowQR(asset)}>QR</Button>
-                    {permissions.canEdit && asset.status === "AVAILABLE" && (
+                    {permissions.canAssign && asset.status === "AVAILABLE" && (
                       <Button size="sm" variant="outline" onClick={() => setShowAssign(asset)}>Assign</Button>
                     )}
-                    {permissions.canEdit && activeAssignment && (
+                    {permissions.canAssign && activeAssignment && (
                       <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignmentId: activeAssignment.id, asset })}>Return</Button>
                     )}
                   </div>
@@ -637,8 +637,8 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
                         <Button size="sm" variant="ghost" onClick={() => setShowQR(asset)} title="QR Code">QR</Button>
-                        {permissions.canEdit && asset.status === "AVAILABLE" && <Button size="sm" variant="outline" onClick={() => setShowAssign(asset)}>Assign</Button>}
-                        {permissions.canEdit && activeAssignment && <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignmentId: activeAssignment.id, asset })}>Return</Button>}
+                        {permissions.canAssign && asset.status === "AVAILABLE" && <Button size="sm" variant="outline" onClick={() => setShowAssign(asset)}>Assign</Button>}
+                        {permissions.canAssign && activeAssignment && <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignmentId: activeAssignment.id, asset })}>Return</Button>}
                       </div>
                     </td>
                   </tr>

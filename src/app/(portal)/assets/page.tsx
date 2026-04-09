@@ -56,7 +56,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
       where: { type: "ASSET", organizationId },
       orderBy: { sortOrder: "asc" },
     }),
-    hasPermissions(session.user.id, session.user.role, ["assetAdd", "assetEdit", "assetDelete"]),
+    hasPermissions(session.user.id, session.user.role, ["assetAdd", "assetEdit", "assetDelete", "assetAssign"]),
   ]);
 
   return (
@@ -66,7 +66,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
       users={JSON.parse(JSON.stringify(users))}
       categories={JSON.parse(JSON.stringify(categories))}
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
-      permissions={{ canAdd: perms.assetAdd, canEdit: perms.assetEdit, canDelete: perms.assetDelete }}
+      permissions={{ canAdd: perms.assetAdd, canEdit: perms.assetEdit, canDelete: perms.assetDelete, canAssign: perms.assetAssign }}
       initialStatus={params.status}
       initialRegion={params.region}
       initialCategory={params.category}

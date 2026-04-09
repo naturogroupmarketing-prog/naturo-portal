@@ -75,12 +75,13 @@ export default async function InventoryDetailPage({ params, searchParams }: { pa
 
   // Permissions
   const isAdmin = isSuperAdmin(session.user.role);
-  const [canAddAsset, canEditAsset, canDeleteAsset, canAddConsumable, canEditConsumable, canDeleteConsumable, canAdjustStock] = isAdmin
-    ? [true, true, true, true, true, true, true]
+  const [canAddAsset, canEditAsset, canDeleteAsset, canAssignAsset, canAddConsumable, canEditConsumable, canDeleteConsumable, canAdjustStock] = isAdmin
+    ? [true, true, true, true, true, true, true, true]
     : await Promise.all([
         hasPermission(session.user.id, session.user.role, "assetAdd"),
         hasPermission(session.user.id, session.user.role, "assetEdit"),
         hasPermission(session.user.id, session.user.role, "assetDelete"),
+        hasPermission(session.user.id, session.user.role, "assetAssign"),
         hasPermission(session.user.id, session.user.role, "consumableAdd"),
         hasPermission(session.user.id, session.user.role, "consumableEdit"),
         hasPermission(session.user.id, session.user.role, "consumableDelete"),
@@ -98,7 +99,7 @@ export default async function InventoryDetailPage({ params, searchParams }: { pa
       consumableCategories={JSON.parse(JSON.stringify(consumableCategories))}
       pendingRequests={JSON.parse(JSON.stringify(pendingRequests))}
       lowStockCount={lowStockCount}
-      permissions={{ canAddAsset, canEditAsset, canDeleteAsset, canAddConsumable, canEditConsumable, canDeleteConsumable, canAdjustStock }}
+      permissions={{ canAddAsset, canEditAsset, canDeleteAsset, canAssignAsset, canAddConsumable, canEditConsumable, canDeleteConsumable, canAdjustStock }}
       isSuperAdmin={isAdmin}
       initialTab={tab as "assets" | "consumables" | "staff" | undefined}
       initialAction={action}

@@ -24,7 +24,7 @@ interface Props {
   consumableCategories: unknown[];
   pendingRequests: unknown[];
   lowStockCount: number;
-  permissions: { canAddAsset: boolean; canEditAsset: boolean; canDeleteAsset: boolean; canAddConsumable: boolean; canEditConsumable: boolean; canDeleteConsumable: boolean; canAdjustStock: boolean };
+  permissions: { canAddAsset: boolean; canEditAsset: boolean; canDeleteAsset: boolean; canAssignAsset: boolean; canAddConsumable: boolean; canEditConsumable: boolean; canDeleteConsumable: boolean; canAdjustStock: boolean };
   isSuperAdmin: boolean;
   initialTab?: "assets" | "consumables" | "staff";
   initialAction?: string;
@@ -152,7 +152,7 @@ export function InventoryDetailClient({
         users={users as never}
         categories={assetCategories as never}
         isSuperAdmin={isSuperAdmin}
-        permissions={{ canAdd: permissions.canAddAsset, canEdit: permissions.canEditAsset, canDelete: permissions.canDeleteAsset }}
+        permissions={{ canAdd: permissions.canAddAsset, canEdit: permissions.canEditAsset, canDelete: permissions.canDeleteAsset, canAssign: permissions.canAssignAsset }}
         initialStatus={undefined}
         initialRegion={region.id}
         initialCategory={undefined}
