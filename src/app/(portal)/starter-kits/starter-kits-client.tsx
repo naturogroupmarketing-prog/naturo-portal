@@ -319,6 +319,7 @@ export function StarterKitsClient({
             kit={showApply}
             users={users}
             consumables={consumables}
+            assetPhotos={assetPhotos}
             onDone={() => setShowApply(null)}
           />
         )}
@@ -776,11 +777,13 @@ function ApplyToStaffForm({
   kit,
   users,
   consumables,
+  assetPhotos = {},
   onDone,
 }: {
   kit: StarterKit;
   users: User[];
   consumables: Consumable[];
+  assetPhotos?: Record<string, string | null>;
   onDone: () => void;
 }) {
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
@@ -866,15 +869,31 @@ function ApplyToStaffForm({
       {/* Kit Items — deselect to exclude */}
       <div>
         <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">Kit Items ({includedCount} of {kit.items.length} selected)</p>
-        <div className="space-y-1 max-h-40 overflow-y-auto border border-shark-100 rounded-lg p-2">
-          {kit.items.map((item) => {
+        {(() => {
+          const assetItems = kit.items.filter((i) => i.itemType === "ASSET_CATEGORY");
+          const consumableItems = kit.items.filter((i) => i.itemType !== "ASSET_CATEGORY");
+
+          // Group consumables by category
+          const consumablesByCategory = new Map<string, StarterKitItem[]>();
+          for (const item of consumableItems) {
+            const c = consumables.find((con) => con.id === item.consumableId);
+            const cat = c?.category || "Other";
+            if (!consumablesByCategory.has(cat)) consumablesByCategory.set(cat, []);
+            consumablesByCategory.get(cat)!.push(item);
+          }
+
+          const renderItem = (item: StarterKitItem) => {
             const consumable = consumables.find((c) => c.id === item.consumableId);
             const isIncluded = !excludedItems.has(item.id);
+            const photo = item.itemType === "ASSET_CATEGORY"
+              ? assetPhotos[item.category || ""]
+              : consumable?.imageUrl;
+
             return (
               <label
                 key={item.id}
-                className={`flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer transition-colors ${
-                  isIncluded ? "hover:bg-shark-50" : "opacity-50"
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+                  isIncluded ? "bg-shark-50 hover:bg-shark-100" : "opacity-40"
                 }`}
               >
                 <input
@@ -883,21 +902,40 @@ function ApplyToStaffForm({
                   onChange={() => toggleItemExclusion(item.id)}
                   className="rounded border-shark-300 text-action-500 focus:ring-action-400"
                 />
-                <Icon
-                  name={item.itemType === "ASSET_CATEGORY" ? "package" : "droplet"}
-                  size={14}
-                  className={item.itemType === "ASSET_CATEGORY" ? "text-action-500" : "text-blue-500"}
-                />
-                <span className={`text-sm ${isIncluded ? "text-shark-700" : "text-shark-400 line-through"}`}>
+                <div className="w-9 h-9 rounded-lg overflow-hidden bg-white border border-shark-100 flex items-center justify-center shrink-0">
+                  {photo ? (
+                    <img src={photo} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <Icon name={item.itemType === "ASSET_CATEGORY" ? "package" : "droplet"} size={14} className={item.itemType === "ASSET_CATEGORY" ? "text-action-500" : "text-blue-500"} />
+                  )}
+                </div>
+                <span className={`text-sm flex-1 truncate ${isIncluded ? "text-shark-700" : "text-shark-400 line-through"}`}>
                   {item.itemType === "ASSET_CATEGORY"
-                    ? `1x Asset from "${item.category}"`
+                    ? `${item.category}`
                     : `${item.quantity}x ${consumable?.name || "Unknown"}`
                   }
                 </span>
               </label>
             );
-          })}
-        </div>
+          };
+
+          return (
+            <div className="space-y-3">
+              {assetItems.length > 0 && (
+                <div>
+                  <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">Assets ({assetItems.length})</p>
+                  <div className="space-y-1">{assetItems.map(renderItem)}</div>
+                </div>
+              )}
+              {Array.from(consumablesByCategory.entries()).map(([cat, items]) => (
+                <div key={cat}>
+                  <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">{cat} ({items.length})</p>
+                  <div className="space-y-1">{items.map(renderItem)}</div>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Staff Selection */}
@@ -921,7 +959,7 @@ function ApplyToStaffForm({
         </label>
       </div>
 
-      <div className="space-y-1 max-h-56 overflow-y-auto">
+      <div className="space-y-1">
         {filteredUsers.length === 0 ? (
           <p className="text-sm text-shark-400 text-center py-4">No staff found.</p>
         ) : (
