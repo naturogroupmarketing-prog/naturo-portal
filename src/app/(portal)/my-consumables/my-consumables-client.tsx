@@ -7,7 +7,8 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/utils";
-import { markConsumableUsed, requestConsumable } from "@/app/actions/consumables";
+import { markConsumableUsed, requestConsumable, acknowledgeConsumable } from "@/app/actions/consumables";
+import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
@@ -69,13 +70,16 @@ interface Request {
 
 interface Props {
   assignments: Assignment[];
+  pendingAssignments?: Assignment[];
   categories: Category[];
   consumables: Consumable[];
   recentRequests: Request[];
 }
 
-export function MyConsumablesClient({ assignments, categories, consumables, recentRequests }: Props) {
+export function MyConsumablesClient({ assignments, pendingAssignments = [], categories, consumables, recentRequests }: Props) {
+  const router = useRouter();
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   const toggleSection = (name: string) => {
     setCollapsedSections((prev) => {
@@ -125,6 +129,54 @@ export function MyConsumablesClient({ assignments, categories, consumables, rece
           Your consumable assignments and requests
         </p>
       </div>
+
+      {/* Pending Assignments — need confirmation */}
+      {pendingAssignments.length > 0 && (
+        <Card className="border-amber-200 bg-amber-50/30">
+          <CardContent className="pt-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center">
+                <Icon name="clipboard" size={14} className="text-[#E8532E]" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-shark-900">Confirm Receipt</p>
+                <p className="text-xs text-shark-400">{pendingAssignments.length} item{pendingAssignments.length !== 1 ? "s" : ""} awaiting confirmation</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {pendingAssignments.map((a) => (
+                <div key={a.id} className="flex items-center gap-3 bg-white rounded-lg px-3 py-2.5 border border-shark-100">
+                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                    {a.consumable.imageUrl ? <img src={a.consumable.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-shark-800 truncate">{a.quantity}x {a.consumable.name}</p>
+                    <p className="text-xs text-shark-400">{a.consumable.unitType} · {a.consumable.category}</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={confirmingId === a.id}
+                    onClick={async () => {
+                      setConfirmingId(a.id);
+                      try {
+                        await acknowledgeConsumable(a.id);
+                        router.refresh();
+                      } catch {
+                        alert("Failed to confirm receipt.");
+                      }
+                      setConfirmingId(null);
+                    }}
+                  >
+                    <Icon name="check" size={14} className="mr-1" />
+                    {confirmingId === a.id ? "..." : "Confirm"}
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Sections */}
       {orderedSections.map((sectionName, idx) => {

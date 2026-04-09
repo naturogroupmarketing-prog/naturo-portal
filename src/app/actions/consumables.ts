@@ -729,6 +729,45 @@ export async function assignConsumable(formData: FormData) {
   return { success: true };
 }
 
+export async function acknowledgeConsumable(assignmentId: string) {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "STAFF") {
+    throw new Error("Unauthorized");
+  }
+
+  const assignment = await db.consumableAssignment.findUnique({
+    where: { id: assignmentId },
+    include: { consumable: true },
+  });
+
+  if (!assignment || !assignment.isActive) {
+    throw new Error("Assignment not found or inactive");
+  }
+  if (assignment.userId !== session.user.id) {
+    throw new Error("This assignment does not belong to you");
+  }
+  if (assignment.acknowledgedAt) {
+    throw new Error("Already acknowledged");
+  }
+
+  await db.consumableAssignment.update({
+    where: { id: assignmentId },
+    data: { acknowledgedAt: new Date() },
+  });
+
+  await createAuditLog({
+    action: "CONSUMABLE_ASSIGNED",
+    description: `Consumable "${assignment.consumable.name}" (${assignment.quantity} ${assignment.consumable.unitType}) receipt confirmed by ${session.user.name || session.user.email}`,
+    performedById: session.user.id,
+    consumableId: assignment.consumableId,
+    organizationId: session.user.organizationId || undefined,
+  });
+
+  revalidatePath("/my-consumables");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
 export async function returnConsumable(formData: FormData) {
   const session = await auth();
   if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "consumableEdit"))) {

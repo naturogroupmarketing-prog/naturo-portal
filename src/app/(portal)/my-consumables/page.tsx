@@ -9,16 +9,27 @@ export default async function MyConsumablesPage() {
 
   const organizationId = session.user.organizationId!;
 
-  const [consumableAssignments, categories, regionConsumables, recentRequests] = await Promise.all([
-    // Active assignments for this user
+  const [consumableAssignments, pendingConsumableItems, categories, regionConsumables, recentRequests] = await Promise.all([
+    // Active acknowledged assignments for this user
     db.consumableAssignment.findMany({
       where: {
         userId: session.user.id,
         isActive: true,
-        OR: [
-          { starterKitApplicationId: null },
-          { acknowledgedAt: { not: null } },
-        ],
+        acknowledgedAt: { not: null },
+      },
+      include: {
+        consumable: {
+          include: { region: true },
+        },
+      },
+      orderBy: { assignedDate: "desc" },
+    }),
+    // Pending (unacknowledged) assignments — need to confirm receipt
+    db.consumableAssignment.findMany({
+      where: {
+        userId: session.user.id,
+        isActive: true,
+        acknowledgedAt: null,
       },
       include: {
         consumable: {
@@ -61,6 +72,7 @@ export default async function MyConsumablesPage() {
   return (
     <MyConsumablesClient
       assignments={JSON.parse(JSON.stringify(consumableAssignments))}
+      pendingAssignments={JSON.parse(JSON.stringify(pendingConsumableItems))}
       categories={JSON.parse(JSON.stringify(categories))}
       consumables={JSON.parse(JSON.stringify(regionConsumables))}
       recentRequests={JSON.parse(JSON.stringify(recentRequests))}
