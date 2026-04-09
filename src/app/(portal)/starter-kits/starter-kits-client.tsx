@@ -292,6 +292,7 @@ export function StarterKitsClient({
             kit={editKit}
             categories={categories}
             consumables={consumables}
+            assetPhotos={assetPhotos}
             onDone={() => setEditKit(null)}
           />
         )}
@@ -329,11 +330,13 @@ function EditStarterKitForm({
   kit,
   categories,
   consumables,
+  assetPhotos = {},
   onDone,
 }: {
   kit: StarterKit;
   categories: Category[];
   consumables: Consumable[];
+  assetPhotos?: Record<string, string | null>;
   onDone: () => void;
 }) {
   const [saving, setSaving] = useState(false);
@@ -401,59 +404,87 @@ function EditStarterKitForm({
 
           {kit.items.length === 0 ? (
             <p className="text-sm text-shark-400 italic py-2">No items in this kit yet. Add items below.</p>
-          ) : (
-            <div className="space-y-1.5 max-h-48 overflow-y-auto">
-              {kit.items.map((item) => {
-                const consumable = consumables.find((c) => c.id === item.consumableId);
-                const currentQty = editQty[item.id] ?? item.quantity;
-                return (
-                  <div
-                    key={item.id}
-                    className={`flex items-center gap-2.5 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2 transition-opacity ${
-                      removingId === item.id ? "opacity-40" : ""
-                    }`}
-                  >
-                    <Icon
-                      name={item.itemType === "ASSET_CATEGORY" ? "package" : "droplet"}
-                      size={14}
-                      className={item.itemType === "ASSET_CATEGORY" ? "text-action-500" : "text-blue-500"}
-                    />
-                    <span className="text-sm text-shark-700 dark:text-shark-300 flex-1 truncate">
-                      {item.itemType === "ASSET_CATEGORY"
-                        ? `Asset from "${item.category}"`
-                        : `${consumable?.name || "Unknown"} (${consumable?.unitType || ""})`
-                      }
-                    </span>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <span className="text-xs text-shark-400">Qty:</span>
-                      <input
-                        type="number"
-                        min="1"
-                        value={currentQty}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value) || 1;
-                          setEditQty((prev) => ({ ...prev, [item.id]: Math.max(1, val) }));
-                        }}
-                        onBlur={() => handleQtyChange(item.id, currentQty)}
-                        className={`w-14 text-center text-sm rounded-lg border py-0.5 ${
-                          savingQtyId === item.id ? "border-action-400 bg-action-50" : "border-shark-200"
-                        }`}
+          ) : (() => {
+            const assetItems = kit.items.filter((i) => i.itemType === "ASSET_CATEGORY");
+            const consumableItems = kit.items.filter((i) => i.itemType !== "ASSET_CATEGORY");
+
+            const renderItem = (item: StarterKitItem) => {
+              const consumable = consumables.find((c) => c.id === item.consumableId);
+              const currentQty = editQty[item.id] ?? item.quantity;
+              const photo = item.itemType === "ASSET_CATEGORY"
+                ? assetPhotos[item.category || ""]
+                : consumable?.imageUrl;
+
+              return (
+                <div
+                  key={item.id}
+                  className={`flex items-center gap-2.5 bg-shark-50 rounded-lg px-3 py-2 transition-opacity ${
+                    removingId === item.id ? "opacity-40" : ""
+                  }`}
+                >
+                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-white border border-shark-100 flex items-center justify-center shrink-0">
+                    {photo ? (
+                      <img src={photo} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <Icon
+                        name={item.itemType === "ASSET_CATEGORY" ? "package" : "droplet"}
+                        size={14}
+                        className={item.itemType === "ASSET_CATEGORY" ? "text-action-500" : "text-blue-500"}
                       />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveItem(item.id)}
-                      disabled={removingId === item.id}
-                      className="text-shark-400 hover:text-red-500 p-1 rounded transition-colors disabled:opacity-50"
-                      title="Remove item"
-                    >
-                      <Icon name="x" size={14} />
-                    </button>
+                    )}
                   </div>
-                );
-              })}
-            </div>
-          )}
+                  <span className="text-sm text-shark-700 flex-1 truncate">
+                    {item.itemType === "ASSET_CATEGORY"
+                      ? `${item.category}`
+                      : `${consumable?.name || "Unknown"} (${consumable?.unitType || ""})`
+                    }
+                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className="text-xs text-shark-400">Qty:</span>
+                    <input
+                      type="number"
+                      min="1"
+                      value={currentQty}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value) || 1;
+                        setEditQty((prev) => ({ ...prev, [item.id]: Math.max(1, val) }));
+                      }}
+                      onBlur={() => handleQtyChange(item.id, currentQty)}
+                      className={`w-14 text-center text-sm rounded-lg border py-0.5 ${
+                        savingQtyId === item.id ? "border-action-400 bg-action-50" : "border-shark-200"
+                      }`}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveItem(item.id)}
+                    disabled={removingId === item.id}
+                    className="text-shark-400 hover:text-red-500 p-1 rounded transition-colors disabled:opacity-50"
+                    title="Remove item"
+                  >
+                    <Icon name="x" size={14} />
+                  </button>
+                </div>
+              );
+            };
+
+            return (
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {assetItems.length > 0 && (
+                  <div>
+                    <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">Assets ({assetItems.length})</p>
+                    <div className="space-y-1.5">{assetItems.map(renderItem)}</div>
+                  </div>
+                )}
+                {consumableItems.length > 0 && (
+                  <div>
+                    <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">Consumables ({consumableItems.length})</p>
+                    <div className="space-y-1.5">{consumableItems.map(renderItem)}</div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Inline Add Items */}
