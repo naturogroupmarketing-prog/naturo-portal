@@ -181,7 +181,9 @@ export async function returnAsset(formData: FormData) {
     throw new Error("Cannot manage this region");
   }
 
-  const newStatus: AssetStatus = isDamaged ? "DAMAGED" : "PENDING_RETURN";
+  // Manager-initiated returns go straight to AVAILABLE (no pending verification needed)
+  // Staff-initiated returns would go to PENDING_RETURN (handled by staffReturnAsset)
+  const newStatus: AssetStatus = isDamaged ? "DAMAGED" : "AVAILABLE";
 
   await db.$transaction(async (tx) => {
     await tx.assetAssignment.update({
@@ -197,22 +199,6 @@ export async function returnAsset(formData: FormData) {
       where: { id: assignment.assetId },
       data: { status: newStatus },
     });
-    // Create pending return for manager verification
-    if (!isDamaged) {
-      await tx.pendingReturn.create({
-        data: {
-          itemType: "ASSET",
-          assetId: assignment.assetId,
-          returnedByName: assignment.user.name || assignment.user.email,
-          returnedByEmail: assignment.user.email,
-          returnCondition: returnCondition || null,
-          returnNotes: returnNotes || null,
-          organizationId,
-          regionId: assignment.asset.regionId,
-          returnReason: "Manual return",
-        },
-      });
-    }
   });
 
   await createAuditLog({
