@@ -913,12 +913,12 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             {/* Condition */}
             <div>
               <label className="text-xs font-medium text-shark-600 block mb-1">Return Condition</label>
-              <select value={returnCondition} onChange={(e) => setReturnCondition(e.target.value)} className="w-full rounded-lg border border-shark-200 px-3 py-2 text-sm">
+              <Select value={returnCondition} onChange={(e) => setReturnCondition(e.target.value)}>
                 <option value="GOOD">Good</option>
                 <option value="FAIR">Fair</option>
                 <option value="POOR">Poor</option>
                 <option value="DAMAGED">Damaged</option>
-              </select>
+              </Select>
             </div>
 
             <div>
