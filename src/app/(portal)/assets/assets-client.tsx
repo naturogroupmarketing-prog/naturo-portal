@@ -14,6 +14,7 @@ import dynamic from "next/dynamic";
 import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets, changeAssetStatus } from "@/app/actions/assets";
 import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { useRouter } from "next/navigation";
+import { compressImage } from "@/lib/image-utils";
 
 // Lazy-load QR scanner (~100KB html5-qrcode) — only needed when modal opens
 const QRScanner = dynamic(
@@ -551,31 +552,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   };
 
   // Resize & compress image client-side to keep base64 under Vercel's body limit
-  const compressImage = (file: File, maxDim = 800, quality = 0.7): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onerror = () => reject(new Error("Failed to read file"));
-      reader.onload = () => {
-        const img = new Image();
-        img.onerror = () => reject(new Error("Failed to load image"));
-        img.onload = () => {
-          let { width, height } = img;
-          if (width > maxDim || height > maxDim) {
-            if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
-            else { width = Math.round(width * maxDim / height); height = maxDim; }
-          }
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d")!;
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL("image/jpeg", quality));
-        };
-        img.src = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-    });
-  };
+  // Image compression imported from shared utility
 
   const handleEditImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
