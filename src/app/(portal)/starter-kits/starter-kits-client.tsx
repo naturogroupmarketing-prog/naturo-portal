@@ -118,7 +118,7 @@ export function StarterKitsClient({
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <Button size="sm" variant="outline" onClick={() => setShowApply(kit)} disabled={kit.items.length === 0}>
-                      Apply to Staff
+                      Assign to Staff
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => setShowAddItem(kit.id)}>
                       <Icon name="plus" size={12} className="mr-1" />Add Item
@@ -313,13 +313,11 @@ export function StarterKitsClient({
       </Modal>
 
       {/* Apply to Staff Modal */}
-      <Modal open={!!showApply} onClose={() => setShowApply(null)} title={`Apply "${showApply?.name}" to Staff`}>
+      <Modal open={!!showApply} onClose={() => setShowApply(null)} title={`Assign "${showApply?.name}"`}>
         {showApply && (
           <ApplyToStaffForm
             kit={showApply}
             users={users}
-            consumables={consumables}
-            assetPhotos={assetPhotos}
             onDone={() => setShowApply(null)}
           />
         )}
@@ -653,88 +651,46 @@ function AddItemsChecklist({
 function ApplyToStaffForm({
   kit,
   users,
-  consumables,
-  assetPhotos = {},
   onDone,
 }: {
   kit: StarterKit;
   users: User[];
-  consumables: Consumable[];
-  assetPhotos?: Record<string, string | null>;
   onDone: () => void;
 }) {
-  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
-  const [excludedItems, setExcludedItems] = useState<Set<string>>(new Set());
+  const [selectedUserId, setSelectedUserId] = useState("");
   const [applying, setApplying] = useState(false);
-  const [results, setResults] = useState<{ userName: string; applied: number; details: string[] }[] | null>(null);
-  const [search, setSearch] = useState("");
+  const [result, setResult] = useState<{ applied: number; details: string[] } | null>(null);
+  const { addToast } = useToast();
+  const router = useRouter();
 
-  const toggleItemExclusion = (itemId: string) => {
-    setExcludedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(itemId)) next.delete(itemId); else next.add(itemId);
-      return next;
-    });
-  };
-
-  const includedCount = kit.items.length - excludedItems.size;
-
-  const filteredUsers = users.filter((u) => {
-    const q = search.toLowerCase();
-    return !q || (u.name || "").toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
-  });
-
-  const toggleUser = (id: string) => {
-    setSelectedUsers((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    });
-  };
-
-  const selectAll = () => {
-    if (selectedUsers.size === filteredUsers.length) {
-      setSelectedUsers(new Set());
-    } else {
-      setSelectedUsers(new Set(filteredUsers.map((u) => u.id)));
-    }
-  };
-
-  const handleApply = async () => {
+  const handleAssign = async () => {
+    if (!selectedUserId) return;
     setApplying(true);
-    const applyResults: { userName: string; applied: number; details: string[] }[] = [];
     try {
-      for (const userId of selectedUsers) {
-        const user = users.find((u) => u.id === userId);
-        const result = await applyStarterKit(userId, kit.id, [...excludedItems]);
-        applyResults.push({
-          userName: user?.name || user?.email || "Unknown",
-          applied: result.applied || 0,
-          details: (result.results as string[]) || [],
-        });
-      }
-      setResults(applyResults);
+      const res = await applyStarterKit(selectedUserId, kit.id, []);
+      setResult({ applied: res.applied || 0, details: (res.results as string[]) || [] });
+      addToast(`Kit assigned — ${res.applied || 0} items`, "success");
+      router.refresh();
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Failed to assign kit", "error");
     } finally {
       setApplying(false);
     }
   };
 
-  if (results) {
+  if (result) {
+    const user = users.find((u) => u.id === selectedUserId);
     return (
       <div className="space-y-4">
-        <p className="text-sm font-medium text-shark-700">Results:</p>
-        <div className="space-y-2 max-h-60 overflow-y-auto">
-          {results.map((r, i) => (
-            <div key={i} className="bg-shark-50 rounded-lg px-3 py-2">
-              <p className="text-sm font-semibold text-shark-800">{r.userName}</p>
-              <p className="text-xs text-shark-500">{r.applied} item{r.applied !== 1 ? "s" : ""} assigned</p>
-              {r.details.map((d, j) => (
-                <p key={j} className="text-xs text-shark-400 ml-2">• {d}</p>
-              ))}
-            </div>
-          ))}
+        <div className="bg-action-50 rounded-xl p-4 text-center">
+          <div className="w-12 h-12 rounded-full bg-action-500 flex items-center justify-center mx-auto mb-3">
+            <Icon name="check" size={24} className="text-white" />
+          </div>
+          <p className="text-sm font-semibold text-shark-900">Kit assigned to {user?.name || user?.email}</p>
+          <p className="text-xs text-shark-500 mt-1">{result.applied} item{result.applied !== 1 ? "s" : ""} assigned</p>
         </div>
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-end gap-3">
+          <Button variant="secondary" onClick={() => { setResult(null); setSelectedUserId(""); }}>Assign Another</Button>
           <Button onClick={onDone}>Done</Button>
         </div>
       </div>
@@ -742,137 +698,27 @@ function ApplyToStaffForm({
   }
 
   return (
-    <div className="space-y-4">
-      {/* Kit Items — deselect to exclude */}
+    <div className="space-y-5">
       <div>
-        <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-2">Kit Items ({includedCount} of {kit.items.length} selected)</p>
-        {(() => {
-          const assetItems = kit.items.filter((i) => i.itemType === "ASSET_CATEGORY");
-          const consumableItems = kit.items.filter((i) => i.itemType !== "ASSET_CATEGORY");
-
-          // Group consumables by category
-          const consumablesByCategory = new Map<string, StarterKitItem[]>();
-          for (const item of consumableItems) {
-            const c = consumables.find((con) => con.id === item.consumableId);
-            const cat = c?.category || "Other";
-            if (!consumablesByCategory.has(cat)) consumablesByCategory.set(cat, []);
-            consumablesByCategory.get(cat)!.push(item);
-          }
-
-          const renderItem = (item: StarterKitItem) => {
-            const consumable = consumables.find((c) => c.id === item.consumableId);
-            const isIncluded = !excludedItems.has(item.id);
-            const photo = item.itemType === "ASSET_CATEGORY"
-              ? assetPhotos[item.category || ""]
-              : consumable?.imageUrl;
-
-            return (
-              <label
-                key={item.id}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
-                  isIncluded ? "bg-shark-50 hover:bg-shark-100" : "opacity-40"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={isIncluded}
-                  onChange={() => toggleItemExclusion(item.id)}
-                  className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                />
-                <div className="w-9 h-9 rounded-lg overflow-hidden bg-white border border-shark-100 flex items-center justify-center shrink-0">
-                  {photo ? (
-                    <img src={photo} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <Icon name={item.itemType === "ASSET_CATEGORY" ? "package" : "droplet"} size={14} className={item.itemType === "ASSET_CATEGORY" ? "text-action-500" : "text-blue-500"} />
-                  )}
-                </div>
-                <span className={`text-sm flex-1 truncate ${isIncluded ? "text-shark-700" : "text-shark-400 line-through"}`}>
-                  {item.itemType === "ASSET_CATEGORY"
-                    ? `${item.category}`
-                    : `${item.quantity}x ${consumable?.name || "Unknown"}`
-                  }
-                </span>
-              </label>
-            );
-          };
-
-          return (
-            <div className="space-y-3">
-              {assetItems.length > 0 && (
-                <div>
-                  <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">Assets ({assetItems.length})</p>
-                  <div className="space-y-1">{assetItems.map(renderItem)}</div>
-                </div>
-              )}
-              {Array.from(consumablesByCategory.entries()).map(([cat, items]) => (
-                <div key={cat}>
-                  <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">{cat} ({items.length})</p>
-                  <div className="space-y-1">{items.map(renderItem)}</div>
-                </div>
-              ))}
-            </div>
-          );
-        })()}
+        <label className="block text-sm font-medium text-shark-700 mb-1.5">Assign to</label>
+        <Select
+          value={selectedUserId}
+          onChange={(e) => setSelectedUserId(e.target.value)}
+        >
+          <option value="">Select staff member</option>
+          {users.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.name || user.email}{user.region ? ` — ${user.region.name}` : ""}
+            </option>
+          ))}
+        </Select>
       </div>
 
-      {/* Staff Selection */}
-      <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider">Select Staff</p>
-
-      <Input
-        placeholder="Search staff..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-
-      <div className="border-b border-shark-100 pb-2">
-        <label className="flex items-center gap-2 cursor-pointer text-sm text-shark-600">
-          <input
-            type="checkbox"
-            checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
-            onChange={selectAll}
-            className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-          />
-          Select All ({filteredUsers.length})
-        </label>
-      </div>
-
-      <div className="space-y-1">
-        {filteredUsers.length === 0 ? (
-          <p className="text-sm text-shark-400 text-center py-4">No staff found.</p>
-        ) : (
-          filteredUsers.map((user) => (
-            <label
-              key={user.id}
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
-                selectedUsers.has(user.id) ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 border border-transparent"
-              }`}
-            >
-              <input
-                type="checkbox"
-                checked={selectedUsers.has(user.id)}
-                onChange={() => toggleUser(user.id)}
-                className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-              />
-              <div className="flex-1 min-w-0">
-                <span className="text-sm text-shark-700">{user.name || user.email}</span>
-                {user.name && <span className="text-xs text-shark-400 ml-1">({user.email})</span>}
-              </div>
-              {user.region && (
-                <span className="text-xs text-shark-400 shrink-0">{user.region.name}</span>
-              )}
-            </label>
-          ))
-        )}
-      </div>
-
-      <div className="flex justify-between items-center pt-3 border-t border-shark-100">
-        <span className="text-sm text-shark-400">{selectedUsers.size} staff · {includedCount} items</span>
-        <div className="flex gap-3">
-          <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>
-          <Button onClick={handleApply} disabled={selectedUsers.size === 0 || includedCount === 0 || applying}>
-            {applying ? "Applying..." : `Apply ${includedCount} Items to ${selectedUsers.size} Staff`}
-          </Button>
-        </div>
+      <div className="flex justify-end gap-3 pt-2">
+        <Button variant="secondary" onClick={onDone}>Cancel</Button>
+        <Button onClick={handleAssign} disabled={!selectedUserId || applying} loading={applying}>
+          Assign Kit
+        </Button>
       </div>
     </div>
   );
