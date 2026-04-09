@@ -10,7 +10,7 @@ import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
 import dynamic from "next/dynamic";
-import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets } from "@/app/actions/assets";
+import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets, changeAssetStatus } from "@/app/actions/assets";
 import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { useRouter } from "next/navigation";
 
@@ -88,10 +88,68 @@ const REGION_COLORS = [
   { color: "text-teal-600", bg: "bg-teal-50" },
 ];
 
-// Inline status selector for PENDING_RETURN assets — lets managers quickly change status
-function StatusSelector({ asset, onStatusChange }: { asset: { id: string; status: string }; onStatusChange: (assetId: string, newStatus: string) => void }) {
+// Badge colors for each status
+const STATUS_BADGE: Record<string, { label: string; bg: string; text: string }> = {
+  AVAILABLE: { label: "Available", bg: "bg-green-100", text: "text-green-700" },
+  ASSIGNED: { label: "Assigned", bg: "bg-blue-100", text: "text-blue-700" },
+  CHECKED_OUT: { label: "Checked Out", bg: "bg-indigo-100", text: "text-indigo-700" },
+  PENDING_RETURN: { label: "Pending Return", bg: "bg-amber-100", text: "text-amber-700" },
+  DAMAGED: { label: "Damaged", bg: "bg-red-100", text: "text-red-700" },
+  LOST: { label: "Lost", bg: "bg-shark-100", text: "text-shark-700" },
+  UNAVAILABLE: { label: "Unavailable", bg: "bg-shark-100", text: "text-shark-500" },
+};
+
+// Status transitions available per status
+const STATUS_ACTIONS: Record<string, { value: string; label: string }[]> = {
+  AVAILABLE: [
+    { value: "_assign", label: "Assign" },
+    { value: "UNAVAILABLE", label: "Mark Unavailable" },
+    { value: "DAMAGED", label: "Mark Damaged" },
+    { value: "LOST", label: "Mark Lost" },
+  ],
+  ASSIGNED: [
+    { value: "_return", label: "Return" },
+    { value: "DAMAGED", label: "Mark Damaged" },
+    { value: "LOST", label: "Mark Lost" },
+  ],
+  CHECKED_OUT: [
+    { value: "_return", label: "Return" },
+    { value: "DAMAGED", label: "Mark Damaged" },
+    { value: "LOST", label: "Mark Lost" },
+  ],
+  PENDING_RETURN: [
+    { value: "AVAILABLE", label: "Confirm Return" },
+    { value: "DAMAGED", label: "Mark Damaged" },
+    { value: "LOST", label: "Mark Lost" },
+  ],
+  DAMAGED: [
+    { value: "AVAILABLE", label: "Restore Available" },
+    { value: "UNAVAILABLE", label: "Mark Unavailable" },
+  ],
+  LOST: [
+    { value: "AVAILABLE", label: "Found — Restore" },
+  ],
+  UNAVAILABLE: [
+    { value: "AVAILABLE", label: "Make Available" },
+    { value: "DAMAGED", label: "Mark Damaged" },
+    { value: "LOST", label: "Mark Lost" },
+  ],
+};
+
+// Universal status dropdown — shows current status as a clickable badge with context actions
+function StatusDropdown({ asset, canAssign, canEdit, activeAssignment, onStatusChange, onAssign, onReturn, onQR }: {
+  asset: { id: string; status: string };
+  canAssign: boolean;
+  canEdit: boolean;
+  activeAssignment: { id: string } | null;
+  onStatusChange: (assetId: string, newStatus: string) => void;
+  onAssign: () => void;
+  onReturn: () => void;
+  onQR: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const hasActions = canAssign || canEdit;
 
   useEffect(() => {
     if (!open) return;
@@ -102,32 +160,57 @@ function StatusSelector({ asset, onStatusChange }: { asset: { id: string; status
     return () => document.removeEventListener("mousedown", handle);
   }, [open]);
 
-  const options: { value: string; label: string; color: string }[] = [
-    { value: "AVAILABLE", label: "Available", color: "text-green-600 bg-green-50" },
-    { value: "DAMAGED", label: "Damaged", color: "text-red-600 bg-red-50" },
-    { value: "LOST", label: "Lost", color: "text-shark-600 bg-shark-50" },
-  ];
+  const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600" };
+  const actions = STATUS_ACTIONS[asset.status] || [];
 
   return (
     <div className="relative" ref={ref} onClick={(e) => e.stopPropagation()}>
       <button
-        onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 hover:bg-amber-200 transition-colors cursor-pointer"
+        onClick={() => hasActions && setOpen(!open)}
+        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.bg} ${badge.text} ${hasActions ? "hover:opacity-80 cursor-pointer" : ""} transition-colors`}
       >
-        Pending Return
-        <Icon name="chevron-down" size={12} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+        {badge.label}
+        {hasActions && <Icon name="chevron-down" size={10} className={`transition-transform ${open ? "rotate-180" : ""}`} />}
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-shark-100 py-1 z-50 min-w-[140px]">
-          {options.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => { onStatusChange(asset.id, opt.value); setOpen(false); }}
-              className={`w-full text-left px-3 py-1.5 text-xs font-medium hover:bg-shark-50 transition-colors ${opt.color}`}
-            >
-              {opt.label}
-            </button>
-          ))}
+        <div className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-lg border border-shark-100 py-1 z-50 min-w-[160px]">
+          <button
+            onClick={() => { onQR(); setOpen(false); }}
+            className="w-full text-left px-3 py-2 text-xs font-medium text-shark-600 hover:bg-shark-50 transition-colors flex items-center gap-2"
+          >
+            <Icon name="box" size={12} /> View QR Code
+          </button>
+          <div className="border-t border-shark-100 my-1" />
+          {actions.map((action) => {
+            // _assign and _return are special workflow actions
+            if (action.value === "_assign") {
+              if (!canAssign || asset.status !== "AVAILABLE") return null;
+              return (
+                <button key={action.value} onClick={() => { onAssign(); setOpen(false); }}
+                  className="w-full text-left px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors flex items-center gap-2">
+                  <Icon name="user" size={12} /> {action.label}
+                </button>
+              );
+            }
+            if (action.value === "_return") {
+              if (!canAssign || !activeAssignment) return null;
+              return (
+                <button key={action.value} onClick={() => { onReturn(); setOpen(false); }}
+                  className="w-full text-left px-3 py-2 text-xs font-medium text-action-600 hover:bg-action-50 transition-colors flex items-center gap-2">
+                  <Icon name="arrow-left" size={12} /> {action.label}
+                </button>
+              );
+            }
+            // Status change actions
+            if (!canAssign && !canEdit) return null;
+            const isDestructive = action.value === "DAMAGED" || action.value === "LOST";
+            return (
+              <button key={action.value} onClick={() => { onStatusChange(asset.id, action.value); setOpen(false); }}
+                className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${isDestructive ? "text-red-600 hover:bg-red-50" : "text-green-600 hover:bg-green-50"}`}>
+                <Icon name={isDestructive ? "alert-triangle" : "check"} size={12} /> {action.label}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
@@ -601,25 +684,21 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                           <p className="text-sm font-semibold text-shark-800 truncate">{asset.name}</p>
                           <p className="text-xs text-shark-400 font-mono">{asset.assetCode}</p>
                         </div>
-                        {asset.status === "PENDING_RETURN" && permissions.canAssign ? (
-                          <StatusSelector asset={asset} onStatusChange={handleQuickStatusChange} />
-                        ) : (
-                          <Badge status={asset.status} />
-                        )}
+                        <StatusDropdown
+                          asset={asset}
+                          canAssign={permissions.canAssign}
+                          canEdit={permissions.canEdit}
+                          activeAssignment={activeAssignment}
+                          onStatusChange={handleQuickStatusChange}
+                          onAssign={() => setShowAssign(asset)}
+                          onReturn={() => activeAssignment && setShowReturn({ assignmentId: activeAssignment.id, asset })}
+                          onQR={() => setShowQR(asset)}
+                        />
                       </div>
                       {activeAssignment && (
                         <p className="text-xs text-shark-500 mt-1">Assigned: {activeAssignment.user.name || activeAssignment.user.email}</p>
                       )}
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-shark-50" onClick={(e) => e.stopPropagation()}>
-                    <Button size="sm" variant="ghost" onClick={() => setShowQR(asset)}>QR</Button>
-                    {permissions.canAssign && asset.status === "AVAILABLE" && (
-                      <Button size="sm" variant="outline" onClick={() => setShowAssign(asset)}>Assign</Button>
-                    )}
-                    {permissions.canAssign && activeAssignment && (
-                      <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignmentId: activeAssignment.id, asset })}>Return</Button>
-                    )}
                   </div>
                 </div>
               );
@@ -650,7 +729,6 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                 {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
                 {visibleColumns.status && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>}
                 {visibleColumns.assignedTo && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -696,17 +774,21 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     </td>
                     )}
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{asset.region.state.name} / {asset.region.name}</td>}
-                    {visibleColumns.status && <td className="px-4 py-3">{asset.status === "PENDING_RETURN" && permissions.canAssign ? <StatusSelector asset={asset} onStatusChange={handleQuickStatusChange} /> : <Badge status={asset.status} />}</td>}
+                    {visibleColumns.status && <td className="px-4 py-3">
+                      <StatusDropdown
+                        asset={asset}
+                        canAssign={permissions.canAssign}
+                        canEdit={permissions.canEdit}
+                        activeAssignment={activeAssignment}
+                        onStatusChange={handleQuickStatusChange}
+                        onAssign={() => setShowAssign(asset)}
+                        onReturn={() => activeAssignment && setShowReturn({ assignmentId: activeAssignment.id, asset })}
+                        onQR={() => setShowQR(asset)}
+                      />
+                    </td>}
                     {visibleColumns.assignedTo && (
                     <td className="px-4 py-3 text-shark-500 hidden md:table-cell">{activeAssignment ? activeAssignment.user.name || activeAssignment.user.email : "\u2014"}</td>
                     )}
-                    <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center justify-end gap-1">
-                        <Button size="sm" variant="ghost" onClick={() => setShowQR(asset)} title="QR Code">QR</Button>
-                        {permissions.canAssign && asset.status === "AVAILABLE" && <Button size="sm" variant="outline" onClick={() => setShowAssign(asset)}>Assign</Button>}
-                        {permissions.canAssign && activeAssignment && <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignmentId: activeAssignment.id, asset })}>Return</Button>}
-                      </div>
-                    </td>
                   </tr>
                 );
               })}

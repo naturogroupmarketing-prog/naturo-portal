@@ -459,6 +459,65 @@ export async function updateAsset(formData: FormData) {
   return { success: true };
 }
 
+/**
+ * Quick status change — only updates status field, used for PENDING_RETURN dropdown
+ */
+export async function changeAssetStatus(assetId: string, newStatus: string) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "assetAssign"))) {
+    throw new Error("Unauthorized");
+  }
+
+  const organizationId = session.user.organizationId!;
+  const asset = await db.asset.findUnique({ where: { id: assetId } });
+  if (!asset || asset.organizationId !== organizationId) throw new Error("Asset not found");
+
+  if (!canManageRegion(session.user.role, session.user.regionId, asset.regionId)) {
+    throw new Error("Cannot manage this region");
+  }
+
+  const validTransitions: Record<string, string[]> = {
+    AVAILABLE: ["UNAVAILABLE", "DAMAGED", "LOST"],
+    ASSIGNED: ["DAMAGED", "LOST"],
+    CHECKED_OUT: ["DAMAGED", "LOST"],
+    PENDING_RETURN: ["AVAILABLE", "DAMAGED", "LOST"],
+    DAMAGED: ["AVAILABLE", "UNAVAILABLE"],
+    LOST: ["AVAILABLE"],
+    UNAVAILABLE: ["AVAILABLE", "DAMAGED", "LOST"],
+  };
+  const allowed = validTransitions[asset.status] || [];
+  if (!allowed.includes(newStatus)) {
+    throw new Error(`Cannot change status from ${asset.status} to ${newStatus}`);
+  }
+
+  await db.asset.update({
+    where: { id: assetId },
+    data: { status: newStatus as AssetStatus },
+  });
+
+  // Also mark any pending return as verified
+  if (asset.status === "PENDING_RETURN") {
+    await db.pendingReturn.updateMany({
+      where: { assetId, isVerified: false },
+      data: { isVerified: true, verifiedById: session.user.id, verifiedAt: new Date() },
+    });
+  }
+
+  await createAuditLog({
+    action: "ASSET_UPDATED",
+    description: `Asset "${asset.name}" (${asset.assetCode}) status changed from ${asset.status} to ${newStatus}`,
+    performedById: session.user.id,
+    assetId,
+    organizationId,
+  });
+
+  revalidatePath("/assets");
+  revalidatePath("/inventory");
+  revalidatePath("/returns");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
 export async function bulkCreateAssets(formData: FormData) {
   const session = await auth();
   if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "assetAdd"))) {
