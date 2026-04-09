@@ -1,15 +1,98 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { reportDamage } from "@/app/actions/damage";
 
 interface Assignment {
   id: string;
-  asset: { id: string; name: string; assetCode: string };
+  asset: { id: string; name: string; assetCode: string; imageUrl?: string | null };
+}
+
+// Custom styled dropdown matching app design
+function CustomSelect({ value, onChange, options, placeholder, name }: {
+  value: string;
+  onChange: (val: string) => void;
+  options: { value: string; label: string; sublabel?: string; imageUrl?: string | null }[];
+  placeholder: string;
+  name: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const selected = options.find((o) => o.value === value);
+
+  useEffect(() => {
+    if (!open) return;
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+    }
+    const handle = (e: MouseEvent) => {
+      if (btnRef.current?.contains(e.target as Node)) return;
+      if (menuRef.current?.contains(e.target as Node)) return;
+      setOpen(false);
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [open]);
+
+  return (
+    <>
+      <input type="hidden" name={name} value={value} />
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`w-full flex items-center justify-between rounded-xl border border-shark-200 bg-white px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
+          open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300"
+        } ${value ? "text-shark-900" : "text-shark-400"}`}
+      >
+        <span className="truncate">{selected ? selected.label : placeholder}</span>
+        <Icon name="chevron-down" size={16} className={`text-shark-400 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && typeof document !== "undefined" && createPortal(
+        <div
+          ref={menuRef}
+          style={{ position: "fixed", top: pos.top, left: pos.left, width: pos.width, zIndex: 9999 }}
+          className="bg-white rounded-xl shadow-lg border border-shark-100 py-1 max-h-64 overflow-y-auto"
+        >
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              className={`w-full text-left px-3.5 py-2.5 text-sm transition-colors flex items-center gap-3 ${
+                opt.value === value ? "bg-action-50 text-action-700 font-medium" : "text-shark-700 hover:bg-shark-50"
+              }`}
+            >
+              {opt.imageUrl && (
+                <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 shrink-0">
+                  <img src={opt.imageUrl} alt="" className="w-full h-full object-cover" />
+                </div>
+              )}
+              {!opt.imageUrl && opt.sublabel && (
+                <div className="w-8 h-8 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                  <Icon name="package" size={14} className="text-shark-400" />
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="truncate">{opt.label}</p>
+                {opt.sublabel && <p className="text-xs text-shark-400">{opt.sublabel}</p>}
+              </div>
+              {opt.value === value && <Icon name="check" size={16} className="text-action-500 ml-auto shrink-0" />}
+            </button>
+          ))}
+        </div>,
+        document.body
+      )}
+    </>
+  );
 }
 
 export function ReportDamageClient({ assignments }: { assignments: Assignment[] }) {
@@ -19,6 +102,8 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [selectedAssetId, setSelectedAssetId] = useState("");
+  const [reportType, setReportType] = useState("DAMAGE");
   const fileRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
 
@@ -95,29 +180,34 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
             >
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Asset *</label>
-                <Select
+                <CustomSelect
                   name="assetId"
-                  required
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      setTimeout(() => descRef.current?.focus(), 100);
-                    }
+                  value={selectedAssetId}
+                  onChange={(val) => {
+                    setSelectedAssetId(val);
+                    setTimeout(() => descRef.current?.focus(), 100);
                   }}
-                >
-                  <option value="">Select the asset</option>
-                  {assignments.map((a) => (
-                    <option key={a.asset.id} value={a.asset.id}>
-                      {a.asset.name} ({a.asset.assetCode})
-                    </option>
-                  ))}
-                </Select>
+                  placeholder="Select the asset"
+                  options={assignments.map((a) => ({
+                    value: a.asset.id,
+                    label: a.asset.name,
+                    sublabel: a.asset.assetCode,
+                    imageUrl: a.asset.imageUrl,
+                  }))}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Report Type *</label>
-                <Select name="type" required>
-                  <option value="DAMAGE">Damage</option>
-                  <option value="LOSS">Loss</option>
-                </Select>
+                <CustomSelect
+                  name="type"
+                  value={reportType}
+                  onChange={setReportType}
+                  placeholder="Select type"
+                  options={[
+                    { value: "DAMAGE", label: "Damage" },
+                    { value: "LOSS", label: "Loss" },
+                  ]}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-shark-700 mb-1">Description *</label>
