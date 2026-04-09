@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +15,75 @@ import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { PullToRefresh } from "@/components/ui/pull-to-refresh";
+
+// Custom styled condition dropdown matching app design
+function ConditionSelect({ value, onChange }: { value: string; onChange: (val: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const options = [
+    { value: "GOOD", label: "Good", color: "text-green-600" },
+    { value: "FAIR", label: "Fair", color: "text-blue-600" },
+    { value: "POOR", label: "Poor", color: "text-amber-600" },
+    { value: "DAMAGED", label: "Damaged", color: "text-red-600" },
+  ];
+  const selected = options.find((o) => o.value === value) || options[0];
+
+  useEffect(() => {
+    if (!open) return;
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+    }
+    const handle = (e: MouseEvent) => {
+      if (btnRef.current?.contains(e.target as Node)) return;
+      if (menuRef.current?.contains(e.target as Node)) return;
+      setOpen(false);
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [open]);
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`w-full flex items-center justify-between rounded-xl border border-shark-200 bg-white px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
+          open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300"
+        }`}
+      >
+        <span className={`font-medium ${selected.color}`}>{selected.label}</span>
+        <Icon name="chevron-down" size={16} className={`text-shark-400 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && typeof document !== "undefined" && createPortal(
+        <div
+          ref={menuRef}
+          style={{ position: "fixed", top: pos.top, left: pos.left, width: pos.width, zIndex: 9999 }}
+          className="bg-white rounded-xl shadow-lg border border-shark-100 py-1"
+        >
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              className={`w-full text-left px-3.5 py-2.5 text-sm transition-colors flex items-center justify-between ${
+                opt.value === value ? "bg-action-50 font-medium" : "hover:bg-shark-50"
+              } ${opt.color}`}
+            >
+              {opt.label}
+              {opt.value === value && <Icon name="check" size={16} className="text-action-500" />}
+            </button>
+          ))}
+        </div>,
+        document.body
+      )}
+    </>
+  );
+}
 
 interface StatCard {
   label: string;
@@ -913,12 +983,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             {/* Condition */}
             <div>
               <label className="text-xs font-medium text-shark-600 block mb-1">Return Condition</label>
-              <Select value={returnCondition} onChange={(e) => setReturnCondition(e.target.value)}>
-                <option value="GOOD">Good</option>
-                <option value="FAIR">Fair</option>
-                <option value="POOR">Poor</option>
-                <option value="DAMAGED">Damaged</option>
-              </Select>
+              <ConditionSelect value={returnCondition} onChange={setReturnCondition} />
             </div>
 
             <div>
