@@ -348,11 +348,18 @@ function EditStarterKitForm({
   );
   const [savingQtyId, setSavingQtyId] = useState<string | null>(null);
 
+  const router = useRouter();
+  const { addToast } = useToast();
+
   const handleRemoveItem = async (itemId: string) => {
     setRemovingId(itemId);
     try {
       await removeStarterKitItem(itemId);
-    } catch {}
+      addToast("Item removed", "success");
+      router.refresh();
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Failed to remove item", "error");
+    }
     setRemovingId(null);
   };
 
@@ -470,7 +477,7 @@ function EditStarterKitForm({
             };
 
             return (
-              <div className="space-y-3 max-h-64 overflow-y-auto">
+              <div className="space-y-3">
                 {assetItems.length > 0 && (
                   <div>
                     <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">Assets ({assetItems.length})</p>
