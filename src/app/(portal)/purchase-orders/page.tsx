@@ -6,7 +6,7 @@ import { PurchaseOrdersClient } from "./purchase-orders-client";
 
 export const dynamic = "force-dynamic";
 
-export default async function PurchaseOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string }> }) {
+export default async function PurchaseOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string; showAll?: string }> }) {
   const params = await searchParams;
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/login");
@@ -25,17 +25,20 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       ? { id: session.user.regionId!, organizationId }
       : { organizationId };
 
-    // Hide received POs older than 7 days
+    // Hide received POs older than 7 days (unless Super Admin toggled "Show All History")
+    const showAllHistory = isSuperAdmin && params.showAll === "true";
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
     // Fetch sequentially to avoid exhausting Neon connection pool
     const purchaseOrders = await db.purchaseOrder.findMany({
       where: {
         ...poWhere,
-        OR: [
-          { status: { not: "RECEIVED" } },
-          { status: "RECEIVED", updatedAt: { gte: sevenDaysAgo } },
-        ],
+        ...(!showAllHistory ? {
+          OR: [
+            { status: { not: "RECEIVED" } },
+            { status: "RECEIVED", updatedAt: { gte: sevenDaysAgo } },
+          ],
+        } : {}),
       },
       select: {
         id: true,
@@ -87,6 +90,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         consumables={JSON.parse(JSON.stringify(consumables))}
         initialStatus={params.status}
         initialRegion={params.region}
+        showAllHistory={showAllHistory}
       />
     );
   } catch (error) {

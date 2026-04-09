@@ -90,6 +90,7 @@ interface Props {
   canEditQty?: boolean;
   initialStatus?: string;
   initialRegion?: string;
+  showAllHistory?: boolean;
 }
 
 function mapStatusToTab(status?: string): string {
@@ -98,7 +99,7 @@ function mapStatusToTab(status?: string): string {
   return map[status.toUpperCase()] || "Pending";
 }
 
-export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion }: Props) {
+export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion, showAllHistory = false }: Props) {
   const { addToast } = useToast();
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -378,12 +379,32 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             {pendingCount > 0 && ` · ${pendingCount} pending`}
           </p>
         </div>
-        {canManagePO && (
-          <Button onClick={() => setShowCreate(true)}>
-            <Icon name="plus" size={14} className="mr-1.5" />
-            Create Order
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {isSuperAdmin && (
+            <Button
+              size="sm"
+              variant={showAllHistory ? "primary" : "secondary"}
+              onClick={() => {
+                const url = new URL(window.location.href);
+                if (showAllHistory) {
+                  url.searchParams.delete("showAll");
+                } else {
+                  url.searchParams.set("showAll", "true");
+                }
+                router.push(url.pathname + url.search);
+              }}
+            >
+              <Icon name="clock" size={14} className="mr-1.5" />
+              {showAllHistory ? "Recent Only" : "All History"}
+            </Button>
+          )}
+          {canManagePO && (
+            <Button onClick={() => setShowCreate(true)}>
+              <Icon name="plus" size={14} className="mr-1.5" />
+              Create Order
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Mobile: compact status dropdown + search in one row */}
