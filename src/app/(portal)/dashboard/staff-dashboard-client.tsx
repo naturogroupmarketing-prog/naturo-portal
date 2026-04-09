@@ -522,7 +522,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>{item.asset.name}</p>
-                              <p className="text-xs text-shark-400">{item.asset.assetCode}</p>
+                              <p className="text-xs text-shark-400">{item.asset.category}</p>
                               {isNotReceived && state.reason && <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>}
                             </div>
                             <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { const reason = prompt("Why was this item not received?"); if (reason) toggleItem(key, "not_received", reason); } }} className={`p-1.5 rounded-lg transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
@@ -686,7 +686,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-shark-800">{asset.name}</p>
-                        <p className="text-xs text-shark-400">{asset.assetCode} · {asset.category}</p>
+                        <p className="text-xs text-shark-400">{asset.category}</p>
                       </div>
                     </div>
                   ))}
@@ -720,7 +720,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-shark-800">{asset.name}</p>
-                        <p className="text-xs text-shark-400">{asset.assetCode} · {asset.category}</p>
+                        <p className="text-xs text-shark-400">{asset.category}</p>
                       </div>
                       <button
                         onClick={() => {
@@ -813,7 +813,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <p className={`text-sm truncate ${isExcluded ? "line-through text-shark-400" : "text-shark-800"}`}>{a.name}</p>
-                                  <p className="text-xs text-shark-400">{a.assetCode}</p>
+                                  <p className="text-xs text-shark-400">{a.category}</p>
                                 </div>
                               </label>
                               {renderExclusionInput(key)}
@@ -918,7 +918,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-shark-800 truncate">{item.type === "consumable" && item.quantity ? `${item.quantity}x ` : ""}{item.name}</p>
                     <p className="text-xs text-shark-400 truncate">
-                      {item.code || item.unitType || ""}
+                      {item.category || item.unitType || ""}
                       {item.kitName && <span className="ml-1 text-action-500">· {item.kitName}</span>}
                     </p>
                   </div>
