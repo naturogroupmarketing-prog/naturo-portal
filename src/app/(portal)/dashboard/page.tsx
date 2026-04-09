@@ -32,7 +32,7 @@ export default async function DashboardPage() {
       // Pending kit items — consumables not yet acknowledged
       db.consumableAssignment.findMany({
         where: { userId: session.user.id, isActive: true, acknowledgedAt: null, starterKitApplicationId: { not: null } },
-        include: { consumable: { select: { name: true, unitType: true, imageUrl: true } } },
+        include: { consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } } },
         orderBy: { assignedDate: "desc" },
       }),
       // Kit applications for "Return Kit" feature

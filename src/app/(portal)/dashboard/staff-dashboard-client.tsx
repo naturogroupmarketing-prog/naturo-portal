@@ -35,7 +35,7 @@ interface PendingConsumableItem {
   id: string;
   starterKitApplicationId: string | null;
   quantity: number;
-  consumable: { name: string; unitType: string; imageUrl: string | null };
+  consumable: { name: string; unitType: string; category: string; imageUrl: string | null };
 }
 
 interface ActiveKitApplication {
@@ -426,104 +426,84 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 {allReceivedAlready ? "Deselect All" : "Select All as Received"}
               </button>
             </div>
-            <div className="divide-y divide-shark-100">
-              {/* Pending Assets */}
-              {pendingAssetItems.map((item) => {
-                const key = `asset-${item.id}`;
-                const state = itemStates[key];
-                const isReceived = state?.status === "received";
-                const isNotReceived = state?.status === "not_received";
-                return (
-                  <div
-                    key={key}
-                    className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
-                      isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isReceived}
-                      onChange={() => toggleItem(key, "received")}
-                      className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0"
-                    />
-                    <Icon name="package" size={16} className={`shrink-0 ${isReceived ? "text-action-400" : isNotReceived ? "text-red-400" : "text-action-500"}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>
-                        {item.asset.name}
-                      </p>
-                      <p className="text-xs text-shark-400">{item.asset.assetCode} · {item.asset.category}</p>
-                      {isNotReceived && state.reason && (
-                        <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>
-                      )}
+            <div className="space-y-4">
+              {/* Assets — grouped by category */}
+              {(() => {
+                const assetsByCategory = new Map<string, PendingAssetItem[]>();
+                for (const item of pendingAssetItems) {
+                  const cat = item.asset.category || "Other";
+                  if (!assetsByCategory.has(cat)) assetsByCategory.set(cat, []);
+                  assetsByCategory.get(cat)!.push(item);
+                }
+                return Array.from(assetsByCategory.entries()).map(([cat, items]) => (
+                  <div key={`asset-cat-${cat}`}>
+                    <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider px-3 mb-1">{cat}</p>
+                    <div className="divide-y divide-shark-100">
+                      {items.map((item) => {
+                        const key = `asset-${item.id}`;
+                        const state = itemStates[key];
+                        const isReceived = state?.status === "received";
+                        const isNotReceived = state?.status === "not_received";
+                        return (
+                          <div key={key} className={`flex items-center gap-3 px-3 py-2.5 transition-all ${isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""}`}>
+                            <input type="checkbox" checked={isReceived} onChange={() => toggleItem(key, "received")} className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0" />
+                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                              {item.asset.imageUrl ? <img src={item.asset.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>{item.asset.name}</p>
+                              <p className="text-xs text-shark-400">{item.asset.assetCode}</p>
+                              {isNotReceived && state.reason && <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>}
+                            </div>
+                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { const reason = prompt("Why was this item not received?"); if (reason) toggleItem(key, "not_received", reason); } }} className={`p-1.5 rounded-lg transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
+                              <Icon name="x" size={16} />
+                            </button>
+                          </div>
+                        );
+                      })}
                     </div>
-                    <button
-                      onClick={() => {
-                        if (isNotReceived) {
-                          toggleItem(key, "not_received");
-                        } else {
-                          const reason = prompt("Why was this item not received?");
-                          if (reason) toggleItem(key, "not_received", reason);
-                        }
-                      }}
-                      className={`p-1.5 rounded-lg transition-colors shrink-0 ${
-                        isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
-                      }`}
-                      title={isNotReceived ? "Undo not received" : "Not received"}
-                    >
-                      <Icon name="x" size={16} />
-                    </button>
                   </div>
-                );
-              })}
+                ));
+              })()}
 
-              {/* Pending Consumables */}
-              {pendingConsumableItems.map((item) => {
-                const key = `consumable-${item.id}`;
-                const state = itemStates[key];
-                const isReceived = state?.status === "received";
-                const isNotReceived = state?.status === "not_received";
-                return (
-                  <div
-                    key={key}
-                    className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
-                      isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isReceived}
-                      onChange={() => toggleItem(key, "received")}
-                      className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0"
-                    />
-                    <Icon name="droplet" size={16} className={`shrink-0 ${isReceived ? "text-action-400" : isNotReceived ? "text-red-400" : "text-blue-500"}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>
-                        {item.quantity}x {item.consumable.name}
-                      </p>
-                      <p className="text-xs text-shark-400">{item.consumable.unitType}</p>
-                      {isNotReceived && state.reason && (
-                        <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>
-                      )}
+              {/* Consumables — grouped by category */}
+              {(() => {
+                const consumablesByCategory = new Map<string, PendingConsumableItem[]>();
+                for (const item of pendingConsumableItems) {
+                  const cat = item.consumable.category || "Other";
+                  if (!consumablesByCategory.has(cat)) consumablesByCategory.set(cat, []);
+                  consumablesByCategory.get(cat)!.push(item);
+                }
+                return Array.from(consumablesByCategory.entries()).map(([cat, items]) => (
+                  <div key={`consumable-cat-${cat}`}>
+                    <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider px-3 mb-1">{cat}</p>
+                    <div className="divide-y divide-shark-100">
+                      {items.map((item) => {
+                        const key = `consumable-${item.id}`;
+                        const state = itemStates[key];
+                        const isReceived = state?.status === "received";
+                        const isNotReceived = state?.status === "not_received";
+                        return (
+                          <div key={key} className={`flex items-center gap-3 px-3 py-2.5 transition-all ${isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""}`}>
+                            <input type="checkbox" checked={isReceived} onChange={() => toggleItem(key, "received")} className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0" />
+                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                              {item.consumable.imageUrl ? <img src={item.consumable.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>{item.quantity}x {item.consumable.name}</p>
+                              <p className="text-xs text-shark-400">{item.consumable.unitType}</p>
+                              {isNotReceived && state.reason && <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>}
+                            </div>
+                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { const reason = prompt("Why was this item not received?"); if (reason) toggleItem(key, "not_received", reason); } }} className={`p-1.5 rounded-lg transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
+                              <Icon name="x" size={16} />
+                            </button>
+                          </div>
+                        );
+                      })}
                     </div>
-                    <button
-                      onClick={() => {
-                        if (isNotReceived) {
-                          toggleItem(key, "not_received");
-                        } else {
-                          const reason = prompt("Why was this item not received?");
-                          if (reason) toggleItem(key, "not_received", reason);
-                        }
-                      }}
-                      className={`p-1.5 rounded-lg transition-colors shrink-0 ${
-                        isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
-                      }`}
-                      title={isNotReceived ? "Undo not received" : "Not received"}
-                    >
-                      <Icon name="x" size={16} />
-                    </button>
                   </div>
-                );
-              })}
+                ));
+              })()}
             </div>
 
             {/* Processing overlay */}
