@@ -85,15 +85,33 @@ export async function notifyAdminsAndManagers({
     })),
   });
 
-  // Send email notifications to users who have them enabled (non-blocking)
-  for (const user of users) {
-    if (user.emailNotifications && user.email) {
-      sendEmail({
-        to: user.email,
-        subject: `Trackio: ${title}`,
-        html: buildNotificationEmailHtml(title, message, link),
-      }).catch(() => {});
-    }
+  // Batch email sends — non-blocking, 5 at a time
+  const emailUsers = users.filter((u) => u.emailNotifications && u.email);
+  if (emailUsers.length > 0) {
+    batchSendEmails(emailUsers.map((u) => ({
+      to: u.email!,
+      subject: `Trackio: ${title}`,
+      html: buildNotificationEmailHtml(title, message, link),
+    }))).catch(() => {});
+  }
+}
+
+/**
+ * Bulk create notifications for multiple users
+ */
+export async function createNotifications(items: { userId: string; type: NotificationType; title: string; message: string; link?: string }[]) {
+  if (items.length === 0) return;
+  await db.notification.createMany({ data: items });
+}
+
+/**
+ * Send emails in batches of 5 to avoid overwhelming the email provider
+ */
+async function batchSendEmails(emails: { to: string; subject: string; html: string }[]) {
+  const BATCH_SIZE = 5;
+  for (let i = 0; i < emails.length; i += BATCH_SIZE) {
+    const batch = emails.slice(i, i + BATCH_SIZE);
+    await Promise.allSettled(batch.map((e) => sendEmail(e)));
   }
 }
 

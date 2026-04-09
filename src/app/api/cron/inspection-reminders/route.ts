@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
-import { createNotification } from "@/lib/notifications";
+import { createNotification, createNotifications } from "@/lib/notifications";
 
 /**
  * Cron endpoint — sends 48hr and 24hr inspection reminders
@@ -88,11 +88,11 @@ export async function GET(request: NextRequest) {
       month: "long",
     });
 
-    for (const staff of staffToRemind) {
-      // Skip staff who have already submitted at least one check this month
-      // (they may not be fully complete, but they've started)
-      // For a stricter check, compare total items vs submitted — but this is good enough for reminders
+    // Batch collect emails and notifications
+    const emailBatch: { to: string; subject: string; html: string }[] = [];
+    const notifBatch: { userId: string; type: "MAINTENANCE_DUE"; title: string; message: string; link: string }[] = [];
 
+    for (const staff of staffToRemind) {
       const subject = is24h
         ? `FINAL REMINDER: ${schedule.title} — due tomorrow`
         : `Reminder: ${schedule.title} — due in 2 days`;
@@ -101,30 +101,32 @@ export async function GET(request: NextRequest) {
         ? `This is your final reminder. "${schedule.title}" is due tomorrow (${formattedDate}). Please complete your equipment condition check before the deadline.`
         : `"${schedule.title}" is due in 2 days (${formattedDate}). Please take photos of your assigned equipment and submit your condition check.`;
 
-      // Send email
-      await sendEmail({
+      emailBatch.push({
         to: staff.email,
         subject: `Trackio: ${subject}`,
-        html: buildReminderEmail(
-          staff.name || "Team Member",
-          schedule.title,
-          formattedDate,
-          is24h,
-          schedule.notes
-        ),
+        html: buildReminderEmail(staff.name || "Team Member", schedule.title, formattedDate, is24h, schedule.notes),
       });
-      emailsSent++;
 
-      // Also create in-app notification
-      await createNotification({
+      notifBatch.push({
         userId: staff.id,
         type: "MAINTENANCE_DUE",
         title: is24h ? `Final Reminder: ${schedule.title}` : `Reminder: ${schedule.title}`,
         message,
         link: "/dashboard",
       });
-      notificationsSent++;
     }
+
+    // Batch create notifications
+    if (notifBatch.length > 0) {
+      await createNotifications(notifBatch);
+      notificationsSent += notifBatch.length;
+    }
+
+    // Batch send emails (5 at a time)
+    for (let i = 0; i < emailBatch.length; i += 5) {
+      await Promise.allSettled(emailBatch.slice(i, i + 5).map((e) => sendEmail(e)));
+    }
+    emailsSent += emailBatch.length;
   }
 
   // Also check for OVERDUE org-wide schedules and notify admins

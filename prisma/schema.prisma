@@ -126,6 +126,9 @@ model Organization {
   address            String?
   website            String?
   abn                String?            // Australian Business Number
+  aiRequestsUsed     Int                @default(0)
+  aiRequestsLimit    Int                @default(100)
+  aiResetDate        DateTime?
 
   users          User[]
   states         State[]

@@ -4,6 +4,7 @@ import { anthropic } from "@/lib/ai";
 import { AI_TOOLS, executeAITool } from "@/lib/ai-tools";
 import { hasPermission } from "@/lib/permissions";
 import { rateLimit, RATE_LIMITS, rateLimitHeaders } from "@/lib/rate-limit";
+import { db } from "@/lib/db";
 import type { Role } from "@/generated/prisma/client";
 
 export async function POST(request: NextRequest) {
@@ -19,6 +20,28 @@ export async function POST(request: NextRequest) {
       { error: "Too many requests. Please wait a moment." },
       { status: 429, headers: rateLimitHeaders(rl) }
     );
+  }
+
+  // Check per-org AI usage limit
+  const organizationId = session.user.organizationId;
+  if (organizationId) {
+    const org = await db.organization.findUnique({
+      where: { id: organizationId },
+      select: { aiRequestsUsed: true, aiRequestsLimit: true, aiResetDate: true },
+    });
+    if (org) {
+      // Auto-reset monthly
+      const now = new Date();
+      const resetDate = org.aiResetDate ? new Date(org.aiResetDate) : null;
+      if (!resetDate || now.getMonth() !== resetDate.getMonth() || now.getFullYear() !== resetDate.getFullYear()) {
+        await db.organization.update({ where: { id: organizationId }, data: { aiRequestsUsed: 0, aiResetDate: now } });
+      } else if (org.aiRequestsUsed >= org.aiRequestsLimit) {
+        return Response.json(
+          { error: `Your organisation has reached its monthly AI limit (${org.aiRequestsLimit} requests). Contact your administrator to upgrade.` },
+          { status: 429 }
+        );
+      }
+    }
   }
 
   const { messages } = (await request.json()) as {
@@ -172,6 +195,14 @@ COMMON TROUBLESHOOTING (answer these if asked):
       }
 
       currentMessages.push({ role: "user", content: toolResults as never });
+    }
+
+    // Increment AI usage counter
+    if (organizationId) {
+      await db.organization.update({
+        where: { id: organizationId },
+        data: { aiRequestsUsed: { increment: 1 } },
+      }).catch(() => {}); // Don't fail the response if counter update fails
     }
 
     return Response.json({ response: finalText, dataChanged: toolsUsed });
