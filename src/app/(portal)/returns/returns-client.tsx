@@ -34,9 +34,10 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   const router = useRouter();
   const { addToast } = useToast();
   const [itemStates, setItemStates] = useState<Record<string, { status: "verified" | "rejected"; reason?: string }>>({});
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState<string | boolean>(false);
   const [submitted, setSubmitted] = useState(false);
   const [expandedStaff, setExpandedStaff] = useState<Set<string>>(new Set());
+  const [processedStaff, setProcessedStaff] = useState<Set<string>>(new Set());
 
   // Group returns by staff
   const staffGroups = useMemo(() => {
@@ -94,10 +95,10 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
     });
   };
 
-  const handleFinalConfirm = async () => {
-    setSubmitting(true);
+  const handleConfirmStaff = async (group: StaffGroup) => {
+    setSubmitting(group.email);
     try {
-      const batchItems = returns
+      const batchItems = group.items
         .filter((item) => itemStates[item.id])
         .map((item) => {
           const state = itemStates[item.id];
@@ -115,8 +116,8 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
       if (batchItems.length === 0) return;
       await batchProcessReturns(batchItems);
-      setSubmitted(true);
-      addToast("Returns processed successfully", "success");
+      setProcessedStaff((prev) => new Set(prev).add(group.email));
+      addToast(`Returns for ${group.name} processed`, "success");
       router.refresh();
     } catch (err) {
       addToast(err instanceof Error ? err.message : "Failed to process returns", "error");
@@ -161,10 +162,12 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         </Card>
       ) : (
         <div className="space-y-3">
-          {staffGroups.map((group) => {
+          {staffGroups.filter((g) => !processedStaff.has(g.email)).map((group) => {
             const isExpanded = expandedStaff.has(group.email);
             const groupProcessed = group.items.filter((r) => itemStates[r.id]).length;
             const allGroupVerified = group.items.every((r) => itemStates[r.id]?.status === "verified");
+            const allGroupMarked = groupProcessed === group.items.length;
+            const isSubmittingThis = submitting === group.email;
 
             return (
               <Card key={group.email}>
@@ -282,21 +285,29 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                         );
                       })}
                     </div>
+
+                    {/* Per-staff confirm button */}
+                    {allGroupMarked && (
+                      <div className="px-5 py-3 border-t border-shark-100">
+                        <Button
+                          className="w-full"
+                          size="sm"
+                          onClick={() => handleConfirmStaff(group)}
+                          loading={isSubmittingThis}
+                        >
+                          Confirm {group.name}&apos;s Returns
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </Card>
             );
           })}
 
-          {/* Confirm button */}
-          {allProcessed && !submitting && (
-            <Button className="w-full" onClick={handleFinalConfirm} loading={submitting}>
-              Confirm All Returns
-            </Button>
-          )}
-          {!allProcessed && !submitting && totalItems > 0 && (
+          {totalItems > 0 && processedCount === 0 && (
             <p className="text-xs text-shark-400 text-center">
-              Mark all {totalItems} items to confirm
+              Expand a staff member and mark items to confirm
             </p>
           )}
         </div>
