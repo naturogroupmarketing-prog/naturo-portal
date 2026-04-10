@@ -140,7 +140,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setModal("region")}>
             <Icon name="plus" size={14} className="mr-1.5" />
-            Region
+            Location
           </Button>
           <Button size="sm" onClick={() => setModal("state")}>
             <Icon name="plus" size={14} className="mr-1.5" />

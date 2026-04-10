@@ -202,7 +202,10 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
           <h1 className="text-3xl font-bold text-shark-900 tracking-tight">User Management</h1>
           <p className="text-sm text-shark-400 mt-1">{filtered.length} total users</p>
         </div>
-        <Button onClick={() => setShowCreate(true)}>+ New User</Button>
+        <Button size="sm" onClick={() => setShowCreate(true)}>
+          <Icon name="plus" size={14} className="mr-1.5" />
+          New User
+        </Button>
       </div>
 
       <div className="flex items-center gap-3">

@@ -556,7 +556,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <Icon name="settings" size={14} className="mr-1.5" />
             Sections
           </Button>
-          <Button onClick={() => setShowCreate(true)}>+ New Consumable</Button>
+          <Button size="sm" onClick={() => setShowCreate(true)}>
+            <Icon name="plus" size={14} className="mr-1.5" />
+            New Consumable
+          </Button>
         </div>
       </div>
 

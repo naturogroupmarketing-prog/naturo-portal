@@ -390,7 +390,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Purchase Orders</h1>
           <p className="text-sm text-shark-400 mt-1">
@@ -418,7 +418,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             </Button>
           )}
           {canManagePO && (
-            <Button onClick={() => setShowCreate(true)}>
+            <Button size="sm" onClick={() => setShowCreate(true)}>
               <Icon name="plus" size={14} className="mr-1.5" />
               Create Order
             </Button>

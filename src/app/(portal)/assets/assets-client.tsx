@@ -813,7 +813,12 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <Icon name="settings" size={14} className="mr-1.5" />
             Sections
           </Button>
-          {permissions.canAdd && <Button onClick={() => setShowCreate(true)}>+ New Asset</Button>}
+          {permissions.canAdd && (
+            <Button size="sm" onClick={() => setShowCreate(true)}>
+              <Icon name="plus" size={14} className="mr-1.5" />
+              New Asset
+            </Button>
+          )}
         </div>
       </div>
 

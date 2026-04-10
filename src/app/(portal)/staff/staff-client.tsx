@@ -426,12 +426,17 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
         </div>
         <div className="flex items-center gap-2">
           {starterKits.length > 0 && (
-            <Button variant="outline" onClick={() => { setShowAssignKit(true); setAssignKitUserId(""); setAssignKitId(starterKits.find(k => k.isDefault)?.id || starterKits[0]?.id || ""); }}>
+            <Button variant="outline" size="sm" onClick={() => { setShowAssignKit(true); setAssignKitUserId(""); setAssignKitId(starterKits.find(k => k.isDefault)?.id || starterKits[0]?.id || ""); }}>
               <Icon name="box" size={14} className="mr-1.5" />
               Assign Starter Kit
             </Button>
           )}
-          {isSuperAdmin && <Button onClick={() => setShowCreate(true)}>+ New User</Button>}
+          {isSuperAdmin && (
+            <Button size="sm" onClick={() => setShowCreate(true)}>
+              <Icon name="plus" size={14} className="mr-1.5" />
+              New User
+            </Button>
+          )}
         </div>
       </div>
 
