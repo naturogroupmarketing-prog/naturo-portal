@@ -115,7 +115,8 @@ function POStatusDropdown({ po, canManage, isSuperAdmin, onAction, loading }: {
     return base;
   })();
 
-  const hasActions = canManage && actions.length > 0;
+  // Branch managers always have access to their limited actions (ORDERED ↔ RECEIVED)
+  const hasActions = (canManage || actions.length > 0) && actions.length > 0;
 
   const updatePos = useCallback(() => {
     if (!btnRef.current) return;
