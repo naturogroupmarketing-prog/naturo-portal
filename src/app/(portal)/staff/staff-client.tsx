@@ -684,46 +684,66 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 {(editUser.assetAssignments.length > 0 || (editUser.consumableAssignments?.length ?? 0) > 0 || (editUser.consumableRequests?.length ?? 0) > 0) && (
                   <div className="border border-shark-100 rounded-lg p-3 space-y-3">
                     <p className="text-xs font-semibold uppercase tracking-wider text-shark-400">On Hand</p>
-                    {editUser.assetAssignments.length > 0 && (
-                      <div>
-                        <p className="text-xs text-shark-400 mb-1">Assets ({editUser.assetAssignments.length})</p>
-                        <div className="space-y-1">
-                          {editUser.assetAssignments.map((a, idx) => (
-                            <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 py-0.5">
-                              {a.asset.imageUrl ? (
-                                <img src={a.asset.imageUrl} alt={a.asset.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
-                              ) : (
-                                <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
-                                  <Icon name="package" size={12} className="text-action-400" />
-                                </div>
-                              )}
-                              <span className="truncate">{a.asset.name}</span>
-                              <span className="text-xs text-shark-300 ml-auto shrink-0">{a.asset.category}</span>
+                    {editUser.assetAssignments.length > 0 && (() => {
+                      const grouped = editUser.assetAssignments.reduce((acc, a) => {
+                        (acc[a.asset.category] ??= []).push(a);
+                        return acc;
+                      }, {} as Record<string, typeof editUser.assetAssignments>);
+                      return (
+                        <div className="space-y-2">
+                          <p className="text-xs text-shark-400">Assets ({editUser.assetAssignments.length})</p>
+                          {Object.entries(grouped).map(([cat, items]) => (
+                            <div key={cat}>
+                              <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                              <div className="space-y-0.5">
+                                {items.map((a, idx) => (
+                                  <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 py-0.5">
+                                    {a.asset.imageUrl ? (
+                                      <img src={a.asset.imageUrl} alt={a.asset.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
+                                    ) : (
+                                      <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                                        <Icon name="package" size={12} className="text-action-400" />
+                                      </div>
+                                    )}
+                                    <span className="truncate">{a.asset.name}</span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           ))}
                         </div>
-                      </div>
-                    )}
-                    {(editUser.consumableAssignments?.length ?? 0) > 0 && (
-                      <div>
-                        <p className="text-xs text-shark-400 mb-1">Consumables ({editUser.consumableAssignments!.length})</p>
-                        <div className="space-y-1">
-                          {editUser.consumableAssignments!.map((c, idx) => (
-                            <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 py-0.5">
-                              {c.consumable.imageUrl ? (
-                                <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
-                              ) : (
-                                <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                  <Icon name="droplet" size={12} className="text-blue-400" />
-                                </div>
-                              )}
-                              <span className="truncate">{c.quantity}x {c.consumable.name}</span>
-                              <span className="text-xs text-shark-300 ml-auto shrink-0">{c.consumable.category}</span>
+                      );
+                    })()}
+                    {(editUser.consumableAssignments?.length ?? 0) > 0 && (() => {
+                      const grouped = editUser.consumableAssignments!.reduce((acc, c) => {
+                        (acc[c.consumable.category] ??= []).push(c);
+                        return acc;
+                      }, {} as Record<string, typeof editUser.consumableAssignments>);
+                      return (
+                        <div className="space-y-2">
+                          <p className="text-xs text-shark-400">Consumables ({editUser.consumableAssignments!.length})</p>
+                          {Object.entries(grouped).map(([cat, items]) => (
+                            <div key={cat}>
+                              <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                              <div className="space-y-0.5">
+                                {items!.map((c, idx) => (
+                                  <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 py-0.5">
+                                    {c.consumable.imageUrl ? (
+                                      <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
+                                    ) : (
+                                      <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                        <Icon name="droplet" size={12} className="text-blue-400" />
+                                      </div>
+                                    )}
+                                    <span className="truncate">{c.quantity}x {c.consumable.name}</span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           ))}
                         </div>
-                      </div>
-                    )}
+                      );
+                    })()}
                     {(editUser.consumableRequests?.length ?? 0) > 0 && (
                       <div>
                         <p className="text-xs text-shark-400 mb-1">Pending Requests ({editUser.consumableRequests!.length})</p>
@@ -830,46 +850,66 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                       <span className="text-sm text-shark-800">{editUser.isActive ? "Active" : "Disabled"}</span>
                     </div>
                   </div>
-                  {editUser.assetAssignments.length > 0 && (
-                    <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Assigned Assets ({editUser.assetAssignments.length})</label>
-                      <div className="space-y-1">
-                        {editUser.assetAssignments.map((a, idx) => (
-                          <div key={idx} className="flex items-center gap-2.5 py-1">
-                            {a.asset.imageUrl ? (
-                              <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
-                            ) : (
-                              <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
-                                <Icon name="package" size={14} className="text-action-400" />
-                              </div>
-                            )}
-                            <p className="text-sm text-shark-700 truncate">{a.asset.name}</p>
-                            <span className="text-xs text-shark-300 ml-auto shrink-0">{a.asset.category}</span>
+                  {editUser.assetAssignments.length > 0 && (() => {
+                    const grouped = editUser.assetAssignments.reduce((acc, a) => {
+                      (acc[a.asset.category] ??= []).push(a);
+                      return acc;
+                    }, {} as Record<string, typeof editUser.assetAssignments>);
+                    return (
+                      <div className="space-y-3">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Assets ({editUser.assetAssignments.length})</label>
+                        {Object.entries(grouped).map(([cat, items]) => (
+                          <div key={cat}>
+                            <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                            <div className="space-y-1">
+                              {items.map((a, idx) => (
+                                <div key={idx} className="flex items-center gap-2.5 py-1">
+                                  {a.asset.imageUrl ? (
+                                    <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                                  ) : (
+                                    <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                                      <Icon name="package" size={14} className="text-action-400" />
+                                    </div>
+                                  )}
+                                  <p className="text-sm text-shark-700 truncate">{a.asset.name}</p>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
-                  {(editUser.consumableAssignments?.length ?? 0) > 0 && (
-                    <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Assigned Consumables ({editUser.consumableAssignments!.length})</label>
-                      <div className="space-y-1">
-                        {editUser.consumableAssignments!.map((c, idx) => (
-                          <div key={idx} className="flex items-center gap-2.5 py-1">
-                            {c.consumable.imageUrl ? (
-                              <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
-                            ) : (
-                              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                <Icon name="droplet" size={14} className="text-blue-400" />
-                              </div>
-                            )}
-                            <p className="text-sm text-shark-700 truncate">{c.quantity}x {c.consumable.name}</p>
-                            <span className="text-xs text-shark-300 ml-auto shrink-0">{c.consumable.category}</span>
+                    );
+                  })()}
+                  {(editUser.consumableAssignments?.length ?? 0) > 0 && (() => {
+                    const grouped = editUser.consumableAssignments!.reduce((acc, c) => {
+                      (acc[c.consumable.category] ??= []).push(c);
+                      return acc;
+                    }, {} as Record<string, typeof editUser.consumableAssignments>);
+                    return (
+                      <div className="space-y-3">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Consumables ({editUser.consumableAssignments!.length})</label>
+                        {Object.entries(grouped).map(([cat, items]) => (
+                          <div key={cat}>
+                            <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                            <div className="space-y-1">
+                              {items!.map((c, idx) => (
+                                <div key={idx} className="flex items-center gap-2.5 py-1">
+                                  {c.consumable.imageUrl ? (
+                                    <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                                  ) : (
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                      <Icon name="droplet" size={14} className="text-blue-400" />
+                                    </div>
+                                  )}
+                                  <p className="text-sm text-shark-700 truncate">{c.quantity}x {c.consumable.name}</p>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
                   {(editUser.consumableRequests?.length ?? 0) > 0 && (
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Pending Requests ({editUser.consumableRequests!.length})</label>
@@ -1007,23 +1047,35 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               </h3>
               {detailUser.assetAssignments.length === 0 ? (
                 <p className="text-xs text-shark-400 pl-5">No assets assigned</p>
-              ) : (
-                <div className="space-y-1.5 pl-5">
-                  {detailUser.assetAssignments.map((a, i) => (
-                    <div key={i} className="flex items-center gap-2.5 text-sm py-1.5 border-b border-shark-50 last:border-0">
-                      {a.asset.imageUrl ? (
-                        <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
-                      ) : (
-                        <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
-                          <Icon name="package" size={14} className="text-action-400" />
+              ) : (() => {
+                const grouped = detailUser.assetAssignments.reduce((acc, a) => {
+                  (acc[a.asset.category] ??= []).push(a);
+                  return acc;
+                }, {} as Record<string, typeof detailUser.assetAssignments>);
+                return (
+                  <div className="space-y-3 pl-5">
+                    {Object.entries(grouped).map(([cat, items]) => (
+                      <div key={cat}>
+                        <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                        <div className="space-y-1">
+                          {items.map((a, i) => (
+                            <div key={i} className="flex items-center gap-2.5 text-sm py-1">
+                              {a.asset.imageUrl ? (
+                                <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                              ) : (
+                                <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                                  <Icon name="package" size={14} className="text-action-400" />
+                                </div>
+                              )}
+                              <span className="font-medium text-shark-800 truncate">{a.asset.name}</span>
+                            </div>
+                          ))}
                         </div>
-                      )}
-                      <span className="font-medium text-shark-800 truncate">{a.asset.name}</span>
-                      <span className="text-xs text-shark-400 ml-auto shrink-0">{a.asset.category}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Consumables assigned */}
@@ -1034,23 +1086,36 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               </h3>
               {!detailUser.consumableAssignments?.length ? (
                 <p className="text-xs text-shark-400 pl-5">No consumables assigned</p>
-              ) : (
-                <div className="space-y-1.5 pl-5">
-                  {detailUser.consumableAssignments.map((c, i) => (
-                    <div key={i} className="flex items-center gap-2.5 text-sm py-1.5 border-b border-shark-50 last:border-0">
-                      {c.consumable.imageUrl ? (
-                        <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
-                      ) : (
-                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                          <Icon name="droplet" size={14} className="text-blue-400" />
+              ) : (() => {
+                const grouped = detailUser.consumableAssignments.reduce((acc, c) => {
+                  (acc[c.consumable.category] ??= []).push(c);
+                  return acc;
+                }, {} as Record<string, typeof detailUser.consumableAssignments>);
+                return (
+                  <div className="space-y-3 pl-5">
+                    {Object.entries(grouped).map(([cat, items]) => (
+                      <div key={cat}>
+                        <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                        <div className="space-y-1">
+                          {items!.map((c, i) => (
+                            <div key={i} className="flex items-center gap-2.5 text-sm py-1">
+                              {c.consumable.imageUrl ? (
+                                <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                              ) : (
+                                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                  <Icon name="droplet" size={14} className="text-blue-400" />
+                                </div>
+                              )}
+                              <span className="font-medium text-shark-800 truncate">{c.consumable.name}</span>
+                              <span className="text-xs text-shark-400 ml-auto shrink-0">{c.quantity} {c.consumable.unitType}</span>
+                            </div>
+                          ))}
                         </div>
-                      )}
-                      <span className="font-medium text-shark-800 truncate">{c.consumable.name}</span>
-                      <span className="text-xs text-shark-400 ml-auto shrink-0">{c.consumable.category}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Consumable usage (requests history) */}
