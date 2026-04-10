@@ -4,16 +4,13 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import {
-  createState,
-  createRegion,
-  updateState,
   updateRegion,
   deleteState,
   deleteRegion,
@@ -56,7 +53,6 @@ interface ArchivedRegion {
 export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin, archivedRegions = [] }: { locations: Location[]; regionAlerts?: Record<string, RegionAlerts>; isSuperAdmin: boolean; archivedRegions?: ArchivedRegion[] }) {
   const router = useRouter();
   const { addToast } = useToast();
-  const [modal, setModal] = useState<"state" | "region" | null>(null);
   const [collapsedStates, setCollapsedStates] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [editLocationRegion, setEditLocationRegion] = useState<Location["regions"][0] | null>(null);
@@ -97,16 +93,12 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
           <p className="text-sm text-shark-400 mt-1">{totalRegions} locations &middot; {totalAssets} assets &middot; {totalConsumables} consumables</p>
         </div>
         {isSuperAdmin && (
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => setModal("region")}>
-              <Icon name="plus" size={14} className="mr-1.5" />
-              Location
+          <Link href="/admin/locations">
+            <Button size="sm">
+              <Icon name="settings" size={14} className="mr-1.5" />
+              Manage Locations
             </Button>
-            <Button size="sm" onClick={() => setModal("state")}>
-              <Icon name="plus" size={14} className="mr-1.5" />
-              State
-            </Button>
-          </div>
+          </Link>
         )}
       </div>
 
@@ -260,51 +252,6 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
           );
         })
       )}
-
-      {/* Add State Modal */}
-      <Modal open={modal === "state"} onClose={() => setModal(null)} title="Add State">
-        <form action={async (fd) => {
-          try { await createState(fd); addToast("State added", "success"); setModal(null); router.refresh(); }
-          catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
-        }} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">State Name *</label>
-            <Input name="name" required placeholder="e.g. Victoria" />
-          </div>
-          <div className="flex justify-end gap-3">
-            <Button type="button" variant="secondary" onClick={() => setModal(null)}>Cancel</Button>
-            <Button type="submit">Add State</Button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* Add Region Modal */}
-      <Modal open={modal === "region"} onClose={() => setModal(null)} title="Add Location">
-        <form action={async (fd) => {
-          try { await createRegion(fd); addToast("Location added", "success"); setModal(null); router.refresh(); }
-          catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
-        }} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">State *</label>
-            <Select name="stateId" required>
-              <option value="">Select state</option>
-              {locations.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </Select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Location Name *</label>
-            <Input name="name" required placeholder="e.g. Blackburn 3130" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Address</label>
-            <Input name="address" placeholder="e.g. 123 Main St" />
-          </div>
-          <div className="flex justify-end gap-3">
-            <Button type="button" variant="secondary" onClick={() => setModal(null)}>Cancel</Button>
-            <Button type="submit">Add Location</Button>
-          </div>
-        </form>
-      </Modal>
 
       {/* Edit Region Modal */}
       <Modal open={!!editLocationRegion} onClose={() => setEditLocationRegion(null)} title={`Edit: ${editLocationRegion?.name}`}>
