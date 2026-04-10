@@ -18,6 +18,7 @@ export async function createState(formData: FormData) {
 
   await db.state.create({ data: { name, organizationId } });
   revalidatePath("/admin/locations");
+  revalidatePath("/inventory");
   return { success: true };
 }
 
@@ -39,6 +40,7 @@ export async function createRegion(formData: FormData) {
 
   await db.region.create({ data: { name, stateId, organizationId, address, latitude, longitude } });
   revalidatePath("/admin/locations");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { success: true };
 }
@@ -59,6 +61,7 @@ export async function updateState(formData: FormData) {
 
   await db.state.update({ where: { id }, data: { name: name.trim() } });
   revalidatePath("/admin/locations");
+  revalidatePath("/inventory");
   return { success: true };
 }
 
@@ -84,6 +87,7 @@ export async function updateRegion(formData: FormData) {
 
   await db.region.update({ where: { id }, data: { name: name.trim(), address, latitude, longitude } });
   revalidatePath("/admin/locations");
+  revalidatePath("/inventory");
   revalidatePath("/dashboard");
   return { success: true };
 }
