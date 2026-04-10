@@ -73,7 +73,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
             <p className={`text-lg font-bold ${data.ordersAwaitingApproval > 0 ? "text-[#E8532E]" : "text-shark-900"}`}>{data.ordersAwaitingApproval}</p>
             <p className="text-[10px] text-shark-400">purchase orders</p>
           </Link>
-          <Link href="/purchase-orders" className="bg-shark-50 rounded-xl px-3 py-2.5 hover:bg-shark-100 transition-colors">
+          <Link href="/purchase-orders?status=ORDERED" className="bg-shark-50 rounded-xl px-3 py-2.5 hover:bg-shark-100 transition-colors">
             <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Receival</p>
             <p className={`text-lg font-bold ${data.ordersAwaitingReceival > 0 ? "text-action-500" : "text-shark-900"}`}>{data.ordersAwaitingReceival}</p>
             <p className="text-[10px] text-shark-400">purchase orders</p>

@@ -172,6 +172,14 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
       u.email.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Sort: Branch Managers first, then alphabetically by name
+  const sortUsers = (list: StaffUser[]) =>
+    [...list].sort((a, b) => {
+      if (a.role === "BRANCH_MANAGER" && b.role !== "BRANCH_MANAGER") return -1;
+      if (a.role !== "BRANCH_MANAGER" && b.role === "BRANCH_MANAGER") return 1;
+      return (a.name || "").localeCompare(b.name || "");
+    });
+
   const regionGroups = regions.map((region, idx) => {
     const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
     return {
@@ -179,11 +187,11 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
       name: region.name,
       stateName: region.state.name,
       ...colors,
-      users: filtered.filter((u) => u.region?.id === region.id),
+      users: sortUsers(filtered.filter((u) => u.region?.id === region.id)),
     };
   });
 
-  const headOfficeUsers = filtered.filter((u) => !u.region);
+  const headOfficeUsers = sortUsers(filtered.filter((u) => !u.region));
   const headOfficeColors = SECTION_COLORS[regions.length % SECTION_COLORS.length];
   const isHeadOfficeCollapsed = collapsedSections.has("head-office");
 
