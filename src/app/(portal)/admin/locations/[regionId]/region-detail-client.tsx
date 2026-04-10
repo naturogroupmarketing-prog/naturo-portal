@@ -258,16 +258,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
 
   return (
     <div className="space-y-8">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-shark-400">
-        <Link href="/admin/locations" className="hover:text-action-500 transition-colors">
-          Locations
-        </Link>
-        <Icon name="arrow-right" size={12} />
-        <span>{region.state.name}</span>
-        <Icon name="arrow-right" size={12} />
-        <span className="text-shark-700 font-medium">{region.name}</span>
-      </div>
+      {/* Back button */}
+      <Link href="/admin/locations" className="inline-flex items-center gap-1.5 text-sm text-shark-400 hover:text-action-500 transition-colors">
+        <Icon name="arrow-left" size={16} />
+        <span>Back</span>
+      </Link>
 
       {/* Header */}
       <div>

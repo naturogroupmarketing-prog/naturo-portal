@@ -72,14 +72,11 @@ export function InventoryDetailClient({
 
   return (
     <div className="space-y-8">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-shark-400">
-        <Link href="/inventory" className="hover:text-action-500 transition-colors">Inventory</Link>
-        <Icon name="arrow-right" size={12} />
-        <span>{region.state.name}</span>
-        <Icon name="arrow-right" size={12} />
-        <span className="text-shark-700 font-medium">{region.name}</span>
-      </div>
+      {/* Back button */}
+      <Link href="/inventory" className="inline-flex items-center gap-1.5 text-sm text-shark-400 hover:text-action-500 transition-colors">
+        <Icon name="arrow-left" size={16} />
+        <span>Back</span>
+      </Link>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
