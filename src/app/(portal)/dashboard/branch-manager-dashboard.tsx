@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Icon } from "@/components/ui/icon";
 import { DashboardClient } from "./dashboard-client";
 import { StaffDashboardClient } from "./staff-dashboard-client";
@@ -12,6 +12,18 @@ interface Props {
 
 export function BranchManagerDashboard({ managerProps, staffProps }: Props) {
   const [view, setView] = useState<"manager" | "staff">("manager");
+
+  // Notify sidebar of view change
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("bm-dashboard-view", { detail: { view } }));
+  }, [view]);
+
+  // Reset to manager view when unmounting (navigating away)
+  useEffect(() => {
+    return () => {
+      window.dispatchEvent(new CustomEvent("bm-dashboard-view", { detail: { view: "manager" } }));
+    };
+  }, []);
 
   return (
     <div>

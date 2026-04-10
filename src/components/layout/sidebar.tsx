@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -87,6 +88,30 @@ const navSections: NavSection[] = [
 export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount = 0 }: SidebarProps) {
   const pathname = usePathname();
 
+  // Branch Managers can switch to staff view from dashboard
+  const [bmStaffView, setBmStaffView] = useState(false);
+
+  useEffect(() => {
+    if (role !== "BRANCH_MANAGER") return;
+
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setBmStaffView(detail?.view === "staff");
+    };
+    window.addEventListener("bm-dashboard-view", handler);
+    return () => window.removeEventListener("bm-dashboard-view", handler);
+  }, [role]);
+
+  // Reset to manager menu when navigating away from dashboard
+  useEffect(() => {
+    if (role === "BRANCH_MANAGER" && pathname !== "/dashboard") {
+      setBmStaffView(false);
+    }
+  }, [pathname, role]);
+
+  // When BM is in staff view, show staff menu items
+  const effectiveRole = role === "BRANCH_MANAGER" && bmStaffView ? "STAFF" : role;
+
   return (
     <nav className="flex flex-col h-full bg-white dark:bg-shark-900 transition-colors">
       <div className="flex items-center justify-between px-5 py-5 border-b border-shark-100 dark:border-shark-800">
@@ -105,9 +130,9 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
       </div>
       <div className="flex-1 overflow-y-auto py-3 px-3">
         {navSections
-          .filter((section) => section.roles.includes(role))
+          .filter((section) => section.roles.includes(effectiveRole))
           .map((section, sIdx) => {
-            const visibleItems = section.items.filter((item) => item.roles.includes(role));
+            const visibleItems = section.items.filter((item) => item.roles.includes(effectiveRole));
             if (visibleItems.length === 0) return null;
 
             return (
@@ -154,7 +179,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
 
       </div>
 
-      <MenuWalkthrough role={role} />
+      <MenuWalkthrough role={effectiveRole} />
     </nav>
   );
 }
