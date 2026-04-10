@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -553,7 +554,13 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Starter Kit</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm font-medium text-shark-700">Starter Kit</label>
+              <Link href="/starter-kits" className="text-xs text-action-500 hover:text-action-600 font-medium flex items-center gap-1">
+                <Icon name="edit" size={12} />
+                Edit Kits
+              </Link>
+            </div>
             <Select value={assignKitId} onChange={(e) => setAssignKitId(e.target.value)}>
               {starterKits.map((kit) => (
                 <option key={kit.id} value={kit.id}>
