@@ -5,51 +5,47 @@ import type { IconName } from "@/components/ui/icon";
 import { parsePreferences } from "@/lib/dashboard-types";
 import { DashboardClient } from "./dashboard-client";
 import { StaffDashboardClient } from "./staff-dashboard-client";
+import { BranchManagerDashboard } from "./branch-manager-dashboard";
 
 export const revalidate = 30; // Refresh data every 30 seconds instead of every request
 
-export default async function DashboardPage() {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
-
-  // Staff dashboard
-  if (session.user.role === "STAFF") {
-    const currentMonthYear = new Date().toISOString().slice(0, 7);
-    // Optimized: counts derived from findMany results (eliminated 4 redundant count queries)
-    const [recentRequests, pendingAssetItems, pendingConsumableItems, kitApplications, allActiveAssets, allActiveConsumables] = await Promise.all([
+// Fetch staff equipment data for a user (used by Staff dashboard and Branch Manager "My Equipment" view)
+async function fetchStaffData(userId: string, organizationId: string) {
+  const currentMonthYear = new Date().toISOString().slice(0, 7);
+  const [recentRequests, pendingAssetItems, pendingConsumableItems, kitApplications, allActiveAssets, allActiveConsumables] = await Promise.all([
       db.consumableRequest.findMany({
-        where: { userId: session.user.id },
+        where: { userId: userId },
         include: { consumable: true },
         orderBy: { createdAt: "desc" },
         take: 20,
       }),
       // Pending kit items — assets not yet acknowledged
       db.assetAssignment.findMany({
-        where: { userId: session.user.id, isActive: true, acknowledgedAt: null, starterKitApplicationId: { not: null } },
+        where: { userId: userId, isActive: true, acknowledgedAt: null, starterKitApplicationId: { not: null } },
         include: { asset: { select: { name: true, assetCode: true, category: true, imageUrl: true } } },
         orderBy: { checkoutDate: "desc" },
       }),
       // Pending kit items — consumables not yet acknowledged
       db.consumableAssignment.findMany({
-        where: { userId: session.user.id, isActive: true, acknowledgedAt: null, starterKitApplicationId: { not: null } },
+        where: { userId: userId, isActive: true, acknowledgedAt: null, starterKitApplicationId: { not: null } },
         include: { consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } } },
         orderBy: { assignedDate: "desc" },
       }),
       // Kit applications for "Return Kit" feature
       db.starterKitApplication.findMany({
-        where: { userId: session.user.id },
+        where: { userId: userId },
         include: { starterKit: { select: { name: true } } },
         orderBy: { appliedAt: "desc" },
       }),
       // ALL active asset assignments (for My Equipment section + condition checks)
       db.assetAssignment.findMany({
-        where: { userId: session.user.id, isActive: true },
+        where: { userId: userId, isActive: true },
         include: { asset: { select: { name: true, assetCode: true, category: true, imageUrl: true } } },
         orderBy: { checkoutDate: "desc" },
       }),
       // ALL active consumable assignments (for My Equipment section + condition checks)
       db.consumableAssignment.findMany({
-        where: { userId: session.user.id, isActive: true },
+        where: { userId: userId, isActive: true },
         include: { consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } } },
         orderBy: { assignedDate: "desc" },
       }),
@@ -66,14 +62,14 @@ export default async function DashboardPage() {
     // Condition checks: get config + submitted checks + schedules + user's personal schedule
     const [conditionCheckSchedule, inspectionCategories, inspectionSchedules] = await Promise.all([
       db.conditionCheckSchedule.findUnique({
-        where: { userId: session.user.id },
+        where: { userId: userId },
       }),
       db.category.findMany({
-        where: { organizationId: session.user.organizationId!, requiresInspection: true },
+        where: { organizationId, requiresInspection: true },
         select: { name: true, type: true, inspectionPhotos: true },
       }),
       db.inspectionSchedule.findMany({
-        where: { organizationId: session.user.organizationId!, isActive: true },
+        where: { organizationId, isActive: true },
         select: { id: true, title: true, dueDate: true, notes: true },
         orderBy: { dueDate: "asc" },
       }),
@@ -82,11 +78,11 @@ export default async function DashboardPage() {
     // Determine which checks to fetch based on personal schedule or default monthly
     const conditionChecksThisMonth = conditionCheckSchedule
       ? await db.conditionCheck.findMany({
-          where: { userId: session.user.id, periodStart: conditionCheckSchedule.periodStart },
+          where: { userId: userId, periodStart: conditionCheckSchedule.periodStart },
           select: { id: true, itemType: true, assetId: true, consumableId: true, condition: true, photoLabel: true },
         })
       : await db.conditionCheck.findMany({
-          where: { userId: session.user.id, monthYear: currentMonthYear },
+          where: { userId: userId, monthYear: currentMonthYear },
           select: { id: true, itemType: true, assetId: true, consumableId: true, condition: true, photoLabel: true },
         });
 
@@ -183,7 +179,7 @@ export default async function DashboardPage() {
     // Consumable usage history — last 6 months
     const staffUsageRaw = await db.consumableAssignment.findMany({
       where: {
-        userId: session.user.id,
+        userId: userId,
         isActive: false,
         returnCondition: "USED",
         returnedDate: { gte: new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1) },
@@ -221,24 +217,51 @@ export default async function DashboardPage() {
       { label: "Requests", value: pendingRequestCount, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-requests" },
     ];
 
+    return {
+      staffStats,
+      recentAssets: JSON.parse(JSON.stringify(recentAssets)),
+      recentConsumables: JSON.parse(JSON.stringify(recentConsumables)),
+      recentRequests: JSON.parse(JSON.stringify(recentRequests)),
+      unacknowledgedCount,
+      pendingAssetItems: JSON.parse(JSON.stringify(pendingAssetItems)),
+      pendingConsumableItems: JSON.parse(JSON.stringify(pendingConsumableItems)),
+      activeKitApplications,
+      individualAssets,
+      individualConsumables,
+      conditionCheckItems,
+      conditionCheckMonth: currentMonthYear,
+      conditionCheckFrequency: conditionCheckSchedule?.frequency || null,
+      conditionCheckDueDate: conditionCheckSchedule?.nextDueDate?.toISOString() || null,
+      inspectionSchedules: JSON.parse(JSON.stringify(inspectionSchedules)),
+      consumableUsageHistory,
+    };
+}
+
+export default async function DashboardPage() {
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+
+  // Staff dashboard — fetch and render
+  if (session.user.role === "STAFF") {
+    const staffData = await fetchStaffData(session.user.id, session.user.organizationId!);
     return (
       <StaffDashboardClient
-        stats={staffStats}
-        recentAssets={JSON.parse(JSON.stringify(recentAssets))}
-        recentConsumables={JSON.parse(JSON.stringify(recentConsumables))}
-        recentRequests={JSON.parse(JSON.stringify(recentRequests))}
-        unacknowledgedCount={unacknowledgedCount}
-        pendingAssetItems={JSON.parse(JSON.stringify(pendingAssetItems))}
-        pendingConsumableItems={JSON.parse(JSON.stringify(pendingConsumableItems))}
-        activeKitApplications={activeKitApplications}
-        individualAssets={individualAssets}
-        individualConsumables={individualConsumables}
-        conditionCheckItems={conditionCheckItems}
-        conditionCheckMonth={currentMonthYear}
-        conditionCheckFrequency={conditionCheckSchedule?.frequency || null}
-        conditionCheckDueDate={conditionCheckSchedule?.nextDueDate?.toISOString() || null}
-        inspectionSchedules={JSON.parse(JSON.stringify(inspectionSchedules))}
-        consumableUsageHistory={consumableUsageHistory}
+        stats={staffData.staffStats}
+        recentAssets={staffData.recentAssets}
+        recentConsumables={staffData.recentConsumables}
+        recentRequests={staffData.recentRequests}
+        unacknowledgedCount={staffData.unacknowledgedCount}
+        pendingAssetItems={staffData.pendingAssetItems}
+        pendingConsumableItems={staffData.pendingConsumableItems}
+        activeKitApplications={staffData.activeKitApplications}
+        individualAssets={staffData.individualAssets}
+        individualConsumables={staffData.individualConsumables}
+        conditionCheckItems={staffData.conditionCheckItems}
+        conditionCheckMonth={staffData.conditionCheckMonth}
+        conditionCheckFrequency={staffData.conditionCheckFrequency}
+        conditionCheckDueDate={staffData.conditionCheckDueDate}
+        inspectionSchedules={staffData.inspectionSchedules}
+        consumableUsageHistory={staffData.consumableUsageHistory}
       />
     );
   }
@@ -514,7 +537,7 @@ export default async function DashboardPage() {
   const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
   const [allStaff, consumableUsageAll] = await Promise.all([
     db.user.findMany({
-      where: { organizationId: session.user.organizationId!, isActive: true, role: "STAFF" },
+      where: { organizationId, isActive: true, role: "STAFF" },
       select: { createdAt: true },
     }),
     db.consumableAssignment.findMany({
@@ -678,25 +701,51 @@ export default async function DashboardPage() {
     { label: "Reports", href: "/reports", icon: "clipboard", iconBg: "bg-action-500", iconColor: "text-white" },
   ];
 
-  return (
-    <DashboardClient
-      stats={stats}
-      lowStockItems={JSON.parse(JSON.stringify(lowStockItems))}
-      quickLinks={quickLinks}
-      preferences={preferences}
-      subtitle={isSuperAdmin ? "All locations overview" : "Your region overview"}
-      regionBreakdown={regionBreakdown}
-      assetStatusChart={assetStatusChart}
-      categoryChart={categoryChart}
-      consumableStatusChart={consumableStatusChart}
-      consumableCategoryChart={consumableCategoryChart}
-      portfolioValue={{ purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100, consumableValue: Math.round(totalConsumableValue * 100) / 100 }}
-      portfolioChartData={portfolioChartData}
-      activityChartData={isSuperAdmin ? activityChartData : undefined}
-      operationsOverview={operationsOverview}
-      upcomingMaintenance={upcomingMaintenance}
-      isSuperAdmin={isSuperAdmin}
-      mapLocations={mapLocations}
-    />
-  );
+  const managerProps = {
+    stats,
+    lowStockItems: JSON.parse(JSON.stringify(lowStockItems)),
+    quickLinks,
+    preferences,
+    subtitle: isSuperAdmin ? "All locations overview" : "Your region overview",
+    regionBreakdown,
+    assetStatusChart,
+    categoryChart,
+    consumableStatusChart,
+    consumableCategoryChart,
+    portfolioValue: { purchase: totalPurchaseValue, current: Math.round(totalCurrentValue * 100) / 100, depreciation: Math.round((totalPurchaseValue - totalCurrentValue) * 100) / 100, consumableValue: Math.round(totalConsumableValue * 100) / 100 },
+    portfolioChartData,
+    activityChartData: isSuperAdmin ? activityChartData : undefined,
+    operationsOverview,
+    upcomingMaintenance,
+    isSuperAdmin,
+    mapLocations,
+  };
+
+  // Super Admin — standard dashboard
+  if (isSuperAdmin) {
+    return <DashboardClient {...managerProps} />;
+  }
+
+  // Branch Manager — toggle between Manager and Staff views
+  const staffData = await fetchStaffData(session.user.id, organizationId);
+  const staffProps = {
+    stats: staffData.staffStats,
+    recentAssets: staffData.recentAssets,
+    recentConsumables: staffData.recentConsumables,
+    recentRequests: staffData.recentRequests,
+    unacknowledgedCount: staffData.unacknowledgedCount,
+    pendingAssetItems: staffData.pendingAssetItems,
+    pendingConsumableItems: staffData.pendingConsumableItems,
+    activeKitApplications: staffData.activeKitApplications,
+    individualAssets: staffData.individualAssets,
+    individualConsumables: staffData.individualConsumables,
+    conditionCheckItems: staffData.conditionCheckItems,
+    conditionCheckMonth: staffData.conditionCheckMonth,
+    conditionCheckFrequency: staffData.conditionCheckFrequency,
+    conditionCheckDueDate: staffData.conditionCheckDueDate,
+    inspectionSchedules: staffData.inspectionSchedules,
+    consumableUsageHistory: staffData.consumableUsageHistory,
+  };
+
+  return <BranchManagerDashboard managerProps={managerProps} staffProps={staffProps} />;
 }
