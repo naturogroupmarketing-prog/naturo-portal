@@ -11,6 +11,7 @@ import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
 import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive, restoreUser, permanentlyDeleteUser } from "@/app/actions/users";
+import { applyStarterKit } from "@/app/actions/starter-kits";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
@@ -83,6 +84,12 @@ interface DeletedUser {
   region: { name: string } | null;
 }
 
+interface StarterKit {
+  id: string;
+  name: string;
+  isDefault: boolean;
+}
+
 interface StaffClientProps {
   users: StaffUser[];
   regions: Region[];
@@ -91,13 +98,20 @@ interface StaffClientProps {
   canViewStaffDetails?: boolean;
   initialRegion?: string;
   deletedUsers?: DeletedUser[];
+  starterKits?: StarterKit[];
 }
 
-export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion, deletedUsers = [] }: StaffClientProps) {
+export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion, deletedUsers = [], starterKits = [] }: StaffClientProps) {
   const router = useRouter();
   const { addToast } = useToast();
   const [showDeleted, setShowDeleted] = useState(false);
   const [restoringId, setRestoringId] = useState<string | null>(null);
+
+  // Assign Starter Kit modal
+  const [showAssignKit, setShowAssignKit] = useState(false);
+  const [assignKitUserId, setAssignKitUserId] = useState("");
+  const [assignKitId, setAssignKitId] = useState("");
+  const [assignKitSubmitting, setAssignKitSubmitting] = useState(false);
   const [search, setSearch] = useState("");
   // If initialRegion is set, collapse all OTHER regions so the target region is visible
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
@@ -409,7 +423,15 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Staff Overview</h1>
           <p className="text-sm text-shark-400 mt-1">{filtered.length} staff members</p>
         </div>
-        {isSuperAdmin && <Button onClick={() => setShowCreate(true)}>+ New User</Button>}
+        <div className="flex items-center gap-2">
+          {starterKits.length > 0 && (
+            <Button variant="outline" onClick={() => { setShowAssignKit(true); setAssignKitUserId(""); setAssignKitId(starterKits.find(k => k.isDefault)?.id || starterKits[0]?.id || ""); }}>
+              <Icon name="box" size={14} className="mr-1.5" />
+              Assign Starter Kit
+            </Button>
+          )}
+          {isSuperAdmin && <Button onClick={() => setShowCreate(true)}>+ New User</Button>}
+        </div>
       </div>
 
       <div className="flex items-center gap-3">
@@ -491,6 +513,63 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           )}
         </div>
       )}
+
+      {/* Assign Starter Kit Modal */}
+      <Modal open={showAssignKit} onClose={() => setShowAssignKit(false)} title="Assign Starter Kit">
+        <form action={async () => {
+          if (!assignKitUserId || !assignKitId) return;
+          setAssignKitSubmitting(true);
+          try {
+            const result = await applyStarterKit(assignKitUserId, assignKitId);
+            if (result && "error" in result) {
+              addToast(result.error as string, "error");
+            } else {
+              const applied = result && "applied" in result ? (result.applied as number) : 0;
+              addToast(`Starter kit assigned successfully (${applied} items)`, "success");
+              setShowAssignKit(false);
+              router.refresh();
+            }
+          } catch (err) {
+            addToast(err instanceof Error ? err.message : "Failed to assign kit", "error");
+          } finally {
+            setAssignKitSubmitting(false);
+          }
+        }} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Staff Member</label>
+            <Select value={assignKitUserId} onChange={(e) => setAssignKitUserId(e.target.value)}>
+              <option value="">Select staff member...</option>
+              {regions.map((region) => {
+                const regionUsers = users.filter((u) => u.region?.id === region.id && u.isActive);
+                if (regionUsers.length === 0) return null;
+                return (
+                  <optgroup key={region.id} label={region.name}>
+                    {regionUsers.map((u) => (
+                      <option key={u.id} value={u.id}>{u.name || u.email}</option>
+                    ))}
+                  </optgroup>
+                );
+              })}
+            </Select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Starter Kit</label>
+            <Select value={assignKitId} onChange={(e) => setAssignKitId(e.target.value)}>
+              {starterKits.map((kit) => (
+                <option key={kit.id} value={kit.id}>
+                  {kit.name}{kit.isDefault ? " (Default)" : ""}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="outline" type="button" onClick={() => setShowAssignKit(false)}>Cancel</Button>
+            <Button type="submit" disabled={!assignKitUserId || !assignKitId || assignKitSubmitting} loading={assignKitSubmitting}>
+              Assign Kit
+            </Button>
+          </div>
+        </form>
+      </Modal>
 
       {/* Create User Modal */}
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create User">

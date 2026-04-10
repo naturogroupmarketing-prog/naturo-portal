@@ -121,6 +121,13 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
     consumableUsageHistory: usageMap.get(u.id) || [],
   }));
 
+  // Fetch starter kits for "Assign Starter Kit" button
+  const starterKits = await db.starterKit.findMany({
+    where: { organizationId },
+    select: { id: true, name: true, isDefault: true },
+    orderBy: { name: "asc" },
+  });
+
   // Fetch deleted users for Super Admin
   const deletedUsers = session.user.role === "SUPER_ADMIN"
     ? await db.user.findMany({
@@ -139,6 +146,7 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
       canViewStaffDetails={canViewStaffDetails}
       initialRegion={params.region}
       deletedUsers={JSON.parse(JSON.stringify(deletedUsers))}
+      starterKits={starterKits}
     />
   );
 }
