@@ -459,7 +459,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
   return (
     <PullToRefresh>
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Dashboard</h1>

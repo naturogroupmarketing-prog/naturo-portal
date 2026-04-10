@@ -43,7 +43,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
   const totalCost = items.reduce((sum, i) => sum + (i.purchaseCost || 0), 0);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div className="flex items-center gap-3">
         <Link href="/dashboard" className="text-shark-400 hover:text-action-500 transition-colors">
           <Icon name="arrow-left" size={18} />

@@ -71,7 +71,7 @@ export function InventoryDetailClient({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Back button */}
       <Link href="/inventory" className="inline-flex items-center gap-1.5 text-sm text-shark-400 hover:text-action-500 transition-colors">
         <Icon name="arrow-left" size={16} />

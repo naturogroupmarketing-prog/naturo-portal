@@ -127,7 +127,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
   if (submitted) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-10">
         <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Returns</h1>
         <Card>
           <div className="py-12 text-center">
@@ -143,7 +143,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div>
         <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Returns</h1>
         <p className="text-sm text-shark-400 mt-1">
