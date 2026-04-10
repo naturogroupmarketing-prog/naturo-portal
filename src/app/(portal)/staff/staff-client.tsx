@@ -36,11 +36,11 @@ interface StaffUser {
   isActive: boolean;
   region: { id: string; name: string } | null;
   assetAssignments: {
-    asset: { name: string; assetCode: string; category: string };
+    asset: { name: string; assetCode: string; category: string; imageUrl: string | null };
   }[];
   consumableAssignments?: {
     quantity: number;
-    consumable: { name: string; unitType: string };
+    consumable: { name: string; unitType: string; imageUrl: string | null };
   }[];
   consumableRequests?: {
     id: string;
@@ -329,10 +329,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </div>
                 <Badge status={user.role} />
               </div>
-              <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-shark-50">
-                <span className="text-xs text-shark-500">
-                  {user.assetAssignments.length} asset{user.assetAssignments.length !== 1 ? "s" : ""} assigned
-                </span>
+              <div className="flex items-center justify-end mt-2.5 pt-2.5 border-t border-shark-50">
                 <button
                   onClick={(e) => { e.stopPropagation(); setDetailUser(user); }}
                   className="text-xs text-action-500 font-medium px-2 py-1 rounded-lg hover:bg-action-50 transition-colors"
@@ -353,7 +350,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               <th className="px-1 py-3 w-6"></th>
               <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
               <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
-              <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Assets</th>
               <th className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
             </tr>
           </thead>
@@ -384,19 +380,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   </td>
                   <td className="px-5 py-3.5 font-medium text-shark-800">{user.name || "—"}</td>
                   <td className="px-5 py-3.5"><Badge status={user.role} /></td>
-                  <td className="px-5 py-3.5 text-right">
-                    {user.assetAssignments.length > 0 ? (
-                      <div>
-                        <span className="font-medium text-shark-700">{user.assetAssignments.length}</span>
-                        <div className="text-xs text-shark-400 mt-0.5">
-                          {user.assetAssignments.slice(0, 2).map((a) => a.asset.name).join(", ")}
-                          {user.assetAssignments.length > 2 && ` +${user.assetAssignments.length - 2} more`}
-                        </div>
-                      </div>
-                    ) : (
-                      <span className="text-shark-300">0</span>
-                    )}
-                  </td>
                   <td className="px-5 py-3.5 text-center">
                     <span className={`inline-flex items-center gap-1.5`} aria-label={user.isActive ? "Active" : "Inactive"} title={user.isActive ? "Active" : "Inactive"}>
                       <span className={`inline-block w-2 h-2 rounded-full ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
@@ -704,12 +687,18 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     {editUser.assetAssignments.length > 0 && (
                       <div>
                         <p className="text-xs text-shark-400 mb-1">Assets ({editUser.assetAssignments.length})</p>
-                        <div className="space-y-0.5">
-                          {editUser.assetAssignments.map((a) => (
-                            <div key={a.asset.assetCode} className="flex items-center gap-2 text-sm text-shark-700">
-                              <Icon name="package" size={12} className="text-action-400 shrink-0" />
-                              <span className="font-mono text-xs text-shark-400">{a.asset.assetCode}</span>
+                        <div className="space-y-1">
+                          {editUser.assetAssignments.map((a, idx) => (
+                            <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 py-0.5">
+                              {a.asset.imageUrl ? (
+                                <img src={a.asset.imageUrl} alt={a.asset.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
+                              ) : (
+                                <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                                  <Icon name="package" size={12} className="text-action-400" />
+                                </div>
+                              )}
                               <span className="truncate">{a.asset.name}</span>
+                              <span className="text-xs text-shark-300 ml-auto shrink-0">{a.asset.category}</span>
                             </div>
                           ))}
                         </div>
@@ -718,12 +707,18 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     {(editUser.consumableAssignments?.length ?? 0) > 0 && (
                       <div>
                         <p className="text-xs text-shark-400 mb-1">Consumables ({editUser.consumableAssignments!.length})</p>
-                        <div className="space-y-0.5">
+                        <div className="space-y-1">
                           {editUser.consumableAssignments!.map((c, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-sm text-shark-700">
-                              <Icon name="droplet" size={12} className="text-blue-400 shrink-0" />
-                              <span>{c.quantity}x {c.consumable.name}</span>
-                              <span className="text-xs text-shark-300 ml-auto">{c.consumable.unitType}</span>
+                            <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 py-0.5">
+                              {c.consumable.imageUrl ? (
+                                <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
+                              ) : (
+                                <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                  <Icon name="droplet" size={12} className="text-blue-400" />
+                                </div>
+                              )}
+                              <span className="truncate">{c.quantity}x {c.consumable.name}</span>
+                              <span className="text-xs text-shark-300 ml-auto shrink-0">{c.consumable.unitType}</span>
                             </div>
                           ))}
                         </div>
@@ -839,14 +834,17 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Assigned Assets ({editUser.assetAssignments.length})</label>
                       <div className="space-y-1">
-                        {editUser.assetAssignments.map((a) => (
-                          <div key={a.asset.assetCode} className="flex items-center gap-2 py-1">
-                            <Icon name="package" size={14} className="text-action-400 shrink-0" />
-                            <p className="text-sm text-shark-700">
-                              <span className="font-mono text-xs text-shark-400 mr-1">{a.asset.assetCode}</span>
-                              {a.asset.name}
-                            </p>
-                            <span className="text-xs text-shark-300 ml-auto">{a.asset.category}</span>
+                        {editUser.assetAssignments.map((a, idx) => (
+                          <div key={idx} className="flex items-center gap-2.5 py-1">
+                            {a.asset.imageUrl ? (
+                              <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                            ) : (
+                              <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                                <Icon name="package" size={14} className="text-action-400" />
+                              </div>
+                            )}
+                            <p className="text-sm text-shark-700 truncate">{a.asset.name}</p>
+                            <span className="text-xs text-shark-300 ml-auto shrink-0">{a.asset.category}</span>
                           </div>
                         ))}
                       </div>
@@ -857,12 +855,16 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                       <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-1">Assigned Consumables ({editUser.consumableAssignments!.length})</label>
                       <div className="space-y-1">
                         {editUser.consumableAssignments!.map((c, idx) => (
-                          <div key={idx} className="flex items-center gap-2 py-1">
-                            <Icon name="droplet" size={14} className="text-blue-400 shrink-0" />
-                            <p className="text-sm text-shark-700">
-                              {c.quantity}x {c.consumable.name}
-                            </p>
-                            <span className="text-xs text-shark-300 ml-auto">{c.consumable.unitType}</span>
+                          <div key={idx} className="flex items-center gap-2.5 py-1">
+                            {c.consumable.imageUrl ? (
+                              <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                            ) : (
+                              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                <Icon name="droplet" size={14} className="text-blue-400" />
+                              </div>
+                            )}
+                            <p className="text-sm text-shark-700 truncate">{c.quantity}x {c.consumable.name}</p>
+                            <span className="text-xs text-shark-300 ml-auto shrink-0">{c.consumable.unitType}</span>
                           </div>
                         ))}
                       </div>
@@ -1006,14 +1008,18 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               {detailUser.assetAssignments.length === 0 ? (
                 <p className="text-xs text-shark-400 pl-5">No assets assigned</p>
               ) : (
-                <div className="space-y-1 pl-5">
+                <div className="space-y-1.5 pl-5">
                   {detailUser.assetAssignments.map((a, i) => (
-                    <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-shark-50 last:border-0">
-                      <div>
-                        <span className="font-medium text-shark-800">{a.asset.name}</span>
-                        <span className="text-xs font-mono text-shark-400 ml-2">{a.asset.assetCode}</span>
-                      </div>
-                      <span className="text-xs text-shark-400">{a.asset.category}</span>
+                    <div key={i} className="flex items-center gap-2.5 text-sm py-1.5 border-b border-shark-50 last:border-0">
+                      {a.asset.imageUrl ? (
+                        <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                          <Icon name="package" size={14} className="text-action-400" />
+                        </div>
+                      )}
+                      <span className="font-medium text-shark-800 truncate">{a.asset.name}</span>
+                      <span className="text-xs text-shark-400 ml-auto shrink-0">{a.asset.category}</span>
                     </div>
                   ))}
                 </div>
@@ -1029,11 +1035,18 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               {!detailUser.consumableAssignments?.length ? (
                 <p className="text-xs text-shark-400 pl-5">No consumables assigned</p>
               ) : (
-                <div className="space-y-1 pl-5">
+                <div className="space-y-1.5 pl-5">
                   {detailUser.consumableAssignments.map((c, i) => (
-                    <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-shark-50 last:border-0">
-                      <span className="font-medium text-shark-800">{c.consumable.name}</span>
-                      <span className="text-xs text-shark-400">{c.quantity} {c.consumable.unitType}</span>
+                    <div key={i} className="flex items-center gap-2.5 text-sm py-1.5 border-b border-shark-50 last:border-0">
+                      {c.consumable.imageUrl ? (
+                        <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                          <Icon name="droplet" size={14} className="text-blue-400" />
+                        </div>
+                      )}
+                      <span className="font-medium text-shark-800 truncate">{c.consumable.name}</span>
+                      <span className="text-xs text-shark-400 ml-auto shrink-0">{c.quantity} {c.consumable.unitType}</span>
                     </div>
                   ))}
                 </div>
@@ -1084,7 +1097,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                             {d.type}
                           </span>
                           <span className="font-medium text-shark-800">{d.asset?.name || "Unknown"}</span>
-                          {d.asset?.assetCode && <span className="text-xs font-mono text-shark-400">{d.asset.assetCode}</span>}
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={`w-1.5 h-1.5 rounded-full ${d.isResolved ? "bg-action-500" : "bg-red-500"}`} />
