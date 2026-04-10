@@ -28,7 +28,7 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
         },
         consumableAssignments: {
           where: { isActive: true },
-          include: { consumable: { select: { name: true, unitType: true, imageUrl: true } } },
+          include: { consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } } },
         },
         consumableRequests: {
           where: { status: { in: ["PENDING", "ISSUED", "CLOSED"] } },

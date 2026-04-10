@@ -40,7 +40,7 @@ interface StaffUser {
   }[];
   consumableAssignments?: {
     quantity: number;
-    consumable: { name: string; unitType: string; imageUrl: string | null };
+    consumable: { name: string; unitType: string; category: string; imageUrl: string | null };
   }[];
   consumableRequests?: {
     id: string;
@@ -718,7 +718,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                 </div>
                               )}
                               <span className="truncate">{c.quantity}x {c.consumable.name}</span>
-                              <span className="text-xs text-shark-300 ml-auto shrink-0">{c.consumable.unitType}</span>
+                              <span className="text-xs text-shark-300 ml-auto shrink-0">{c.consumable.category}</span>
                             </div>
                           ))}
                         </div>
@@ -864,7 +864,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                               </div>
                             )}
                             <p className="text-sm text-shark-700 truncate">{c.quantity}x {c.consumable.name}</p>
-                            <span className="text-xs text-shark-300 ml-auto shrink-0">{c.consumable.unitType}</span>
+                            <span className="text-xs text-shark-300 ml-auto shrink-0">{c.consumable.category}</span>
                           </div>
                         ))}
                       </div>
@@ -1046,7 +1046,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                         </div>
                       )}
                       <span className="font-medium text-shark-800 truncate">{c.consumable.name}</span>
-                      <span className="text-xs text-shark-400 ml-auto shrink-0">{c.quantity} {c.consumable.unitType}</span>
+                      <span className="text-xs text-shark-400 ml-auto shrink-0">{c.consumable.category}</span>
                     </div>
                   ))}
                 </div>
