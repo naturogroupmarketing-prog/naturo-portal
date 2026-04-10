@@ -104,10 +104,13 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
           )}
         </div>
 
-        <div className="mt-4 pt-3 border-t border-shark-100 flex items-center justify-between">
+        <Link href="/staff" className="mt-4 pt-3 border-t border-shark-100 flex items-center justify-between hover:bg-shark-50 -mx-4 px-4 -mb-4 pb-4 rounded-b-xl transition-colors cursor-pointer">
           <span className="text-xs text-shark-400">Active Staff</span>
-          <span className="text-sm font-semibold text-shark-700">{data.totalStaff}</span>
-        </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm font-semibold text-shark-700">{data.totalStaff}</span>
+            <Icon name="arrow-right" size={14} className="text-shark-400" />
+          </div>
+        </Link>
       </div>
     </Card>
   );
