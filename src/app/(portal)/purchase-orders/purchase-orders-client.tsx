@@ -57,8 +57,8 @@ const STATUS_PRIORITY: Record<string, number> = {
   RECEIVED: 4,
 };
 
-// Status transitions available per PO status
-const PO_STATUS_ACTIONS: Record<string, { value: string; label: string; icon: string; color: string }[]> = {
+// Super Admin: all status transitions
+const PO_STATUS_ACTIONS_ADMIN: Record<string, { value: string; label: string; icon: string; color: string }[]> = {
   PENDING: [
     { value: "APPROVED", label: "Approve", icon: "check", color: "text-action-600 hover:bg-action-50" },
     { value: "REJECTED", label: "Reject", icon: "x", color: "text-red-600 hover:bg-red-50" },
@@ -78,10 +78,21 @@ const PO_STATUS_ACTIONS: Record<string, { value: string; label: string; icon: st
   ],
 };
 
+// Branch Manager: only ORDERED ↔ RECEIVED
+const PO_STATUS_ACTIONS_MANAGER: Record<string, { value: string; label: string; icon: string; color: string }[]> = {
+  ORDERED: [
+    { value: "RECEIVED", label: "Mark Received", icon: "check", color: "text-action-600 hover:bg-action-50" },
+  ],
+  RECEIVED: [
+    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50" },
+  ],
+};
+
 // Portal-based status dropdown for PO — consistent with asset status dropdown
-function POStatusDropdown({ po, canManage, onAction, loading }: {
+function POStatusDropdown({ po, canManage, isSuperAdmin, onAction, loading }: {
   po: { id: string; status: string; updatedAt: string };
   canManage: boolean;
+  isSuperAdmin: boolean;
   onAction: (poId: string, action: string) => void;
   loading: boolean;
 }) {
@@ -90,9 +101,12 @@ function POStatusDropdown({ po, canManage, onAction, loading }: {
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Super Admin gets all transitions, Branch Manager only ORDERED ↔ RECEIVED
+  const actionMap = isSuperAdmin ? PO_STATUS_ACTIONS_ADMIN : PO_STATUS_ACTIONS_MANAGER;
+
   // For RECEIVED, only allow undo within 7 days
   const actions = (() => {
-    const base = PO_STATUS_ACTIONS[po.status] || [];
+    const base = actionMap[po.status] || [];
     if (po.status === "RECEIVED") {
       const receivedDate = new Date(po.updatedAt);
       const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -336,6 +350,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     <POStatusDropdown
       po={po}
       canManage={canManagePO || canApprovePO}
+      isSuperAdmin={isSuperAdmin}
       onAction={handleAction}
       loading={!!loading}
     />
