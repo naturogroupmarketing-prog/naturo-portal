@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,7 @@ import { Icon } from "@/components/ui/icon";
 import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder, undoReceivedPurchaseOrder, batchUpdatePOStatus } from "@/app/actions/purchase-orders";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import { formatDate } from "@/lib/utils";
+import { formatDate, statusColor } from "@/lib/utils";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
@@ -55,6 +56,111 @@ const STATUS_PRIORITY: Record<string, number> = {
   REJECTED: 3,
   RECEIVED: 4,
 };
+
+// Status transitions available per PO status
+const PO_STATUS_ACTIONS: Record<string, { value: string; label: string; icon: string; color: string }[]> = {
+  PENDING: [
+    { value: "APPROVED", label: "Approve", icon: "check", color: "text-action-600 hover:bg-action-50" },
+    { value: "REJECTED", label: "Reject", icon: "x", color: "text-red-600 hover:bg-red-50" },
+  ],
+  APPROVED: [
+    { value: "ORDERED", label: "Mark Ordered", icon: "package", color: "text-action-600 hover:bg-action-50" },
+    { value: "PENDING", label: "Undo Approval", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50" },
+  ],
+  ORDERED: [
+    { value: "RECEIVED", label: "Mark Received", icon: "check", color: "text-action-600 hover:bg-action-50" },
+  ],
+  RECEIVED: [
+    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50" },
+  ],
+  REJECTED: [
+    { value: "PENDING", label: "Re-open", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50" },
+  ],
+};
+
+// Portal-based status dropdown for PO — consistent with asset status dropdown
+function POStatusDropdown({ po, canManage, onAction, loading }: {
+  po: { id: string; status: string; updatedAt: string };
+  canManage: boolean;
+  onAction: (poId: string, action: string) => void;
+  loading: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // For RECEIVED, only allow undo within 7 days
+  const actions = (() => {
+    const base = PO_STATUS_ACTIONS[po.status] || [];
+    if (po.status === "RECEIVED") {
+      const receivedDate = new Date(po.updatedAt);
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      if (receivedDate < sevenDaysAgo) return [];
+    }
+    return base;
+  })();
+
+  const hasActions = canManage && actions.length > 0;
+
+  const updatePos = useCallback(() => {
+    if (!btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    setPos({ top: rect.bottom + 4, left: Math.max(8, rect.right - 180) });
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    updatePos();
+    const handleClick = (e: MouseEvent) => {
+      if (btnRef.current?.contains(e.target as Node)) return;
+      if (menuRef.current?.contains(e.target as Node)) return;
+      setOpen(false);
+    };
+    const handleScroll = () => setOpen(false);
+    document.addEventListener("mousedown", handleClick);
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [open, updatePos]);
+
+  const menuContent = open && typeof document !== "undefined" ? createPortal(
+    <div
+      ref={menuRef}
+      style={{ position: "fixed", top: pos.top, left: pos.left, zIndex: 9999 }}
+      className="bg-white rounded-xl shadow-lg border border-shark-100 py-1 min-w-[180px]"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {actions.map((action) => (
+        <button
+          key={action.value}
+          onClick={() => { onAction(po.id, action.value); setOpen(false); }}
+          disabled={loading}
+          className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${action.color} disabled:opacity-50`}
+        >
+          <Icon name={action.icon as any} size={12} /> {action.label}
+        </button>
+      ))}
+    </div>,
+    document.body
+  ) : null;
+
+  return (
+    <div onClick={(e) => e.stopPropagation()}>
+      <button
+        ref={btnRef}
+        onClick={() => hasActions && setOpen(!open)}
+        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColor(po.status)} ${hasActions ? "hover:opacity-80 cursor-pointer" : ""} transition-colors`}
+      >
+        {po.status.replace(/_/g, " ")}
+        {hasActions && <Icon name="chevron-down" size={10} className={`transition-transform ${open ? "rotate-180" : ""}`} />}
+      </button>
+      {menuContent}
+    </div>
+  );
+}
 
 const PO_COLS_KEY = "trackio-purchase-orders-columns";
 type POCols = { item: boolean; category: boolean; supplier: boolean; qty: boolean; status: boolean; createdBy: boolean; date: boolean };
@@ -195,25 +301,27 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     setLoading(purchaseOrderId + action);
     setError(null);
     try {
-      if (action === "ordered") {
-        const fd = new FormData();
-        fd.set("purchaseOrderId", purchaseOrderId);
+      const fd = new FormData();
+      fd.set("purchaseOrderId", purchaseOrderId);
+
+      if (action === "ORDERED") {
         await markPurchaseOrderOrdered(fd);
-      } else if (action === "received") {
-        const fd = new FormData();
-        fd.set("purchaseOrderId", purchaseOrderId);
+        addToast("Marked as ordered", "success");
+      } else if (action === "RECEIVED") {
         await receivePurchaseOrder(fd);
         addToast("PO received — stock updated", "success");
-      } else if (action === "undo-received") {
-        const fd = new FormData();
-        fd.set("purchaseOrderId", purchaseOrderId);
+      } else if (action === "UNDO_RECEIVED") {
         await undoReceivedPurchaseOrder(fd);
         addToast("Receipt undone — stock reverted", "success");
-      } else {
-        const fd = new FormData();
-        fd.set("purchaseOrderId", purchaseOrderId);
-        fd.set("action", action);
+      } else if (action === "APPROVED" || action === "REJECTED") {
+        fd.set("action", action === "APPROVED" ? "approve" : "reject");
         await approvePurchaseOrder(fd);
+        addToast(action === "APPROVED" ? "Order approved" : "Order rejected", "success");
+      } else if (action === "PENDING") {
+        // Re-open / undo approval — use updatePurchaseOrder
+        fd.set("status", "PENDING");
+        await updatePurchaseOrder(fd);
+        addToast("Order re-opened", "success");
       }
       router.refresh();
     } catch (err) {
@@ -223,30 +331,15 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     }
   };
 
-  // Status display — Badge for all, plus action buttons
-  const renderStatus = (po: PurchaseOrder) => {
-    // Show "Received" button for any manager when item is ORDERED
-    if (po.status === "ORDERED") return (
-      <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-        <Badge status={po.status} />
-        <Button size="sm" onClick={() => handleAction(po.id, "received")} disabled={!!loading} loading={loading === po.id + "received"}>Received</Button>
-      </div>
-    );
-    // Show "Undo" button on recently received items (within 7 days)
-    if (po.status === "RECEIVED") {
-      const receivedDate = new Date(po.updatedAt);
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      if (receivedDate >= sevenDaysAgo) {
-        return (
-          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-            <Badge status={po.status} />
-            <Button size="sm" variant="secondary" onClick={() => handleAction(po.id, "undo-received")} disabled={!!loading} loading={loading === po.id + "undo-received"}>Undo</Button>
-          </div>
-        );
-      }
-    }
-    return <Badge status={po.status} />;
-  };
+  // Status display — dropdown matching asset pattern
+  const renderStatus = (po: PurchaseOrder) => (
+    <POStatusDropdown
+      po={po}
+      canManage={canManagePO || canApprovePO}
+      onAction={handleAction}
+      loading={!!loading}
+    />
+  );
 
   // Bulk selection
   const toggleSelect = (id: string) => setSelected((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
