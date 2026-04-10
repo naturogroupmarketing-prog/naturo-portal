@@ -49,8 +49,9 @@ export async function GET(
     }
 
     const bytes = await body.transformToByteArray();
+    const buffer = Buffer.from(bytes);
 
-    return new NextResponse(bytes, {
+    return new NextResponse(buffer, {
       status: 200,
       headers: {
         "Content-Type": response.ContentType || "image/jpeg",
