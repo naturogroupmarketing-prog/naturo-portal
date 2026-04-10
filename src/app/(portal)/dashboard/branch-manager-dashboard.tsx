@@ -50,7 +50,7 @@ export function BranchManagerDashboard({ managerProps, staffProps }: Props) {
             }`}
           >
             <Icon name="user" size={14} />
-            My Equipment
+            Staff
           </button>
         </div>
       </div>
