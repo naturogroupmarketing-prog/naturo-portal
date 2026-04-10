@@ -326,7 +326,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     <span className={`w-2 h-2 rounded-full shrink-0 ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
                     <p className="text-sm font-semibold text-shark-800 truncate">{user.name || "—"}</p>
                   </div>
-                  {canViewStaffDetails && <p className="text-xs text-shark-400 mt-0.5 truncate">{user.email}</p>}
                 </div>
                 <Badge status={user.role} />
               </div>
@@ -353,7 +352,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             <tr className="border-b border-shark-100">
               <th className="px-1 py-3 w-6"></th>
               <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-              {canViewStaffDetails && <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Email</th>}
               {canViewStaffDetails && <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Phone</th>}
               <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
               <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Assets</th>
@@ -386,7 +384,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     )}
                   </td>
                   <td className="px-5 py-3.5 font-medium text-shark-800">{user.name || "—"}</td>
-                  {canViewStaffDetails && <td className="px-5 py-3.5 text-shark-500 hidden md:table-cell">{user.email}</td>}
                   {canViewStaffDetails && <td className="px-5 py-3.5 text-shark-500 hidden lg:table-cell">{user.phone || "—"}</td>}
                   <td className="px-5 py-3.5"><Badge status={user.role} /></td>
                   <td className="px-5 py-3.5 text-right">
