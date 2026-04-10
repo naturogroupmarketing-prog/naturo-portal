@@ -622,8 +622,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-action-500 flex items-center justify-center">
-                <Icon name="map-pin" size={16} className="text-white" />
+              <div className="w-9 h-9 rounded-xl bg-action-50 flex items-center justify-center">
+                <Icon name="map-pin" size={18} className="text-action-600" />
               </div>
               Storage Locations
             </CardTitle>
