@@ -232,7 +232,7 @@ export async function returnAsset(formData: FormData) {
 
 export async function acknowledgeAsset(assignmentId: string) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "STAFF") {
+  if (!session?.user || (session.user.role !== "STAFF" && session.user.role !== "BRANCH_MANAGER")) {
     throw new Error("Unauthorized");
   }
 

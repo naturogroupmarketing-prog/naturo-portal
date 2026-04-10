@@ -31,7 +31,7 @@ export default async function StarterKitsPage() {
       orderBy: [{ category: "asc" }, { name: "asc" }],
     }),
     db.user.findMany({
-      where: { organizationId, isActive: true, role: "STAFF" },
+      where: { organizationId, isActive: true, role: { in: ["STAFF", "BRANCH_MANAGER"] } },
       select: { id: true, name: true, email: true, region: { select: { name: true } } },
       orderBy: { name: "asc" },
     }),

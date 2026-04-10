@@ -739,7 +739,7 @@ export async function assignConsumable(formData: FormData) {
 
 export async function acknowledgeConsumable(assignmentId: string) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "STAFF") {
+  if (!session?.user || (session.user.role !== "STAFF" && session.user.role !== "BRANCH_MANAGER")) {
     throw new Error("Unauthorized");
   }
 
@@ -851,7 +851,7 @@ export async function returnConsumable(formData: FormData) {
 
 export async function markConsumableUsed(assignmentId: string, quantityUsed: number) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "STAFF") {
+  if (!session?.user || (session.user.role !== "STAFF" && session.user.role !== "BRANCH_MANAGER")) {
     throw new Error("Unauthorized");
   }
 
