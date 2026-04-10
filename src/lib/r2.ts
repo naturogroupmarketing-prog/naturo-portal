@@ -5,7 +5,7 @@ const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID;
 const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
 const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
 const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME || "trackio-uploads";
-const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL; // e.g. https://pub-xxx.r2.dev
+const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL; // e.g. https://images.yourdomain.com
 
 /** Whether R2 is configured and available */
 export function isR2Configured(): boolean {
@@ -51,15 +51,23 @@ export async function uploadToR2(
     })
   );
 
-  return `${R2_PUBLIC_URL}/${key}`;
+  // Return proxy URL — avoids r2.dev rate limits, Vercel CDN caches the response
+  return `/api/images/${key}`;
 }
 
 /**
  * Delete a file from R2 by its key (extracted from the URL).
  */
 export async function deleteFromR2(url: string): Promise<void> {
-  if (!R2_PUBLIC_URL || !url.startsWith(R2_PUBLIC_URL)) return;
-  const key = url.replace(`${R2_PUBLIC_URL}/`, "");
+  let key: string | null = null;
+
+  if (url.startsWith("/api/images/")) {
+    key = url.replace("/api/images/", "");
+  } else if (R2_PUBLIC_URL && url.startsWith(R2_PUBLIC_URL)) {
+    key = url.replace(`${R2_PUBLIC_URL}/`, "");
+  }
+
+  if (!key) return;
 
   const client = getClient();
   await client.send(
