@@ -31,7 +31,7 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
           include: { consumable: { select: { name: true, unitType: true, category: true, imageUrl: true } } },
         },
         consumableRequests: {
-          where: { status: { in: ["PENDING", "ISSUED", "CLOSED"] } },
+          where: { status: { in: ["PENDING", "ISSUED"] } },
           include: { consumable: { select: { name: true, unitType: true, category: true } } },
           orderBy: { createdAt: "desc" },
           take: 20,
