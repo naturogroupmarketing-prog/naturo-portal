@@ -651,8 +651,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   className="flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-shark-50 transition-colors group"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-action-500 flex items-center justify-center">
-                      <Icon name="map-pin" size={13} className="text-white" />
+                    <div className="w-9 h-9 rounded-xl bg-action-50 flex items-center justify-center">
+                      <Icon name="map-pin" size={18} className="text-action-600" />
                     </div>
                     <div>
                       <span className="text-sm font-medium text-shark-700 group-hover:text-action-500 transition-colors">{loc.name}</span>
