@@ -167,6 +167,7 @@ export function InventoryDetailClient({
         users={users as never}
         categories={consumableCategories as never}
         isSuperAdmin={isSuperAdmin}
+        canAdd={permissions.canAddConsumable}
         canAdjustStock={permissions.canAdjustStock}
         initialTab={undefined}
         initialStock={undefined}
