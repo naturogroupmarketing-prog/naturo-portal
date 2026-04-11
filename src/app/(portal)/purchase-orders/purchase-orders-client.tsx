@@ -214,10 +214,10 @@ interface Props {
   showAllHistory?: boolean;
 }
 
-function mapStatusToTab(status?: string): string {
-  if (!status) return "Pending";
+function mapStatusToTab(status?: string, isSuperAdmin?: boolean): string {
+  if (!status) return isSuperAdmin ? "Pending" : "Ordered";
   const map: Record<string, string> = { PENDING: "Pending", APPROVED: "Approved", ORDERED: "Ordered", RECEIVED: "Received", REJECTED: "Rejected" };
-  return map[status.toUpperCase()] || "Pending";
+  return map[status.toUpperCase()] || (isSuperAdmin ? "Pending" : "Ordered");
 }
 
 export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion, showAllHistory = false }: Props) {
@@ -225,7 +225,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkLoading, setBulkLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<string>(mapStatusToTab(initialStatus));
+  const [activeTab, setActiveTab] = useState<string>(mapStatusToTab(initialStatus, isSuperAdmin));
   const [search, setSearch] = useState("");
   const [regionFilter, setRegionFilter] = useState("ALL");
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
