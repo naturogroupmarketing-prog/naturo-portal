@@ -471,7 +471,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   </div>
                   <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-shark-50" onClick={(e) => e.stopPropagation()}>
                     <Button size="sm" variant="outline" onClick={() => {
-                      if (!canAdjustStock) { addToast("You don't have permission to adjust stock. Please contact your admin.", "error"); return; }
+                      if (!canAdjustStock) { addToast("You don't have permission to adjust stock. To update stock, confirm receival in Purchase Orders.", "error"); return; }
                       setStockMode("add"); setShowAddStock(c);
                     }}>Stock</Button>
                     <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
@@ -533,7 +533,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
                         <Button size="sm" variant="outline" onClick={() => {
-                          if (!canAdjustStock) { addToast("You don't have permission to adjust stock. Please contact your admin.", "error"); return; }
+                          if (!canAdjustStock) { addToast("You don't have permission to adjust stock. To update stock, confirm receival in Purchase Orders.", "error"); return; }
                           setStockMode("add"); setShowAddStock(c);
                         }}>Stock</Button>
                         <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
