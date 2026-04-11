@@ -93,6 +93,7 @@ interface ConsumablesClientProps {
   users: Array<{ id: string; name: string | null; email: string; regionId: string | null }>;
   categories: CategoryDef[];
   isSuperAdmin: boolean;
+  canAdd: boolean;
   canAdjustStock: boolean;
   initialTab?: string;
   initialStock?: string;
@@ -101,7 +102,7 @@ interface ConsumablesClientProps {
 
 import { compressImage } from "@/lib/image-utils";
 
-export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdjustStock, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
+export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
   const { addToast } = useToast();
   const [showCreate, setShowCreate] = useState(false);
   const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
@@ -556,7 +557,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <Icon name="settings" size={14} className="mr-1.5" />
             Sections
           </Button>
-          <Button size="sm" onClick={() => setShowCreate(true)}>
+          <Button size="sm" onClick={() => {
+            if (!canAdd) {
+              addToast("You don't have permission to add consumables. Please contact your admin.", "error");
+              return;
+            }
+            setShowCreate(true);
+          }}>
             <Icon name="plus" size={14} className="mr-1.5" />
             New Consumable
           </Button>

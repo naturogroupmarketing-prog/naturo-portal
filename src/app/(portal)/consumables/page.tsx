@@ -15,7 +15,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
     ? { regionId: session.user.regionId!, organizationId }
     : { organizationId };
 
-  const [consumables, pendingRequests, regions, users, categories, canAdjustStock] = await Promise.all([
+  const [consumables, pendingRequests, regions, users, categories, canAdjustStock, canAdd] = await Promise.all([
     db.consumable.findMany({
       where: { ...regionFilter, isActive: true },
       include: {
@@ -62,6 +62,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
       orderBy: { sortOrder: "asc" },
     }),
     hasPermission(session.user.id, session.user.role, "consumableStockAdjust"),
+    hasPermission(session.user.id, session.user.role, "consumableAdd"),
   ]);
 
   return (
@@ -72,6 +73,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
       users={JSON.parse(JSON.stringify(users))}
       categories={JSON.parse(JSON.stringify(categories))}
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
+      canAdd={canAdd}
       canAdjustStock={canAdjustStock}
       initialTab={params.tab}
       initialStock={params.stock}

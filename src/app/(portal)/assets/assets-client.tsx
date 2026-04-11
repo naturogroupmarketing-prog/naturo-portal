@@ -813,12 +813,16 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <Icon name="settings" size={14} className="mr-1.5" />
             Sections
           </Button>
-          {permissions.canAdd && (
-            <Button size="sm" onClick={() => setShowCreate(true)}>
-              <Icon name="plus" size={14} className="mr-1.5" />
-              New Asset
-            </Button>
-          )}
+          <Button size="sm" onClick={() => {
+            if (!permissions.canAdd) {
+              addToast("You don't have permission to add assets. Please contact your admin.", "error");
+              return;
+            }
+            setShowCreate(true);
+          }}>
+            <Icon name="plus" size={14} className="mr-1.5" />
+            New Asset
+          </Button>
         </div>
       </div>
 
