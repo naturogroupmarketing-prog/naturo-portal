@@ -214,7 +214,7 @@ async function fetchStaffData(userId: string, organizationId: string) {
 
     const staffStats: { label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
       { label: "Assigned Assets", value: assetCount, icon: "package", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-assets" },
-      { label: "Consumable Items", value: consumableCount, icon: "droplet", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-consumables" },
+      { label: "Supplies", value: consumableCount, icon: "droplet", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-consumables" },
       { label: "Request & Confirm", value: pendingRequestCount + pendingConfirmCount, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/request-consumables" },
     ];
 
@@ -697,7 +697,7 @@ export default async function DashboardPage() {
 
   const quickLinks: { label: string; href: string; icon: IconName; iconBg: string; iconColor: string }[] = [
     { label: "Manage Assets", href: "/assets", icon: "package", iconBg: "bg-action-500", iconColor: "text-white" },
-    { label: "Consumables", href: "/consumables", icon: "droplet", iconBg: "bg-action-500", iconColor: "text-white" },
+    { label: "Supplies", href: "/consumables", icon: "droplet", iconBg: "bg-action-500", iconColor: "text-white" },
     { label: "Staff Overview", href: "/staff", icon: "users", iconBg: "bg-action-500", iconColor: "text-white" },
     { label: "Reports", href: "/reports", icon: "clipboard", iconBg: "bg-action-500", iconColor: "text-white" },
   ];

@@ -62,7 +62,7 @@ export function InventoryDetailClient({
         assets: templates.assets,
         consumables: templates.consumables.map((c) => ({ ...c, initialStock: 0 })),
       });
-      addToast(`Applied ${result.assetsCreated} assets and ${result.consumablesCreated} consumables`, "success");
+      addToast(`Applied ${result.assetsCreated} assets and ${result.consumablesCreated} supplies`, "success");
       router.refresh();
     } catch (err) {
       addToast(err instanceof Error ? err.message : "Failed", "error");
@@ -91,7 +91,7 @@ export function InventoryDetailClient({
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500", scrollTo: "section-assets" },
-          { label: "Consumables", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500", scrollTo: "section-consumables" },
+          { label: "Supplies", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500", scrollTo: "section-consumables" },
           { label: "Staff", value: staff.length, icon: "users" as const, border: "border-action-500", scrollTo: "section-staff" },
           { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", href: `/purchase-orders?region=${region.id}` },
         ].map((stat) => {

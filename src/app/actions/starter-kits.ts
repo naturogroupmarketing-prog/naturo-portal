@@ -232,7 +232,7 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
         where: { id: item.consumableId },
       });
       if (!templateConsumable) {
-        results.push("Consumable not found");
+        results.push("Supply not found");
         continue;
       }
 

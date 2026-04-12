@@ -721,7 +721,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                       }, {} as Record<string, typeof editUser.consumableAssignments>);
                       return (
                         <div className="space-y-2">
-                          <p className="text-xs text-shark-400">Consumables ({editUser.consumableAssignments!.length})</p>
+                          <p className="text-xs text-shark-400">Supplies ({editUser.consumableAssignments!.length})</p>
                           {Object.entries(grouped).map(([cat, items]) => (
                             <div key={cat}>
                               <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
@@ -887,7 +887,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     }, {} as Record<string, typeof editUser.consumableAssignments>);
                     return (
                       <div className="space-y-3">
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Consumables ({editUser.consumableAssignments!.length})</label>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Supplies ({editUser.consumableAssignments!.length})</label>
                         {Object.entries(grouped).map(([cat, items]) => (
                           <div key={cat}>
                             <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
@@ -1082,10 +1082,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             <div>
               <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
                 <Icon name="droplet" size={14} className="text-action-500" />
-                Consumables ({detailUser.consumableAssignments?.length || 0})
+                Supplies ({detailUser.consumableAssignments?.length || 0})
               </h3>
               {!detailUser.consumableAssignments?.length ? (
-                <p className="text-xs text-shark-400 pl-5">No consumables assigned</p>
+                <p className="text-xs text-shark-400 pl-5">No supplies assigned</p>
               ) : (() => {
                 const grouped = detailUser.consumableAssignments.reduce((acc, c) => {
                   (acc[c.consumable.category] ??= []).push(c);
@@ -1122,10 +1122,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             <div>
               <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
                 <Icon name="clipboard" size={14} className="text-action-500" />
-                Consumable Usage ({detailUser.consumableRequests?.length || 0})
+                Supply Usage ({detailUser.consumableRequests?.length || 0})
               </h3>
               {!detailUser.consumableRequests?.length ? (
-                <p className="text-xs text-shark-400 pl-5">No consumable requests</p>
+                <p className="text-xs text-shark-400 pl-5">No supply requests</p>
               ) : (
                 <div className="space-y-1 pl-5">
                   {detailUser.consumableRequests.map((r) => (
@@ -1187,7 +1187,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </div>
                 <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900">{detailUser.consumableAssignments?.length || 0}</p>
-                  <p className="text-[10px] text-shark-400">Consumables</p>
+                  <p className="text-[10px] text-shark-400">Supplies</p>
                 </div>
                 <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900">{detailUser.conditionChecks?.length || 0}</p>

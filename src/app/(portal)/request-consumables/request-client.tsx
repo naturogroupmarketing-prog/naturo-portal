@@ -224,7 +224,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
 
           {/* Search */}
           <Input
-            placeholder="Search consumables..."
+            placeholder="Search supplies..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="max-w-xs"
@@ -274,7 +274,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
               <CardContent className="py-12 text-center">
                 <Icon name="droplet" size={40} className="text-shark-200 mx-auto mb-3" />
                 <p className="text-shark-400">
-                  {search ? "No consumables match your search." : "No consumables available to request."}
+                  {search ? "No supplies match your search." : "No supplies available to request."}
                 </p>
               </CardContent>
             </Card>

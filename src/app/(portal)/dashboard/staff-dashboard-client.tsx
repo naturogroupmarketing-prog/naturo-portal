@@ -826,7 +826,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
                   {returningKit.consumables.length > 0 && (
                     <div>
-                      <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">Consumables</p>
+                      <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">Supplies</p>
                       <div className="space-y-1">
                         {returningKit.consumables.map((c) => {
                           const key = `consumable-${c.id}`;
@@ -1132,7 +1132,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <Icon name="droplet" size={20} className="text-white" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-shark-900">Consumable Usage</h3>
+                <h3 className="text-base font-semibold text-shark-900">Supply Usage</h3>
                 <p className="text-xs text-shark-400 mt-0.5">Last 6 months</p>
               </div>
             </div>

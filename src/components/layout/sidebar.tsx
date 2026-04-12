@@ -70,7 +70,7 @@ const navSections: NavSection[] = [
     roles: ["STAFF"],
     items: [
       { label: "My Assets", href: "/my-assets", icon: "package", roles: ["STAFF"] },
-      { label: "My Consumables", href: "/my-consumables", icon: "droplet", roles: ["STAFF"] },
+      { label: "My Supplies", href: "/my-consumables", icon: "droplet", roles: ["STAFF"] },
     ],
   },
   {

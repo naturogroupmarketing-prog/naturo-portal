@@ -207,7 +207,7 @@ export async function createPurchaseOrder(formData: FormData) {
   const supplier = (formData.get("supplier") as string)?.trim() || null;
   const notes = (formData.get("notes") as string)?.trim() || null;
 
-  if (!consumableId) throw new Error("Consumable is required");
+  if (!consumableId) throw new Error("Supply is required");
   if (!quantity || quantity <= 0) throw new Error("Quantity must be greater than 0");
 
   const consumable = await db.consumable.findUnique({ where: { id: consumableId } });

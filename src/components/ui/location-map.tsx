@@ -92,7 +92,7 @@ export function LocationMap({ locations, className = "" }: LocationMapProps) {
               <span style="font-size: 13px; font-weight: 600; color: #292d34;">${loc.assetCount}</span>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 12px; color: #6b7080;">Consumables</span>
+              <span style="font-size: 12px; color: #6b7080;">Supplies</span>
               <span style="font-size: 13px; font-weight: 600; color: #292d34;">${loc.consumableCount}</span>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">

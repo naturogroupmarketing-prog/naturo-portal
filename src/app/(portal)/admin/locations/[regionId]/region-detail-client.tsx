@@ -135,7 +135,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
         assets: assetItems,
         consumables: consumableItems,
       });
-      addToast(`Applied ${result.assetsCreated} assets and ${result.consumablesCreated} consumables to ${region.name}`, "success");
+      addToast(`Applied ${result.assetsCreated} assets and ${result.consumablesCreated} supplies to ${region.name}`, "success");
       setShowApplyModal(false);
       router.refresh();
     } catch (err) {
@@ -245,14 +245,14 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
 
   const stats = [
     { label: "Total Assets", value: assets.length, icon: "package" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
-    { label: "Consumables", value: consumables.length, icon: "droplet" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
+    { label: "Supplies", value: consumables.length, icon: "droplet" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
     { label: "Staff", value: staff.length, icon: "users" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
     { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, color: "text-white", bg: "bg-[#E8532E]", border: "border-[#E8532E]" },
   ];
 
   const tabs = [
     { key: "assets" as const, label: "Assets", count: assets.length, icon: "package" as const },
-    { key: "consumables" as const, label: "Consumables", count: consumables.length, icon: "droplet" as const },
+    { key: "consumables" as const, label: "Supplies", count: consumables.length, icon: "droplet" as const },
     { key: "staff" as const, label: "Staff", count: staff.length, icon: "users" as const },
   ];
 
@@ -298,7 +298,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             </div>
             <h3 className="text-lg font-semibold text-shark-900">Set Up This Location</h3>
             <p className="text-sm text-shark-500 mt-1 max-w-md mx-auto">
-              This location has no assets or consumables. Apply standard items from your existing locations to get started quickly.
+              This location has no assets or supplies. Apply standard items from your existing locations to get started quickly.
             </p>
             <Button className="mt-5" onClick={handleOpenApply}>
               <Icon name="package" size={16} className="mr-2" />
@@ -453,7 +453,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             <Card>
               <div className="py-12 text-center">
                 <Icon name="droplet" size={40} className="text-shark-200 mx-auto mb-3" />
-                <p className="text-shark-400">{search || stockFilter !== "ALL" ? "No consumables match your filters." : "No consumables in this region."}</p>
+                <p className="text-shark-400">{search || stockFilter !== "ALL" ? "No supplies match your filters." : "No supplies in this region."}</p>
               </div>
             </Card>
           ) : (
@@ -626,13 +626,13 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             {templates.consumables.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-shark-700">Consumables ({totalConsumableCount}/{templates.consumables.length})</h3>
+                  <h3 className="text-sm font-semibold text-shark-700">Supplies ({totalConsumableCount}/{templates.consumables.length})</h3>
                   <div className="flex items-center gap-2">
                     <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 10; }); setConsumableQtys(q); }} className="text-xs text-action-500 hover:text-action-600">All to 10</button>
                     <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 0; }); setConsumableQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600">Clear</button>
                   </div>
                 </div>
-                <p className="text-xs text-shark-400 mb-2">Set initial stock quantity for each consumable</p>
+                <p className="text-xs text-shark-400 mb-2">Set initial stock quantity for each supply</p>
                 <div className="space-y-1">
                   {templates.consumables.map((c) => {
                     const key = `${c.category}|${c.name}`;
@@ -666,7 +666,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
         {templates && (templates.assets.length > 0 || templates.consumables.length > 0) && (
           <div className="flex items-center justify-between border-t border-shark-100 pt-4 mt-4">
             <p className="text-xs text-shark-400">
-              {totalAssetCount} assets + {totalConsumableCount} consumables — each asset gets a unique code
+              {totalAssetCount} assets + {totalConsumableCount} supplies — each asset gets a unique code
             </p>
             <div className="flex gap-3">
               <Button variant="secondary" onClick={() => setShowApplyModal(false)}>Cancel</Button>

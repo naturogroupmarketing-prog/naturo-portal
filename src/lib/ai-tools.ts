@@ -1156,7 +1156,7 @@ async function updateConsumableTool(
 
   await createAuditLog({
     action: "CONSUMABLE_UPDATED",
-    description: `AI updated consumable "${consumable.name}": ${Object.keys(data).join(", ")}`,
+    description: `AI updated supply "${consumable.name}": ${Object.keys(data).join(", ")}`,
     performedById: userId,
     consumableId: consumable.id,
     organizationId,
@@ -1527,7 +1527,7 @@ async function createConsumableTool(
 
   await createAuditLog({
     action: "CONSUMABLE_CREATED",
-    description: `AI created consumable "${consumable.name}" in ${region.name} (stock: ${consumable.quantityOnHand})`,
+    description: `AI created supply "${consumable.name}" in ${region.name} (stock: ${consumable.quantityOnHand})`,
     performedById: userId,
     consumableId: consumable.id,
     organizationId: region.organizationId,
@@ -1567,7 +1567,7 @@ async function moveConsumableToRegion(input: { consumable_name: string; source_r
     if (src) where.regionId = src.id;
   }
   const consumable = await db.consumable.findFirst({ where });
-  if (!consumable) return { error: "Consumable not found" };
+  if (!consumable) return { error: "Supply not found" };
   const region = await db.region.findFirst({ where: { name: { contains: input.target_region, mode: "insensitive" }, state: { organizationId } } });
   if (!region) return { error: `Region "${input.target_region}" not found` };
   await db.consumable.update({ where: { id: consumable.id }, data: { regionId: region.id } });

@@ -72,7 +72,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
             <div>
               <h3 className="text-lg font-semibold text-shark-900">Full Backup</h3>
               <p className="text-sm text-shark-400 mt-0.5">
-                Downloads all 4 files at once — assets, consumables, staff, and regions
+                Downloads all 4 files at once — assets, supplies, staff, and regions
               </p>
               <p className="text-xs text-shark-400 mt-1">
                 {assetCount + consumableCount + staffCount + regionCount} total records
@@ -90,7 +90,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {[
           { key: "assets" as const, label: "Assets", count: assetCount, icon: "package" as const, description: "Name, category, serial number, status, assigned to, purchase info" },
-          { key: "consumables" as const, label: "Consumables", count: consumableCount, icon: "droplet" as const, description: "Name, category, unit type, quantity, thresholds, supplier" },
+          { key: "consumables" as const, label: "Supplies", count: consumableCount, icon: "droplet" as const, description: "Name, category, unit type, quantity, thresholds, supplier" },
           { key: "staff" as const, label: "Staff", count: staffCount, icon: "users" as const, description: "Name, email, phone, role, region, status" },
           { key: "regions" as const, label: "Regions", count: regionCount, icon: "map-pin" as const, description: "Region name, state, region ID for reference" },
         ].map((item) => (
@@ -133,7 +133,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
               <h4 className="text-sm font-semibold text-shark-700">How to restore from backup</h4>
               <p className="text-sm text-shark-500 mt-1">
                 Go to <Link href="/admin/import" className="text-action-500 hover:text-action-600 font-medium">Import Data</Link> and
-                upload any of the downloaded CSV files. The column headers will be matched automatically. Assets and consumables will be
+                upload any of the downloaded CSV files. The column headers will be matched automatically. Assets and supplies will be
                 created in their original regions.
               </p>
             </div>

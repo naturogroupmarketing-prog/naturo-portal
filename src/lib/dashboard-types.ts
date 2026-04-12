@@ -18,7 +18,7 @@ export const DASHBOARD_SECTIONS = [
   { id: "portfolio", label: "Portfolio Valuation" },
   { id: "maintenance", label: "Maintenance Due" },
   { id: "asset-charts", label: "Asset Charts" },
-  { id: "consumable-charts", label: "Consumable Charts" },
+  { id: "consumable-charts", label: "Supply Charts" },
   { id: "low-stock", label: "Low Stock Alerts" },
   { id: "regional", label: "Regional Breakdown" },
   { id: "quick-links", label: "Quick Links" },
@@ -64,7 +64,7 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   "operations-overview": "Operations Overview",
   "maintenance-due": "Maintenance Due",
   "asset-charts": "Asset Charts",
-  "consumable-charts": "Consumable Charts",
+  "consumable-charts": "Supply Charts",
   "regional-breakdown": "Regional Breakdown",
   "location-map": "Location Map",
 };

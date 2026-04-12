@@ -84,7 +84,7 @@ export function StarterKitsClient({
         <div>
           <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Starter Kits</h1>
           <p className="text-sm text-shark-400 mt-1">
-            Pre-defined sets of assets and consumables assigned to new staff automatically.
+            Pre-defined sets of assets and supplies assigned to new staff automatically.
           </p>
         </div>
         <Button size="sm" onClick={() => setShowCreate(true)}>
@@ -205,7 +205,7 @@ export function StarterKitsClient({
                                 <div className="w-6 h-6 rounded-lg bg-action-500 flex items-center justify-center">
                                   <Icon name="droplet" size={12} className="text-white" />
                                 </div>
-                                <h4 className="text-sm font-semibold text-shark-700">Consumables ({consumableItems.reduce((s, i) => s + i.quantity, 0)})</h4>
+                                <h4 className="text-sm font-semibold text-shark-700">Supplies ({consumableItems.reduce((s, i) => s + i.quantity, 0)})</h4>
                               </div>
                               {[...consumablesByCategory.entries()].map(([catName, items]) => (
                                 <div key={catName} className="mb-3">

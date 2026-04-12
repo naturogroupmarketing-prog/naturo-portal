@@ -809,9 +809,9 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Purchase Order">
         <form id="create-po-form" className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Consumable *</label>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Supply *</label>
             <Select name="consumableId" required>
-              <option value="">Select consumable</option>
+              <option value="">Select supply</option>
               {consumables.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name} ({c.category}) — {c.quantityOnHand} {c.unitType} in stock

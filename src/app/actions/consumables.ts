@@ -44,7 +44,7 @@ export async function createConsumable(formData: FormData) {
 
   await createAuditLog({
     action: "CONSUMABLE_CREATED",
-    description: `Consumable "${name}" created with qty ${quantityOnHand}`,
+    description: `Supply "${name}" created with qty ${quantityOnHand}`,
     performedById: session.user.id,
     consumableId: consumable.id,
     organizationId,
@@ -80,7 +80,7 @@ export async function updateConsumable(formData: FormData) {
   const imageUrl = formData.get("imageUrl") as string | null;
   const quantityRaw = formData.get("quantityOnHand") as string | null;
 
-  if (!consumableId) throw new Error("Consumable ID is required");
+  if (!consumableId) throw new Error("Supply ID is required");
   if (!name) throw new Error("Name is required");
   if (!category) throw new Error("Category is required");
   if (!regionId) throw new Error("Region is required");
@@ -88,8 +88,8 @@ export async function updateConsumable(formData: FormData) {
   const parsedUnitCost = unitCostRaw && unitCostRaw !== "" ? parseFloat(unitCostRaw) : null;
 
   const consumable = await db.consumable.findUnique({ where: { id: consumableId } });
-  if (!consumable) throw new Error("Consumable not found");
-  if (consumable.organizationId !== organizationId) throw new Error("Consumable not found");
+  if (!consumable) throw new Error("Supply not found");
+  if (consumable.organizationId !== organizationId) throw new Error("Supply not found");
 
   if (!canManageRegion(session.user.role, session.user.regionId, consumable.regionId)) {
     throw new Error("Cannot manage this region");
@@ -144,7 +144,7 @@ export async function updateConsumable(formData: FormData) {
 
   await createAuditLog({
     action: "CONSUMABLE_UPDATED",
-    description: `Consumable "${name}" updated${stockChangeNote}`,
+    description: `Supply "${name}" updated${stockChangeNote}`,
     performedById: session.user.id,
     consumableId,
     organizationId,
@@ -174,8 +174,8 @@ export async function addStock(formData: FormData) {
   const consumable = await db.consumable.findUnique({
     where: { id: consumableId },
   });
-  if (!consumable) throw new Error("Consumable not found");
-  if (consumable.organizationId !== organizationId) throw new Error("Consumable not found");
+  if (!consumable) throw new Error("Supply not found");
+  if (consumable.organizationId !== organizationId) throw new Error("Supply not found");
   if (!canManageRegion(session.user.role, session.user.regionId, consumable.regionId)) {
     throw new Error("Cannot manage this region");
   }
@@ -220,8 +220,8 @@ export async function deductStock(formData: FormData) {
   const consumable = await db.consumable.findUnique({
     where: { id: consumableId },
   });
-  if (!consumable) throw new Error("Consumable not found");
-  if (consumable.organizationId !== organizationId) throw new Error("Consumable not found");
+  if (!consumable) throw new Error("Supply not found");
+  if (consumable.organizationId !== organizationId) throw new Error("Supply not found");
 
   if (consumable.quantityOnHand < quantity) {
     throw new Error(`Cannot deduct ${quantity} — only ${consumable.quantityOnHand} ${consumable.unitType} in stock`);
@@ -236,7 +236,7 @@ export async function deductStock(formData: FormData) {
     throw new Error("Insufficient stock — another operation may have reduced it. Please try again.");
   }
   const afterUpdate = await db.consumable.findUnique({ where: { id: consumableId } });
-  if (!afterUpdate) throw new Error("Consumable not found");
+  if (!afterUpdate) throw new Error("Supply not found");
 
   await createAuditLog({
     action: "CONSUMABLE_STOCK_REDUCED",
@@ -275,13 +275,13 @@ export async function requestConsumable(formData: FormData) {
   const consumable = await db.consumable.findUnique({
     where: { id: consumableId },
   });
-  if (!consumable) throw new Error("Consumable not found");
-  if (consumable.organizationId !== organizationId) throw new Error("Consumable not found");
+  if (!consumable) throw new Error("Supply not found");
+  if (consumable.organizationId !== organizationId) throw new Error("Supply not found");
 
   // Staff can only request from their own region
   if (session.user.role === "STAFF") {
     if (session.user.regionId !== consumable.regionId) {
-      throw new Error("Cannot request consumables from another region");
+      throw new Error("Cannot request supplies from another region");
     }
   }
 
@@ -316,7 +316,7 @@ export async function requestConsumable(formData: FormData) {
     if (mgr.email) {
       await sendEmail({
         to: mgr.email,
-        subject: `Consumable Request: ${consumable.name}`,
+        subject: `Supply Request: ${consumable.name}`,
         html: emailConsumableRequested(
           mgr.name || "Manager",
           session.user.name || session.user.email || "Staff",
@@ -332,7 +332,7 @@ export async function requestConsumable(formData: FormData) {
     organizationId,
     regionId: consumable.regionId,
     type: "PENDING_REQUEST",
-    title: "New Consumable Request",
+    title: "New Supply Request",
     message: `${session.user.name || session.user.email} requested ${quantity} ${consumable.unitType} of "${consumable.name}".`,
     link: "/consumables?tab=requests",
   });
@@ -440,7 +440,7 @@ export async function approveRequest(formData: FormData) {
     await createNotification({
       userId: request.userId,
       type: "REQUEST_APPROVED",
-      title: "Consumable Request Approved",
+      title: "Supply Request Approved",
       message: `Your request for ${request.quantity} ${request.consumable.unitType} of "${request.consumable.name}" has been approved.`,
       link: "/dashboard",
     });
@@ -467,7 +467,7 @@ export async function approveRequest(formData: FormData) {
     await createNotification({
       userId: request.userId,
       type: "REQUEST_REJECTED",
-      title: "Consumable Request Rejected",
+      title: "Supply Request Rejected",
       message: `Your request for ${request.quantity} ${request.consumable.unitType} of "${request.consumable.name}" was rejected.${rejectionNote ? ` Reason: ${rejectionNote}` : ""}`,
       link: "/dashboard",
     });
@@ -567,15 +567,15 @@ export async function deleteConsumable(formData: FormData) {
     where: { id: consumableId },
     include: { assignments: { where: { isActive: true } } },
   });
-  if (!consumable) throw new Error("Consumable not found");
-  if (consumable.organizationId !== organizationId) throw new Error("Consumable not found");
+  if (!consumable) throw new Error("Supply not found");
+  if (consumable.organizationId !== organizationId) throw new Error("Supply not found");
 
   if (!canManageRegion(session.user.role, session.user.regionId, consumable.regionId)) {
     throw new Error("Cannot manage this region");
   }
 
   if (consumable.assignments.length > 0) {
-    throw new Error("Cannot delete consumable with active assignments. Return them first.");
+    throw new Error("Cannot delete supply with active assignments. Return them first.");
   }
 
   // Soft-delete — preserve data for audit trail
@@ -651,7 +651,7 @@ export async function bulkDeleteConsumables(consumableIds: string[]) {
 export async function assignConsumable(formData: FormData) {
   const session = await withAuth();
   if (!(await hasPermission(session.user.id, session.user.role, "consumableAssign"))) {
-    throw new Error("Unauthorized — you don't have permission to assign consumables");
+    throw new Error("Unauthorized — you don't have permission to assign supplies");
   }
 
   const organizationId = session.user.organizationId;
@@ -666,8 +666,8 @@ export async function assignConsumable(formData: FormData) {
   const consumable = await db.consumable.findUnique({
     where: { id: consumableId },
   });
-  if (!consumable) throw new Error("Consumable not found");
-  if (consumable.organizationId !== organizationId) throw new Error("Consumable not found");
+  if (!consumable) throw new Error("Supply not found");
+  if (consumable.organizationId !== organizationId) throw new Error("Supply not found");
 
   if (!canManageRegion(session.user.role, session.user.regionId, consumable.regionId)) {
     throw new Error("Cannot manage this region");
@@ -765,7 +765,7 @@ export async function acknowledgeConsumable(assignmentId: string) {
 
   await createAuditLog({
     action: "CONSUMABLE_ASSIGNED",
-    description: `Consumable "${assignment.consumable.name}" (${assignment.quantity} ${assignment.consumable.unitType}) receipt confirmed by ${session.user.name || session.user.email}`,
+    description: `Supply "${assignment.consumable.name}" (${assignment.quantity} ${assignment.consumable.unitType}) receipt confirmed by ${session.user.name || session.user.email}`,
     performedById: session.user.id,
     consumableId: assignment.consumableId,
     organizationId: session.user.organizationId || undefined,
@@ -954,7 +954,7 @@ export async function batchApproveRequests(
 
   await createAuditLog({
     action: action === "approve" ? "CONSUMABLE_REQUEST_APPROVED" : "CONSUMABLE_REQUEST_REJECTED",
-    description: `Batch ${action}d ${processed} consumable request(s)`,
+    description: `Batch ${action}d ${processed} supply request(s)`,
     performedById: session.user.id,
     organizationId,
   });

@@ -17,7 +17,7 @@ interface Manager {
   permissions: Record<PermissionKey, boolean> | null;
 }
 
-const GROUPS = ["Staff", "Assets", "Consumables", "Features", "Regions", "AI"];
+const GROUPS = ["Staff", "Assets", "Supplies", "Features", "Regions", "AI"];
 
 function Toggle({
   checked,

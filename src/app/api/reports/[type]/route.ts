@@ -221,7 +221,7 @@ export async function GET(
       }
 
       csv = toCSV(
-        ["Staff Name", "Staff Email", "Staff Region", "Consumable", "Category", "Total Qty", "Unit", "Consumable Region"],
+        ["Staff Name", "Staff Email", "Staff Region", "Supply", "Category", "Total Qty", "Unit", "Supply Region"],
         usageRows
       );
       break;
@@ -269,7 +269,7 @@ export async function GET(
         take: 2000,
       });
       csv = toCSV(
-        ["Date", "Action", "Description", "Performed By", "Target User", "Asset", "Consumable"],
+        ["Date", "Action", "Description", "Performed By", "Target User", "Asset", "Supply"],
         logs.map((l) => [
           l.createdAt.toISOString(), l.action, l.description,
           l.performedBy.name || l.performedBy.email,

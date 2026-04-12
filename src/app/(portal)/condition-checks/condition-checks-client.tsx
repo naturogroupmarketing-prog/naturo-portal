@@ -303,7 +303,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                       </label>
                       <div>
                         <span className="text-sm font-medium text-shark-800">{cat.name}</span>
-                        <span className="text-xs text-shark-400 ml-2">({cat.type === "ASSET" ? "Assets" : "Consumables"})</span>
+                        <span className="text-xs text-shark-400 ml-2">({cat.type === "ASSET" ? "Assets" : "Supplies"})</span>
                         {isSaving && <span className="text-xs text-action-500 ml-2 animate-pulse">Saving...</span>}
                       </div>
                     </div>

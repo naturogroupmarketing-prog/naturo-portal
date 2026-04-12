@@ -51,7 +51,7 @@ const assetFields: FieldDef[] = [
 ];
 
 const consumableFields: FieldDef[] = [
-  { key: "name", label: "Consumable Name", required: true },
+  { key: "name", label: "Supply Name", required: true },
   { key: "category", label: "Category", required: true },
   { key: "unitType", label: "Unit Type (e.g., Box, Pack, Each)", required: true },
   { key: "quantityOnHand", label: "Quantity On Hand", required: false },
@@ -316,7 +316,7 @@ export function ImportClient({ regions }: Props) {
       <div>
         <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Import Data</h1>
         <p className="text-sm text-shark-400 mt-1">
-          Bulk import assets, consumables, or staff from CSV or Excel files
+          Bulk import assets, supplies, or staff from CSV or Excel files
         </p>
       </div>
 
@@ -356,7 +356,7 @@ export function ImportClient({ regions }: Props) {
         <div className="grid gap-4 sm:grid-cols-3">
           {([
             { type: "assets" as ImportType, label: "Assets", icon: "package" as const, desc: "Import fixed assets like equipment, tools, vehicles" },
-            { type: "consumables" as ImportType, label: "Consumables", icon: "droplet" as const, desc: "Import consumable items like supplies, PPE, stationery" },
+            { type: "consumables" as ImportType, label: "Supplies", icon: "droplet" as const, desc: "Import supply items like PPE, stationery, and other consumables" },
             { type: "staff" as ImportType, label: "Staff", icon: "users" as const, desc: "Import staff members with email and role assignments" },
           ]).map((item) => (
             <Card

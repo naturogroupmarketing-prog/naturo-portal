@@ -305,9 +305,9 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       const idsToDelete = Array.from(selectedIds).filter((id) => filteredIds.has(id));
       const result = await bulkDeleteConsumables(idsToDelete);
       if (result.errors.length > 0) {
-        addToast(`Deleted ${result.deleted} consumable(s). Some errors occurred.`, "warning");
+        addToast(`Deleted ${result.deleted} supply item(s). Some errors occurred.`, "warning");
       } else {
-        addToast(`Deleted ${result.deleted} consumable(s) successfully`, "success");
+        addToast(`Deleted ${result.deleted} supply item(s) successfully`, "success");
       }
       setSelectedIds(new Set());
       setShowBulkDelete(false);
@@ -555,7 +555,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     <div className="space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Consumables</h1>
+          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Supplies</h1>
           <p className="text-sm text-shark-400 mt-1">{consumables.length} total items</p>
         </div>
         <div className="flex items-center gap-2">
@@ -565,13 +565,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </Button>
           <Button size="sm" onClick={() => {
             if (!canAdd) {
-              addToast("You don't have permission to add consumables. Please contact your admin.", "error");
+              addToast("You don't have permission to add supplies. Please contact your admin.", "error");
               return;
             }
             setShowCreate(true);
           }}>
             <Icon name="plus" size={14} className="mr-1.5" />
-            New Consumable
+            New Supply
           </Button>
         </div>
       </div>
@@ -605,7 +605,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           {/* Search + Delete Selected */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <Input
-              placeholder="Search consumables..."
+              placeholder="Search supplies..."
               value={search}
               onChange={(e) => setSearchAndClear(e.target.value)}
               className="flex-1 sm:max-w-md"
@@ -691,7 +691,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       })}
 
                       {regionItems.length === 0 && (
-                        <p className="text-sm text-shark-400 ml-4 px-1">No consumables in this region.</p>
+                        <p className="text-sm text-shark-400 ml-4 px-1">No supplies in this region.</p>
                       )}
                     </>
                   )}
@@ -830,11 +830,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       )}
 
       {/* Bulk Delete Confirmation Modal */}
-      <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Consumables">
+      <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Supplies">
         <div className="space-y-4">
           <div className="bg-red-50 border border-red-200 rounded-xl p-4">
             <p className="text-sm text-red-800 font-medium">
-              Are you sure you want to delete {selectedIds.size} consumable{selectedIds.size > 1 ? "s" : ""}?
+              Are you sure you want to delete {selectedIds.size} supply item{selectedIds.size > 1 ? "s" : ""}?
             </p>
             <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
           </div>
@@ -853,16 +853,16 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               disabled={bulkDeleting}
               onClick={handleBulkDelete}
             >
-              {bulkDeleting ? "Deleting..." : `Delete ${selectedIds.size} Consumable${selectedIds.size > 1 ? "s" : ""}`}
+              {bulkDeleting ? "Deleting..." : `Delete ${selectedIds.size} Supply Item${selectedIds.size > 1 ? "s" : ""}`}
             </Button>
           </div>
         </div>
       </Modal>
 
       {/* Manage Sections Modal */}
-      <Modal open={showManageSections} onClose={() => { setShowManageSections(false); setAddingSectionError(""); setNewSectionName(""); setEditingSectionId(null); }} title="Manage Consumable Sections">
+      <Modal open={showManageSections} onClose={() => { setShowManageSections(false); setAddingSectionError(""); setNewSectionName(""); setEditingSectionId(null); }} title="Manage Supply Sections">
         <div className="space-y-4">
-          <p className="text-sm text-shark-500">Add, rename, or remove sections for organising consumables.</p>
+          <p className="text-sm text-shark-500">Add, rename, or remove sections for organising supplies.</p>
 
           {/* Existing sections */}
           <div className="space-y-1 max-h-60 overflow-y-auto">
@@ -960,7 +960,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       </Modal>
 
       {/* Create Consumable Modal */}
-      <Modal open={showCreate} onClose={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }} title="Add New Consumable">
+      <Modal open={showCreate} onClose={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }} title="Add New Supply">
         <form action={handleCreateSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-shark-700 mb-1">Photo</label>
@@ -1052,7 +1052,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }}>Cancel</Button>
-            <Button type="submit" disabled={uploading} loading={uploading}>Add Consumable</Button>
+            <Button type="submit" disabled={uploading} loading={uploading}>Add Supply</Button>
           </div>
         </form>
       </Modal>
@@ -1149,7 +1149,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             setAssigning(true);
             try {
               await assignConsumable(fd);
-              addToast("Consumable assigned successfully", "success");
+              addToast("Supply assigned successfully", "success");
               setShowAssign(null);
             } catch (e) {
               addToast(e instanceof Error ? e.message : "Failed to assign consumable", "error");
@@ -1195,7 +1195,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             setReturning(true);
             try {
               await returnConsumable(fd);
-              addToast("Consumable returned successfully", "success");
+              addToast("Supply returned successfully", "success");
               setShowReturn(null);
             } catch (e) {
               addToast(e instanceof Error ? e.message : "Failed to return consumable", "error");
@@ -1235,7 +1235,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       </Modal>
 
       {/* Image Preview Modal */}
-      <Modal open={!!showImage} onClose={() => setShowImage(null)} title={showImage?.name || "Consumable Photo"}>
+      <Modal open={!!showImage} onClose={() => setShowImage(null)} title={showImage?.name || "Supply Photo"}>
         {showImage && showImage.imageUrl && (
           <div className="text-center space-y-4">
             <img src={showImage.imageUrl} alt={showImage.name} className="mx-auto max-w-full max-h-[60vh] rounded-xl object-contain" />
@@ -1378,7 +1378,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     fd.set("imageUrl", "");
                   }
                   await updateConsumable(fd);
-                  addToast("Consumable updated successfully", "success");
+                  addToast("Supply updated successfully", "success");
                   setEditConsumable(null);
                   setEditImagePreview(null);
                   setEditImageFile(null);

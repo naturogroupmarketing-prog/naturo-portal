@@ -214,7 +214,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <div className="flex items-center justify-between mb-2">
                         <div>
                           <h2 className="text-lg font-bold text-shark-900">Finance</h2>
-                          <p className="text-sm text-shark-400">Asset &amp; Consumable Value</p>
+                          <p className="text-sm text-shark-400">Asset &amp; Supply Value</p>
                         </div>
                       </div>
 
@@ -237,7 +237,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <div className="border border-shark-100 rounded-xl px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
                             <span className="w-2 h-2 rounded-full" style={{ background: "#E8532E" }} />
-                            <span className="text-xs text-shark-500">Consumables</span>
+                            <span className="text-xs text-shark-500">Supplies</span>
                           </div>
                           <p className="text-xl font-bold text-shark-900">
                             ${portfolioValue.consumableValue.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
@@ -277,7 +277,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                       <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
                                       {payload.map((p) => {
                                         const color = p.dataKey === "assets" ? "#1F3DD9" : p.dataKey === "consumables" ? "#E8532E" : "#8b8f96";
-                                        const name = p.dataKey === "assets" ? "Assets" : p.dataKey === "consumables" ? "Consumables" : "Depreciation";
+                                        const name = p.dataKey === "assets" ? "Assets" : p.dataKey === "consumables" ? "Supplies" : "Depreciation";
                                         return (
                                           <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
                                             <span style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
@@ -394,7 +394,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {consumableStatusChart && consumableStatusChart.length > 0 && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Consumable Status</CardTitle>
+                      <CardTitle>Supply Status</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
@@ -422,7 +422,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {consumableCategoryChart && consumableCategoryChart.length > 0 && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Consumables by Category</CardTitle>
+                      <CardTitle>Supplies by Category</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
@@ -661,7 +661,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </div>
                   <div className="flex items-center gap-3 text-xs text-shark-400">
                     <span>{loc.assetCount} assets</span>
-                    <span>{loc.consumableCount} consumables</span>
+                    <span>{loc.consumableCount} supplies</span>
                     <span>{loc.staffCount} staff</span>
                   </div>
                 </a>

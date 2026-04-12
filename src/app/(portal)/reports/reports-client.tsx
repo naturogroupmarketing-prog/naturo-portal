@@ -6,11 +6,11 @@ import { Icon, type IconName } from "@/components/ui/icon";
 
 const reports: { id: string; name: string; description: string; icon: IconName; iconBg: string; iconColor: string; superAdminOnly?: boolean }[] = [
   { id: "assets", name: "Asset Register", description: "Full list of all assets with status and assignments", icon: "package", iconBg: "bg-action-500", iconColor: "text-white" },
-  { id: "consumables", name: "Consumables by Location", description: "Stock levels by region", icon: "droplet", iconBg: "bg-action-500", iconColor: "text-white" },
+  { id: "consumables", name: "Supplies by Location", description: "Stock levels by region", icon: "droplet", iconBg: "bg-action-500", iconColor: "text-white" },
   { id: "assignments", name: "Staff Assignments", description: "Assets assigned to each staff member", icon: "user", iconBg: "bg-action-500", iconColor: "text-white" },
-  { id: "staff-consumable-usage", name: "Staff Consumable Usage", description: "Per-staff breakdown of consumable items issued", icon: "users", iconBg: "bg-action-500", iconColor: "text-white", superAdminOnly: true },
-  { id: "stock-movement", name: "Stock Movement", description: "Consumable issue and restock history", icon: "bar-chart", iconBg: "bg-action-500", iconColor: "text-white" },
-  { id: "requests", name: "Request History", description: "All consumable requests with status", icon: "clipboard", iconBg: "bg-action-500", iconColor: "text-white" },
+  { id: "staff-consumable-usage", name: "Staff Supply Usage", description: "Per-staff breakdown of supply items issued", icon: "users", iconBg: "bg-action-500", iconColor: "text-white", superAdminOnly: true },
+  { id: "stock-movement", name: "Stock Movement", description: "Supply issue and restock history", icon: "bar-chart", iconBg: "bg-action-500", iconColor: "text-white" },
+  { id: "requests", name: "Request History", description: "All supply requests with status", icon: "clipboard", iconBg: "bg-action-500", iconColor: "text-white" },
   { id: "damage-loss", name: "Damage & Loss", description: "Damage and loss reports", icon: "alert-triangle", iconBg: "bg-action-500", iconColor: "text-white" },
   { id: "audit", name: "Audit Trail", description: "Complete system audit history", icon: "lock", iconBg: "bg-action-500", iconColor: "text-white" },
   { id: "maintenance", name: "Maintenance Schedule", description: "All maintenance tasks with due dates and history", icon: "settings", iconBg: "bg-action-500", iconColor: "text-white" },

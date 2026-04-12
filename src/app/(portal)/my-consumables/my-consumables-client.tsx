@@ -138,9 +138,9 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">My Consumables</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">My Supplies</h1>
         <p className="text-sm text-shark-400 mt-1">
-          Your consumable assignments and requests
+          Your supply assignments and requests
         </p>
       </div>
 
@@ -258,7 +258,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
       {orderedSections.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-shark-400">No consumable sections have been set up yet.</p>
+            <p className="text-shark-400">No supply sections have been set up yet.</p>
           </CardContent>
         </Card>
       )}

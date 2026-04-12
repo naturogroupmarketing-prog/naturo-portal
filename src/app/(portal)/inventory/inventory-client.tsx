@@ -98,7 +98,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Inventory</h1>
-          <p className="text-sm text-shark-400 mt-1">{totalRegions} locations &middot; {totalAssets} assets &middot; {totalConsumables} consumables</p>
+          <p className="text-sm text-shark-400 mt-1">{totalRegions} locations &middot; {totalAssets} assets &middot; {totalConsumables} supplies</p>
         </div>
         {isSuperAdmin && (
           <Button size="sm" onClick={() => { setShowManageModal(true); setManageTab("locations"); }}>
@@ -181,7 +181,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                               <div className="flex-1 min-w-0">
                                 <h3 className="text-sm font-semibold text-shark-800">{region.name}</h3>
                                 <p className="text-xs text-shark-400 mt-0.5">
-                                  {region._count.assets} assets · {region._count.consumables} consumables · {region._count.users} staff
+                                  {region._count.assets} assets · {region._count.consumables} supplies · {region._count.users} staff
                                 </p>
                                 {region.address && (
                                   <p className="hidden lg:flex text-xs text-shark-400 mt-0.5 items-center gap-1">
@@ -287,7 +287,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                 Archive &quot;{archiveConfirm.name}&quot;?
               </p>
               <p className="text-sm text-amber-700 mt-1">
-                All assets, consumables, and staff will be preserved but hidden from active views. You can restore this location anytime.
+                All assets, supplies, and staff will be preserved but hidden from active views. You can restore this location anytime.
               </p>
             </div>
             <div className="grid grid-cols-3 gap-3">
@@ -297,7 +297,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               </div>
               <div className="bg-shark-50 rounded-lg px-3 py-2 text-center">
                 <p className="text-lg font-bold text-shark-900">{archiveConfirm.consumables}</p>
-                <p className="text-xs text-shark-400">Consumables</p>
+                <p className="text-xs text-shark-400">Supplies</p>
               </div>
               <div className="bg-shark-50 rounded-lg px-3 py-2 text-center">
                 <p className="text-lg font-bold text-shark-900">{archiveConfirm.users}</p>
@@ -350,7 +350,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                         {region.state.name} · Archived {new Date(region.archivedAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
                       </p>
                       <p className="text-xs text-shark-400 mt-0.5">
-                        {region._count.assets} assets · {region._count.consumables} consumables · {region._count.users} staff
+                        {region._count.assets} assets · {region._count.consumables} supplies · {region._count.users} staff
                       </p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
