@@ -164,64 +164,6 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
       {/* ── Request Tab ── */}
       {tab === "request" && (
         <>
-          {/* Search */}
-          <Input
-            placeholder="Search consumables..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-xs"
-          />
-
-          {/* Sections */}
-          {orderedSections.map((sectionName, idx) => {
-            const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
-            const sectionConsumables = consumablesByCategory.get(sectionName) || [];
-            const collapsed = collapsedSections.has(sectionName);
-
-            return (
-              <div key={sectionName} className="space-y-3">
-                <button
-                  onClick={() => toggleSection(sectionName)}
-                  className="flex items-center gap-3 px-1 w-full text-left group"
-                >
-                  <div className={`w-8 h-8 rounded-lg ${colors.bg} flex items-center justify-center`}>
-                    <Icon name="droplet" size={16} className={colors.color} />
-                  </div>
-                  <div className="flex items-center gap-2 flex-1">
-                    <h2 className="text-lg font-semibold text-shark-900">{sectionName}</h2>
-                    <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
-                      {sectionConsumables.length}
-                    </span>
-                  </div>
-                  <Icon
-                    name="chevron-down"
-                    size={16}
-                    className={`text-shark-400 group-hover:text-shark-600 transition-transform ${collapsed ? "-rotate-90" : ""}`}
-                  />
-                </button>
-
-                {!collapsed && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-2">
-                    {sectionConsumables.map((c) => (
-                      <ConsumableRequestCard key={c.id} consumable={c} addToast={addToast} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-
-          {orderedSections.length === 0 && (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <Icon name="droplet" size={40} className="text-shark-200 mx-auto mb-3" />
-                <p className="text-shark-400">
-                  {search ? "No consumables match your search." : "No consumables available to request."}
-                </p>
-              </CardContent>
-            </Card>
-          )}
-
           {/* Active Requests */}
           {recentRequests.length > 0 && (
             <div>
@@ -278,6 +220,64 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                 ))}
               </div>
             </div>
+          )}
+
+          {/* Search */}
+          <Input
+            placeholder="Search consumables..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="max-w-xs"
+          />
+
+          {/* Sections */}
+          {orderedSections.map((sectionName, idx) => {
+            const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
+            const sectionConsumables = consumablesByCategory.get(sectionName) || [];
+            const collapsed = collapsedSections.has(sectionName);
+
+            return (
+              <div key={sectionName} className="space-y-3">
+                <button
+                  onClick={() => toggleSection(sectionName)}
+                  className="flex items-center gap-3 px-1 w-full text-left group"
+                >
+                  <div className={`w-8 h-8 rounded-lg ${colors.bg} flex items-center justify-center`}>
+                    <Icon name="droplet" size={16} className={colors.color} />
+                  </div>
+                  <div className="flex items-center gap-2 flex-1">
+                    <h2 className="text-lg font-semibold text-shark-900">{sectionName}</h2>
+                    <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                      {sectionConsumables.length}
+                    </span>
+                  </div>
+                  <Icon
+                    name="chevron-down"
+                    size={16}
+                    className={`text-shark-400 group-hover:text-shark-600 transition-transform ${collapsed ? "-rotate-90" : ""}`}
+                  />
+                </button>
+
+                {!collapsed && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-2">
+                    {sectionConsumables.map((c) => (
+                      <ConsumableRequestCard key={c.id} consumable={c} addToast={addToast} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {orderedSections.length === 0 && (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <Icon name="droplet" size={40} className="text-shark-200 mx-auto mb-3" />
+                <p className="text-shark-400">
+                  {search ? "No consumables match your search." : "No consumables available to request."}
+                </p>
+              </CardContent>
+            </Card>
           )}
         </>
       )}
