@@ -214,7 +214,7 @@ async function fetchStaffData(userId: string, organizationId: string) {
     const staffStats: { label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
       { label: "Assigned Assets", value: assetCount, icon: "package", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-assets" },
       { label: "Consumable Items", value: consumableCount, icon: "droplet", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-consumables" },
-      { label: "Requests", value: pendingRequestCount, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-requests" },
+      { label: "Request & Confirm", value: pendingRequestCount, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/request-consumables" },
     ];
 
     return {
