@@ -8,6 +8,11 @@
   "theme_color": "#1F3DD9",
   "icons": [
     {
+      "src": "/Favicon_trackio.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"

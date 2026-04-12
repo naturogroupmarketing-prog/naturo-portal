@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   title: "Trackio",
   description: "Asset & Consumable Tracker - Internal management portal",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/Favicon_trackio.svg",
+    apple: "/Favicon_trackio.svg",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
