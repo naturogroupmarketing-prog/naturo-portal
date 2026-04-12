@@ -8,7 +8,7 @@
   "theme_color": "#1F3DD9",
   "icons": [
     {
-      "src": "/Favicon_trackio.svg",
+      "src": "/trackio_white.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

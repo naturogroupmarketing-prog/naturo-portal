@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   description: "Asset & Consumable Tracker - Internal management portal",
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/Favicon_trackio.svg",
-    apple: "/Favicon_trackio.svg",
+    icon: "/trackio_white.svg",
+    apple: "/trackio_white.svg",
   },
   appleWebApp: {
     capable: true,
@@ -40,8 +40,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/Favicon_trackio.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/Favicon_trackio.svg" />
+        <link rel="icon" href="/trackio_white.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/trackio_white.svg" />
         <meta name="theme-color" content="#0f172a" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
