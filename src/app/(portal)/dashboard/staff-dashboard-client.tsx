@@ -1352,8 +1352,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   <Icon name="plus" size={24} className="text-white" />
                 </div>
                 <div>
-                  <p className="font-semibold text-shark-900">Request Consumables</p>
-                  <p className="text-xs text-shark-400">Request items from your region</p>
+                  <p className="font-semibold text-shark-900">Request & Confirm</p>
+                  <p className="text-xs text-shark-400">Request items and confirm receipts</p>
                 </div>
               </CardContent>
             </Card>
