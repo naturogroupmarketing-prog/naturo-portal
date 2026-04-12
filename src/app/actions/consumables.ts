@@ -337,7 +337,7 @@ export async function requestConsumable(formData: FormData) {
     link: "/consumables?tab=requests",
   });
 
-  revalidatePath("/my-requests");
+  revalidatePath("/request-consumables");
   revalidatePath("/consumables");
   revalidatePath("/inventory");
   revalidatePath("/inventory");
@@ -383,7 +383,7 @@ export async function closeRequest(formData: FormData) {
     organizationId,
   });
 
-  revalidatePath("/my-requests");
+  revalidatePath("/request-consumables");
   revalidatePath("/consumables");
   revalidatePath("/inventory");
   revalidatePath("/inventory");
@@ -962,7 +962,7 @@ export async function batchApproveRequests(
   revalidatePath("/consumables");
   revalidatePath("/inventory");
   revalidatePath("/inventory");
-  revalidatePath("/my-requests");
+  revalidatePath("/request-consumables");
   revalidatePath("/dashboard");
   return { success: true, processed };
 }

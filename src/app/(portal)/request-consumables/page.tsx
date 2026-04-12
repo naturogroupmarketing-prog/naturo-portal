@@ -26,13 +26,12 @@ export default async function RequestConsumablesPage() {
     db.consumableRequest.findMany({
       where: {
         userId: session.user.id,
-        status: { in: ["PENDING", "REJECTED"] },
+        status: { not: "CLOSED" },
       },
       include: {
         consumable: { include: { region: true } },
       },
       orderBy: { createdAt: "desc" },
-      take: 10,
     }),
     // Items issued to staff awaiting receipt confirmation
     db.consumableAssignment.findMany({

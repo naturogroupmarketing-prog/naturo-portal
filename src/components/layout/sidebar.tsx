@@ -71,7 +71,6 @@ const navSections: NavSection[] = [
     items: [
       { label: "My Assets", href: "/my-assets", icon: "package", roles: ["STAFF"] },
       { label: "My Consumables", href: "/my-consumables", icon: "droplet", roles: ["STAFF"] },
-      { label: "My Requests", href: "/my-requests", icon: "clipboard", roles: ["STAFF"] },
     ],
   },
   {

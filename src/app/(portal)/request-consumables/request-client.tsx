@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { formatDate } from "@/lib/utils";
-import { requestConsumable, acknowledgeConsumable } from "@/app/actions/consumables";
+import { requestConsumable, acknowledgeConsumable, closeRequest } from "@/app/actions/consumables";
 import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
@@ -77,6 +77,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<"request" | "confirm">(pendingAssignments.length > 0 ? "confirm" : "request");
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [closingId, setClosingId] = useState<string | null>(null);
   const { addToast } = useToast();
   const router = useRouter();
 
@@ -221,10 +222,10 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
             </Card>
           )}
 
-          {/* Pending & Recent Requests */}
+          {/* Active Requests */}
           {recentRequests.length > 0 && (
             <div>
-              <h2 className="text-lg font-semibold text-shark-900 mb-3">Pending & Recent Requests</h2>
+              <h2 className="text-lg font-semibold text-shark-900 mb-3">My Requests</h2>
               <div className="space-y-3">
                 {recentRequests.map((r) => (
                   <Card key={r.id}>
@@ -236,7 +237,32 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                             {r.quantity} {r.consumable.unitType} &middot; {r.consumable.region.name}
                           </p>
                         </div>
-                        <Badge status={r.status} />
+                        <div className="flex items-center gap-2">
+                          <Badge status={r.status} />
+                          {(r.status === "APPROVED" || r.status === "REJECTED") && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              disabled={closingId === r.id}
+                              loading={closingId === r.id}
+                              onClick={async () => {
+                                setClosingId(r.id);
+                                try {
+                                  const fd = new FormData();
+                                  fd.set("requestId", r.id);
+                                  await closeRequest(fd);
+                                  addToast("Request closed", "success");
+                                  router.refresh();
+                                } catch {
+                                  addToast("Failed to close request", "error");
+                                }
+                                setClosingId(null);
+                              }}
+                            >
+                              Close
+                            </Button>
+                          )}
+                        </div>
                       </div>
                       <div className="mt-2 flex items-center gap-3 text-xs text-shark-400">
                         <span>Requested: {formatDate(r.createdAt)}</span>
