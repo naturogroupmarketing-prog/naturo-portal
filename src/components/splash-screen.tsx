@@ -24,14 +24,14 @@ export function SplashScreen() {
       className={`fixed inset-0 z-[99999] flex items-center justify-center transition-opacity duration-700 ${
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
-      style={{ backgroundColor: "#1113d4" }}
+      style={{ backgroundColor: "#ffffff" }}
     >
-      {/* Animated icon */}
+      {/* Animated logo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/trackio_white.svg"
+        src="/trackio_logo_v1.svg"
         alt="Trackio"
-        className="w-24 h-24 animate-splash-icon"
+        className="h-16 w-auto animate-splash-icon"
         draggable={false}
       />
 
