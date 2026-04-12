@@ -1,12 +1,13 @@
-const CACHE_NAME = "trackio-v2";
+const CACHE_NAME = "trackio-v3";
 const OFFLINE_URL = "/offline";
 
 // Critical pages to cache for offline use
 const PRECACHE_URLS = [
   OFFLINE_URL,
-  "/logo.png",
+  "/trackio_white.svg",
   "/icon-192.png",
   "/icon-512.png",
+  "/apple-touch-icon.png",
   "/manifest.webmanifest",
 ];
 
