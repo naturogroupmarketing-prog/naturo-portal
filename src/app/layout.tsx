@@ -48,7 +48,7 @@ export default function RootLayout({
         <link rel="icon" href="/trackio_white.svg" type="image/svg+xml" />
         <link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="theme-color" content="#1113d4" />
+        <meta name="theme-color" content="#f5f5f5" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className={`${inter.className} ${exo.variable} antialiased`}>
