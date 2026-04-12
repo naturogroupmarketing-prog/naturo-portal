@@ -57,6 +57,7 @@ async function fetchStaffData(userId: string, organizationId: string) {
     const assetCount = allActiveAssets.filter((a) => a.acknowledgedAt !== null).length;
     const consumableCount = allActiveConsumables.filter((c) => c.acknowledgedAt !== null).length;
     const pendingRequestCount = recentRequests.filter((r) => r.status === "PENDING").length;
+    const pendingConfirmCount = allActiveConsumables.filter((c) => c.acknowledgedAt === null).length;
     const unacknowledgedCount = allActiveAssets.filter((a) => a.acknowledgedAt === null && a.starterKitApplicationId).length;
 
     // Condition checks: get config + submitted checks + schedules + user's personal schedule
@@ -214,7 +215,7 @@ async function fetchStaffData(userId: string, organizationId: string) {
     const staffStats: { label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string }[] = [
       { label: "Assigned Assets", value: assetCount, icon: "package", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-assets" },
       { label: "Consumable Items", value: consumableCount, icon: "droplet", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/my-consumables" },
-      { label: "Request & Confirm", value: pendingRequestCount, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/request-consumables" },
+      { label: "Request & Confirm", value: pendingRequestCount + pendingConfirmCount, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/request-consumables" },
     ];
 
     return {
