@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { formatDate } from "@/lib/utils";
-import { requestConsumable } from "@/app/actions/consumables";
+import { requestConsumable, acknowledgeConsumable } from "@/app/actions/consumables";
+import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
@@ -51,16 +52,33 @@ interface Request {
   };
 }
 
+interface PendingAssignment {
+  id: string;
+  quantity: number;
+  createdAt: string;
+  consumable: {
+    id: string;
+    name: string;
+    unitType: string;
+    category: string;
+    imageUrl: string | null;
+  };
+}
+
 interface Props {
   consumables: Consumable[];
   categories: Category[];
   recentRequests: Request[];
+  pendingAssignments: PendingAssignment[];
 }
 
-export function RequestConsumablesClient({ consumables, categories, recentRequests }: Props) {
+export function RequestConsumablesClient({ consumables, categories, recentRequests, pendingAssignments }: Props) {
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
+  const [tab, setTab] = useState<"request" | "confirm">(pendingAssignments.length > 0 ? "confirm" : "request");
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const { addToast } = useToast();
+  const router = useRouter();
 
   const toggleSection = (name: string) => {
     setCollapsedSections((prev) => {
@@ -104,101 +122,200 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
     <div className="space-y-10">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Request Consumables</h1>
+        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Requests</h1>
         <p className="text-sm text-shark-400 mt-1">
-          Browse items and request what you need
+          Request items and confirm what you&apos;ve received
         </p>
       </div>
 
-      {/* Search */}
-      <Input
-        placeholder="Search consumables..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="max-w-xs"
-      />
+      {/* Tabs */}
+      <div className="flex gap-1 bg-shark-50 p-1 rounded-lg w-fit">
+        <button
+          onClick={() => setTab("request")}
+          className={`px-3.5 py-1.5 text-sm font-medium rounded-md transition-all ${
+            tab === "request" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
+          }`}
+        >
+          Request
+          {recentRequests.length > 0 && (
+            <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
+              recentRequests.some((r) => r.status === "PENDING") ? "text-white bg-[#E8532E]" : "text-shark-500 bg-shark-200"
+            }`}>
+              {recentRequests.length}
+            </span>
+          )}
+        </button>
+        <button
+          onClick={() => setTab("confirm")}
+          className={`px-3.5 py-1.5 text-sm font-medium rounded-md transition-all ${
+            tab === "confirm" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
+          }`}
+        >
+          Confirm Receipt
+          {pendingAssignments.length > 0 && (
+            <span className="ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full text-white bg-[#E8532E]">
+              {pendingAssignments.length}
+            </span>
+          )}
+        </button>
+      </div>
 
-      {/* Sections */}
-      {orderedSections.map((sectionName, idx) => {
-        const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
-        const sectionConsumables = consumablesByCategory.get(sectionName) || [];
-        const collapsed = collapsedSections.has(sectionName);
+      {/* ── Request Tab ── */}
+      {tab === "request" && (
+        <>
+          {/* Search */}
+          <Input
+            placeholder="Search consumables..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="max-w-xs"
+          />
 
-        return (
-          <div key={sectionName} className="space-y-3">
-            <button
-              onClick={() => toggleSection(sectionName)}
-              className="flex items-center gap-3 px-1 w-full text-left group"
-            >
-              <div className={`w-8 h-8 rounded-lg ${colors.bg} flex items-center justify-center`}>
-                <Icon name="droplet" size={16} className={colors.color} />
+          {/* Sections */}
+          {orderedSections.map((sectionName, idx) => {
+            const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
+            const sectionConsumables = consumablesByCategory.get(sectionName) || [];
+            const collapsed = collapsedSections.has(sectionName);
+
+            return (
+              <div key={sectionName} className="space-y-3">
+                <button
+                  onClick={() => toggleSection(sectionName)}
+                  className="flex items-center gap-3 px-1 w-full text-left group"
+                >
+                  <div className={`w-8 h-8 rounded-lg ${colors.bg} flex items-center justify-center`}>
+                    <Icon name="droplet" size={16} className={colors.color} />
+                  </div>
+                  <div className="flex items-center gap-2 flex-1">
+                    <h2 className="text-lg font-semibold text-shark-900">{sectionName}</h2>
+                    <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                      {sectionConsumables.length}
+                    </span>
+                  </div>
+                  <Icon
+                    name="chevron-down"
+                    size={16}
+                    className={`text-shark-400 group-hover:text-shark-600 transition-transform ${collapsed ? "-rotate-90" : ""}`}
+                  />
+                </button>
+
+                {!collapsed && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-2">
+                    {sectionConsumables.map((c) => (
+                      <ConsumableRequestCard key={c.id} consumable={c} addToast={addToast} />
+                    ))}
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-2 flex-1">
-                <h2 className="text-lg font-semibold text-shark-900">{sectionName}</h2>
-                <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
-                  {sectionConsumables.length}
-                </span>
-              </div>
-              <Icon
-                name="chevron-down"
-                size={16}
-                className={`text-shark-400 group-hover:text-shark-600 transition-transform ${collapsed ? "-rotate-90" : ""}`}
-              />
-            </button>
+            );
+          })}
 
-            {!collapsed && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-2">
-                {sectionConsumables.map((c) => (
-                  <ConsumableRequestCard key={c.id} consumable={c} addToast={addToast} />
+          {orderedSections.length === 0 && (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <Icon name="droplet" size={40} className="text-shark-200 mx-auto mb-3" />
+                <p className="text-shark-400">
+                  {search ? "No consumables match your search." : "No consumables available to request."}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Pending & Recent Requests */}
+          {recentRequests.length > 0 && (
+            <div>
+              <h2 className="text-lg font-semibold text-shark-900 mb-3">Pending & Recent Requests</h2>
+              <div className="space-y-3">
+                {recentRequests.map((r) => (
+                  <Card key={r.id}>
+                    <CardContent className="py-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-semibold text-shark-800">{r.consumable.name}</h3>
+                          <p className="text-sm text-shark-400">
+                            {r.quantity} {r.consumable.unitType} &middot; {r.consumable.region.name}
+                          </p>
+                        </div>
+                        <Badge status={r.status} />
+                      </div>
+                      <div className="mt-2 flex items-center gap-3 text-xs text-shark-400">
+                        <span>Requested: {formatDate(r.createdAt)}</span>
+                        {r.rejectionNote && (
+                          <span className="text-red-500">Reason: {r.rejectionNote}</span>
+                        )}
+                      </div>
+                      {r.notes && (
+                        <p className="mt-2 text-sm text-shark-500 bg-shark-50 rounded-xl p-3">{r.notes}</p>
+                      )}
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
-            )}
-          </div>
-        );
-      })}
-
-      {orderedSections.length === 0 && (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <Icon name="droplet" size={40} className="text-shark-200 mx-auto mb-3" />
-            <p className="text-shark-400">
-              {search ? "No consumables match your search." : "No consumables available to request."}
-            </p>
-          </CardContent>
-        </Card>
+            </div>
+          )}
+        </>
       )}
 
-      {/* Pending & Recent Requests */}
-      {recentRequests.length > 0 && (
-        <div>
-          <h2 className="text-lg font-semibold text-shark-900 mb-3">Pending & Recent Requests</h2>
-          <div className="space-y-3">
-            {recentRequests.map((r) => (
-              <Card key={r.id}>
-                <CardContent className="py-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-shark-800">{r.consumable.name}</h3>
-                      <p className="text-sm text-shark-400">
-                        {r.quantity} {r.consumable.unitType} &middot; {r.consumable.region.name}
-                      </p>
+      {/* ── Confirm Receipt Tab ── */}
+      {tab === "confirm" && (
+        <>
+          {pendingAssignments.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <div className="w-14 h-14 rounded-full bg-action-50 flex items-center justify-center mx-auto mb-4">
+                  <Icon name="check" size={28} className="text-action-500" />
+                </div>
+                <p className="text-lg font-semibold text-shark-900">All items confirmed</p>
+                <p className="text-sm text-shark-400 mt-1">No items awaiting receipt confirmation.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-sm text-shark-500">
+                {pendingAssignments.length} item{pendingAssignments.length !== 1 ? "s" : ""} issued to you. Confirm once you&apos;ve received them.
+              </p>
+              {pendingAssignments.map((a) => (
+                <Card key={a.id}>
+                  <CardContent className="py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                        {a.consumable.imageUrl ? (
+                          <img src={a.consumable.imageUrl} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <Icon name="droplet" size={18} className="text-shark-400" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-shark-900 truncate">{a.quantity}x {a.consumable.name}</p>
+                        <p className="text-xs text-shark-400 mt-0.5">{a.consumable.unitType} · {a.consumable.category}</p>
+                        <p className="text-xs text-shark-400">Issued: {formatDate(a.createdAt)}</p>
+                      </div>
+                      <Button
+                        size="sm"
+                        disabled={confirmingId === a.id}
+                        loading={confirmingId === a.id}
+                        onClick={async () => {
+                          setConfirmingId(a.id);
+                          try {
+                            await acknowledgeConsumable(a.id);
+                            addToast(`Confirmed receipt of ${a.consumable.name}`, "success");
+                            router.refresh();
+                          } catch {
+                            addToast("Failed to confirm receipt", "error");
+                          }
+                          setConfirmingId(null);
+                        }}
+                      >
+                        <Icon name="check" size={14} className="mr-1" />
+                        Confirm
+                      </Button>
                     </div>
-                    <Badge status={r.status} />
-                  </div>
-                  <div className="mt-2 flex items-center gap-3 text-xs text-shark-400">
-                    <span>Requested: {formatDate(r.createdAt)}</span>
-                    {r.rejectionNote && (
-                      <span className="text-red-500">Reason: {r.rejectionNote}</span>
-                    )}
-                  </div>
-                  {r.notes && (
-                    <p className="mt-2 text-sm text-shark-500 bg-shark-50 rounded-xl p-3">{r.notes}</p>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

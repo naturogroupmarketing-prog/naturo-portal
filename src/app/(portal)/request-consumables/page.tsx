@@ -9,7 +9,7 @@ export default async function RequestConsumablesPage() {
 
   const organizationId = session.user.organizationId!;
 
-  const [consumables, categories, recentRequests] = await Promise.all([
+  const [consumables, categories, recentRequests, pendingAssignments] = await Promise.all([
     db.consumable.findMany({
       where: {
         isActive: true,
@@ -34,6 +34,18 @@ export default async function RequestConsumablesPage() {
       orderBy: { createdAt: "desc" },
       take: 10,
     }),
+    // Items issued to staff awaiting receipt confirmation
+    db.consumableAssignment.findMany({
+      where: {
+        userId: session.user.id,
+        isActive: true,
+        acknowledgedAt: null,
+      },
+      include: {
+        consumable: { select: { id: true, name: true, unitType: true, category: true, imageUrl: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
   ]);
 
   return (
@@ -41,6 +53,7 @@ export default async function RequestConsumablesPage() {
       consumables={JSON.parse(JSON.stringify(consumables))}
       categories={JSON.parse(JSON.stringify(categories))}
       recentRequests={JSON.parse(JSON.stringify(recentRequests))}
+      pendingAssignments={JSON.parse(JSON.stringify(pendingAssignments))}
     />
   );
 }
