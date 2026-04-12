@@ -1345,19 +1345,6 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       <div>
         <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest mb-4">Quick Actions</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Link href="/request-consumables">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer group">
-              <CardContent className="py-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-action-500 flex items-center justify-center group-hover:bg-action-600 transition-colors">
-                  <Icon name="plus" size={24} className="text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-shark-900">Request & Confirm</p>
-                  <p className="text-xs text-shark-400">Request items and confirm receipts</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
           <Link href="/report-damage">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="py-5 flex items-center gap-4">
