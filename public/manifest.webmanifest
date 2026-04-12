@@ -4,7 +4,7 @@
   "description": "Asset & Consumable Tracking Platform",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#1113d4",
   "theme_color": "#1F3DD9",
   "icons": [
     {
