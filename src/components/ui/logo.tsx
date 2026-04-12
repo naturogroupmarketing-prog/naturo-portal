@@ -12,7 +12,7 @@ export function Logo({ size = 32, className = "", iconOnly = false }: LogoProps)
         src="/trackio_logo_v1.svg"
         alt="Trackio"
         height={size}
-        style={{ height: `${size}px`, width: "auto" }}
+        style={{ height: `${size * 0.7}px`, width: "auto" }}
         draggable={false}
       />
     </span>
