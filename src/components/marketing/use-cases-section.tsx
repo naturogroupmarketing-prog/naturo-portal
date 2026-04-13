@@ -82,7 +82,7 @@ export function UseCasesSection() {
           {cases.map((useCase) => (
             <div
               key={useCase.title}
-              className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-shark-100 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_2px_8px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.06)] transition-all"
+              className="flex items-start gap-4 p-5 rounded-2xl border border-shark-100/80 bg-shark-50/30 hover:bg-white hover:border-shark-200 hover:shadow-sm transition-all"
             >
               <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center text-action-500 shrink-0">
                 {useCase.icon}

@@ -51,7 +51,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/login"
-            className="text-sm font-medium bg-action-400 text-white px-5 py-2 rounded-xl hover:bg-action-500 transition-all hover:-translate-y-px hover:shadow-md active:scale-[0.97]"
+            className="text-sm font-medium bg-action-500 text-white px-5 py-2 rounded-full hover:bg-action-600 transition-all hover:-translate-y-px hover:shadow-md active:scale-[0.97]"
           >
             Get Started
           </Link>
@@ -82,7 +82,7 @@ export function Navbar() {
             <a href="#use-cases" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 hover:text-shark-900">Use Cases</a>
             <div className="pt-3 border-t border-shark-100 mt-3 space-y-2">
               <Link href="/login" className="block py-2.5 text-sm font-medium text-shark-700">Sign In</Link>
-              <Link href="/login" className="block text-center text-sm font-medium bg-action-400 text-white px-5 py-2.5 rounded-xl">Get Started</Link>
+              <Link href="/login" className="block text-center text-sm font-medium bg-action-500 text-white px-5 py-2.5 rounded-full">Get Started</Link>
             </div>
           </div>
         </div>
