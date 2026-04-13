@@ -30,7 +30,7 @@ export function SplashScreen() {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/trackio_t_full_logo.svg"
-        alt="Trackio"
+        alt="trackio"
         className="h-16 w-auto animate-splash-icon"
         draggable={false}
       />

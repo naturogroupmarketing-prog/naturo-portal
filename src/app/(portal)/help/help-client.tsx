@@ -22,7 +22,7 @@ const FAQ_SECTIONS: FAQSection[] = [
     title: "Getting Started",
     icon: "dashboard",
     faqs: [
-      { q: "What is Trackio?", a: "Trackio is an asset and supply tracking platform designed for businesses with distributed teams. It helps you track who has what equipment, manage stock levels, and keep your operations running smoothly." },
+      { q: "What is trackio?", a: "trackio is an asset and supply tracking platform designed for businesses with distributed teams. It helps you track who has what equipment, manage stock levels, and keep your operations running smoothly." },
       { q: "How do I navigate the app?", a: "Use the sidebar menu on the left to navigate between pages. On mobile, tap the menu icon (☰) in the top-left to open the sidebar. You can also press Cmd+K (Mac) or Ctrl+K (Windows) to quickly search and jump to any page." },
       { q: "What is the AI Assistant?", a: "The AI Assistant is a chat-based tool that can help you manage your inventory using natural language. Click the chat bubble in the bottom-right corner to ask questions like 'Show low stock items' or 'Create 5 mop buckets for Sydney'. It can search, create, update, and manage almost everything in the app." },
       { q: "How do I use voice input with the AI?", a: "Click the microphone icon next to the chat input field. Allow microphone access when prompted. Speak your request clearly and the AI will transcribe and process it. Works best on Chrome, Edge, and Safari." },

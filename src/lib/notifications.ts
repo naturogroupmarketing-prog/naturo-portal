@@ -90,7 +90,7 @@ export async function notifyAdminsAndManagers({
   if (emailUsers.length > 0) {
     batchSendEmails(emailUsers.map((u) => ({
       to: u.email!,
-      subject: `Trackio: ${title}`,
+      subject: `trackio: ${title}`,
       html: buildNotificationEmailHtml(title, message, link),
     }))).catch(() => {});
   }
@@ -128,7 +128,7 @@ async function sendNotificationEmail(userId: string, title: string, message: str
 
   await sendEmail({
     to: user.email,
-    subject: `Trackio: ${title}`,
+    subject: `trackio: ${title}`,
     html: buildNotificationEmailHtml(title, message, link),
   });
 }
@@ -136,7 +136,7 @@ async function sendNotificationEmail(userId: string, title: string, message: str
 function buildNotificationEmailHtml(title: string, message: string, link?: string) {
   const appUrl = process.env.AUTH_URL || "https://naturo-portal.vercel.app";
   const linkHtml = link
-    ? `<p style="margin:24px 0 0;"><a href="${appUrl}${link}" style="display:inline-block;padding:10px 24px;background:#1F3DD9;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:600;font-size:14px;">View in Trackio</a></p>`
+    ? `<p style="margin:24px 0 0;"><a href="${appUrl}${link}" style="display:inline-block;padding:10px 24px;background:#1F3DD9;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:600;font-size:14px;">View in trackio</a></p>`
     : "";
 
   return `

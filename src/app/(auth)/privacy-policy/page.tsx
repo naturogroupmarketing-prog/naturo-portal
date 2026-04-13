@@ -4,13 +4,13 @@ import { Logo } from "@/components/ui/logo";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Trackio privacy policy — how we collect, use, and protect your data.",
+  description: "trackio privacy policy — how we collect, use, and protect your data.",
   alternates: { canonical: "/privacy-policy" },
 };
 
 export default function PrivacyPolicyPage() {
   const lastUpdated = "5 April 2026";
-  const companyName = "Trackio";
+  const companyName = "trackio";
   const contactEmail = "privacy@trackio.com.au";
 
   return (

@@ -6,7 +6,7 @@ import { Icon } from "./icon";
 
 const ONBOARDING_STEPS = [
   {
-    title: "Welcome to Trackio!",
+    title: "Welcome to trackio!",
     description: "Let's take a quick tour of your dashboard. This will only take 30 seconds.",
     icon: "dashboard" as const,
   },

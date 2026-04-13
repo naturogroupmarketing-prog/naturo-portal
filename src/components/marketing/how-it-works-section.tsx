@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ScrollReveal } from "./scroll-reveal";
 
 export function HowItWorksSection() {
   const steps = [
@@ -25,21 +26,25 @@ export function HowItWorksSection() {
   return (
     <section id="how-it-works" className="py-20 sm:py-28 bg-white">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
-            How It Works
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-shark-900 tracking-tight font-exo leading-tight">
-            Up and running in minutes.
-          </h2>
-          <p className="mt-4 text-shark-400 text-lg">
-            No complex setup. No training manuals. Just a clear system that works.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
+              How It Works
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
+              <span className="text-shark-900">Up and running </span>
+              <span className="bg-gradient-to-r from-action-500 to-indigo-500 bg-clip-text text-transparent">in minutes.</span>
+            </h2>
+            <p className="mt-4 text-shark-400 text-lg">
+              No complex setup. No training manuals. Just a clear system that works.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid sm:grid-cols-3 gap-8 sm:gap-12">
           {steps.map((step, i) => (
-            <div key={step.number} className="relative text-center sm:text-left">
+            <ScrollReveal key={step.number} delay={i * 200}>
+            <div className="relative text-center sm:text-left">
               {/* Connector line (desktop only) */}
               {i < steps.length - 1 && (
                 <div className="hidden sm:block absolute top-6 left-[calc(50%+40px)] w-[calc(100%-40px)] h-px border-t border-dashed border-shark-200" />
@@ -55,6 +60,7 @@ export function HowItWorksSection() {
                 {step.description}
               </p>
             </div>
+            </ScrollReveal>
           ))}
         </div>
 

@@ -14,7 +14,7 @@ export async function generateTOTPSecret() {
 
   const secret = new Secret({ size: 20 });
   const totp = new TOTP({
-    issuer: "Trackio",
+    issuer: "trackio",
     label: session.user.email || "User",
     algorithm: "SHA1",
     digits: 6,
@@ -49,7 +49,7 @@ export async function enableMFA(code: string) {
 
   const { TOTP, Secret } = await import("otpauth");
   const totp = new TOTP({
-    issuer: "Trackio",
+    issuer: "trackio",
     label: session.user.email || "User",
     algorithm: "SHA1",
     digits: 6,
@@ -109,7 +109,7 @@ export async function verifyTOTPCode(userId: string, code: string): Promise<bool
 
   const { TOTP, Secret } = await import("otpauth");
   const totp = new TOTP({
-    issuer: "Trackio",
+    issuer: "trackio",
     algorithm: "SHA1",
     digits: 6,
     period: 30,

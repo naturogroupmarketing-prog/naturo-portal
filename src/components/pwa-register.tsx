@@ -55,7 +55,7 @@ export function PWARegister() {
           <Icon name="download" size={18} className="text-action-500" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-shark-900">Install Trackio</p>
+          <p className="text-sm font-semibold text-shark-900">Install trackio</p>
           <p className="text-xs text-shark-400 mt-0.5">Install as an app for faster access and mic permissions</p>
           <div className="flex items-center gap-2 mt-2.5">
             <button onClick={handleInstall} className="text-xs font-semibold text-white bg-action-500 hover:bg-action-600 px-3 py-1.5 rounded-lg transition-colors">

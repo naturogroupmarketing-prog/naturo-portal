@@ -104,7 +104,7 @@ IMPORTANT RULES:
 - For creates/updates: do immediately. User can say "undo" to reverse.`
     : "You can READ data and provide insights. Use list_regions to see all locations, compare_regions to compare them, and add a region filter to any search to narrow by location. For creating or modifying assets, direct users to the appropriate page in the app.";
 
-  const systemPrompt = `You are the AI assistant for "Trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, manage inventory, and answer questions.
+  const systemPrompt = `You are the AI assistant for "trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, manage inventory, and answer questions.
 
 Current user: ${(session.user.name || session.user.email || "").replace(/["`'\\\n\r]/g, "")}
 Role: ${session.user.role}

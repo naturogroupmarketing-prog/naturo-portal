@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
 
       emailBatch.push({
         to: staff.email,
-        subject: `Trackio: ${subject}`,
+        subject: `trackio: ${subject}`,
         html: buildReminderEmail(staff.name || "Team Member", schedule.title, formattedDate, is24h, schedule.notes),
       });
 
@@ -184,7 +184,7 @@ export async function GET(request: NextRequest) {
 
     await sendEmail({
       to: sched.user.email,
-      subject: `Trackio: ${subject}`,
+      subject: `trackio: ${subject}`,
       html: buildReminderEmail(
         sched.user.name || "Team Member",
         `${freqLabel.charAt(0).toUpperCase() + freqLabel.slice(1)} Condition Check`,

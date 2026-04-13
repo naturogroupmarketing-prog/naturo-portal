@@ -1,3 +1,5 @@
+import { ScrollReveal } from "./scroll-reveal";
+
 export function BenefitsSection() {
   const benefits = [
     {
@@ -18,7 +20,7 @@ export function BenefitsSection() {
     },
     {
       metric: "All branches, one view",
-      description: "See every location's inventory, staff, and alerts from a single dashboard.",
+      description: "See every location's stock, staff, and alerts from a single dashboard.",
     },
     {
       metric: "Real-time operational control",
@@ -29,23 +31,26 @@ export function BenefitsSection() {
   return (
     <section className="py-20 sm:py-28 bg-shark-900 text-white">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-xs font-semibold text-action-300 uppercase tracking-widest mb-4">
-            Why Trackio
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
-            The results that matter.
-          </h2>
-          <p className="mt-4 text-shark-300 text-lg">
-            Trackio gives operations teams the visibility and control they&apos;ve been missing.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-xs font-semibold text-action-300 uppercase tracking-widest mb-4">
+              Why trackio
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
+              <span className="text-white">The results that </span>
+              <span className="bg-gradient-to-r from-action-300 to-indigo-400 bg-clip-text text-transparent">matter.</span>
+            </h2>
+            <p className="mt-4 text-shark-300 text-lg">
+              trackio gives operations teams the visibility and control they&apos;ve been missing.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {benefits.map((benefit) => (
+          {benefits.map((benefit, i) => (
+            <ScrollReveal key={benefit.metric} delay={i * 100}>
             <div
-              key={benefit.metric}
-              className="p-6 rounded-2xl bg-shark-800/60 border border-shark-700/50 hover:border-shark-600 transition-colors"
+              className="p-6 rounded-2xl bg-shark-800/60 border border-shark-700/50 hover:border-shark-600 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 h-full"
             >
               <h3 className="text-base font-semibold text-white mb-2">
                 {benefit.metric}
@@ -54,6 +59,7 @@ export function BenefitsSection() {
                 {benefit.description}
               </p>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

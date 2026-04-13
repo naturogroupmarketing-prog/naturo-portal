@@ -1,3 +1,5 @@
+import { ScrollReveal } from "./scroll-reveal";
+
 export function UseCasesSection() {
   const cases = [
     {
@@ -65,24 +67,27 @@ export function UseCasesSection() {
   return (
     <section id="use-cases" className="py-20 sm:py-28 bg-white">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
-            Who It&apos;s For
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-shark-900 tracking-tight font-exo leading-tight">
-            Built for teams that manage things.
-          </h2>
-          <p className="mt-4 text-shark-400 text-lg">
-            Any business that issues equipment or tracks supplies across
-            locations and staff.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
+              Who It&apos;s For
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
+              <span className="text-shark-900">Built for teams that </span>
+              <span className="bg-gradient-to-r from-action-500 to-indigo-500 bg-clip-text text-transparent">manage things.</span>
+            </h2>
+            <p className="mt-4 text-shark-400 text-lg">
+              Any business that issues equipment or tracks supplies across
+              locations and staff.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {cases.map((useCase) => (
+          {cases.map((useCase, i) => (
+            <ScrollReveal key={useCase.title} delay={i * 100}>
             <div
-              key={useCase.title}
-              className="flex items-start gap-4 p-5 rounded-2xl border border-shark-100/80 bg-shark-50/30 hover:bg-white hover:border-shark-200 hover:shadow-sm transition-all"
+              className="flex items-start gap-4 p-5 rounded-2xl border border-shark-100/80 bg-shark-50/30 hover:bg-white hover:border-shark-200 hover:shadow-sm hover:-translate-y-1 transition-all duration-300 h-full"
             >
               <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center text-action-500 shrink-0">
                 {useCase.icon}
@@ -96,6 +101,7 @@ export function UseCasesSection() {
                 </p>
               </div>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

@@ -24,11 +24,21 @@ function FlipOnce({ text, delay = 0 }: { text: string; delay?: number }) {
 
 export function HeroSection() {
   return (
-    <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 overflow-x-clip">
-      {/* Subtle background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-action-50/40 via-white to-white pointer-events-none" />
+      <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 overflow-x-clip bg-white">
+        {/* Swyftx-style gradient — warm peach/salmon bottom-left, lavender/periwinkle right */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 90% 80% at -5% 105%, rgba(235,180,175,0.6) 0%, rgba(240,195,185,0.35) 35%, transparent 70%), " +
+                "radial-gradient(ellipse 75% 90% at 105% 50%, rgba(195,200,238,0.5) 0%, rgba(210,215,245,0.25) 40%, transparent 70%), " +
+                "radial-gradient(ellipse 60% 50% at 40% 105%, rgba(230,195,205,0.25) 0%, transparent 55%)",
+            }}
+          />
+        </div>
 
-      <div className="relative max-w-6xl mx-auto px-6">
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-action-50 border border-action-100 mb-8 animate-[fadeInDown_0.5s_ease-out]">
@@ -74,7 +84,7 @@ export function HeroSection() {
           <DashboardShowcase />
         </div>
       </div>
-    </section>
+      </section>
   );
 }
 
@@ -117,7 +127,7 @@ function DashboardShowcase() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/trackio_t_full_logo.svg"
-                  alt="Trackio"
+                  alt="trackio"
                   style={{ height: "18px", width: "auto" }}
                   draggable={false}
                 />
@@ -134,7 +144,7 @@ function DashboardShowcase() {
               <p className="px-2.5 mt-3 mb-1.5 text-[9px] font-semibold uppercase tracking-wider text-shark-400">Management</p>
               <div className="space-y-0.5">
                 {[
-                  { icon: "M16.5 9.4l-9-5.19M21 16V8l-9-5-9 5v8l9 5 9-5z", label: "Inventory" },
+                  { icon: "M16.5 9.4l-9-5.19M21 16V8l-9-5-9 5v8l9 5 9-5z", label: "Stock" },
                   { icon: "M1 3h15v13H1zM16 8h7v13h-7z", label: "Purchase Orders", badge: 36 },
                   { icon: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2", label: "Staff" },
                   { icon: "M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8", label: "Starter Kits" },
@@ -208,21 +218,19 @@ function DashboardShowcase() {
                 {/* Overview stat cards */}
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { label: "Damage", value: "0", icon: "⚠", bg: "bg-orange-50", iconColor: "text-orange-500", arrow: "↓" },
-                    { label: "Requests", value: "1", icon: "📋", bg: "bg-action-50", iconColor: "text-action-500", arrow: "↑" },
-                    { label: "Returns", value: "0", icon: "←", bg: "bg-blue-50", iconColor: "text-blue-500", arrow: "↓" },
+                    { label: "Damage", value: "0", iconBg: "bg-[#E8532E]", iconPath: "M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" },
+                    { label: "Requests", value: "1", iconBg: "bg-action-500", iconPath: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
+                    { label: "Returns", value: "0", iconBg: "bg-action-500", iconPath: "M19 12H5M12 19l-7-7 7-7" },
                   ].map(s => (
-                    <div key={s.label} className="bg-white rounded-xl border border-shark-100 p-2.5 flex items-center gap-2.5">
-                      <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center ${s.iconColor} text-xs`}>
-                        {s.icon}
+                    <div key={s.label} className="bg-white rounded-2xl border border-shark-100 p-2.5 flex items-center gap-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_2px_8px_rgba(0,0,0,0.04)]">
+                      <div className={`w-9 h-9 rounded-xl ${s.iconBg} flex items-center justify-center shrink-0`}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={s.iconPath}/></svg>
                       </div>
-                      <div>
-                        <p className="text-[9px] text-shark-400">{s.label}</p>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-lg font-bold text-shark-900">{s.value}</span>
-                          <span className="text-[8px] text-shark-300">{s.arrow}</span>
-                        </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[9px] text-shark-500">{s.label}</p>
+                        <span className="text-base font-bold text-shark-900">{s.value}</span>
                       </div>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </div>
                   ))}
                 </div>
@@ -278,6 +286,31 @@ function DashboardShowcase() {
                     </div>
                     {/* Mini chart */}
                     <div className="relative h-14 mt-1">
+                      {/* Tooltip */}
+                      <div className="absolute -top-11 left-1/2 -translate-x-1/2 z-10" style={{ background: "#1a1c21", borderRadius: 8, padding: "5px 8px", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
+                        <p style={{ color: "#8b8f96", fontSize: 7, marginBottom: 3, fontWeight: 600 }}>Feb</p>
+                        <div className="flex items-center gap-1" style={{ marginBottom: 1 }}>
+                          <span className="w-1 h-1 rounded-full bg-[#1F3DD9] shrink-0" />
+                          <span style={{ color: "#ffffff", fontSize: 7, fontWeight: 500 }}>$10,280</span>
+                          <span style={{ color: "#6b7080", fontSize: 6 }}>Assets</span>
+                        </div>
+                        <div className="flex items-center gap-1" style={{ marginBottom: 1 }}>
+                          <span className="w-1 h-1 rounded-full bg-[#E8532E] shrink-0" />
+                          <span style={{ color: "#ffffff", fontSize: 7, fontWeight: 500 }}>$5,820</span>
+                          <span style={{ color: "#6b7080", fontSize: 6 }}>Supplies</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-1 h-1 rounded-full bg-[#8b8f96] shrink-0" />
+                          <span style={{ color: "#ffffff", fontSize: 7, fontWeight: 500 }}>$1,440</span>
+                          <span style={{ color: "#6b7080", fontSize: 6 }}>Depreciation</span>
+                        </div>
+                      </div>
+                      {/* Vertical hover line */}
+                      <div className="absolute left-1/2 top-0 bottom-4 w-px bg-shark-300/40 z-[5]" />
+                      {/* Dots on the lines */}
+                      <div className="absolute w-1.5 h-1.5 rounded-full bg-[#1F3DD9] border border-white z-[6]" style={{ left: "50%", top: "36%", transform: "translate(-50%, -50%)" }} />
+                      <div className="absolute w-1.5 h-1.5 rounded-full bg-[#E8532E] border border-white z-[6]" style={{ left: "50%", top: "56%", transform: "translate(-50%, -50%)" }} />
+
                       <svg viewBox="0 0 200 50" className="w-full h-full" preserveAspectRatio="none">
                         <defs>
                           <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
@@ -286,8 +319,9 @@ function DashboardShowcase() {
                           </linearGradient>
                         </defs>
                         <path d="M0 35 Q25 30 50 28 T100 22 T150 18 T200 12 V50 H0Z" fill="url(#chartFill)"/>
-                        <path d="M0 35 Q25 30 50 28 T100 22 T150 18 T200 12" fill="none" stroke="#3b5bdb" strokeWidth="1.5"/>
+                        <path d="M0 35 Q25 30 50 28 T100 22 T150 18 T200 12" fill="none" stroke="#1F3DD9" strokeWidth="1.5"/>
                         <path d="M0 38 Q25 36 50 34 T100 30 T150 32 T200 28" fill="none" stroke="#E8532E" strokeWidth="1" strokeDasharray="3 2" opacity="0.6"/>
+                        <path d="M0 42 Q25 40 50 39 T100 37 T150 36 T200 34" fill="none" stroke="#8b8f96" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.4"/>
                       </svg>
                       <div className="absolute bottom-0 left-0 right-0 flex justify-between px-1">
                         {["Nov", "Dec", "Jan", "Feb", "Mar", "Apr"].map(m => (
@@ -298,6 +332,67 @@ function DashboardShowcase() {
                     <div className="mt-2 pt-1.5 border-t border-shark-50 flex items-center justify-between">
                       <span className="text-[8px] text-shark-400">Total Portfolio</span>
                       <span className="text-[10px] font-bold text-shark-900">$16,041</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recent Activity + Stock by Region row */}
+                <div className="grid grid-cols-2 gap-2">
+                  {/* Recent Activity */}
+                  <div className="bg-white rounded-xl border border-shark-100 p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <p className="text-[10px] font-semibold text-shark-800">Recent Activity</p>
+                        <p className="text-[8px] text-shark-400">Latest actions</p>
+                      </div>
+                      <span className="text-[8px] text-action-500 font-medium">View All</span>
+                    </div>
+                    <div className="space-y-1.5">
+                      {[
+                        { action: "Assigned", item: "Vacuum V200", user: "Sarah M.", time: "2m ago", color: "bg-green-500" },
+                        { action: "Returned", item: "Drill Kit Pro", user: "James T.", time: "18m ago", color: "bg-blue-500" },
+                        { action: "PO Approved", item: "PO-0041", user: "Admin", time: "1h ago", color: "bg-action-500" },
+                        { action: "Low Stock", item: "Nitrile Gloves", user: "System", time: "2h ago", color: "bg-amber-500" },
+                      ].map((a, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                          <div className={`w-1 h-1 rounded-full ${a.color} shrink-0`} />
+                          <span className="text-[8px] text-shark-700 font-medium">{a.action}</span>
+                          <span className="text-[8px] text-shark-400 truncate flex-1">{a.item}</span>
+                          <span className="text-[7px] text-shark-300 shrink-0">{a.time}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Stock by Region */}
+                  <div className="bg-white rounded-xl border border-shark-100 p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <p className="text-[10px] font-semibold text-shark-800">Stock by Region</p>
+                        <p className="text-[8px] text-shark-400">Stock distribution</p>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      {[
+                        { region: "North Branch", assets: 24, consumables: 156, pct: 85 },
+                        { region: "South Branch", assets: 18, consumables: 89, pct: 62 },
+                        { region: "West Branch", assets: 31, consumables: 210, pct: 94 },
+                        { region: "Head Office", assets: 12, consumables: 45, pct: 48 },
+                      ].map(r => (
+                        <div key={r.region} className="space-y-0.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[8px] text-shark-700 font-medium">{r.region}</span>
+                            <span className="text-[7px] text-shark-400">{r.assets}A / {r.consumables}C</span>
+                          </div>
+                          <div className="w-full h-1 bg-shark-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-action-500 rounded-full" style={{ width: `${r.pct}%` }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-2 pt-1.5 border-t border-shark-50 flex items-center justify-between">
+                      <span className="text-[8px] text-shark-400">Total Items</span>
+                      <span className="text-[10px] font-bold text-shark-900">585</span>
                     </div>
                   </div>
                 </div>

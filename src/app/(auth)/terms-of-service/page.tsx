@@ -4,13 +4,13 @@ import { Logo } from "@/components/ui/logo";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Trackio terms of service — the agreement governing your use of our platform.",
+  description: "trackio terms of service — the agreement governing your use of our platform.",
   alternates: { canonical: "/terms-of-service" },
 };
 
 export default function TermsOfServicePage() {
   const lastUpdated = "9 April 2026";
-  const companyName = "Trackio";
+  const companyName = "trackio";
   const contactEmail = "support@trackio.com.au";
 
   return (

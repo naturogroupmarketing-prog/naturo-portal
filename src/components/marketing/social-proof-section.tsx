@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ScrollReveal } from "./scroll-reveal";
 
 const stats = [
   { value: 500, suffix: "+", label: "Teams tracking smarter" },
@@ -12,7 +13,7 @@ const stats = [
 const testimonials = [
   {
     quote:
-      "We cut equipment losses by over 40% in the first three months. Trackio paid for itself in weeks.",
+      "We cut equipment losses by over 40% in the first three months. trackio paid for itself in weeks.",
     name: "Sarah Mitchell",
     role: "Operations Manager",
     company: "CleanForce Services",
@@ -21,7 +22,7 @@ const testimonials = [
   },
   {
     quote:
-      "Before Trackio, restocking was a guessing game. Now we get alerts before anything runs out. Our branch managers love it.",
+      "Before trackio, restocking was a guessing game. Now we get alerts before anything runs out. Our branch managers love it.",
     name: "James Nguyen",
     role: "Regional Director",
     company: "Pacific Aged Care Group",
@@ -106,10 +107,10 @@ export function SocialProofSection() {
 
         {/* Testimonials */}
         <div className="grid sm:grid-cols-3 gap-6">
-          {testimonials.map((t) => (
+          {testimonials.map((t, i) => (
+            <ScrollReveal key={t.name} delay={i * 150}>
             <div
-              key={t.name}
-              className="bg-shark-50/50 rounded-2xl p-6 border border-shark-100/80 hover:border-shark-200 hover:shadow-sm transition-all relative"
+              className="bg-shark-50/50 rounded-2xl p-6 border border-shark-100/80 hover:border-shark-200 hover:shadow-sm transition-all relative h-full"
             >
               {/* Quote mark */}
               <svg
@@ -149,6 +150,7 @@ export function SocialProofSection() {
                 </div>
               </div>
             </div>
+            </ScrollReveal>
           ))}
         </div>
 

@@ -26,7 +26,7 @@ export function Navbar() {
         <Link href="/welcome" className="flex items-center gap-2.5">
           <img
             src="/trackio_t_full_logo.svg"
-            alt="Trackio"
+            alt="trackio"
             className="w-auto" style={{ height: "45px" }}
           />
         </Link>

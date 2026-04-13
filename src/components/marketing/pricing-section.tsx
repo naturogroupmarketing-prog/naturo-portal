@@ -85,8 +85,10 @@ export function PricingSection() {
           <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
             Pricing
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-shark-900 tracking-tight font-exo leading-tight">
-            Simple, transparent pricing.
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
+            <span className="text-shark-900">Simple, </span>
+            <span className="bg-gradient-to-r from-action-500 to-indigo-500 bg-clip-text text-transparent">transparent</span>
+            <span className="text-shark-900"> pricing.</span>
           </h2>
           <p className="mt-4 text-shark-400 text-lg">
             Start free and upgrade as your team grows. All paid plans include a
@@ -103,14 +105,14 @@ export function PricingSection() {
           </span>
           <button
             onClick={() => setIsAnnual(!isAnnual)}
-            className={`relative w-12 h-6 rounded-full transition-colors ${
+            className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ${
               isAnnual ? "bg-action-500" : "bg-shark-200"
             }`}
             aria-label="Toggle annual pricing"
           >
             <span
-              className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
-                isAnnual ? "translate-x-6" : "translate-x-0.5"
+              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                isAnnual ? "translate-x-[22px]" : "translate-x-0"
               }`}
             />
           </button>

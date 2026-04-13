@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
         .footer { margin-top: 40px; font-size: 11px; color: #999; text-align: center; }
       </style>
     </head><body>
-      <h1>Trackio - Asset Report</h1>
+      <h1>trackio - Asset Report</h1>
       <p class="subtitle">Generated on ${now}</p>
       <table>
         <thead><tr>
@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
            <strong>Damaged:</strong> ${assets.filter(a => a.status === "DAMAGED").length} |
            <strong>Lost:</strong> ${assets.filter(a => a.status === "LOST").length}</p>
       </div>
-      <p class="footer">Trackio - Asset & Consumable Tracker</p>
+      <p class="footer">trackio - Asset & Consumable Tracker</p>
     </body></html>`;
 
     return new NextResponse(html, {
@@ -130,7 +130,7 @@ export async function GET(req: NextRequest) {
         .footer { margin-top: 40px; font-size: 11px; color: #999; text-align: center; }
       </style>
     </head><body>
-      <h1>Trackio - Consumable Stock Report</h1>
+      <h1>trackio - Consumable Stock Report</h1>
       <p class="subtitle">Generated on ${now}</p>
       <table>
         <thead><tr>
@@ -143,7 +143,7 @@ export async function GET(req: NextRequest) {
         <p><strong>Total Items:</strong> ${consumables.length}</p>
         <p><strong>Low Stock Items:</strong> <span style="color:#e53e3e;">${lowStockCount}</span></p>
       </div>
-      <p class="footer">Trackio - Asset & Consumable Tracker</p>
+      <p class="footer">trackio - Asset & Consumable Tracker</p>
     </body></html>`;
 
     return new NextResponse(html, {
@@ -196,7 +196,7 @@ export async function GET(req: NextRequest) {
         .footer { margin-top: 40px; font-size: 11px; color: #999; text-align: center; }
       </style>
     </head><body>
-      <h1>Trackio - Maintenance Report</h1>
+      <h1>trackio - Maintenance Report</h1>
       <p class="subtitle">Generated on ${now}</p>
       <table>
         <thead><tr>
@@ -209,7 +209,7 @@ export async function GET(req: NextRequest) {
         <p><strong>Total Schedules:</strong> ${schedules.length}</p>
         <p><strong>Overdue:</strong> <span style="color:#e53e3e;">${overdueCount}</span></p>
       </div>
-      <p class="footer">Trackio - Asset & Consumable Tracker</p>
+      <p class="footer">trackio - Asset & Consumable Tracker</p>
     </body></html>`;
 
     return new NextResponse(html, {

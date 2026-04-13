@@ -1,21 +1,29 @@
+import { ScrollReveal } from "./scroll-reveal";
+
 export function ValueSection() {
   return (
     <section className="py-20 sm:py-28 bg-white">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
-            The Problem
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-shark-900 tracking-tight font-exo leading-tight">
-            Spreadsheets weren&apos;t built for this.
-          </h2>
-          <p className="mt-5 text-shark-400 text-lg leading-relaxed max-w-2xl mx-auto">
-            The average operations team loses thousands each year to untracked
-            equipment and emergency restocking. When no one knows who has what,
-            it&apos;s not a people problem &mdash; it&apos;s a system problem.
-            Trackio replaces the chaos with clarity.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
+              The Problem
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
+              <span className="text-shark-900">Spreadsheets </span>
+              <span className="bg-gradient-to-r from-action-500 to-indigo-500 bg-clip-text text-transparent">
+                weren&apos;t built
+              </span>
+              <span className="text-shark-900"> for this.</span>
+            </h2>
+            <p className="mt-5 text-shark-400 text-lg leading-relaxed max-w-2xl mx-auto">
+              The average operations team loses thousands each year to untracked
+              equipment and emergency restocking. When no one knows who has what,
+              it&apos;s not a people problem &mdash; it&apos;s a system problem.
+              trackio replaces the chaos with clarity.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Pain → Solution cards */}
         <div className="mt-16 grid sm:grid-cols-3 gap-6">
@@ -50,21 +58,22 @@ export function ValueSection() {
                 </svg>
               ),
             },
-          ].map((card) => (
-            <div
-              key={card.pain}
-              className="bg-shark-50/50 rounded-2xl p-7 border border-shark-100/80 hover:border-shark-200 transition-colors"
-            >
-              <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center text-action-500 mb-5">
-                {card.icon}
+          ].map((card, i) => (
+            <ScrollReveal key={card.pain} delay={i * 150}>
+              <div
+                className="bg-shark-50/50 rounded-2xl p-7 border border-shark-100/80 hover:border-shark-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-pointer"
+              >
+                <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center text-action-500 mb-5">
+                  {card.icon}
+                </div>
+                <h3 className="text-base font-semibold text-shark-900 mb-2">
+                  {card.pain}
+                </h3>
+                <p className="text-sm text-shark-400 leading-relaxed">
+                  {card.solution}
+                </p>
               </div>
-              <h3 className="text-base font-semibold text-shark-900 mb-2">
-                {card.pain}
-              </h3>
-              <p className="text-sm text-shark-400 leading-relaxed">
-                {card.solution}
-              </p>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

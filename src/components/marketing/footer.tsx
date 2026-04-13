@@ -10,7 +10,7 @@ export function Footer() {
             <Link href="/welcome" className="inline-block">
               <img
                 src="/trackio_t_full_logo.svg"
-                alt="Trackio"
+                alt="trackio"
                 className="h-6 w-auto"
               />
             </Link>
@@ -35,7 +35,7 @@ export function Footer() {
 
         <div className="mt-8 pt-6 border-t border-shark-100 text-center">
           <p className="text-[11px] text-shark-300">
-            &copy; {new Date().getFullYear()} Trackio. All rights reserved.
+            &copy; {new Date().getFullYear()} trackio. All rights reserved.
           </p>
         </div>
       </div>

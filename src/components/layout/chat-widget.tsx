@@ -163,10 +163,10 @@ export function ChatWidget() {
         const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
         const isAndroid = /Android/.test(navigator.userAgent);
         const hint = isIOS
-          ? "Go to Settings → Safari → Microphone → Allow for this site. Or install Trackio as an app: tap Share → Add to Home Screen."
+          ? "Go to Settings → Safari → Microphone → Allow for this site. Or install trackio as an app: tap Share → Add to Home Screen."
           : isAndroid
-          ? "Tap the lock icon in the address bar → Permissions → Microphone → Allow. Or install Trackio: tap ⋮ → Install app."
-          : "Click the lock/site icon in the address bar → Site settings → Microphone → Allow. Or install Trackio as a desktop app for permanent access.";
+          ? "Tap the lock icon in the address bar → Permissions → Microphone → Allow. Or install trackio: tap ⋮ → Install app."
+          : "Click the lock/site icon in the address bar → Site settings → Microphone → Allow. Or install trackio as a desktop app for permanent access.";
         setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: `🎤 Microphone access required.\n\n${hint}` }]);
         return;
       }
@@ -190,7 +190,7 @@ export function ChatWidget() {
       recognition.onerror = (event: { error: string }) => {
         setIsListening(false);
         if (event.error === "not-allowed") {
-          setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "🎤 Microphone blocked. Check your browser permissions or install Trackio as an app for permanent mic access." }]);
+          setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "🎤 Microphone blocked. Check your browser permissions or install trackio as an app for permanent mic access." }]);
         }
       };
 

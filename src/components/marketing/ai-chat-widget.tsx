@@ -8,7 +8,7 @@ interface Message {
 }
 
 const SUGGESTED_QUESTIONS = [
-  "What is Trackio?",
+  "What is trackio?",
   "How does asset tracking work?",
   "What pricing plans are available?",
   "Can I manage multiple locations?",
@@ -16,37 +16,37 @@ const SUGGESTED_QUESTIONS = [
 ];
 
 const KNOWLEDGE_BASE: Record<string, string> = {
-  // What is Trackio
+  // What is trackio
   "what is trackio|what does trackio do|tell me about trackio|about trackio":
-    "Trackio is an asset and supply tracking platform built for operational teams. It helps you track equipment, manage consumable supplies, and keep every location accountable — all from one clear system. No more spreadsheets or guesswork.",
+    "trackio is an asset and supply tracking platform built for operational teams. It helps you track equipment, manage consumable supplies, and keep every location accountable — all from one clear system. No more spreadsheets or guesswork.",
 
   // Asset tracking
   "asset tracking|track assets|track equipment|how does tracking work":
-    "With Trackio, every asset gets a clear status — Available, Assigned, Checked Out, Damaged, or Lost. You can assign equipment to staff, track who has what, manage returns, and get instant visibility across all your locations.",
+    "With trackio, every asset gets a clear status — Available, Assigned, Checked Out, Damaged, or Lost. You can assign equipment to staff, track who has what, manage returns, and get instant visibility across all your locations.",
 
   // Supply management
-  "supply|consumable|stock|inventory management":
-    "Trackio tracks consumable stock levels across every location. You get automatic low-stock alerts before items run out, can set minimum thresholds, and monitor usage patterns over time. Staff can request supplies directly through the app.",
+  "supply|consumable|stock|stock management":
+    "trackio tracks consumable stock levels across every location. You get automatic low-stock alerts before items run out, can set minimum thresholds, and monitor usage patterns over time. Staff can request supplies directly through the app.",
 
   // Pricing
   "pricing|cost|price|how much|plans|subscription":
-    "Trackio offers flexible pricing plans to suit teams of all sizes. We have a free trial so you can explore the platform before committing. Visit our pricing page or contact us for detailed plan information and custom enterprise quotes.",
+    "trackio offers flexible pricing plans to suit teams of all sizes. We have a free trial so you can explore the platform before committing. Visit our pricing page or contact us for detailed plan information and custom enterprise quotes.",
 
   // Free trial
   "free trial|try free|trial|demo|test":
-    "Yes! Trackio offers a 14-day free trial with full access to all features. No credit card required to get started. Simply click 'Get Started Free' to create your account and start tracking immediately.",
+    "Yes! trackio offers a 14-day free trial with full access to all features. No credit card required to get started. Simply click 'Get Started Free' to create your account and start tracking immediately.",
 
   // Multiple locations
   "multiple locations|multi-location|branches|locations|regions":
-    "Absolutely! Trackio is built for multi-location teams. You can manage assets and supplies across unlimited branches, grouped by state or region. Each location shows its own inventory counts, staff assignments, and alert badges at a glance.",
+    "Absolutely! trackio is built for multi-location teams. You can manage assets and supplies across unlimited branches, grouped by state or region. Each location shows its own stock counts, staff assignments, and alert badges at a glance.",
 
   // Staff
   "staff|team|users|employees|roles|permissions":
-    "Trackio supports role-based access with three levels: Super Admin (full platform control), Branch Manager (location-level management), and Staff (view assigned items, request supplies, report damage). Each role sees a tailored dashboard.",
+    "trackio supports role-based access with three levels: Super Admin (full platform control), Branch Manager (location-level management), and Staff (view assigned items, request supplies, report damage). Each role sees a tailored dashboard.",
 
   // Reports
   "reports|reporting|analytics|data|insights":
-    "Trackio provides comprehensive reporting including asset status breakdowns, supply usage trends, financial portfolio tracking, operations health scores, and regional performance comparisons. Export data to CSV anytime.",
+    "trackio provides comprehensive reporting including asset status breakdowns, supply usage trends, financial portfolio tracking, operations health scores, and regional performance comparisons. Export data to CSV anytime.",
 
   // Damage / returns
   "damage|return|lost|missing|broken":
@@ -54,7 +54,7 @@ const KNOWLEDGE_BASE: Record<string, string> = {
 
   // Purchase orders
   "purchase order|order|po|procurement|buying":
-    "Trackio includes a full purchase order workflow. Create POs, track approval status, and mark items as received. Low-stock alerts can trigger reorder reminders, and pending POs are visible right from the dashboard.",
+    "trackio includes a full purchase order workflow. Create POs, track approval status, and mark items as received. Low-stock alerts can trigger reorder reminders, and pending POs are visible right from the dashboard.",
 
   // Inspections
   "inspection|condition check|maintenance|check":
@@ -62,11 +62,11 @@ const KNOWLEDGE_BASE: Record<string, string> = {
 
   // Security
   "security|secure|safe|data protection|privacy":
-    "Trackio takes security seriously. We use encrypted connections, role-based access controls, and activity logging so you always know who did what. Your data is protected and access is limited to authorized team members only.",
+    "trackio takes security seriously. We use encrypted connections, role-based access controls, and activity logging so you always know who did what. Your data is protected and access is limited to authorized team members only.",
 
   // Mobile
   "mobile|phone|app|ios|android":
-    "Trackio is fully responsive and works beautifully on mobile devices. Staff can check their assigned items, request supplies, and report damage right from their phone. Managers can monitor operations on the go.",
+    "trackio is fully responsive and works beautifully on mobile devices. Staff can check their assigned items, request supplies, and report damage right from their phone. Managers can monitor operations on the go.",
 
   // Getting started
   "get started|sign up|start|begin|onboard":
@@ -85,12 +85,12 @@ function findAnswer(question: string): string {
 
   // Greeting
   if (/^(hi|hello|hey|howdy|good morning|good afternoon)/i.test(q)) {
-    return "Hi there! I'm the Trackio assistant. I can answer questions about our asset and supply tracking platform. What would you like to know?";
+    return "Hi there! I'm the trackio assistant. I can answer questions about our asset and supply tracking platform. What would you like to know?";
   }
 
   // Thank you
   if (/thank|thanks|cheers/i.test(q)) {
-    return "You're welcome! If you have any other questions about Trackio, feel free to ask. You can also get started with a free 14-day trial anytime.";
+    return "You're welcome! If you have any other questions about trackio, feel free to ask. You can also get started with a free 14-day trial anytime.";
   }
 
   // Default
@@ -103,7 +103,7 @@ export function AIChatWidget() {
     {
       role: "assistant",
       content:
-        "Hi! I'm the Trackio assistant. Ask me anything about our asset and supply tracking platform. How can I help you today?",
+        "Hi! I'm the trackio assistant. Ask me anything about our asset and supply tracking platform. How can I help you today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -156,8 +156,8 @@ export function AIChatWidget() {
                 </svg>
               </div>
               <div className="flex-1">
-                <p className="text-sm font-semibold text-white">Trackio Assistant</p>
-                <p className="text-[11px] text-white/70">Ask me anything about Trackio</p>
+                <p className="text-sm font-semibold text-white">trackio Assistant</p>
+                <p className="text-[11px] text-white/70">Ask me anything about trackio</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}

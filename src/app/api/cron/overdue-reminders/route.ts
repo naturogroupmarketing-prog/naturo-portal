@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
 
       await sendEmail({
         to: mgr.email,
-        subject: `Trackio: ${data.count} Overdue Returns Need Attention`,
+        subject: `trackio: ${data.count} Overdue Returns Need Attention`,
         html: `<p>Hi ${mgr.name || "Manager"},</p><p>${data.count} returned item${data.count > 1 ? "s are" : " is"} awaiting your verification for over 3 days.</p><p><a href="${process.env.AUTH_URL || "https://naturo-portal.vercel.app"}/returns" style="display:inline-block;padding:10px 24px;background:#1F3DD9;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">Review Returns</a></p>`,
       });
       returnReminders++;

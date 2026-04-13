@@ -1,23 +1,27 @@
 import Link from "next/link";
+import { ScrollReveal } from "./scroll-reveal";
 
 export function ProductPreviewSection() {
   return (
     <section className="py-20 sm:py-28 bg-shark-50/40">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
-            Built for Operations
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-shark-900 tracking-tight font-exo leading-tight">
-            A clearer way to manage your branches.
-          </h2>
-          <p className="mt-4 text-shark-400 text-lg">
-            See stock levels, staff assignments, and activity across every
-            location &mdash; all in one view.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
+              Built for Operations
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
+              <span className="text-shark-900">A clearer way to </span>
+              <span className="bg-gradient-to-r from-action-500 to-indigo-500 bg-clip-text text-transparent">manage your branches.</span>
+            </h2>
+            <p className="mt-4 text-shark-400 text-lg">
+              See stock levels, staff assignments, and activity across every
+              location &mdash; all in one view.
+            </p>
+          </div>
+        </ScrollReveal>
 
-        {/* Inventory page mockup */}
+        {/* Stock page mockup */}
         <div className="relative max-w-4xl mx-auto">
           {/* Glow */}
           <div className="absolute -inset-6 bg-gradient-to-b from-action-100/40 via-action-50/20 to-transparent rounded-3xl blur-2xl pointer-events-none" />
@@ -33,18 +37,18 @@ export function ProductPreviewSection() {
               <div className="flex-1 flex justify-center">
                 <div className="bg-white rounded-md border border-shark-200 px-4 py-1 text-[11px] text-shark-400 min-w-[180px] text-center flex items-center justify-center gap-1.5">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                  app.trackio.com/inventory
+                  app.trackio.com/stock
                 </div>
               </div>
               <div className="w-12" />
             </div>
 
-            {/* Inventory page content */}
+            {/* Stock page content */}
             <div className="p-5 sm:p-6 space-y-5">
               {/* Header row */}
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-xl font-bold text-shark-900">Inventory</h3>
+                  <h3 className="text-xl font-bold text-shark-900">Stock</h3>
                   <p className="text-xs text-shark-400 mt-0.5">8 locations · 255 assets · 524 supplies</p>
                 </div>
                 <div className="flex items-center gap-2">

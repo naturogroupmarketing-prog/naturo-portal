@@ -14,7 +14,7 @@ export async function sendEmail({ to, subject, html, from }: EmailParams): Promi
   try {
     const sender = from || DEFAULT_FROM;
     await resend.emails.send({
-      from: `Trackio <${sender}>`,
+      from: `trackio <${sender}>`,
       to,
       subject,
       html: wrapTemplate(subject, html),
@@ -40,7 +40,7 @@ function wrapTemplate(title: string, body: string) {
         <tr><td align="center">
           <table width="100%" style="max-width:560px;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
             <tr><td style="background:#0f1b3d;padding:24px 32px;text-align:center;">
-              <h1 style="margin:0;color:#ffffff;font-size:20px;font-weight:600;">Trackio</h1>
+              <h1 style="margin:0;color:#ffffff;font-size:20px;font-weight:600;">trackio</h1>
               <p style="margin:4px 0 0;color:#c9a84c;font-size:12px;letter-spacing:1px;">ASSET &amp; CONSUMABLE TRACKER</p>
             </td></tr>
             <tr><td style="padding:32px;">
@@ -48,7 +48,7 @@ function wrapTemplate(title: string, body: string) {
               ${body}
             </td></tr>
             <tr><td style="padding:16px 32px;background:#f8f9fa;text-align:center;border-top:1px solid #e9ecef;">
-              <p style="margin:0;color:#868e96;font-size:12px;">&copy; Trackio Australia. All rights reserved.</p>
+              <p style="margin:0;color:#868e96;font-size:12px;">&copy; trackio Australia. All rights reserved.</p>
             </td></tr>
           </table>
         </td></tr>
@@ -129,7 +129,7 @@ export function emailWelcome(staffName: string, email: string, password: string,
   const appUrl = process.env.AUTH_URL || "https://naturo-portal.vercel.app";
   return `
     <p style="color:#495057;">Hi ${staffName},</p>
-    <p style="color:#495057;">Welcome to <strong>${companyName}</strong>! Your Trackio account has been created. You can now log in to manage your assigned equipment and consumables.</p>
+    <p style="color:#495057;">Welcome to <strong>${companyName}</strong>! Your trackio account has been created. You can now log in to manage your assigned equipment and consumables.</p>
 
     <table style="width:100%;border-collapse:collapse;margin:16px 0;">
       <tr><td style="padding:10px 14px;background:#f8f9fa;border:1px solid #e9ecef;font-weight:600;color:#0f1b3d;width:100px;">Email</td>
@@ -144,7 +144,7 @@ export function emailWelcome(staffName: string, email: string, password: string,
 
     <div style="text-align:center;margin:24px 0 8px;">
       <a href="${appUrl}/login" style="display:inline-block;padding:12px 32px;background:#1F3DD9;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">
-        Log In to Trackio
+        Log In to trackio
       </a>
     </div>
 

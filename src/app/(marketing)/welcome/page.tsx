@@ -10,6 +10,7 @@ import { BenefitsSection } from "@/components/marketing/benefits-section";
 import { PricingSection } from "@/components/marketing/pricing-section";
 import { FAQSection } from "@/components/marketing/faq-section";
 import { ResourcesSection } from "@/components/marketing/resources-section";
+import { SignupBanner } from "@/components/marketing/signup-banner";
 import { CTASection } from "@/components/marketing/cta-section";
 import { Footer } from "@/components/marketing/footer";
 import { AIChatWidget } from "@/components/marketing/ai-chat-widget";
@@ -18,10 +19,10 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Asset & Supply Tracking Software for Operational Teams",
   description:
-    "Track equipment, manage supplies, and keep every location accountable. Trackio is the all-in-one asset and consumable tracking platform trusted by 500+ teams across Australia.",
+    "Track equipment, manage supplies, and keep every location accountable. trackio is the all-in-one asset and consumable tracking platform trusted by 500+ teams across Australia.",
   alternates: { canonical: "/welcome" },
   openGraph: {
-    title: "Trackio — Asset & Supply Tracking Software",
+    title: "trackio — Asset & Supply Tracking Software",
     description: "Track equipment, manage supplies, and keep every location accountable. Trusted by 500+ operational teams.",
     url: "/welcome",
   },
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "Trackio",
+  name: "trackio",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   description: "All-in-one asset and consumable tracking platform for operational teams. Track equipment, manage supplies, and keep every location accountable.",
@@ -50,7 +51,7 @@ const jsonLd = {
   },
   publisher: {
     "@type": "Organization",
-    name: "Trackio",
+    name: "trackio",
     url: "https://app.trackio.au",
     logo: "https://app.trackio.au/trackio_t_full_logo.svg",
   },
@@ -81,6 +82,8 @@ export default function WelcomePage() {
         <FeaturesSection />
         {/* 8. Outcomes — Quantified results that matter */}
         <BenefitsSection />
+        {/* 8.5. Conversion — Vibrant gradient signup banner */}
+        <SignupBanner />
         {/* 9. Decision — Pricing with annual/monthly toggle */}
         <PricingSection />
         {/* 10. Objections — FAQ handles remaining doubts */}

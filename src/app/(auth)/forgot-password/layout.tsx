@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Reset Password",
-  description: "Reset your Trackio account password.",
+  description: "Reset your trackio account password.",
   robots: { index: false, follow: false },
 };
 

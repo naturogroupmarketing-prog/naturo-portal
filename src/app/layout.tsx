@@ -17,14 +17,14 @@ const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://app.trackio.au";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Trackio — Asset & Supply Tracking for Operational Teams",
-    template: "%s | Trackio",
+    default: "trackio — Asset & Supply Tracking for Operational Teams",
+    template: "%s | trackio",
   },
-  description: "Know exactly what you have, where it is, and who has it. Trackio is the all-in-one asset and consumable tracking platform built for operational teams across Australia.",
+  description: "Know exactly what you have, where it is, and who has it. trackio is the all-in-one asset and consumable tracking platform built for operational teams across Australia.",
   keywords: ["asset tracking", "inventory management", "consumable tracking", "equipment tracking", "supply tracking", "asset management software", "operational teams", "Australia"],
-  authors: [{ name: "Trackio" }],
-  creator: "Trackio",
-  publisher: "Trackio",
+  authors: [{ name: "trackio" }],
+  creator: "trackio",
+  publisher: "trackio",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
@@ -36,14 +36,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_AU",
     url: SITE_URL,
-    siteName: "Trackio",
-    title: "Trackio — Asset & Supply Tracking for Operational Teams",
+    siteName: "trackio",
+    title: "trackio — Asset & Supply Tracking for Operational Teams",
     description: "Know exactly what you have, where it is, and who has it. The all-in-one tracking platform built for operational teams.",
-    images: [{ url: "/trackio_t_full_logo.svg", width: 1200, height: 630, alt: "Trackio" }],
+    images: [{ url: "/trackio_t_full_logo.svg", width: 1200, height: 630, alt: "trackio" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Trackio — Asset & Supply Tracking for Operational Teams",
+    title: "trackio — Asset & Supply Tracking for Operational Teams",
     description: "Know exactly what you have, where it is, and who has it. The all-in-one tracking platform built for operational teams.",
     images: ["/trackio_t_full_logo.svg"],
   },
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Trackio",
+    title: "trackio",
   },
   formatDetection: {
     telephone: false,

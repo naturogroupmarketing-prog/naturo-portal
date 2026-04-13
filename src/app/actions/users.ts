@@ -83,8 +83,8 @@ export async function createUser(formData: FormData) {
         const org = await db.organization.findUnique({ where: { id: organizationId }, select: { name: true } });
         await sendEmail({
           to: email,
-          subject: `Welcome to ${org?.name || "Trackio"} — Your Account is Ready`,
-          html: emailWelcome(name, email, password, org?.name || "Trackio", role),
+          subject: `Welcome to ${org?.name || "trackio"} — Your Account is Ready`,
+          html: emailWelcome(name, email, password, org?.name || "trackio", role),
         });
       } catch (e) {
         console.error("Welcome email failed:", e instanceof Error ? e.message : e);

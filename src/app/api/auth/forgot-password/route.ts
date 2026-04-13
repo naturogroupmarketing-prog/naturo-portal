@@ -49,7 +49,7 @@ export async function POST(req: Request) {
       subject: "Password Reset",
       html: `
         <p style="color:#495057;">Hi ${user.name || "there"},</p>
-        <p style="color:#495057;">We received a request to reset your Trackio password. Use the code below to reset it:</p>
+        <p style="color:#495057;">We received a request to reset your trackio password. Use the code below to reset it:</p>
         <div style="text-align:center;margin:24px 0;">
           <span style="font-size:28px;font-weight:bold;letter-spacing:6px;color:#1F3DD9;background:#eef0fb;padding:12px 24px;border-radius:8px;display:inline-block;">${token}</span>
         </div>

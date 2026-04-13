@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ScrollReveal } from "./scroll-reveal";
 
 const faqs = [
   {
@@ -11,12 +12,12 @@ const faqs = [
   {
     question: "Can I migrate from spreadsheets?",
     answer:
-      "Absolutely. Trackio has a built-in CSV import tool that lets you bring in your existing asset and supply data in minutes. We support bulk imports for assets, consumables, staff, and locations.",
+      "Absolutely. trackio has a built-in CSV import tool that lets you bring in your existing asset and supply data in minutes. We support bulk imports for assets, consumables, staff, and locations.",
   },
   {
     question: "Is my data secure?",
     answer:
-      "Yes. Trackio uses 256-bit SSL encryption, role-based access controls, and full activity logging. Your data is hosted on secure, SOC 2 compliant infrastructure with automated backups.",
+      "Yes. trackio uses 256-bit SSL encryption, role-based access controls, and full activity logging. Your data is hosted on secure, SOC 2 compliant infrastructure with automated backups.",
   },
   {
     question: "What happens when my free trial ends?",
@@ -26,7 +27,7 @@ const faqs = [
   {
     question: "Can I manage multiple branches?",
     answer:
-      "Yes — multi-location management is a core feature. You can group branches by state or region, see inventory across all locations at a glance, and drill into any branch for detail.",
+      "Yes — multi-location management is a core feature. You can group branches by state or region, see stock across all locations at a glance, and drill into any branch for detail.",
   },
   {
     question: "Do you offer customer support?",
@@ -41,17 +42,20 @@ export function FAQSection() {
   return (
     <section className="py-20 sm:py-28 bg-shark-50/40">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="text-center mb-14">
-          <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
-            FAQ
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-shark-900 tracking-tight font-exo leading-tight">
-            Common questions, clear answers.
-          </h2>
-          <p className="mt-4 text-shark-400 text-lg">
-            Everything you need to know before getting started.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center mb-14">
+            <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
+              FAQ
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
+              <span className="text-shark-900">Common questions, </span>
+              <span className="bg-gradient-to-r from-action-500 to-indigo-500 bg-clip-text text-transparent">clear answers.</span>
+            </h2>
+            <p className="mt-4 text-shark-400 text-lg">
+              Everything you need to know before getting started.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="space-y-3">
           {faqs.map((faq, i) => {

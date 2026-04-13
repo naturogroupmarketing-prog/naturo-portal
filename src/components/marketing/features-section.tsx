@@ -1,3 +1,5 @@
+import { ScrollReveal } from "./scroll-reveal";
+
 export function FeaturesSection() {
   const features = [
     {
@@ -89,25 +91,30 @@ export function FeaturesSection() {
   return (
     <section id="features" className="py-20 sm:py-28 bg-shark-50/40">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
-            Features
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-shark-900 tracking-tight font-exo leading-tight">
-            Everything you need to stay in control.
-          </h2>
-          <p className="mt-4 text-shark-400 text-lg">
-            Built for the way operations teams actually work.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
+              Features
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
+              <span className="text-shark-900">Everything you need to </span>
+              <span className="bg-gradient-to-r from-action-500 to-indigo-500 bg-clip-text text-transparent">
+                stay in control.
+              </span>
+            </h2>
+            <p className="mt-4 text-shark-400 text-lg">
+              Built for the way operations teams actually work.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {features.map((feature) => (
+          {features.map((feature, i) => (
+            <ScrollReveal key={feature.title} delay={i * 100}>
             <div
-              key={feature.title}
-              className="bg-white rounded-2xl p-6 border border-shark-100/80 hover:border-action-200 hover:shadow-sm transition-all group"
+              className="bg-white rounded-2xl p-6 border border-shark-100/80 hover:border-action-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full"
             >
-              <div className="w-10 h-10 rounded-xl bg-action-50 group-hover:bg-action-100 flex items-center justify-center text-action-500 transition-colors mb-4">
+              <div className="w-10 h-10 rounded-xl bg-action-50 group-hover:bg-action-500 group-hover:text-white group-hover:scale-110 group-hover:shadow-md flex items-center justify-center text-action-500 transition-all duration-300 mb-4">
                 {feature.icon}
               </div>
               <h3 className="text-sm font-semibold text-shark-900 mb-1.5">
@@ -117,6 +124,7 @@ export function FeaturesSection() {
                 {feature.description}
               </p>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

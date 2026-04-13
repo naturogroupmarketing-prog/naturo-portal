@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { ScrollReveal } from "./scroll-reveal";
 
 const steps = [
   {
     title: "Add your locations",
     description:
-      "Set up branches in seconds. Assign managers, define inventory needs, and organise by state or region.",
+      "Set up branches in seconds. Assign managers, define stock needs, and organise by state or region.",
     icon: (
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
         <path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -215,18 +216,21 @@ export function ShowcaseSection() {
   return (
     <section id="how-it-works" className="py-20 sm:py-28 bg-shark-50/40 overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
-            How It Works
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-shark-900 tracking-tight font-exo leading-tight">
-            Up and running in minutes.
-          </h2>
-          <p className="mt-4 text-shark-400 text-lg">
-            No complex setup. No training manuals. Just a clear system that
-            works.
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
+              How It Works
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
+              <span className="text-shark-900">Up and running </span>
+              <span className="bg-gradient-to-r from-action-500 to-indigo-500 bg-clip-text text-transparent">in minutes.</span>
+            </h2>
+            <p className="mt-4 text-shark-400 text-lg">
+              No complex setup. No training manuals. Just a clear system that
+              works.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* LEFT — Visual mockup */}
