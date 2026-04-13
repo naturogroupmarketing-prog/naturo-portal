@@ -102,43 +102,6 @@ interface ConsumablesClientProps {
 
 import { compressImage } from "@/lib/image-utils";
 
-function AssignedToDropdown({ assignments, onViewStaff }: { assignments: ConsumableAssignment[]; onViewStaff: (userId: string) => void }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const total = assignments.reduce((s, a) => s + a.quantity, 0);
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
-  return (
-    <div className="relative" ref={ref}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 text-xs text-shark-600 hover:text-shark-900 transition-colors"
-      >
-        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-action-50 text-action-600 text-[10px] font-bold">{assignments.length}</span>
-        <span>staff ({total})</span>
-        <svg className={`w-3.5 h-3.5 text-shark-400 transition-transform ${open ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      {open && (
-        <div className="absolute z-50 top-full left-0 mt-1 bg-white border border-shark-200 rounded-lg shadow-lg min-w-[180px] py-1 animate-fade-in">
-          {assignments.map((a) => (
-            <button key={a.id} onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(false); onViewStaff(a.user.id); }} className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-action-50 text-xs transition-colors cursor-pointer">
-              <span className="text-action-600 hover:text-action-700 truncate mr-2">{a.user.name || a.user.email}</span>
-              <span className="text-shark-400 whitespace-nowrap">×{a.quantity}</span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
   const { addToast } = useToast();
@@ -567,7 +530,19 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {visibleColumns.assignedTo && (
                     <td className="px-4 py-3 text-shark-500 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
                       {activeAssignments.length > 0 ? (
-                        <AssignedToDropdown assignments={activeAssignments} onViewStaff={setStaffModalUserId} />
+                        <select
+                          className="text-xs bg-transparent border border-shark-200 rounded px-2 py-1 text-action-600 cursor-pointer hover:border-action-300 focus:outline-none focus:ring-1 focus:ring-action-300"
+                          value=""
+                          onChange={(e) => {
+                            if (e.target.value) setStaffModalUserId(e.target.value);
+                            e.target.value = "";
+                          }}
+                        >
+                          <option value="">{activeAssignments.length} staff ({activeAssignments.reduce((s, a) => s + a.quantity, 0)})</option>
+                          {activeAssignments.map((a) => (
+                            <option key={a.id} value={a.user.id}>{a.user.name || a.user.email} (×{a.quantity})</option>
+                          ))}
+                        </select>
                       ) : <span className="text-shark-400">{"\u2014"}</span>}
                     </td>
                     )}
