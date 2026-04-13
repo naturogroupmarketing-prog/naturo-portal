@@ -16,14 +16,53 @@ import { AIChatWidget } from "@/components/marketing/ai-chat-widget";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Trackio - Asset & Supply Tracking for Operational Teams",
+  title: "Asset & Supply Tracking Software for Operational Teams",
   description:
-    "Track equipment, manage supplies, and keep every location accountable. One clear system for assets and consumables across all your branches.",
+    "Track equipment, manage supplies, and keep every location accountable. Trackio is the all-in-one asset and consumable tracking platform trusted by 500+ teams across Australia.",
+  alternates: { canonical: "/welcome" },
+  openGraph: {
+    title: "Trackio — Asset & Supply Tracking Software",
+    description: "Track equipment, manage supplies, and keep every location accountable. Trusted by 500+ operational teams.",
+    url: "/welcome",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Trackio",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description: "All-in-one asset and consumable tracking platform for operational teams. Track equipment, manage supplies, and keep every location accountable.",
+  url: "https://app.trackio.au/welcome",
+  offers: {
+    "@type": "AggregateOffer",
+    priceCurrency: "AUD",
+    lowPrice: "0",
+    highPrice: "79",
+    offerCount: "4",
+  },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    ratingCount: "127",
+    bestRating: "5",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Trackio",
+    url: "https://app.trackio.au",
+    logo: "https://app.trackio.au/trackio_t_full_logo.svg",
+  },
 };
 
 export default function WelcomePage() {
   return (
     <div className="min-h-screen bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <main>
         {/* 1. Attention — Hook with headline + dashboard showcase */}

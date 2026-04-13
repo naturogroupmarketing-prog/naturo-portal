@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Trackio privacy policy — how we collect, use, and protect your data.",
+  alternates: { canonical: "/privacy-policy" },
+};
 
 export default function PrivacyPolicyPage() {
   const lastUpdated = "5 April 2026";

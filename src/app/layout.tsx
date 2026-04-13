@@ -12,15 +12,54 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 const exo = Exo({ subsets: ["latin"], variable: "--font-exo", weight: ["300", "400", "500", "600", "700", "800"] });
 
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://app.trackio.au";
+
 export const metadata: Metadata = {
-  title: "Trackio",
-  description: "Asset & Consumable Tracker - Internal management portal",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Trackio — Asset & Supply Tracking for Operational Teams",
+    template: "%s | Trackio",
+  },
+  description: "Know exactly what you have, where it is, and who has it. Trackio is the all-in-one asset and consumable tracking platform built for operational teams across Australia.",
+  keywords: ["asset tracking", "inventory management", "consumable tracking", "equipment tracking", "supply tracking", "asset management software", "operational teams", "Australia"],
+  authors: [{ name: "Trackio" }],
+  creator: "Trackio",
+  publisher: "Trackio",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
       { url: "/trackio_t_logo.svg", type: "image/svg+xml" },
     ],
     apple: "/trackio_t_logo.svg",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_AU",
+    url: SITE_URL,
+    siteName: "Trackio",
+    title: "Trackio — Asset & Supply Tracking for Operational Teams",
+    description: "Know exactly what you have, where it is, and who has it. The all-in-one tracking platform built for operational teams.",
+    images: [{ url: "/trackio_t_full_logo.svg", width: 1200, height: 630, alt: "Trackio" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Trackio — Asset & Supply Tracking for Operational Teams",
+    description: "Know exactly what you have, where it is, and who has it. The all-in-one tracking platform built for operational teams.",
+    images: ["/trackio_t_full_logo.svg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: SITE_URL,
   },
   appleWebApp: {
     capable: true,
