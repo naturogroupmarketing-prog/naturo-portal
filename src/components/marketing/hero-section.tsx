@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 const FLIP_PHRASES = [
-  "where it is,",
   "who has it,",
   "when it moved,",
   "what's running low,",
@@ -17,25 +16,31 @@ const PAUSE_BETWEEN = 3000;
 const INITIAL_DELAY = 800;
 
 function FlipCycle() {
+  const [phase, setPhase] = useState<"initial" | "cycling">("initial");
   const [activeIndex, setActiveIndex] = useState(0);
   const [flipKey, setFlipKey] = useState(0);
 
   const advance = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % FLIP_PHRASES.length);
-    setFlipKey((k) => k + 1);
-  }, []);
+    if (phase === "initial") {
+      setPhase("cycling");
+      setFlipKey((k) => k + 1);
+    } else {
+      setActiveIndex((prev) => (prev + 1) % FLIP_PHRASES.length);
+      setFlipKey((k) => k + 1);
+    }
+  }, [phase]);
 
   useEffect(() => {
-    const phrase = FLIP_PHRASES[activeIndex];
+    const phrase = phase === "initial" ? "where it is," : FLIP_PHRASES[activeIndex];
     const animDuration = CHAR_DURATION + phrase.length * CHAR_STAGGER;
-    const delay = activeIndex === 0 && flipKey === 0 ? INITIAL_DELAY + animDuration + PAUSE_BETWEEN : animDuration + PAUSE_BETWEEN;
+    const delay = phase === "initial" ? INITIAL_DELAY + animDuration + PAUSE_BETWEEN : animDuration + PAUSE_BETWEEN;
     const timer = setTimeout(advance, delay);
     return () => clearTimeout(timer);
-  }, [activeIndex, flipKey, advance]);
+  }, [activeIndex, flipKey, phase, advance]);
 
-  const phrase = FLIP_PHRASES[activeIndex];
+  const phrase = phase === "initial" ? "where it is," : FLIP_PHRASES[activeIndex];
   const chars = phrase.split("");
-  const baseDelay = activeIndex === 0 && flipKey === 0 ? INITIAL_DELAY : 0;
+  const baseDelay = phase === "initial" ? INITIAL_DELAY : 0;
 
   return (
     <span className="text-action-500 inline-block" style={{ perspective: "800px" }}>
