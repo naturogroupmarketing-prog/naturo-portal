@@ -27,7 +27,7 @@ export function Navbar() {
           <img
             src="/trackio_t_full_logo.svg"
             alt="Trackio"
-            className="h-7 w-auto"
+            className="h-6 w-auto"
           />
         </Link>
 
