@@ -256,13 +256,49 @@ body {
   50% { opacity: 0; }
 }
 
-@keyframes gleanSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Glean-style CTA button */
+.glean-cta {
+  background: #1F3DD9;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.glean-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid transparent;
+  background: linear-gradient(180deg, #d8fd49, #dcbb9b, #e16bff) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: gleanBorder 4s ease-in-out infinite;
+}
+
+.glean-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  animation: gleanShimmer 4s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes gleanBorder {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  60% { opacity: 1; }
+  80% { opacity: 0; }
+  100% { opacity: 0; }
 }
 
 @keyframes gleanShimmer {
-  0% { transform: translateX(-100%); }
-  50% { transform: translateX(100%); }
-  100% { transform: translateX(100%); }
+  0% { transform: translateX(-100%); opacity: 0; }
+  10% { opacity: 0; }
+  30% { opacity: 1; }
+  50% { transform: translateX(100%); opacity: 1; }
+  51% { opacity: 0; }
+  100% { transform: translateX(100%); opacity: 0; }
 }

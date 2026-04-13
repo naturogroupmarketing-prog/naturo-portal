@@ -54,19 +54,8 @@ export function Navbar() {
           </Link>
           <Link
             href="/login"
-            className="group relative text-sm font-medium text-white px-5 py-2 rounded-full hover:-translate-y-px active:scale-[0.97] transition-transform"
+            className="glean-cta relative text-sm font-medium text-white px-5 py-2 rounded-full hover:-translate-y-px active:scale-[0.97] transition-transform"
           >
-            {/* Rotating gradient border */}
-            <span className="absolute inset-0 rounded-full animate-[gleanSpin_4s_linear_infinite] p-[1.5px]"
-              style={{ background: "conic-gradient(from 0deg, #d8fd49, #dcbb9b, #e16bff, #343bed, #d8fd49)" }}>
-              <span className="block w-full h-full rounded-full bg-action-500" />
-            </span>
-            {/* Shimmer sweep */}
-            <span className="absolute inset-[1.5px] rounded-full overflow-hidden">
-              <span className="absolute inset-0 bg-action-500" />
-              <span className="absolute inset-0 animate-[gleanShimmer_4s_ease-in-out_infinite] opacity-20"
-                style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)" }} />
-            </span>
             <span className="relative z-10">Start Free Trial</span>
           </Link>
         </div>
