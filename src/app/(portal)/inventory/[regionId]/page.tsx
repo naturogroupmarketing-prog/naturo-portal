@@ -27,7 +27,7 @@ export default async function InventoryDetailPage({ params, searchParams }: { pa
   // Fetch all data needed for both asset and consumable tabs
   const [assets, consumables, staff, users, assetCategories, consumableCategories, lowStockCount] = await Promise.all([
     db.asset.findMany({
-      where: { regionId },
+      where: { regionId, deletedAt: null },
       include: {
         region: { include: { state: true } },
         assignments: { where: { isActive: true }, include: { user: { select: { name: true, email: true } } } },

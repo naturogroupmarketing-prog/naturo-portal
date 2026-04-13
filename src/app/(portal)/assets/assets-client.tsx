@@ -11,7 +11,7 @@ import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
 import dynamic from "next/dynamic";
-import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, bulkDeleteAssets, changeAssetStatus } from "@/app/actions/assets";
+import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, deleteAsset, bulkDeleteAssets, changeAssetStatus } from "@/app/actions/assets";
 import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { useRouter } from "next/navigation";
 import { compressImage } from "@/lib/image-utils";
@@ -139,20 +139,23 @@ const STATUS_ACTIONS: Record<string, { value: string; label: string }[]> = {
 };
 
 // Universal status dropdown — renders menu via portal so it's never clipped by overflow
-function StatusDropdown({ asset, canAssign, canEdit, activeAssignment, onStatusChange, onAssign, onReturn }: {
+function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment, onStatusChange, onAssign, onReturn, onDelete }: {
   asset: { id: string; status: string };
   canAssign: boolean;
   canEdit: boolean;
+  canDelete: boolean;
   activeAssignment: { id: string } | null;
   onStatusChange: (assetId: string, newStatus: string) => void;
   onAssign: () => void;
   onReturn: () => void;
+  onDelete: (assetId: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const hasActions = canAssign || canEdit;
+  const isDeletable = canDelete && !activeAssignment;
+  const hasActions = canAssign || canEdit || isDeletable;
 
   const updatePos = useCallback(() => {
     if (!btnRef.current) return;
@@ -215,6 +218,15 @@ function StatusDropdown({ asset, canAssign, canEdit, activeAssignment, onStatusC
           </button>
         );
       })}
+      {isDeletable && (
+        <>
+          <div className="border-t border-shark-100 my-1" />
+          <button onClick={() => { onDelete(asset.id); setOpen(false); }}
+            className="w-full text-left px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2">
+            <Icon name="trash-2" size={12} /> Delete Asset
+          </button>
+        </>
+      )}
     </div>,
     document.body
   ) : null;
@@ -295,6 +307,10 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showBulkDelete, setShowBulkDelete] = useState(false);
   const [bulkDeleting, setBulkDeleting] = useState(false);
+
+  // Single delete state
+  const [showSingleDelete, setShowSingleDelete] = useState<string | null>(null);
+  const [singleDeleting, setSingleDeleting] = useState(false);
 
   // Manage sections state
   const [showManageSections, setShowManageSections] = useState(false);
@@ -436,9 +452,9 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     };
   });
 
-  // Only AVAILABLE (unassigned) assets can be deleted
+  // Any asset without active assignments can be deleted
   const deletableIds = new Set(
-    assets.filter((a) => a.status === "AVAILABLE" && a.assignments.length === 0).map((a) => a.id)
+    assets.filter((a) => a.assignments.length === 0).map((a) => a.id)
   );
 
   const toggleSelect = (id: string) => {
@@ -482,6 +498,23 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       addToast(err instanceof Error ? err.message : "Delete failed", "error");
     } finally {
       setBulkDeleting(false);
+    }
+  };
+
+  const handleSingleDelete = async () => {
+    if (!showSingleDelete) return;
+    setSingleDeleting(true);
+    try {
+      const fd = new FormData();
+      fd.set("assetId", showSingleDelete);
+      await deleteAsset(fd);
+      addToast("Asset deleted successfully", "success");
+      setShowSingleDelete(null);
+      router.refresh();
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Delete failed", "error");
+    } finally {
+      setSingleDeleting(false);
     }
   };
 
@@ -680,10 +713,12 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                           asset={asset}
                           canAssign={permissions.canAssign}
                           canEdit={permissions.canEdit}
+                          canDelete={permissions.canDelete}
                           activeAssignment={activeAssignment}
                           onStatusChange={handleQuickStatusChange}
                           onAssign={() => setShowAssign(asset)}
                           onReturn={() => activeAssignment && setShowReturn({ assignmentId: activeAssignment.id, asset })}
+                          onDelete={(id) => setShowSingleDelete(id)}
                         />
                       </div>
                       {activeAssignment && (
@@ -774,10 +809,12 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                         asset={asset}
                         canAssign={permissions.canAssign}
                         canEdit={permissions.canEdit}
+                        canDelete={permissions.canDelete}
                         activeAssignment={activeAssignment}
                         onStatusChange={handleQuickStatusChange}
                         onAssign={() => setShowAssign(asset)}
                         onReturn={() => activeAssignment && setShowReturn({ assignmentId: activeAssignment.id, asset })}
+                        onDelete={(id) => setShowSingleDelete(id)}
                       />
                     </td>}
                     {visibleColumns.assignedTo && (
@@ -1075,6 +1112,44 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               {bulkDeleting ? "Deleting..." : `Delete ${selectedIds.size} Asset${selectedIds.size > 1 ? "s" : ""}`}
             </Button>
           </div>
+        </div>
+      </Modal>
+
+      {/* Single Delete Confirmation Modal */}
+      <Modal open={!!showSingleDelete} onClose={() => setShowSingleDelete(null)} title="Delete Asset">
+        <div className="space-y-4">
+          {(() => {
+            const assetToDelete = assets.find((a) => a.id === showSingleDelete);
+            return (
+              <>
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                  <p className="text-sm text-red-800 font-medium">
+                    Are you sure you want to delete this asset?
+                  </p>
+                  <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
+                </div>
+                {assetToDelete && (
+                  <div className="bg-shark-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-shark-800 text-sm">{assetToDelete.name}</span>
+                      <span className="text-xs text-shark-400 font-mono">{assetToDelete.assetCode}</span>
+                    </div>
+                    <p className="text-xs text-shark-500 mt-1">{assetToDelete.region.name} &middot; {assetToDelete.category}</p>
+                  </div>
+                )}
+                <div className="flex justify-end gap-3 pt-2">
+                  <Button type="button" variant="secondary" onClick={() => setShowSingleDelete(null)}>Cancel</Button>
+                  <Button
+                    variant="danger"
+                    disabled={singleDeleting}
+                    onClick={handleSingleDelete}
+                  >
+                    {singleDeleting ? "Deleting..." : "Delete Asset"}
+                  </Button>
+                </div>
+              </>
+            );
+          })()}
         </div>
       </Modal>
 
