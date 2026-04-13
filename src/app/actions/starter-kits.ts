@@ -91,6 +91,39 @@ export async function deleteStarterKit(id: string) {
   return { success: true };
 }
 
+export async function duplicateStarterKit(kitId: string) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");
+  const organizationId = session.user.organizationId!;
+
+  const kit = await db.starterKit.findUnique({
+    where: { id: kitId },
+    include: { items: true },
+  });
+  if (!kit || kit.organizationId !== organizationId) throw new Error("Starter kit not found");
+
+  const newKit = await db.starterKit.create({
+    data: {
+      organizationId,
+      name: `${kit.name} (Copy)`,
+      description: kit.description,
+      isDefault: false,
+      items: {
+        create: kit.items.map((item) => ({
+          itemType: item.itemType,
+          category: item.category,
+          consumableId: item.consumableId,
+          quantity: item.quantity,
+        })),
+      },
+    },
+  });
+
+  revalidatePath("/staff");
+  revalidatePath("/starter-kits");
+  return { success: true, newKitId: newKit.id };
+}
+
 export async function addStarterKitItem(formData: FormData) {
   const session = await withAuth();
   if (!(await hasPermission(session.user.id, session.user.role, "starterKitsManage"))) throw new Error("Unauthorized");

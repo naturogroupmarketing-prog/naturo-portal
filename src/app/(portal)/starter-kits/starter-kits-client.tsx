@@ -14,6 +14,7 @@ import {
   createStarterKit,
   updateStarterKit,
   deleteStarterKit,
+  duplicateStarterKit,
   addStarterKitItem,
   removeStarterKitItem,
   updateStarterKitItemQuantity,
@@ -77,6 +78,20 @@ export function StarterKitsClient({
   const [expandedKit, setExpandedKit] = useState<string | null>(null);
   const [showAddItem, setShowAddItem] = useState<string | null>(null);
   const [showApply, setShowApply] = useState<StarterKit | null>(null);
+  const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
+
+  const handleDuplicate = async (kitId: string) => {
+    setDuplicatingId(kitId);
+    try {
+      await duplicateStarterKit(kitId);
+      addToast("Starter kit duplicated successfully", "success");
+      router.refresh();
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : "Failed to duplicate kit", "error");
+    } finally {
+      setDuplicatingId(null);
+    }
+  };
 
   return (
     <div className="space-y-10">
@@ -127,6 +142,9 @@ export function StarterKitsClient({
                     <div className="flex flex-wrap items-center justify-end gap-2 mb-4">
                       <Button size="sm" variant="outline" onClick={() => setShowApply(kit)} disabled={kit.items.length === 0}>
                         Assign to Staff
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => handleDuplicate(kit.id)} disabled={duplicatingId === kit.id}>
+                        <Icon name="copy" size={12} className="mr-1" />{duplicatingId === kit.id ? "Duplicating..." : "Duplicate"}
                       </Button>
                       <Button size="sm" variant="outline" onClick={() => setShowAddItem(kit.id)}>
                         <Icon name="plus" size={12} className="mr-1" />Add Item

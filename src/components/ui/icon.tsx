@@ -8,7 +8,7 @@ export type IconName =
   | "log-out" | "arrow-right" | "arrow-left" | "box" | "truck" | "file-text"
   | "shield" | "clock" | "edit" | "upload" | "check-circle" | "file-spreadsheet"
   | "help-circle" | "mail" | "message-circle" | "bell" | "inbox"
-  | "award" | "trash-2";
+  | "award" | "trash-2" | "copy";
 
 interface IconProps {
   name: IconName;
@@ -97,6 +97,8 @@ const paths: Record<IconName, string> = {
     "M12 15a7 7 0 100-14 7 7 0 000 14z M8.21 13.89L7 23l5-3 5 3-1.21-9.12",
   "trash-2":
     "M3 6h18 M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2 M10 11v6 M14 11v6",
+  copy:
+    "M20 9h-9a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-9a2 2 0 00-2-2z M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1",
 };
 
 export function Icon({ name, className, size = 20 }: IconProps) {
