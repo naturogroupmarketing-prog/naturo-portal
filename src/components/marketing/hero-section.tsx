@@ -1,55 +1,17 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
-const FLIP_PHRASES = [
-  "who has it,",
-  "when it moved,",
-  "what's running low,",
-  "where it's going,",
-];
-
-const CHAR_DURATION = 800;
-const CHAR_STAGGER = 50;
-const PAUSE_BETWEEN = 3000;
-const INITIAL_DELAY = 800;
-
-function FlipCycle() {
-  const [phase, setPhase] = useState<"initial" | "cycling">("initial");
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [flipKey, setFlipKey] = useState(0);
-
-  const advance = useCallback(() => {
-    if (phase === "initial") {
-      setPhase("cycling");
-      setFlipKey((k) => k + 1);
-    } else {
-      setActiveIndex((prev) => (prev + 1) % FLIP_PHRASES.length);
-      setFlipKey((k) => k + 1);
-    }
-  }, [phase]);
-
-  useEffect(() => {
-    const phrase = phase === "initial" ? "where it is," : FLIP_PHRASES[activeIndex];
-    const animDuration = CHAR_DURATION + phrase.length * CHAR_STAGGER;
-    const delay = phase === "initial" ? INITIAL_DELAY + animDuration + PAUSE_BETWEEN : animDuration + PAUSE_BETWEEN;
-    const timer = setTimeout(advance, delay);
-    return () => clearTimeout(timer);
-  }, [activeIndex, flipKey, phase, advance]);
-
-  const phrase = phase === "initial" ? "where it is," : FLIP_PHRASES[activeIndex];
-  const chars = phrase.split("");
-  const baseDelay = phase === "initial" ? INITIAL_DELAY : 0;
-
+function FlipOnce({ text, delay = 0 }: { text: string; delay?: number }) {
+  const chars = text.split("");
   return (
     <span className="text-action-500 inline-block" style={{ perspective: "800px" }}>
       {chars.map((char, i) => (
         <span
-          key={`${flipKey}-${i}`}
+          key={i}
           className="inline-block animate-[charFlipIn_0.8s_cubic-bezier(0.22,1,0.36,1)_both]"
           style={{
-            animationDelay: `${baseDelay + i * CHAR_STAGGER}ms`,
+            animationDelay: `${delay + i * 50}ms`,
             transformOrigin: "center bottom",
           }}
         >
@@ -79,8 +41,8 @@ export function HeroSection() {
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-semibold text-shark-900 tracking-tight leading-[1.1] font-exo animate-[fadeInUp_0.6s_ease-out]">
             Know exactly what you have,{" "}
-            <FlipCycle />{" "}
-            and so much more.
+            <FlipOnce text="where it is," delay={800} />{" "}
+            and who has it.
           </h1>
 
           {/* Subheading */}
