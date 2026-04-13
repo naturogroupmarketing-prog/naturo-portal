@@ -276,29 +276,10 @@ body {
   animation: gleanBorder 4s ease-in-out infinite;
 }
 
-.glean-cta::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
-  animation: gleanShimmer 4s ease-in-out infinite;
-  z-index: 1;
-}
-
 @keyframes gleanBorder {
   0% { opacity: 0; }
   10% { opacity: 1; }
   60% { opacity: 1; }
   80% { opacity: 0; }
   100% { opacity: 0; }
-}
-
-@keyframes gleanShimmer {
-  0% { transform: translateX(-100%); opacity: 0; }
-  10% { opacity: 0; }
-  30% { opacity: 1; }
-  50% { transform: translateX(100%); opacity: 1; }
-  51% { opacity: 0; }
-  100% { transform: translateX(100%); opacity: 0; }
 }
