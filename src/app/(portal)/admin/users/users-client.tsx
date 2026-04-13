@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -57,6 +58,16 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
   const [deleteError, setDeleteError] = useState("");
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
   const { addToast } = useToast();
+  const searchParams = useSearchParams();
+
+  // Auto-open user modal when ?user=ID is in the URL
+  useEffect(() => {
+    const userId = searchParams.get("user");
+    if (userId) {
+      const user = users.find((u) => u.id === userId);
+      if (user) setEditUser(user);
+    }
+  }, [searchParams, users]);
 
   const toggleSection = (key: string) => {
     setCollapsedSections((prev) => {

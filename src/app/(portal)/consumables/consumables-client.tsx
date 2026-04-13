@@ -129,10 +129,10 @@ function AssignedToDropdown({ assignments }: { assignments: ConsumableAssignment
       {open && (
         <div className="absolute z-50 top-full left-0 mt-1 bg-white border border-shark-200 rounded-lg shadow-lg min-w-[180px] py-1 animate-fade-in">
           {assignments.map((a) => (
-            <div key={a.id} className="flex items-center justify-between px-3 py-1.5 hover:bg-shark-50 text-xs">
-              <span className="text-shark-700 truncate mr-2">{a.user.name || a.user.email}</span>
+            <a key={a.id} href={`/admin/users?user=${a.user.id}`} className="flex items-center justify-between px-3 py-1.5 hover:bg-action-50 text-xs transition-colors">
+              <span className="text-action-600 hover:text-action-700 truncate mr-2">{a.user.name || a.user.email}</span>
               <span className="text-shark-400 whitespace-nowrap">×{a.quantity}</span>
-            </div>
+            </a>
           ))}
         </div>
       )}
