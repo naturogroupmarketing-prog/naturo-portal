@@ -102,7 +102,7 @@ interface ConsumablesClientProps {
 
 import { compressImage } from "@/lib/image-utils";
 
-function AssignedToDropdown({ assignments }: { assignments: ConsumableAssignment[] }) {
+function AssignedToDropdown({ assignments, onViewStaff }: { assignments: ConsumableAssignment[]; onViewStaff: (userId: string) => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const total = assignments.reduce((s, a) => s + a.quantity, 0);
@@ -129,10 +129,10 @@ function AssignedToDropdown({ assignments }: { assignments: ConsumableAssignment
       {open && (
         <div className="absolute z-50 top-full left-0 mt-1 bg-white border border-shark-200 rounded-lg shadow-lg min-w-[180px] py-1 animate-fade-in">
           {assignments.map((a) => (
-            <a key={a.id} href={`/admin/users?user=${a.user.id}`} className="flex items-center justify-between px-3 py-1.5 hover:bg-action-50 text-xs transition-colors">
+            <button key={a.id} onClick={() => { setOpen(false); onViewStaff(a.user.id); }} className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-action-50 text-xs transition-colors">
               <span className="text-action-600 hover:text-action-700 truncate mr-2">{a.user.name || a.user.email}</span>
               <span className="text-shark-400 whitespace-nowrap">×{a.quantity}</span>
-            </a>
+            </button>
           ))}
         </div>
       )}
@@ -162,6 +162,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const [search, setSearch] = useState(initialCategory || "");
   const [tab, setTab] = useState<"stock" | "requests">(initialTab === "requests" ? "requests" : "stock");
   const [stockFilter, setStockFilter] = useState(initialStock || "ALL");
+  const [staffModalUserId, setStaffModalUserId] = useState<string | null>(null);
 
   // Collapsed sections state
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
@@ -566,7 +567,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {visibleColumns.assignedTo && (
                     <td className="px-4 py-3 text-shark-500 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
                       {activeAssignments.length > 0 ? (
-                        <AssignedToDropdown assignments={activeAssignments} />
+                        <AssignedToDropdown assignments={activeAssignments} onViewStaff={setStaffModalUserId} />
                       ) : <span className="text-shark-400">{"\u2014"}</span>}
                     </td>
                     )}
@@ -1432,6 +1433,79 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
           </form>
         )}
+      </Modal>
+
+      {/* Staff Items On Hand Modal */}
+      <Modal open={!!staffModalUserId} onClose={() => setStaffModalUserId(null)} title={(() => {
+        if (!staffModalUserId) return "Staff Items";
+        const allAssignments = consumables.flatMap((c) => (c.assignments || []).map((a) => ({ ...a, consumable: c })));
+        const staffUser = allAssignments.find((a) => a.user.id === staffModalUserId)?.user;
+        return staffUser ? `${staffUser.name || staffUser.email} — Items On Hand` : "Staff Items";
+      })()}>
+        {staffModalUserId && (() => {
+          const allAssignments = consumables.flatMap((c) => (c.assignments || []).map((a) => ({ ...a, consumable: c })));
+          const staffAssignments = allAssignments.filter((a) => a.user.id === staffModalUserId);
+          const totalItems = staffAssignments.reduce((s, a) => s + a.quantity, 0);
+
+          return (
+            <div className="space-y-4">
+              {/* Summary */}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-action-50 text-action-600">
+                  <Icon name="user" size={20} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-shark-800">{staffAssignments[0]?.user.name || staffAssignments[0]?.user.email}</p>
+                  <p className="text-xs text-shark-400">{staffAssignments.length} item{staffAssignments.length !== 1 ? "s" : ""} · {totalItems} total qty</p>
+                </div>
+              </div>
+
+              {/* Items list */}
+              {staffAssignments.length > 0 ? (
+                <div className="border border-shark-100 rounded-lg overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-shark-50/60 border-b border-shark-100">
+                        <th className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Item</th>
+                        <th className="px-3 py-2 text-right text-xs font-semibold text-shark-400 uppercase tracking-wider">Qty</th>
+                        <th className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Assigned</th>
+                        <th className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Location</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {staffAssignments.map((a) => (
+                        <tr key={a.id} className="border-b border-shark-50 last:border-0 hover:bg-shark-50/50">
+                          <td className="px-3 py-2">
+                            <div className="flex items-center gap-2">
+                              {a.consumable.imageUrl ? (
+                                <div className="w-7 h-7 rounded overflow-hidden border border-shark-100 shrink-0">
+                                  <img src={a.consumable.imageUrl} alt={a.consumable.name} className="w-full h-full object-cover" />
+                                </div>
+                              ) : (
+                                <div className="w-7 h-7 rounded bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                                  <Icon name="droplet" size={14} className="text-shark-300" />
+                                </div>
+                              )}
+                              <div>
+                                <span className="font-medium text-shark-800">{a.consumable.name}</span>
+                                <span className="text-shark-400 text-xs ml-1">({a.consumable.unitType})</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-3 py-2 text-right font-bold text-shark-800">{a.quantity}</td>
+                          <td className="px-3 py-2 text-xs text-shark-500">{formatDate(a.assignedDate)}</td>
+                          <td className="px-3 py-2 text-xs text-shark-500">{a.consumable.region.name}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-sm text-shark-400 text-center py-6">No items currently assigned.</p>
+              )}
+            </div>
+          );
+        })()}
       </Modal>
     </div>
   );
