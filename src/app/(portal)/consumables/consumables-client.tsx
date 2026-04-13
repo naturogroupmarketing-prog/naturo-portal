@@ -129,7 +129,7 @@ function AssignedToDropdown({ assignments, onViewStaff }: { assignments: Consuma
       {open && (
         <div className="absolute z-50 top-full left-0 mt-1 bg-white border border-shark-200 rounded-lg shadow-lg min-w-[180px] py-1 animate-fade-in">
           {assignments.map((a) => (
-            <button key={a.id} onClick={() => { setOpen(false); onViewStaff(a.user.id); }} className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-action-50 text-xs transition-colors">
+            <button key={a.id} onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(false); onViewStaff(a.user.id); }} className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-action-50 text-xs transition-colors cursor-pointer">
               <span className="text-action-600 hover:text-action-700 truncate mr-2">{a.user.name || a.user.email}</span>
               <span className="text-shark-400 whitespace-nowrap">×{a.quantity}</span>
             </button>
