@@ -18,11 +18,9 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
-      { url: "/trackio_white.svg", type: "image/svg+xml" },
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/trackio_t_logo.svg", type: "image/svg+xml" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: "/trackio_t_logo.svg",
   },
   appleWebApp: {
     capable: true,
@@ -45,9 +43,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/trackio_white.svg" type="image/svg+xml" />
-        <link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/trackio_t_logo.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/trackio_t_logo.svg" />
         <meta name="theme-color" content="#f5f5f5" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>

@@ -25,7 +25,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/welcome" className="flex items-center gap-2.5">
           <img
-            src="/trackio_logo_v1.svg"
+            src="/trackio_t_full_logo.svg"
             alt="Trackio"
             className="h-7 w-auto"
           />
@@ -42,6 +42,9 @@ export function Navbar() {
           <a href="#use-cases" className="text-sm text-shark-500 hover:text-shark-900 transition-colors">
             Use Cases
           </a>
+          <a href="#pricing" className="text-sm text-shark-500 hover:text-shark-900 transition-colors">
+            Pricing
+          </a>
           <div className="w-px h-5 bg-shark-200" />
           <Link
             href="/login"
@@ -53,7 +56,7 @@ export function Navbar() {
             href="/login"
             className="text-sm font-medium bg-action-500 text-white px-5 py-2 rounded-full hover:bg-action-600 transition-all hover:-translate-y-px hover:shadow-md active:scale-[0.97]"
           >
-            Get Started
+            Start Free Trial
           </Link>
         </div>
 
@@ -80,9 +83,10 @@ export function Navbar() {
             <a href="#features" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 hover:text-shark-900">Features</a>
             <a href="#how-it-works" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 hover:text-shark-900">How It Works</a>
             <a href="#use-cases" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 hover:text-shark-900">Use Cases</a>
+            <a href="#pricing" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 hover:text-shark-900">Pricing</a>
             <div className="pt-3 border-t border-shark-100 mt-3 space-y-2">
               <Link href="/login" className="block py-2.5 text-sm font-medium text-shark-700">Sign In</Link>
-              <Link href="/login" className="block text-center text-sm font-medium bg-action-500 text-white px-5 py-2.5 rounded-full">Get Started</Link>
+              <Link href="/login" className="block text-center text-sm font-medium bg-action-500 text-white px-5 py-2.5 rounded-full">Start Free Trial</Link>
             </div>
           </div>
         </div>

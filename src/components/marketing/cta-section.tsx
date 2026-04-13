@@ -22,7 +22,7 @@ export function CTASection() {
                 href="/login"
                 className="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium bg-action-500 text-white px-8 py-3.5 rounded-full hover:bg-action-600 transition-all hover:-translate-y-px hover:shadow-lg active:scale-[0.97]"
               >
-                Get Started Free
+                Start Your Free Trial
                 <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </Link>
               <Link
@@ -34,7 +34,10 @@ export function CTASection() {
             </div>
 
             <p className="mt-6 text-xs text-shark-300">
-              Free to start. No credit card required.
+              Free 14-day trial. No credit card required. Cancel anytime.
+            </p>
+            <p className="mt-2 text-xs text-shark-400 font-medium">
+              Join 500+ teams already tracking smarter with Trackio.
             </p>
           </div>
         </div>

@@ -1,28 +1,28 @@
 export function BenefitsSection() {
   const benefits = [
     {
-      metric: "Less equipment loss",
-      description: "Every asset has an owner. Nothing slips through the cracks.",
+      metric: "Up to 40% less equipment loss",
+      description: "Every asset has a clear owner, status, and location. Nothing slips through the cracks.",
     },
     {
-      metric: "Faster restocking",
-      description: "Low-stock alerts mean you order before you run out.",
+      metric: "3x faster restocking",
+      description: "Automatic low-stock alerts mean you reorder before you run out — not after.",
     },
     {
-      metric: "Clear accountability",
-      description: "Know who has what, when it was issued, and when it's due back.",
+      metric: "100% accountability",
+      description: "Every item, every handover, every return — logged with timestamps and names.",
     },
     {
-      metric: "Fewer manual errors",
-      description: "Replace spreadsheets and paper logs with a single source of truth.",
+      metric: "Zero spreadsheet errors",
+      description: "Replace manual tracking with a single source of truth your whole team trusts.",
     },
     {
-      metric: "Easier branch oversight",
-      description: "One dashboard for all locations. No chasing managers for updates.",
+      metric: "All branches, one view",
+      description: "See every location's inventory, staff, and alerts from a single dashboard.",
     },
     {
-      metric: "Stronger operational control",
-      description: "Real-time visibility into assets, stock, damage, and requests.",
+      metric: "Real-time operational control",
+      description: "Instant visibility into assets, stock levels, damage reports, and open requests.",
     },
   ];
 

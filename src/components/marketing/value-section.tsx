@@ -10,9 +10,10 @@ export function ValueSection() {
             Spreadsheets weren&apos;t built for this.
           </h2>
           <p className="mt-5 text-shark-400 text-lg leading-relaxed max-w-2xl mx-auto">
-            When equipment goes missing, stock runs out without warning, and no
-            one knows who has what &mdash; the problem isn&apos;t your team. It&apos;s
-            the system. Trackio replaces the chaos with clarity.
+            The average operations team loses thousands each year to untracked
+            equipment and emergency restocking. When no one knows who has what,
+            it&apos;s not a people problem &mdash; it&apos;s a system problem.
+            Trackio replaces the chaos with clarity.
           </p>
         </div>
 
@@ -20,8 +21,8 @@ export function ValueSection() {
         <div className="mt-16 grid sm:grid-cols-3 gap-6">
           {[
             {
-              pain: "Items go missing",
-              solution: "Every asset tracked with a clear owner, location, and status.",
+              pain: "Equipment vanishes without a trace",
+              solution: "Every asset tracked with a clear owner, location, and status. Teams report up to 40% less loss.",
               icon: (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
@@ -30,8 +31,8 @@ export function ValueSection() {
               ),
             },
             {
-              pain: "Stock runs out silently",
-              solution: "Real-time stock levels by location with low-stock alerts.",
+              pain: "Stock runs out — nobody noticed",
+              solution: "Real-time stock levels by location with automatic alerts. Restock 3x faster with proactive notifications.",
               icon: (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
@@ -41,8 +42,8 @@ export function ValueSection() {
               ),
             },
             {
-              pain: "No one is accountable",
-              solution: "Every issue, return, and handover logged and visible.",
+              pain: "Nobody knows who had it last",
+              solution: "Every issue, return, and handover logged and visible. Full audit trail means zero finger-pointing.",
               icon: (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />

@@ -4,10 +4,8 @@ const OFFLINE_URL = "/offline";
 // Critical pages to cache for offline use
 const PRECACHE_URLS = [
   OFFLINE_URL,
-  "/trackio_white.svg",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/apple-touch-icon.png",
+  "/trackio_t_logo.svg",
+  "/trackio_t_full_logo.svg",
   "/manifest.webmanifest",
 ];
 

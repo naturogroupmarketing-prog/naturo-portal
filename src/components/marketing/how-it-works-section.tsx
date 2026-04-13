@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function HowItWorksSection() {
   const steps = [
     {
@@ -54,6 +56,20 @@ export function HowItWorksSection() {
               </p>
             </div>
           ))}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-14 text-center">
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center text-sm font-medium bg-action-500 text-white px-8 py-3.5 rounded-full hover:bg-action-600 transition-all hover:-translate-y-px hover:shadow-lg active:scale-[0.97]"
+          >
+            Start Your Free Trial
+            <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </Link>
+          <p className="mt-3 text-xs text-shark-300">
+            Up and running in under 15 minutes. No credit card required.
+          </p>
         </div>
       </div>
     </section>
