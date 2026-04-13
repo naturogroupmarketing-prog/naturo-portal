@@ -102,6 +102,44 @@ interface ConsumablesClientProps {
 
 import { compressImage } from "@/lib/image-utils";
 
+function AssignedToDropdown({ assignments }: { assignments: ConsumableAssignment[] }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const total = assignments.reduce((s, a) => s + a.quantity, 0);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 text-xs text-shark-600 hover:text-shark-900 transition-colors"
+      >
+        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-action-50 text-action-600 text-[10px] font-bold">{assignments.length}</span>
+        <span>staff ({total})</span>
+        <svg className={`w-3.5 h-3.5 text-shark-400 transition-transform ${open ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      {open && (
+        <div className="absolute z-50 top-full left-0 mt-1 bg-white border border-shark-200 rounded-lg shadow-lg min-w-[180px] py-1 animate-fade-in">
+          {assignments.map((a) => (
+            <div key={a.id} className="flex items-center justify-between px-3 py-1.5 hover:bg-shark-50 text-xs">
+              <span className="text-shark-700 truncate mr-2">{a.user.name || a.user.email}</span>
+              <span className="text-shark-400 whitespace-nowrap">×{a.quantity}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
   const { addToast } = useToast();
   const [showCreate, setShowCreate] = useState(false);
@@ -526,8 +564,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
                     {visibleColumns.qty && <td className="px-4 py-3 text-right"><span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>{c.quantityOnHand}</span></td>}
                     {visibleColumns.assignedTo && (
-                    <td className="px-4 py-3 text-shark-500 hidden md:table-cell">
-                      {activeAssignments.length > 0 ? <div className="space-y-0.5">{activeAssignments.map((a) => <div key={a.id} className="text-xs">{a.user.name || a.user.email} <span className="text-shark-400">({a.quantity})</span></div>)}</div> : <span className="text-shark-400">{"\u2014"}</span>}
+                    <td className="px-4 py-3 text-shark-500 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
+                      {activeAssignments.length > 0 ? (
+                        <AssignedToDropdown assignments={activeAssignments} />
+                      ) : <span className="text-shark-400">{"\u2014"}</span>}
                     </td>
                     )}
                     <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
