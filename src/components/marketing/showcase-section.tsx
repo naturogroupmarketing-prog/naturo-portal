@@ -257,7 +257,7 @@ export function ShowcaseSection() {
                         </div>
                       </div>
                     </div>
-                    <div className="bg-shark-50/30 min-h-[340px]">
+                    <div className="bg-shark-50/30 h-[380px] overflow-y-auto">
                       {step.visual}
                     </div>
                   </div>
