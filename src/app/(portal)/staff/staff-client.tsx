@@ -705,8 +705,8 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                         <Icon name="package" size={12} className="text-action-400" />
                                       </div>
                                     )}
-                                    <span className="truncate flex-1">{a.asset.name}</span>
-                                    <span className="text-xs text-shark-400 shrink-0">×1</span>
+                                    <span className="truncate">{a.asset.name}</span>
+                                    <span className="text-[11px] text-shark-400 shrink-0 ml-1">(1)</span>
                                   </div>
                                 ))}
                               </div>
@@ -736,8 +736,8 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                         <Icon name="droplet" size={12} className="text-blue-400" />
                                       </div>
                                     )}
-                                    <span className="truncate flex-1">{c.consumable.name}</span>
-                                    <span className="text-xs text-shark-400 shrink-0">×{c.quantity}</span>
+                                    <span className="truncate">{c.consumable.name}</span>
+                                    <span className="text-[11px] text-shark-400 shrink-0 ml-1">({c.quantity})</span>
                                   </div>
                                 ))}
                               </div>
@@ -873,8 +873,8 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                       <Icon name="package" size={14} className="text-action-400" />
                                     </div>
                                   )}
-                                  <p className="text-sm text-shark-700 truncate flex-1">{a.asset.name}</p>
-                                  <span className="text-xs text-shark-400 shrink-0">×1</span>
+                                  <p className="text-sm text-shark-700 truncate">{a.asset.name}</p>
+                                  <span className="text-[11px] text-shark-400 shrink-0 ml-1">(1)</span>
                                 </div>
                               ))}
                             </div>
@@ -904,8 +904,8 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                       <Icon name="droplet" size={14} className="text-blue-400" />
                                     </div>
                                   )}
-                                  <p className="text-sm text-shark-700 truncate flex-1">{c.consumable.name}</p>
-                                  <span className="text-xs text-shark-400 shrink-0">×{c.quantity}</span>
+                                  <p className="text-sm text-shark-700 truncate">{c.consumable.name}</p>
+                                  <span className="text-[11px] text-shark-400 shrink-0 ml-1">({c.quantity})</span>
                                 </div>
                               ))}
                             </div>
