@@ -5,10 +5,12 @@ export function middleware(request: NextRequest) {
 
   // Public routes — no auth check needed
   if (
+    pathname.startsWith("/welcome") ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/forgot-password") ||
     pathname.startsWith("/reset-password") ||
     pathname.startsWith("/privacy-policy") ||
+    pathname.startsWith("/terms-of-service") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/webhooks") ||
     pathname.startsWith("/api/cron") ||
