@@ -6,5 +6,5 @@ export default async function Home() {
   if (session?.user) {
     redirect("/dashboard");
   }
-  redirect("/login");
+  redirect("/welcome");
 }
