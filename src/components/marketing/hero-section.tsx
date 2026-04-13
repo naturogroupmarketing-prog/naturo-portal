@@ -1,17 +1,50 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
-function FlipOnce({ text, delay = 0 }: { text: string; delay?: number }) {
-  const chars = text.split("");
+const FLIP_PHRASES = [
+  "where it is,",
+  "who has it,",
+  "when it moved,",
+  "what's running low,",
+  "where it's going,",
+];
+
+const CHAR_DURATION = 800;
+const CHAR_STAGGER = 50;
+const PAUSE_BETWEEN = 3000;
+const INITIAL_DELAY = 800;
+
+function FlipCycle() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [flipKey, setFlipKey] = useState(0);
+
+  const advance = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % FLIP_PHRASES.length);
+    setFlipKey((k) => k + 1);
+  }, []);
+
+  useEffect(() => {
+    const phrase = FLIP_PHRASES[activeIndex];
+    const animDuration = CHAR_DURATION + phrase.length * CHAR_STAGGER;
+    const delay = activeIndex === 0 && flipKey === 0 ? INITIAL_DELAY + animDuration + PAUSE_BETWEEN : animDuration + PAUSE_BETWEEN;
+    const timer = setTimeout(advance, delay);
+    return () => clearTimeout(timer);
+  }, [activeIndex, flipKey, advance]);
+
+  const phrase = FLIP_PHRASES[activeIndex];
+  const chars = phrase.split("");
+  const baseDelay = activeIndex === 0 && flipKey === 0 ? INITIAL_DELAY : 0;
+
   return (
     <span className="text-action-500 inline-block" style={{ perspective: "800px" }}>
       {chars.map((char, i) => (
         <span
-          key={i}
-          className="inline-block animate-[charFlipIn_0.5s_cubic-bezier(0.22,1,0.36,1)_both]"
+          key={`${flipKey}-${i}`}
+          className="inline-block animate-[charFlipIn_0.8s_cubic-bezier(0.22,1,0.36,1)_both]"
           style={{
-            animationDelay: `${delay + i * 55}ms`,
+            animationDelay: `${baseDelay + i * CHAR_STAGGER}ms`,
             transformOrigin: "center bottom",
           }}
         >
@@ -41,8 +74,8 @@ export function HeroSection() {
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-semibold text-shark-900 tracking-tight leading-[1.1] font-exo animate-[fadeInUp_0.6s_ease-out]">
             Know exactly what you have,{" "}
-            <FlipOnce text="where it is," delay={800} />{" "}
-            and who has it.
+            <FlipCycle />{" "}
+            and so much more.
           </h1>
 
           {/* Subheading */}
