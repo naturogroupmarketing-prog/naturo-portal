@@ -52,7 +52,7 @@ export function ValueSection() {
           ].map((card) => (
             <div
               key={card.pain}
-              className="bg-shark-50/50 rounded-2xl p-7 border border-shark-100/80 hover:border-shark-200 transition-colors"
+              className="bg-white rounded-2xl p-7 border border-shark-100 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_2px_8px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.06)] transition-all"
             >
               <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center text-action-500 mb-5">
                 {card.icon}

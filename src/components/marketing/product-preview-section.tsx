@@ -1,6 +1,6 @@
 export function ProductPreviewSection() {
   return (
-    <section className="py-20 sm:py-28 bg-shark-50/40">
+    <section className="py-20 sm:py-28 bg-shark-50">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">
