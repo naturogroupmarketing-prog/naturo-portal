@@ -86,11 +86,11 @@ export function ProductPreviewSection() {
                   <div className="grid grid-cols-3 gap-3">
                     <div>
                       <p className="text-[10px] text-shark-400 uppercase tracking-wider">Assets</p>
-                      <p className="text-lg font-bold text-shark-800 mt-0.5">{location.assets}</p>
+                      <p className="text-lg font-bold text-shark-900 mt-0.5">{location.assets}</p>
                     </div>
                     <div>
                       <p className="text-[10px] text-shark-400 uppercase tracking-wider">Supplies</p>
-                      <p className="text-lg font-bold text-shark-800 mt-0.5">{location.supplies}</p>
+                      <p className="text-lg font-bold text-shark-900 mt-0.5">{location.supplies}</p>
                     </div>
                     <div>
                       <p className="text-[10px] text-shark-400 uppercase tracking-wider">Alerts</p>

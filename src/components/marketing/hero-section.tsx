@@ -108,10 +108,10 @@ function DashboardPreview() {
               {/* Stats row */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                  { label: "Total Assets", value: "284", change: "+12", color: "text-action-600" },
-                  { label: "Available", value: "196", change: "", color: "text-green-600" },
-                  { label: "Assigned", value: "76", change: "", color: "text-blue-600" },
-                  { label: "Low Stock", value: "8", change: "", color: "text-amber-600" },
+                  { label: "Total Assets", value: "284", change: "+12", color: "text-shark-900" },
+                  { label: "Available", value: "196", change: "", color: "text-shark-900" },
+                  { label: "Assigned", value: "76", change: "", color: "text-shark-900" },
+                  { label: "Low Stock", value: "8", change: "", color: "text-shark-900" },
                 ].map((stat) => (
                   <div key={stat.label} className="bg-white rounded-xl border border-shark-100 p-3 sm:p-4">
                     <p className="text-[10px] sm:text-xs text-shark-400 uppercase tracking-wider">{stat.label}</p>
