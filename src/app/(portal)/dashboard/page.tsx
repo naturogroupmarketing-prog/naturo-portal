@@ -688,7 +688,10 @@ export default async function DashboardPage() {
 
   const actionTrend = (val: number) => val === 0 ? { direction: "neutral" as const, label: "Clear" } : val > 3 ? { direction: "up" as const, label: "Needs attention" } : undefined;
 
+  const lowStockCount = (lowStockItems as unknown[]).length;
+
   const stats: { widgetId: string; label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string; trend?: { direction: "up" | "down" | "neutral"; label: string } }[] = isSuperAdmin ? [
+    { widgetId: "stat-low-stock", label: "Low Stock", value: lowStockCount, icon: "alert-triangle", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/alerts/low-stock", trend: actionTrend(lowStockCount) },
     { widgetId: "stat-total-assets", label: "Total Assets", value: totalAssets, icon: "package", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
     { widgetId: "stat-checked-out", label: "Checked Out", value: checkedOut, icon: "arrow-right", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
     { widgetId: "stat-overdue", label: "Overdue", value: overdue, icon: "clock", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/assets", trend: actionTrend(overdue) },
@@ -698,6 +701,7 @@ export default async function DashboardPage() {
     { widgetId: "stat-pending-returns", label: "Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/returns", trend: actionTrend(pendingReturns as number) },
   ] : [
     // Branch Manager — focused on actionable items
+    { widgetId: "stat-low-stock", label: "Low Stock", value: lowStockCount, icon: "alert-triangle", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/alerts/low-stock", trend: actionTrend(lowStockCount) },
     { widgetId: "stat-damaged", label: "Damage", value: unresolvedDamageReports + unresolvedLossReports, icon: "alert-triangle", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/alerts/damage", trend: actionTrend(unresolvedDamageReports + unresolvedLossReports) },
     { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables?tab=requests", trend: actionTrend(pendingRequests) },
     { widgetId: "stat-pending-returns", label: "Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/returns", trend: actionTrend(pendingReturns as number) },
