@@ -2,6 +2,12 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { RequestConsumablesClient } from "./request-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Request & Confirm",
+  description: "Request consumables and confirm deliveries",
+};
 
 export default async function RequestConsumablesPage() {
   const session = await auth();

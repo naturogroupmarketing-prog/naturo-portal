@@ -404,11 +404,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                         <table className="w-full">
                           <thead>
                             <tr className="border-b border-shark-100">
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Photo</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Code</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Status</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Assigned To</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Photo</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Code</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Status</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Assigned To</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -487,11 +487,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                         <table className="w-full">
                           <thead>
                             <tr className="border-b border-shark-100">
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Photo</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Min</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Supplier</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Photo</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Min</th>
+                              <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Supplier</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -553,10 +553,10 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-shark-100">
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Role</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Status</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Role</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Status</th>
                     </tr>
                   </thead>
                   <tbody>

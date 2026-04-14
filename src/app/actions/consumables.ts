@@ -966,3 +966,50 @@ export async function batchApproveRequests(
   revalidatePath("/dashboard");
   return { success: true, processed };
 }
+
+export async function getConsumables(
+  regionId?: string,
+  { page = 1, pageSize = 50 }: { page?: number; pageSize?: number } = {}
+) {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const where: Record<string, unknown> = {
+    organizationId: session.user.organizationId,
+    isActive: true,
+  };
+
+  if (session.user.role === "BRANCH_MANAGER") {
+    where.regionId = session.user.regionId;
+  } else if (session.user.role === "STAFF") {
+    throw new Error("Staff cannot list all supplies");
+  }
+  if (regionId) {
+    where.regionId = regionId;
+  }
+
+  const [items, totalCount] = await Promise.all([
+    db.consumable.findMany({
+      where,
+      include: {
+        region: { include: { state: true } },
+        assignments: {
+          where: { isActive: true },
+          include: { user: { select: { id: true, name: true, email: true } } },
+        },
+      },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    db.consumable.count({ where }),
+  ]);
+
+  return {
+    items,
+    totalCount,
+    page,
+    pageSize,
+    totalPages: Math.ceil(totalCount / pageSize),
+  };
+}

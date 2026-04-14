@@ -90,24 +90,24 @@ export function MenuWalkthrough({ role }: { role: string }) {
 
   return createPortal(
     <div className="fixed inset-0 z-[80]">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" onClick={finish} />
+      {/* Slightly darkened click-away layer */}
+      <div className="absolute inset-0 bg-black/15" onClick={finish} />
 
-      {/* Highlight cutout + tooltip */}
+      {/* Highlight + tooltip */}
       {targetRect && (
         <>
-          {/* Highlighted menu item */}
+          {/* Subtle highlight ring around menu item — no solid background */}
           <div
-            className="absolute bg-white rounded-xl shadow-lg shadow-action-500/20 ring-2 ring-action-500 transition-all duration-300 z-[81]"
+            className="absolute rounded-xl ring-2 ring-action-500 ring-offset-2 transition-all duration-300 z-[81] pointer-events-none"
             style={{
-              top: targetRect.top - 4,
-              left: targetRect.left - 4,
-              width: targetRect.width + 8,
-              height: targetRect.height + 8,
+              top: targetRect.top - 2,
+              left: targetRect.left - 2,
+              width: targetRect.width + 4,
+              height: targetRect.height + 4,
             }}
           />
 
-          {/* Tooltip */}
+          {/* Google-style tooltip — light, clean, with subtle shadow */}
           <div
             className="absolute z-[82] transition-all duration-300"
             style={{
@@ -115,33 +115,24 @@ export function MenuWalkthrough({ role }: { role: string }) {
               left: targetRect.right + 16,
             }}
           >
-            <div className="bg-white rounded-2xl shadow-2xl p-5 max-w-xs w-72">
+            <div className="bg-white/95 dark:bg-shark-800/95 backdrop-blur-sm rounded-xl shadow-lg shadow-shark-900/10 border border-shark-100 dark:border-shark-700 p-4 max-w-xs w-64">
               {/* Arrow pointing left */}
-              <div className="absolute -left-2 top-6 w-4 h-4 bg-white rotate-45 shadow-lg" />
+              <div className="absolute -left-1.5 top-5 w-3 h-3 bg-white/95 dark:bg-shark-800/95 rotate-45 border-l border-b border-shark-100 dark:border-shark-700" />
 
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-action-500 flex items-center justify-center shrink-0">
-                  <Icon name={current.icon} size={20} className="text-white" />
+              <div className="flex items-center gap-2.5 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-action-500 flex items-center justify-center shrink-0">
+                  <Icon name={current.icon} size={16} className="text-white" />
                 </div>
-                <h3 className="text-base font-bold text-shark-900">{current.label}</h3>
+                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">{current.label}</h3>
               </div>
 
-              <p className="text-sm text-shark-500 leading-relaxed mb-4">{current.description}</p>
+              <p className="text-xs text-shark-500 dark:text-shark-400 leading-relaxed mb-3">{current.description}</p>
 
               {/* Progress + actions */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  {steps.map((_, i) => (
-                    <div
-                      key={i}
-                      className={`w-1.5 h-1.5 rounded-full transition-all ${
-                        i === step ? "bg-action-500 w-4" : i < step ? "bg-action-300" : "bg-shark-200"
-                      }`}
-                    />
-                  ))}
-                </div>
+                <span className="text-[10px] text-shark-400">{step + 1} / {steps.length}</span>
                 <div className="flex items-center gap-2">
-                  <button onClick={finish} className="text-xs text-shark-400 hover:text-shark-600 transition-colors">
+                  <button onClick={finish} className="text-xs text-shark-400 hover:text-shark-600 dark:hover:text-shark-300 transition-colors">
                     Skip
                   </button>
                   <Button size="sm" onClick={handleNext}>
@@ -149,8 +140,6 @@ export function MenuWalkthrough({ role }: { role: string }) {
                   </Button>
                 </div>
               </div>
-
-              <p className="text-[10px] text-shark-300 mt-3">{step + 1} of {steps.length}</p>
             </div>
           </div>
         </>

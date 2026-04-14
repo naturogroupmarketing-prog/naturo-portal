@@ -1,53 +1,20 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Loading() {
+export default function DashboardLoading() {
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <div className="h-8 w-40 bg-shark-100 rounded animate-pulse" />
-        <div className="h-4 w-52 bg-shark-100 rounded animate-pulse mt-2" />
-      </div>
-
-      {/* Stat cards grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {[...Array(7)].map((_, i) => (
-          <Card key={i} className="border-l-4 border-l-shark-100">
-            <CardContent className="py-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-shark-50 animate-pulse" />
-                <div className="space-y-2">
-                  <div className="h-3 w-20 bg-shark-100 rounded animate-pulse" />
-                  <div className="h-6 w-12 bg-shark-100 rounded animate-pulse" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+    <div className="space-y-8">
+      <Skeleton className="h-8 w-48" />
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="bg-white rounded-xl p-4 space-y-2">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-8 w-16" />
+          </div>
         ))}
       </div>
-
-      {/* Quick links and low stock */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardContent className="py-4">
-            <div className="h-5 w-28 bg-shark-100 rounded animate-pulse mb-4" />
-            <div className="grid grid-cols-2 gap-3">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-14 bg-shark-50 rounded-lg animate-pulse" />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="py-4">
-            <div className="h-5 w-36 bg-shark-100 rounded animate-pulse mb-4" />
-            <div className="space-y-3">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-10 bg-shark-50 rounded-lg animate-pulse" />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Skeleton className="h-64 w-full rounded-xl" />
+        <Skeleton className="h-64 w-full rounded-xl" />
       </div>
     </div>
   );

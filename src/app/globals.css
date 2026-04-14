@@ -104,6 +104,18 @@ body {
   .hover\:bg-shark-100:active { background-color: var(--color-shark-100); }
 }
 
+/* Focus-visible styles for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--color-action-400);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove focus ring for mouse/touch users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -282,4 +294,74 @@ body {
   60% { opacity: 1; }
   80% { opacity: 0; }
   100% { opacity: 0; }
+}
+
+/* Print-friendly styles */
+@media print {
+  /* Hide non-content UI */
+  nav, header, footer,
+  .bottom-nav, .chat-widget,
+  button[aria-label="Scroll to top"],
+  [data-no-print] {
+    display: none !important;
+  }
+
+  /* Full-width content */
+  body, main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Remove backgrounds & shadows for ink savings */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Ensure text is dark on white */
+  body {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  /* Cards print cleanly */
+  [class*="bg-white"], [class*="bg-shark"] {
+    background: #fff !important;
+    border: 1px solid #ddd !important;
+  }
+
+  /* Tables print properly */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+  th, td {
+    border: 1px solid #ccc !important;
+    padding: 6px 8px !important;
+    font-size: 11px !important;
+  }
+  th {
+    background: #f5f5f5 !important;
+    font-weight: 600 !important;
+  }
+
+  /* Avoid page breaks inside elements */
+  tr, .card, [class*="rounded-xl"] {
+    page-break-inside: avoid;
+  }
+
+  /* Show link URLs */
+  a[href]:not([href^="#"])::after {
+    content: " (" attr(href) ")";
+    font-size: 9px;
+    color: #666;
+  }
+
+  /* Page margins */
+  @page {
+    margin: 1.5cm;
+  }
 }

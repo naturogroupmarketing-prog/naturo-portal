@@ -4,6 +4,12 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { getLocations, getArchivedRegions } from "@/app/actions/locations";
 import { InventoryListClient } from "./inventory-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Inventory",
+  description: "Browse and manage inventory across all locations",
+};
 
 export default async function InventoryPage() {
   const session = await auth();

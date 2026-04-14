@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { StaffClient } from "./staff-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Staff",
+  description: "Manage staff members and their assignments",
+};
 
 export const dynamic = "force-dynamic";
 

@@ -46,23 +46,23 @@ export default function ForgotPasswordPage() {
           <p className="text-sm text-shark-400 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-shark-100 overflow-hidden">
+        <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-shark-100 dark:border-shark-800 overflow-hidden transition-colors">
           <div className="p-8">
-            <h2 className="text-lg font-semibold text-shark-900 text-center mb-1">
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 text-center mb-1">
               Forgot Password
             </h2>
 
             {sent ? (
               <div className="text-center space-y-4 mt-4">
-                <div className="w-12 h-12 rounded-full bg-action-50 flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 rounded-full bg-action-50 dark:bg-action-900/30 flex items-center justify-center mx-auto">
                   <svg className="w-6 h-6 text-action-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="text-sm text-shark-600">
+                <p className="text-sm text-shark-600 dark:text-shark-300">
                   If an account exists with <strong>{email}</strong>, you will receive a password reset code.
                 </p>
-                <p className="text-sm text-shark-400">
+                <p className="text-sm text-shark-400 dark:text-shark-500">
                   Check your email and use the code to reset your password.
                 </p>
                 <Link
@@ -79,14 +79,14 @@ export default function ForgotPasswordPage() {
                 </p>
 
                 {error && (
-                  <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600 text-center">
+                  <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-sm text-red-600 dark:text-red-400 text-center">
                     {error}
                   </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-shark-700 mb-1">
+                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                       Email
                     </label>
                     <Input
@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
             )}
 
             <div className="mt-6 text-center">
-              <Link href="/login" className="text-sm text-shark-400 hover:text-shark-600">
+              <Link href="/login" className="text-sm text-shark-400 hover:text-shark-600 dark:hover:text-shark-300">
                 ← Back to Sign In
               </Link>
             </div>

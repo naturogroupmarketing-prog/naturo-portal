@@ -25,6 +25,7 @@ export function SplashScreen() {
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
       style={{ backgroundColor: "#ffffff" }}
+      id="splash-screen"
     >
       {/* Animated logo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -36,6 +37,11 @@ export function SplashScreen() {
       />
 
       <style jsx global>{`
+        @media (prefers-color-scheme: dark) {
+          .dark #splash-screen {
+            background-color: #1a1c21 !important;
+          }
+        }
         @keyframes splash-icon {
           0% {
             opacity: 0;

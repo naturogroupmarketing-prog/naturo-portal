@@ -325,7 +325,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
               <p className="text-sm font-medium text-shark-800">Privacy Policy</p>
               <p className="text-xs text-shark-400 mt-0.5">Read how we handle your personal information</p>
             </div>
-            <Link href="/privacy-policy" target="_blank" className="text-sm text-action-500 hover:text-action-600 font-medium flex items-center gap-1">
+            <Link href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-sm text-action-500 hover:text-action-600 font-medium flex items-center gap-1">
               View <Icon name="arrow-right" size={14} />
             </Link>
           </div>

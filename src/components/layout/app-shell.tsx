@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, createContext, useContext } from "react";
+import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
 import { BottomNav } from "./bottom-nav";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Role } from "@/generated/prisma/browser";
 
 interface AppShellProps {
@@ -15,8 +17,14 @@ interface AppShellProps {
   pendingReturnsCount?: number;
 }
 
+// Context so child pages can know if sidebar is expanded
+export const SidebarContext = createContext<{ expanded: boolean; toggle: () => void }>({ expanded: false, toggle: () => {} });
+export const useSidebar = () => useContext(SidebarContext);
+
 export function AppShell({ children, role, userName, userImage, pendingPOCount = 0, pendingReturnsCount = 0 }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Desktop sidebar: expanded by default, collapsible
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
   // Swipe-to-close sidebar
   const touchStartX = useRef(0);
@@ -25,7 +33,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
   }, []);
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     const delta = e.changedTouches[0].clientX - touchStartX.current;
-    if (delta < -60) setSidebarOpen(false); // Swipe left to close
+    if (delta < -60) setSidebarOpen(false);
   }, []);
 
   // Swipe from left edge to open sidebar
@@ -36,52 +44,150 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
   const handleMainTouchEnd = useCallback((e: React.TouchEvent) => {
     const startX = mainTouchStartX.current;
     const delta = e.changedTouches[0].clientX - startX;
-    if (startX < 20 && delta > 60) setSidebarOpen(true); // Swipe right from edge to open
+    if (startX < 20 && delta > 60) setSidebarOpen(true);
   }, []);
 
   return (
+    <SidebarContext.Provider value={{ expanded: sidebarExpanded, toggle: () => setSidebarExpanded((p) => !p) }}>
     <div
-      className="flex h-dvh bg-shark-50 dark:bg-shark-950 transition-colors"
+      className="flex flex-col h-dvh bg-shark-50 dark:bg-shark-950 transition-colors"
       onTouchStart={handleMainTouchStart}
       onTouchEnd={handleMainTouchEnd}
     >
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-shrink-0">
-        <div className="flex w-64 flex-col bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 transition-colors">
-          <Sidebar role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} />
-        </div>
-      </aside>
+      {/* Skip to main content — accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-action-500 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
+      >
+        Skip to main content
+      </a>
 
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
+      {/* Top bar — full width across the entire screen */}
+      <Header
+        userName={userName}
+        userImage={userImage}
+        role={role}
+        onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
+        sidebarExpanded={sidebarExpanded}
+        onSidebarToggle={() => setSidebarExpanded((p) => !p)}
+      />
+
+      {/* Below header: sidebar + content */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Desktop sidebar — collapsible with toggle arrow */}
+        <aside className="hidden lg:flex flex-shrink-0 relative">
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setSidebarOpen(false)}
-          />
-          <div
-            className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 z-50 shadow-xl transition-colors"
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
+            className={`flex flex-col bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 transition-all duration-300 overflow-hidden ${
+              sidebarExpanded ? "w-64" : "w-[68px]"
+            }`}
           >
-            <Sidebar role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} onClose={() => setSidebarOpen(false)} />
+            {sidebarExpanded ? (
+              <Sidebar role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} />
+            ) : (
+              <SidebarRail role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} />
+            )}
           </div>
-        </div>
-      )}
+          {/* Collapse/expand arrow — Connecteam-style floating at border edge */}
+          <button
+            onClick={() => setSidebarExpanded((p) => !p)}
+            className="absolute -right-3 top-4 z-10 w-6 h-6 rounded-full bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 shadow-sm flex items-center justify-center text-shark-400 hover:text-shark-700 hover:shadow-md transition-all"
+            title={sidebarExpanded ? "Collapse menu" : "Expand menu"}
+          >
+            <svg
+              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              className={`transition-transform duration-300 ${sidebarExpanded ? "" : "rotate-180"}`}
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+        </aside>
 
-      {/* Main content */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Header
-          userName={userName}
-          userImage={userImage}
-          role={role}
-          onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
-        />
-        <main className={`flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 sm:p-6 lg:p-12 animate-page-in ${role === "STAFF" ? "pb-20 lg:pb-12" : "pb-16 sm:pb-6 lg:pb-12"}`}>{children}</main>
+        {/* Mobile sidebar overlay */}
+        {sidebarOpen && (
+          <div className="fixed inset-0 z-40 lg:hidden">
+            <div
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <div
+              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 z-50 shadow-xl transition-colors"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <Sidebar role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} onClose={() => setSidebarOpen(false)} />
+            </div>
+          </div>
+        )}
+
+        {/* Main content */}
+        <main id="main-content" className={`flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 sm:p-6 lg:p-12 animate-page-in ${role === "STAFF" ? "pb-20 lg:pb-12" : "pb-16 sm:pb-6 lg:pb-12"}`}>
+          <div className="hidden lg:flex mb-4">
+            <Breadcrumbs />
+          </div>
+          {children}
+        </main>
       </div>
 
       {/* Bottom navigation for Staff on mobile/tablet */}
       {role === "STAFF" && <BottomNav />}
     </div>
+    </SidebarContext.Provider>
+  );
+}
+
+/* ── Collapsed icon rail ── */
+import Link from "next/link";
+import { Icon, type IconName } from "@/components/ui/icon";
+
+interface RailItem { icon: IconName; href: string; label: string; badge?: number }
+
+function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { role: Role; pendingPOCount?: number; pendingReturnsCount?: number }) {
+  const pathname = usePathname();
+
+  const items: RailItem[] = role === "STAFF"
+    ? [
+        { icon: "dashboard", href: "/dashboard", label: "Home" },
+        { icon: "package", href: "/my-assets", label: "Assets" },
+        { icon: "droplet", href: "/my-consumables", label: "Supplies" },
+        { icon: "plus", href: "/request-consumables", label: "Request" },
+      ]
+    : [
+        { icon: "dashboard", href: "/dashboard", label: "Home" },
+        { icon: "package", href: "/inventory", label: "Stock" },
+        { icon: "truck", href: "/purchase-orders", label: "Orders", badge: pendingPOCount },
+        { icon: "users", href: "/staff", label: "Staff" },
+        { icon: "arrow-left", href: "/returns", label: "Returns", badge: pendingReturnsCount },
+        { icon: "clipboard", href: "/reports", label: "Reports" },
+        { icon: "settings", href: "/settings", label: "Settings" },
+      ];
+
+  return (
+    <nav className="flex flex-col items-center h-full">
+      {/* Rail items */}
+      <div className="flex flex-col items-center gap-1 py-3 flex-1">
+        {items.map((item) => {
+          const active = pathname === item.href || pathname.startsWith(item.href + "/");
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              title={item.label}
+              className={`relative w-11 h-11 flex items-center justify-center rounded-xl transition-all ${
+                active
+                  ? "bg-action-50 text-action-600"
+                  : "text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 hover:text-shark-700"
+              }`}
+            >
+              <Icon name={item.icon} size={20} />
+              {item.badge && item.badge > 0 ? (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-1">
+                  {item.badge}
+                </span>
+              ) : null}
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
   );
 }

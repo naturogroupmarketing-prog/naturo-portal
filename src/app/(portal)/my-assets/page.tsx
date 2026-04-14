@@ -7,6 +7,12 @@ import { Icon } from "@/components/ui/icon";
 import { formatDate } from "@/lib/utils";
 import { ConfirmReceiptButton } from "./confirm-receipt-button";
 import { ReturnAssetButton } from "./return-button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Assets",
+  description: "View assets assigned to you",
+};
 
 export default async function MyAssetsPage() {
   const session = await auth();

@@ -38,6 +38,7 @@ interface StatCard {
   iconBg: string;
   iconColor: string;
   href: string;
+  trend?: { direction: "up" | "down" | "neutral"; label: string };
 }
 
 interface LowStockItem {
@@ -153,20 +154,45 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* Onboarding overlay */}
       {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
 
-      <PageTransition className="space-y-10">
+      <PageTransition className="space-y-10 px-4 sm:px-6 lg:px-12 py-6 lg:py-10">
+
       {/* Header with settings gear */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Dashboard</h1>
-        </div>
+        <h1 className="text-2xl font-bold text-shark-900 tracking-tight">Dashboard</h1>
         <button
           onClick={() => setSettingsOpen(true)}
-          className="p-2 rounded-lg text-shark-400 hover:text-shark-600 hover:bg-shark-50 transition-colors"
+          className="p-2 rounded-full text-shark-400 hover:text-shark-600 hover:bg-shark-100 transition-colors"
           title="Dashboard settings"
         >
-          <Icon name="settings" size={20} />
+          <Icon name="settings" size={18} />
         </button>
       </div>
+
+      {/* Quick Actions */}
+      {isSuperAdmin && (
+        <div className="flex flex-wrap gap-2">
+          <Link href="/assets?action=add" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="plus" size={14} className="text-action-500" />
+            Add Asset
+          </Link>
+          <Link href="/consumables?action=add" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="plus" size={14} className="text-action-500" />
+            Add Supply
+          </Link>
+          <Link href="/purchase-orders?action=create" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="truck" size={14} className="text-action-500" />
+            Create PO
+          </Link>
+          <Link href="/staff" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="users" size={14} className="text-action-500" />
+            Manage Staff
+          </Link>
+          <Link href="/admin/import" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="upload" size={14} className="text-action-500" />
+            Import Data
+          </Link>
+        </div>
+      )}
 
       {preferences.sectionOrder.map((sectionId) => {
         switch (sectionId) {
@@ -186,7 +212,20 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-shark-500">{s.label}</p>
-                            <AnimatedCounter value={s.value} className="text-2xl font-bold text-shark-900" />
+                            <div className="flex items-center gap-2">
+                              <AnimatedCounter value={s.value} className="text-2xl font-bold text-shark-900" />
+                              {s.trend && (
+                                <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                                  s.trend.direction === "down" ? "bg-green-50 text-green-600" :
+                                  s.trend.direction === "up" ? "bg-red-50 text-red-500" :
+                                  "bg-shark-50 text-shark-400"
+                                }`}>
+                                  {s.trend.direction === "up" && "↑"}
+                                  {s.trend.direction === "down" && "↓"}
+                                  {s.trend.label}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <Icon name="arrow-right" size={18} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
                         </div>
@@ -480,8 +519,18 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <p className="text-sm font-medium text-shark-800">{item.name}</p>
                             <p className="text-xs text-shark-400">{item.region?.name || ""}</p>
                           </div>
-                          <div className="text-right flex items-center gap-2">
-                            <div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-16">
+                              <div className="h-1.5 rounded-full bg-shark-100 overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full transition-all ${
+                                    item.quantityOnHand === 0 ? "bg-red-500" : item.quantityOnHand <= item.minimumThreshold / 2 ? "bg-red-400" : "bg-amber-400"
+                                  }`}
+                                  style={{ width: `${Math.min(100, (item.quantityOnHand / Math.max(item.minimumThreshold * 2, 1)) * 100)}%` }}
+                                />
+                              </div>
+                            </div>
+                            <div className="text-right">
                               <p className="text-sm font-bold text-red-500">{item.quantityOnHand} {item.unitType}</p>
                               <p className="text-xs text-shark-400">min: {item.minimumThreshold}</p>
                             </div>

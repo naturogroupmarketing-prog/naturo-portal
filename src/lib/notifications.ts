@@ -33,7 +33,7 @@ export async function createNotification({
   });
 
   // Send email notification (non-blocking)
-  sendNotificationEmail(userId, title, message, link).catch(() => {});
+  sendNotificationEmail(userId, title, message, link).catch((e) => { console.error("[notification-email-failed]", e); });
 
   return notification;
 }
@@ -92,7 +92,7 @@ export async function notifyAdminsAndManagers({
       to: u.email!,
       subject: `trackio: ${title}`,
       html: buildNotificationEmailHtml(title, message, link),
-    }))).catch(() => {});
+    }))).catch((e) => { console.error("[notification-email-failed]", e); });
   }
 }
 

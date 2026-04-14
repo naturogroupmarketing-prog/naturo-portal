@@ -15,6 +15,19 @@ export default function GlobalError({
   }, [error]);
   return (
     <html lang="en">
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: `
+          @media (prefers-color-scheme: dark) {
+            body { background: #1a1c21 !important; }
+            .error-card { background: #292d34 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important; }
+            .error-icon { background: #4a1d1d !important; }
+            .error-title { color: #e2e3e5 !important; }
+            .error-text { color: #8b8f96 !important; }
+            .error-digest { color: #6b7080 !important; }
+            .error-btn { background: #e2e3e5 !important; color: #1a1c21 !important; }
+          }
+        ` }} />
+      </head>
       <body
         style={{
           margin: 0,
@@ -28,6 +41,7 @@ export default function GlobalError({
         }}
       >
         <div
+          className="error-card"
           style={{
             textAlign: "center",
             maxWidth: 480,
@@ -38,6 +52,7 @@ export default function GlobalError({
           }}
         >
           <div
+            className="error-icon"
             style={{
               width: 64,
               height: 64,
@@ -53,6 +68,7 @@ export default function GlobalError({
             !
           </div>
           <h1
+            className="error-title"
             style={{
               fontSize: 24,
               fontWeight: 700,
@@ -63,6 +79,7 @@ export default function GlobalError({
             Something went wrong
           </h1>
           <p
+            className="error-text"
             style={{
               fontSize: 15,
               color: "#6b7280",
@@ -72,12 +89,13 @@ export default function GlobalError({
           >
             An unexpected error occurred. Our team has been notified.
             {error.digest && (
-              <span style={{ display: "block", fontSize: 12, marginTop: 8, color: "#9ca3af" }}>
+              <span className="error-digest" style={{ display: "block", fontSize: 12, marginTop: 8, color: "#9ca3af" }}>
                 Error ID: {error.digest}
               </span>
             )}
           </p>
           <button
+            className="error-btn"
             onClick={reset}
             style={{
               padding: "10px 24px",

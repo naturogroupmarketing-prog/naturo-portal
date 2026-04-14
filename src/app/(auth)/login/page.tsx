@@ -47,27 +47,27 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Logo size={64} className="mx-auto mb-2" />
-          <p className="text-sm text-shark-400 mt-1">Asset & Consumable Tracker</p>
+          <p className="text-sm text-shark-400 dark:text-shark-300 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="bg-white dark:bg-shark-900 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] border border-shark-100 dark:border-shark-800 overflow-hidden transition-colors">
+        <div className="bg-white dark:bg-shark-900 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.2),0_8px_24px_rgba(0,0,0,0.3)] border border-shark-100 dark:border-shark-700 overflow-hidden transition-colors">
           <div className="p-8">
-            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 text-center mb-1">
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-50 text-center mb-1">
               Sign In
             </h2>
-            <p className="text-sm text-shark-400 text-center mb-6">
+            <p className="text-sm text-shark-400 dark:text-shark-300 text-center mb-6">
               Enter your credentials to continue
             </p>
 
             {error && (
-              <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600 text-center">
+              <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 text-sm text-red-600 dark:text-red-400 text-center">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-200 mb-1">
                   Email
                 </label>
                 <Input
@@ -80,7 +80,7 @@ export default function LoginPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-200 mb-1">
                   Password
                 </label>
                 <Input
@@ -102,15 +102,15 @@ export default function LoginPage() {
               </Button>
             </form>
             <div className="mt-4 text-center">
-              <Link href="/forgot-password" className="text-sm text-action-500 hover:text-action-600">
+              <Link href="/forgot-password" className="text-sm text-action-500 dark:text-action-400 hover:text-action-600 dark:hover:text-action-300">
                 Forgot your password?
               </Link>
             </div>
           </div>
         </div>
 
-        <p className="text-center text-xs text-shark-400 mt-6">
-          By signing in, you agree to our <Link href="/privacy-policy" className="text-action-500 hover:underline">Privacy Policy</Link>.
+        <p className="text-center text-xs text-shark-400 dark:text-shark-300 mt-6">
+          By signing in, you agree to our <Link href="/privacy-policy" className="text-action-500 dark:text-action-400 hover:underline">Privacy Policy</Link>.
         </p>
       </div>
     </div>

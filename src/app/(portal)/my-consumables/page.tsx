@@ -2,6 +2,12 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { MyConsumablesClient } from "./my-consumables-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Supplies",
+  description: "View your consumable supply history",
+};
 
 export default async function MyConsumablesPage() {
   const session = await auth();

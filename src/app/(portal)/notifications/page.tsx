@@ -2,6 +2,12 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { NotificationsClient } from "./notifications-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Notifications",
+  description: "View all your notifications",
+};
 
 export const dynamic = "force-dynamic";
 

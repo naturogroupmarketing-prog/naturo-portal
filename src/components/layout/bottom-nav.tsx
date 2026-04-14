@@ -22,7 +22,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-shark-100 safe-bottom lg:hidden">
+    <nav aria-label="Mobile navigation" className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-shark-100 dark:bg-shark-900/95 dark:border-shark-800 safe-bottom lg:hidden">
       <div className="flex items-stretch justify-around">
         {STAFF_NAV.map((item) => {
           const active = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -30,9 +30,10 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               className={cn(
                 "flex flex-col items-center justify-center gap-0.5 py-2 px-3 min-h-[52px] flex-1 transition-colors",
-                active ? "text-action-500" : "text-shark-400"
+                active ? "text-action-500" : "text-shark-400 dark:text-shark-500"
               )}
             >
               <Icon name={item.icon} size={20} />

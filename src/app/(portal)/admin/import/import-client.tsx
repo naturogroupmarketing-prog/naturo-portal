@@ -636,13 +636,13 @@ export function ImportClient({ regions }: Props) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-shark-100">
-                    <th className="text-left py-2 px-3 text-xs font-medium text-shark-400 w-10">#</th>
+                    <th scope="col" className="text-left py-2 px-3 text-xs font-medium text-shark-400 w-10">#</th>
                     {fields.map((f) => (
-                      <th key={f.key} className="text-left py-2 px-3 text-xs font-medium text-shark-400">
+                      <th key={f.key} scope="col" className="text-left py-2 px-3 text-xs font-medium text-shark-400">
                         {f.label}
                       </th>
                     ))}
-                    <th className="text-left py-2 px-3 text-xs font-medium text-shark-400">Status</th>
+                    <th scope="col" className="text-left py-2 px-3 text-xs font-medium text-shark-400">Status</th>
                   </tr>
                 </thead>
                 <tbody>

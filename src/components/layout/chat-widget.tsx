@@ -310,7 +310,7 @@ export function ChatWidget() {
   };
 
   return (
-    <>
+    <div data-no-print>
       {/* Floating button — small on mobile to avoid blocking content */}
       {!isOpen && (
         <button
@@ -332,7 +332,7 @@ export function ChatWidget() {
 
       {/* Chat panel — floating on all screens */}
       {isOpen && (
-        <div className="fixed bottom-20 right-3 sm:bottom-6 sm:right-6 z-40 w-[calc(100vw-1.5rem)] sm:w-96 h-[60vh] sm:h-[32rem] max-h-[32rem] flex flex-col rounded-2xl border border-shark-100 bg-white shadow-2xl overflow-hidden">
+        <div className="fixed bottom-20 right-3 sm:bottom-6 sm:right-6 z-40 w-[calc(100vw-1.5rem)] sm:w-96 h-[60vh] sm:h-[32rem] max-h-[32rem] flex flex-col rounded-2xl border border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-900 shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 bg-action-400 rounded-t-2xl">
             <div className="flex items-center gap-2">
@@ -373,8 +373,8 @@ export function ChatWidget() {
           {/* History panel */}
           {showHistory ? (
             <div className="flex-1 overflow-y-auto">
-              <div className="px-4 py-3 border-b border-shark-100 flex items-center justify-between">
-                <p className="text-sm font-semibold text-shark-700">Conversations</p>
+              <div className="px-4 py-3 border-b border-shark-100 dark:border-shark-800 flex items-center justify-between">
+                <p className="text-sm font-semibold text-shark-700 dark:text-shark-200">Conversations</p>
                 <button onClick={() => setShowHistory(false)} className="text-xs text-action-500 hover:text-action-600">
                   Back to chat
                 </button>
@@ -384,14 +384,14 @@ export function ChatWidget() {
                   <p className="text-sm text-shark-400">No conversations yet</p>
                 </div>
               ) : (
-                <div className="divide-y divide-shark-50">
+                <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {[...conversations].reverse().map((conv) => (
                     <div
                       key={conv.id}
-                      className={`px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-shark-50 transition-colors ${conv.id === activeConvId ? "bg-action-50" : ""}`}
+                      className={`px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors ${conv.id === activeConvId ? "bg-action-50 dark:bg-action-900/30" : ""}`}
                     >
                       <div className="flex-1 min-w-0" onClick={() => switchConversation(conv.id)}>
-                        <p className={`text-sm truncate ${conv.id === activeConvId ? "font-semibold text-action-600" : "text-shark-700"}`}>
+                        <p className={`text-sm truncate ${conv.id === activeConvId ? "font-semibold text-action-600" : "text-shark-700 dark:text-shark-300"}`}>
                           {conv.title}
                         </p>
                         <p className="text-xs text-shark-400 mt-0.5">
@@ -419,14 +419,14 @@ export function ChatWidget() {
                     <div className="w-12 h-12 rounded-xl bg-action-50 flex items-center justify-center mx-auto mb-3">
                       <Icon name="search" size={20} className="text-action-500" />
                     </div>
-                    <p className="text-sm font-medium text-shark-700">How can I help?</p>
-                    <p className="text-xs text-shark-400 mt-1">Ask about assets, consumables, or inventory</p>
+                    <p className="text-sm font-medium text-shark-700 dark:text-shark-200">How can I help?</p>
+                    <p className="text-xs text-shark-400 dark:text-shark-500 mt-1">Ask about assets, consumables, or inventory</p>
                     <div className="mt-4 space-y-2">
                       {SUGGESTIONS.map((q) => (
                         <button
                           key={q}
                           onClick={() => sendMessage(q)}
-                          className="block w-full text-left text-xs text-action-600 bg-action-50 rounded-lg px-3 py-2 hover:bg-action-100 transition-colors"
+                          className="block w-full text-left text-xs text-action-600 dark:text-action-400 bg-action-50 dark:bg-action-900/20 rounded-lg px-3 py-2 hover:bg-action-100 dark:hover:bg-action-900/30 transition-colors"
                         >
                           {q}
                         </button>
@@ -442,7 +442,7 @@ export function ChatWidget() {
               </div>
 
               {/* Input */}
-              <form onSubmit={handleSubmit} className="border-t border-shark-100 px-3 py-2.5 flex items-center gap-1.5">
+              <form onSubmit={handleSubmit} className="border-t border-shark-100 dark:border-shark-800 px-3 py-2.5 flex items-center gap-1.5">
                 <input
                   ref={inputRef}
                   value={input}
@@ -450,13 +450,13 @@ export function ChatWidget() {
                   placeholder={isListening ? "Listening..." : "Ask about assets, stock..."}
                   disabled={isLoading}
                   aria-label="Type your message"
-                  className={`flex-1 min-w-0 rounded-xl border bg-white px-3 py-2 text-sm text-shark-900 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50 ${isListening ? "border-red-400 ring-2 ring-red-200" : "border-shark-200"}`}
+                  className={`flex-1 min-w-0 rounded-xl border bg-white dark:bg-shark-800 px-3 py-2 text-sm text-shark-900 dark:text-shark-100 placeholder:text-shark-400 dark:placeholder:text-shark-500 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50 ${isListening ? "border-red-400 ring-2 ring-red-200" : "border-shark-200 dark:border-shark-700"}`}
                 />
                 {!isLoading && (
                   <button
                     type="button"
                     onClick={toggleVoiceInput}
-                    className={`shrink-0 w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${isListening ? "bg-red-500 text-white animate-pulse" : "text-shark-400 hover:text-shark-600 hover:bg-shark-50"}`}
+                    className={`shrink-0 w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${isListening ? "bg-red-500 text-white animate-pulse" : "text-shark-400 hover:text-shark-600 dark:hover:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"}`}
                     title={isListening ? "Stop listening" : "Voice input"}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -468,7 +468,7 @@ export function ChatWidget() {
                   </button>
                 )}
                 {isLoading ? (
-                  <button type="button" onClick={cancelRequest} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-xl border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
+                  <button type="button" onClick={cancelRequest} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-xl border border-red-200 dark:border-red-800 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                     <Icon name="x" size={16} />
                   </button>
                 ) : (
@@ -481,6 +481,6 @@ export function ChatWidget() {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }

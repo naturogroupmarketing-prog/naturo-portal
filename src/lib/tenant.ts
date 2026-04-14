@@ -108,3 +108,11 @@ export async function enforceAssetLimit(orgId: string) {
     );
   }
 }
+
+/**
+ * Tenant isolation helper — returns a Prisma `where` clause
+ * scoped to the current user's organization.
+ */
+export function orgWhere(session: { user: { organizationId: string } }) {
+  return { organizationId: session.user.organizationId };
+}

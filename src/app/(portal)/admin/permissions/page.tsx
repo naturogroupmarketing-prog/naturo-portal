@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { isSuperAdmin } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { PermissionsClient } from "./permissions-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Permissions",
+  description: "Manage user roles and permissions",
+};
 
 export default async function PermissionsPage() {
   const session = await auth();

@@ -8,6 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/ui/logo";
 import Link from "next/link";
 
+function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
+  if (!pw) return { score: 0, label: "", color: "" };
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (pw.length >= 12) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+  if (score <= 1) return { score: 1, label: "Weak", color: "bg-red-500" };
+  if (score <= 2) return { score: 2, label: "Fair", color: "bg-orange-500" };
+  if (score <= 3) return { score: 3, label: "Good", color: "bg-yellow-500" };
+  if (score <= 4) return { score: 4, label: "Strong", color: "bg-green-500" };
+  return { score: 5, label: "Very strong", color: "bg-green-600" };
+}
+
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState(searchParams.get("email") || "");
@@ -64,20 +80,20 @@ function ResetPasswordForm() {
           <p className="text-sm text-shark-400 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-shark-100 overflow-hidden">
+        <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-shark-100 dark:border-shark-800 overflow-hidden transition-colors">
           <div className="p-8">
-            <h2 className="text-lg font-semibold text-shark-900 text-center mb-1">
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 text-center mb-1">
               Reset Password
             </h2>
 
             {success ? (
               <div className="text-center space-y-4 mt-4">
-                <div className="w-12 h-12 rounded-full bg-action-50 flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 rounded-full bg-action-50 dark:bg-action-900/30 flex items-center justify-center mx-auto">
                   <svg className="w-6 h-6 text-action-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="text-sm text-shark-600">
+                <p className="text-sm text-shark-600 dark:text-shark-300">
                   Your password has been reset successfully!
                 </p>
                 <Link
@@ -89,19 +105,19 @@ function ResetPasswordForm() {
               </div>
             ) : (
               <>
-                <p className="text-sm text-shark-400 text-center mb-6">
+                <p className="text-sm text-shark-400 dark:text-shark-500 text-center mb-6">
                   Enter your reset code and new password
                 </p>
 
                 {error && (
-                  <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600 text-center">
+                  <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-sm text-red-600 dark:text-red-400 text-center">
                     {error}
                   </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-shark-700 mb-1">
+                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                       Email
                     </label>
                     <Input
@@ -114,7 +130,7 @@ function ResetPasswordForm() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-shark-700 mb-1">
+                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                       Reset Code
                     </label>
                     <Input
@@ -128,7 +144,7 @@ function ResetPasswordForm() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-shark-700 mb-1">
+                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                       New Password
                     </label>
                     <Input
@@ -140,9 +156,27 @@ function ResetPasswordForm() {
                       minLength={8}
                       autoComplete="new-password"
                     />
+                    {password && (() => {
+                      const strength = getPasswordStrength(password);
+                      return (
+                        <div className="mt-2">
+                          <div className="flex gap-1">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                              <div
+                                key={i}
+                                className={`h-1 flex-1 rounded-full transition-colors ${
+                                  i <= strength.score ? strength.color : "bg-shark-200 dark:bg-shark-700"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <p className="text-xs text-shark-400 mt-1">{strength.label}</p>
+                        </div>
+                      );
+                    })()}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-shark-700 mb-1">
+                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                       Confirm Password
                     </label>
                     <Input
@@ -163,7 +197,7 @@ function ResetPasswordForm() {
             )}
 
             <div className="mt-6 text-center">
-              <Link href="/login" className="text-sm text-shark-400 hover:text-shark-600">
+              <Link href="/login" className="text-sm text-shark-400 hover:text-shark-600 dark:hover:text-shark-300">
                 ← Back to Sign In
               </Link>
             </div>

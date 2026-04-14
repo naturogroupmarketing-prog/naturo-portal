@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Icon, type IconName } from "@/components/ui/icon";
 
 interface CommandItem {
@@ -11,6 +11,22 @@ interface CommandItem {
   section: string;
   keywords?: string;
 }
+
+const RECENT_PAGES_KEY = "trackio-recent-pages";
+const MAX_RECENT = 3;
+
+interface RecentPage {
+  label: string;
+  href: string;
+  visitedAt: number;
+}
+
+const QUICK_ACTIONS: CommandItem[] = [
+  { label: "Add Asset", href: "/assets?action=add", icon: "plus", section: "Quick Actions", keywords: "new asset create" },
+  { label: "Add Supply", href: "/consumables?action=add", icon: "plus", section: "Quick Actions", keywords: "new supply consumable create" },
+  { label: "Create Purchase Order", href: "/purchase-orders?action=create", icon: "plus", section: "Quick Actions", keywords: "new PO buy order create" },
+  { label: "Manage Staff", href: "/staff", icon: "users", section: "Quick Actions", keywords: "employees team manage" },
+];
 
 const COMMANDS: CommandItem[] = [
   // Navigation
@@ -32,12 +48,56 @@ const COMMANDS: CommandItem[] = [
   { label: "Settings", href: "/settings", icon: "settings", section: "Account", keywords: "profile preferences password" },
 ];
 
+function getRecentPages(): RecentPage[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(RECENT_PAGES_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as RecentPage[];
+  } catch {
+    return [];
+  }
+}
+
+function saveRecentPage(pathname: string) {
+  if (typeof window === "undefined") return;
+  // Find a matching command to get a nice label
+  const allCommands = [...COMMANDS, ...QUICK_ACTIONS];
+  const basePath = pathname.split("?")[0];
+  const match = allCommands.find((c) => c.href.split("?")[0] === basePath);
+  const label = match?.label ?? (basePath.replace(/^\//, "").replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) || "Home");
+
+  try {
+    const existing = getRecentPages().filter((p) => p.href !== pathname);
+    const updated: RecentPage[] = [{ label, href: pathname, visitedAt: Date.now() }, ...existing].slice(0, MAX_RECENT);
+    localStorage.setItem(RECENT_PAGES_KEY, JSON.stringify(updated));
+  } catch {
+    // localStorage may be unavailable
+  }
+}
+
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [recentPages, setRecentPages] = useState<RecentPage[]>([]);
   const router = useRouter();
+  const pathname = usePathname();
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Track page visits
+  useEffect(() => {
+    if (pathname && pathname !== "/") {
+      saveRecentPage(pathname);
+    }
+  }, [pathname]);
+
+  // Load recent pages when palette opens
+  useEffect(() => {
+    if (open) {
+      setRecentPages(getRecentPages());
+    }
+  }, [open]);
 
   // Cmd+K / Ctrl+K to open
   useEffect(() => {
@@ -61,19 +121,44 @@ export function CommandPalette() {
     }
   }, [open]);
 
-  const filtered = query.trim()
-    ? COMMANDS.filter((c) => {
+  const isSearching = query.trim().length > 0;
+
+  // When searching, include both COMMANDS and QUICK_ACTIONS in the filter
+  const filtered = isSearching
+    ? [...COMMANDS, ...QUICK_ACTIONS].filter((c) => {
         const q = query.toLowerCase();
         return c.label.toLowerCase().includes(q) || c.keywords?.toLowerCase().includes(q);
       })
     : COMMANDS;
 
-  // Group by section
-  const grouped = filtered.reduce<Record<string, CommandItem[]>>((acc, item) => {
-    if (!acc[item.section]) acc[item.section] = [];
-    acc[item.section].push(item);
-    return acc;
-  }, {});
+  // Build recent items as CommandItems (only when not searching)
+  const recentItems: CommandItem[] = !isSearching
+    ? recentPages
+        .filter((r) => r.href !== pathname) // Don't show the current page
+        .map((r) => ({
+          label: r.label,
+          href: r.href,
+          icon: "clock" as IconName,
+          section: "Recent",
+        }))
+    : [];
+
+  // Build the grouped structure with Recent and Quick Actions first
+  const grouped: Record<string, CommandItem[]> = {};
+
+  if (recentItems.length > 0) {
+    grouped["Recent"] = recentItems;
+  }
+
+  if (!isSearching) {
+    grouped["Quick Actions"] = QUICK_ACTIONS;
+  }
+
+  // Add the filtered navigation/admin/account groups
+  for (const item of filtered) {
+    if (!grouped[item.section]) grouped[item.section] = [];
+    grouped[item.section].push(item);
+  }
 
   const flatList = Object.values(grouped).flat();
 
@@ -136,7 +221,7 @@ export function CommandPalette() {
                   const idx = flatIdx;
                   return (
                     <button
-                      key={item.href}
+                      key={`${section}-${item.href}`}
                       onClick={() => navigate(item.href)}
                       onMouseEnter={() => setSelectedIndex(idx)}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${

@@ -8,10 +8,12 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon, type IconName } from "@/components/ui/icon";
+import { EmptyState } from "@/components/ui/empty-state";
 import { useToast } from "@/components/ui/toast";
 import { createConsumable, updateConsumable, addStock, deductStock, approveRequest, issueConsumable, assignConsumable, returnConsumable, bulkDeleteConsumables } from "@/app/actions/consumables";
 import { createCategory, updateCategory, deleteCategory, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { formatDate } from "@/lib/utils";
+import { exportToCSV } from "@/lib/csv";
 
 // Color palette auto-assigned by category index
 const SECTION_COLORS = [
@@ -492,18 +494,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-shark-100">
-                <th className="px-1 py-3 w-6"></th>
-                <th className="px-3 py-3 text-left w-10">
+                <th scope="col" className="px-1 py-3 w-6"></th>
+                <th scope="col" className="px-3 py-3 text-left w-10">
                   {deletableInSection.length > 0 && (
                     <input type="checkbox" checked={allSelected} ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }} onChange={() => toggleSelectAll(sectionItems)} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
                   )}
                 </th>
-                {visibleColumns.photo && <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
-                {visibleColumns.item && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>}
-                {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
-                {visibleColumns.qty && <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>}
-                {visibleColumns.assignedTo && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
+                {visibleColumns.photo && <th scope="col" className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
+                {visibleColumns.item && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>}
+                {visibleColumns.location && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
+                {visibleColumns.qty && <th scope="col" className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>}
+                {visibleColumns.assignedTo && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
+                <th scope="col" className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -626,6 +628,26 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               onChange={(e) => setSearchAndClear(e.target.value)}
               className="flex-1 sm:max-w-md"
             />
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                const rows = filtered.map((c) => ({
+                  "Name": c.name,
+                  "Category": c.category,
+                  "Unit Type": c.unitType,
+                  "Quantity on Hand": c.quantityOnHand,
+                  "Minimum Threshold": c.minimumThreshold,
+                  "Reorder Level": c.reorderLevel,
+                  "Unit Cost": c.unitCost != null ? c.unitCost : "",
+                  "Region": c.region.name,
+                }));
+                exportToCSV(rows as Record<string, unknown>[], "consumables.csv");
+              }}
+            >
+              <Icon name="download" size={14} className="mr-1" />
+              Export
+            </Button>
             {selectedIds.size > 0 && (
               <Button
                 variant="danger"
@@ -638,7 +660,14 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
 
           {/* Grouped Sections */}
-          {isSuperAdmin ? (
+          {consumables.length === 0 ? (
+            <EmptyState
+              icon="droplet"
+              title="No supplies yet"
+              description="Add consumable items to manage stock"
+              action={{ label: "Add Supply", href: "/consumables?action=add" }}
+            />
+          ) : isSuperAdmin ? (
             // Super Admin: group by region first, then category within each region
             regions.map((region, rIdx) => {
               const regionItems = filtered.filter((c) => c.region.id === region.id);
@@ -803,11 +832,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-shark-100">
-                  <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>
-                  <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Requested By</th>
-                  <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>
-                  <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Date</th>
-                  <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
+                  <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>
+                  <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Requested By</th>
+                  <th scope="col" className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>
+                  <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Date</th>
+                  <th scope="col" className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -1441,10 +1470,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-shark-50/60 border-b border-shark-100">
-                        <th className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Item</th>
-                        <th className="px-3 py-2 text-right text-xs font-semibold text-shark-400 uppercase tracking-wider">Qty</th>
-                        <th className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Assigned</th>
-                        <th className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Location</th>
+                        <th scope="col" className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Item</th>
+                        <th scope="col" className="px-3 py-2 text-right text-xs font-semibold text-shark-400 uppercase tracking-wider">Qty</th>
+                        <th scope="col" className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Assigned</th>
+                        <th scope="col" className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Location</th>
                       </tr>
                     </thead>
                     <tbody>

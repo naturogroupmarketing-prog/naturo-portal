@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "@/components/ui/icon";
-import { Logo } from "@/components/ui/logo";
 import { MenuWalkthrough } from "@/components/ui/menu-walkthrough";
 import { Role } from "@/generated/prisma/browser";
 
@@ -112,21 +111,15 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
   const effectiveRole = role === "BRANCH_MANAGER" && bmStaffView ? "STAFF" : role;
 
   return (
-    <nav className="flex flex-col h-full bg-white dark:bg-shark-900 transition-colors">
-      <div className="flex items-center justify-between px-5 py-5 border-b border-shark-100 dark:border-shark-800">
-        <button
-          onClick={() => { window.location.href = "/dashboard"; }}
-          className="flex items-center gap-1 hover:opacity-80 transition-opacity"
-          title="Go to Dashboard"
-        >
-          <Logo size={44} />
-        </button>
-        {onClose && (
-          <button onClick={onClose} className="text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 lg:hidden">
+    <nav aria-label="Main navigation" className="flex flex-col h-full bg-white dark:bg-shark-900 transition-colors">
+      {/* Close button for mobile */}
+      {onClose && (
+        <div className="flex items-center justify-end px-3 py-2 lg:hidden">
+          <button onClick={onClose} className="text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 p-2">
             <Icon name="x" size={20} />
           </button>
-        )}
-      </div>
+        </div>
+      )}
       <div className="flex-1 overflow-y-auto py-3 px-3">
         {navSections
           .filter((section) => section.roles.includes(effectiveRole))
@@ -135,12 +128,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
             if (visibleItems.length === 0) return null;
 
             return (
-              <div key={sIdx} className={sIdx > 0 ? "mt-4" : ""}>
-                {section.heading && (
-                  <p className="px-3 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-shark-400">
-                    {section.heading}
-                  </p>
-                )}
+              <CollapsibleSection key={sIdx} heading={section.heading} className={sIdx > 0 ? "mt-4" : ""}>
                 <div className="space-y-0.5">
                   {visibleItems.map((item) => {
                     const active = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -149,6 +137,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                         key={item.href}
                         href={item.href}
                         onClick={onClose}
+                        aria-current={active ? "page" : undefined}
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl min-h-[44px] transition-all duration-200",
                           active
@@ -172,13 +161,61 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                     );
                   })}
                 </div>
-              </div>
+              </CollapsibleSection>
             );
           })}
 
       </div>
 
+      {/* Keyboard shortcut hint */}
+      <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-t border-shark-100 dark:border-shark-800">
+        <button
+          onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
+          className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-shark-400 hover:text-shark-600 dark:hover:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-xs"
+        >
+          <Icon name="search" size={13} />
+          <span className="flex-1 text-left">Quick search</span>
+          <kbd className="text-[10px] bg-shark-100 dark:bg-shark-700 border border-shark-200 dark:border-shark-600 px-1 py-0.5 rounded font-mono">⌘K</kbd>
+        </button>
+      </div>
       <MenuWalkthrough role={effectiveRole} />
     </nav>
+  );
+}
+
+/* ── Collapsible sidebar section ── */
+function CollapsibleSection({ heading, children, className }: { heading?: string; children: React.ReactNode; className?: string }) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  // Sections without a heading (e.g. Dashboard) are always open
+  if (!heading) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <div className={className}>
+      <button
+        onClick={() => setCollapsed((c) => !c)}
+        className="w-full flex items-center justify-between px-3 mb-1.5 group cursor-pointer"
+      >
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-shark-400 group-hover:text-shark-600 transition-colors">
+          {heading}
+        </span>
+        <svg
+          width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          className={cn("text-shark-400 transition-transform duration-200", collapsed ? "-rotate-90" : "")}
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      <div
+        className={cn(
+          "overflow-hidden transition-all duration-200",
+          collapsed ? "max-h-0 opacity-0" : "max-h-[500px] opacity-100"
+        )}
+      >
+        {children}
+      </div>
+    </div>
   );
 }

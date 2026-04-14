@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
@@ -347,10 +348,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-shark-100">
-              <th className="px-1 py-3 w-6"></th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
-              <th className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
+              <th scope="col" className="px-1 py-3 w-6"></th>
+              <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
+              <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
+              <th scope="col" className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -440,7 +441,13 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
       </div>
 
       {/* Region Sections */}
-      {regionGroups
+      {users.length === 0 ? (
+        <EmptyState
+          icon="users"
+          title="No staff members"
+          description="Add team members to assign assets and supplies"
+        />
+      ) : regionGroups
         .filter((g) => g.users.length > 0)
         .map((section) => {
           const isCollapsed = collapsedSections.has(section.id);

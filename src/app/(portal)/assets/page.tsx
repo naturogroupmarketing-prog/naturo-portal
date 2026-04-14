@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager, hasPermissions } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { AssetsClient } from "./assets-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Assets",
+  description: "View and manage all tracked assets",
+};
 
 export default async function AssetsPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string; category?: string }> }) {
   const params = await searchParams;

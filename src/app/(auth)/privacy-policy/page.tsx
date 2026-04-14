@@ -14,24 +14,24 @@ export default function PrivacyPolicyPage() {
   const contactEmail = "privacy@trackio.com.au";
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-shark-950">
       <div className="max-w-3xl mx-auto px-6 py-12">
         <div className="mb-8">
           <Link href="/login"><Logo size={36} /></Link>
         </div>
 
-        <h1 className="text-3xl font-bold text-shark-900 mb-2">Privacy Policy</h1>
-        <p className="text-sm text-shark-400 mb-8">Last updated: {lastUpdated}</p>
+        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 mb-2">Privacy Policy</h1>
+        <p className="text-sm text-shark-400 dark:text-shark-500 mb-8">Last updated: {lastUpdated}</p>
 
-        <div className="prose prose-shark max-w-none space-y-6 text-sm text-shark-700 leading-relaxed">
+        <div className="prose prose-shark max-w-none space-y-6 text-sm text-shark-700 dark:text-shark-300 leading-relaxed">
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">1. About This Policy</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">1. About This Policy</h2>
             <p>{companyName} (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is committed to protecting the privacy of personal information in accordance with the Australian Privacy Act 1988 (Cth) and the 13 Australian Privacy Principles (APPs). This policy explains how we collect, use, disclose, and protect your personal information when you use our asset and consumable tracking platform.</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">2. Information We Collect (APP 3)</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">2. Information We Collect (APP 3)</h2>
             <p>We collect the following personal information:</p>
             <ul className="list-disc ml-6 space-y-1 mt-2">
               <li><strong>Identity information:</strong> Full name</li>
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">3. How We Use Your Information (APP 6)</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">3. How We Use Your Information (APP 6)</h2>
             <p>We use your personal information for the following purposes:</p>
             <ul className="list-disc ml-6 space-y-1 mt-2">
               <li>Authenticating your identity and managing your account</li>
@@ -59,7 +59,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">4. Third-Party Disclosure (APP 6 & 8)</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">4. Third-Party Disclosure (APP 6 & 8)</h2>
             <p>We share limited information with the following service providers to operate the platform:</p>
             <ul className="list-disc ml-6 space-y-1 mt-2">
               <li><strong>Resend (US-based):</strong> Email delivery service. Receives your email address and name for sending notifications. <a href="https://resend.com/privacy" className="text-action-500 underline" target="_blank" rel="noopener noreferrer">Resend Privacy Policy</a></li>
@@ -72,7 +72,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">5. Data Security (APP 11)</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">5. Data Security (APP 11)</h2>
             <p>We take reasonable steps to protect your information from misuse, interference, loss, and unauthorised access, modification, or disclosure:</p>
             <ul className="list-disc ml-6 space-y-1 mt-2">
               <li>Passwords are hashed using bcrypt with 12 rounds (industry standard)</li>
@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">6. Accessing and Correcting Your Information (APP 12 & 13)</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">6. Accessing and Correcting Your Information (APP 12 & 13)</h2>
             <p>You have the right to:</p>
             <ul className="list-disc ml-6 space-y-1 mt-2">
               <li><strong>Access your data:</strong> View your personal information via Settings, and download a copy of all your data.</li>
@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">7. Data Retention</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">7. Data Retention</h2>
             <p>We retain your personal information for as long as your account is active or as needed to provide services. When your account is deleted:</p>
             <ul className="list-disc ml-6 space-y-1 mt-2">
               <li>Your profile data (name, email, phone) is permanently deleted</li>
@@ -110,7 +110,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">8. Cookies</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">8. Cookies</h2>
             <p>We use the following cookies:</p>
             <ul className="list-disc ml-6 space-y-1 mt-2">
               <li><strong>Session cookie</strong> (essential): Maintains your login session. Cannot be disabled.</li>
@@ -120,7 +120,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">9. Data Breach Notification</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">9. Data Breach Notification</h2>
             <p>In the event of a data breach that is likely to result in serious harm, we will:</p>
             <ul className="list-disc ml-6 space-y-1 mt-2">
               <li>Notify the Office of the Australian Information Commissioner (OAIC) as soon as practicable</li>
@@ -131,23 +131,23 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">10. Complaints</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">10. Complaints</h2>
             <p>If you believe we have breached the Australian Privacy Principles, you may lodge a complaint with us at <a href={`mailto:${contactEmail}`} className="text-action-500 underline">{contactEmail}</a>. We will investigate and respond within 30 days.</p>
             <p className="mt-2">If you are not satisfied with our response, you may lodge a complaint with the <a href="https://www.oaic.gov.au/privacy/privacy-complaints" className="text-action-500 underline" target="_blank" rel="noopener noreferrer">Office of the Australian Information Commissioner (OAIC)</a>.</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-shark-900 mt-8 mb-3">11. Contact Us</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mt-8 mb-3">11. Contact Us</h2>
             <p>For privacy-related enquiries, contact our Privacy Officer:</p>
             <p className="mt-2">Email: <a href={`mailto:${contactEmail}`} className="text-action-500 underline">{contactEmail}</a></p>
           </section>
 
         </div>
 
-        <div className="mt-12 pt-6 border-t border-shark-100 text-xs text-shark-400">
+        <div className="mt-12 pt-6 border-t border-shark-100 dark:border-shark-800 text-xs text-shark-400 dark:text-shark-500">
           <p>&copy; {new Date().getFullYear()} {companyName}. All rights reserved.</p>
           <div className="flex gap-4 mt-2">
-            <Link href="/login" className="hover:text-action-500">Back to Login</Link>
+            <Link href="/login" className="hover:text-action-500 dark:hover:text-shark-300">Back to Login</Link>
           </div>
         </div>
       </div>

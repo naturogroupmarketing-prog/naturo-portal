@@ -10,11 +10,13 @@ import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
+import { EmptyState } from "@/components/ui/empty-state";
 import dynamic from "next/dynamic";
 import { createAsset, bulkCreateAssets, updateAsset, assignAsset, returnAsset, deleteAsset, bulkDeleteAssets, changeAssetStatus } from "@/app/actions/assets";
 import { createCategory, updateCategory, deleteCategory, addEquipmentItem, removeEquipmentItem, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { useRouter } from "next/navigation";
 import { compressImage } from "@/lib/image-utils";
+import { exportToCSV } from "@/lib/csv";
 
 // Lazy-load QR scanner (~100KB html5-qrcode) — only needed when modal opens
 const QRScanner = dynamic(
@@ -737,8 +739,8 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-shark-100">
-                {permissions.canEdit && <th className="px-1 py-3 w-6"></th>}
-                <th className="px-3 py-3 text-left w-10">
+                {permissions.canEdit && <th scope="col" className="px-1 py-3 w-6"></th>}
+                <th scope="col" className="px-3 py-3 text-left w-10">
                   {deletableInSection.length > 0 && (
                     <input
                       type="checkbox"
@@ -749,12 +751,12 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     />
                   )}
                 </th>
-                {visibleColumns.photo && <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
-                {visibleColumns.code && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">QR</th>}
-                {visibleColumns.name && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>}
-                {visibleColumns.location && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
-                {visibleColumns.status && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>}
-                {visibleColumns.assignedTo && <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
+                {visibleColumns.photo && <th scope="col" className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
+                {visibleColumns.code && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">QR</th>}
+                {visibleColumns.name && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>}
+                {visibleColumns.location && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
+                {visibleColumns.status && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>}
+                {visibleColumns.assignedTo && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
               </tr>
             </thead>
             <tbody>
@@ -888,6 +890,26 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           Filters
           {(categoryFilter !== "ALL" || dateFrom || dateTo) && <span className="ml-1 w-2 h-2 bg-action-500 rounded-full" />}
         </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            const rows = filtered.map((a) => ({
+              "Asset Code": a.assetCode,
+              "Name": a.name,
+              "Category": a.category,
+              "Status": a.status,
+              "Serial Number": a.serialNumber ?? "",
+              "Region": a.region.name,
+              "Purchase Cost": a.purchaseCost != null ? a.purchaseCost : "",
+              "Purchase Date": a.purchaseDate ?? "",
+            }));
+            exportToCSV(rows as Record<string, unknown>[], "assets.csv");
+          }}
+        >
+          <Icon name="download" size={14} className="mr-1" />
+          Export
+        </Button>
         <div className="relative" ref={columnMenuRef}>
           <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
             Columns
@@ -958,7 +980,14 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       )}
 
       {/* Grouped Sections */}
-      {isSuperAdmin ? (
+      {assets.length === 0 ? (
+        <EmptyState
+          icon="package"
+          title="No assets yet"
+          description="Add your first asset to start tracking"
+          action={{ label: "Add Asset", href: "/assets?action=add" }}
+        />
+      ) : isSuperAdmin ? (
         // Super Admin: group by region first, then category within each region
         regions.map((region, rIdx) => {
           const regionAssets = filtered.filter((a) => a.region.id === region.id);

@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { ReturnsClient } from "./returns-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Returns",
+  description: "Process and verify asset returns",
+};
 
 export const dynamic = "force-dynamic";
 

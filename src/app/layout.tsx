@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Exo } from "next/font/google";
 import { PWARegister } from "@/components/pwa-register";
 import { ToastProvider } from "@/components/ui/toast";
+import { ThemeProvider } from "@/components/theme-provider";
 import { CookieConsent } from "@/components/privacy/cookie-consent";
 import { OfflineIndicator } from "@/components/ui/offline-indicator";
 import { SplashScreen } from "@/components/splash-screen";
@@ -80,23 +81,59 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/trackio_t_logo.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/trackio_t_logo.svg" />
         <meta name="theme-color" content="#f5f5f5" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            try {
+              var theme = localStorage.getItem('trackio-theme');
+              if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+              }
+            } catch(e) {}
+          })();
+        ` }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "trackio",
+              applicationCategory: "BusinessApplication",
+              operatingSystem: "Web",
+              description: "Asset and consumable tracking platform built for operational teams across Australia.",
+              url: SITE_URL,
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "AUD",
+              },
+              creator: {
+                "@type": "Organization",
+                name: "trackio",
+                url: SITE_URL,
+              },
+            }),
+          }}
+        />
       </head>
       <body className={`${inter.className} ${exo.variable} antialiased`}>
-        <SplashScreen />
-        <ToastProvider>
-          <PWARegister />
-          <OfflineIndicator />
-          {children}
-          <CookieConsent />
-          <Analytics />
-          <SpeedInsights />
-        </ToastProvider>
+        <ThemeProvider>
+          <SplashScreen />
+          <ToastProvider>
+            <PWARegister />
+            <OfflineIndicator />
+            {children}
+            <CookieConsent />
+            <Analytics />
+            <SpeedInsights />
+          </ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

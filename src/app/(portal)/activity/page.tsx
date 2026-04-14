@@ -6,6 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Activity Log",
+  description: "View system-wide activity and audit trail",
+};
 
 export const dynamic = "force-dynamic";
 

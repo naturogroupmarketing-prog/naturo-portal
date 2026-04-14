@@ -9,6 +9,7 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
+import { EmptyState } from "@/components/ui/empty-state";
 import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder, undoReceivedPurchaseOrder, batchUpdatePOStatus } from "@/app/actions/purchase-orders";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
@@ -425,11 +426,11 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-shark-100 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
-              {canApprovePO && <th className="px-3 py-3 w-10"><input type="checkbox" checked={selected.size > 0 && selected.size === orders.length} onChange={() => { if (selected.size === orders.length) setSelected(new Set()); else setSelected(new Set(orders.map((o) => o.id))); }} className="rounded border-shark-300 text-action-500" /></th>}
-              <th className="px-5 py-3">Item</th>
-              <th className="px-5 py-3">Qty</th>
-              <th className="px-5 py-3">Region</th>
-              <th className="px-5 py-3 text-right">Status</th>
+              {canApprovePO && <th scope="col" className="px-3 py-3 w-10"><input type="checkbox" checked={selected.size > 0 && selected.size === orders.length} onChange={() => { if (selected.size === orders.length) setSelected(new Set()); else setSelected(new Set(orders.map((o) => o.id))); }} className="rounded border-shark-300 text-action-500" /></th>}
+              <th scope="col" className="px-5 py-3">Item</th>
+              <th scope="col" className="px-5 py-3">Qty</th>
+              <th scope="col" className="px-5 py-3">Region</th>
+              <th scope="col" className="px-5 py-3 text-right">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-shark-50">
@@ -617,7 +618,14 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       )}
 
       {/* Content */}
-      {isSuperAdmin ? (
+      {purchaseOrders.length === 0 ? (
+        <EmptyState
+          icon="truck"
+          title="No purchase orders"
+          description="Create your first purchase order to replenish stock"
+          action={{ label: "Create PO", href: "/purchase-orders?action=create" }}
+        />
+      ) : isSuperAdmin ? (
         // Region-grouped view
         <div className="space-y-4">
           {regionGroups.map(({ region, orders }, idx) => {

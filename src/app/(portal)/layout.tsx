@@ -6,6 +6,10 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { AppShell } from "@/components/layout/app-shell";
 import { ChatWidget } from "@/components/layout/chat-widget";
 import { CommandPalette } from "@/components/ui/command-palette";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { KeyboardShortcuts } from "@/components/ui/keyboard-shortcuts";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
+import { SessionTimeoutWarning } from "@/components/ui/session-timeout-warning";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -53,10 +57,15 @@ export default async function PortalLayout({
         pendingPOCount={pendingPOCount}
         pendingReturnsCount={pendingReturnsCount}
       >
-        {children}
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
       </AppShell>
       <ChatWidget />
       <CommandPalette />
+      <KeyboardShortcuts />
+      <ScrollToTop />
+      <SessionTimeoutWarning />
     </>
   );
 }

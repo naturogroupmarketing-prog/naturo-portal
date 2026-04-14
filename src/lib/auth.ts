@@ -81,7 +81,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Refresh role/region/org from DB every 2 minutes
       const now = Date.now();
       const lastRefresh = (token.lastRefresh as number) || 0;
-      const REFRESH_INTERVAL = 30 * 1000; // 30 seconds — fast permission revocation
+      const REFRESH_INTERVAL = 300 * 1000; // 5 minutes — reduces DB load while still catching permission revocation
 
       if (token.sub && now - lastRefresh > REFRESH_INTERVAL) {
         const dbUser = await db.user.findUnique({

@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager, hasPermission, hasPermissions } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { ConsumablesClient } from "./consumables-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Consumables",
+  description: "Manage consumable supplies and stock levels",
+};
 
 export default async function ConsumablesPage({ searchParams }: { searchParams: Promise<{ tab?: string; region?: string; stock?: string; category?: string }> }) {
   const params = await searchParams;

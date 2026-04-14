@@ -93,6 +93,8 @@ function generateRandomPassword(length = 12): string {
 // ─── Bulk Import Assets ───────────────────────────────
 
 export async function bulkImportAssets(rows: AssetImportRow[]): Promise<ImportResult> {
+  if (rows.length > 1000) return { success: 0, skipped: 0, errors: [{ row: 0, field: "general", message: "Maximum 1000 rows per import" }] };
+
   const session = await withAuth();
   if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");
@@ -201,6 +203,8 @@ export async function bulkImportAssets(rows: AssetImportRow[]): Promise<ImportRe
 // ─── Bulk Import Consumables ──────────────────────────
 
 export async function bulkImportConsumables(rows: ConsumableImportRow[]): Promise<ImportResult> {
+  if (rows.length > 1000) return { success: 0, skipped: 0, errors: [{ row: 0, field: "general", message: "Maximum 1000 rows per import" }] };
+
   const session = await withAuth();
   if (!isAdminOrManager(session.user.role)) {
     throw new Error("Unauthorized");

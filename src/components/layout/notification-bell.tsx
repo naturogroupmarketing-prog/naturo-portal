@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 
 interface Notification {
@@ -52,6 +53,9 @@ export function NotificationBell() {
         const data = await res.json();
         setNotifications(data.notifications);
         setUnreadCount(data.unreadCount);
+        // Update document title with unread badge
+        const baseTitle = document.title.replace(/^\(\d+\)\s*/, "");
+        document.title = data.unreadCount > 0 ? `(${data.unreadCount}) ${baseTitle}` : baseTitle;
       }
     } catch {
       // silently fail
@@ -137,12 +141,12 @@ export function NotificationBell() {
                   <button
                     key={n.id}
                     onClick={() => handleClick(n)}
-                    className={`w-full text-left px-4 py-3 border-b border-shark-50 hover:bg-shark-50/50 transition-colors ${!n.isRead ? "bg-action-50/20" : ""}`}
+                    className={`w-full text-left px-4 py-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50/50 dark:hover:bg-shark-800/50 transition-colors ${!n.isRead ? "bg-action-50/20 dark:bg-action-900/20" : ""}`}
                   >
                     <div className="flex gap-3">
                       <Icon name={typeInfo.icon as "bell"} size={16} className={`${typeInfo.color} mt-0.5 shrink-0`} />
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm ${!n.isRead ? "font-semibold text-shark-900" : "text-shark-700"}`}>
+                        <p className={`text-sm ${!n.isRead ? "font-semibold text-shark-900 dark:text-shark-100" : "text-shark-700 dark:text-shark-300"}`}>
                           {n.title}
                         </p>
                         <p className="text-xs text-shark-400 mt-0.5 truncate">{n.message}</p>
@@ -157,13 +161,13 @@ export function NotificationBell() {
               })
             )}
           </div>
-          <a
+          <Link
             href="/notifications"
-            className="block text-center text-xs text-action-500 hover:text-action-600 font-medium py-2.5 border-t border-shark-100"
+            className="block text-center text-xs text-action-500 hover:text-action-600 font-medium py-2.5 border-t border-shark-100 dark:border-shark-800"
             onClick={() => setIsOpen(false)}
           >
             View all notifications →
-          </a>
+          </Link>
         </div>
       )}
     </div>

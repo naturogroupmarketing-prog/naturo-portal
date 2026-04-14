@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { Card, CardContent } from "@/components/ui/card";
 import { ReportsClient } from "./reports-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Reports",
+  description: "Export data as CSV or printable reports",
+};
 
 export default async function ReportsPage() {
   const session = await auth();

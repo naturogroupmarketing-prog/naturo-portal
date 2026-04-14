@@ -139,7 +139,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-shark-100">
-            <th className="px-3 py-3.5 text-center w-10">
+            <th scope="col" className="px-3 py-3.5 text-center w-10">
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded border-shark-300 text-action-500 focus:ring-action-500 cursor-pointer"
@@ -147,11 +147,11 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                 onChange={toggleAll}
               />
             </th>
-            <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
-            <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
-            <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
-            <th className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Active</th>
-            <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
+            <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
+            <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
+            <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
+            <th scope="col" className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Active</th>
+            <th scope="col" className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
           </tr>
         </thead>
         <tbody>

@@ -1,47 +1,21 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Loading() {
+export default function AssetsLoading() {
   return (
     <div className="space-y-6">
-      {/* Header with action button */}
       <div className="flex items-center justify-between">
-        <div>
-          <div className="h-8 w-32 bg-shark-100 rounded animate-pulse" />
-          <div className="h-4 w-48 bg-shark-100 rounded animate-pulse mt-2" />
-        </div>
-        <div className="h-10 w-32 bg-shark-100 rounded-lg animate-pulse" />
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-10 w-32 rounded-lg" />
       </div>
-
-      {/* Filters row */}
-      <div className="flex items-center gap-3">
-        <div className="h-10 w-64 bg-shark-50 rounded-lg animate-pulse" />
-        <div className="h-10 w-36 bg-shark-50 rounded-lg animate-pulse" />
-        <div className="h-10 w-36 bg-shark-50 rounded-lg animate-pulse" />
+      <div className="flex gap-2">
+        <Skeleton className="h-10 w-64 rounded-lg" />
+        <Skeleton className="h-10 w-24 rounded-lg" />
       </div>
-
-      {/* Table */}
-      <Card>
-        <CardContent className="py-0">
-          {/* Table header */}
-          <div className="flex items-center gap-4 py-3 border-b border-shark-100">
-            <div className="h-4 w-24 bg-shark-100 rounded animate-pulse" />
-            <div className="h-4 w-20 bg-shark-100 rounded animate-pulse" />
-            <div className="h-4 w-28 bg-shark-100 rounded animate-pulse flex-1" />
-            <div className="h-4 w-16 bg-shark-100 rounded animate-pulse" />
-            <div className="h-4 w-20 bg-shark-100 rounded animate-pulse" />
-          </div>
-          {/* Table rows */}
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="flex items-center gap-4 py-4 border-b border-shark-50 last:border-0">
-              <div className="h-5 w-24 bg-shark-50 rounded animate-pulse" />
-              <div className="h-5 w-20 bg-shark-50 rounded animate-pulse" />
-              <div className="h-5 w-40 bg-shark-50 rounded animate-pulse flex-1" />
-              <div className="h-5 w-16 bg-shark-50 rounded-full animate-pulse" />
-              <div className="h-5 w-20 bg-shark-50 rounded animate-pulse" />
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      <div className="space-y-3">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <Skeleton key={i} className="h-16 w-full rounded-xl" />
+        ))}
+      </div>
     </div>
   );
 }

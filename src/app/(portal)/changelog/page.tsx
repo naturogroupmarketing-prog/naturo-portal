@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Changelog",
+  description: "Latest updates and improvements to trackio",
+};
 
 interface Release {
   version: string;

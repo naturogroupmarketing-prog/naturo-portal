@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { PurchaseOrdersClient } from "./purchase-orders-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Purchase Orders",
+  description: "Track and manage purchase orders",
+};
 
 export const dynamic = "force-dynamic";
 

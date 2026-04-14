@@ -2,6 +2,12 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { MyActivityClient } from "./my-activity-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Recent Activity",
+  description: "View your recent activity",
+};
 
 export const dynamic = "force-dynamic";
 

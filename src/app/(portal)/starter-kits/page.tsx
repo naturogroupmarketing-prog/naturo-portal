@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { hasPermission, isAdminOrManager } from "@/lib/permissions";
 import { StarterKitsClient } from "./starter-kits-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Starter Kits",
+  description: "Manage onboarding starter kit templates",
+};
 
 export default async function StarterKitsPage() {
   const session = await auth();

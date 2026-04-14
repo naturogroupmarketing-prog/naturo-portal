@@ -119,11 +119,11 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
                       <table className="w-full">
                         <thead>
                           <tr className="bg-shark-50/50">
-                            <th className="px-5 py-2.5 text-left text-xs font-semibold text-shark-400">Item</th>
-                            <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400">Stock</th>
-                            <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400">Threshold</th>
-                            <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400 hidden md:table-cell">Reorder Level</th>
-                            <th className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400 hidden lg:table-cell">Supplier</th>
+                            <th scope="col" className="px-5 py-2.5 text-left text-xs font-semibold text-shark-400">Item</th>
+                            <th scope="col" className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400">Stock</th>
+                            <th scope="col" className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400">Threshold</th>
+                            <th scope="col" className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400 hidden md:table-cell">Reorder Level</th>
+                            <th scope="col" className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400 hidden lg:table-cell">Supplier</th>
                           </tr>
                         </thead>
                         <tbody>

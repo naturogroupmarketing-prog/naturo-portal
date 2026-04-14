@@ -3,6 +3,12 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { MaintenanceClient } from "./maintenance-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Maintenance",
+  description: "Schedule and track asset maintenance",
+};
 
 export default async function MaintenancePage() {
   const session = await auth();

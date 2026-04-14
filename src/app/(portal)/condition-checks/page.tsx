@@ -4,6 +4,12 @@ import { isAdminOrManager, isSuperAdmin } from "@/lib/permissions";
 import { getConditionChecksForReview, getInspectionConfig, getInspectionSchedules, getStaffSchedules } from "@/app/actions/condition-checks";
 import { db } from "@/lib/db";
 import { ConditionChecksClient } from "./condition-checks-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Inspections",
+  description: "Conduct and review asset condition checks",
+};
 
 export const dynamic = "force-dynamic";
 

@@ -611,7 +611,10 @@ export async function bulkCreateAssets(formData: FormData) {
   return { success: true, count: created.length, assets: created };
 }
 
-export async function getAssets(regionId?: string) {
+export async function getAssets(
+  regionId?: string,
+  { page = 1, pageSize = 50 }: { page?: number; pageSize?: number } = {}
+) {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
 
@@ -627,15 +630,28 @@ export async function getAssets(regionId?: string) {
     where.regionId = regionId;
   }
 
-  return db.asset.findMany({
-    where,
-    include: {
-      region: { include: { state: true } },
-      assignments: {
-        where: { isActive: true },
-        include: { user: { select: { id: true, name: true, email: true } } },
+  const [items, totalCount] = await Promise.all([
+    db.asset.findMany({
+      where,
+      include: {
+        region: { include: { state: true } },
+        assignments: {
+          where: { isActive: true },
+          include: { user: { select: { id: true, name: true, email: true } } },
+        },
       },
-    },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-  });
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    db.asset.count({ where }),
+  ]);
+
+  return {
+    items,
+    totalCount,
+    page,
+    pageSize,
+    totalPages: Math.ceil(totalCount / pageSize),
+  };
 }

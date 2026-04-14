@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -17,6 +18,42 @@ interface OperationsOverview {
   lowStockCount: number;
 }
 
+function HealthRing({ score, size = 64 }: { score: number; size?: number }) {
+  const [animated, setAnimated] = useState(0);
+  const strokeWidth = 5;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (animated / 100) * circumference;
+  const color = score >= 80 ? "#1F3DD9" : score >= 50 ? "#E8532E" : "#ef4444";
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimated(score), 100);
+    return () => clearTimeout(timer);
+  }, [score]);
+
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2} cy={size / 2} r={radius}
+          fill="none" stroke="#e5e7eb" strokeWidth={strokeWidth}
+        />
+        <circle
+          cx={size / 2} cy={size / 2} r={radius}
+          fill="none" stroke={color} strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          style={{ transition: "stroke-dashoffset 1s ease-out" }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-sm font-bold text-shark-700">{score}<span className="text-[10px] text-shark-400 font-normal">/100</span></span>
+      </div>
+    </div>
+  );
+}
+
 export function OperationsWidget({ data }: { data: OperationsOverview }) {
   return (
     <Card>
@@ -26,14 +63,8 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
             <h2 className="text-lg font-bold text-shark-900">Operations</h2>
             <p className="text-sm text-shark-400">Business health overview</p>
           </div>
-          <div className="text-center relative group/health">
-            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold text-white cursor-pointer ${
-              data.healthScore >= 80 ? "bg-action-500" :
-              data.healthScore >= 50 ? "bg-[#E8532E]" : "bg-red-500"
-            }`}>
-              {data.healthScore}
-            </div>
-            <p className="text-[10px] text-shark-400 mt-1">Health</p>
+          <div className="text-center relative group/health cursor-pointer">
+            <HealthRing score={data.healthScore} />
             <div className="absolute right-0 sm:right-0 top-full mt-2 w-56 sm:w-64 bg-[#1a1c21] text-white rounded-xl p-3.5 sm:p-4 shadow-2xl opacity-0 invisible group-hover/health:opacity-100 group-hover/health:visible transition-all duration-200 z-50 text-left">
               <p className="text-xs font-semibold mb-2 text-shark-400">Health Score Breakdown</p>
               <div className="space-y-1.5 text-xs">
