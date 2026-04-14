@@ -296,6 +296,47 @@ body {
   100% { opacity: 0; }
 }
 
+/* ── Dark mode automatic text contrast ──
+   Remap shark text colors so headings/numbers/labels are readable on dark backgrounds.
+   Explicit dark: overrides in components still take precedence. */
+:where(.dark, .dark *) {
+  /* Headings & primary values — near-white */
+  &:where([class*="text-shark-900"]:not([class*="dark:text-"])) { color: var(--color-shark-100) !important; }
+  /* Sub-headings & bold labels */
+  &:where([class*="text-shark-800"]:not([class*="dark:text-"])) { color: var(--color-shark-200) !important; }
+  /* Body text & labels */
+  &:where([class*="text-shark-700"]:not([class*="dark:text-"])) { color: var(--color-shark-200) !important; }
+  /* Secondary text */
+  &:where([class*="text-shark-600"]:not([class*="dark:text-"])) { color: var(--color-shark-300) !important; }
+  /* Muted text — bump up to readable levels */
+  &:where([class*="text-shark-500"]:not([class*="dark:text-"])) { color: var(--color-shark-300) !important; }
+  &:where([class*="text-shark-400"]:not([class*="dark:text-"])) { color: var(--color-shark-300) !important; }
+
+  /* Backgrounds — cards, modals, sections */
+  &:where([class*="bg-white"]:not([class*="dark:bg-"])) { background-color: var(--color-shark-900) !important; }
+  &:where([class*="bg-shark-50"]:not([class*="dark:bg-"])) { background-color: var(--color-shark-800) !important; }
+
+  /* Additional backgrounds */
+  &:where([class*="bg-shark-100"]:not([class*="dark:bg-"])) { background-color: var(--color-shark-700) !important; }
+
+  /* Hover backgrounds */
+  &:where([class*="hover:bg-shark-50"]:not([class*="dark:hover:bg-"])):hover { background-color: var(--color-shark-800) !important; }
+  &:where([class*="hover:bg-shark-100"]:not([class*="dark:hover:bg-"])):hover { background-color: var(--color-shark-700) !important; }
+
+  /* Borders — subtle dividers */
+  &:where([class*="border-shark-50"]:not([class*="dark:border-"])) { border-color: var(--color-shark-800) !important; }
+  &:where([class*="border-shark-100"]:not([class*="dark:border-"])) { border-color: var(--color-shark-800) !important; }
+  &:where([class*="border-shark-200"]:not([class*="dark:border-"])) { border-color: var(--color-shark-700) !important; }
+
+  /* Dividers */
+  &:where([class*="divide-shark-50"]:not([class*="dark:divide-"])) > * + * { border-color: var(--color-shark-800) !important; }
+  &:where([class*="divide-shark-100"]:not([class*="dark:divide-"])) > * + * { border-color: var(--color-shark-800) !important; }
+
+  /* Placeholder text */
+  &:where([class*="placeholder-shark-400"]:not([class*="dark:placeholder-"]))::placeholder { color: var(--color-shark-400) !important; }
+  &:where([class*="placeholder:text-shark-400"]:not([class*="dark:placeholder:"]))::placeholder { color: var(--color-shark-400) !important; }
+}
+
 /* Print-friendly styles */
 @media print {
   /* Hide non-content UI */

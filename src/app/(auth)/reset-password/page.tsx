@@ -77,12 +77,12 @@ function ResetPasswordForm() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Logo size={64} className="mx-auto mb-2" />
-          <p className="text-sm text-shark-400 mt-1">Asset & Consumable Tracker</p>
+          <p className="text-sm text-shark-400 dark:text-shark-200 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-shark-100 dark:border-shark-800 overflow-hidden transition-colors">
+        <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] border border-shark-100 dark:border-shark-700 overflow-hidden transition-colors">
           <div className="p-8">
-            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 text-center mb-1">
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-white text-center mb-1">
               Reset Password
             </h2>
 
@@ -93,19 +93,19 @@ function ResetPasswordForm() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="text-sm text-shark-600 dark:text-shark-300">
+                <p className="text-sm text-shark-600 dark:text-shark-200">
                   Your password has been reset successfully!
                 </p>
                 <Link
                   href="/login"
-                  className="inline-block text-sm text-action-500 hover:text-action-600 font-medium"
+                  className="inline-block text-sm text-action-500 dark:text-action-400 hover:text-action-600 font-medium"
                 >
                   Sign In →
                 </Link>
               </div>
             ) : (
               <>
-                <p className="text-sm text-shark-400 dark:text-shark-500 text-center mb-6">
+                <p className="text-sm text-shark-400 dark:text-shark-200 text-center mb-6">
                   Enter your reset code and new password
                 </p>
 
@@ -117,7 +117,7 @@ function ResetPasswordForm() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
+                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-100 mb-1">
                       Email
                     </label>
                     <Input
@@ -130,7 +130,7 @@ function ResetPasswordForm() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
+                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-100 mb-1">
                       Reset Code
                     </label>
                     <Input
@@ -144,7 +144,7 @@ function ResetPasswordForm() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
+                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-100 mb-1">
                       New Password
                     </label>
                     <Input
@@ -170,13 +170,13 @@ function ResetPasswordForm() {
                               />
                             ))}
                           </div>
-                          <p className="text-xs text-shark-400 mt-1">{strength.label}</p>
+                          <p className="text-xs text-shark-400 dark:text-shark-200 mt-1">{strength.label}</p>
                         </div>
                       );
                     })()}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
+                    <label className="block text-sm font-medium text-shark-700 dark:text-shark-100 mb-1">
                       Confirm Password
                     </label>
                     <Input
@@ -197,7 +197,7 @@ function ResetPasswordForm() {
             )}
 
             <div className="mt-6 text-center">
-              <Link href="/login" className="text-sm text-shark-400 hover:text-shark-600 dark:hover:text-shark-300">
+              <Link href="/login" className="text-sm text-shark-400 dark:text-shark-200 hover:text-shark-600 dark:hover:text-shark-100">
                 ← Back to Sign In
               </Link>
             </div>

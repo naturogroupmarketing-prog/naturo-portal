@@ -147,7 +147,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
               {/* User info */}
               <div className="px-4 py-2.5 border-b border-shark-100 dark:border-shark-700">
                 <p className="text-sm font-semibold text-shark-800 dark:text-shark-100">{userName}</p>
-                <p className="text-xs text-shark-400">{role.replace(/_/g, " ")}</p>
+                <p className="text-xs text-shark-400 dark:text-shark-300">{role.replace(/_/g, " ")}</p>
               </div>
 
               {/* Menu items */}
@@ -156,7 +156,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                   onClick={() => { setDropdownOpen(false); router.push("/dashboard"); }}
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
                 >
-                  <Icon name="dashboard" size={15} className="text-shark-400" />
+                  <Icon name="dashboard" size={15} className="text-shark-400 dark:text-shark-300" />
                   Dashboard
                 </button>
 
@@ -164,7 +164,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                   onClick={toggleTheme}
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
                 >
-                  <Icon name={theme === "dark" ? "sun" : "moon"} size={15} className="text-shark-400" />
+                  <Icon name={theme === "dark" ? "sun" : "moon"} size={15} className="text-shark-400 dark:text-shark-300" />
                   {theme === "dark" ? "Light Mode" : "Dark Mode"}
                 </button>
 
@@ -172,7 +172,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                   onClick={() => { setDropdownOpen(false); router.push("/settings"); }}
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
                 >
-                  <Icon name="settings" size={15} className="text-shark-400" />
+                  <Icon name="settings" size={15} className="text-shark-400 dark:text-shark-300" />
                   Settings
                 </button>
 
@@ -180,7 +180,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                   onClick={() => { setDropdownOpen(false); router.push("/help"); }}
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
                 >
-                  <Icon name="help-circle" size={15} className="text-shark-400" />
+                  <Icon name="help-circle" size={15} className="text-shark-400 dark:text-shark-300" />
                   Help
                 </button>
 
@@ -188,7 +188,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                   onClick={() => { setDropdownOpen(false); router.push("/changelog"); }}
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
                 >
-                  <Icon name="star" size={15} className="text-shark-400" />
+                  <Icon name="star" size={15} className="text-shark-400 dark:text-shark-300" />
                   What&apos;s New
                 </button>
               </div>
@@ -200,21 +200,21 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                     onClick={() => { setDropdownOpen(false); router.push("/admin/company"); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
                   >
-                    <Icon name="shield" size={15} className="text-shark-400" />
+                    <Icon name="shield" size={15} className="text-shark-400 dark:text-shark-300" />
                     Company
                   </button>
                   <button
                     onClick={() => { setDropdownOpen(false); router.push("/admin/billing"); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
                   >
-                    <Icon name="award" size={15} className="text-shark-400" />
+                    <Icon name="award" size={15} className="text-shark-400 dark:text-shark-300" />
                     Billing
                   </button>
                   <button
                     onClick={() => { setDropdownOpen(false); router.push("/admin/backup"); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
                   >
-                    <Icon name="download" size={15} className="text-shark-400" />
+                    <Icon name="download" size={15} className="text-shark-400 dark:text-shark-300" />
                     Backup
                   </button>
                   <div className="px-3 pt-1 pb-0.5">

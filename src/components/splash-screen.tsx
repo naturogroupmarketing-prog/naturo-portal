@@ -24,7 +24,6 @@ export function SplashScreen() {
       className={`fixed inset-0 z-[99999] flex items-center justify-center transition-opacity duration-700 ${
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
-      style={{ backgroundColor: "#ffffff" }}
       id="splash-screen"
     >
       {/* Animated logo */}
@@ -37,10 +36,11 @@ export function SplashScreen() {
       />
 
       <style jsx global>{`
-        @media (prefers-color-scheme: dark) {
-          .dark #splash-screen {
-            background-color: #1a1c21 !important;
-          }
+        #splash-screen {
+          background-color: #ffffff;
+        }
+        .dark #splash-screen {
+          background-color: #1a1c21;
         }
         @keyframes splash-icon {
           0% {
