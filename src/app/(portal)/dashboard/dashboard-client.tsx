@@ -226,13 +226,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* Onboarding overlay */}
       {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
 
-      {/* Two-column layout: main content + sticky action panel on xl+ */}
-      <div className="flex gap-6 items-start">
-      <PageTransition className="flex-1 min-w-0 space-y-6 sm:space-y-8 lg:space-y-10">
+      <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
-      {/* Mobile action panel — shown inline on smaller screens, hidden on xl+ */}
+      {/* Mobile action panel — shown inline on smaller screens, hidden on md+ where it sits next to Finance */}
       {actionItems.length > 0 && (
-        <div className="xl:hidden">
+        <div className="md:hidden">
           <SmartActionsPanel items={actionItems} />
         </div>
       )}
@@ -324,13 +322,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "portfolio":
             return (showPortfolio || showOperations || !isSuperAdmin) ? (
-              <div key="portfolio" className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div key="portfolio" className={`grid grid-cols-1 gap-4 ${actionItems.length > 0 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
                 {/* LEFT — Operations Overview */}
                 {operationsOverview && showOperations && (
                   <OperationsWidget data={operationsOverview} />
                 )}
 
-                {/* RIGHT — Portfolio Line Chart (Assets vs Consumables value) */}
+                {/* CENTRE — Portfolio Line Chart (Assets vs Consumables value) */}
                 {showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
                   <Card>
                     <div className="p-6">
@@ -432,6 +430,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       </div>
                     </div>
                   </Card>
+                )}
+
+                {/* RIGHT — Smart Action Panel (desktop only, hidden on mobile where it shows at top) */}
+                {actionItems.length > 0 && (
+                  <div className="hidden md:flex flex-col">
+                    <SmartActionsPanel items={actionItems} />
+                  </div>
                 )}
               </div>
             ) : null;
@@ -859,12 +864,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         preferences={preferences}
       />
       </PageTransition>
-
-      {/* Right panel — sticky on xl+, hidden on smaller screens */}
-      <div className="hidden xl:block w-72 flex-shrink-0 sticky top-6 self-start">
-        <SmartActionsPanel items={actionItems} />
-      </div>
-      </div>
     </div>
   );
 }
