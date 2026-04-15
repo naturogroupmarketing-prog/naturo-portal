@@ -834,13 +834,15 @@ export default async function DashboardPage() {
     lowStockCount: (lowStockItems as unknown[]).length,
   };
 
-  // Active procurement cost: sum of quantity × unitCost for PENDING + APPROVED + ORDERED POs (SuperAdmin only)
+  // Active procurement: count + cost for PENDING + APPROVED + ORDERED POs (SuperAdmin only)
   let totalProcurementCost = 0;
+  let activePOCount = 0;
   if (isSuperAdmin) {
     const activePOs = await db.purchaseOrder.findMany({
       where: { organizationId, status: { in: ["PENDING", "APPROVED", "ORDERED"] } },
       select: { quantity: true, consumable: { select: { unitCost: true } } },
     });
+    activePOCount = activePOs.length;
     totalProcurementCost = activePOs.reduce((sum, po) => sum + (po.consumable.unitCost ? po.quantity * po.consumable.unitCost : 0), 0);
   }
 
@@ -1121,6 +1123,7 @@ export default async function DashboardPage() {
     depletionForecast,
     recentActivity,
     procurementCost: isSuperAdmin ? Math.round(totalProcurementCost * 100) / 100 : undefined,
+    activePOCount: isSuperAdmin ? activePOCount : undefined,
   };
 
   // Super Admin — standard dashboard

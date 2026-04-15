@@ -175,13 +175,14 @@ interface Props {
   depletionForecast?: DepletionForecastItem[];
   recentActivity?: RecentActivityItem[];
   procurementCost?: number;
+  activePOCount?: number;
 }
 
 function fmtAUD(n: number) {
   return n.toLocaleString("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0 }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
@@ -328,19 +329,26 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </StaggerItem>
                 ))}
               </StaggerContainer>
-              {/* Procurement cost banner — only when there are active POs with costing */}
-              {isSuperAdmin && procurementCost !== undefined && procurementCost > 0 && (
+              {/* Procurement cost banner — shows whenever there are active POs */}
+              {isSuperAdmin && activePOCount > 0 && (
                 <Link href="/purchase-orders" className="block group">
                   <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-action-100 bg-gradient-to-r from-action-50/50 to-transparent hover:border-action-300 hover:shadow-sm transition-all">
                     <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
                       <Icon name="truck" size={15} className="text-action-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-shark-500">Active Procurement Budget</p>
-                      <p className="text-[11px] text-shark-400">Total committed across all regions (pending · approved · ordered)</p>
+                      <p className="text-xs font-semibold text-shark-500">Active Procurement</p>
+                      <p className="text-[11px] text-shark-400">
+                        {activePOCount} order{activePOCount !== 1 ? "s" : ""} in pipeline across all regions
+                        {(!procurementCost || procurementCost === 0) && " · Add unit costs to see total value"}
+                      </p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-xl font-bold text-shark-900">{fmtAUD(procurementCost)}</p>
+                      {procurementCost && procurementCost > 0 ? (
+                        <p className="text-xl font-bold text-shark-900">{fmtAUD(procurementCost)}</p>
+                      ) : (
+                        <p className="text-sm font-semibold text-shark-400">{activePOCount} PO{activePOCount !== 1 ? "s" : ""}</p>
+                      )}
                     </div>
                     <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors shrink-0" />
                   </div>
