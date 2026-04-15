@@ -200,7 +200,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return visibleStats.length > 0 ? (
               <div key="stats" className="space-y-4">
               <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
-              <StaggerContainer className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+              <StaggerContainer className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
