@@ -112,12 +112,13 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       orderBy: { quantityOnHand: "asc" },
       take: 500,
     }).then((items) => {
-      // Filter: AI-predicted risk OR below minimum threshold OR out of stock
+      // Filter: AI-predicted risk OR below minimum threshold OR below reorder level OR out of stock
       const atRisk = items.filter((item) =>
         item.riskLevel === "critical" ||
         item.riskLevel === "warning" ||
         item.quantityOnHand === 0 ||
-        item.quantityOnHand <= item.minimumThreshold
+        (item.minimumThreshold > 0 && item.quantityOnHand <= item.minimumThreshold) ||
+        (item.reorderLevel > 0 && item.quantityOnHand <= item.reorderLevel)
       );
 
       return atRisk
@@ -159,7 +160,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
 
     return (
       <div className="space-y-4">
-      {isSuperAdmin && replenishmentSuggestions.length > 0 && (
+      {isSuperAdmin && (
         <ReplenishmentBanner suggestions={replenishmentSuggestions} />
       )}
       <PurchaseOrdersClient

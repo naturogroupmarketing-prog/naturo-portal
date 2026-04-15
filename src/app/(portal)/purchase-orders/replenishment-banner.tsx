@@ -21,8 +21,6 @@ export function ReplenishmentBanner({ suggestions }: Props) {
 
   const visible = suggestions.filter((s) => !dismissed.has(s.consumableId));
 
-  if (visible.length === 0) return null;
-
   const handleApprove = async (suggestion: ReplenishmentSuggestion) => {
     setApproving(suggestion.consumableId);
     try {
@@ -42,6 +40,26 @@ export function ReplenishmentBanner({ suggestions }: Props) {
   const criticalCount = visible.filter((s) => s.riskLevel === "critical").length;
   const warningCount = visible.filter((s) => s.riskLevel === "warning").length;
 
+  // "All clear" state — still render the widget so it's always visible
+  if (visible.length === 0) {
+    return (
+      <Card className="border-green-100 bg-green-50/50">
+        <CardContent className="py-3">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center">
+              <Icon name="check" size={14} className="text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-green-800">Stock levels look good</p>
+              <p className="text-xs text-green-600">No items need reordering right now</p>
+            </div>
+            <span className="ml-auto text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="border-[#E8532E]/20 bg-gradient-to-r from-[#E8532E]/5 to-transparent">
       <CardContent className="py-4">
@@ -55,7 +73,8 @@ export function ReplenishmentBanner({ suggestions }: Props) {
               {criticalCount > 0 && <span className="text-red-500 font-medium">{criticalCount} critical</span>}
               {criticalCount > 0 && warningCount > 0 && " · "}
               {warningCount > 0 && <span className="text-amber-500 font-medium">{warningCount} warning</span>}
-              {" "}— AI-suggested orders based on usage trends
+              {criticalCount === 0 && warningCount === 0 && <span>{visible.length} items</span>}
+              {" "}— suggested orders based on stock levels
             </p>
           </div>
           <span className="ml-auto text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
