@@ -216,7 +216,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <div className="flex items-center gap-1 sm:gap-2">
                               <AnimatedCounter value={s.value} className="text-lg sm:text-2xl font-bold text-shark-900" />
                               {s.trend && (
-                                <span className={`hidden sm:inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                                <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                   s.trend.direction === "down" ? "bg-green-50 text-green-600" :
                                   s.trend.direction === "up" ? "bg-red-50 text-red-500" :
                                   "bg-shark-50 text-shark-400"
@@ -228,7 +228,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               )}
                             </div>
                           </div>
-                          <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden sm:block" />
+                          <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 sm:hidden" />
+                          <Icon name="arrow-right" size={18} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden sm:block" />
                         </div>
                       </CardContent>
                     </Card>
