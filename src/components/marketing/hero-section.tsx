@@ -24,7 +24,7 @@ function FlipOnce({ text, delay = 0 }: { text: string; delay?: number }) {
 
 export function HeroSection() {
   return (
-      <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 overflow-x-clip bg-white">
+      <section className="relative pt-24 pb-16 sm:pt-40 sm:pb-28 overflow-x-clip bg-white">
         {/* Swyftx-style gradient — warm peach/salmon bottom-left, lavender/periwinkle right */}
         <div className="absolute inset-0 pointer-events-none z-0">
           <div
@@ -184,7 +184,7 @@ function DashboardShowcase() {
             <div className="flex-1 bg-shark-50/40">
               {/* Top bar */}
               <div className="flex items-center justify-between px-4 py-2.5 bg-white/80 border-b border-shark-100">
-                <div className="flex items-center gap-2 bg-shark-50 rounded-lg border border-shark-100 px-3 py-1.5 w-48">
+                <div className="flex items-center gap-2 bg-shark-50 rounded-lg border border-shark-100 px-3 py-1.5 w-32 sm:w-48">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                   <span className="text-[10px] text-shark-400">Search</span>
                   <span className="ml-auto text-[9px] text-shark-300 bg-white px-1.5 py-0.5 rounded border border-shark-100">⌘K</span>
@@ -216,7 +216,7 @@ function DashboardShowcase() {
                 <p className="text-[9px] font-semibold text-shark-400 uppercase tracking-wider">Overview</p>
 
                 {/* Overview stat cards */}
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {[
                     { label: "Damage", value: "0", iconBg: "bg-[#E8532E]", iconPath: "M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" },
                     { label: "Requests", value: "1", iconBg: "bg-action-500", iconPath: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
@@ -236,7 +236,7 @@ function DashboardShowcase() {
                 </div>
 
                 {/* Operations + Finance row */}
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {/* Operations */}
                   <div className="bg-white rounded-xl border border-shark-100 p-3">
                     <div className="flex items-center justify-between mb-2">
@@ -337,7 +337,7 @@ function DashboardShowcase() {
                 </div>
 
                 {/* Recent Activity + Stock by Region row */}
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {/* Recent Activity */}
                   <div className="bg-white rounded-xl border border-shark-100 p-3">
                     <div className="flex items-center justify-between mb-2">

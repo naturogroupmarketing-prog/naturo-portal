@@ -214,7 +214,7 @@ export function ShowcaseSection() {
   };
 
   return (
-    <section id="how-it-works" className="py-20 sm:py-28 bg-shark-50/40 overflow-hidden">
+    <section id="how-it-works" className="py-14 sm:py-20 lg:py-28 bg-shark-50/40 overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
         <ScrollReveal>
           <div className="text-center max-w-2xl mx-auto mb-16">
@@ -261,7 +261,7 @@ export function ShowcaseSection() {
                         </div>
                       </div>
                     </div>
-                    <div className="bg-shark-50/30 h-[380px] overflow-y-auto">
+                    <div className="bg-shark-50/30 h-[280px] sm:h-[340px] lg:h-[380px] overflow-y-auto">
                       {step.visual}
                     </div>
                   </div>

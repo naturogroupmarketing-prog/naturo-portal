@@ -29,7 +29,7 @@ export function BenefitsSection() {
   ];
 
   return (
-    <section className="py-20 sm:py-28 bg-shark-900 text-white">
+    <section className="py-14 sm:py-20 lg:py-28 bg-shark-900 text-white">
       <div className="max-w-6xl mx-auto px-6">
         <ScrollReveal>
           <div className="text-center max-w-2xl mx-auto mb-16">

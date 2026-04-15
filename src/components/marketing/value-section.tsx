@@ -2,7 +2,7 @@ import { ScrollReveal } from "./scroll-reveal";
 
 export function ValueSection() {
   return (
-    <section className="py-20 sm:py-28 bg-white">
+    <section className="py-14 sm:py-20 lg:py-28 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <ScrollReveal>
           <div className="max-w-3xl mx-auto text-center">

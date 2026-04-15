@@ -240,7 +240,7 @@ export function ResourcesSection() {
   }, []);
 
   return (
-    <section className="py-20 sm:py-28 bg-white">
+    <section className="py-14 sm:py-20 lg:py-28 bg-white">
       <div className="max-w-6xl mx-auto px-6" ref={sectionRef}>
         {/* Section heading */}
         <div className="text-center mb-14">
@@ -269,7 +269,7 @@ export function ResourcesSection() {
                 className="group relative overflow-hidden flex flex-col text-left cursor-pointer"
                 style={{
                   background: isActive ? "#1F3DD9" : "#f0f1f5",
-                  height: "464px",
+                  minHeight: "340px",
                   opacity: isVisible ? 1 : 0,
                   transform: isVisible ? "translateY(0)" : "translateY(60px)",
                   transition: `background 0.5s ease-out, opacity 0.7s cubic-bezier(0.22,1,0.36,1) ${i * 150}ms, transform 0.7s cubic-bezier(0.22,1,0.36,1) ${i * 150}ms`,
@@ -283,7 +283,7 @@ export function ResourcesSection() {
               >
                 {/* Header */}
                 <div
-                  className="p-7 pb-3"
+                  className="p-5 pb-3 sm:p-7 sm:pb-3"
                   style={{
                     opacity: isVisible ? 1 : 0,
                     transform: isVisible ? "translateY(0)" : "translateY(20px)",

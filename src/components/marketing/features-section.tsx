@@ -89,7 +89,7 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section id="features" className="py-20 sm:py-28 bg-shark-50/40">
+    <section id="features" className="py-14 sm:py-20 lg:py-28 bg-shark-50/40">
       <div className="max-w-6xl mx-auto px-6">
         <ScrollReveal>
           <div className="text-center max-w-2xl mx-auto mb-16">

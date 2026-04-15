@@ -24,7 +24,7 @@ export function HowItWorksSection() {
   ];
 
   return (
-    <section id="how-it-works" className="py-20 sm:py-28 bg-white">
+    <section id="how-it-works" className="py-14 sm:py-20 lg:py-28 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <ScrollReveal>
           <div className="text-center max-w-2xl mx-auto mb-16">

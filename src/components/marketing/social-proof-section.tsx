@@ -91,7 +91,7 @@ function AnimatedCounter({
 
 export function SocialProofSection() {
   return (
-    <section className="py-16 sm:py-20 bg-white border-t border-shark-100">
+    <section className="py-12 sm:py-16 lg:py-20 bg-white border-t border-shark-100">
       <div className="max-w-6xl mx-auto px-6">
         {/* Stats bar */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">

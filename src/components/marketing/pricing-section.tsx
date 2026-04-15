@@ -79,7 +79,7 @@ export function PricingSection() {
   const [isAnnual, setIsAnnual] = useState(true);
 
   return (
-    <section id="pricing" className="py-20 sm:py-28 bg-white">
+    <section id="pricing" className="py-14 sm:py-20 lg:py-28 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <p className="text-xs font-semibold text-action-500 uppercase tracking-widest mb-4">

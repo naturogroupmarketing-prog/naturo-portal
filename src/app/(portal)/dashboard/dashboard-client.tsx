@@ -154,7 +154,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* Onboarding overlay */}
       {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
 
-      <PageTransition className="space-y-10 px-4 sm:px-6 lg:px-12 py-6 lg:py-10">
+      <PageTransition className="space-y-8 sm:space-y-10">
 
       {/* Header with settings gear */}
       <div className="flex items-center justify-between">
@@ -200,7 +200,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return visibleStats.length > 0 ? (
               <div key="stats" className="space-y-4">
               <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
-              <StaggerContainer className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
@@ -354,7 +354,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "maintenance":
             return showMaintenance && upcomingMaintenance !== undefined && upcomingMaintenance > 0 ? (
-              <div key="maintenance" className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div key="maintenance" className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Link href="/maintenance">
                   <Card className="hover:border-amber-300 transition-colors cursor-pointer">
                     <CardContent className="pt-5">

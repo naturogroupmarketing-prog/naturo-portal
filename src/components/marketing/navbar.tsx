@@ -21,13 +21,13 @@ export function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-24 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 h-16 sm:h-24 flex items-center justify-between">
         {/* Logo */}
         <Link href="/welcome" className="flex items-center gap-2.5">
           <img
             src="/trackio_t_full_logo.svg"
             alt="trackio"
-            className="w-auto" style={{ height: "45px" }}
+            className="w-auto h-8 sm:h-[45px]"
           />
         </Link>
 

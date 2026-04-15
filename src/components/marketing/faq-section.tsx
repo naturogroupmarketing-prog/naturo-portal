@@ -40,7 +40,7 @@ export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-20 sm:py-28 bg-shark-50/40">
+    <section className="py-14 sm:py-20 lg:py-28 bg-shark-50/40">
       <div className="max-w-3xl mx-auto px-6">
         <ScrollReveal>
           <div className="text-center mb-14">
