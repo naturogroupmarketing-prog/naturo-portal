@@ -112,7 +112,15 @@ interface Props {
 export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [] }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
+  const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
+    // Auto-collapse regions with no actionable items
+    if (!regionBreakdown) return new Set();
+    return new Set(
+      regionBreakdown
+        .filter((r) => r.lowStockCount === 0 && r.pendingRequests === 0 && r.pendingPOs === 0)
+        .map((r) => r.regionId)
+    );
+  });
   const [showOnboarding, setShowOnboarding] = useState(() => {
     if (typeof window === "undefined") return false;
     return !localStorage.getItem("trackio-onboarding-complete");
@@ -551,9 +559,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               <div key="regional" className="space-y-4">
                 <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Regions</p>
                 <div className="space-y-3">
-                  {regionBreakdown.map((region, idx) => {
+                  {[...regionBreakdown].sort((a, b) => a.healthScore - b.healthScore).map((region, idx) => {
               const colors = REGION_COLORS[idx % REGION_COLORS.length];
               const isCollapsed = collapsedRegions.has(region.regionId);
+              const hasActions = region.lowStockCount > 0 || region.pendingRequests > 0 || region.pendingPOs > 0;
               const totalIssues = (region.damaged + region.lost) + region.pendingRequests + region.pendingPOs;
               return (
                 <Card key={region.regionId} className="overflow-hidden">
@@ -566,9 +575,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <span className="font-semibold text-shark-900">{region.regionName}</span>
                         <span className="ml-2 text-xs text-shark-400">{region.stateName}</span>
                       </div>
-                      {totalIssues > 0 && (
-                        <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-shark-100 text-shark-600 rounded-full">
+                      {hasActions ? (
+                        <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-red-50 text-red-500 rounded-full">
                           {totalIssues} {totalIssues === 1 ? "issue" : "issues"}
+                        </span>
+                      ) : (
+                        <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-green-50 text-green-600 rounded-full">
+                          All clear
                         </span>
                       )}
                     </div>
