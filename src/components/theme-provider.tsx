@@ -42,9 +42,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (stored) {
       setTheme(stored);
       document.documentElement.classList.toggle("dark", stored === "dark");
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-      document.documentElement.classList.add("dark");
+    } else {
+      // Default to light mode — users can toggle dark mode manually
+      setTheme("light");
+      document.documentElement.classList.remove("dark");
     }
   }, [mounted, isLightOnly]);
 

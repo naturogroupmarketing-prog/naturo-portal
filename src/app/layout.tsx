@@ -93,7 +93,7 @@ export default function RootLayout({
               // Dark mode is only for the app — not the marketing site
               if (window.location.pathname.indexOf('/welcome') === 0) return;
               var theme = localStorage.getItem('trackio-theme');
-              if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+              if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
               }
             } catch(e) {}
