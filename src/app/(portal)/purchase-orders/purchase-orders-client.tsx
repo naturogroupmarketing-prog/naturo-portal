@@ -35,7 +35,7 @@ type PurchaseOrder = {
   createdAt: string;
   updatedAt: string;
   approvedAt: string | null;
-  consumable: { name: string; unitType: string; category: string; imageUrl: string | null };
+  consumable: { name: string; unitType: string; category: string; imageUrl: string | null; quantityOnHand: number; minimumThreshold: number };
   region: { id: string; name: string; state: { name: string } };
   createdBy: { name: string | null; email: string } | null;
   approvedBy: { name: string | null; email: string } | null;
@@ -413,7 +413,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                     <p className="text-sm font-semibold text-shark-800 truncate">{po.consumable.name}</p>
                     {renderStatus(po)}
                   </div>
-                  <p className="text-xs text-shark-400 mt-0.5">Qty: {po.quantity} · {po.region.name}</p>
+                  <p className="text-xs text-shark-400 mt-0.5">Order: {po.quantity} {po.consumable.unitType} · In stock: {po.consumable.quantityOnHand} · {po.region.name}</p>
                 </div>
               </div>
             </div>
@@ -428,7 +428,8 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             <tr className="border-b border-shark-100 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
               {canApprovePO && <th scope="col" className="px-3 py-3 w-10"><input type="checkbox" checked={selected.size > 0 && selected.size === orders.length} onChange={() => { if (selected.size === orders.length) setSelected(new Set()); else setSelected(new Set(orders.map((o) => o.id))); }} className="rounded border-shark-300 text-action-500" /></th>}
               <th scope="col" className="px-5 py-3">Item</th>
-              <th scope="col" className="px-5 py-3">Qty</th>
+              <th scope="col" className="px-5 py-3">Order Qty</th>
+              <th scope="col" className="px-5 py-3">In Stock</th>
               <th scope="col" className="px-5 py-3">Region</th>
               <th scope="col" className="px-5 py-3 text-right">Status</th>
             </tr>
@@ -436,7 +437,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           <tbody className="divide-y divide-shark-50">
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={canApprovePO ? 5 : 4} className="px-5 py-8 text-center text-shark-400">
+                <td colSpan={canApprovePO ? 6 : 5} className="px-5 py-8 text-center text-shark-400">
                   No purchase orders found.
                 </td>
               </tr>
@@ -465,7 +466,13 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                       </div>
                     </div>
                   </td>
-                  <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity}</td>
+                  <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity} <span className="font-normal text-xs text-shark-400">{po.consumable.unitType}</span></td>
+                  <td className="px-5 py-3.5">
+                    <span className={`font-semibold ${po.consumable.quantityOnHand <= po.consumable.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>
+                      {po.consumable.quantityOnHand}
+                    </span>
+                    <span className="text-xs text-shark-400 ml-1">{po.consumable.unitType}</span>
+                  </td>
                   <td className="px-5 py-3.5 text-shark-500">{po.region.name}</td>
                   <td className="px-5 py-3.5 text-right">
                     {renderStatus(po)}
