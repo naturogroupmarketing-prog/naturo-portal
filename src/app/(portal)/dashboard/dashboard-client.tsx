@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -87,6 +88,53 @@ interface ChartItem {
   name: string;
   value: number;
   color?: string;
+}
+
+function RecalcPredictionsButton() {
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const router = useRouter();
+
+  const handleRecalc = async () => {
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/predictions", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        setStatus("done");
+        router.refresh();
+        setTimeout(() => setStatus("idle"), 3000);
+      } else {
+        console.error(data.error);
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleRecalc}
+      disabled={status === "loading"}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border text-xs sm:text-sm transition-all ${
+        status === "done"
+          ? "border-action-300 bg-action-50 text-action-600"
+          : status === "error"
+          ? "border-red-300 bg-red-50 text-red-600"
+          : "border-shark-200 bg-white text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm"
+      }`}
+      title="Recalculate AI predictions from consumption history"
+    >
+      <Icon
+        name={status === "loading" ? "clock" : status === "done" ? "check" : "bar-chart"}
+        size={12}
+        className={status === "loading" ? "animate-spin" : status === "done" ? "text-action-500" : "text-action-500"}
+      />
+      {status === "loading" ? "Calculating…" : status === "done" ? "Updated!" : status === "error" ? "Failed" : "AI Predict"}
+    </button>
+  );
 }
 
 interface PredictedShortageItem {
@@ -213,6 +261,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             <Icon name="upload" size={12} className="text-action-500" />
             Import
           </Link>
+          <RecalcPredictionsButton />
         </div>
       )}
 
