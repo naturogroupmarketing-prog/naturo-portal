@@ -154,7 +154,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* Onboarding overlay */}
       {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
 
-      <PageTransition className="space-y-8 sm:space-y-10">
+      <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
       {/* Header with settings gear */}
       <div className="flex items-center justify-between">
@@ -170,26 +170,26 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* Quick Actions */}
       {isSuperAdmin && (
-        <div className="flex flex-wrap gap-2">
-          <Link href="/assets?action=add" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="plus" size={14} className="text-action-500" />
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          <Link href="/assets?action=add" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="plus" size={12} className="text-action-500" />
             Add Asset
           </Link>
-          <Link href="/consumables?action=add" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="plus" size={14} className="text-action-500" />
+          <Link href="/consumables?action=add" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="plus" size={12} className="text-action-500" />
             Add Supply
           </Link>
-          <Link href="/purchase-orders?action=create" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="truck" size={14} className="text-action-500" />
+          <Link href="/purchase-orders?action=create" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="truck" size={12} className="text-action-500" />
             Create PO
           </Link>
-          <Link href="/staff" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="users" size={14} className="text-action-500" />
-            Manage Staff
+          <Link href="/staff" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="users" size={12} className="text-action-500" />
+            Staff
           </Link>
-          <Link href="/admin/import" className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-shark-200 bg-white text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="upload" size={14} className="text-action-500" />
-            Import Data
+          <Link href="/admin/import" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
+            <Icon name="upload" size={12} className="text-action-500" />
+            Import
           </Link>
         </div>
       )}
@@ -200,22 +200,23 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return visibleStats.length > 0 ? (
               <div key="stats" className="space-y-4">
               <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
-              <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              <StaggerContainer className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
                     <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
-                      <CardContent>
-                        <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
-                            <Icon name={s.icon} size={22} className={s.iconColor} />
+                      <CardContent className="px-3 py-3 sm:px-5 sm:py-5">
+                        <div className="flex items-center gap-2 sm:gap-4">
+                          <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                            <Icon name={s.icon} size={16} className={`${s.iconColor} sm:hidden`} />
+                            <Icon name={s.icon} size={22} className={`${s.iconColor} hidden sm:block`} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm text-shark-500">{s.label}</p>
-                            <div className="flex items-center gap-2">
-                              <AnimatedCounter value={s.value} className="text-2xl font-bold text-shark-900" />
+                            <p className="text-xs sm:text-sm text-shark-500 truncate">{s.label}</p>
+                            <div className="flex items-center gap-1 sm:gap-2">
+                              <AnimatedCounter value={s.value} className="text-lg sm:text-2xl font-bold text-shark-900" />
                               {s.trend && (
-                                <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                                <span className={`hidden sm:inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                   s.trend.direction === "down" ? "bg-green-50 text-green-600" :
                                   s.trend.direction === "up" ? "bg-red-50 text-red-500" :
                                   "bg-shark-50 text-shark-400"
@@ -227,7 +228,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               )}
                             </div>
                           </div>
-                          <Icon name="arrow-right" size={18} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
+                          <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden sm:block" />
                         </div>
                       </CardContent>
                     </Card>
