@@ -87,17 +87,14 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
     });
 
     // Fetch replenishment suggestions for Super Admin
+    // Fetch ALL consumables with no active PO — filter in JS so we catch
+    // both AI-predicted risk AND items simply below minimum threshold
     const replenishmentSuggestions = isSuperAdmin ? await db.consumable.findMany({
       where: {
         organizationId,
         isActive: true,
         deletedAt: null,
-        OR: [
-          { riskLevel: "critical" },
-          { riskLevel: "warning" },
-        ],
-        avgDailyUsage: { gt: 0 },
-        // Exclude items with existing active POs
+        // Exclude items that already have an active PO
         purchaseOrders: { none: { status: { in: ["PENDING", "APPROVED", "ORDERED"] } } },
       },
       select: {
@@ -112,37 +109,53 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         regionId: true,
         region: { select: { name: true } },
       },
-      orderBy: [{ riskLevel: "asc" }, { quantityOnHand: "asc" }],
-      take: 10,
-    }).then((items) =>
-      items.map((item) => {
-        const dailyUsage = item.avgDailyUsage || 0;
-        const thirtyDaySupply = Math.ceil(dailyUsage * 30);
-        const deficit = Math.max(0, item.reorderLevel - item.quantityOnHand);
-        const suggestedQty = Math.max(deficit, thirtyDaySupply, item.reorderLevel);
-        const daysRemaining = dailyUsage > 0 ? Math.round(item.quantityOnHand / dailyUsage) : null;
+      orderBy: { quantityOnHand: "asc" },
+      take: 500,
+    }).then((items) => {
+      // Filter: AI-predicted risk OR below minimum threshold OR out of stock
+      const atRisk = items.filter((item) =>
+        item.riskLevel === "critical" ||
+        item.riskLevel === "warning" ||
+        item.quantityOnHand === 0 ||
+        item.quantityOnHand <= item.minimumThreshold
+      );
 
-        let reason = "";
-        if (item.quantityOnHand === 0) reason = "Out of stock";
-        else if (daysRemaining !== null && daysRemaining <= 3) reason = `~${daysRemaining}d left`;
-        else if (daysRemaining !== null && daysRemaining <= 7) reason = `Low — ~${daysRemaining}d`;
-        else reason = `Below threshold`;
+      return atRisk
+        .slice(0, 10) // cap at 10 suggestions
+        .map((item) => {
+          const dailyUsage = item.avgDailyUsage || 0;
+          const thirtyDaySupply = Math.ceil(dailyUsage * 30);
+          const safeReorder = Math.max(item.reorderLevel, item.minimumThreshold);
+          const deficit = Math.max(0, safeReorder - item.quantityOnHand);
+          const suggestedQty = Math.max(deficit, thirtyDaySupply, safeReorder, 1);
+          const daysRemaining = dailyUsage > 0 ? Math.round(item.quantityOnHand / dailyUsage) : null;
 
-        return {
-          consumableId: item.id,
-          consumableName: item.name,
-          regionId: item.regionId,
-          regionName: item.region.name,
-          currentStock: item.quantityOnHand,
-          avgDailyUsage: dailyUsage,
-          daysRemaining,
-          riskLevel: item.riskLevel || "warning",
-          suggestedOrderQty: suggestedQty,
-          unitType: item.unitType,
-          reason,
-        };
-      }).filter((s) => s.suggestedOrderQty > 0)
-    ) : [];
+          let reason = "";
+          if (item.quantityOnHand === 0) reason = "Out of stock";
+          else if (daysRemaining !== null && daysRemaining <= 3) reason = `~${daysRemaining}d left`;
+          else if (daysRemaining !== null && daysRemaining <= 7) reason = `Low — ~${daysRemaining}d`;
+          else reason = `Below min threshold (${item.minimumThreshold})`;
+
+          // Risk level: use AI value if set, otherwise derive from stock
+          const riskLevel = item.riskLevel && item.riskLevel !== "ok"
+            ? item.riskLevel
+            : item.quantityOnHand === 0 ? "critical" : "warning";
+
+          return {
+            consumableId: item.id,
+            consumableName: item.name,
+            regionId: item.regionId,
+            regionName: item.region.name,
+            currentStock: item.quantityOnHand,
+            avgDailyUsage: dailyUsage,
+            daysRemaining,
+            riskLevel,
+            suggestedOrderQty: suggestedQty,
+            unitType: item.unitType,
+            reason,
+          };
+        });
+    }) : [];
 
     return (
       <div className="space-y-4">
