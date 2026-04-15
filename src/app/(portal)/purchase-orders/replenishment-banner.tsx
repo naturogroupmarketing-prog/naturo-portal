@@ -12,6 +12,10 @@ interface Props {
   suggestions: ReplenishmentSuggestion[];
 }
 
+function fmtCost(n: number) {
+  return n.toLocaleString("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
+}
+
 // Group suggestions by their shopUrl (or "no-link" if none)
 function groupByShop(suggestions: ReplenishmentSuggestion[]) {
   const groups = new Map<string, { shopUrl: string | null; items: ReplenishmentSuggestion[] }>();
@@ -102,6 +106,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
   const criticalCount = visible.filter((s) => s.riskLevel === "critical").length;
   const warningCount = visible.filter((s) => s.riskLevel === "warning").length;
   const shopGroups = groupByShop(visible);
+  const grandEstimatedCost = visible.reduce((s, r) => s + (r.estimatedCost || 0), 0);
 
   return (
     <Card className="border-[#E8532E]/20 bg-gradient-to-r from-[#E8532E]/5 to-transparent">
@@ -109,10 +114,10 @@ export function ReplenishmentBanner({ suggestions }: Props) {
 
         {/* Header */}
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center shrink-0">
             <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
           </div>
-          <div>
+          <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-shark-900">Smart Replenishment</h3>
             <p className="text-xs text-shark-400">
               {criticalCount > 0 && <span className="text-red-500 font-medium">{criticalCount} critical</span>}
@@ -122,7 +127,13 @@ export function ReplenishmentBanner({ suggestions }: Props) {
               {" "}— grouped by supplier to save on postage
             </p>
           </div>
-          <span className="ml-auto text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
+          {grandEstimatedCost > 0 && (
+            <div className="text-right shrink-0">
+              <p className="text-sm font-bold text-shark-900">{fmtCost(grandEstimatedCost)}</p>
+              <p className="text-[10px] text-shark-400">est. total</p>
+            </div>
+          )}
+          <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
         </div>
 
         {/* Groups by shop */}
@@ -133,6 +144,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
             if (groupVisible.length === 0) return null;
 
             const groupCritical = groupVisible.filter((s) => s.riskLevel === "critical").length;
+            const groupCost = groupVisible.reduce((s, r) => s + (r.estimatedCost || 0), 0);
             const hostname = group.shopUrl ? (() => { try { return new URL(group.shopUrl).hostname.replace("www.", ""); } catch { return group.shopUrl; } })() : null;
 
             return (
@@ -146,6 +158,11 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                   <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full shrink-0 ${groupCritical > 0 ? "bg-red-50 text-red-500" : "bg-amber-50 text-amber-600"}`}>
                     {groupVisible.length} item{groupVisible.length !== 1 ? "s" : ""}
                   </span>
+                  {groupCost > 0 && (
+                    <span className="text-[10px] font-semibold text-shark-600 bg-shark-50 px-1.5 py-0.5 rounded-full shrink-0">
+                      {fmtCost(groupCost)}
+                    </span>
+                  )}
                   {/* Actions for this group */}
                   <div className="flex items-center gap-1 shrink-0">
                     <button
@@ -189,7 +206,11 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                       </div>
                       <div className="text-right shrink-0 mr-1">
                         <p className="text-sm font-bold text-shark-900">{s.suggestedOrderQty} <span className="text-xs font-normal text-shark-400">{s.unitType}</span></p>
-                        <p className="text-[10px] text-shark-400">{s.reason}</p>
+                        {s.estimatedCost ? (
+                          <p className="text-[10px] font-semibold text-action-600">~{fmtCost(s.estimatedCost)}</p>
+                        ) : (
+                          <p className="text-[10px] text-shark-400">{s.reason}</p>
+                        )}
                       </div>
                       <div className="flex gap-1 shrink-0">
                         <Button
@@ -224,6 +245,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                   <div className="px-3 py-2 border-t border-shark-50 bg-shark-50/30 flex items-center justify-between">
                     <p className="text-[11px] text-shark-400">
                       Order all {groupVisible.length} items from this supplier to save on postage
+                      {groupCost > 0 && <span className="ml-1 font-semibold text-shark-600">· Est. {fmtCost(groupCost)}</span>}
                     </p>
                     <Button
                       size="sm"

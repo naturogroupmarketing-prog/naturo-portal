@@ -4,6 +4,7 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { PurchaseOrdersClient } from "./purchase-orders-client";
 import { ReplenishmentBanner } from "./replenishment-banner";
+import { OrderCostSummary } from "./order-cost-summary";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -61,7 +62,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         approvedAt: true,
         createdAt: true,
         updatedAt: true,
-        consumable: { select: { name: true, unitType: true, category: true, imageUrl: true, quantityOnHand: true, minimumThreshold: true, shopUrl: true } },
+        consumable: { select: { name: true, unitType: true, category: true, imageUrl: true, quantityOnHand: true, minimumThreshold: true, shopUrl: true, unitCost: true } },
         region: { select: { id: true, name: true, state: { select: { id: true, name: true } } } },
         createdBy: { select: { name: true, email: true } },
         approvedBy: { select: { name: true, email: true } },
@@ -107,6 +108,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         avgDailyUsage: true,
         riskLevel: true,
         shopUrl: true,
+        unitCost: true,
         regionId: true,
         region: { select: { name: true } },
       },
@@ -156,14 +158,48 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
             unitType: item.unitType,
             reason,
             shopUrl: item.shopUrl || null,
+            unitCost: item.unitCost || null,
+            estimatedCost: item.unitCost ? Math.round(suggestedQty * item.unitCost * 100) / 100 : null,
           };
         });
     }) : [];
+
+    // Cost summary for active POs (PENDING + APPROVED + ORDERED) grouped by region
+    const activePOsForCost = isSuperAdmin ? await db.purchaseOrder.findMany({
+      where: { organizationId, status: { in: ["PENDING", "APPROVED", "ORDERED"] } },
+      select: {
+        quantity: true,
+        status: true,
+        regionId: true,
+        region: { select: { name: true } },
+        consumable: { select: { unitCost: true, name: true } },
+      },
+    }) : [];
+
+    // Group active PO costs by region
+    const poCostByRegion = new Map<string, { regionName: string; total: number; pending: number; approved: number; ordered: number; hasCosting: boolean }>();
+    for (const po of activePOsForCost) {
+      const cost = po.consumable.unitCost ? po.quantity * po.consumable.unitCost : 0;
+      const existing = poCostByRegion.get(po.regionId) || { regionName: po.region.name, total: 0, pending: 0, approved: 0, ordered: 0, hasCosting: false };
+      existing.total += cost;
+      if (po.consumable.unitCost) existing.hasCosting = true;
+      if (po.status === "PENDING") existing.pending += cost;
+      if (po.status === "APPROVED") existing.approved += cost;
+      if (po.status === "ORDERED") existing.ordered += cost;
+      poCostByRegion.set(po.regionId, existing);
+    }
+
+    const poCostSummary = Array.from(poCostByRegion.values())
+      .filter((r) => r.total > 0)
+      .sort((a, b) => b.total - a.total);
 
     return (
       <div className="space-y-4">
       {isSuperAdmin && (
         <ReplenishmentBanner suggestions={replenishmentSuggestions} />
+      )}
+      {isSuperAdmin && poCostSummary.length > 0 && (
+        <OrderCostSummary regions={poCostSummary} />
       )}
       <PurchaseOrdersClient
         purchaseOrders={JSON.parse(JSON.stringify(purchaseOrders))}

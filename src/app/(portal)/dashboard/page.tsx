@@ -834,6 +834,16 @@ export default async function DashboardPage() {
     lowStockCount: (lowStockItems as unknown[]).length,
   };
 
+  // Active procurement cost: sum of quantity × unitCost for PENDING + APPROVED + ORDERED POs (SuperAdmin only)
+  let totalProcurementCost = 0;
+  if (isSuperAdmin) {
+    const activePOs = await db.purchaseOrder.findMany({
+      where: { organizationId, status: { in: ["PENDING", "APPROVED", "ORDERED"] } },
+      select: { quantity: true, consumable: { select: { unitCost: true } } },
+    });
+    totalProcurementCost = activePOs.reduce((sum, po) => sum + (po.consumable.unitCost ? po.quantity * po.consumable.unitCost : 0), 0);
+  }
+
   let preferences = parsePreferences(userPrefs?.dashboardPreferences);
 
   // Branch Manager default: show Overview, Operations, Finance, Region, Low Stock
@@ -1110,6 +1120,7 @@ export default async function DashboardPage() {
     actionItems,
     depletionForecast,
     recentActivity,
+    procurementCost: isSuperAdmin ? Math.round(totalProcurementCost * 100) / 100 : undefined,
   };
 
   // Super Admin — standard dashboard
