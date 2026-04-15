@@ -27,6 +27,7 @@ function timeAgo(dateStr: string) {
 
 const TYPE_ICONS: Record<string, { icon: string; color: string }> = {
   LOW_STOCK: { icon: "alert-triangle", color: "text-[#E8532E]" },
+  LOW_STOCK_PREDICTION: { icon: "bar-chart", color: "text-[#E8532E]" },
   OVERDUE_RETURN: { icon: "clock", color: "text-red-500" },
   PENDING_REQUEST: { icon: "inbox", color: "text-blue-500" },
   DAMAGE_REPORT: { icon: "alert-triangle", color: "text-red-500" },
@@ -37,6 +38,7 @@ const TYPE_ICONS: Record<string, { icon: string; color: string }> = {
   MAINTENANCE_DUE: { icon: "settings", color: "text-[#E8532E]" },
   WARRANTY_EXPIRING: { icon: "shield", color: "text-[#E8532E]" },
   PO_STATUS_CHANGED: { icon: "file-text", color: "text-blue-500" },
+  REPLENISHMENT_SUGGESTION: { icon: "truck", color: "text-action-500" },
   GENERAL: { icon: "bell", color: "text-shark-500" },
 };
 

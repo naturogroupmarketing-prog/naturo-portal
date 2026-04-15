@@ -89,6 +89,18 @@ interface ChartItem {
   color?: string;
 }
 
+interface PredictedShortageItem {
+  id: string;
+  name: string;
+  unitType: string;
+  quantityOnHand: number;
+  avgDailyUsage: number;
+  daysRemaining: number | null;
+  riskLevel: "critical" | "warning" | "ok";
+  regionName: string;
+  predictedDepletionDate: string | null;
+}
+
 interface Props {
   stats: StatCard[];
   lowStockItems: LowStockItem[];
@@ -107,9 +119,10 @@ interface Props {
   upcomingMaintenance?: number;
   isSuperAdmin?: boolean;
   mapLocations?: { id: string; name: string; stateName: string; latitude: number; longitude: number; assetCount: number; consumableCount: number; staffCount: number }[];
+  predictedShortages?: PredictedShortageItem[];
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [] }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [] }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
@@ -142,6 +155,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   const showConsumableCharts = !h.includes("consumable-charts");
   const showRegional = !h.includes("regional-breakdown");
   const showMap = !h.includes("location-map");
+  const showPredictions = !h.includes("predicted-shortages");
 
   const handleRemoveShortcut = (id: string) => {
     startTransition(async () => {
@@ -550,6 +564,49 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       ))}
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            ) : null;
+
+          case "predicted-shortages":
+            return showPredictions && predictedShortages.length > 0 ? (
+              <Card key="predicted-shortages">
+                <Link href="/purchase-orders">
+                  <CardHeader className="hover:bg-shark-50/50 transition-colors cursor-pointer rounded-t-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center">
+                          <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
+                        </div>
+                        <CardTitle>Predicted Shortages</CardTitle>
+                        <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
+                      </div>
+                      <Icon name="arrow-right" size={16} className="text-shark-400" />
+                    </div>
+                  </CardHeader>
+                </Link>
+                <CardContent>
+                  <div className="space-y-0">
+                    {predictedShortages.map((item) => (
+                      <Link key={item.id} href={`/purchase-orders`} className="flex items-center justify-between py-3 border-b border-shark-50 last:border-0 hover:bg-shark-50/50 px-1 -mx-1 rounded-lg transition-colors cursor-pointer">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-shark-800 truncate">{item.name}</p>
+                          <p className="text-xs text-shark-400">{item.regionName} · {item.avgDailyUsage.toFixed(1)}/day usage</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <p className="text-sm font-bold text-shark-900">{item.quantityOnHand} <span className="text-xs font-normal text-shark-400">{item.unitType}</span></p>
+                            {item.daysRemaining !== null && (
+                              <span className={`text-xs font-semibold ${item.riskLevel === "critical" ? "text-red-500" : "text-amber-500"}`}>
+                                {item.daysRemaining === 0 ? "Depleted today" : `~${item.daysRemaining}d left`}
+                              </span>
+                            )}
+                          </div>
+                          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.riskLevel === "critical" ? "bg-red-500" : "bg-amber-400"}`} />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             ) : null;

@@ -292,6 +292,7 @@ export default async function DashboardPage() {
     lowStockItems,
     pendingReturns,
     userPrefs,
+    predictedShortagesRaw,
     ...regionData
   ] = await Promise.all([
     db.asset.count({ where: regionFilter }),
@@ -336,6 +337,28 @@ export default async function DashboardPage() {
     db.user.findUnique({
       where: { id: session.user.id },
       select: { dashboardPreferences: true },
+    }),
+    // Predicted shortages — consumables predicted to deplete within 14 days
+    db.consumable.findMany({
+      where: {
+        ...regionFilter,
+        isActive: true,
+        deletedAt: null,
+        riskLevel: { in: ["critical", "warning"] },
+        avgDailyUsage: { gt: 0 },
+      },
+      select: {
+        id: true,
+        name: true,
+        unitType: true,
+        quantityOnHand: true,
+        avgDailyUsage: true,
+        predictedDepletionDate: true,
+        riskLevel: true,
+        region: { select: { id: true, name: true } },
+      },
+      orderBy: [{ riskLevel: "asc" }, { quantityOnHand: "asc" }],
+      take: 10,
     }),
     // Regional breakdown data (Super Admin only)
     ...(isSuperAdmin
@@ -714,6 +737,25 @@ export default async function DashboardPage() {
     { label: "Reports", href: "/reports", icon: "clipboard", iconBg: "bg-action-500", iconColor: "text-white" },
   ];
 
+  // Transform predicted shortages for client
+  const predictedShortages = (predictedShortagesRaw as { id: string; name: string; unitType: string; quantityOnHand: number; avgDailyUsage: number | null; predictedDepletionDate: Date | null; riskLevel: string | null; region: { id: string; name: string } }[])
+    .map((item) => {
+      const daysRemaining = item.avgDailyUsage && item.avgDailyUsage > 0
+        ? Math.round(item.quantityOnHand / item.avgDailyUsage)
+        : null;
+      return {
+        id: item.id,
+        name: item.name,
+        unitType: item.unitType,
+        quantityOnHand: item.quantityOnHand,
+        avgDailyUsage: item.avgDailyUsage || 0,
+        daysRemaining,
+        riskLevel: (item.riskLevel || "ok") as "critical" | "warning" | "ok",
+        regionName: item.region.name,
+        predictedDepletionDate: item.predictedDepletionDate?.toISOString() || null,
+      };
+    });
+
   const managerProps = {
     stats,
     lowStockItems: JSON.parse(JSON.stringify(lowStockItems)),
@@ -732,6 +774,7 @@ export default async function DashboardPage() {
     upcomingMaintenance,
     isSuperAdmin,
     mapLocations,
+    predictedShortages,
   };
 
   // Super Admin — standard dashboard

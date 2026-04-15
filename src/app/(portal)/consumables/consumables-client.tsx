@@ -61,6 +61,9 @@ interface Consumable {
   supplier: string | null;
   unitCost: number | null;
   notes: string | null;
+  avgDailyUsage: number | null;
+  riskLevel: string | null;
+  predictedDepletionDate: string | null;
   region: { id: string; name: string; state: { name: string } };
   assignments: ConsumableAssignment[];
 }
@@ -471,6 +474,21 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       {activeAssignments.length > 0 && (
                         <p className="text-xs text-shark-500 mt-1">Assigned to {activeAssignments.length} staff</p>
                       )}
+                      {c.avgDailyUsage && c.avgDailyUsage > 0 && (
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                            c.riskLevel === "critical" ? "bg-red-50 text-red-600" :
+                            c.riskLevel === "warning" ? "bg-amber-50 text-amber-600" :
+                            "bg-shark-50 text-shark-500"
+                          }`}>
+                            {(() => {
+                              const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
+                              return daysLeft <= 0 ? "Depleted" : `~${daysLeft}d left`;
+                            })()}
+                          </span>
+                          <span className="text-[10px] text-shark-400">{c.avgDailyUsage.toFixed(1)}/day</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-shark-50" onClick={(e) => e.stopPropagation()}>
@@ -528,7 +546,21 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     )}
                     {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
-                    {visibleColumns.qty && <td className="px-4 py-3 text-right"><span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>{c.quantityOnHand}</span></td>}
+                    {visibleColumns.qty && <td className="px-4 py-3 text-right">
+                      <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>{c.quantityOnHand}</span>
+                      {c.avgDailyUsage && c.avgDailyUsage > 0 && (
+                        <span className={`ml-1.5 text-[10px] font-medium px-1 py-0.5 rounded ${
+                          c.riskLevel === "critical" ? "bg-red-50 text-red-500" :
+                          c.riskLevel === "warning" ? "bg-amber-50 text-amber-500" :
+                          "text-shark-400"
+                        }`}>
+                          {(() => {
+                            const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
+                            return daysLeft <= 0 ? "0d" : `${daysLeft}d`;
+                          })()}
+                        </span>
+                      )}
+                    </td>}
                     {visibleColumns.assignedTo && (
                     <td className="px-4 py-3 text-shark-500 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
                       {activeAssignments.length > 0 ? (

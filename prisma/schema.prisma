@@ -246,6 +246,10 @@ model User {
   onboardingComplete    Boolean  @default(false)
   deletedAt             DateTime?
 
+  // ── Smart Activity Memory ──
+  recentActions         Json?    // [{action, targetId, targetType, timestamp}] last 20
+  frequentItems         Json?    // [{itemId, itemType, count}] top 10 most-used
+
   region       Region?       @relation(fields: [regionId], references: [id])
   organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
@@ -378,6 +382,12 @@ model Consumable {
   sortOrder        Int     @default(0)
   customFields     Json?   // User-defined custom fields as JSON
   deletedAt        DateTime?
+
+  // ── Smart Inventory Predictions ──
+  avgDailyUsage         Float?    // Rolling 30-day average daily consumption
+  predictedDepletionDate DateTime? // Estimated date stock reaches 0
+  riskLevel             String?   // "critical" | "warning" | "ok"
+  lastUsageCalcAt       DateTime? // When predictions were last recalculated
 
   region       Region       @relation(fields: [regionId], references: [id], onDelete: Restrict)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -756,10 +766,13 @@ model Notification {
   message   String
   link      String?  // optional URL to navigate to
   isRead    Boolean  @default(false)
+  priority  String   @default("info") // "critical" | "warning" | "info"
+  predictedDate DateTime? // For forecast-based alerts (e.g. "runs out on X date")
   createdAt DateTime @default(now())
 
   @@index([userId, isRead])
   @@index([userId, createdAt])
+  @@index([userId, priority])
 }
 
 // ─── MAINTENANCE ────────────────────────────────────────

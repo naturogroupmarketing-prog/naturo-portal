@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { PurchaseOrdersClient } from "./purchase-orders-client";
+import { ReplenishmentBanner } from "./replenishment-banner";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -85,7 +86,69 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       orderBy: [{ category: "asc" }, { name: "asc" }],
     });
 
+    // Fetch replenishment suggestions for Super Admin
+    const replenishmentSuggestions = isSuperAdmin ? await db.consumable.findMany({
+      where: {
+        organizationId,
+        isActive: true,
+        deletedAt: null,
+        OR: [
+          { riskLevel: "critical" },
+          { riskLevel: "warning" },
+        ],
+        avgDailyUsage: { gt: 0 },
+        // Exclude items with existing active POs
+        purchaseOrders: { none: { status: { in: ["PENDING", "APPROVED", "ORDERED"] } } },
+      },
+      select: {
+        id: true,
+        name: true,
+        unitType: true,
+        quantityOnHand: true,
+        minimumThreshold: true,
+        reorderLevel: true,
+        avgDailyUsage: true,
+        riskLevel: true,
+        regionId: true,
+        region: { select: { name: true } },
+      },
+      orderBy: [{ riskLevel: "asc" }, { quantityOnHand: "asc" }],
+      take: 10,
+    }).then((items) =>
+      items.map((item) => {
+        const dailyUsage = item.avgDailyUsage || 0;
+        const thirtyDaySupply = Math.ceil(dailyUsage * 30);
+        const deficit = Math.max(0, item.reorderLevel - item.quantityOnHand);
+        const suggestedQty = Math.max(deficit, thirtyDaySupply, item.reorderLevel);
+        const daysRemaining = dailyUsage > 0 ? Math.round(item.quantityOnHand / dailyUsage) : null;
+
+        let reason = "";
+        if (item.quantityOnHand === 0) reason = "Out of stock";
+        else if (daysRemaining !== null && daysRemaining <= 3) reason = `~${daysRemaining}d left`;
+        else if (daysRemaining !== null && daysRemaining <= 7) reason = `Low — ~${daysRemaining}d`;
+        else reason = `Below threshold`;
+
+        return {
+          consumableId: item.id,
+          consumableName: item.name,
+          regionId: item.regionId,
+          regionName: item.region.name,
+          currentStock: item.quantityOnHand,
+          avgDailyUsage: dailyUsage,
+          daysRemaining,
+          riskLevel: item.riskLevel || "warning",
+          suggestedOrderQty: suggestedQty,
+          unitType: item.unitType,
+          reason,
+        };
+      }).filter((s) => s.suggestedOrderQty > 0)
+    ) : [];
+
     return (
+      <div className="space-y-4">
+      {isSuperAdmin && replenishmentSuggestions.length > 0 && (
+        <ReplenishmentBanner suggestions={replenishmentSuggestions} />
+      )}
       <PurchaseOrdersClient
         purchaseOrders={JSON.parse(JSON.stringify(purchaseOrders))}
         regions={JSON.parse(JSON.stringify(regions))}
@@ -98,6 +161,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         initialRegion={params.region}
         showAllHistory={showAllHistory}
       />
+      </div>
     );
   } catch (error) {
     // Show the actual error so we can debug

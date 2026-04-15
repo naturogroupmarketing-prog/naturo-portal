@@ -3,6 +3,7 @@ import { sendEmail } from "@/lib/email";
 
 type NotificationType =
   | "LOW_STOCK"
+  | "LOW_STOCK_PREDICTION"
   | "OVERDUE_RETURN"
   | "PENDING_REQUEST"
   | "DAMAGE_REPORT"
@@ -13,6 +14,7 @@ type NotificationType =
   | "MAINTENANCE_DUE"
   | "WARRANTY_EXPIRING"
   | "PO_STATUS_CHANGED"
+  | "REPLENISHMENT_SUGGESTION"
   | "GENERAL";
 
 export async function createNotification({
@@ -21,15 +23,19 @@ export async function createNotification({
   title,
   message,
   link,
+  priority,
+  predictedDate,
 }: {
   userId: string;
   type: NotificationType;
   title: string;
   message: string;
   link?: string;
+  priority?: "critical" | "warning" | "info";
+  predictedDate?: Date | null;
 }) {
   const notification = await db.notification.create({
-    data: { userId, type, title, message, link },
+    data: { userId, type, title, message, link, priority: priority || "info", predictedDate },
   });
 
   // Send email notification (non-blocking)
@@ -45,6 +51,8 @@ export async function notifyAdminsAndManagers({
   title,
   message,
   link,
+  priority,
+  predictedDate,
 }: {
   organizationId: string;
   regionId?: string;
@@ -52,6 +60,8 @@ export async function notifyAdminsAndManagers({
   title: string;
   message: string;
   link?: string;
+  priority?: "critical" | "warning" | "info";
+  predictedDate?: Date | null;
 }) {
   const where: Record<string, unknown> = {
     organizationId,
@@ -82,6 +92,8 @@ export async function notifyAdminsAndManagers({
       title,
       message,
       link,
+      priority: priority || "info",
+      predictedDate,
     })),
   });
 
