@@ -15,6 +15,7 @@ import { removeCustomShortcut } from "@/app/actions/dashboard";
 import type { DashboardPreferences } from "@/lib/dashboard-types";
 import { SmartActionsPanel, type SmartActionItem } from "./smart-actions-panel";
 import { AiForecastWidget, type DepletionForecastItem } from "./ai-forecast-widget";
+import { RecentActivityWidget, type RecentActivityItem } from "./recent-activity-widget";
 
 // Lazy-load recharts components
 const AreaChart = dynamic(() => import("recharts").then((m) => m.AreaChart), { ssr: false });
@@ -172,9 +173,10 @@ interface Props {
   predictedShortages?: PredictedShortageItem[];
   actionItems?: SmartActionItem[];
   depletionForecast?: DepletionForecastItem[];
+  recentActivity?: RecentActivityItem[];
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [] }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [] }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
@@ -209,6 +211,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   const showMap = !h.includes("location-map");
   const showPredictions = !h.includes("predicted-shortages");
   const showAiForecast = !h.includes("ai-forecast");
+  const showRecentActivity = !h.includes("recent-activity");
 
   const handleRemoveShortcut = (id: string) => {
     startTransition(async () => {
@@ -683,6 +686,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return showAiForecast ? (
               <div key="ai-forecast">
                 <AiForecastWidget items={depletionForecast} />
+              </div>
+            ) : null;
+
+          case "recent-activity":
+            return showRecentActivity ? (
+              <div key="recent-activity">
+                <RecentActivityWidget items={recentActivity} />
               </div>
             ) : null;
 

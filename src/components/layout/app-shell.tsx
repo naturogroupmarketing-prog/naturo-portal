@@ -7,6 +7,7 @@ import { Header } from "./header";
 import { BottomNav } from "./bottom-nav";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Role } from "@/generated/prisma/browser";
+import { QuickActionsFab } from "@/components/ui/quick-actions-fab";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -138,6 +139,9 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
 
       {/* Bottom navigation for Staff on mobile/tablet */}
       {role === "STAFF" && <BottomNav />}
+
+      {/* Floating Quick Actions button — admins and managers only */}
+      {(role === "SUPER_ADMIN" || role === "BRANCH_MANAGER") && <QuickActionsFab />}
     </div>
     </SidebarContext.Provider>
   );

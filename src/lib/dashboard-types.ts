@@ -22,6 +22,7 @@ export const DASHBOARD_SECTIONS = [
   { id: "low-stock", label: "Low Stock Alerts" },
   { id: "predicted-shortages", label: "Predicted Shortages" },
   { id: "ai-forecast", label: "AI Stock Forecast" },
+  { id: "recent-activity", label: "Recent Activity" },
   { id: "regional", label: "Regional Breakdown" },
   { id: "quick-links", label: "Quick Links" },
   { id: "shortcuts", label: "My Shortcuts" },
@@ -50,6 +51,7 @@ export const WIDGET_IDS = {
   LOCATION_MAP: "location-map",
   PREDICTED_SHORTAGES: "predicted-shortages",
   AI_FORECAST: "ai-forecast",
+  RECENT_ACTIVITY: "recent-activity",
 } as const;
 
 export type WidgetId = (typeof WIDGET_IDS)[keyof typeof WIDGET_IDS];
@@ -73,6 +75,7 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   "location-map": "Location Map",
   "predicted-shortages": "Predicted Shortages",
   "ai-forecast": "AI Stock Forecast",
+  "recent-activity": "Recent Activity",
 };
 
 export const DEFAULT_PREFERENCES: DashboardPreferences = {

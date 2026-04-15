@@ -730,6 +730,40 @@ export default async function DashboardPage() {
     }),
   ]);
 
+  // Recent Activity feed — merge requests + checkouts + POs (last 5 each, sort in JS)
+  const [recentRequests, recentCheckouts, recentPOs] = await Promise.all([
+    db.consumableRequest.findMany({
+      where: { consumable: regionFilter },
+      select: {
+        id: true, createdAt: true, status: true, quantity: true,
+        consumable: { select: { name: true, unitType: true } },
+        user: { select: { name: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+    }),
+    db.assetAssignment.findMany({
+      where: { asset: regionFilter, isActive: true },
+      select: {
+        id: true, checkoutDate: true, assignmentType: true,
+        asset: { select: { name: true, assetCode: true } },
+        user: { select: { name: true } },
+      },
+      orderBy: { checkoutDate: "desc" },
+      take: 5,
+    }),
+    db.purchaseOrder.findMany({
+      where: { ...regionFilter },
+      select: {
+        id: true, createdAt: true, status: true, quantity: true,
+        consumable: { select: { name: true, unitType: true } },
+        createdBy: { select: { name: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+    }),
+  ]);
+
   // Upcoming maintenance count
   const upcomingMaintenance = await db.maintenanceSchedule.count({
     where: {
@@ -984,6 +1018,61 @@ export default async function DashboardPage() {
   const PRIORITY_ORDER = { critical: 0, urgent: 1, normal: 2 };
   actionItems.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
 
+  // Build recent activity feed — merge, sort by date, take top 10
+  type RecentActivityItem = import("./recent-activity-widget").RecentActivityItem;
+  const activityFeed: RecentActivityItem[] = [];
+
+  for (const r of (recentRequests as { id: string; createdAt: Date; status: string; quantity: number; consumable: { name: string; unitType: string }; user: { name: string | null } }[])) {
+    activityFeed.push({
+      id: `req-${r.id}`,
+      type: "request",
+      staffName: r.user?.name || "Someone",
+      itemName: r.consumable.name,
+      detail: `${r.quantity} ${r.consumable.unitType} · Status: ${r.status.toLowerCase()}`,
+      timeAgo: r.createdAt.toISOString(),
+      href: "/consumables?tab=requests",
+      status: r.status,
+    });
+  }
+  for (const a of (recentCheckouts as { id: string; checkoutDate: Date; assignmentType: string; asset: { name: string; assetCode: string }; user: { name: string | null } }[])) {
+    activityFeed.push({
+      id: `co-${a.id}`,
+      type: "checkout",
+      staffName: a.user?.name || "Someone",
+      itemName: a.asset.name,
+      detail: `${a.asset.assetCode} · ${a.assignmentType.toLowerCase()} assignment`,
+      timeAgo: a.checkoutDate.toISOString(),
+      href: "/assets",
+    });
+  }
+  for (const p of (recentPOs as { id: string; createdAt: Date; status: string; quantity: number; consumable: { name: string; unitType: string }; createdBy: { name: string | null } | null }[])) {
+    activityFeed.push({
+      id: `po-${p.id}`,
+      type: "po",
+      staffName: p.createdBy?.name || "Admin",
+      itemName: p.consumable.name,
+      detail: `${p.quantity} ${p.consumable.unitType} · ${p.status.toLowerCase()}`,
+      timeAgo: p.createdAt.toISOString(),
+      href: "/purchase-orders",
+      status: p.status,
+    });
+  }
+
+  // Sort by most recent first, take top 10
+  activityFeed.sort((a, b) => new Date(b.timeAgo).getTime() - new Date(a.timeAgo).getTime());
+  const recentActivity: RecentActivityItem[] = activityFeed.slice(0, 10).map((item) => ({
+    ...item,
+    timeAgo: (() => {
+      const diff = Date.now() - new Date(item.timeAgo).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return "just now";
+      if (mins < 60) return `${mins}m ago`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs}h ago`;
+      return `${Math.floor(hrs / 24)}d ago`;
+    })(),
+  }));
+
   // Build depletion forecast data
   const spikeIds = new Set((consumptionSpikeRaw as { id: string }[]).map((i) => i.id));
   const depletionForecast = (depletionForecastRaw as { id: string; name: string; unitType: string; quantityOnHand: number; avgDailyUsage: number; predictedDepletionDate: Date; riskLevel: string | null; region: { name: string } }[])
@@ -1020,6 +1109,7 @@ export default async function DashboardPage() {
     predictedShortages,
     actionItems,
     depletionForecast,
+    recentActivity,
   };
 
   // Super Admin — standard dashboard
