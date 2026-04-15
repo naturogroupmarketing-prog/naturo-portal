@@ -87,19 +87,27 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
               <SidebarRail role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} />
             )}
           </div>
-          {/* Collapse/expand arrow — Connecteam-style floating at border edge */}
-          <button
+          {/* Collapse/expand — edge tab with hover label */}
+          <div
+            className="group absolute -right-3 top-1/2 -translate-y-1/2 z-10 flex items-center cursor-pointer"
             onClick={() => setSidebarExpanded((p) => !p)}
-            className="absolute -right-3 top-4 z-10 w-6 h-6 rounded-full bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 shadow-sm flex items-center justify-center text-shark-400 hover:text-shark-700 hover:shadow-md transition-all"
             title={sidebarExpanded ? "Collapse menu" : "Expand menu"}
           >
-            <svg
-              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              className={`transition-transform duration-300 ${sidebarExpanded ? "" : "rotate-180"}`}
-            >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
+            {/* Vertical track bar */}
+            <div className="w-1.5 h-10 bg-shark-200 dark:bg-shark-700 group-hover:bg-shark-400 dark:group-hover:bg-shark-500 rounded-full transition-colors duration-150" />
+            {/* Floating label — slides in on hover */}
+            <div className="absolute left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none">
+              <div className="flex items-center gap-1 bg-shark-800 dark:bg-shark-700 text-white text-[11px] font-medium px-2 py-1 rounded-md shadow-lg whitespace-nowrap">
+                <svg
+                  width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  className={`transition-transform duration-300 ${sidebarExpanded ? "rotate-180" : ""}`}
+                >
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+                {sidebarExpanded ? "Collapse" : "Expand"}
+              </div>
+            </div>
+          </div>
         </aside>
 
         {/* Mobile sidebar overlay */}
