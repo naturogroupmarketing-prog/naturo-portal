@@ -218,8 +218,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               {s.trend && (
                                 <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                   s.trend.direction === "down" ? "bg-green-50 text-green-600" :
-                                  s.trend.direction === "up" ? "bg-red-50 text-red-500" :
-                                  "bg-shark-50 text-shark-400"
+                                  s.trend.direction === "up" ? "text-red-500" :
+                                  "text-shark-400"
                                 }`}>
                                   {s.trend.direction === "up" && "↑"}
                                   {s.trend.direction === "down" && "↓"}

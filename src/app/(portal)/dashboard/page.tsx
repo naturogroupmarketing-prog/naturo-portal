@@ -692,7 +692,7 @@ export default async function DashboardPage() {
 
   const stats: { widgetId: string; label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string; trend?: { direction: "up" | "down" | "neutral"; label: string } }[] = isSuperAdmin ? [
     { widgetId: "stat-low-stock", label: "Low Stock", value: lowStockCount, icon: "alert-triangle", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/alerts/low-stock", trend: cardTrend(lowStockCount, "Action") },
-    { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables?tab=requests", trend: cardTrend(pendingRequests, "Assign item") },
+    { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables?tab=requests", trend: cardTrend(pendingRequests, "Assign") },
     { widgetId: "stat-pending-returns", label: "Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/returns", trend: cardTrend(pendingReturns as number, "Confirm returns") },
     { widgetId: "stat-total-assets", label: "Total Assets", value: totalAssets, icon: "package", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
     { widgetId: "stat-checked-out", label: "Checked Out", value: checkedOut, icon: "arrow-right", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/assets" },
@@ -702,7 +702,7 @@ export default async function DashboardPage() {
   ] : [
     // Branch Manager — focused on actionable items
     { widgetId: "stat-low-stock", label: "Low Stock", value: lowStockCount, icon: "alert-triangle", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/alerts/low-stock", trend: cardTrend(lowStockCount, "Action") },
-    { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables?tab=requests", trend: cardTrend(pendingRequests, "Assign item") },
+    { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables?tab=requests", trend: cardTrend(pendingRequests, "Assign") },
     { widgetId: "stat-pending-returns", label: "Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/returns", trend: cardTrend(pendingReturns as number, "Confirm returns") },
     { widgetId: "stat-damaged", label: "Damage", value: unresolvedDamageReports + unresolvedLossReports, icon: "alert-triangle", borderColor: "border-t-[#E8532E]", iconBg: "bg-[#E8532E]", iconColor: "text-white", href: "/alerts/damage", trend: cardTrend(unresolvedDamageReports + unresolvedLossReports, "Action") },
   ];
