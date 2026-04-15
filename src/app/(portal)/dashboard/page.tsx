@@ -628,6 +628,38 @@ export default async function DashboardPage() {
     });
   }
 
+  // Smart action panel — fetch pending requests + overdue returns with staff/item names
+  const [pendingRequestsDetail, overdueReturnsDetail] = await Promise.all([
+    db.consumableRequest.findMany({
+      where: { status: "PENDING", consumable: regionFilter },
+      select: {
+        id: true,
+        createdAt: true,
+        quantity: true,
+        consumable: { select: { name: true, unitType: true } },
+        user: { select: { name: true } },
+      },
+      orderBy: { createdAt: "asc" }, // oldest first (most urgent)
+      take: 8,
+    }),
+    db.assetAssignment.findMany({
+      where: {
+        isActive: true,
+        expectedReturnDate: { lt: new Date() },
+        assignmentType: "TEMPORARY",
+        asset: regionFilter,
+      },
+      select: {
+        id: true,
+        expectedReturnDate: true,
+        asset: { select: { name: true, assetCode: true } },
+        user: { select: { name: true } },
+      },
+      orderBy: { expectedReturnDate: "asc" }, // most overdue first
+      take: 8,
+    }),
+  ]);
+
   // Upcoming maintenance count
   const upcomingMaintenance = await db.maintenanceSchedule.count({
     where: {
@@ -756,6 +788,90 @@ export default async function DashboardPage() {
       };
     });
 
+  // Build prioritised action items for SmartActionsPanel
+  const nowMs = Date.now();
+  const actionItems: import("./smart-actions-panel").SmartActionItem[] = [];
+
+  // 1. Pending consumable requests (oldest = most critical)
+  for (const req of pendingRequestsDetail as { id: string; createdAt: Date; quantity: number; consumable: { name: string; unitType: string }; user: { name: string | null } }[]) {
+    const ageMs = nowMs - new Date(req.createdAt).getTime();
+    const ageDays = Math.floor(ageMs / (24 * 60 * 60 * 1000));
+    const ageHours = Math.floor(ageMs / (60 * 60 * 1000));
+    const staffName = req.user?.name || "A staff member";
+    const priority = ageDays >= 2 ? "critical" : ageDays >= 1 ? "urgent" : "normal";
+    actionItems.push({
+      id: `req-${req.id}`,
+      priority,
+      type: "request",
+      title: `${staffName} needs ${req.consumable.name}`,
+      description: `Requested ${req.quantity} ${req.consumable.unitType} — waiting for fulfilment`,
+      href: "/consumables?tab=requests",
+      timeLabel: ageDays >= 1 ? `${ageDays} day${ageDays !== 1 ? "s" : ""} ago` : `${ageHours}h ago`,
+    });
+  }
+
+  // 2. Overdue asset returns
+  for (const ret of overdueReturnsDetail as { id: string; expectedReturnDate: Date | null; asset: { name: string; assetCode: string }; user: { name: string | null } }[]) {
+    if (!ret.expectedReturnDate) continue;
+    const overdueDays = Math.ceil((nowMs - new Date(ret.expectedReturnDate).getTime()) / (24 * 60 * 60 * 1000));
+    const staffName = ret.user?.name || "A staff member";
+    const priority = overdueDays >= 7 ? "critical" : overdueDays >= 3 ? "urgent" : "normal";
+    actionItems.push({
+      id: `ret-${ret.id}`,
+      priority,
+      type: "overdue",
+      title: `${staffName} hasn't returned ${ret.asset.name}`,
+      description: `${ret.asset.assetCode} · Expected back ${overdueDays} day${overdueDays !== 1 ? "s" : ""} ago`,
+      href: "/returns",
+      timeLabel: `${overdueDays}d overdue`,
+    });
+  }
+
+  // 3. Low stock / out-of-stock items (from already-fetched lowStockItems)
+  for (const item of (lowStockItems as { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number; region: { name: string } }[]).slice(0, 5)) {
+    const isOut = item.quantityOnHand === 0;
+    actionItems.push({
+      id: `stock-${item.id}`,
+      priority: isOut ? "critical" : "urgent",
+      type: "stock",
+      title: isOut ? `Out of stock: ${item.name}` : `Low stock: ${item.name}`,
+      description: `${item.region.name} · ${item.quantityOnHand} left (min: ${item.minimumThreshold} ${item.unitType})`,
+      href: "/purchase-orders?action=create",
+      timeLabel: isOut ? "Out of stock" : `${item.quantityOnHand} remaining`,
+    });
+  }
+
+  // 4. Pending POs awaiting approval (use the already-fetched count)
+  if ((ordersAwaitingApproval as number) > 0) {
+    actionItems.push({
+      id: "po-pending",
+      priority: (ordersAwaitingApproval as number) >= 3 ? "urgent" : "normal",
+      type: "po",
+      title: `${ordersAwaitingApproval} purchase order${(ordersAwaitingApproval as number) !== 1 ? "s" : ""} awaiting approval`,
+      description: "Review and approve to keep stock on order",
+      href: "/purchase-orders",
+      timeLabel: `${ordersAwaitingApproval} pending`,
+    });
+  }
+
+  // 5. Unresolved damage reports
+  const totalDamage = (unresolvedDamageReports + unresolvedLossReports) as number;
+  if (totalDamage > 0) {
+    actionItems.push({
+      id: "damage-reports",
+      priority: totalDamage >= 3 ? "urgent" : "normal",
+      type: "damage",
+      title: `${totalDamage} unresolved damage/loss report${totalDamage !== 1 ? "s" : ""}`,
+      description: "Assets marked as damaged or lost need attention",
+      href: "/alerts/damage",
+      timeLabel: `${totalDamage} open`,
+    });
+  }
+
+  // Sort: critical → urgent → normal
+  const PRIORITY_ORDER = { critical: 0, urgent: 1, normal: 2 };
+  actionItems.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
+
   const managerProps = {
     stats,
     lowStockItems: JSON.parse(JSON.stringify(lowStockItems)),
@@ -775,6 +891,7 @@ export default async function DashboardPage() {
     isSuperAdmin,
     mapLocations,
     predictedShortages,
+    actionItems,
   };
 
   // Super Admin — standard dashboard

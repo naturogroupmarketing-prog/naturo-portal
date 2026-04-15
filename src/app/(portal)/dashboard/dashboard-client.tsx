@@ -13,6 +13,7 @@ import { PageTransition, StaggerContainer, StaggerItem } from "@/components/ui/p
 import { OperationsWidget } from "./widgets/operations-widget";
 import { removeCustomShortcut } from "@/app/actions/dashboard";
 import type { DashboardPreferences } from "@/lib/dashboard-types";
+import { SmartActionsPanel, type SmartActionItem } from "./smart-actions-panel";
 
 // Lazy-load recharts components
 const AreaChart = dynamic(() => import("recharts").then((m) => m.AreaChart), { ssr: false });
@@ -168,9 +169,10 @@ interface Props {
   isSuperAdmin?: boolean;
   mapLocations?: { id: string; name: string; stateName: string; latitude: number; longitude: number; assetCount: number; consumableCount: number; staffCount: number }[];
   predictedShortages?: PredictedShortageItem[];
+  actionItems?: SmartActionItem[];
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [] }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [] }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
@@ -224,7 +226,16 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* Onboarding overlay */}
       {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
 
-      <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
+      {/* Two-column layout: main content + sticky action panel on xl+ */}
+      <div className="flex gap-6 items-start">
+      <PageTransition className="flex-1 min-w-0 space-y-6 sm:space-y-8 lg:space-y-10">
+
+      {/* Mobile action panel — shown inline on smaller screens, hidden on xl+ */}
+      {actionItems.length > 0 && (
+        <div className="xl:hidden">
+          <SmartActionsPanel items={actionItems} />
+        </div>
+      )}
 
       {/* Header with settings gear */}
       <div className="flex items-center justify-between">
@@ -848,6 +859,12 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         preferences={preferences}
       />
       </PageTransition>
+
+      {/* Right panel — sticky on xl+, hidden on smaller screens */}
+      <div className="hidden xl:block w-72 flex-shrink-0 sticky top-6 self-start">
+        <SmartActionsPanel items={actionItems} />
+      </div>
+      </div>
     </div>
   );
 }
