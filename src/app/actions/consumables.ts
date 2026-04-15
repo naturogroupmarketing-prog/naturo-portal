@@ -75,6 +75,7 @@ export async function updateConsumable(formData: FormData) {
   const reorderLevel = reorderLevelRaw ? parseInt(reorderLevelRaw) || 10 : 10;
   const regionId = formData.get("regionId") as string;
   const supplier = (formData.get("supplier") as string)?.trim();
+  const shopUrl = (formData.get("shopUrl") as string)?.trim();
   const unitCostRaw = (formData.get("unitCost") as string)?.trim();
   const notes = (formData.get("notes") as string)?.trim();
   const imageUrl = formData.get("imageUrl") as string | null;
@@ -123,6 +124,7 @@ export async function updateConsumable(formData: FormData) {
       reorderLevel,
       regionId,
       supplier: supplier || null,
+      shopUrl: shopUrl || null,
       unitCost: parsedUnitCost !== null && !isNaN(parsedUnitCost) ? parsedUnitCost : null,
       notes: notes || null,
       ...(imageUrl !== null ? { imageUrl: imageUrl || null } : {}),

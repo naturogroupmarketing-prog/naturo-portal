@@ -376,6 +376,7 @@ model Consumable {
   regionId         String
   organizationId   String
   supplier         String?
+  shopUrl          String? // Direct link to the online shop/product page for reordering
   unitCost         Float?
   notes            String? @db.Text
   isActive         Boolean @default(true)

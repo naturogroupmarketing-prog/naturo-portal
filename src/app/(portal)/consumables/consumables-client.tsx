@@ -59,6 +59,7 @@ interface Consumable {
   minimumThreshold: number;
   reorderLevel: number;
   supplier: string | null;
+  shopUrl: string | null;
   unitCost: number | null;
   notes: string | null;
   avgDailyUsage: number | null;
@@ -1127,6 +1128,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <Input name="unitCost" type="number" step="0.01" placeholder="0.00" />
             </div>
           </div>
+          <div>
+            <label className="block text-sm font-medium text-shark-700 mb-1">Shop / Order Link</label>
+            <Input name="shopUrl" type="url" placeholder="https://shop.example.com/product/..." />
+            <p className="text-[11px] text-shark-400 mt-1">Direct link to the product page for quick reordering</p>
+          </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }}>Cancel</Button>
             <Button type="submit" disabled={uploading} loading={uploading}>Add Supply</Button>
@@ -1429,6 +1435,19 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 <label className="block text-sm font-medium text-shark-700 mb-1">Unit Cost (AUD)</label>
                 <Input name="unitCost" type="number" step="0.01" defaultValue={editConsumable.unitCost ?? ""} />
               </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-shark-700 mb-1">Shop / Order Link</label>
+              <div className="flex gap-2 items-center">
+                <Input name="shopUrl" type="url" placeholder="https://shop.example.com/product/..." defaultValue={editConsumable.shopUrl || ""} className="flex-1" />
+                {editConsumable.shopUrl && (
+                  <a href={editConsumable.shopUrl} target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center gap-1 text-xs text-action-600 hover:text-action-700 bg-action-50 hover:bg-action-100 px-2.5 py-1.5 rounded-lg transition-colors" onClick={(e) => e.stopPropagation()}>
+                    <Icon name="arrow-right" size={12} />
+                    Open
+                  </a>
+                )}
+              </div>
+              <p className="text-[11px] text-shark-400 mt-1">Direct link to the product page for quick reordering</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>

@@ -61,7 +61,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         approvedAt: true,
         createdAt: true,
         updatedAt: true,
-        consumable: { select: { name: true, unitType: true, category: true, imageUrl: true, quantityOnHand: true, minimumThreshold: true } },
+        consumable: { select: { name: true, unitType: true, category: true, imageUrl: true, quantityOnHand: true, minimumThreshold: true, shopUrl: true } },
         region: { select: { id: true, name: true, state: { select: { id: true, name: true } } } },
         createdBy: { select: { name: true, email: true } },
         approvedBy: { select: { name: true, email: true } },
@@ -106,6 +106,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         reorderLevel: true,
         avgDailyUsage: true,
         riskLevel: true,
+        shopUrl: true,
         regionId: true,
         region: { select: { name: true } },
       },
@@ -154,6 +155,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
             suggestedOrderQty: suggestedQty,
             unitType: item.unitType,
             reason,
+            shopUrl: item.shopUrl || null,
           };
         });
     }) : [];

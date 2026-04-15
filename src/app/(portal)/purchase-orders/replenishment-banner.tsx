@@ -12,35 +12,43 @@ interface Props {
   suggestions: ReplenishmentSuggestion[];
 }
 
+// Group suggestions by their shopUrl (or "no-link" if none)
+function groupByShop(suggestions: ReplenishmentSuggestion[]) {
+  const groups = new Map<string, { shopUrl: string | null; items: ReplenishmentSuggestion[] }>();
+
+  for (const s of suggestions) {
+    const key = s.shopUrl || "__no_link__";
+    if (!groups.has(key)) {
+      groups.set(key, { shopUrl: s.shopUrl || null, items: [] });
+    }
+    groups.get(key)!.items.push(s);
+  }
+
+  // Sort: shops with links first, then by item count desc
+  return [...groups.values()].sort((a, b) => {
+    if (a.shopUrl && !b.shopUrl) return -1;
+    if (!a.shopUrl && b.shopUrl) return 1;
+    return b.items.length - a.items.length;
+  });
+}
+
+function buildShoppingList(items: ReplenishmentSuggestion[]) {
+  return items
+    .map((s) => `• ${s.consumableName} — order ${s.suggestedOrderQty} ${s.unitType} (have ${s.currentStock})`)
+    .join("\n");
+}
+
 export function ReplenishmentBanner({ suggestions }: Props) {
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [approving, setApproving] = useState<string | null>(null);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [, startTransition] = useTransition();
   const { addToast } = useToast();
   const router = useRouter();
 
   const visible = suggestions.filter((s) => !dismissed.has(s.consumableId));
 
-  const handleApprove = async (suggestion: ReplenishmentSuggestion) => {
-    setApproving(suggestion.consumableId);
-    try {
-      const result = await approveReplenishment(suggestion.consumableId, suggestion.suggestedOrderQty);
-      if (result.success) {
-        addToast(`PO created for ${result.itemName}`, "success");
-        setDismissed((prev) => new Set(prev).add(suggestion.consumableId));
-        startTransition(() => { router.refresh(); });
-      }
-    } catch (e) {
-      addToast(e instanceof Error ? e.message : "Failed to create PO", "error");
-    } finally {
-      setApproving(null);
-    }
-  };
-
-  const criticalCount = visible.filter((s) => s.riskLevel === "critical").length;
-  const warningCount = visible.filter((s) => s.riskLevel === "warning").length;
-
-  // "All clear" state — still render the widget so it's always visible
+  // "All clear" state
   if (visible.length === 0) {
     return (
       <Card className="border-green-100 bg-green-50/50">
@@ -60,10 +68,47 @@ export function ReplenishmentBanner({ suggestions }: Props) {
     );
   }
 
+  const handleApprove = async (suggestion: ReplenishmentSuggestion) => {
+    setApproving(suggestion.consumableId);
+    try {
+      const result = await approveReplenishment(suggestion.consumableId, suggestion.suggestedOrderQty);
+      if (result.success) {
+        addToast(`PO created for ${result.itemName}`, "success");
+        setDismissed((prev) => new Set(prev).add(suggestion.consumableId));
+        startTransition(() => { router.refresh(); });
+      }
+    } catch (e) {
+      addToast(e instanceof Error ? e.message : "Failed to create PO", "error");
+    } finally {
+      setApproving(null);
+    }
+  };
+
+  const handleApproveAll = async (items: ReplenishmentSuggestion[]) => {
+    for (const s of items) {
+      if (dismissed.has(s.consumableId)) continue;
+      await handleApprove(s);
+    }
+  };
+
+  const handleCopyList = (items: ReplenishmentSuggestion[], key: string) => {
+    const list = buildShoppingList(items);
+    navigator.clipboard.writeText(list).then(() => {
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 2000);
+    });
+  };
+
+  const criticalCount = visible.filter((s) => s.riskLevel === "critical").length;
+  const warningCount = visible.filter((s) => s.riskLevel === "warning").length;
+  const shopGroups = groupByShop(visible);
+
   return (
     <Card className="border-[#E8532E]/20 bg-gradient-to-r from-[#E8532E]/5 to-transparent">
-      <CardContent className="py-4">
-        <div className="flex items-center gap-2 mb-3">
+      <CardContent className="py-4 space-y-3">
+
+        {/* Header */}
+        <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center">
             <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
           </div>
@@ -74,64 +119,128 @@ export function ReplenishmentBanner({ suggestions }: Props) {
               {criticalCount > 0 && warningCount > 0 && " · "}
               {warningCount > 0 && <span className="text-amber-500 font-medium">{warningCount} warning</span>}
               {criticalCount === 0 && warningCount === 0 && <span>{visible.length} items</span>}
-              {" "}— suggested orders based on stock levels
+              {" "}— grouped by supplier to save on postage
             </p>
           </div>
-          <span className="ml-auto text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
+          <span className="ml-auto text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
         </div>
 
-        <div className="space-y-2">
-          {visible.slice(0, 5).map((s) => (
-            <div key={s.consumableId} className="flex items-center gap-3 bg-white rounded-lg border border-shark-100 px-3 py-2.5">
-              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${s.riskLevel === "critical" ? "bg-red-500" : "bg-amber-400"}`} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-shark-800 truncate">{s.consumableName}</p>
-                <p className="text-xs text-shark-400">
-                  {s.regionName} · {s.currentStock} in stock · {s.avgDailyUsage.toFixed(1)}/day
-                  {s.daysRemaining !== null && (
-                    <span className={`ml-1 font-medium ${s.riskLevel === "critical" ? "text-red-500" : "text-amber-500"}`}>
-                      · {s.daysRemaining === 0 ? "Depleted" : `~${s.daysRemaining}d left`}
-                    </span>
-                  )}
-                </p>
-              </div>
-              <div className="text-right mr-2">
-                <p className="text-sm font-bold text-shark-900">{s.suggestedOrderQty} <span className="text-xs font-normal text-shark-400">{s.unitType}</span></p>
-                <p className="text-[10px] text-shark-400">{s.reason}</p>
-              </div>
-              <div className="flex gap-1.5">
-                <Button
-                  size="sm"
-                  onClick={() => handleApprove(s)}
-                  disabled={approving === s.consumableId}
-                  className="h-7 px-2.5 text-xs"
-                >
-                  {approving === s.consumableId ? (
-                    <Icon name="clock" size={12} className="animate-spin" />
-                  ) : (
-                    <>
-                      <Icon name="check" size={12} className="mr-1" />
-                      Order
-                    </>
-                  )}
-                </Button>
-                <button
-                  onClick={() => setDismissed((prev) => new Set(prev).add(s.consumableId))}
-                  className="h-7 w-7 flex items-center justify-center rounded-md text-shark-400 hover:text-shark-600 hover:bg-shark-100 transition-colors"
-                  title="Dismiss"
-                >
-                  <Icon name="x" size={12} />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Groups by shop */}
+        <div className="space-y-3">
+          {shopGroups.map((group) => {
+            const groupKey = group.shopUrl || "__no_link__";
+            const groupVisible = group.items.filter((s) => !dismissed.has(s.consumableId));
+            if (groupVisible.length === 0) return null;
 
-        {visible.length > 5 && (
-          <p className="text-xs text-shark-400 mt-2 text-center">
-            +{visible.length - 5} more suggestions
-          </p>
-        )}
+            const groupCritical = groupVisible.filter((s) => s.riskLevel === "critical").length;
+            const hostname = group.shopUrl ? (() => { try { return new URL(group.shopUrl).hostname.replace("www.", ""); } catch { return group.shopUrl; } })() : null;
+
+            return (
+              <div key={groupKey} className="bg-white rounded-xl border border-shark-100 overflow-hidden">
+                {/* Shop header */}
+                <div className="flex items-center gap-2 px-3 py-2 border-b border-shark-50 bg-shark-50/50">
+                  <Icon name="truck" size={13} className="text-shark-400 shrink-0" />
+                  <span className="text-xs font-semibold text-shark-700 flex-1 truncate">
+                    {hostname || "No shop link set"}
+                  </span>
+                  <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full shrink-0 ${groupCritical > 0 ? "bg-red-50 text-red-500" : "bg-amber-50 text-amber-600"}`}>
+                    {groupVisible.length} item{groupVisible.length !== 1 ? "s" : ""}
+                  </span>
+                  {/* Actions for this group */}
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => handleCopyList(groupVisible, groupKey)}
+                      className="inline-flex items-center gap-1 text-[10px] font-medium text-shark-500 hover:text-shark-700 bg-shark-100 hover:bg-shark-200 px-1.5 py-1 rounded transition-colors"
+                      title="Copy shopping list to clipboard"
+                    >
+                      <Icon name={copiedKey === groupKey ? "check" : "copy"} size={10} />
+                      {copiedKey === groupKey ? "Copied!" : "Copy list"}
+                    </button>
+                    {group.shopUrl && (
+                      <a
+                        href={group.shopUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[10px] font-medium text-action-600 bg-action-50 hover:bg-action-100 px-1.5 py-1 rounded transition-colors"
+                        title="Open shop in new tab"
+                      >
+                        <Icon name="arrow-right" size={10} />
+                        Open shop
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                {/* Items in this group */}
+                <div className="divide-y divide-shark-50">
+                  {groupVisible.map((s) => (
+                    <div key={s.consumableId} className="flex items-center gap-2 px-3 py-2">
+                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${s.riskLevel === "critical" ? "bg-red-500" : "bg-amber-400"}`} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-shark-800 truncate">{s.consumableName}</p>
+                        <p className="text-xs text-shark-400">
+                          {s.regionName} · {s.currentStock} in stock
+                          {s.daysRemaining !== null && (
+                            <span className={`ml-1 font-medium ${s.riskLevel === "critical" ? "text-red-500" : "text-amber-500"}`}>
+                              · {s.daysRemaining === 0 ? "Depleted" : `~${s.daysRemaining}d left`}
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0 mr-1">
+                        <p className="text-sm font-bold text-shark-900">{s.suggestedOrderQty} <span className="text-xs font-normal text-shark-400">{s.unitType}</span></p>
+                        <p className="text-[10px] text-shark-400">{s.reason}</p>
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        <Button
+                          size="sm"
+                          onClick={() => handleApprove(s)}
+                          disabled={approving === s.consumableId}
+                          className="h-7 px-2 text-xs"
+                        >
+                          {approving === s.consumableId ? (
+                            <Icon name="clock" size={11} className="animate-spin" />
+                          ) : (
+                            <>
+                              <Icon name="check" size={11} className="mr-1" />
+                              PO
+                            </>
+                          )}
+                        </Button>
+                        <button
+                          onClick={() => setDismissed((prev) => new Set(prev).add(s.consumableId))}
+                          className="h-7 w-7 flex items-center justify-center rounded-md text-shark-300 hover:text-shark-500 hover:bg-shark-100 transition-colors"
+                          title="Dismiss"
+                        >
+                          <Icon name="x" size={11} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Group footer: "Create PO for all" */}
+                {groupVisible.length > 1 && (
+                  <div className="px-3 py-2 border-t border-shark-50 bg-shark-50/30 flex items-center justify-between">
+                    <p className="text-[11px] text-shark-400">
+                      Order all {groupVisible.length} items from this supplier to save on postage
+                    </p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleApproveAll(groupVisible)}
+                      disabled={!!approving}
+                      className="h-6 px-2 text-[10px]"
+                    >
+                      <Icon name="check" size={10} className="mr-1" />
+                      Create all POs
+                    </Button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </CardContent>
     </Card>
   );

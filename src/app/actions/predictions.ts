@@ -202,6 +202,7 @@ export interface ReplenishmentSuggestion {
   suggestedOrderQty: number;
   unitType: string;
   reason: string;
+  shopUrl?: string | null;
 }
 
 export async function getReplenishmentSuggestions(): Promise<ReplenishmentSuggestion[]> {

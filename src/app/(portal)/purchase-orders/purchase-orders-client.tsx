@@ -35,7 +35,7 @@ type PurchaseOrder = {
   createdAt: string;
   updatedAt: string;
   approvedAt: string | null;
-  consumable: { name: string; unitType: string; category: string; imageUrl: string | null; quantityOnHand: number; minimumThreshold: number };
+  consumable: { name: string; unitType: string; category: string; imageUrl: string | null; quantityOnHand: number; minimumThreshold: number; shopUrl: string | null };
   region: { id: string; name: string; state: { name: string } };
   createdBy: { name: string | null; email: string } | null;
   approvedBy: { name: string | null; email: string } | null;
@@ -414,6 +414,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                     {renderStatus(po)}
                   </div>
                   <p className="text-xs text-shark-400 mt-0.5">In stock: {po.consumable.quantityOnHand} · Order: {po.quantity} {po.consumable.unitType} · {po.region.name}</p>
+                  {po.consumable.shopUrl && (
+                    <a href={po.consumable.shopUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 text-[10px] font-medium text-action-600 mt-0.5 hover:underline">
+                      <Icon name="arrow-right" size={10} />
+                      Open shop to order
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -461,8 +467,23 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                         </div>
                       )}
                       <div>
-                        <span className="font-medium text-shark-800">{po.consumable.name}</span>
-                        <span className="ml-1 text-xs text-shark-400">({po.consumable.unitType})</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-shark-800">{po.consumable.name}</span>
+                          {po.consumable.shopUrl && (
+                            <a
+                              href={po.consumable.shopUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-1 text-[10px] font-medium bg-action-50 text-action-600 hover:bg-action-100 px-1.5 py-0.5 rounded transition-colors"
+                              title="Open shop page"
+                            >
+                              <Icon name="arrow-right" size={10} />
+                              Buy
+                            </a>
+                          )}
+                        </div>
+                        <span className="text-xs text-shark-400">({po.consumable.unitType})</span>
                       </div>
                     </div>
                   </td>
