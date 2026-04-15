@@ -14,6 +14,7 @@ import { OperationsWidget } from "./widgets/operations-widget";
 import { removeCustomShortcut } from "@/app/actions/dashboard";
 import type { DashboardPreferences } from "@/lib/dashboard-types";
 import { SmartActionsPanel, type SmartActionItem } from "./smart-actions-panel";
+import { AiForecastWidget, type DepletionForecastItem } from "./ai-forecast-widget";
 
 // Lazy-load recharts components
 const AreaChart = dynamic(() => import("recharts").then((m) => m.AreaChart), { ssr: false });
@@ -170,9 +171,10 @@ interface Props {
   mapLocations?: { id: string; name: string; stateName: string; latitude: number; longitude: number; assetCount: number; consumableCount: number; staffCount: number }[];
   predictedShortages?: PredictedShortageItem[];
   actionItems?: SmartActionItem[];
+  depletionForecast?: DepletionForecastItem[];
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [] }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [] }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
@@ -206,6 +208,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   const showRegional = !h.includes("regional-breakdown");
   const showMap = !h.includes("location-map");
   const showPredictions = !h.includes("predicted-shortages");
+  const showAiForecast = !h.includes("ai-forecast");
 
   const handleRemoveShortcut = (id: string) => {
     startTransition(async () => {
@@ -674,6 +677,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </div>
                 </CardContent>
               </Card>
+            ) : null;
+
+          case "ai-forecast":
+            return showAiForecast ? (
+              <div key="ai-forecast">
+                <AiForecastWidget items={depletionForecast} />
+              </div>
             ) : null;
 
           case "regional":

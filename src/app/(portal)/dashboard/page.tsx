@@ -660,6 +660,76 @@ export default async function DashboardPage() {
     }),
   ]);
 
+  // AI Feature queries — run in parallel
+  const [depletionForecastRaw, staffUnackRaw, consumptionSpikeRaw] = await Promise.all([
+    // 1. Depletion forecast: items predicted to run out in next 14 days
+    db.consumable.findMany({
+      where: {
+        ...regionFilter,
+        isActive: true,
+        deletedAt: null,
+        avgDailyUsage: { gt: 0 },
+        predictedDepletionDate: {
+          not: null,
+          lte: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+          gte: new Date(),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        unitType: true,
+        quantityOnHand: true,
+        avgDailyUsage: true,
+        predictedDepletionDate: true,
+        riskLevel: true,
+        region: { select: { name: true } },
+      },
+      orderBy: { predictedDepletionDate: "asc" },
+      take: 20,
+    }),
+
+    // 2. Staff with unacknowledged kit items (assigned but not confirmed receipt)
+    db.assetAssignment.findMany({
+      where: {
+        isActive: true,
+        acknowledgedAt: null,
+        starterKitApplicationId: { not: null },
+        asset: regionFilter,
+      },
+      select: {
+        id: true,
+        checkoutDate: true,
+        user: { select: { name: true, id: true } },
+      },
+      orderBy: { checkoutDate: "asc" },
+      take: 30,
+    }),
+
+    // 3. Consumption spike detection: consumables where 30-day rate is much higher than baseline
+    // We detect spikes by comparing riskLevel with quantityOnHand — if critical but qty > minimum, usage spiked
+    db.consumable.findMany({
+      where: {
+        ...regionFilter,
+        isActive: true,
+        deletedAt: null,
+        avgDailyUsage: { gt: 0 },
+        riskLevel: "critical",
+        quantityOnHand: { gt: 0 }, // not just out-of-stock, genuinely fast depletion
+      },
+      select: {
+        id: true,
+        name: true,
+        quantityOnHand: true,
+        minimumThreshold: true,
+        avgDailyUsage: true,
+        region: { select: { name: true } },
+      },
+      orderBy: { avgDailyUsage: "desc" },
+      take: 5,
+    }),
+  ]);
+
   // Upcoming maintenance count
   const upcomingMaintenance = await db.maintenanceSchedule.count({
     where: {
@@ -868,9 +938,66 @@ export default async function DashboardPage() {
     });
   }
 
+  // 6. Staff unacknowledged kit items — group by user
+  const unackByUser = new Map<string, { name: string; count: number; oldestDate: Date }>();
+  for (const a of (staffUnackRaw as { id: string; checkoutDate: Date; user: { name: string | null; id: string } }[])) {
+    const uid = a.user.id;
+    const existing = unackByUser.get(uid);
+    const date = new Date(a.checkoutDate);
+    if (!existing) {
+      unackByUser.set(uid, { name: a.user.name || "A staff member", count: 1, oldestDate: date });
+    } else {
+      existing.count++;
+      if (date < existing.oldestDate) existing.oldestDate = date;
+    }
+  }
+  for (const [, u] of Array.from(unackByUser.entries()).slice(0, 3)) {
+    const ageDays = Math.floor((nowMs - u.oldestDate.getTime()) / (24 * 60 * 60 * 1000));
+    actionItems.push({
+      id: `unack-${u.name}`,
+      priority: ageDays >= 3 ? "urgent" : "normal",
+      type: "request" as const,
+      title: `${u.name} hasn't confirmed ${u.count} item${u.count !== 1 ? "s" : ""}`,
+      description: "Kit assigned but not yet acknowledged by staff member",
+      href: "/staff",
+      timeLabel: ageDays >= 1 ? `${ageDays}d since assigned` : "Today",
+    });
+  }
+
+  // 7. Consumption spikes — critical items with qty still above minimum (usage has accelerated)
+  for (const item of (consumptionSpikeRaw as { id: string; name: string; quantityOnHand: number; minimumThreshold: number; avgDailyUsage: number; region: { name: string } }[])) {
+    if (item.quantityOnHand > item.minimumThreshold) {
+      const daysLeft = Math.round(item.quantityOnHand / item.avgDailyUsage);
+      actionItems.push({
+        id: `spike-${item.id}`,
+        priority: "urgent" as const,
+        type: "stock" as const,
+        title: `Usage spike: ${item.name}`,
+        description: `${item.region.name} · Depleting faster than normal (~${daysLeft}d left)`,
+        href: "/purchase-orders?action=create",
+        timeLabel: "Unusual usage ↑",
+      });
+    }
+  }
+
   // Sort: critical → urgent → normal
   const PRIORITY_ORDER = { critical: 0, urgent: 1, normal: 2 };
   actionItems.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
+
+  // Build depletion forecast data
+  const spikeIds = new Set((consumptionSpikeRaw as { id: string }[]).map((i) => i.id));
+  const depletionForecast = (depletionForecastRaw as { id: string; name: string; unitType: string; quantityOnHand: number; avgDailyUsage: number; predictedDepletionDate: Date; riskLevel: string | null; region: { name: string } }[])
+    .map((item) => ({
+      id: item.id,
+      name: item.name,
+      unitType: item.unitType,
+      quantityOnHand: item.quantityOnHand,
+      predictedDepletionDate: item.predictedDepletionDate.toISOString(),
+      daysRemaining: Math.max(0, Math.ceil((item.predictedDepletionDate.getTime() - nowMs) / (24 * 60 * 60 * 1000))),
+      riskLevel: (item.riskLevel || "warning") as "critical" | "warning" | "ok",
+      regionName: item.region.name,
+      spiking: spikeIds.has(item.id),
+    }));
 
   const managerProps = {
     stats,
@@ -892,6 +1019,7 @@ export default async function DashboardPage() {
     mapLocations,
     predictedShortages,
     actionItems,
+    depletionForecast,
   };
 
   // Super Admin — standard dashboard
