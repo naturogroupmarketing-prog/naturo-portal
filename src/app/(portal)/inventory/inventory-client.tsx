@@ -93,110 +93,109 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
     : locations;
 
   return (
-    <div className="space-y-10">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Inventory</h1>
-          <p className="text-sm text-shark-400 mt-1">{totalRegions} locations &middot; {totalAssets} assets &middot; {totalConsumables} supplies</p>
-        </div>
-        {isSuperAdmin && (
-          <Button size="sm" onClick={() => { setShowManageModal(true); setManageTab("locations"); }}>
-            <Icon name="settings" size={14} className="mr-1.5" />
-            Manage Locations
-          </Button>
-        )}
-      </div>
-
-      {/* Search */}
-      <Input
-        placeholder="Search locations..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="max-w-xs"
-      />
-
-      {/* Location List */}
-      {filteredLocations.length === 0 ? (
-        <Card>
-          <div className="py-12 text-center">
-            <Icon name="map-pin" size={40} className="text-shark-200 mx-auto mb-3" />
-            <p className="text-shark-400">{search ? "No locations match your search." : "No locations yet."}</p>
+    <div className="space-y-6">
+      {/* Header + search + all regions — one unified card */}
+      <Card>
+        <div className="p-4 sm:p-5 space-y-4">
+          {/* Title row */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                <Icon name="package" size={14} className="text-action-600" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-shark-900">Inventory</h3>
+                <p className="text-xs text-shark-400">
+                  {totalRegions} locations · {totalAssets} assets · {totalConsumables} supplies
+                </p>
+              </div>
+            </div>
+            {isSuperAdmin && (
+              <Button size="sm" onClick={() => { setShowManageModal(true); setManageTab("locations"); }}>
+                <Icon name="settings" size={14} className="mr-1.5" />
+                Manage Locations
+              </Button>
+            )}
           </div>
-        </Card>
-      ) : (
-        filteredLocations.map((state, sIdx) => {
-          const sc = STATE_COLORS[sIdx % STATE_COLORS.length];
-          const isCollapsed = collapsedStates.has(state.id);
 
-          return (
-            <div key={state.id} className="space-y-3">
-              {/* State Header */}
-              <button
-                onClick={() => toggleState(state.id)}
-                className="flex items-center gap-3 px-1 pt-2 w-full text-left group"
-              >
-                <div className={`w-9 h-9 rounded-xl ${sc.bg} flex items-center justify-center`}>
-                  <Icon name="map-pin" size={18} className={sc.color} />
-                </div>
-                <div className="flex items-center gap-2 flex-1">
-                  <h2 className="text-xl font-bold text-shark-900">{state.name}</h2>
-                  <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
-                    {state.regions.length} location{state.regions.length !== 1 ? "s" : ""}
-                  </span>
-                </div>
-                {isSuperAdmin && state.regions.length === 0 && (
+          {/* Search */}
+          <Input
+            placeholder="Search locations..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        {/* Location list — divided sections inside the card */}
+        {filteredLocations.length === 0 ? (
+          <div className="border-t border-shark-100 py-12 text-center">
+            <Icon name="map-pin" size={36} className="text-shark-200 mx-auto mb-3" />
+            <p className="text-sm text-shark-400">{search ? "No locations match your search." : "No locations yet."}</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-shark-100">
+            {filteredLocations.map((state, sIdx) => {
+              const sc = STATE_COLORS[sIdx % STATE_COLORS.length];
+              const isCollapsed = collapsedStates.has(state.id);
+
+              return (
+                <div key={state.id}>
+                  {/* State header row */}
                   <button
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      const fd = new FormData(); fd.set("id", state.id);
-                      try { await deleteState(fd); addToast("State deleted", "success"); } catch { addToast("Failed", "error"); }
-                    }}
-                    className="text-shark-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100"
+                    onClick={() => toggleState(state.id)}
+                    className="w-full flex items-center gap-3 px-4 sm:px-5 py-3 hover:bg-shark-50/50 transition-colors group text-left"
                   >
-                    <Icon name="x" size={14} />
+                    <div className={`w-7 h-7 rounded-lg ${sc.bg} flex items-center justify-center shrink-0`}>
+                      <Icon name="map-pin" size={14} className={sc.color} />
+                    </div>
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <span className="text-sm font-semibold text-shark-900">{state.name}</span>
+                      <span className="text-[10px] font-semibold text-shark-500 bg-shark-100 px-2 py-0.5 rounded-full">
+                        {state.regions.length} location{state.regions.length !== 1 ? "s" : ""}
+                      </span>
+                    </div>
+                    {isSuperAdmin && state.regions.length === 0 && (
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const fd = new FormData(); fd.set("id", state.id);
+                          try { await deleteState(fd); addToast("State deleted", "success"); } catch { addToast("Failed", "error"); }
+                        }}
+                        className="text-shark-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Icon name="x" size={14} />
+                      </button>
+                    )}
+                    <Icon
+                      name="chevron-down"
+                      size={14}
+                      className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
+                    />
                   </button>
-                )}
-                <Icon
-                  name="chevron-down"
-                  size={18}
-                  className={`text-shark-400 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
-                />
-              </button>
 
-              {/* Region Cards */}
-              {!isCollapsed && (
-                <div className="space-y-2 ml-4">
-                  {state.regions.length === 0 ? (
-                    <p className="text-sm text-shark-400 px-1">No locations yet.</p>
-                  ) : (
-                    state.regions.map((region) => {
-                      const alerts = regionAlerts[region.id];
-                      return (
-                        <Link key={region.id} href={`/inventory/${region.id}`} className="block group">
-                        <Card className={`hover:shadow-md transition-all cursor-pointer border-action-100 hover:border-action-300`}>
-                          <div className="px-4 py-3.5">
-                            <div className="flex items-center justify-between gap-3">
-                              {/* Left — name + counts */}
-                              <div className="flex items-center gap-3 flex-1 min-w-0">
-                                <div className={`w-8 h-8 rounded-lg ${sc.bg} flex items-center justify-center shrink-0`}>
-                                  <Icon name="map-pin" size={14} className={sc.color} />
-                                </div>
-                                <div className="min-w-0">
-                                  <h3 className="text-sm font-semibold text-shark-800">{region.name}</h3>
-                                  <p className="text-xs text-shark-400 mt-0.5">
-                                    {region._count.assets} assets · {region._count.consumables} supplies · {region._count.users} staff
-                                  </p>
-                                  {region.address && (
-                                    <p className="hidden lg:flex text-xs text-shark-400 mt-0.5 items-center gap-1">
-                                      <Icon name="map-pin" size={10} className="text-shark-300" />
-                                      {region.address}
-                                    </p>
-                                  )}
-                                </div>
+                  {/* Region rows */}
+                  {!isCollapsed && (
+                    <div className="divide-y divide-shark-50">
+                      {state.regions.length === 0 ? (
+                        <p className="text-sm text-shark-400 px-4 sm:px-5 py-3">No locations yet.</p>
+                      ) : (
+                        state.regions.map((region) => {
+                          const alerts = regionAlerts[region.id];
+                          return (
+                            <Link key={region.id} href={`/inventory/${region.id}`} className="flex items-center gap-3 px-4 sm:px-5 py-3 hover:bg-shark-50/60 transition-colors group cursor-pointer">
+                              {/* Icon */}
+                              <div className={`w-7 h-7 rounded-lg ${sc.bg} flex items-center justify-center shrink-0`}>
+                                <Icon name="map-pin" size={13} className={sc.color} />
                               </div>
-
-                              {/* Right — alert badges + edit icon */}
+                              {/* Name + meta */}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-shark-800">{region.name}</p>
+                                <p className="text-xs text-shark-400">
+                                  {region._count.assets} assets · {region._count.consumables} supplies · {region._count.users} staff
+                                  {region.address && <span className="hidden lg:inline"> · {region.address}</span>}
+                                </p>
+                              </div>
+                              {/* Alerts + actions */}
                               <div className="flex items-center gap-1.5 shrink-0">
                                 {alerts && (() => {
                                   const damageLost = alerts.unresolvedDamage + alerts.lost;
@@ -239,19 +238,18 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                 )}
                                 <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors" />
                               </div>
-                            </div>
-                          </div>
-                        </Card>
-                        </Link>
-                      );
-                    })
+                            </Link>
+                          );
+                        })
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
-          );
-        })
-      )}
+              );
+            })}
+          </div>
+        )}
+      </Card>
 
       {/* Edit Region Modal */}
       <Modal open={!!editLocationRegion} onClose={() => setEditLocationRegion(null)} title={`Edit: ${editLocationRegion?.name}`}>
