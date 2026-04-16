@@ -615,102 +615,101 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               </button>
             ))}
           </div>
-        </div>
-      </Card>
-
-      {/* Bulk Action Bar */}
-      {selected.size > 0 && canApprovePO && (
-        <div className="sticky top-14 z-20 bg-action-500 text-white rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
-          <span className="text-sm font-medium">{selected.size} selected</span>
-          <div className="flex items-center gap-2">
-            {selectedPending > 0 && (
-              <>
-                <Button size="sm" variant="secondary" onClick={() => handleBulk("APPROVED")} disabled={bulkLoading} loading={bulkLoading}>Approve ({selectedPending})</Button>
-                <Button size="sm" variant="ghost" className="text-white hover:bg-white/20" onClick={() => handleBulk("REJECTED")} disabled={bulkLoading}>Reject ({selectedPending})</Button>
-              </>
-            )}
-            {selectedApproved > 0 && (
-              <Button size="sm" variant="secondary" onClick={() => handleBulk("ORDERED")} disabled={bulkLoading} loading={bulkLoading}>Mark Ordered ({selectedApproved})</Button>
-            )}
-            {selectedOrdered > 0 && (
-              <Button size="sm" variant="secondary" onClick={() => handleBulk("RECEIVED")} disabled={bulkLoading} loading={bulkLoading}>Mark Received ({selectedOrdered})</Button>
-            )}
-            <button onClick={() => setSelected(new Set())} className="text-white/80 hover:text-white p-1 ml-1"><Icon name="x" size={16} /></button>
-          </div>
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg flex items-center justify-between">
-          <span>{error}</span>
-          <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600">
-            <Icon name="x" size={14} />
-          </button>
-        </div>
-      )}
-
-      {/* Content */}
-      {purchaseOrders.length === 0 ? (
-        <EmptyState
-          icon="truck"
-          title="No purchase orders"
-          description="Create your first purchase order to replenish stock"
-          action={{ label: "Create PO", href: "/purchase-orders?action=create" }}
-        />
-      ) : isSuperAdmin ? (
-        // Region-grouped view
-        <div className="space-y-3">
-          {regionGroups.map(({ region, orders }, idx) => {
-            const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
-            const isCollapsed = collapsedSections.has(region.id);
-            const pendingInRegion = orders.filter((o) => o.status === "PENDING").length;
-
-            return (
-              <Card key={region.id} className="overflow-hidden border-action-100">
-                <button
-                  onClick={() => toggleSection(region.id)}
-                  className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
-                      <Icon name="map-pin" size={13} className={colors.color} />
-                    </div>
-                    <div className="text-left">
-                      <span className="text-sm font-semibold text-shark-900">{region.name}</span>
-                      <span className="ml-2 text-xs text-shark-400">{region.state.name}</span>
-                    </div>
-                    <span className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-white border border-shark-100 text-shark-600 rounded-full">
-                      {orders.length} order{orders.length !== 1 ? "s" : ""}
-                    </span>
-                    {pendingInRegion > 0 && (
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 border border-red-100 text-red-500 rounded-full">
-                        {pendingInRegion} pending
-                      </span>
-                    )}
-                  </div>
-                  <Icon
-                    name="chevron-down"
-                    size={14}
-                    className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
-                  />
-                </button>
-                {!isCollapsed && (
-                  <div className="border-t border-shark-100/60 bg-white">
-                    {renderTable(orders)}
-                  </div>
+          {/* Bulk Action Bar — inside card */}
+          {selected.size > 0 && canApprovePO && (
+            <div className="sticky top-14 z-20 bg-action-500 text-white rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+              <span className="text-sm font-medium">{selected.size} selected</span>
+              <div className="flex items-center gap-2">
+                {selectedPending > 0 && (
+                  <>
+                    <Button size="sm" variant="secondary" onClick={() => handleBulk("APPROVED")} disabled={bulkLoading} loading={bulkLoading}>Approve ({selectedPending})</Button>
+                    <Button size="sm" variant="ghost" className="text-white hover:bg-white/20" onClick={() => handleBulk("REJECTED")} disabled={bulkLoading}>Reject ({selectedPending})</Button>
+                  </>
                 )}
-              </Card>
-            );
-          })}
+                {selectedApproved > 0 && (
+                  <Button size="sm" variant="secondary" onClick={() => handleBulk("ORDERED")} disabled={bulkLoading} loading={bulkLoading}>Mark Ordered ({selectedApproved})</Button>
+                )}
+                {selectedOrdered > 0 && (
+                  <Button size="sm" variant="secondary" onClick={() => handleBulk("RECEIVED")} disabled={bulkLoading} loading={bulkLoading}>Mark Received ({selectedOrdered})</Button>
+                )}
+                <button onClick={() => setSelected(new Set())} className="text-white/80 hover:text-white p-1 ml-1"><Icon name="x" size={16} /></button>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg flex items-center justify-between">
+              <span>{error}</span>
+              <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600">
+                <Icon name="x" size={14} />
+              </button>
+            </div>
+          )}
         </div>
-      ) : (
-        // Single region view
-        <Card className="overflow-hidden border-action-100">
-          <div className="bg-white">
+
+        {/* Content — region groups as sections inside the same card */}
+        {purchaseOrders.length === 0 ? (
+          <div className="px-4 sm:px-5 pb-4">
+            <EmptyState
+              icon="truck"
+              title="No purchase orders"
+              description="Create your first purchase order to replenish stock"
+              action={{ label: "Create PO", href: "/purchase-orders?action=create" }}
+            />
+          </div>
+        ) : isSuperAdmin ? (
+          // Region-grouped view — each region is a section with a top divider
+          <div className="divide-y divide-shark-100">
+            {regionGroups.map(({ region, orders }, idx) => {
+              const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
+              const isCollapsed = collapsedSections.has(region.id);
+              const pendingInRegion = orders.filter((o) => o.status === "PENDING").length;
+
+              return (
+                <div key={region.id}>
+                  <button
+                    onClick={() => toggleSection(region.id)}
+                    className="w-full flex items-center justify-between px-4 sm:px-5 py-3 hover:bg-shark-50/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
+                        <Icon name="map-pin" size={13} className={colors.color} />
+                      </div>
+                      <div className="text-left">
+                        <span className="text-sm font-semibold text-shark-900">{region.name}</span>
+                        <span className="ml-2 text-xs text-shark-400">{region.state.name}</span>
+                      </div>
+                      <span className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-shark-100 text-shark-600 rounded-full">
+                        {orders.length} order{orders.length !== 1 ? "s" : ""}
+                      </span>
+                      {pendingInRegion > 0 && (
+                        <span className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 border border-red-100 text-red-500 rounded-full">
+                          {pendingInRegion} pending
+                        </span>
+                      )}
+                    </div>
+                    <Icon
+                      name="chevron-down"
+                      size={14}
+                      className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
+                    />
+                  </button>
+                  {!isCollapsed && (
+                    <div className="border-t border-shark-50">
+                      {renderTable(orders)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          // Single region view
+          <div className="border-t border-shark-100">
             {renderTable(filtered)}
           </div>
-        </Card>
-      )}
+        )}
+      </Card>
       {/* Order Detail / Edit Modal */}
       {viewOrder && (
         <Modal open onClose={() => setViewOrder(null)} title={canManagePO ? "Edit Purchase Order" : "Purchase Order Details"}>
