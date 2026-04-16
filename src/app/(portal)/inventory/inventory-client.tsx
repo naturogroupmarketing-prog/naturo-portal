@@ -133,7 +133,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
             <p className="text-sm text-shark-400">{search ? "No locations match your search." : "No locations yet."}</p>
           </div>
         ) : (
-          <div className="divide-y divide-shark-100">
+          <div className="divide-y-2 divide-shark-100">
             {filteredLocations.map((state, sIdx) => {
               const sc = STATE_COLORS[sIdx % STATE_COLORS.length];
               const isCollapsed = collapsedStates.has(state.id);
@@ -143,14 +143,14 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                   {/* State header row */}
                   <button
                     onClick={() => toggleState(state.id)}
-                    className="w-full flex items-center gap-3 px-4 sm:px-5 py-3 hover:bg-shark-50/50 transition-colors group text-left"
+                    className="w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 bg-shark-50/70 hover:bg-shark-100/60 transition-colors group text-left"
                   >
                     <div className={`w-7 h-7 rounded-lg ${sc.bg} flex items-center justify-center shrink-0`}>
                       <Icon name="map-pin" size={14} className={sc.color} />
                     </div>
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span className="text-sm font-semibold text-shark-900">{state.name}</span>
-                      <span className="text-[10px] font-semibold text-shark-500 bg-shark-100 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-semibold text-shark-500 bg-shark-200/60 px-2 py-0.5 rounded-full">
                         {state.regions.length} location{state.regions.length !== 1 ? "s" : ""}
                       </span>
                     </div>
