@@ -529,12 +529,16 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     <div className="space-y-10">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Purchase Orders</h1>
-          <p className="text-sm text-shark-400 mt-1">
-            {purchaseOrders.length} total orders
-            {pendingCount > 0 && ` · ${pendingCount} pending`}
-          </p>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="truck" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">Purchase Orders</h3>
+            <p className="text-xs text-shark-400">
+              {purchaseOrders.length} total · {pendingCount} pending
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {isSuperAdmin && (
@@ -590,15 +594,15 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         </div>
 
         {/* Desktop: full tab bar */}
-        <div className="hidden sm:flex gap-1 bg-shark-50 p-1 rounded-lg w-fit">
+        <div className="hidden sm:flex gap-1 bg-shark-50 rounded-xl p-1 w-fit">
           {TABS.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-3.5 py-1.5 text-sm font-medium rounded-md transition-all ${
+              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                 activeTab === tab
-                  ? "bg-white text-shark-900 shadow-sm"
-                  : "text-shark-500 hover:text-shark-700"
+                  ? "bg-action-500 text-white shadow-sm"
+                  : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
               }`}
             >
               {tab}

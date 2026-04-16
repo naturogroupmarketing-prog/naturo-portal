@@ -130,10 +130,10 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-50 p-1 rounded-lg w-fit">
+      <div className="flex gap-1 bg-shark-50 rounded-xl p-1 w-fit">
         <button
           onClick={() => setTab("request")}
-          className={`px-3.5 py-1.5 text-sm font-medium rounded-md transition-all ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
             tab === "request" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
           }`}
         >
@@ -148,7 +148,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         </button>
         <button
           onClick={() => setTab("confirm")}
-          className={`px-3.5 py-1.5 text-sm font-medium rounded-md transition-all ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
             tab === "confirm" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
           }`}
         >

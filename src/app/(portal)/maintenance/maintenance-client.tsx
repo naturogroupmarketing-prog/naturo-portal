@@ -85,12 +85,16 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
         <Button onClick={() => setShowCreate(true)}>+ Schedule Maintenance</Button>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
         {(["all", "overdue", "upcoming"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${filter === f ? "bg-action-500 text-white" : "bg-shark-100 text-shark-600 hover:bg-shark-200"}`}
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+              filter === f
+                ? "bg-action-500 text-white shadow-sm"
+                : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+            }`}
           >
             {f === "all" ? "All" : f === "overdue" ? "Overdue" : "Due Soon"}
           </button>

@@ -129,7 +129,15 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   if (submitted) {
     return (
       <div className="space-y-10">
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Returns</h1>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="arrow-left" size={14} className="text-action-600" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-shark-900">Returns</h3>
+            <p className="text-xs text-shark-400">All returns processed</p>
+          </div>
+        </div>
         <Card>
           <div className="py-12 text-center">
             <div className="w-14 h-14 rounded-full bg-action-50 flex items-center justify-center mx-auto mb-4">
@@ -145,12 +153,21 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
   return (
     <div className="space-y-10">
-      <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Returns</h1>
-        <p className="text-sm text-shark-400 mt-1">
-          {totalItems} item{totalItems !== 1 ? "s" : ""} pending verification
-          {processedCount > 0 && <span> · {processedCount} marked</span>}
-        </p>
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+          <Icon name="arrow-left" size={14} className="text-action-600" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-shark-900">Returns</h3>
+          <p className="text-xs text-shark-400">
+            {totalItems} item{totalItems !== 1 ? "s" : ""} pending verification
+            {processedCount > 0 && <span> · {processedCount} marked</span>}
+          </p>
+        </div>
+        <div className="text-right shrink-0">
+          <p className="text-lg font-bold text-shark-900">{totalItems}</p>
+          <p className="text-[10px] text-shark-400">pending</p>
+        </div>
       </div>
 
       {returns.length === 0 ? (

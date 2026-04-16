@@ -48,9 +48,20 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
         <Link href="/dashboard" className="text-shark-400 hover:text-action-500 transition-colors">
           <Icon name="arrow-left" size={18} />
         </Link>
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Low Stock Items</h1>
-          <p className="text-sm text-shark-400 mt-0.5">{items.length} item{items.length !== 1 ? "s" : ""} at or below threshold</p>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center shrink-0">
+              <Icon name="alert-triangle" size={14} className="text-[#E8532E]" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-shark-900">Low Stock Alerts</h3>
+              <p className="text-xs text-shark-400">{items.length} item{items.length !== 1 ? "s" : ""} need attention</p>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="text-lg font-bold text-shark-900">{items.length}</p>
+              <p className="text-[10px] text-shark-400">items at or below threshold</p>
+            </div>
+          </div>
         </div>
       </div>
 

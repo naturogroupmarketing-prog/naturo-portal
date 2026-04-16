@@ -167,7 +167,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={() => handleCopyList(groupVisible, groupKey)}
-                      className="inline-flex items-center gap-1 text-[10px] font-medium text-shark-500 hover:text-shark-700 bg-shark-100 hover:bg-shark-200 px-1.5 py-1 rounded transition-colors"
+                      className="inline-flex items-center gap-1 text-[10px] font-medium text-shark-500 hover:text-shark-700 bg-shark-100 hover:bg-shark-200 px-1.5 py-1.5 rounded-lg transition-colors"
                       title="Copy shopping list to clipboard"
                     >
                       <Icon name={copiedKey === groupKey ? "check" : "copy"} size={10} />
@@ -178,7 +178,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                         href={group.shopUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[10px] font-medium text-action-600 bg-action-50 hover:bg-action-100 px-1.5 py-1 rounded transition-colors"
+                        className="inline-flex items-center gap-1 text-[10px] font-medium text-action-600 bg-action-50 hover:bg-action-100 px-1.5 py-1.5 rounded-lg transition-colors"
                         title="Open shop in new tab"
                       >
                         <Icon name="arrow-right" size={10} />
@@ -217,7 +217,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                           size="sm"
                           onClick={() => handleApprove(s)}
                           disabled={approving === s.consumableId}
-                          className="h-7 px-2 text-xs"
+                          className="px-2 text-xs"
                         >
                           {approving === s.consumableId ? (
                             <Icon name="clock" size={11} className="animate-spin" />
@@ -230,7 +230,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                         </Button>
                         <button
                           onClick={() => setDismissed((prev) => new Set(prev).add(s.consumableId))}
-                          className="h-7 w-7 flex items-center justify-center rounded-md text-shark-300 hover:text-shark-500 hover:bg-shark-100 transition-colors"
+                          className="h-8 w-8 flex items-center justify-center rounded-lg text-shark-300 hover:text-shark-500 hover:bg-shark-100 transition-colors"
                           title="Dismiss"
                         >
                           <Icon name="x" size={11} />
@@ -252,7 +252,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                       variant="outline"
                       onClick={() => handleApproveAll(groupVisible)}
                       disabled={!!approving}
-                      className="h-6 px-2 text-[10px]"
+                      className="px-2 text-[10px]"
                     >
                       <Icon name="check" size={10} className="mr-1" />
                       Create all POs

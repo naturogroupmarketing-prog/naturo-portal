@@ -407,9 +407,14 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   return (
     <div className="space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Staff Overview</h1>
-          <p className="text-sm text-shark-400 mt-1">{filtered.length} staff members</p>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="users" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">Staff Overview</h3>
+            <p className="text-xs text-shark-400">{filtered.length} staff members</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {starterKits.length > 0 && (

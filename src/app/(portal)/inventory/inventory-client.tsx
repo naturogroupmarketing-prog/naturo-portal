@@ -402,7 +402,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
       <Modal open={showManageModal} onClose={() => { setShowManageModal(false); setManageSearch(""); setEditingStateName(null); }} title="Manage Locations">
         <div className="space-y-4">
           {/* Tab Navigation */}
-          <div className="flex items-center gap-1 bg-shark-100 rounded-xl p-1">
+          <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
             {[
               { key: "locations" as const, label: "All Locations", icon: "map-pin" as const },
               { key: "add-state" as const, label: "Add State", icon: "plus" as const },
@@ -411,10 +411,10 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               <button
                 key={tab.key}
                 onClick={() => setManageTab(tab.key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex-1 justify-center ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex-1 justify-center ${
                   manageTab === tab.key
-                    ? "bg-white text-shark-900 shadow-sm"
-                    : "text-shark-500 hover:text-shark-700"
+                    ? "bg-action-500 text-white shadow-sm"
+                    : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
                 }`}
               >
                 <Icon name={tab.icon} size={14} />
@@ -478,10 +478,10 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                 className="text-sm h-8"
                                 autoFocus
                               />
-                              <Button type="submit" size="sm" className="h-8 px-2">
+                              <Button type="submit" size="sm" className="px-2">
                                 <Icon name="check" size={14} />
                               </Button>
-                              <Button type="button" size="sm" variant="secondary" className="h-8 px-2" onClick={() => setEditingStateName(null)}>
+                              <Button type="button" size="sm" variant="secondary" className="px-2" onClick={() => setEditingStateName(null)}>
                                 <Icon name="x" size={14} />
                               </Button>
                             </form>

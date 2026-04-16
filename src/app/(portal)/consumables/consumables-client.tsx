@@ -605,9 +605,14 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   return (
     <div className="space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Supplies</h1>
-          <p className="text-sm text-shark-400 mt-1">{consumables.length} total items</p>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="droplet" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">Supplies</h3>
+            <p className="text-xs text-shark-400">{consumables.length} total items</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowManageSections(true)}>
@@ -628,19 +633,19 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-shark-200">
+      <div className="flex gap-1 bg-shark-50 rounded-xl p-1 w-fit">
         <button
           onClick={() => setTab("stock")}
-          className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-            tab === "stock" ? "border-action-400 text-action-500" : "border-transparent text-shark-400 hover:text-shark-700"
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+            tab === "stock" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
           }`}
         >
           Stock Levels
         </button>
         <button
           onClick={() => setTab("requests")}
-          className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-            tab === "requests" ? "border-action-400 text-action-500" : "border-transparent text-shark-400 hover:text-shark-700"
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+            tab === "requests" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
           }`}
         >
           Requests {pendingRequests.length > 0 && (

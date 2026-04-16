@@ -29,10 +29,10 @@ export function BranchManagerDashboard({ managerProps, staffProps }: Props) {
     <div>
       {/* View toggle */}
       <div className="flex justify-end mb-4">
-        <div className="inline-flex items-center gap-1 bg-shark-100 rounded-xl p-1">
+        <div className="inline-flex items-center gap-1 bg-shark-50 rounded-xl p-1">
           <button
             onClick={() => setView("manager")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               view === "manager"
                 ? "bg-white text-shark-900 shadow-sm"
                 : "text-shark-500 hover:text-shark-700"
@@ -43,7 +43,7 @@ export function BranchManagerDashboard({ managerProps, staffProps }: Props) {
           </button>
           <button
             onClick={() => setView("staff")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               view === "staff"
                 ? "bg-white text-shark-900 shadow-sm"
                 : "text-shark-500 hover:text-shark-700"
