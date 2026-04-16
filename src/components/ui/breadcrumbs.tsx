@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useBreadcrumbOverrides } from "@/components/ui/breadcrumb-context";
 
-const labelOverrides: Record<string, string> = {
+const staticOverrides: Record<string, string> = {
   "purchase-orders": "Purchase Orders",
   "my-assets": "My Assets",
   "my-consumables": "My Supplies",
@@ -12,8 +13,9 @@ const labelOverrides: Record<string, string> = {
   "admin": "Admin",
 };
 
-function toLabel(segment: string): string {
-  if (labelOverrides[segment]) return labelOverrides[segment];
+function toLabel(segment: string, dynamicOverrides: Record<string, string>): string {
+  if (dynamicOverrides[segment]) return dynamicOverrides[segment];
+  if (staticOverrides[segment]) return staticOverrides[segment];
   return segment
     .replace(/-/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -21,12 +23,13 @@ function toLabel(segment: string): string {
 
 export function Breadcrumbs() {
   const pathname = usePathname();
+  const dynamicOverrides = useBreadcrumbOverrides();
   const segments = pathname.split("/").filter(Boolean);
 
   if (segments.length === 0) return null;
 
   const crumbs = segments.map((seg, i) => ({
-    label: toLabel(seg),
+    label: toLabel(seg, dynamicOverrides),
     href: "/" + segments.slice(0, i + 1).join("/"),
   }));
 

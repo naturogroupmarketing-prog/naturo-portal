@@ -6,6 +6,7 @@ import { Sidebar } from "./sidebar";
 import { Header } from "./header";
 import { BottomNav } from "./bottom-nav";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { BreadcrumbProvider } from "@/components/ui/breadcrumb-context";
 import { Role } from "@/generated/prisma/browser";
 import { QuickActionsFab } from "@/components/ui/quick-actions-fab";
 
@@ -49,6 +50,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
   }, []);
 
   return (
+    <BreadcrumbProvider>
     <SidebarContext.Provider value={{ expanded: sidebarExpanded, toggle: () => setSidebarExpanded((p) => !p) }}>
     <div
       className="flex flex-col h-dvh bg-shark-50 dark:bg-shark-950 transition-colors"
@@ -144,6 +146,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
       {(role === "SUPER_ADMIN" || role === "BRANCH_MANAGER") && <QuickActionsFab />}
     </div>
     </SidebarContext.Provider>
+    </BreadcrumbProvider>
   );
 }
 

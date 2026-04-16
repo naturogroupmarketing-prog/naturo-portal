@@ -14,6 +14,7 @@ import { StaffClient } from "@/app/(portal)/staff/staff-client";
 import { getItemTemplates, applyItemsToRegion } from "@/app/actions/locations";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
+import { BreadcrumbSetter } from "@/components/ui/breadcrumb-context";
 
 interface Props {
   region: { id: string; name: string; state: { id: string; name: string } };
@@ -72,6 +73,7 @@ export function InventoryDetailClient({
 
   return (
     <div className="space-y-10">
+      <BreadcrumbSetter segment={region.id} label={region.name} />
       {/* Back button */}
       <Link href="/inventory" className="inline-flex items-center gap-1.5 text-sm text-shark-400 hover:text-action-500 transition-colors">
         <Icon name="arrow-left" size={16} />
