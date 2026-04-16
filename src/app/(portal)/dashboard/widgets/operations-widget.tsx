@@ -56,7 +56,7 @@ function HealthRing({ score, size = 64 }: { score: number; size?: number }) {
 
 export function OperationsWidget({ data }: { data: OperationsOverview }) {
   return (
-    <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+    <Card className="border-action-100">
       <div className="p-4 sm:p-5">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">

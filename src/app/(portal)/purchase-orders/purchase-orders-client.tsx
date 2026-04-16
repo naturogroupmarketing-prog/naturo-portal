@@ -666,7 +666,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             const pendingInRegion = orders.filter((o) => o.status === "PENDING").length;
 
             return (
-              <Card key={region.id} className="overflow-hidden border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+              <Card key={region.id} className="overflow-hidden border-action-100">
                 <button
                   onClick={() => toggleSection(region.id)}
                   className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/50 transition-colors"
@@ -705,7 +705,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         </div>
       ) : (
         // Single region view
-        <Card className="overflow-hidden border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+        <Card className="overflow-hidden border-action-100">
           <div className="bg-white">
             {renderTable(filtered)}
           </div>

@@ -296,7 +296,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
-                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer border-action-100/60 bg-gradient-to-br from-white to-action-50/20">
+                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
                       <CardContent className="px-3 py-3 sm:px-5 sm:py-5">
                         <div className="flex items-center gap-2 sm:gap-4">
                           <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
@@ -367,7 +367,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
                 {/* CENTRE — Portfolio Line Chart (Assets vs Consumables value) */}
                 {showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
-                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                  <Card className="border-action-100">
                     <div className="p-4 sm:p-6">
                       {/* Header */}
                       <div className="flex items-center gap-2 mb-4">
@@ -503,7 +503,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return showAssetCharts && ((assetStatusChart && assetStatusChart.length > 0) || (categoryChart && categoryChart.length > 0)) ? (
               <div key="asset-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {assetStatusChart && assetStatusChart.length > 0 && (
-                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                  <Card className="border-action-100">
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -537,7 +537,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Card>
                 )}
                 {categoryChart && categoryChart.length > 0 && (
-                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                  <Card className="border-action-100">
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -575,7 +575,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return showConsumableCharts && ((consumableStatusChart && consumableStatusChart.length > 0) || (consumableCategoryChart && consumableCategoryChart.length > 0)) ? (
               <div key="consumable-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {consumableStatusChart && consumableStatusChart.length > 0 && (
-                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                  <Card className="border-action-100">
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -609,7 +609,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Card>
                 )}
                 {consumableCategoryChart && consumableCategoryChart.length > 0 && (
-                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                  <Card className="border-action-100">
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -645,7 +645,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "low-stock":
             return (showLowStock || !isSuperAdmin) ? (
-              <Card key="low-stock" className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+              <Card key="low-stock" className="border-action-100">
                 <div className="p-4 sm:p-5">
                   {/* Header */}
                   <Link href={isSuperAdmin ? "/alerts/low-stock" : "/purchase-orders"} className="flex items-center justify-between mb-4 group cursor-pointer">
@@ -705,7 +705,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "predicted-shortages":
             return showPredictions && predictedShortages.length > 0 ? (
-              <Card key="predicted-shortages" className="border-[#E8532E]/20 bg-gradient-to-r from-[#E8532E]/5 to-transparent">
+              <Card key="predicted-shortages" className="border-[#E8532E]/20">
                 <div className="p-4 sm:p-5">
                   {/* Header */}
                   <Link href="/purchase-orders" className="flex items-center justify-between mb-4 group cursor-pointer">
@@ -766,7 +766,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "regional":
             return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
               <div key="regional">
-                <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                <Card className="border-action-100">
                   <div className="p-4 sm:p-5">
                     {/* Header */}
                     <div className="flex items-center gap-2 mb-4">
@@ -911,7 +911,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* Storage Locations Map */}
       {isSuperAdmin && showMap && mapLocations.length > 0 && (
-        <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+        <Card className="border-action-100">
           <div className="p-4 sm:p-5">
             {/* Header */}
             <div className="flex items-center gap-2 mb-4">

@@ -174,7 +174,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                       const alerts = regionAlerts[region.id];
                       return (
                         <Link key={region.id} href={`/inventory/${region.id}`} className="block group">
-                        <Card className={`hover:shadow-md transition-all cursor-pointer border-action-100 bg-gradient-to-r from-action-50/30 to-transparent hover:border-action-300`}>
+                        <Card className={`hover:shadow-md transition-all cursor-pointer border-action-100 hover:border-action-300`}>
                           <div className="px-4 py-3.5">
                             <div className="flex items-center justify-between gap-3">
                               {/* Left — name + counts */}
