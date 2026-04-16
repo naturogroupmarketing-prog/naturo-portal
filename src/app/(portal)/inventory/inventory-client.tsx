@@ -171,51 +171,54 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                     <p className="text-sm text-shark-400 px-1">No locations yet.</p>
                   ) : (
                     state.regions.map((region) => {
-                      const isEmpty = region._count.assets === 0 && region._count.consumables === 0;
+                      const alerts = regionAlerts[region.id];
                       return (
-                        <Link key={region.id} href={`/inventory/${region.id}`} className="block">
-                        <Card className="hover:shadow-md hover:border-action-200 transition-all cursor-pointer">
+                        <Link key={region.id} href={`/inventory/${region.id}`} className="block group">
+                        <Card className={`hover:shadow-md transition-all cursor-pointer border-action-100 bg-gradient-to-r from-action-50/30 to-transparent hover:border-action-300`}>
                           <div className="px-4 py-3.5">
                             <div className="flex items-center justify-between gap-3">
                               {/* Left — name + counts */}
-                              <div className="flex-1 min-w-0">
-                                <h3 className="text-sm font-semibold text-shark-800">{region.name}</h3>
-                                <p className="text-xs text-shark-400 mt-0.5">
-                                  {region._count.assets} assets · {region._count.consumables} supplies · {region._count.users} staff
-                                </p>
-                                {region.address && (
-                                  <p className="hidden lg:flex text-xs text-shark-400 mt-0.5 items-center gap-1">
-                                    <Icon name="map-pin" size={10} className="text-shark-300" />
-                                    {region.address}
+                              <div className="flex items-center gap-3 flex-1 min-w-0">
+                                <div className={`w-8 h-8 rounded-lg ${sc.bg} flex items-center justify-center shrink-0`}>
+                                  <Icon name="map-pin" size={14} className={sc.color} />
+                                </div>
+                                <div className="min-w-0">
+                                  <h3 className="text-sm font-semibold text-shark-800">{region.name}</h3>
+                                  <p className="text-xs text-shark-400 mt-0.5">
+                                    {region._count.assets} assets · {region._count.consumables} supplies · {region._count.users} staff
                                   </p>
-                                )}
+                                  {region.address && (
+                                    <p className="hidden lg:flex text-xs text-shark-400 mt-0.5 items-center gap-1">
+                                      <Icon name="map-pin" size={10} className="text-shark-300" />
+                                      {region.address}
+                                    </p>
+                                  )}
+                                </div>
                               </div>
 
                               {/* Right — alert badges + edit icon */}
                               <div className="flex items-center gap-1.5 shrink-0">
-                                {(() => {
-                                  const alerts = regionAlerts[region.id];
-                                  if (!alerts) return null;
+                                {alerts && (() => {
                                   const damageLost = alerts.unresolvedDamage + alerts.lost;
                                   return (
                                     <>
                                       {damageLost > 0 && (
                                         <span
                                           onClick={(e) => { e.preventDefault(); window.location.href = `/alerts/damage?region=${region.id}`; }}
-                                          className="flex items-center gap-1 text-[#E8532E] bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded-lg font-semibold text-xs transition-colors"
+                                          className="flex items-center gap-1 text-[#E8532E] bg-red-50 border border-red-100 hover:bg-red-100 px-2 py-0.5 rounded-full font-semibold text-xs transition-colors"
                                           title={`${damageLost} damaged/lost`}
                                         >
-                                          <Icon name="alert-triangle" size={12} />
+                                          <Icon name="alert-triangle" size={11} />
                                           {damageLost}
                                         </span>
                                       )}
                                       {alerts.lowStock > 0 && (
                                         <span
                                           onClick={(e) => { e.preventDefault(); window.location.href = `/alerts/low-stock?region=${region.id}`; }}
-                                          className="flex items-center gap-1 text-[#E8532E] bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded-lg font-semibold text-xs transition-colors"
+                                          className="flex items-center gap-1 text-amber-600 bg-amber-50 border border-amber-100 hover:bg-amber-100 px-2 py-0.5 rounded-full font-semibold text-xs transition-colors"
                                           title={`${alerts.lowStock} low stock`}
                                         >
-                                          <Icon name="alert-triangle" size={12} />
+                                          <Icon name="alert-triangle" size={11} />
                                           {alerts.lowStock}
                                         </span>
                                       )}
@@ -234,7 +237,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                     <Icon name="download" size={14} />
                                   </button>
                                 )}
-                                <Icon name="arrow-right" size={14} className="text-shark-300" />
+                                <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors" />
                               </div>
                             </div>
                           </div>

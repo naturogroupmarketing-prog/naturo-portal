@@ -88,23 +88,24 @@ export function InventoryDetailClient({
 
       {/* Summary Stats */}
       <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
-          { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, border: "border-action-500", scrollTo: "section-assets" },
-          { label: "Supplies", value: (consumables as unknown[]).length, icon: "droplet" as const, border: "border-action-500", scrollTo: "section-consumables" },
-          { label: "Staff", value: staff.length, icon: "users" as const, border: "border-action-500", scrollTo: "section-staff" },
-          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, border: lowStockCount > 0 ? "border-[#E8532E]" : "border-action-500", href: `/purchase-orders?region=${region.id}` },
+          { label: "Assets", value: (assets as unknown[]).length, icon: "package" as const, iconBg: "bg-action-100", iconColor: "text-action-600", scrollTo: "section-assets" },
+          { label: "Supplies", value: (consumables as unknown[]).length, icon: "droplet" as const, iconBg: "bg-action-100", iconColor: "text-action-600", scrollTo: "section-consumables" },
+          { label: "Staff", value: staff.length, icon: "users" as const, iconBg: "bg-action-100", iconColor: "text-action-600", scrollTo: "section-staff" },
+          { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, iconBg: lowStockCount > 0 ? "bg-red-50" : "bg-action-100", iconColor: lowStockCount > 0 ? "text-red-500" : "text-action-600", href: `/purchase-orders?region=${region.id}` },
         ].map((stat) => {
           const cardContent = (
-            <Card className="hover:shadow-md transition-all cursor-pointer">
-              <div className="px-4 sm:px-5 py-4">
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl ${stat.border === "border-[#E8532E]" && stat.value > 0 ? "bg-[#E8532E]" : "bg-action-500"} flex items-center justify-center shrink-0`}>
-                    <Icon name={stat.icon} size={22} className="text-white" />
+            <Card className={`hover:shadow-md transition-all cursor-pointer border-action-100/60 bg-gradient-to-br from-white to-action-50/20`}>
+              <div className="px-3 py-3 sm:px-5 sm:py-5">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl ${stat.iconBg} flex items-center justify-center shrink-0`}>
+                    <Icon name={stat.icon} size={16} className={`${stat.iconColor} sm:hidden`} />
+                    <Icon name={stat.icon} size={20} className={`${stat.iconColor} hidden sm:block`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-shark-500">{stat.label}</p>
-                    <p className="text-2xl font-bold text-shark-900">{stat.value}</p>
+                    <p className="text-xs sm:text-sm text-shark-500">{stat.label}</p>
+                    <p className="text-xl sm:text-2xl font-bold text-shark-900">{stat.value}</p>
                   </div>
                 </div>
               </div>
@@ -113,7 +114,7 @@ export function InventoryDetailClient({
 
           if ("scrollTo" in stat && stat.scrollTo) {
             return (
-              <div key={stat.label} onClick={() => document.getElementById(stat.scrollTo!)?.scrollIntoView({ behavior: "smooth", block: "start" })}>
+              <div key={stat.label} className="cursor-pointer" onClick={() => document.getElementById(stat.scrollTo!)?.scrollIntoView({ behavior: "smooth", block: "start" })}>
                 {cardContent}
               </div>
             );

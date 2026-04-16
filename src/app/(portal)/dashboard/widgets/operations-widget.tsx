@@ -56,12 +56,18 @@ function HealthRing({ score, size = 64 }: { score: number; size?: number }) {
 
 export function OperationsWidget({ data }: { data: OperationsOverview }) {
   return (
-    <Card>
-      <div className="p-4 sm:p-6">
+    <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+      <div className="p-4 sm:p-5">
+        {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-bold text-shark-900">Operations</h2>
-            <p className="text-sm text-shark-400">Business health overview</p>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+              <Icon name="settings" size={14} className="text-action-600" />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-shark-900">Operations</h2>
+              <p className="text-xs text-shark-400">Business health overview</p>
+            </div>
           </div>
           <div className="text-center relative group/health cursor-pointer">
             <HealthRing score={data.healthScore} />
@@ -98,45 +104,60 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <Link href="/purchase-orders" className="bg-shark-50 rounded-xl px-3 py-2.5 hover:bg-shark-100 transition-colors">
-            <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Approval</p>
-            <p className={`text-lg font-bold ${data.ordersAwaitingApproval > 0 ? "text-[#E8532E]" : "text-shark-900"}`}>{data.ordersAwaitingApproval}</p>
-            <p className="text-[10px] text-shark-400">purchase orders</p>
-          </Link>
-          <Link href="/purchase-orders?status=ORDERED" className="bg-shark-50 rounded-xl px-3 py-2.5 hover:bg-shark-100 transition-colors">
-            <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Receival</p>
-            <p className={`text-lg font-bold ${data.ordersAwaitingReceival > 0 ? "text-action-500" : "text-shark-900"}`}>{data.ordersAwaitingReceival}</p>
-            <p className="text-[10px] text-shark-400">purchase orders</p>
-          </Link>
+        {/* Approval / Receival stats */}
+        <div className="bg-white rounded-xl border border-shark-100 overflow-hidden mb-3">
+          <div className="grid grid-cols-2 divide-x divide-shark-50">
+            <Link href="/purchase-orders" className="px-3 py-2.5 hover:bg-shark-50 transition-colors">
+              <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Approval</p>
+              <p className={`text-lg font-bold ${data.ordersAwaitingApproval > 0 ? "text-[#E8532E]" : "text-shark-900"}`}>{data.ordersAwaitingApproval}</p>
+              <p className="text-[10px] text-shark-400">purchase orders</p>
+            </Link>
+            <Link href="/purchase-orders?status=ORDERED" className="px-3 py-2.5 hover:bg-shark-50 transition-colors">
+              <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Receival</p>
+              <p className={`text-lg font-bold ${data.ordersAwaitingReceival > 0 ? "text-action-500" : "text-shark-900"}`}>{data.ordersAwaitingReceival}</p>
+              <p className="text-[10px] text-shark-400">purchase orders</p>
+            </Link>
+          </div>
         </div>
 
-        <div className="space-y-2">
-          {[
+        {/* Issues list */}
+        {(() => {
+          const issues = [
             { label: "Overdue Returns", value: data.overdueReturns, icon: "arrow-left" as const, href: "/returns", danger: true },
             { label: "Low Stock Items", value: data.lowStockCount, icon: "alert-triangle" as const, href: "/purchase-orders", danger: true },
             { label: "Damage", value: data.unresolvedDamage + data.lostItems, icon: "alert-triangle" as const, href: "/alerts/damage", danger: true },
             { label: "Pending Requests", value: data.pendingRequests, icon: "clipboard" as const, href: "/inventory", danger: false },
             { label: "Overdue Inspections", value: data.incompleteInspections, icon: "search" as const, href: "/condition-checks", danger: true },
-          ].filter((item) => item.value > 0).map((item) => (
-            <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-shark-50 transition-colors -mx-1">
-              <div className="flex items-center gap-2.5">
-                <Icon name={item.icon} size={14} className={item.danger ? "text-[#E8532E]" : "text-action-500"} />
-                <span className="text-sm text-shark-600">{item.label}</span>
-              </div>
-              <span className={`text-sm font-bold ${item.danger ? "text-[#E8532E]" : "text-shark-700"}`}>{item.value}</span>
-            </Link>
-          ))}
-          {data.overdueReturns === 0 && data.lowStockCount === 0 && data.unresolvedDamage === 0 && data.pendingRequests === 0 && data.incompleteInspections === 0 && (
-            <div className="flex items-center gap-2 px-3 py-3">
-              <Icon name="check" size={16} className="text-action-500" />
-              <span className="text-sm text-action-600 font-medium">All clear — no outstanding issues</span>
-            </div>
-          )}
-        </div>
+          ].filter((item) => item.value > 0);
 
-        <Link href="/staff" className="mt-4 pt-3 border-t border-shark-100 flex items-center justify-between hover:bg-shark-50 -mx-4 px-4 -mb-4 pb-4 rounded-b-xl transition-colors cursor-pointer">
-          <span className="text-xs text-shark-400">Active Staff</span>
+          return issues.length > 0 ? (
+            <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden mb-3">
+              {issues.map((item) => (
+                <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <Icon name={item.icon} size={14} className={item.danger ? "text-[#E8532E]" : "text-action-500"} />
+                    <span className="text-sm text-shark-600">{item.label}</span>
+                  </div>
+                  <span className={`text-sm font-bold ${item.danger ? "text-[#E8532E]" : "text-shark-700"}`}>{item.value}</span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-xl border border-shark-100 overflow-hidden mb-3">
+              <div className="flex items-center gap-2 px-3 py-3">
+                <Icon name="check" size={16} className="text-action-500" />
+                <span className="text-sm text-action-600 font-medium">All clear — no outstanding issues</span>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Staff footer */}
+        <Link href="/staff" className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-white border border-shark-100 hover:border-action-200 hover:bg-action-50/30 transition-colors">
+          <div className="flex items-center gap-2">
+            <Icon name="users" size={14} className="text-shark-400" />
+            <span className="text-xs text-shark-500">Active Staff</span>
+          </div>
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-semibold text-shark-700">{data.totalStaff}</span>
             <Icon name="arrow-right" size={14} className="text-shark-400" />

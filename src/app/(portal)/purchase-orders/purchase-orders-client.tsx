@@ -659,44 +659,56 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         />
       ) : isSuperAdmin ? (
         // Region-grouped view
-        <div className="space-y-4">
+        <div className="space-y-3">
           {regionGroups.map(({ region, orders }, idx) => {
             const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
             const isCollapsed = collapsedSections.has(region.id);
+            const pendingInRegion = orders.filter((o) => o.status === "PENDING").length;
 
             return (
-              <Card key={region.id} className="overflow-hidden">
+              <Card key={region.id} className="overflow-hidden border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
                 <button
                   onClick={() => toggleSection(region.id)}
-                  className="w-full flex items-center justify-between px-5 py-3 hover:bg-shark-25 transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center`}>
-                      <Icon name="map-pin" size={14} className={colors.color} />
+                    <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
+                      <Icon name="map-pin" size={13} className={colors.color} />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-shark-900">{region.name}</span>
+                      <span className="text-sm font-semibold text-shark-900">{region.name}</span>
                       <span className="ml-2 text-xs text-shark-400">{region.state.name}</span>
                     </div>
-                    <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-shark-100 text-shark-600 rounded-full">
-                      {orders.length}
+                    <span className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-white border border-shark-100 text-shark-600 rounded-full">
+                      {orders.length} order{orders.length !== 1 ? "s" : ""}
                     </span>
+                    {pendingInRegion > 0 && (
+                      <span className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 border border-red-100 text-red-500 rounded-full">
+                        {pendingInRegion} pending
+                      </span>
+                    )}
                   </div>
                   <Icon
                     name="chevron-down"
-                    size={16}
-                    className={`text-shark-400 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
+                    size={14}
+                    className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
                   />
                 </button>
-                {!isCollapsed && renderTable(orders)}
+                {!isCollapsed && (
+                  <div className="border-t border-shark-100/60 bg-white">
+                    {renderTable(orders)}
+                  </div>
+                )}
               </Card>
             );
           })}
         </div>
       ) : (
         // Single region view
-        <Card className="overflow-hidden">
-          {renderTable(filtered)}
+        <Card className="overflow-hidden border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+          <div className="bg-white">
+            {renderTable(filtered)}
+          </div>
         </Card>
       )}
       {/* Order Detail / Edit Modal */}

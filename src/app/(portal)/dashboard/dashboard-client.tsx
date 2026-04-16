@@ -296,7 +296,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
-                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
+                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer border-action-100/60 bg-gradient-to-br from-white to-action-50/20">
                       <CardContent className="px-3 py-3 sm:px-5 sm:py-5">
                         <div className="flex items-center gap-2 sm:gap-4">
                           <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
@@ -367,18 +367,23 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
                 {/* CENTRE — Portfolio Line Chart (Assets vs Consumables value) */}
                 {showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
-                  <Card>
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-2">
+                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                    <div className="p-4 sm:p-6">
+                      {/* Header */}
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                          <Icon name="bar-chart" size={14} className="text-action-600" />
+                        </div>
                         <div>
-                          <h2 className="text-lg font-bold text-shark-900">Finance</h2>
-                          <p className="text-sm text-shark-400">Asset &amp; Supply Value</p>
+                          <h2 className="text-sm font-semibold text-shark-900">Finance</h2>
+                          <p className="text-xs text-shark-400">Asset &amp; Supply Value</p>
                         </div>
                       </div>
 
                       {/* Summary cards */}
-                      <div className="grid grid-cols-2 gap-3 mb-4">
-                        <div className="border border-shark-100 rounded-xl px-3.5 py-2.5">
+                      <div className="bg-white rounded-xl border border-shark-100 overflow-hidden mb-4">
+                        <div className="grid grid-cols-2 divide-x divide-shark-50">
+                        <div className="px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
                             <span className="w-2 h-2 rounded-full" style={{ background: "#1F3DD9" }} />
                             <span className="text-xs text-shark-500">Assets</span>
@@ -392,7 +397,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             </span>
                           )}
                         </div>
-                        <div className="border border-shark-100 rounded-xl px-3.5 py-2.5">
+                        <div className="px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
                             <span className="w-2 h-2 rounded-full" style={{ background: "#E8532E" }} />
                             <span className="text-xs text-shark-500">Supplies</span>
@@ -400,6 +405,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <p className="text-xl font-bold text-shark-900">
                             ${portfolioValue.consumableValue.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
                           </p>
+                        </div>
                         </div>
                       </div>
 
@@ -459,7 +465,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       )}
 
                       {/* Total */}
-                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-shark-100">
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-shark-100/60">
                         <span className="text-xs font-medium text-shark-500">Total Portfolio</span>
                         <span className="text-lg font-bold text-shark-900">
                           ${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
@@ -497,23 +503,29 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return showAssetCharts && ((assetStatusChart && assetStatusChart.length > 0) || (categoryChart && categoryChart.length > 0)) ? (
               <div key="asset-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {assetStatusChart && assetStatusChart.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Asset Status</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
+                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                    <div className="p-4 sm:p-5">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                          <Icon name="package" size={14} className="text-action-600" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-semibold text-shark-900">Asset Status</h3>
+                          <p className="text-xs text-shark-400">Breakdown by status</p>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
                         {assetStatusChart.map((item) => {
                           const total = assetStatusChart.reduce((sum, i) => sum + i.value, 0);
                           const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
                           const statusMap: Record<string, string> = { Available: "AVAILABLE", Assigned: "ASSIGNED", "Checked Out": "CHECKED_OUT", Damaged: "DAMAGED", Lost: "LOST", Unavailable: "UNAVAILABLE" };
                           const statusParam = statusMap[item.name] || "";
                           return (
-                            <Link key={item.name} href={`/assets${statusParam ? `?status=${statusParam}` : ""}`} className="flex items-center gap-3 rounded-lg px-2 py-1.5 -mx-2 hover:bg-shark-50 transition-colors cursor-pointer">
-                              <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                            <Link key={item.name} href={`/assets${statusParam ? `?status=${statusParam}` : ""}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
+                              <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                               <span className="text-sm text-shark-700 flex-1">{item.name}</span>
                               <span className="text-sm font-semibold text-shark-900">{item.value}</span>
-                              <div className="w-24 bg-shark-100 rounded-full h-2 overflow-hidden">
+                              <div className="w-20 bg-shark-100 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
                               </div>
                               <span className="text-xs text-shark-400 w-8 text-right">{pct}%</span>
@@ -521,33 +533,39 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           );
                         })}
                       </div>
-                    </CardContent>
+                    </div>
                   </Card>
                 )}
                 {categoryChart && categoryChart.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Assets by Category</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
+                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                    <div className="p-4 sm:p-5">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                          <Icon name="box" size={14} className="text-action-600" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-semibold text-shark-900">Assets by Category</h3>
+                          <p className="text-xs text-shark-400">Distribution across categories</p>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
                         {categoryChart.map((item, idx) => {
                           const maxVal = Math.max(...categoryChart.map((c) => c.value));
                           const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
                           const colors = ["#7C3AED", "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4"];
                           const color = colors[idx % colors.length];
                           return (
-                            <Link key={item.name} href={`/assets?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 rounded-lg px-2 py-1.5 -mx-2 hover:bg-shark-50 transition-colors cursor-pointer">
+                            <Link key={item.name} href={`/assets?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
                               <span className="text-sm text-shark-700 flex-1 truncate">{item.name}</span>
                               <span className="text-sm font-semibold text-shark-900">{item.value}</span>
-                              <div className="w-28 bg-shark-100 rounded-full h-2 overflow-hidden">
+                              <div className="w-24 bg-shark-100 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
                               </div>
                             </Link>
                           );
                         })}
                       </div>
-                    </CardContent>
+                    </div>
                   </Card>
                 )}
               </div>
@@ -557,23 +575,29 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return showConsumableCharts && ((consumableStatusChart && consumableStatusChart.length > 0) || (consumableCategoryChart && consumableCategoryChart.length > 0)) ? (
               <div key="consumable-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {consumableStatusChart && consumableStatusChart.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Supply Status</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
+                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                    <div className="p-4 sm:p-5">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                          <Icon name="droplet" size={14} className="text-action-600" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-semibold text-shark-900">Supply Status</h3>
+                          <p className="text-xs text-shark-400">Breakdown by stock level</p>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
                         {consumableStatusChart.map((item) => {
                           const total = consumableStatusChart.reduce((sum, i) => sum + i.value, 0);
                           const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
                           const stockMap: Record<string, string> = { Adequate: "adequate", "Low Stock": "low", Critical: "critical", "Out of Stock": "out" };
                           const stockParam = stockMap[item.name] || "";
                           return (
-                            <Link key={item.name} href={`/consumables${stockParam ? `?stock=${stockParam}` : ""}`} className="flex items-center gap-3 rounded-lg px-2 py-1.5 -mx-2 hover:bg-shark-50 transition-colors cursor-pointer">
-                              <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                            <Link key={item.name} href={`/consumables${stockParam ? `?stock=${stockParam}` : ""}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
+                              <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                               <span className="text-sm text-shark-700 flex-1">{item.name}</span>
                               <span className="text-sm font-semibold text-shark-900">{item.value}</span>
-                              <div className="w-24 bg-shark-100 rounded-full h-2 overflow-hidden">
+                              <div className="w-20 bg-shark-100 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
                               </div>
                               <span className="text-xs text-shark-400 w-8 text-right">{pct}%</span>
@@ -581,33 +605,39 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           );
                         })}
                       </div>
-                    </CardContent>
+                    </div>
                   </Card>
                 )}
                 {consumableCategoryChart && consumableCategoryChart.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Supplies by Category</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
+                  <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                    <div className="p-4 sm:p-5">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                          <Icon name="clipboard" size={14} className="text-action-600" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-semibold text-shark-900">Supplies by Category</h3>
+                          <p className="text-xs text-shark-400">Distribution across categories</p>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
                         {consumableCategoryChart.map((item, idx) => {
                           const maxVal = Math.max(...consumableCategoryChart.map((c) => c.value));
                           const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
                           const colors = ["#06b6d4", "#8b5cf6", "#ec4899", "#f97316", "#14b8a6", "#a855f7", "#f43f5e", "#0ea5e9"];
                           const color = colors[idx % colors.length];
                           return (
-                            <Link key={item.name} href={`/consumables?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 rounded-lg px-2 py-1.5 -mx-2 hover:bg-shark-50 transition-colors cursor-pointer">
+                            <Link key={item.name} href={`/consumables?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
                               <span className="text-sm text-shark-700 flex-1 truncate">{item.name}</span>
                               <span className="text-sm font-semibold text-shark-900">{item.value}</span>
-                              <div className="w-28 bg-shark-100 rounded-full h-2 overflow-hidden">
+                              <div className="w-24 bg-shark-100 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
                               </div>
                             </Link>
                           );
                         })}
                       </div>
-                    </CardContent>
+                    </div>
                   </Card>
                 )}
               </div>
@@ -615,37 +645,40 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "low-stock":
             return (showLowStock || !isSuperAdmin) ? (
-              <Card key="low-stock">
-                <Link href={isSuperAdmin ? "/alerts/low-stock" : "/purchase-orders"}>
-                  <CardHeader className="hover:bg-shark-50/50 transition-colors cursor-pointer rounded-t-xl">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center">
-                          <Icon name="alert-triangle" size={14} className="text-red-500" />
-                        </div>
-                        <CardTitle>Low Stock Alerts</CardTitle>
+              <Card key="low-stock" className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                <div className="p-4 sm:p-5">
+                  {/* Header */}
+                  <Link href={isSuperAdmin ? "/alerts/low-stock" : "/purchase-orders"} className="flex items-center justify-between mb-4 group cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center shrink-0">
+                        <Icon name="alert-triangle" size={14} className="text-red-500" />
                       </div>
-                      <Icon name="arrow-right" size={16} className="text-shark-400" />
+                      <div>
+                        <h3 className="text-sm font-semibold text-shark-900">Low Stock Alerts</h3>
+                        <p className="text-xs text-shark-400">Items below minimum threshold</p>
+                      </div>
                     </div>
-                  </CardHeader>
-                </Link>
-                <CardContent>
+                    <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors" />
+                  </Link>
+                  {/* Content */}
                   {lowStockItems.length === 0 ? (
-                    <div className="flex items-center gap-3 py-4">
-                      <div className="w-8 h-8 rounded-full bg-action-50 flex items-center justify-center">
-                        <Icon name="check" size={16} className="text-action-500" />
+                    <div className="bg-white rounded-xl border border-shark-100 overflow-hidden">
+                      <div className="flex items-center gap-3 px-4 py-3.5">
+                        <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                          <Icon name="check" size={14} className="text-action-500" />
+                        </div>
+                        <p className="text-sm text-shark-500">All stock levels are OK.</p>
                       </div>
-                      <p className="text-sm text-shark-500">All stock levels are OK.</p>
                     </div>
                   ) : (
-                    <div className="space-y-0">
+                    <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
                       {lowStockItems.map((item) => (
-                        <Link key={item.id} href={isSuperAdmin ? `/alerts/low-stock${item.region?.id ? `?region=${item.region.id}` : ""}` : "/purchase-orders"} className="flex items-center justify-between py-3 border-b border-shark-50 last:border-0 hover:bg-shark-50/50 px-1 -mx-1 rounded-lg transition-colors cursor-pointer">
-                          <div>
-                            <p className="text-sm font-medium text-shark-800">{item.name}</p>
+                        <Link key={item.id} href={isSuperAdmin ? `/alerts/low-stock${item.region?.id ? `?region=${item.region.id}` : ""}` : "/purchase-orders"} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
+                          <div className="flex-1 min-w-0 mr-3">
+                            <p className="text-sm font-medium text-shark-800 truncate">{item.name}</p>
                             <p className="text-xs text-shark-400">{item.region?.name || ""}</p>
                           </div>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 shrink-0">
                             <div className="w-16">
                               <div className="h-1.5 rounded-full bg-shark-100 overflow-hidden">
                                 <div
@@ -666,36 +699,40 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       ))}
                     </div>
                   )}
-                </CardContent>
+                </div>
               </Card>
             ) : null;
 
           case "predicted-shortages":
             return showPredictions && predictedShortages.length > 0 ? (
-              <Card key="predicted-shortages">
-                <Link href="/purchase-orders">
-                  <CardHeader className="hover:bg-shark-50/50 transition-colors cursor-pointer rounded-t-xl">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center">
-                          <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
-                        </div>
-                        <CardTitle>Predicted Shortages</CardTitle>
-                        <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
+              <Card key="predicted-shortages" className="border-[#E8532E]/20 bg-gradient-to-r from-[#E8532E]/5 to-transparent">
+                <div className="p-4 sm:p-5">
+                  {/* Header */}
+                  <Link href="/purchase-orders" className="flex items-center justify-between mb-4 group cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center shrink-0">
+                        <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
                       </div>
-                      <Icon name="arrow-right" size={16} className="text-shark-400" />
+                      <div>
+                        <h3 className="text-sm font-semibold text-shark-900">Predicted Shortages</h3>
+                        <p className="text-xs text-shark-400">AI-powered depletion forecasts</p>
+                      </div>
+                      <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
                     </div>
-                  </CardHeader>
-                </Link>
-                <CardContent>
-                  <div className="space-y-0">
+                    <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors" />
+                  </Link>
+                  {/* Items */}
+                  <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
                     {predictedShortages.map((item) => (
-                      <Link key={item.id} href={`/purchase-orders`} className="flex items-center justify-between py-3 border-b border-shark-50 last:border-0 hover:bg-shark-50/50 px-1 -mx-1 rounded-lg transition-colors cursor-pointer">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-shark-800 truncate">{item.name}</p>
-                          <p className="text-xs text-shark-400">{item.regionName} · {item.avgDailyUsage.toFixed(1)}/day usage</p>
+                      <Link key={item.id} href={`/purchase-orders`} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${item.riskLevel === "critical" ? "bg-red-500" : "bg-amber-400"}`} />
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-shark-800 truncate">{item.name}</p>
+                            <p className="text-xs text-shark-400">{item.regionName} · {item.avgDailyUsage.toFixed(1)}/day usage</p>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 shrink-0">
                           <div className="text-right">
                             <p className="text-sm font-bold text-shark-900">{item.quantityOnHand} <span className="text-xs font-normal text-shark-400">{item.unitType}</span></p>
                             {item.daysRemaining !== null && (
@@ -704,12 +741,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               </span>
                             )}
                           </div>
-                          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.riskLevel === "critical" ? "bg-red-500" : "bg-amber-400"}`} />
                         </div>
                       </Link>
                     ))}
                   </div>
-                </CardContent>
+                </div>
               </Card>
             ) : null;
 
@@ -729,72 +765,91 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "regional":
             return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
-              <div key="regional" className="space-y-4">
-                <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Regions</p>
-                <div className="space-y-3">
-                  {[...regionBreakdown].sort((a, b) => a.healthScore - b.healthScore).map((region, idx) => {
-              const colors = REGION_COLORS[idx % REGION_COLORS.length];
-              const isCollapsed = collapsedRegions.has(region.regionId);
-              const hasActions = region.lowStockCount > 0 || region.pendingRequests > 0 || region.pendingPOs > 0;
-              const totalIssues = (region.damaged + region.lost) + region.pendingRequests + region.pendingPOs;
-              return (
-                <Card key={region.regionId} className="overflow-hidden">
-                  <button
-                    onClick={() => toggleRegion(region.regionId)}
-                    className="w-full flex items-center justify-between px-5 py-3 hover:bg-shark-25 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="text-left">
-                        <span className="font-semibold text-shark-900">{region.regionName}</span>
-                        <span className="ml-2 text-xs text-shark-400">{region.stateName}</span>
+              <div key="regional">
+                <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+                  <div className="p-4 sm:p-5">
+                    {/* Header */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                        <Icon name="map-pin" size={14} className="text-action-600" />
                       </div>
-                      {hasActions ? (
-                        <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-red-50 text-red-500 rounded-full">
-                          {totalIssues} {totalIssues === 1 ? "issue" : "issues"}
-                        </span>
-                      ) : (
-                        <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-green-50 text-green-600 rounded-full">
-                          All clear
-                        </span>
-                      )}
-                    </div>
-                    <Icon
-                      name="chevron-down"
-                      size={16}
-                      className={`text-shark-400 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
-                    />
-                  </button>
-                  {!isCollapsed && (
-                    <div className="px-5 pb-4 pt-1 border-t border-shark-50">
-                      <div className="grid grid-cols-3 gap-3">
-                        <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 hover:bg-red-100 transition-colors">
-                          <Icon name="alert-triangle" size={14} className="text-red-500" />
-                          <div>
-                            <p className="text-lg font-bold text-red-600">{region.lowStockCount}</p>
-                            <p className="text-xs text-red-400">Low Stock</p>
-                          </div>
-                        </Link>
-                        <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 hover:bg-amber-200 transition-colors">
-                          <Icon name="clipboard" size={14} className="text-[#E8532E]" />
-                          <div>
-                            <p className="text-lg font-bold text-[#E8532E]">{region.pendingRequests}</p>
-                            <p className="text-xs text-[#E8532E]">Requests</p>
-                          </div>
-                        </Link>
-                        <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-lg bg-action-50 px-3 py-2 hover:bg-action-100 transition-colors">
-                          <Icon name="truck" size={14} className="text-action-500" />
-                          <div>
-                            <p className="text-lg font-bold text-action-600">{region.pendingPOs}</p>
-                            <p className="text-xs text-action-400">POs</p>
-                          </div>
-                        </Link>
+                      <div>
+                        <h3 className="text-sm font-semibold text-shark-900">Regions</h3>
+                        <p className="text-xs text-shark-400">Status by region</p>
                       </div>
                     </div>
-                  )}
+                    {/* Region cards */}
+                    <div className="space-y-2">
+                      {[...regionBreakdown].sort((a, b) => a.healthScore - b.healthScore).map((region, idx) => {
+                        const colors = REGION_COLORS[idx % REGION_COLORS.length];
+                        const isCollapsed = collapsedRegions.has(region.regionId);
+                        const hasActions = region.lowStockCount > 0 || region.pendingRequests > 0 || region.pendingPOs > 0;
+                        const totalIssues = (region.damaged + region.lost) + region.pendingRequests + region.pendingPOs;
+                        return (
+                          <div key={region.regionId} className="bg-white rounded-xl border border-shark-100 overflow-hidden">
+                            {/* Region header row */}
+                            <button
+                              onClick={() => toggleRegion(region.regionId)}
+                              className="w-full flex items-center justify-between px-4 py-3 hover:bg-shark-50/50 transition-colors"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
+                                  <Icon name="map-pin" size={12} className={colors.color} />
+                                </div>
+                                <div className="text-left">
+                                  <span className="text-sm font-semibold text-shark-900">{region.regionName}</span>
+                                  <span className="ml-2 text-xs text-shark-400">{region.stateName}</span>
+                                </div>
+                                {hasActions ? (
+                                  <span className="ml-1 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 text-red-500 rounded-full border border-red-100">
+                                    {totalIssues} {totalIssues === 1 ? "issue" : "issues"}
+                                  </span>
+                                ) : (
+                                  <span className="ml-1 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-green-50 text-green-600 rounded-full border border-green-100">
+                                    All clear
+                                  </span>
+                                )}
+                              </div>
+                              <Icon
+                                name="chevron-down"
+                                size={14}
+                                className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
+                              />
+                            </button>
+                            {/* Expanded detail */}
+                            {!isCollapsed && (
+                              <div className="px-4 pb-3 pt-0 border-t border-shark-50">
+                                <div className="grid grid-cols-3 gap-2 mt-3">
+                                  <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex items-center gap-2 rounded-xl bg-red-50 border border-red-100 px-3 py-2 hover:bg-red-100 transition-colors">
+                                    <Icon name="alert-triangle" size={13} className="text-red-500 shrink-0" />
+                                    <div>
+                                      <p className="text-base font-bold text-red-600 leading-tight">{region.lowStockCount}</p>
+                                      <p className="text-[10px] text-red-400">Low Stock</p>
+                                    </div>
+                                  </Link>
+                                  <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-xl bg-amber-50 border border-amber-100 px-3 py-2 hover:bg-amber-100 transition-colors">
+                                    <Icon name="clipboard" size={13} className="text-[#E8532E] shrink-0" />
+                                    <div>
+                                      <p className="text-base font-bold text-[#E8532E] leading-tight">{region.pendingRequests}</p>
+                                      <p className="text-[10px] text-amber-500">Requests</p>
+                                    </div>
+                                  </Link>
+                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-xl bg-action-50 border border-action-100 px-3 py-2 hover:bg-action-100 transition-colors">
+                                    <Icon name="truck" size={13} className="text-action-500 shrink-0" />
+                                    <div>
+                                      <p className="text-base font-bold text-action-600 leading-tight">{region.pendingPOs}</p>
+                                      <p className="text-[10px] text-action-400">POs</p>
+                                    </div>
+                                  </Link>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </Card>
-              );
-                  })}
-                </div>
               </div>
             ) : null;
 
@@ -856,18 +911,20 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* Storage Locations Map */}
       {isSuperAdmin && showMap && mapLocations.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-action-50 flex items-center justify-center">
-                <Icon name="map-pin" size={18} className="text-action-600" />
+        <Card className="border-action-100 bg-gradient-to-r from-action-50/40 to-transparent">
+          <div className="p-4 sm:p-5">
+            {/* Header */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                <Icon name="map-pin" size={14} className="text-action-600" />
               </div>
-              Storage Locations
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+              <div>
+                <h3 className="text-sm font-semibold text-shark-900">Storage Locations</h3>
+                <p className="text-xs text-shark-400">Map and location overview</p>
+              </div>
+            </div>
             {/* Google Maps embed — no API key needed */}
-            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-xl overflow-hidden border border-shark-100">
+            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-xl overflow-hidden border border-shark-100 mb-3">
               <iframe
                 width="100%"
                 height="100%"
@@ -878,18 +935,18 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               />
             </div>
             {/* Location list */}
-            <div className="mt-3 space-y-1">
+            <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
               {mapLocations.map((loc) => (
                 <a
                   key={loc.id}
                   href={`https://www.google.com/maps?q=${loc.latitude},${loc.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-shark-50 transition-colors group"
+                  className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors group"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-action-50 flex items-center justify-center">
-                      <Icon name="map-pin" size={18} className="text-action-600" />
+                    <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                      <Icon name="map-pin" size={13} className="text-action-600" />
                     </div>
                     <div>
                       <span className="text-sm font-medium text-shark-700 group-hover:text-action-500 transition-colors">{loc.name}</span>
@@ -904,7 +961,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 </a>
               ))}
             </div>
-          </CardContent>
+          </div>
         </Card>
       )}
 
