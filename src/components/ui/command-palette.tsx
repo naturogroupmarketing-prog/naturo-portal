@@ -23,7 +23,7 @@ interface RecentPage {
 
 const QUICK_ACTIONS: CommandItem[] = [
   { label: "Add Asset", href: "/assets?action=add", icon: "plus", section: "Quick Actions", keywords: "new asset create" },
-  { label: "Add Supply", href: "/consumables?action=add", icon: "plus", section: "Quick Actions", keywords: "new supply consumable create" },
+  { label: "Add Supply", href: "/consumables?action=add", icon: "plus", section: "Quick Actions", keywords: "new supply create" },
   { label: "Create Purchase Order", href: "/purchase-orders?action=create", icon: "plus", section: "Quick Actions", keywords: "new PO buy order create" },
   { label: "Manage Staff", href: "/staff", icon: "users", section: "Quick Actions", keywords: "employees team manage" },
 ];
@@ -31,7 +31,8 @@ const QUICK_ACTIONS: CommandItem[] = [
 const COMMANDS: CommandItem[] = [
   // Navigation
   { label: "Dashboard", href: "/dashboard", icon: "dashboard", section: "Navigation", keywords: "home overview" },
-  { label: "Inventory", href: "/inventory", icon: "package", section: "Navigation", keywords: "assets consumables equipment items stock inventory locations regions" },
+  { label: "Inventory", href: "/inventory", icon: "package", section: "Navigation", keywords: "assets supplies equipment items stock inventory locations regions" },
+  { label: "Supplies", href: "/consumables", icon: "droplet", section: "Navigation", keywords: "supplies consumables stock PPE items manage" },
   { label: "Staff", href: "/staff", icon: "users", section: "Navigation", keywords: "employees team" },
   { label: "Purchase Orders", href: "/purchase-orders", icon: "truck", section: "Navigation", keywords: "PO buy order" },
   { label: "Returns", href: "/returns", icon: "arrow-left", section: "Navigation", keywords: "return verify" },

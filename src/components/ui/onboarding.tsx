@@ -116,7 +116,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
 
   const goals = [
     "Track equipment & assets",
-    "Manage consumable supplies",
+    "Manage supply items",
     "Multi-location oversight",
     "Reduce equipment loss",
     "Replace spreadsheets",

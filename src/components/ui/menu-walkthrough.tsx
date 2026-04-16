@@ -13,7 +13,7 @@ interface WalkthroughStep {
 
 const ADMIN_STEPS: WalkthroughStep[] = [
   { label: "Dashboard", icon: "dashboard", description: "Your command centre — overview of all regions, stats, health scores, and quick actions." },
-  { label: "Inventory", icon: "package", description: "View all assets and consumables across every region. Click a region to manage its items." },
+  { label: "Inventory", icon: "package", description: "View all assets and supplies across every region. Click a region to manage its items." },
   { label: "Purchase Orders", icon: "truck", description: "Track orders from pending to received. Auto-generated when stock runs low." },
   { label: "Staff", icon: "users", description: "Manage your team — create accounts, assign regions, view equipment, and track usage." },
   { label: "Starter Kits", icon: "box", description: "Pre-built equipment bundles. Apply to new staff to assign all their items in one click." },
@@ -26,9 +26,9 @@ const ADMIN_STEPS: WalkthroughStep[] = [
 const STAFF_STEPS: WalkthroughStep[] = [
   { label: "Dashboard", icon: "dashboard", description: "Your personal hub — see assigned items, pending checklists, and condition checks." },
   { label: "My Assets", icon: "package", description: "View equipment assigned to you. Confirm receipt of new items here." },
-  { label: "My Consumables", icon: "droplet", description: "Track consumables you've received. Mark items as used when finished." },
-  { label: "My Requests", icon: "clipboard", description: "View status of your consumable requests — pending, approved, or rejected." },
-  { label: "Request Consumables", icon: "plus", description: "Need more supplies? Submit a request to your manager for approval." },
+  { label: "My Supplies", icon: "droplet", description: "Track supplies you've received. Mark items as used when finished." },
+  { label: "My Requests", icon: "clipboard", description: "View status of your supply requests — pending, approved, or rejected." },
+  { label: "Request Supplies", icon: "plus", description: "Need more supplies? Submit a request to your manager for approval." },
   { label: "Report Damage", icon: "alert-triangle", description: "Report damaged or lost equipment. Your manager will be notified." },
 ];
 

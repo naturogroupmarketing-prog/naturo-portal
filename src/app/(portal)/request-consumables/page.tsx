@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Request & Confirm",
-  description: "Request consumables and confirm deliveries",
+  description: "Request supplies and confirm deliveries",
 };
 
 export default async function RequestConsumablesPage() {

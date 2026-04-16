@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "My Supplies",
-  description: "View your consumable supply history",
+  description: "View your supply history",
 };
 
 export default async function MyConsumablesPage() {

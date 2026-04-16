@@ -104,7 +104,7 @@ export function OrderCostSummary({ regions }: Props) {
 
         {regions.some((r) => !r.hasCosting) && (
           <p className="text-[10px] text-shark-400">
-            * Some items have no unit cost set — totals may be understated. Add costs via Consumables → Edit.
+            * Some items have no unit cost set — totals may be understated. Add costs via Supplies → Edit.
           </p>
         )}
       </CardContent>

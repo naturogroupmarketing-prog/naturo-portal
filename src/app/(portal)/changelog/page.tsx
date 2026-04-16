@@ -64,7 +64,7 @@ const RELEASES: Release[] = [
       "Monthly photo inspections — staff photograph assigned equipment",
       "Manager review page with photo grid and condition badges",
       "Inspection configuration — super admin chooses which categories need photos",
-      "AI assistant: filter by region, compare locations, create consumables",
+      "AI assistant: filter by region, compare locations, create supplies",
       "list_regions and compare_regions AI tools",
     ],
   },
@@ -91,7 +91,7 @@ const RELEASES: Release[] = [
     icon: "check-circle",
     changes: [
       "Fixed modal stealing focus from inputs on every keystroke",
-      "Fixed consumable photo disappearing when changing category",
+      "Fixed supply photo disappearing when changing category",
       "Fixed double-click on stock add/deduct submitting twice",
       "Fixed Neon compatibility — removed interactive transactions",
       "Added toast notifications replacing alert() calls",

@@ -697,7 +697,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <EmptyState
               icon="droplet"
               title="No supplies yet"
-              description="Add consumable items to manage stock"
+              description="Add supply items to manage stock"
               action={{ label: "Add Supply", href: "/consumables?action=add" }}
             />
           ) : isSuperAdmin ? (
@@ -1235,7 +1235,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               addToast("Supply assigned successfully", "success");
               setShowAssign(null);
             } catch (e) {
-              addToast(e instanceof Error ? e.message : "Failed to assign consumable", "error");
+              addToast(e instanceof Error ? e.message : "Failed to assign supply", "error");
             } finally {
               setAssigning(false);
             }
@@ -1281,7 +1281,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               addToast("Supply returned successfully", "success");
               setShowReturn(null);
             } catch (e) {
-              addToast(e instanceof Error ? e.message : "Failed to return consumable", "error");
+              addToast(e instanceof Error ? e.message : "Failed to return supply", "error");
             } finally {
               setReturning(false);
             }
@@ -1480,7 +1480,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   setEditImageFile(null);
                   setEditImageRemoved(false);
                 } catch (e) {
-                  addToast(e instanceof Error ? e.message : "Failed to update consumable", "error");
+                  addToast(e instanceof Error ? e.message : "Failed to update supply", "error");
                 } finally {
                   setEditSaving(false);
                 }

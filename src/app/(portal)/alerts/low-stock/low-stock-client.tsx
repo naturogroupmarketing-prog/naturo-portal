@@ -61,7 +61,7 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
               <Icon name="check" size={24} className="text-action-600" />
             </div>
             <p className="text-lg font-semibold text-shark-900">All stock levels OK</p>
-            <p className="text-sm text-shark-400 mt-1">No consumables are below their minimum threshold.</p>
+            <p className="text-sm text-shark-400 mt-1">No supplies are below their minimum threshold.</p>
           </div>
         </Card>
       ) : (

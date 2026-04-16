@@ -60,7 +60,7 @@ export default async function AlertsPage() {
     },
     {
       title: "Low Stock",
-      description: "Consumables below their minimum threshold",
+      description: "Supplies below their minimum threshold",
       href: "/alerts/low-stock",
       count: lowStockCount,
     },

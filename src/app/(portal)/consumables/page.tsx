@@ -6,8 +6,8 @@ import { ConsumablesClient } from "./consumables-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Consumables",
-  description: "Manage consumable supplies and stock levels",
+  title: "Supplies",
+  description: "Manage supply items and stock levels",
 };
 
 export default async function ConsumablesPage({ searchParams }: { searchParams: Promise<{ tab?: string; region?: string; stock?: string; category?: string }> }) {

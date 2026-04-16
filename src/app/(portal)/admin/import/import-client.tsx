@@ -356,7 +356,7 @@ export function ImportClient({ regions }: Props) {
         <div className="grid gap-4 sm:grid-cols-3">
           {([
             { type: "assets" as ImportType, label: "Assets", icon: "package" as const, desc: "Import fixed assets like equipment, tools, vehicles" },
-            { type: "consumables" as ImportType, label: "Supplies", icon: "droplet" as const, desc: "Import supply items like PPE, stationery, and other consumables" },
+            { type: "consumables" as ImportType, label: "Supplies", icon: "droplet" as const, desc: "Import supply items like PPE, stationery, and other supplies" },
             { type: "staff" as ImportType, label: "Staff", icon: "users" as const, desc: "Import staff members with email and role assignments" },
           ]).map((item) => (
             <Card

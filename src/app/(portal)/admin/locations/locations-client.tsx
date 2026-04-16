@@ -154,7 +154,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
         {[
           { label: "States", value: locations.length, icon: "map-pin" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
           { label: "Total Assets", value: totalAssets, icon: "package" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
-          { label: "Total Consumables", value: totalConsumables, icon: "droplet" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
+          { label: "Total Supplies", value: totalConsumables, icon: "droplet" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
           { label: "Total Staff", value: totalStaff, icon: "users" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
         ].map((stat) => (
           <Card key={stat.label} className="">
@@ -234,7 +234,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                     {state.regions.length} region{state.regions.length !== 1 ? "s" : ""}
                   </span>
                   <span className="text-xs text-shark-400 hidden sm:inline">
-                    {stateAssetTotal} assets &middot; {stateConsumableTotal} consumables &middot; {stateStaffTotal} staff
+                    {stateAssetTotal} assets &middot; {stateConsumableTotal} supplies &middot; {stateStaffTotal} staff
                   </span>
                 </div>
                 <div className="flex items-center gap-1">

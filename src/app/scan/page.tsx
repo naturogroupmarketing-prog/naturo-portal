@@ -313,7 +313,7 @@ export default function ScanPage() {
                 </div>
                 <div>
                   <p className="font-bold text-white">Item not found</p>
-                  <p className="text-sm text-white/40 mt-1">No asset or consumable matched this code</p>
+                  <p className="text-sm text-white/40 mt-1">No asset or supply matched this code</p>
                 </div>
                 <button onClick={resetScan} className="text-action-400 hover:text-action-300 font-semibold text-sm">
                   Try again
