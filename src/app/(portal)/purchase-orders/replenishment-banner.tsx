@@ -217,7 +217,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                           size="sm"
                           onClick={() => handleApprove(s)}
                           disabled={approving === s.consumableId}
-                          className="px-2 text-xs"
+                          className="h-8 px-2 text-xs"
                         >
                           {approving === s.consumableId ? (
                             <Icon name="clock" size={11} className="animate-spin" />
