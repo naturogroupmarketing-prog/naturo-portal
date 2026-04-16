@@ -526,97 +526,97 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     : [];
 
   return (
-    <div className="space-y-10">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="truck" size={14} className="text-action-600" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-shark-900">Purchase Orders</h3>
-            <p className="text-xs text-shark-400">
-              {purchaseOrders.length} total · {pendingCount} pending
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {isSuperAdmin && (
-            <Button
-              size="sm"
-              variant={showAllHistory ? "primary" : "secondary"}
-              onClick={() => {
-                const url = new URL(window.location.href);
-                if (showAllHistory) {
-                  url.searchParams.delete("showAll");
-                } else {
-                  url.searchParams.set("showAll", "true");
-                }
-                router.push(url.pathname + url.search);
-              }}
-            >
-              <Icon name="clock" size={14} className="mr-1.5" />
-              {showAllHistory ? "Recent Only" : "All History"}
-            </Button>
-          )}
-          {canManagePO && (
-            <Button size="sm" onClick={() => setShowCreate(true)}>
-              <Icon name="plus" size={14} className="mr-1.5" />
-              Create Order
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Mobile: compact status dropdown + search in one row */}
-      {/* Desktop: full tab bar */}
-      <div className="space-y-3">
-        {/* Row 1: Status + Search */}
-        <div className="flex items-center gap-2">
-          {/* Mobile: dropdown for status */}
-          <Select
-            value={activeTab}
-            onChange={(e) => setActiveTab(e.target.value as typeof activeTab)}
-            className="sm:hidden w-auto min-w-[120px] shrink-0"
-          >
-            {TABS.map((tab) => (
-              <option key={tab} value={tab}>
-                {tab}{tabCounts[tab] > 0 ? ` (${tabCounts[tab]})` : ""}
-              </option>
-            ))}
-          </Select>
-          <Input
-            placeholder="Search items, regions..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1"
-          />
-        </div>
-
-        {/* Desktop: full tab bar */}
-        <div className="hidden sm:flex gap-1 bg-shark-50 rounded-xl p-1 w-fit">
-          {TABS.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-                activeTab === tab
-                  ? "bg-action-500 text-white shadow-sm"
-                  : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
-              }`}
-            >
-              {tab}
-              {tabCounts[tab] > 0 && (
-                <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
-                  tab === "Pending" ? "text-white bg-[#E8532E]" : "text-shark-500 bg-shark-200"
-                }`}>
-                  {tabCounts[tab]}
-                </span>
+    <div className="space-y-4">
+      {/* Header + search + tabs — all in one card */}
+      <Card>
+        <div className="p-4 sm:p-5 space-y-4">
+          {/* Title row */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                <Icon name="truck" size={14} className="text-action-600" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-shark-900">Purchase Orders</h3>
+                <p className="text-xs text-shark-400">
+                  {purchaseOrders.length} total · {pendingCount} pending
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {isSuperAdmin && (
+                <Button
+                  size="sm"
+                  variant={showAllHistory ? "primary" : "secondary"}
+                  onClick={() => {
+                    const url = new URL(window.location.href);
+                    if (showAllHistory) {
+                      url.searchParams.delete("showAll");
+                    } else {
+                      url.searchParams.set("showAll", "true");
+                    }
+                    router.push(url.pathname + url.search);
+                  }}
+                >
+                  <Icon name="clock" size={14} className="mr-1.5" />
+                  {showAllHistory ? "Recent Only" : "All History"}
+                </Button>
               )}
-            </button>
-          ))}
+              {canManagePO && (
+                <Button size="sm" onClick={() => setShowCreate(true)}>
+                  <Icon name="plus" size={14} className="mr-1.5" />
+                  Create Order
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="flex items-center gap-2">
+            <Select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value as typeof activeTab)}
+              className="sm:hidden w-auto min-w-[120px] shrink-0"
+            >
+              {TABS.map((tab) => (
+                <option key={tab} value={tab}>
+                  {tab}{tabCounts[tab] > 0 ? ` (${tabCounts[tab]})` : ""}
+                </option>
+              ))}
+            </Select>
+            <Input
+              placeholder="Search items, regions..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="flex-1"
+            />
+          </div>
+
+          {/* Tab bar */}
+          <div className="hidden sm:flex gap-1 bg-shark-50 rounded-xl p-1 w-fit">
+            {TABS.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  activeTab === tab
+                    ? "bg-action-500 text-white shadow-sm"
+                    : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+                }`}
+              >
+                {tab}
+                {tabCounts[tab] > 0 && (
+                  <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
+                    tab === "Pending" ? "text-white bg-[#E8532E]" : "text-shark-500 bg-shark-200"
+                  }`}>
+                    {tabCounts[tab]}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      </Card>
 
       {/* Bulk Action Bar */}
       {selected.size > 0 && canApprovePO && (
