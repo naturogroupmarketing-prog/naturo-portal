@@ -39,8 +39,7 @@ const navSections: NavSection[] = [
     heading: "Management",
     roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
     items: [
-      { label: "Inventory", href: "/inventory", icon: "package", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
-      { label: "Supplies", href: "/consumables", icon: "droplet", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+      { label: "Inventory & Supplies", href: "/inventory", icon: "package", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Purchase Orders", href: "/purchase-orders", icon: "truck", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Staff", href: "/staff", icon: "users", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Starter Kits", href: "/starter-kits", icon: "box", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
