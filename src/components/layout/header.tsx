@@ -9,6 +9,7 @@ import { Logo } from "@/components/ui/logo";
 import { NotificationBell } from "./notification-bell";
 import { useTheme } from "@/components/theme-provider";
 import { CommandSearch } from "@/components/ui/command-search";
+import { QuickLinks } from "@/components/ui/quick-links";
 import { QuickAddMenu } from "@/components/ui/quick-add-menu";
 import type { Role } from "@/generated/prisma/browser";
 
@@ -28,6 +29,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const [searchFocused, setSearchFocused] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [quickLinksOpen, setQuickLinksOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isMac, setIsMac] = useState(false);
@@ -36,12 +38,12 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
     setIsMac(navigator.userAgent.includes("Mac"));
   }, []);
 
-  // Cmd+K / Ctrl+K to open command search
+  // Cmd+K / Ctrl+K to open quick links
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        setSearchOpen(true);
+        setQuickLinksOpen(true);
       }
     };
     window.addEventListener("keydown", handler);
@@ -132,11 +134,11 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
           )}
         </div>
 
-        {/* Apps grid — Google-style */}
+        {/* Apps grid — opens quick links */}
         <button
-          onClick={() => setSearchOpen(true)}
+          onClick={() => setQuickLinksOpen(true)}
           className="hidden lg:flex p-2 min-w-[40px] min-h-[40px] items-center justify-center text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 rounded-full hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
-          title="Apps"
+          title="Quick Links"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <rect x="3" y="3" width="4" height="4" rx="1" />
@@ -273,6 +275,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
         </div>
       </div>
       <CommandSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
+      <QuickLinks open={quickLinksOpen} onClose={() => setQuickLinksOpen(false)} />
     </header>
   );
 }
