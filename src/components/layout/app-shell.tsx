@@ -196,7 +196,7 @@ function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { ro
               className={`relative w-11 h-11 flex items-center justify-center rounded-xl transition-all ${
                 active
                   ? "bg-action-50 text-action-600 dark:bg-transparent dark:text-action-400"
-                  : "text-shark-400 hover:bg-shark-50 dark:hover:bg-transparent hover:text-shark-700 dark:hover:text-white"
+                  : "text-shark-400 hover:bg-shark-50 dark:bg-transparent dark:hover:bg-shark-800/40 hover:text-shark-700 dark:hover:text-white"
               }`}
             >
               <Icon name={item.icon} size={20} />
