@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { Icon, type IconName } from "@/components/ui/icon";
 
 interface CommandSearchProps {
   open: boolean;
@@ -10,18 +11,18 @@ interface CommandSearchProps {
 }
 
 interface QuickNavItem {
-  emoji: string;
+  icon: IconName;
   label: string;
   href: string;
   shortcut: string;
 }
 
 const QUICK_NAV: QuickNavItem[] = [
-  { emoji: "📦", label: "Assets", href: "/assets", shortcut: "G then A" },
-  { emoji: "💧", label: "Consumables", href: "/consumables", shortcut: "G then C" },
-  { emoji: "👥", label: "Staff", href: "/staff", shortcut: "G then S" },
-  { emoji: "📋", label: "Reports", href: "/reports", shortcut: "G then R" },
-  { emoji: "⚡", label: "Anomalies", href: "/alerts/anomalies", shortcut: "" },
+  { icon: "package",        label: "Assets",       href: "/assets",           shortcut: "G then A" },
+  { icon: "droplet",        label: "Consumables",  href: "/consumables",      shortcut: "G then C" },
+  { icon: "users",          label: "Staff",        href: "/staff",            shortcut: "G then S" },
+  { icon: "clipboard",      label: "Reports",      href: "/reports",          shortcut: "G then R" },
+  { icon: "alert-triangle", label: "Anomalies",    href: "/alerts/anomalies", shortcut: "" },
 ];
 
 const RECENT_SEARCHES = [
@@ -162,9 +163,7 @@ export function CommandSearch({ open, onClose }: CommandSearchProps) {
                         onClick={() => handleNavigate(item.href)}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-left group"
                       >
-                        <span className="text-base leading-none w-5 text-center shrink-0">
-                          {item.emoji}
-                        </span>
+                        <Icon name={item.icon} size={16} className="text-shark-400 group-hover:text-action-500 transition-colors shrink-0" />
                         <span className="flex-1 text-sm text-shark-700 dark:text-shark-200 font-medium">
                           {item.label}
                         </span>
