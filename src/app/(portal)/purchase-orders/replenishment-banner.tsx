@@ -46,6 +46,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [approving, setApproving] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(true);
   const [, startTransition] = useTransition();
   const { addToast } = useToast();
   const router = useRouter();
@@ -109,11 +110,14 @@ export function ReplenishmentBanner({ suggestions }: Props) {
   const grandEstimatedCost = visible.reduce((s, r) => s + (r.estimatedCost || 0), 0);
 
   return (
-    <Card className="border-[#E8532E]/20 bg-gradient-to-r from-[#E8532E]/5 to-transparent">
+    <Card className="border-[#E8532E]/20">
       <CardContent className="py-4 space-y-3">
 
-        {/* Header */}
-        <div className="flex items-center gap-2">
+        {/* Header — clickable to collapse/expand */}
+        <button
+          onClick={() => setCollapsed((c) => !c)}
+          className="w-full flex items-center gap-2 text-left"
+        >
           <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center shrink-0">
             <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
           </div>
@@ -128,16 +132,21 @@ export function ReplenishmentBanner({ suggestions }: Props) {
             </p>
           </div>
           {grandEstimatedCost > 0 && (
-            <div className="text-right shrink-0">
+            <div className="text-right shrink-0 mr-2">
               <p className="text-sm font-bold text-shark-900">{fmtCost(grandEstimatedCost)}</p>
               <p className="text-[10px] text-shark-400">est. total</p>
             </div>
           )}
           <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
-        </div>
+          <Icon
+            name="chevron-down"
+            size={14}
+            className={`text-shark-400 transition-transform shrink-0 ml-1 ${collapsed ? "-rotate-90" : ""}`}
+          />
+        </button>
 
-        {/* Groups by shop */}
-        <div className="space-y-3">
+        {/* Groups by shop — collapsible */}
+        {!collapsed && <div className="space-y-3">
           {shopGroups.map((group) => {
             const groupKey = group.shopUrl || "__no_link__";
             const groupVisible = group.items.filter((s) => !dismissed.has(s.consumableId));
@@ -262,7 +271,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
               </div>
             );
           })}
-        </div>
+        </div>}
       </CardContent>
     </Card>
   );

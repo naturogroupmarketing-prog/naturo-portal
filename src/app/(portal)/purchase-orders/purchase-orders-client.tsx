@@ -15,15 +15,6 @@ import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { formatDate, statusColor } from "@/lib/utils";
 
-const SECTION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50" },
-  { color: "text-cyan-600", bg: "bg-cyan-50" },
-  { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-shark-600", bg: "bg-shark-50" },
-];
-
 type PurchaseOrder = {
   id: string;
   consumableId: string;
@@ -228,17 +219,33 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   const [bulkLoading, setBulkLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>(mapStatusToTab(initialStatus, isSuperAdmin));
   const [search, setSearch] = useState("");
-  const [regionFilter, setRegionFilter] = useState("ALL");
-  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
-    if (!initialRegion) return new Set();
-    // Collapse all regions except the one linked from dashboard
-    return new Set(regions.filter((r) => r.id !== initialRegion).map((r) => r.id));
-  });
   const [loading, setLoading] = useState<string | null>(null);
   const [viewOrder, setViewOrder] = useState<PurchaseOrder | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
+
+  // Region selector state (super admin only)
+  const [selectedRegionId, setSelectedRegionId] = useState<string>(() => {
+    if (initialRegion && regions.some((r) => r.id === initialRegion)) return initialRegion;
+    return regions[0]?.id || "";
+  });
+  const [regionDropdownOpen, setRegionDropdownOpen] = useState(false);
+  const [regionSearch, setRegionSearch] = useState("");
+  const regionDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close region dropdown on outside click
+  useEffect(() => {
+    if (!regionDropdownOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (regionDropdownRef.current && !regionDropdownRef.current.contains(e.target as Node)) {
+        setRegionDropdownOpen(false);
+        setRegionSearch("");
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [regionDropdownOpen]);
 
   // Column visibility
   const [visibleColumns, setVisibleColumns] = useState<POCols>(() => {
@@ -273,17 +280,18 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
 
   const visibleCount = Object.values(visibleColumns).filter(Boolean).length + 1; // +1 for actions
 
-  const toggleSection = (key: string) => {
-    setCollapsedSections((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
+  // Selected region object
+  const selectedRegion = isSuperAdmin
+    ? (regions.find((r) => r.id === selectedRegionId) || regions[0])
+    : null;
 
-  // Filter by tab + search + region, then sort by priority (most urgent first)
-  const filtered = purchaseOrders.filter((po) => {
+  // Orders scoped to the selected region (super admin) or all (branch manager)
+  const regionPOs = isSuperAdmin && selectedRegionId
+    ? purchaseOrders.filter((po) => po.regionId === selectedRegionId)
+    : purchaseOrders;
+
+  // Filter by tab + search within the region's orders, then sort by priority
+  const filtered = regionPOs.filter((po) => {
     if (activeTab !== "All" && po.status !== activeTab.toUpperCase()) return false;
     if (search) {
       const q = search.toLowerCase();
@@ -303,14 +311,14 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
-  const pendingCount = purchaseOrders.filter((po) => po.status === "PENDING").length;
+  const pendingCount = regionPOs.filter((po) => po.status === "PENDING").length;
   const tabCounts: Record<string, number> = {
     Pending: pendingCount,
-    Approved: purchaseOrders.filter((po) => po.status === "APPROVED").length,
-    Ordered: purchaseOrders.filter((po) => po.status === "ORDERED").length,
-    Rejected: purchaseOrders.filter((po) => po.status === "REJECTED").length,
-    Received: purchaseOrders.filter((po) => po.status === "RECEIVED").length,
-    All: purchaseOrders.length,
+    Approved: regionPOs.filter((po) => po.status === "APPROVED").length,
+    Ordered: regionPOs.filter((po) => po.status === "ORDERED").length,
+    Rejected: regionPOs.filter((po) => po.status === "REJECTED").length,
+    Received: regionPOs.filter((po) => po.status === "RECEIVED").length,
+    All: regionPOs.length,
   };
 
   const handleAction = async (purchaseOrderId: string, action: string) => {
@@ -507,28 +515,113 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     </>
   );
 
-  // Group by region for super admin
-  const regionGroups = isSuperAdmin
-    ? regions.map((region) => ({
-        region,
-        orders: filtered.filter((po) => po.regionId === region.id),
-      }))
-      .sort((a, b) => {
-        // Count pending (most urgent) orders per region
-        const aPending = a.orders.filter((o) => o.status === "PENDING").length;
-        const bPending = b.orders.filter((o) => o.status === "PENDING").length;
-        if (bPending !== aPending) return bPending - aPending;
-        // Then by total outstanding (non-received/rejected)
-        const aOutstanding = a.orders.filter((o) => o.status !== "RECEIVED" && o.status !== "REJECTED").length;
-        const bOutstanding = b.orders.filter((o) => o.status !== "RECEIVED" && o.status !== "REJECTED").length;
-        return bOutstanding - aOutstanding;
-      })
-    : [];
-
   return (
     <div className="space-y-4">
-      {/* Header + search + tabs — all in one card */}
       <Card>
+        {/* Region selector — super admin only */}
+        {isSuperAdmin && regions.length > 0 && selectedRegion && (
+          <div className="relative" ref={regionDropdownRef}>
+            <button
+              onClick={() => { setRegionDropdownOpen((o) => !o); setRegionSearch(""); }}
+              className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 hover:bg-shark-50/50 transition-colors text-left"
+            >
+              <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                <Icon name="map-pin" size={15} className="text-action-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <h2 className="text-base font-semibold text-shark-900">{selectedRegion.name}</h2>
+                  {regions.length > 1 && (
+                    <Icon
+                      name="chevron-down"
+                      size={14}
+                      className={`text-shark-400 transition-transform shrink-0 ${regionDropdownOpen ? "rotate-180" : ""}`}
+                    />
+                  )}
+                </div>
+                <p className="text-xs text-shark-400">{selectedRegion.state.name} · tap to switch region</p>
+              </div>
+              {pendingCount > 0 && (
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-red-500 bg-red-50 border border-red-100 px-2.5 py-1.5 rounded-lg shrink-0">
+                  <Icon name="alert-triangle" size={12} />
+                  {pendingCount} pending
+                </span>
+              )}
+            </button>
+
+            {/* Region dropdown */}
+            {regionDropdownOpen && regions.length > 1 && (
+              <div className="absolute left-0 right-0 top-full z-50 bg-white border border-shark-100 shadow-xl rounded-b-xl overflow-hidden">
+                {/* Search */}
+                <div className="px-3 py-2.5 border-b border-shark-100">
+                  <div className="flex items-center gap-2 bg-shark-50 rounded-lg px-3 py-1.5">
+                    <Icon name="search" size={13} className="text-shark-400 shrink-0" />
+                    <input
+                      autoFocus
+                      value={regionSearch}
+                      onChange={(e) => setRegionSearch(e.target.value)}
+                      placeholder="Search regions..."
+                      className="flex-1 bg-transparent text-sm text-shark-800 placeholder-shark-400 outline-none"
+                    />
+                  </div>
+                </div>
+                {/* Region list grouped by state */}
+                <div className="max-h-72 overflow-y-auto">
+                  {(() => {
+                    const q = regionSearch.toLowerCase();
+                    const filteredRegions = regions.filter(
+                      (r) => r.name.toLowerCase().includes(q) || r.state.name.toLowerCase().includes(q)
+                    );
+                    if (filteredRegions.length === 0) {
+                      return <p className="text-sm text-shark-400 text-center py-6">No regions found</p>;
+                    }
+                    const byState = filteredRegions.reduce<Record<string, typeof regions>>((acc, r) => {
+                      const s = r.state.name;
+                      if (!acc[s]) acc[s] = [];
+                      acc[s].push(r);
+                      return acc;
+                    }, {});
+                    return Object.entries(byState).map(([stateName, stateRegions]) => (
+                      <div key={stateName}>
+                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 border-b border-shark-50">
+                          {stateName}
+                        </p>
+                        {stateRegions.map((r) => {
+                          const rPending = purchaseOrders.filter((po) => po.regionId === r.id && po.status === "PENDING").length;
+                          return (
+                            <button
+                              key={r.id}
+                              onClick={() => { setSelectedRegionId(r.id); setRegionDropdownOpen(false); setRegionSearch(""); }}
+                              className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-action-50 transition-colors text-left ${r.id === selectedRegionId ? "bg-action-50" : ""}`}
+                            >
+                              <Icon
+                                name="map-pin"
+                                size={13}
+                                className={r.id === selectedRegionId ? "text-action-500" : "text-shark-300"}
+                              />
+                              <span className={`text-sm flex-1 ${r.id === selectedRegionId ? "font-semibold text-action-600" : "text-shark-700"}`}>
+                                {r.name}
+                              </span>
+                              {rPending > 0 && (
+                                <span className="text-[10px] font-semibold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full shrink-0">
+                                  {rPending} pending
+                                </span>
+                              )}
+                              {r.id === selectedRegionId && (
+                                <Icon name="check" size={12} className="text-action-500 ml-auto shrink-0" />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ));
+                  })()}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="p-4 sm:p-5 space-y-4">
           {/* Title row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -539,7 +632,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               <div>
                 <h3 className="text-sm font-semibold text-shark-900">Purchase Orders</h3>
                 <p className="text-xs text-shark-400">
-                  {purchaseOrders.length} total · {pendingCount} pending
+                  {regionPOs.length} total · {pendingCount} pending
                 </p>
               </div>
             </div>
@@ -615,7 +708,8 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               </button>
             ))}
           </div>
-          {/* Bulk Action Bar — inside card */}
+
+          {/* Bulk Action Bar */}
           {selected.size > 0 && canApprovePO && (
             <div className="sticky top-14 z-20 bg-action-500 text-white rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
               <span className="text-sm font-medium">{selected.size} selected</span>
@@ -647,7 +741,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           )}
         </div>
 
-        {/* Content — region groups as sections inside the same card */}
+        {/* Content */}
         {purchaseOrders.length === 0 ? (
           <div className="px-4 sm:px-5 pb-4">
             <EmptyState
@@ -657,59 +751,13 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               action={{ label: "Create PO", href: "/purchase-orders?action=create" }}
             />
           </div>
-        ) : isSuperAdmin ? (
-          // Region-grouped view — each region is a section with a top divider
-          <div className="divide-y divide-shark-100">
-            {regionGroups.map(({ region, orders }, idx) => {
-              const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
-              const isCollapsed = collapsedSections.has(region.id);
-              const pendingInRegion = orders.filter((o) => o.status === "PENDING").length;
-
-              return (
-                <div key={region.id}>
-                  <button
-                    onClick={() => toggleSection(region.id)}
-                    className="w-full flex items-center justify-between px-4 sm:px-5 py-3 hover:bg-shark-50/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
-                        <Icon name="map-pin" size={13} className={colors.color} />
-                      </div>
-                      <div className="text-left">
-                        <span className="text-sm font-semibold text-shark-900">{region.name}</span>
-                        <span className="ml-2 text-xs text-shark-400">{region.state.name}</span>
-                      </div>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-shark-100 text-shark-600 rounded-full">
-                        {orders.length} order{orders.length !== 1 ? "s" : ""}
-                      </span>
-                      {pendingInRegion > 0 && (
-                        <span className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 border border-red-100 text-red-500 rounded-full">
-                          {pendingInRegion} pending
-                        </span>
-                      )}
-                    </div>
-                    <Icon
-                      name="chevron-down"
-                      size={14}
-                      className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
-                    />
-                  </button>
-                  {!isCollapsed && (
-                    <div className="border-t border-shark-50">
-                      {renderTable(orders)}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
         ) : (
-          // Single region view
           <div className="border-t border-shark-100">
             {renderTable(filtered)}
           </div>
         )}
       </Card>
+
       {/* Order Detail / Edit Modal */}
       {viewOrder && (
         <Modal open onClose={() => setViewOrder(null)} title={canManagePO ? "Edit Purchase Order" : "Purchase Order Details"}>
