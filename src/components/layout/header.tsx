@@ -8,6 +8,8 @@ import { Icon } from "@/components/ui/icon";
 import { Logo } from "@/components/ui/logo";
 import { NotificationBell } from "./notification-bell";
 import { useTheme } from "@/components/theme-provider";
+import { CommandSearch } from "@/components/ui/command-search";
+import { QuickAddMenu } from "@/components/ui/quick-add-menu";
 import type { Role } from "@/generated/prisma/browser";
 
 interface HeaderProps {
@@ -25,11 +27,25 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isMac, setIsMac] = useState(false);
 
   useEffect(() => {
     setIsMac(navigator.userAgent.includes("Mac"));
+  }, []);
+
+  // Cmd+K / Ctrl+K to open command search
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, []);
 
   // Close dropdown on click outside
@@ -73,39 +89,52 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
       <div className="lg:hidden flex-1" />
 
-      {/* Mobile search button — opens command palette */}
+      {/* Mobile search button — opens command search */}
       <button
-        onClick={() => { document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true })); }}
+        onClick={() => setSearchOpen(true)}
         className="lg:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-shark-400 hover:text-shark-700 rounded-full hover:bg-shark-50 transition-colors"
         aria-label="Search"
       >
         <Icon name="search" size={18} />
       </button>
 
-      {/* Desktop search — Google-style rounded bar */}
-      <form onSubmit={handleSearch} className="hidden lg:flex items-center flex-1 max-w-xl">
-        <div className={`flex items-center w-full rounded-full border ${searchFocused ? "border-action-400 shadow-md" : "border-shark-200 dark:border-shark-700 hover:shadow-sm"} bg-white dark:bg-shark-800 px-4 py-2 transition-all`}>
-          <Icon name="search" size={16} className="text-shark-400 shrink-0" />
-          <input
-            type="text"
-            placeholder="Search trackio"
-            aria-label="Search assets and inventory"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-            className="w-full bg-transparent border-none outline-none text-sm text-shark-700 dark:text-shark-200 placeholder-shark-400 ml-2.5"
-          />
-          <kbd className="hidden sm:flex items-center gap-0.5 text-[10px] text-shark-400 bg-shark-100 dark:bg-shark-700 border border-shark-200 dark:border-shark-600 px-1.5 py-0.5 rounded font-mono shrink-0">
+      {/* Desktop search — styled button that opens CommandSearch */}
+      <div className="hidden lg:flex items-center flex-1 max-w-xl">
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-400 bg-shark-50 dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-lg hover:border-shark-300 dark:hover:border-shark-600 transition-colors w-48 lg:w-64"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <span className="flex-1 text-left">Search...</span>
+          <kbd className="hidden lg:inline-flex items-center gap-1 text-xs bg-shark-200 dark:bg-shark-700 px-1.5 py-0.5 rounded font-mono">
             {isMac ? "⌘" : "Ctrl+"}K
           </kbd>
-        </div>
-      </form>
+        </button>
+      </div>
 
       <div className="flex items-center gap-2">
+        {/* Quick Add button */}
+        <div className="relative">
+          <button
+            onClick={() => setQuickAddOpen(!quickAddOpen)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-action-500 hover:bg-action-600 text-white rounded-lg transition-colors"
+          >
+            <span className="text-base leading-none">+</span>
+            <span className="hidden sm:inline">Add</span>
+          </button>
+          {quickAddOpen && (
+            <div className="absolute right-0 top-full mt-2 z-50">
+              <QuickAddMenu role={role} onClose={() => setQuickAddOpen(false)} />
+            </div>
+          )}
+        </div>
+
         {/* Apps grid — Google-style */}
         <button
-          onClick={() => { document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true })); }}
+          onClick={() => setSearchOpen(true)}
           className="hidden lg:flex p-2 min-w-[40px] min-h-[40px] items-center justify-center text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 rounded-full hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
           title="Apps"
         >
@@ -243,6 +272,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
           )}
         </div>
       </div>
+      <CommandSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }
