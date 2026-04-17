@@ -1,35 +1,41 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Icon, type IconName } from "@/components/ui/icon";
 
 interface CommandSearchProps {
   open: boolean;
   onClose: () => void;
 }
 
-interface QuickNavItem {
-  icon: IconName;
-  label: string;
-  href: string;
-  shortcut: string;
+function resolveQuery(query: string): string {
+  const q = query.toLowerCase();
+  if (q.includes("low stock"))  return "/alerts/low-stock";
+  if (q.includes("damage"))     return "/alerts/damage";
+  if (q.includes("return"))     return "/returns";
+  if (q.includes("order") || q.includes(" po")) return "/purchase-orders";
+  if (q.includes("staff") || q.includes("team")) return "/staff";
+  if (q.includes("report"))     return "/reports";
+  if (q.includes("maintenance"))return "/maintenance";
+  if (q.includes("anomal"))     return "/alerts/anomalies";
+  if (q.includes("consumable") || q.includes("supply") || q.includes("supplies")) return "/consumables";
+  if (q.includes("asset"))      return "/assets";
+  return `/assets?search=${encodeURIComponent(query.trim())}`;
 }
 
-const QUICK_NAV: QuickNavItem[] = [
-  { icon: "dashboard",      label: "Dashboard",    href: "/dashboard",        shortcut: "G then D" },
-  { icon: "package",        label: "Assets",       href: "/assets",           shortcut: "G then A" },
-  { icon: "droplet",        label: "Consumables",  href: "/consumables",      shortcut: "G then C" },
-  { icon: "users",          label: "Staff",        href: "/staff",            shortcut: "G then S" },
-  { icon: "truck",          label: "Orders",       href: "/purchase-orders",  shortcut: "G then O" },
-  { icon: "arrow-left",     label: "Returns",      href: "/returns",          shortcut: "G then R" },
-  { icon: "clipboard",      label: "Reports",      href: "/reports",          shortcut: "" },
-  { icon: "alert-triangle", label: "Anomalies",    href: "/alerts/anomalies", shortcut: "" },
-];
-
 export function CommandSearch({ open, onClose }: CommandSearchProps) {
+  const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!open) {
+      setQuery("");
+    } else {
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [open]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -39,16 +45,17 @@ export function CommandSearch({ open, onClose }: CommandSearchProps) {
     return () => document.removeEventListener("keydown", handler);
   }, [open, onClose]);
 
-  const handleNavigate = (href: string) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) return;
     onClose();
-    router.push(href);
+    router.push(resolveQuery(query));
   };
 
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
@@ -59,50 +66,34 @@ export function CommandSearch({ open, onClose }: CommandSearchProps) {
             onClick={onClose}
           />
 
-          {/* Panel */}
-          <div className="fixed inset-0 z-[61] flex items-start justify-center pt-[10vh] px-4 pointer-events-none">
+          <div className="fixed inset-0 z-[61] flex items-start justify-center pt-[12vh] px-4 pointer-events-none">
             <motion.div
               key="modal"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.15 }}
-              className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-200 dark:border-shark-700 overflow-hidden pointer-events-auto"
+              className="w-full max-w-xl pointer-events-auto"
             >
-              {/* Header */}
-              <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 dark:border-shark-800">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-shark-400">
-                  Quick Navigate
-                </p>
-                <kbd className="text-[10px] text-shark-400 bg-shark-100 dark:bg-shark-800 border border-shark-200 dark:border-shark-700 px-1.5 py-0.5 rounded font-mono">
-                  Esc
-                </kbd>
-              </div>
-
-              {/* Nav links */}
-              <div className="p-2">
-                {QUICK_NAV.map((item) => (
-                  <button
-                    key={item.href}
-                    onClick={() => handleNavigate(item.href)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-shark-50 dark:bg-transparent dark:hover:bg-shark-800/40 transition-colors text-left group"
-                  >
-                    <Icon
-                      name={item.icon}
-                      size={16}
-                      className="text-shark-400 group-hover:text-action-500 dark:text-shark-400 transition-colors shrink-0"
-                    />
-                    <span className="flex-1 text-sm font-medium text-shark-700 dark:text-shark-200 group-hover:text-shark-900 dark:group-hover:text-white transition-colors">
-                      {item.label}
-                    </span>
-                    {item.shortcut && (
-                      <kbd className="text-[10px] text-shark-400 bg-shark-100 dark:bg-shark-800 px-1.5 py-0.5 rounded font-mono shrink-0">
-                        {item.shortcut}
-                      </kbd>
-                    )}
-                  </button>
-                ))}
-              </div>
+              <form onSubmit={handleSubmit}>
+                <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-200 dark:border-shark-700">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-shark-400 shrink-0">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search assets, stock, staff…"
+                    className="flex-1 bg-transparent text-lg text-shark-900 dark:text-shark-100 placeholder-shark-400 outline-none border-none"
+                  />
+                  <kbd className="hidden sm:inline-flex items-center text-xs text-shark-400 bg-shark-100 dark:bg-shark-800 border border-shark-200 dark:border-shark-700 px-2 py-1 rounded font-mono shrink-0">
+                    Esc
+                  </kbd>
+                </div>
+              </form>
             </motion.div>
           </div>
         </>
