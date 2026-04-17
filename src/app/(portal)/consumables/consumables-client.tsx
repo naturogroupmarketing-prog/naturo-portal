@@ -10,6 +10,7 @@ import { Modal } from "@/components/ui/modal";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useToast } from "@/components/ui/toast";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 import { createConsumable, updateConsumable, addStock, deductStock, approveRequest, issueConsumable, assignConsumable, returnConsumable, bulkDeleteConsumables } from "@/app/actions/consumables";
 import { createCategory, updateCategory, deleteCategory, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { formatDate } from "@/lib/utils";
@@ -111,6 +112,7 @@ import { compressImage } from "@/lib/image-utils";
 
 export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
   const { addToast } = useToast();
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [showCreate, setShowCreate] = useState(false);
   const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
   const [stockMode, setStockMode] = useState<"add" | "deduct">("add");
@@ -431,6 +433,97 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     }
   };
 
+  const renderConsumableCard = (c: Consumable) => {
+    const stockPercent = c.minimumThreshold > 0
+      ? Math.min(100, (c.quantityOnHand / (c.minimumThreshold * 3)) * 100)
+      : 100;
+    const isLow = c.quantityOnHand <= c.minimumThreshold;
+    const isCritical = c.quantityOnHand === 0;
+
+    return (
+      <div
+        key={c.id}
+        onClick={() => setEditConsumable(c)}
+        className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-xl p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
+      >
+        {/* Image or icon + status badge */}
+        <div className="flex items-start justify-between mb-3">
+          <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
+            {c.imageUrl ? (
+              <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover rounded-lg" />
+            ) : (
+              <Icon name="droplet" size={18} className="text-shark-300" />
+            )}
+          </div>
+          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+            isCritical ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400" :
+            isLow ? "bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400" :
+            "bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400"
+          }`}>
+            {isCritical ? "Out of Stock" : isLow ? "Low Stock" : "In Stock"}
+          </span>
+        </div>
+
+        {/* Name + category */}
+        <h3 className="font-semibold text-shark-900 dark:text-white text-sm mb-0.5 truncate">{c.name}</h3>
+        <p className="text-xs text-shark-400 mb-3 truncate">{c.category} · {c.region.name}</p>
+
+        {/* Stock bar */}
+        <div className="mb-3">
+          <div className="flex justify-between text-xs text-shark-500 mb-1">
+            <span>{c.quantityOnHand} {c.unitType}</span>
+            <span>Min: {c.minimumThreshold}</span>
+          </div>
+          <div className="h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all ${isCritical ? "bg-red-500" : isLow ? "bg-amber-400" : "bg-green-500"}`}
+              style={{ width: `${stockPercent}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Quick actions - show on hover */}
+        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150" onClick={(e) => e.stopPropagation()}>
+          <button
+            className="flex-1 text-xs py-1.5 rounded-lg bg-action-50 text-action-600 hover:bg-action-100 font-medium transition-colors"
+            onClick={() => {
+              if (!canAdjustStock) { addToast("You don't have permission to adjust stock. To update stock, confirm receival in Purchase Orders.", "error"); return; }
+              setStockMode("add"); setShowAddStock(c);
+            }}
+          >
+            Add Stock
+          </button>
+          <button
+            className="flex-1 text-xs py-1.5 rounded-lg bg-shark-50 text-shark-600 hover:bg-shark-100 font-medium transition-colors"
+            onClick={() => setShowAssign(c)}
+          >
+            Assign
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderCompactRow = (c: Consumable) => {
+    const isLow = c.quantityOnHand <= c.minimumThreshold;
+    const isCritical = c.quantityOnHand === 0;
+    return (
+      <div
+        key={c.id}
+        onClick={() => setEditConsumable(c)}
+        className="flex items-center gap-3 px-3 border-b border-shark-50 hover:bg-shark-50/60 cursor-pointer"
+        style={{ height: 36, minHeight: 36 }}
+      >
+        <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 truncate">{c.name}</span>
+        <span className={`shrink-0 text-[11px] font-bold px-1.5 py-0.5 rounded ${
+          isCritical ? "bg-red-50 text-red-600" : isLow ? "bg-amber-50 text-amber-600" : "bg-green-50 text-green-600"
+        }`}>{c.quantityOnHand} {c.unitType}</span>
+        <span className="shrink-0 text-[11px] text-shark-400 hidden md:block w-24 truncate">{c.category}</span>
+        <span className="shrink-0 text-[11px] text-shark-400 hidden lg:block w-28 truncate">{c.region.name}</span>
+      </div>
+    );
+  };
+
   const renderConsumableTable = (sectionItems: Consumable[]) => {
     const deletableInSection = sectionItems.filter((c) => deletableIds.has(c.id));
     const allSelected = deletableInSection.length > 0 && deletableInSection.every((c) => selectedIds.has(c.id));
@@ -615,6 +708,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <ViewToggle value={viewMode} onChange={setViewMode} />
           <Button variant="outline" size="sm" onClick={() => setShowManageSections(true)}>
             <Icon name="settings" size={14} className="mr-1.5" />
             Sections
@@ -762,9 +856,29 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                               />
                             </button>
                             {!catCollapsed && (
-                              <Card>
-                                {renderConsumableTable(catItems)}
-                              </Card>
+                              viewMode === "card" ? (
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 py-2">
+                                  {catItems.map(renderConsumableCard)}
+                                  {catItems.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
+                                </div>
+                              ) : viewMode === "compact" ? (
+                                <Card>
+                                  <div className="overflow-hidden">
+                                    <div className="flex items-center gap-3 px-3 border-b border-shark-100 bg-shark-50/60" style={{ height: 30 }}>
+                                      <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
+                                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
+                                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
+                                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden lg:block w-28">Location</span>
+                                    </div>
+                                    {catItems.map(renderCompactRow)}
+                                    {catItems.length === 0 && <p className="text-center text-shark-400 py-4 text-sm">No items in this section.</p>}
+                                  </div>
+                                </Card>
+                              ) : (
+                                <Card>
+                                  {renderConsumableTable(catItems)}
+                                </Card>
+                              )
                             )}
                           </div>
                         );
@@ -814,9 +928,29 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     </button>
                   </div>
                   {!catCollapsed && (
-                    <Card>
-                      {renderConsumableTable(section.items)}
-                    </Card>
+                    viewMode === "card" ? (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 py-2">
+                        {section.items.map(renderConsumableCard)}
+                        {section.items.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
+                      </div>
+                    ) : viewMode === "compact" ? (
+                      <Card>
+                        <div className="overflow-hidden">
+                          <div className="flex items-center gap-3 px-3 border-b border-shark-100 bg-shark-50/60" style={{ height: 30 }}>
+                            <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
+                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
+                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
+                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden lg:block w-28">Location</span>
+                          </div>
+                          {section.items.map(renderCompactRow)}
+                          {section.items.length === 0 && <p className="text-center text-shark-400 py-4 text-sm">No items in this section.</p>}
+                        </div>
+                      </Card>
+                    ) : (
+                      <Card>
+                        {renderConsumableTable(section.items)}
+                      </Card>
+                    )
                   )}
                 </div>
               );

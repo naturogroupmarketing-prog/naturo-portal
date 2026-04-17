@@ -17,6 +17,7 @@ import { createCategory, updateCategory, deleteCategory, addEquipmentItem, remov
 import { useRouter } from "next/navigation";
 import { compressImage } from "@/lib/image-utils";
 import { exportToCSV } from "@/lib/csv";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 
 // Lazy-load QR scanner (~100KB html5-qrcode) — only needed when modal opens
 const QRScanner = dynamic(
@@ -344,6 +345,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   const [dateTo, setDateTo] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
 
   // Column visibility state — persisted to localStorage
   const ASSET_COLS_KEY = "trackio-asset-columns";
@@ -673,6 +675,78 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     }
   };
 
+  const renderAssetCard = (asset: Asset) => {
+    const activeAssignment = asset.assignments[0];
+    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600" };
+    return (
+      <div
+        key={asset.id}
+        onClick={() => permissions.canEdit && setEditAsset(asset)}
+        className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-xl p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
+      >
+        <div className="flex items-start justify-between mb-3">
+          <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
+            {asset.imageUrl ? (
+              <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover rounded-lg" />
+            ) : (
+              <Icon name="package" size={18} className="text-shark-300" />
+            )}
+          </div>
+          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badge.bg} ${badge.text}`}>
+            {badge.label}
+          </span>
+        </div>
+        <h3 className="font-semibold text-shark-900 dark:text-white text-sm mb-0.5 truncate">
+          {asset.name}
+          {asset.isHighValue && <span className="ml-1 text-gold-500 text-xs">★</span>}
+        </h3>
+        <p className="text-xs text-shark-400 mb-3 truncate">{asset.category} · {asset.region.name}</p>
+        {activeAssignment ? (
+          <p className="text-xs text-shark-500 mb-3 truncate">Assigned: {activeAssignment.user.name || activeAssignment.user.email}</p>
+        ) : (
+          <p className="text-xs text-shark-300 mb-3">Unassigned</p>
+        )}
+        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150" onClick={(e) => e.stopPropagation()}>
+          <button
+            className="flex-1 text-xs py-1.5 rounded-lg bg-action-50 text-action-600 hover:bg-action-100 font-medium transition-colors"
+            onClick={() => { if (asset.status === "AVAILABLE" && permissions.canAssign) setShowAssign(asset); }}
+          >
+            {asset.status === "AVAILABLE" ? "Assign" : "View"}
+          </button>
+          <button
+            className="text-xs py-1.5 px-3 rounded-lg bg-shark-50 text-shark-600 hover:bg-shark-100 font-medium transition-colors"
+            onClick={() => setShowQR(asset)}
+          >
+            QR
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderAssetCompact = (asset: Asset) => {
+    const activeAssignment = asset.assignments[0];
+    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600" };
+    return (
+      <div
+        key={asset.id}
+        onClick={() => permissions.canEdit && setEditAsset(asset)}
+        className="flex items-center gap-3 px-3 border-b border-shark-50 hover:bg-shark-50/60 cursor-pointer"
+        style={{ height: 36, minHeight: 36 }}
+      >
+        <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 truncate">
+          {asset.name}
+          {asset.isHighValue && <span className="ml-1 text-gold-500">★</span>}
+        </span>
+        <span className={`shrink-0 text-[11px] font-bold px-1.5 py-0.5 rounded ${badge.bg} ${badge.text}`}>{badge.label}</span>
+        <span className="shrink-0 text-[11px] text-shark-400 hidden md:block w-28 truncate">
+          {activeAssignment ? activeAssignment.user.name || activeAssignment.user.email : "—"}
+        </span>
+        <span className="shrink-0 text-[11px] text-shark-400 hidden lg:block w-24 truncate">{asset.region.name}</span>
+      </div>
+    );
+  };
+
   const renderAssetTable = (sectionAssets: Asset[], sectionName: string) => {
     const deletableInSection = sectionAssets.filter((a) => deletableIds.has(a.id));
     const allSelected = deletableInSection.length > 0 && deletableInSection.every((a) => selectedIds.has(a.id));
@@ -910,6 +984,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           <Icon name="download" size={14} className="mr-1" />
           Export
         </Button>
+        <ViewToggle value={viewMode} onChange={setViewMode} />
         <div className="relative" ref={columnMenuRef}>
           <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
             Columns
@@ -1045,7 +1120,25 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                             className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
                           />
                         </button>
-                        {!catCollapsed && renderAssetTable(catAssets, cat.name)}
+                        {!catCollapsed && (
+                          viewMode === "card" ? (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 pt-2">
+                              {catAssets.map(renderAssetCard)}
+                            </div>
+                          ) : viewMode === "compact" ? (
+                            <div className="rounded-xl border border-shark-100 overflow-hidden">
+                              <div className="flex items-center gap-3 px-3 py-1.5 bg-shark-50 border-b border-shark-100 text-[11px] font-semibold text-shark-400 uppercase tracking-wide">
+                                <span className="flex-1">Name</span>
+                                <span className="w-20 shrink-0">Status</span>
+                                <span className="w-28 shrink-0 hidden md:block">Assigned To</span>
+                                <span className="w-24 shrink-0 hidden lg:block">Location</span>
+                              </div>
+                              {catAssets.map(renderAssetCompact)}
+                            </div>
+                          ) : (
+                            renderAssetTable(catAssets, cat.name)
+                          )
+                        )}
                       </div>
                     );
                   })}
@@ -1094,7 +1187,25 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   />
                 </button>
               </div>
-              {!catCollapsed && renderAssetTable(section.assets, section.name)}
+              {!catCollapsed && (
+                viewMode === "card" ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 pt-2">
+                    {section.assets.map(renderAssetCard)}
+                  </div>
+                ) : viewMode === "compact" ? (
+                  <div className="rounded-xl border border-shark-100 overflow-hidden">
+                    <div className="flex items-center gap-3 px-3 py-1.5 bg-shark-50 border-b border-shark-100 text-[11px] font-semibold text-shark-400 uppercase tracking-wide">
+                      <span className="flex-1">Name</span>
+                      <span className="w-20 shrink-0">Status</span>
+                      <span className="w-28 shrink-0 hidden md:block">Assigned To</span>
+                      <span className="w-24 shrink-0 hidden lg:block">Location</span>
+                    </div>
+                    {section.assets.map(renderAssetCompact)}
+                  </div>
+                ) : (
+                  renderAssetTable(section.assets, section.name)
+                )
+              )}
             </div>
           );
         })

@@ -142,6 +142,34 @@ function RecalcPredictionsButton() {
   );
 }
 
+function QuickActionsBar({ role }: { role: string }) {
+  const actions: { label: string; href: string; icon: IconName; color: string }[] = [
+    { label: "Assign Item", href: "/assets", icon: "package", color: "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400" },
+    { label: "Add Stock", href: "/consumables", icon: "droplet", color: "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400" },
+    { label: "Report Issue", href: "/report-damage", icon: "alert-triangle", color: "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400" },
+    { label: "New Order", href: "/purchase-orders", icon: "truck", color: "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400" },
+    { label: "View Returns", href: "/returns", icon: "arrow-left", color: "bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400" },
+    { label: "Quick Return", href: "/returns/quick", icon: "check", color: "bg-teal-50 text-teal-600 dark:bg-teal-900/20 dark:text-teal-400" },
+  ];
+
+  return (
+    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
+      {actions.map((action) => (
+        <Link
+          key={action.label}
+          href={action.href}
+          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 hover:shadow-sm hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group text-center"
+        >
+          <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${action.color} transition-transform duration-150 group-hover:scale-110`}>
+            <Icon name={action.icon} size={16} />
+          </div>
+          <span className="text-xs font-medium text-shark-600 dark:text-shark-400">{action.label}</span>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 interface PredictedShortageItem {
   id: string;
   name: string;
@@ -319,7 +347,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
-                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
+                    <Card className={`hover:shadow-md transition-all duration-200 cursor-pointer border-t-2 ${s.borderColor}`}>
                       <CardContent className="px-3 py-3 sm:px-5 sm:py-5">
                         <div className="flex items-center gap-2 sm:gap-4">
                           <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
@@ -329,12 +357,12 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <div className="flex-1 min-w-0">
                             <p className="text-xs sm:text-sm text-shark-500 truncate">{s.label}</p>
                             <div className="flex items-center gap-1 sm:gap-2">
-                              <AnimatedCounter value={s.value} className="text-lg sm:text-2xl font-bold text-shark-900" />
+                              <AnimatedCounter value={s.value} className="text-xl sm:text-3xl font-bold text-shark-900" />
                               {s.trend && (
                                 <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                   s.trend.direction === "down" ? "bg-green-50 text-green-600" :
-                                  s.trend.direction === "up" ? "text-red-500" :
-                                  "text-shark-400"
+                                  s.trend.direction === "up" ? "bg-red-50 text-red-500" :
+                                  "bg-shark-50 text-shark-400"
                                 }`}>
                                   {s.trend.direction === "up" && "↑"}
                                   {s.trend.direction === "down" && "↓"}
@@ -352,6 +380,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </StaggerItem>
                 ))}
               </StaggerContainer>
+              {/* Quick Actions bar — below stat cards */}
+              <QuickActionsBar role={isSuperAdmin ? "superadmin" : "manager"} />
               {/* Procurement cost banner — shows whenever there are active POs */}
               {isSuperAdmin && activePOCount > 0 && (
                 <Link href="/purchase-orders" className="block group">

@@ -42,17 +42,18 @@
   --color-shark-900: #292d34;
   --color-shark-950: #1a1c21;
 
-  /* Brand blue — bold, strong like Edaly */
-  --color-action-50: #e8ecff;
-  --color-action-100: #c5ceff;
-  --color-action-200: #8a9bff;
-  --color-action-300: #5570f5;
-  --color-action-400: #3350ea;
-  --color-action-500: #1F3DD9;
-  --color-action-600: #1830c0;
-  --color-action-700: #1226a0;
-  --color-action-800: #0d1d80;
-  --color-action-900: #091560;
+  /* Action blue (primary brand) */
+  --color-action-50: #eff6ff;
+  --color-action-100: #dbeafe;
+  --color-action-200: #bfdbfe;
+  --color-action-300: #93c5fd;
+  --color-action-400: #60a5fa;
+  --color-action-500: #3b82f6;
+  --color-action-600: #2563eb;
+  --color-action-700: #1d4ed8;
+  --color-action-800: #1e40af;
+  --color-action-900: #1e3a8a;
+  --color-action-950: #172554;
 }
 
 .font-exo {
@@ -166,9 +167,9 @@ body {
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.4) 50%, transparent 75%);
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.15) 50%, transparent 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer 1.5s infinite;
 }
 
 @keyframes pulse-soft {
@@ -270,7 +271,7 @@ body {
 
 /* Glean-style CTA button */
 .glean-cta {
-  background: #1F3DD9;
+  background: hsl(272 75% 52%);
   overflow: hidden;
   isolation: isolate;
 }
@@ -405,4 +406,24 @@ body {
   @page {
     margin: 1.5cm;
   }
+}
+
+/* Premium interaction micro-animations */
+@keyframes pop-in {
+  0% { transform: scale(0.95); opacity: 0; }
+  60% { transform: scale(1.02); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-pop-in {
+  animation: pop-in 0.2s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.2s ease-out forwards;
 }
