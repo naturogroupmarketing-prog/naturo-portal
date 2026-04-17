@@ -13,7 +13,16 @@ export function isStaff(role: Role) {
   return role === "STAFF";
 }
 
+export function isAuditor(role: Role | string): boolean {
+  return role === "AUDITOR";
+}
+
+export function canViewReports(role: Role | string): boolean {
+  return role === "SUPER_ADMIN" || role === "BRANCH_MANAGER" || role === "AUDITOR";
+}
+
 export function isAdminOrManager(role: Role) {
+  // AUDITOR is NOT included — auditors have read-only access and cannot manage
   return role === "SUPER_ADMIN" || role === "BRANCH_MANAGER";
 }
 

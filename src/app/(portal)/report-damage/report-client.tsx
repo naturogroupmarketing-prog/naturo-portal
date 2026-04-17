@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { reportDamage } from "@/app/actions/damage";
+import { DamageClassifier } from "@/components/ui/damage-classifier";
+import type { DamageClassification } from "@/app/api/vision/classify-damage/route";
 
 interface Assignment {
   id: string;
@@ -99,6 +101,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
   const [submitted, setSubmitted] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [photoUrl, setPhotoUrl] = useState("");
+  const [photoBase64, setPhotoBase64] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -110,6 +113,12 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
   async function handleUpload(file: File) {
     setUploading(true);
     setUploadError(null);
+
+    // Read base64 for AI analysis
+    const reader = new FileReader();
+    reader.onload = (e) => setPhotoBase64(e.target?.result as string ?? null);
+    reader.readAsDataURL(file);
+
     const fd = new FormData();
     fd.append("file", file);
     try {
@@ -123,6 +132,13 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
       setPhotoUrl("");
     }
     setUploading(false);
+  }
+
+  function handleClassification(result: DamageClassification) {
+    // Pre-fill description with AI analysis if empty
+    if (descRef.current && !descRef.current.value.trim()) {
+      descRef.current.value = result.description;
+    }
   }
 
   if (submitted) {
@@ -237,6 +253,12 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                 {uploading && <p className="text-xs text-shark-400 mt-1">Uploading...</p>}
                 {uploadError && <p className="text-xs text-red-500 mt-1">{uploadError}</p>}
                 {photoUrl && !uploadError && <p className="text-xs text-action-600 mt-1">Photo uploaded successfully.</p>}
+                <DamageClassifier
+                  imageBase64={photoBase64}
+                  assetName={assignments.find((a) => a.asset.id === selectedAssetId)?.asset.name ?? ""}
+                  assetCategory={""}
+                  onClassification={handleClassification}
+                />
               </div>
               <input type="hidden" name="photoUrl" value={photoUrl} />
               {error && (

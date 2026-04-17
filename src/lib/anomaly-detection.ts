@@ -31,11 +31,21 @@ const SEVERITY_ORDER: Record<AnomalySeverity, number> = {
 
 // ─── Main export ─────────────────────────────────────────────────────────────
 
-export async function detectAnomalies(organizationId: string): Promise<Anomaly[]> {
+export interface AnomalySettings {
+  stockConsumptionMultiplier?: number;
+  overdueReturnDays?: number;
+  damageReportsThreshold?: number;
+  maxAnomalies?: number;
+}
+
+export async function detectAnomalies(
+  organizationId: string,
+  settings?: AnomalySettings
+): Promise<Anomaly[]> {
   const [stock, assets, damage, staff] = await Promise.all([
-    detectStockAnomalies(organizationId),
-    detectAssetAnomalies(organizationId),
-    detectDamageAnomalies(organizationId),
+    detectStockAnomalies(organizationId, settings),
+    detectAssetAnomalies(organizationId, settings),
+    detectDamageAnomalies(organizationId, settings),
     detectStaffAnomalies(organizationId),
   ]);
 
@@ -54,13 +64,13 @@ export async function detectAnomalies(organizationId: string): Promise<Anomaly[]
   // Sort: critical → warning → info
   unique.sort((a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity]);
 
-  // Cap at 50
-  return unique.slice(0, 50);
+  // Cap at configured max (default 50)
+  return unique.slice(0, settings?.maxAnomalies ?? 50);
 }
 
 // ─── Stock anomalies ─────────────────────────────────────────────────────────
 
-async function detectStockAnomalies(organizationId: string): Promise<Anomaly[]> {
+async function detectStockAnomalies(organizationId: string, settings?: AnomalySettings): Promise<Anomaly[]> {
   const now = new Date();
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const anomalies: Anomaly[] = [];
@@ -128,7 +138,7 @@ async function detectStockAnomalies(organizationId: string): Promise<Anomaly[]> 
           ratio,
         },
       });
-    } else if (ratio > 2.0) {
+    } else if (ratio > (settings?.stockConsumptionMultiplier ?? 2.0)) {
       anomalies.push({
         id: `stock-${c.id}-high-consumption`,
         severity: "warning",
@@ -204,9 +214,10 @@ async function detectStockAnomalies(organizationId: string): Promise<Anomaly[]> 
 
 // ─── Asset anomalies ─────────────────────────────────────────────────────────
 
-async function detectAssetAnomalies(organizationId: string): Promise<Anomaly[]> {
+async function detectAssetAnomalies(organizationId: string, settings?: AnomalySettings): Promise<Anomaly[]> {
   const now = new Date();
-  const day14Ago = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+  const overdueReturnDays = settings?.overdueReturnDays ?? 14;
+  const day14Ago = new Date(now.getTime() - overdueReturnDays * 24 * 60 * 60 * 1000);
   const day30Ago = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const day7Ago = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const anomalies: Anomaly[] = [];
@@ -372,7 +383,7 @@ async function detectAssetAnomalies(organizationId: string): Promise<Anomaly[]> 
 
 // ─── Damage anomalies ─────────────────────────────────────────────────────────
 
-async function detectDamageAnomalies(organizationId: string): Promise<Anomaly[]> {
+async function detectDamageAnomalies(organizationId: string, settings?: AnomalySettings): Promise<Anomaly[]> {
   const now = new Date();
   const day30Ago = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const anomalies: Anomaly[] = [];
@@ -413,8 +424,9 @@ async function detectDamageAnomalies(organizationId: string): Promise<Anomaly[]>
     byUser.get(r.reportedById)!.reports.push(r);
   }
 
+  const damageReportsThreshold = settings?.damageReportsThreshold ?? 3;
   for (const [, { user, reports }] of byUser) {
-    if (reports.length > 3) {
+    if (reports.length > damageReportsThreshold) {
       anomalies.push({
         id: `damage-user-${user.id}-high-rate`,
         severity: "warning",

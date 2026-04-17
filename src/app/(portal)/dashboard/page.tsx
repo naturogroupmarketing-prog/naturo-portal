@@ -7,8 +7,10 @@ import { DashboardClient } from "./dashboard-client";
 import { StaffDashboardClient } from "./staff-dashboard-client";
 import { BranchManagerDashboard } from "./branch-manager-dashboard";
 import { AiBriefingWidget } from "./ai-briefing-widget";
+import { AuditorDashboard } from "./auditor-dashboard";
 import { getReplenishmentSuggestions } from "@/app/actions/predictions";
 import { detectAnomalies } from "@/lib/anomaly-detection";
+import { getAssetHealthSummary } from "@/lib/asset-health";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -250,6 +252,86 @@ async function fetchStaffData(userId: string, organizationId: string) {
 export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  // Auditor dashboard — read-only executive view
+  if (session.user.role === "AUDITOR") {
+    const organizationId = session.user.organizationId!;
+
+    const [
+      totalAssets,
+      totalConsumables,
+      totalStaff,
+      lowStockConsumables,
+      damageReports,
+      pendingPOs,
+      overdueReturns,
+      recentAuditLogs,
+      orgRecord,
+    ] = await Promise.all([
+      db.asset.count({ where: { organizationId, deletedAt: null } }),
+      db.consumable.count({ where: { organizationId, isActive: true, deletedAt: null } }),
+      db.user.count({ where: { organizationId, isActive: true, role: "STAFF" } }),
+      db.consumable.findMany({
+        where: { organizationId, isActive: true },
+        select: { quantityOnHand: true, minimumThreshold: true },
+      }),
+      db.damageReport.count({ where: { organizationId, isResolved: false } }),
+      db.purchaseOrder.count({ where: { organizationId, status: "PENDING" } }),
+      db.pendingReturn.count({ where: { organizationId, isVerified: false } }),
+      db.auditLog.findMany({
+        where: { organizationId },
+        select: {
+          action: true,
+          createdAt: true,
+          performedBy: { select: { name: true } },
+          metadata: true,
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      }),
+      db.organization.findUnique({
+        where: { id: organizationId },
+        select: { name: true },
+      }),
+    ]);
+
+    const lowStockCount = lowStockConsumables.filter(
+      (c) => c.quantityOnHand <= c.minimumThreshold
+    ).length;
+
+    // Health score calculation (mirrors the main dashboard logic)
+    let healthScore = 100;
+    healthScore -= Math.min(30, lowStockCount * 5);
+    healthScore -= Math.min(20, overdueReturns * 4);
+    healthScore -= Math.min(15, damageReports * 5);
+    healthScore = Math.max(0, healthScore);
+
+    const auditorStats = {
+      totalAssets,
+      totalConsumables,
+      totalStaff,
+      healthScore,
+      lowStockCount,
+      damageReports,
+      pendingPOs,
+      overdueReturns,
+    };
+
+    const auditorActivity = recentAuditLogs.map((log) => ({
+      action: log.action as string,
+      performedBy: log.performedBy?.name ?? "Unknown",
+      createdAt: log.createdAt,
+      metadata: log.metadata ? JSON.parse(log.metadata) : undefined,
+    }));
+
+    return (
+      <AuditorDashboard
+        orgName={orgRecord?.name ?? "Your Organisation"}
+        stats={auditorStats}
+        recentActivity={auditorActivity}
+      />
+    );
+  }
 
   // Staff dashboard — fetch and render
   if (session.user.role === "STAFF") {
@@ -866,6 +948,16 @@ export default async function DashboardPage() {
     // Non-fatal — dashboard works without anomaly data
   }
 
+  // Asset health summary — SUPER_ADMIN only, non-fatal
+  let assetHealthSummary: Awaited<ReturnType<typeof getAssetHealthSummary>> | null = null;
+  if (isSuperAdmin) {
+    try {
+      assetHealthSummary = await getAssetHealthSummary(organizationId);
+    } catch {
+      // Non-fatal — dashboard works without asset health data
+    }
+  }
+
   let preferences = parsePreferences(userPrefs?.dashboardPreferences);
 
   // Branch Manager default: show Overview, Operations, Finance, Region, Low Stock
@@ -1189,7 +1281,7 @@ export default async function DashboardPage() {
           recentAnomalyCount={anomalyCount}
           date={new Date().toISOString()}
         />
-        <DashboardClient {...managerProps} />
+        <DashboardClient {...managerProps} assetHealthSummary={assetHealthSummary} />
       </>
     );
   }

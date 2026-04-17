@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { detectAnomalies } from "@/lib/anomaly-detection";
+import { getAnomalySettings } from "@/app/actions/anomaly-settings";
 import AnomaliesClient from "./anomalies-client";
 import type { Metadata } from "next";
 
@@ -17,7 +18,15 @@ export default async function AnomaliesPage() {
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/dashboard");
 
   const organizationId = session.user.organizationId!;
-  const anomalies = await detectAnomalies(organizationId);
+  const isSuperAdmin = session.user.role === "SUPER_ADMIN";
+  const anomalySettings = await getAnomalySettings(organizationId);
+  const anomalies = await detectAnomalies(organizationId, anomalySettings);
 
-  return <AnomaliesClient anomalies={JSON.parse(JSON.stringify(anomalies))} />;
+  return (
+    <AnomaliesClient
+      anomalies={JSON.parse(JSON.stringify(anomalies))}
+      isSuperAdmin={isSuperAdmin}
+      currentSettings={anomalySettings}
+    />
+  );
 }

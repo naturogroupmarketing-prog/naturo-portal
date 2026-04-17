@@ -622,6 +622,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               <option value="STAFF">Staff</option>
               <option value="BRANCH_MANAGER">Branch Manager</option>
               <option value="SUPER_ADMIN">Super Admin</option>
+              <option value="AUDITOR">Auditor — Read-only access for executives and auditors</option>
             </Select>
           </div>
           <div>
@@ -669,6 +670,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     <option value="STAFF">Staff</option>
                     <option value="BRANCH_MANAGER">Branch Manager</option>
                     <option value="SUPER_ADMIN">Super Admin</option>
+                    <option value="AUDITOR">Auditor — Read-only access for executives and auditors</option>
                   </Select>
                 </div>
                 <div>

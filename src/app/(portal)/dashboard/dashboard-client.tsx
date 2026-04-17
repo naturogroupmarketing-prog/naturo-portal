@@ -17,6 +17,7 @@ import { SmartActionsPanel, type SmartActionItem } from "./smart-actions-panel";
 import { AiForecastWidget, type DepletionForecastItem } from "./ai-forecast-widget";
 import { RecentActivityWidget, type RecentActivityItem } from "./recent-activity-widget";
 import { SmartReorderPanel, type ReorderRecommendation } from "./smart-reorder-panel";
+import { AssetHealthWidget } from "./asset-health-widget";
 
 // Lazy-load recharts components
 const AreaChart = dynamic(() => import("recharts").then((m) => m.AreaChart), { ssr: false });
@@ -179,13 +180,32 @@ interface Props {
   activePOCount?: number;
   reorderRecommendations?: ReorderRecommendation[];
   recentAnomalyCount?: number;
+  assetHealthSummary?: {
+    averageScore: number;
+    distribution: { grade: string; count: number }[];
+    criticalAssets: Array<{
+      assetId: string;
+      assetName: string;
+      assetCode: string;
+      score: number;
+      grade: string;
+      recommendation: string;
+    }>;
+    topPerformers: Array<{
+      assetId: string;
+      assetName: string;
+      assetCode: string;
+      score: number;
+      grade: string;
+    }>;
+  } | null;
 }
 
 function fmtAUD(n: number) {
   return n.toLocaleString("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0 }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, assetHealthSummary = null }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
@@ -758,6 +778,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 <AiForecastWidget items={depletionForecast} />
                 {isSuperAdmin && reorderRecommendations.length > 0 && (
                   <SmartReorderPanel recommendations={reorderRecommendations} canApprove={true} />
+                )}
+                {isSuperAdmin && assetHealthSummary && (
+                  <AssetHealthWidget summary={assetHealthSummary} />
                 )}
               </div>
             ) : null;

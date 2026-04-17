@@ -166,6 +166,12 @@ function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { ro
         { icon: "droplet", href: "/my-consumables", label: "Supplies" },
         { icon: "plus", href: "/request-consumables", label: "Request" },
       ]
+    : role === "AUDITOR"
+    ? [
+        { icon: "dashboard", href: "/dashboard", label: "Home" },
+        { icon: "clipboard", href: "/reports", label: "Reports" },
+        { icon: "clock", href: "/activity", label: "Activity" },
+      ]
     : [
         { icon: "dashboard", href: "/dashboard", label: "Home" },
         { icon: "package", href: "/inventory", label: "Stock" },

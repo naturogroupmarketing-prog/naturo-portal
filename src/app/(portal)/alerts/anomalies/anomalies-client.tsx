@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import type { Anomaly, AnomalySeverity, AnomalyCategory } from "@/lib/anomaly-detection";
 import type { IconName } from "@/components/ui/icon";
+import { updateAnomalySettings } from "@/app/actions/anomaly-settings";
 
 // ─── Types & constants ───────────────────────────────────────────────────────
 
@@ -251,13 +252,159 @@ function EmptyState({ filter }: { filter: FilterTab }) {
   );
 }
 
+// ─── Settings panel ──────────────────────────────────────────────────────────
+
+interface AnomalySettingsValues {
+  stockConsumptionMultiplier: number;
+  overdueReturnDays: number;
+  damageReportsThreshold: number;
+  maxAnomalies: number;
+}
+
+function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsValues }) {
+  const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    if (!formRef.current) return;
+    setSaving(true);
+    setSaveMsg(null);
+    const fd = new FormData(formRef.current);
+    const result = await updateAnomalySettings(fd);
+    setSaving(false);
+    if (result.success) {
+      setSaveMsg("Settings saved. Reload to see updated anomalies.");
+    } else {
+      setSaveMsg(result.error ?? "Failed to save.");
+    }
+  }
+
+  return (
+    <div className="rounded-xl border border-shark-100 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-shark-700 hover:bg-shark-50 dark:text-shark-300 dark:hover:bg-shark-800/50 transition-colors"
+      >
+        <span className="flex items-center gap-2">
+          <Icon name="settings" size={15} className="text-shark-400" />
+          Threshold Settings
+        </span>
+        <Icon
+          name="chevron-down"
+          size={15}
+          className={cn("text-shark-400 transition-transform", open && "rotate-180")}
+        />
+      </button>
+
+      {open && (
+        <div className="px-4 pb-4 border-t border-shark-100 dark:border-shark-800">
+          <p className="text-xs text-shark-400 mt-3 mb-4">
+            Adjust detection thresholds. Changes take effect on next page load.
+          </p>
+          <form ref={formRef} onSubmit={handleSave} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-shark-600 dark:text-shark-400 mb-1">
+                Stock consumption multiplier
+                <span className="ml-1 font-normal text-shark-400">(flag if usage exceeds Nx baseline)</span>
+              </label>
+              <input
+                type="number"
+                name="stockConsumptionMultiplier"
+                step="0.1"
+                min="1.1"
+                max="10"
+                defaultValue={currentSettings.stockConsumptionMultiplier}
+                required
+                className="w-full rounded-lg border border-shark-200 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-shark-600 dark:text-shark-400 mb-1">
+                Overdue return days
+                <span className="ml-1 font-normal text-shark-400">(flag checkouts older than N days)</span>
+              </label>
+              <input
+                type="number"
+                name="overdueReturnDays"
+                step="1"
+                min="1"
+                max="90"
+                defaultValue={currentSettings.overdueReturnDays}
+                required
+                className="w-full rounded-lg border border-shark-200 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-shark-600 dark:text-shark-400 mb-1">
+                Damage reports threshold
+                <span className="ml-1 font-normal text-shark-400">(flag staff with more than N reports/30d)</span>
+              </label>
+              <input
+                type="number"
+                name="damageReportsThreshold"
+                step="1"
+                min="1"
+                max="20"
+                defaultValue={currentSettings.damageReportsThreshold}
+                required
+                className="w-full rounded-lg border border-shark-200 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-shark-600 dark:text-shark-400 mb-1">
+                Max anomalies shown
+                <span className="ml-1 font-normal text-shark-400">(cap on total anomalies displayed)</span>
+              </label>
+              <input
+                type="number"
+                name="maxAnomalies"
+                step="1"
+                min="10"
+                max="200"
+                defaultValue={currentSettings.maxAnomalies}
+                required
+                className="w-full rounded-lg border border-shark-200 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+              />
+            </div>
+            <div className="sm:col-span-2 flex items-center gap-3">
+              <button
+                type="submit"
+                disabled={saving}
+                className="inline-flex items-center gap-2 rounded-lg bg-action-600 px-4 py-2 text-sm font-medium text-white hover:bg-action-700 disabled:opacity-60 transition-colors"
+              >
+                {saving ? "Saving..." : "Save Settings"}
+              </button>
+              {saveMsg && (
+                <p className={cn("text-xs", saveMsg.includes("saved") ? "text-green-600" : "text-red-500")}>
+                  {saveMsg}
+                </p>
+              )}
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main client component ────────────────────────────────────────────────────
 
 interface AnomaliesClientProps {
   anomalies: Anomaly[];
+  isSuperAdmin?: boolean;
+  currentSettings?: {
+    stockConsumptionMultiplier: number;
+    overdueReturnDays: number;
+    damageReportsThreshold: number;
+    maxAnomalies: number;
+  };
 }
 
-export default function AnomaliesClient({ anomalies }: AnomaliesClientProps) {
+export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettings }: AnomaliesClientProps) {
   const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
 
   const filteredAnomalies =
@@ -285,6 +432,11 @@ export default function AnomaliesClient({ anomalies }: AnomaliesClientProps) {
 
   return (
     <div className="space-y-6">
+      {/* Settings panel — Super Admin only */}
+      {isSuperAdmin && currentSettings && (
+        <SettingsPanel currentSettings={currentSettings} />
+      )}
+
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>

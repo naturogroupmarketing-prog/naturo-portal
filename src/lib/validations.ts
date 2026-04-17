@@ -155,7 +155,7 @@ export const passwordSchema = z.string()
 export const createUserSchema = z.object({
   email: z.string().email("Invalid email address").max(200),
   name: safeString(200),
-  role: z.enum(["SUPER_ADMIN", "BRANCH_MANAGER", "STAFF"]),
+  role: z.enum(["SUPER_ADMIN", "BRANCH_MANAGER", "STAFF", "AUDITOR"]),
   regionId: optionalString(),
   password: passwordSchema,
 });
@@ -163,7 +163,7 @@ export const createUserSchema = z.object({
 export const updateUserSchema = z.object({
   userId: cuid(),
   name: safeString(200),
-  role: z.enum(["SUPER_ADMIN", "BRANCH_MANAGER", "STAFF"]),
+  role: z.enum(["SUPER_ADMIN", "BRANCH_MANAGER", "STAFF", "AUDITOR"]),
   regionId: optionalString(),
 });
 

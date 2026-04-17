@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
@@ -164,9 +165,22 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
             {processedCount > 0 && <span> · {processedCount} marked</span>}
           </p>
         </div>
-        <div className="text-right shrink-0">
-          <p className="text-lg font-bold text-shark-900">{totalItems}</p>
-          <p className="text-[10px] text-shark-400">pending</p>
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="text-right">
+            <p className="text-lg font-bold text-shark-900">{totalItems}</p>
+            <p className="text-[10px] text-shark-400">pending</p>
+          </div>
+          {totalItems > 0 && (
+            <Link
+              href="/returns/quick"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-action-600 px-3 py-2 text-sm font-semibold text-white hover:bg-action-700 transition-colors shadow-sm"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+              Quick Mode
+            </Link>
+          )}
         </div>
       </div>
 

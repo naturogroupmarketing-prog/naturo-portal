@@ -13,6 +13,7 @@ enum Role {
   SUPER_ADMIN
   BRANCH_MANAGER
   STAFF
+  AUDITOR
 }
 
 enum AssetStatus {
@@ -129,6 +130,7 @@ model Organization {
   aiRequestsUsed     Int                @default(0)
   aiRequestsLimit    Int                @default(100)
   aiResetDate        DateTime?
+  anomalySettings    Json               @default("{}")
 
   users          User[]
   states         State[]

@@ -14,6 +14,11 @@ export async function withAuth() {
   if (!session?.user) throw new Error("Please sign in to continue");
   if (!session.user.organizationId) throw new Error("No organization found");
 
+  // Auditors are read-only — block all server actions (which are write operations)
+  if (session.user.role === "AUDITOR") {
+    throw new Error("You have read-only access. Contact your administrator.");
+  }
+
   // Rate limit by user ID
   const rl = await rateLimit(session.user.id, RATE_LIMITS.action);
   if (!rl.success) throw new Error("Too many requests. Please wait a moment.");
