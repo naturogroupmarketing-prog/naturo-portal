@@ -80,7 +80,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         {/* Desktop sidebar — collapsible with toggle arrow */}
         <aside className="hidden lg:flex flex-shrink-0 relative">
           <div
-            className={`flex flex-col bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 transition-all duration-300 overflow-hidden ${
+            className={`flex flex-col bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-transparent transition-all duration-300 overflow-hidden ${
               sidebarExpanded ? "w-64" : "w-[68px]"
             }`}
           >
@@ -121,7 +121,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
               onClick={() => setSidebarOpen(false)}
             />
             <div
-              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 z-50 shadow-xl transition-colors"
+              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-transparent z-50 shadow-xl transition-colors"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
@@ -195,8 +195,8 @@ function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { ro
               title={item.label}
               className={`relative w-11 h-11 flex items-center justify-center rounded-xl transition-all ${
                 active
-                  ? "bg-action-50 text-action-600"
-                  : "text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 hover:text-shark-700"
+                  ? "bg-action-50 text-action-600 dark:bg-transparent dark:text-action-400"
+                  : "text-shark-400 hover:bg-shark-50 dark:hover:bg-transparent hover:text-shark-700 dark:hover:text-white"
               }`}
             >
               <Icon name={item.icon} size={20} />

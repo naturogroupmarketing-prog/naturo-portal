@@ -158,11 +158,11 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl min-h-[44px] transition-all duration-200",
                           active
-                            ? "bg-action-50 text-action-600 font-medium"
-                            : "text-shark-600 dark:text-shark-200 hover:bg-shark-50 dark:hover:bg-shark-800 hover:text-shark-900 dark:hover:text-white"
+                            ? "bg-action-50 text-action-600 font-medium dark:bg-transparent dark:text-action-400"
+                            : "text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-transparent hover:text-shark-900 dark:hover:text-white"
                         )}
                       >
-                        <Icon name={item.icon} size={18} className={active ? "text-action-600" : "text-shark-400 dark:text-shark-300"} />
+                        <Icon name={item.icon} size={18} className={active ? "text-action-600 dark:text-action-400" : "text-shark-400 dark:text-shark-400"} />
                         <span className="flex-1">{item.label}</span>
                         {item.href === "/purchase-orders" && pendingPOCount > 0 && (
                           <span className="min-w-[20px] h-5 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1.5">
@@ -185,7 +185,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
       </div>
 
       {/* Keyboard shortcut hint */}
-      <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-t border-shark-100 dark:border-shark-800">
+      <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-t border-shark-100 dark:border-transparent">
         <button
           onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
           className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-shark-400 dark:text-shark-300 hover:text-shark-600 dark:hover:text-shark-100 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-xs"
