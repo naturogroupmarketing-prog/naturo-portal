@@ -1048,11 +1048,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                             className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
                           />
                         </button>
-                        {!catCollapsed && (
-                          <Card>
-                            {renderAssetTable(catAssets, cat.name)}
-                          </Card>
-                        )}
+                        {!catCollapsed && renderAssetTable(catAssets, cat.name)}
                       </div>
                     );
                   })}
@@ -1104,11 +1100,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   />
                 </button>
               </div>
-              {!catCollapsed && (
-                <Card>
-                  {renderAssetTable(section.assets, section.name)}
-                </Card>
-              )}
+              {!catCollapsed && renderAssetTable(section.assets, section.name)}
             </div>
           );
         })
