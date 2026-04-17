@@ -6,6 +6,9 @@ import { parsePreferences } from "@/lib/dashboard-types";
 import { DashboardClient } from "./dashboard-client";
 import { StaffDashboardClient } from "./staff-dashboard-client";
 import { BranchManagerDashboard } from "./branch-manager-dashboard";
+import { AiBriefingWidget } from "./ai-briefing-widget";
+import { getReplenishmentSuggestions } from "@/app/actions/predictions";
+import { detectAnomalies } from "@/lib/anomaly-detection";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -846,6 +849,23 @@ export default async function DashboardPage() {
     totalProcurementCost = activePOs.reduce((sum, po) => sum + (po.consumable.unitCost ? po.quantity * po.consumable.unitCost : 0), 0);
   }
 
+  // Smart reorder suggestions — generated from predictions (server action)
+  let replenishmentSuggestions: import("@/app/actions/predictions").ReplenishmentSuggestion[] = [];
+  try {
+    replenishmentSuggestions = await getReplenishmentSuggestions();
+  } catch {
+    // Non-fatal — dashboard works without suggestions
+  }
+
+  // Anomaly count — wrapped in try/catch so detection failures don't break the page
+  let anomalyCount = 0;
+  try {
+    const anomalies = await detectAnomalies(organizationId);
+    anomalyCount = anomalies.length;
+  } catch {
+    // Non-fatal — dashboard works without anomaly data
+  }
+
   let preferences = parsePreferences(userPrefs?.dashboardPreferences);
 
   // Branch Manager default: show Overview, Operations, Finance, Region, Low Stock
@@ -1100,6 +1120,22 @@ export default async function DashboardPage() {
       spiking: spikeIds.has(item.id),
     }));
 
+  // Map ReplenishmentSuggestion → ReorderRecommendation shape for SmartReorderPanel
+  const reorderRecommendations: import("./smart-reorder-panel").ReorderRecommendation[] = replenishmentSuggestions.map((s) => ({
+    consumableId: s.consumableId,
+    name: s.consumableName,
+    category: s.regionName,
+    currentStock: s.currentStock,
+    unit: s.unitType,
+    suggestedQty: s.suggestedOrderQty,
+    estimatedCost: s.estimatedCost ?? undefined,
+    supplierName: undefined,
+    riskLevel: (s.riskLevel === "critical" || s.riskLevel === "warning" || s.riskLevel === "ok") ? s.riskLevel : "warning",
+    daysRemaining: s.daysRemaining ?? undefined,
+    avgDailyUsage: s.avgDailyUsage,
+    reasoning: s.reason,
+  }));
+
   const managerProps = {
     stats,
     lowStockItems: JSON.parse(JSON.stringify(lowStockItems)),
@@ -1124,11 +1160,38 @@ export default async function DashboardPage() {
     recentActivity,
     procurementCost: isSuperAdmin ? Math.round(totalProcurementCost * 100) / 100 : undefined,
     activePOCount: isSuperAdmin ? activePOCount : undefined,
+    reorderRecommendations,
+    recentAnomalyCount: anomalyCount,
   };
+
+  // Compute criticalStockCount for AI briefing (items with riskLevel "critical")
+  const criticalStockCount = (predictedShortagesRaw as { riskLevel: string | null }[]).filter((i) => i.riskLevel === "critical").length;
+
+  // Fetch org name for AI briefing
+  const orgRecord = await db.organization.findUnique({
+    where: { id: organizationId },
+    select: { name: true },
+  });
 
   // Super Admin — standard dashboard
   if (isSuperAdmin) {
-    return <DashboardClient {...managerProps} />;
+    return (
+      <>
+        <AiBriefingWidget
+          orgName={orgRecord?.name ?? "Your Organisation"}
+          lowStockCount={(lowStockItems as unknown[]).length}
+          criticalStockCount={criticalStockCount}
+          overdueReturns={overdueReturns}
+          pendingApprovals={ordersAwaitingApproval}
+          unresolvedDamage={unresolvedDamageReports + unresolvedLossReports}
+          healthScore={healthScore}
+          depletionForecasts={depletionForecast.map((d) => ({ name: d.name, daysRemaining: d.daysRemaining, riskLevel: d.riskLevel }))}
+          recentAnomalyCount={anomalyCount}
+          date={new Date().toISOString()}
+        />
+        <DashboardClient {...managerProps} />
+      </>
+    );
   }
 
   // Branch Manager — toggle between Manager and Staff views

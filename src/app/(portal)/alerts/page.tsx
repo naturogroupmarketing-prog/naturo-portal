@@ -64,6 +64,12 @@ export default async function AlertsPage() {
       href: "/alerts/low-stock",
       count: lowStockCount,
     },
+    {
+      title: "Anomalies",
+      description: "AI-detected unusual patterns in stock and asset activity",
+      href: "/alerts/anomalies",
+      count: 0,
+    },
   ];
 
   return (

@@ -47,6 +47,7 @@ const navSections: NavSection[] = [
       { label: "Maintenance", href: "/maintenance", icon: "settings", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Reports", href: "/reports", icon: "clipboard", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Inspections", href: "/condition-checks", icon: "search", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+      { label: "Anomalies", href: "/alerts/anomalies", icon: "alert-triangle", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
     ],
   },
   {

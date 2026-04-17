@@ -749,9 +749,6 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                               onClick={() => toggleCategory(catKey)}
                               className="flex items-center gap-3 px-1 w-full text-left group"
                             >
-                              <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center`}>
-                                <Icon name="package" size={14} className={colors.color} />
-                              </div>
                               <div className="flex items-center gap-2 flex-1">
                                 <h3 className="text-base font-semibold text-shark-900">{cat.name}</h3>
                                 <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
@@ -803,9 +800,6 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       onClick={() => toggleCategory(section.name)}
                       className="flex items-center gap-3 px-1 w-full text-left group"
                     >
-                      <div className={`w-8 h-8 rounded-lg ${section.bg} flex items-center justify-center`}>
-                        <Icon name="package" size={16} className={section.color} />
-                      </div>
                       <div className="flex items-center gap-2 flex-1">
                         <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
                         <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">

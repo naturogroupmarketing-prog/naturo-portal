@@ -16,6 +16,7 @@ import type { DashboardPreferences } from "@/lib/dashboard-types";
 import { SmartActionsPanel, type SmartActionItem } from "./smart-actions-panel";
 import { AiForecastWidget, type DepletionForecastItem } from "./ai-forecast-widget";
 import { RecentActivityWidget, type RecentActivityItem } from "./recent-activity-widget";
+import { SmartReorderPanel, type ReorderRecommendation } from "./smart-reorder-panel";
 
 // Lazy-load recharts components
 const AreaChart = dynamic(() => import("recharts").then((m) => m.AreaChart), { ssr: false });
@@ -176,13 +177,15 @@ interface Props {
   recentActivity?: RecentActivityItem[];
   procurementCost?: number;
   activePOCount?: number;
+  reorderRecommendations?: ReorderRecommendation[];
+  recentAnomalyCount?: number;
 }
 
 function fmtAUD(n: number) {
   return n.toLocaleString("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0 }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0 }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
@@ -751,8 +754,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "ai-forecast":
             return showAiForecast ? (
-              <div key="ai-forecast">
+              <div key="ai-forecast" className="space-y-4">
                 <AiForecastWidget items={depletionForecast} />
+                {isSuperAdmin && reorderRecommendations.length > 0 && (
+                  <SmartReorderPanel recommendations={reorderRecommendations} canApprove={true} />
+                )}
               </div>
             ) : null;
 
