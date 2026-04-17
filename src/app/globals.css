@@ -42,18 +42,18 @@
   --color-shark-900: #292d34;
   --color-shark-950: #1a1c21;
 
-  /* Action blue (primary brand) */
-  --color-action-50: #eff6ff;
-  --color-action-100: #dbeafe;
-  --color-action-200: #bfdbfe;
-  --color-action-300: #93c5fd;
-  --color-action-400: #60a5fa;
-  --color-action-500: #3b82f6;
-  --color-action-600: #2563eb;
-  --color-action-700: #1d4ed8;
-  --color-action-800: #1e40af;
-  --color-action-900: #1e3a8a;
-  --color-action-950: #172554;
+  /* Action blue — matches logo #1113d4 */
+  --color-action-50: #eeeffe;
+  --color-action-100: #d5d7fc;
+  --color-action-200: #aaabf9;
+  --color-action-300: #7f81f5;
+  --color-action-400: #5456ef;
+  --color-action-500: #1113d4;
+  --color-action-600: #0f10be;
+  --color-action-700: #0c0da7;
+  --color-action-800: #090a8f;
+  --color-action-900: #060778;
+  --color-action-950: #04054d;
 }
 
 .font-exo {
