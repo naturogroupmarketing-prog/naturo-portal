@@ -143,13 +143,13 @@ function RecalcPredictionsButton() {
 }
 
 function QuickActionsBar({ role }: { role: string }) {
-  const actions: { label: string; href: string; icon: IconName; color: string }[] = [
-    { label: "Assign Item", href: "/assets", icon: "package", color: "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400" },
-    { label: "Add Stock", href: "/consumables", icon: "droplet", color: "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400" },
-    { label: "Report Issue", href: "/report-damage", icon: "alert-triangle", color: "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400" },
-    { label: "New Order", href: "/purchase-orders", icon: "truck", color: "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400" },
-    { label: "View Returns", href: "/returns", icon: "arrow-left", color: "bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400" },
-    { label: "Quick Return", href: "/returns/quick", icon: "check", color: "bg-teal-50 text-teal-600 dark:bg-teal-900/20 dark:text-teal-400" },
+  const actions: { label: string; href: string; icon: IconName }[] = [
+    { label: "Assign Item", href: "/assets", icon: "package" },
+    { label: "Add Stock", href: "/consumables", icon: "droplet" },
+    { label: "Report Issue", href: "/report-damage", icon: "alert-triangle" },
+    { label: "New Order", href: "/purchase-orders", icon: "truck" },
+    { label: "View Returns", href: "/returns", icon: "arrow-left" },
+    { label: "Quick Return", href: "/returns/quick", icon: "check-circle" },
   ];
 
   return (
@@ -158,12 +158,10 @@ function QuickActionsBar({ role }: { role: string }) {
         <Link
           key={action.label}
           href={action.href}
-          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 hover:shadow-sm hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group text-center"
+          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 hover:bg-shark-50 dark:hover:bg-shark-800 hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group text-center"
         >
-          <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${action.color} transition-transform duration-150 group-hover:scale-110`}>
-            <Icon name={action.icon} size={16} />
-          </div>
-          <span className="text-xs font-medium text-shark-600 dark:text-shark-400">{action.label}</span>
+          <Icon name={action.icon} size={20} className="text-shark-500 dark:text-shark-400 group-hover:text-action-500 transition-colors duration-150" />
+          <span className="text-xs font-medium text-shark-600 dark:text-shark-400 group-hover:text-shark-800 dark:group-hover:text-shark-200 transition-colors">{action.label}</span>
         </Link>
       ))}
     </div>
