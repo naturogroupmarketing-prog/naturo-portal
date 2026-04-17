@@ -5,7 +5,6 @@ import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/theme-provider";
 import { CookieConsent } from "@/components/privacy/cookie-consent";
 import { OfflineIndicator } from "@/components/ui/offline-indicator";
-import { SplashScreen } from "@/components/splash-screen";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -126,7 +125,6 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} ${exo.variable} antialiased`}>
         <ThemeProvider>
-          <SplashScreen />
           <ToastProvider>
             <PWARegister />
             <OfflineIndicator />
