@@ -347,7 +347,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
-                    <Card className={`hover:shadow-md transition-all duration-200 cursor-pointer border-t-2 ${s.borderColor}`}>
+                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
                       <CardContent className="px-3 py-3 sm:px-5 sm:py-5">
                         <div className="flex items-center gap-2 sm:gap-4">
                           <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
@@ -385,7 +385,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               {/* Procurement cost banner — shows whenever there are active POs */}
               {isSuperAdmin && activePOCount > 0 && (
                 <Link href="/purchase-orders" className="block group">
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-action-100 bg-gradient-to-r from-action-50/50 to-transparent hover:border-action-300 hover:shadow-sm transition-all">
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-shark-100 bg-shark-50/50 hover:border-shark-200 hover:shadow-sm transition-all">
                     <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
                       <Icon name="truck" size={15} className="text-action-600" />
                     </div>
@@ -420,7 +420,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
                 {/* CENTRE — Portfolio Line Chart (Assets vs Consumables value) */}
                 {showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
-                  <Card className="border-action-100">
+                  <Card>
                     <div className="p-4 sm:p-6">
                       {/* Header */}
                       <div className="flex items-center gap-2 mb-4">
@@ -556,7 +556,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return showAssetCharts && ((assetStatusChart && assetStatusChart.length > 0) || (categoryChart && categoryChart.length > 0)) ? (
               <div key="asset-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {assetStatusChart && assetStatusChart.length > 0 && (
-                  <Card className="border-action-100">
+                  <Card>
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -590,7 +590,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Card>
                 )}
                 {categoryChart && categoryChart.length > 0 && (
-                  <Card className="border-action-100">
+                  <Card>
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -628,7 +628,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return showConsumableCharts && ((consumableStatusChart && consumableStatusChart.length > 0) || (consumableCategoryChart && consumableCategoryChart.length > 0)) ? (
               <div key="consumable-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {consumableStatusChart && consumableStatusChart.length > 0 && (
-                  <Card className="border-action-100">
+                  <Card>
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -662,7 +662,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Card>
                 )}
                 {consumableCategoryChart && consumableCategoryChart.length > 0 && (
-                  <Card className="border-action-100">
+                  <Card>
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -698,7 +698,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "low-stock":
             return (showLowStock || !isSuperAdmin) ? (
-              <Card key="low-stock" className="border-action-100">
+              <Card key="low-stock">
                 <div className="p-4 sm:p-5">
                   {/* Header */}
                   <Link href={isSuperAdmin ? "/alerts/low-stock" : "/purchase-orders"} className="flex items-center justify-between mb-4 group cursor-pointer">
@@ -825,7 +825,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "regional":
             return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
               <div key="regional">
-                <Card className="border-action-100">
+                <Card>
                   <div className="p-4 sm:p-5">
                     {/* Header */}
                     <div className="flex items-center gap-2 mb-4">
@@ -893,7 +893,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                       <p className="text-[10px] text-amber-500">Requests</p>
                                     </div>
                                   </Link>
-                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-xl bg-action-50 border border-action-100 px-3 py-2 hover:bg-action-100 transition-colors">
+                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-xl bg-shark-50 border border-shark-100 px-3 py-2 hover:bg-shark-100 transition-colors">
                                     <Icon name="truck" size={13} className="text-action-500 shrink-0" />
                                     <div>
                                       <p className="text-base font-bold text-action-600 leading-tight">{region.pendingPOs}</p>
@@ -970,7 +970,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* Storage Locations Map */}
       {isSuperAdmin && showMap && mapLocations.length > 0 && (
-        <Card className="border-action-100">
+        <Card>
           <div className="p-4 sm:p-5">
             {/* Header */}
             <div className="flex items-center gap-2 mb-4">
