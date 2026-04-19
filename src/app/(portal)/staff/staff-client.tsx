@@ -325,7 +325,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full shrink-0 ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                    <p className="text-sm font-semibold text-shark-800 truncate">{user.name || "—"}</p>
+                    <p className="text-sm font-semibold text-shark-800 dark:text-shark-200 truncate">{user.name || "—"}</p>
                   </div>
                 </div>
                 <Badge status={user.role} />
@@ -378,7 +378,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   onDragStart={() => setDragItemId(user.id)}
                   onDragOver={(e) => { e.preventDefault(); setDragOverItemId(user.id); }}
                   onDragEnd={() => { setDragItemId(null); setDragOverItemId(null); }}
-                  className={`border-b border-shark-50 hover:bg-shark-50/50 ${(isSuperAdmin || canViewStaffDetails) ? "cursor-pointer" : ""} ${dragItemId === user.id ? "opacity-40" : ""} ${dragOverItemId === user.id ? "border-t-2 border-t-action-500" : ""}`}
+                  className={`border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 ${(isSuperAdmin || canViewStaffDetails) ? "cursor-pointer" : ""} ${dragItemId === user.id ? "opacity-40" : ""} ${dragOverItemId === user.id ? "border-t-2 border-t-action-500" : ""}`}
                 >
                   <td className="px-1 py-2" onClick={(e) => e.stopPropagation()}>
                     {isSuperAdmin && (
@@ -387,7 +387,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                       </div>
                     )}
                   </td>
-                  <td className="px-5 py-3.5 font-medium text-shark-800">{user.name || "—"}</td>
+                  <td className="px-5 py-3.5 font-medium text-shark-800 dark:text-shark-200">{user.name || "—"}</td>
                   <td className="px-5 py-3.5"><Badge status={user.role} /></td>
                   <td className="px-5 py-3.5 text-center">
                     <span className={`inline-flex items-center gap-1.5`} aria-label={user.isActive ? "Active" : "Inactive"} title={user.isActive ? "Active" : "Inactive"}>
@@ -421,7 +421,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             <Icon name="users" size={14} className="text-action-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">Staff Overview</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Staff Overview</h3>
             <p className="text-xs text-shark-400">{filtered.length} staff members</p>
           </div>
         </div>
@@ -485,7 +485,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   <Icon name="map-pin" size={16} className={section.color} />
                 </div>
                 <div className="flex items-center gap-2 flex-1">
-                  <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
+                  <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">{section.name}</h2>
                   <span className="text-xs text-shark-400">{section.stateName}</span>
                   <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
                     {section.users.length}
@@ -505,7 +505,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               <Icon name="dashboard" size={16} className={headOfficeColors.color} />
             </div>
             <div className="flex items-center gap-2 flex-1">
-              <h2 className="text-lg font-semibold text-shark-900">Head Office</h2>
+              <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Head Office</h2>
               <span className="text-xs text-shark-400">No region assigned</span>
               <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
                 {headOfficeUsers.length}
@@ -538,7 +538,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           }
         }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Staff Member</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Staff Member</label>
             <Select value={assignKitUserId} onChange={(e) => setAssignKitUserId(e.target.value)}>
               <option value="">Select staff member...</option>
               {regions.map((region) => {
@@ -556,7 +556,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           </div>
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-sm font-medium text-shark-700">Starter Kit</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300">Starter Kit</label>
               <Link href="/starter-kits" className="text-xs text-action-500 hover:text-action-600 font-medium flex items-center gap-1">
                 <Icon name="edit" size={12} />
                 Edit Kits
@@ -599,23 +599,23 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           }
         }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
             <Input name="name" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Email *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email *</label>
             <Input name="email" type="email" required placeholder="user@company.com" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
             <Input name="phone" type="tel" placeholder="e.g. 0412 345 678" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Password *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Password *</label>
             <Input name="password" type="password" required minLength={6} placeholder="Min 6 characters" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Role *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Role *</label>
             <Select name="role" required>
               <option value="STAFF">Staff</option>
               <option value="BRANCH_MANAGER">Branch Manager</option>
@@ -624,7 +624,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Region</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region</label>
             <Select name="regionId">
               <option value="">No region (head office)</option>
               {allRegions.map((r) => (
@@ -634,7 +634,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           </div>
           <label className="flex items-center gap-2.5 cursor-pointer py-1">
             <input type="checkbox" name="sendWelcomeEmail" value="true" defaultChecked className="w-4 h-4 rounded border-shark-300 text-action-500 focus:ring-action-400" />
-            <span className="text-sm text-shark-700">Send welcome email with login details</span>
+            <span className="text-sm text-shark-700 dark:text-shark-300">Send welcome email with login details</span>
           </label>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
@@ -651,19 +651,19 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               isSuperAdmin ? (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email</label>
                   <p className="text-sm text-shark-500">{editUser.email}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name</label>
                   <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
                   <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="e.g. 0412 345 678" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">Role</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Role</label>
                   <Select value={editRole} onChange={(e) => setEditRole(e.target.value)}>
                     <option value="STAFF">Staff</option>
                     <option value="BRANCH_MANAGER">Branch Manager</option>
@@ -672,7 +672,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">Region</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region</label>
                   <Select value={editRegionId} onChange={(e) => setEditRegionId(e.target.value)}>
                     <option value="">Head Office (No Region)</option>
                     {allRegions.map((r) => (
@@ -685,7 +685,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-shark-50">
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                    <span className="text-sm text-shark-700">{editUser.isActive ? "Active" : "Disabled"}</span>
+                    <span className="text-sm text-shark-700 dark:text-shark-300">{editUser.isActive ? "Active" : "Disabled"}</span>
                   </div>
                   <Button size="sm" variant="outline" onClick={handleToggleActive}>
                     {editUser.isActive ? "Disable User" : "Enable User"}
@@ -709,7 +709,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                               <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
                               <div className="space-y-0.5">
                                 {items.map((a, idx) => (
-                                  <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 py-0.5">
+                                  <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 dark:text-shark-300 py-0.5">
                                     {a.asset.imageUrl ? (
                                       <img src={a.asset.imageUrl} alt={a.asset.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
                                     ) : (
@@ -740,7 +740,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                               <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
                               <div className="space-y-0.5">
                                 {items!.map((c, idx) => (
-                                  <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 py-0.5">
+                                  <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 dark:text-shark-300 py-0.5">
                                     {c.consumable.imageUrl ? (
                                       <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
                                     ) : (
@@ -763,7 +763,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                         <p className="text-xs text-shark-400 mb-1">Pending Requests ({editUser.consumableRequests!.length})</p>
                         <div className="space-y-0.5">
                           {editUser.consumableRequests!.map((r) => (
-                            <div key={r.id} className="flex items-center gap-2 text-sm text-shark-700">
+                            <div key={r.id} className="flex items-center gap-2 text-sm text-shark-700 dark:text-shark-300">
                               <Icon name="clipboard" size={12} className="text-amber-400 shrink-0" />
                               <span>{r.quantity}x {r.consumable.name}</span>
                               <Badge status={r.status} />
@@ -798,14 +798,14 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                 <div className="space-y-0.5">
                                   {m.items.map((item) => (
                                     <div key={item.name} className="flex items-center justify-between text-sm">
-                                      <span className="text-shark-700">{item.name}</span>
-                                      <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
+                                      <span className="text-shark-700 dark:text-shark-300">{item.name}</span>
+                                      <span className="text-xs font-semibold text-shark-900 dark:text-shark-100">{item.quantity} {item.unitType}</span>
                                     </div>
                                   ))}
                                 </div>
                               )}
                             </div>
-                            <div className="w-10 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed || "—"}</div>
+                            <div className="w-10 text-right text-sm font-bold text-shark-900 dark:text-shark-100 pt-0.5">{m.totalUsed || "—"}</div>
                           </div>
                         ))}
                       </div>
@@ -841,27 +841,27 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                       <Icon name="user" size={24} className="text-action-500" />
                     </div>
                     <div>
-                      <p className="font-semibold text-shark-900 text-lg">{editUser.name || "—"}</p>
+                      <p className="font-semibold text-shark-900 dark:text-shark-100 text-lg">{editUser.name || "—"}</p>
                       <Badge status={editUser.role} />
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-0.5">Email</label>
-                    <p className="text-sm text-shark-800">{editUser.email}</p>
+                    <p className="text-sm text-shark-800 dark:text-shark-200">{editUser.email}</p>
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-0.5">Phone</label>
-                    <p className="text-sm text-shark-800">{editUser.phone || "—"}</p>
+                    <p className="text-sm text-shark-800 dark:text-shark-200">{editUser.phone || "—"}</p>
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-0.5">Region</label>
-                    <p className="text-sm text-shark-800">{editUser.region?.name || "Head Office"}</p>
+                    <p className="text-sm text-shark-800 dark:text-shark-200">{editUser.region?.name || "Head Office"}</p>
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400 mb-0.5">Status</label>
                     <div className="flex items-center gap-2">
                       <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                      <span className="text-sm text-shark-800">{editUser.isActive ? "Active" : "Disabled"}</span>
+                      <span className="text-sm text-shark-800 dark:text-shark-200">{editUser.isActive ? "Active" : "Disabled"}</span>
                     </div>
                   </div>
                   {editUser.assetAssignments.length > 0 && (() => {
@@ -885,7 +885,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                       <Icon name="package" size={14} className="text-action-400" />
                                     </div>
                                   )}
-                                  <p className="text-sm text-shark-700 truncate">{a.asset.name}</p>
+                                  <p className="text-sm text-shark-700 dark:text-shark-300 truncate">{a.asset.name}</p>
                                   <span className="text-[11px] text-shark-400 shrink-0 ml-1">(1)</span>
                                 </div>
                               ))}
@@ -916,7 +916,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                       <Icon name="droplet" size={14} className="text-blue-400" />
                                     </div>
                                   )}
-                                  <p className="text-sm text-shark-700 truncate">{c.consumable.name}</p>
+                                  <p className="text-sm text-shark-700 dark:text-shark-300 truncate">{c.consumable.name}</p>
                                   <span className="text-[11px] text-shark-400 shrink-0 ml-1">({c.quantity})</span>
                                 </div>
                               ))}
@@ -933,7 +933,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                         {editUser.consumableRequests!.map((r) => (
                           <div key={r.id} className="flex items-center gap-2 py-1">
                             <Icon name="clipboard" size={14} className="text-amber-400 shrink-0" />
-                            <p className="text-sm text-shark-700">
+                            <p className="text-sm text-shark-700 dark:text-shark-300">
                               {r.quantity}x {r.consumable.name}
                             </p>
                             <Badge status={r.status} />
@@ -965,14 +965,14 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                   <div className="space-y-0.5">
                                     {m.items.map((item) => (
                                       <div key={item.name} className="flex items-center justify-between text-sm">
-                                        <span className="text-shark-700">{item.name}</span>
-                                        <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
+                                        <span className="text-shark-700 dark:text-shark-300">{item.name}</span>
+                                        <span className="text-xs font-semibold text-shark-900 dark:text-shark-100">{item.quantity} {item.unitType}</span>
                                       </div>
                                     ))}
                                   </div>
                                 )}
                               </div>
-                              <div className="w-10 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed || "—"}</div>
+                              <div className="w-10 text-right text-sm font-bold text-shark-900 dark:text-shark-100 pt-0.5">{m.totalUsed || "—"}</div>
                             </div>
                           ))}
                         </div>
@@ -988,10 +988,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             ) : showResetPassword ? (
               <>
                 <p className="text-sm text-shark-500">
-                  Reset password for <span className="font-medium text-shark-800">{editUser.name || editUser.email}</span>
+                  Reset password for <span className="font-medium text-shark-800 dark:text-shark-200">{editUser.name || editUser.email}</span>
                 </p>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">New Password</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">New Password</label>
                   <Input
                     type="password"
                     value={newPassword}
@@ -1011,7 +1011,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             ) : (
               <>
                 <p className="text-sm text-shark-600">
-                  Are you sure you want to permanently delete <span className="font-bold text-shark-900">{editUser.name || editUser.email}</span>?
+                  Are you sure you want to permanently delete <span className="font-bold text-shark-900 dark:text-shark-100">{editUser.name || editUser.email}</span>?
                 </p>
                 <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
                 {editUser.assetAssignments.length > 0 && (
@@ -1042,7 +1042,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 {detailUser.name?.charAt(0)?.toUpperCase() || "?"}
               </div>
               <div>
-                <p className="text-base font-semibold text-shark-900">{detailUser.name || "—"}</p>
+                <p className="text-base font-semibold text-shark-900 dark:text-shark-100">{detailUser.name || "—"}</p>
                 <p className="text-sm text-shark-400">{detailUser.email}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge status={detailUser.role} />
@@ -1057,7 +1057,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
             {/* Assets assigned */}
             <div>
-              <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-2 flex items-center gap-2">
                 <Icon name="package" size={14} className="text-action-500" />
                 Assets ({detailUser.assetAssignments.length})
               </h3>
@@ -1083,7 +1083,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                   <Icon name="package" size={14} className="text-action-400" />
                                 </div>
                               )}
-                              <span className="font-medium text-shark-800 truncate">{a.asset.name}</span>
+                              <span className="font-medium text-shark-800 dark:text-shark-200 truncate">{a.asset.name}</span>
                             </div>
                           ))}
                         </div>
@@ -1096,7 +1096,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
             {/* Consumables assigned */}
             <div>
-              <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-2 flex items-center gap-2">
                 <Icon name="droplet" size={14} className="text-action-500" />
                 Supplies ({detailUser.consumableAssignments?.length || 0})
               </h3>
@@ -1122,7 +1122,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                   <Icon name="droplet" size={14} className="text-blue-400" />
                                 </div>
                               )}
-                              <span className="font-medium text-shark-800 truncate">{c.consumable.name}</span>
+                              <span className="font-medium text-shark-800 dark:text-shark-200 truncate">{c.consumable.name}</span>
                               <span className="text-xs text-shark-400 ml-auto shrink-0">{c.quantity} {c.consumable.unitType}</span>
                             </div>
                           ))}
@@ -1136,7 +1136,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
             {/* Consumable usage (requests history) */}
             <div>
-              <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-2 flex items-center gap-2">
                 <Icon name="clipboard" size={14} className="text-action-500" />
                 Supply Usage ({detailUser.consumableRequests?.length || 0})
               </h3>
@@ -1147,7 +1147,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   {detailUser.consumableRequests.map((r) => (
                     <div key={r.id} className="flex items-center justify-between text-sm py-1.5 border-b border-shark-50 last:border-0">
                       <div>
-                        <span className="font-medium text-shark-800">{r.consumable.name}</span>
+                        <span className="font-medium text-shark-800 dark:text-shark-200">{r.consumable.name}</span>
                         <span className="text-xs text-shark-400 ml-2">{r.quantity} {r.consumable.unitType}</span>
                       </div>
                       <div className="flex items-center gap-2">
@@ -1162,7 +1162,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
             {/* Damage / Loss reports */}
             <div>
-              <h3 className="text-sm font-semibold text-shark-700 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-2 flex items-center gap-2">
                 <Icon name="alert-triangle" size={14} className="text-[#E8532E]" />
                 Damage & Loss ({detailUser.damageReports?.length || 0})
               </h3>
@@ -1177,7 +1177,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                           <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${d.type === "DAMAGE" ? "bg-amber-100 text-[#E8532E]" : "bg-red-100 text-red-700"}`}>
                             {d.type}
                           </span>
-                          <span className="font-medium text-shark-800">{d.asset?.name || "Unknown"}</span>
+                          <span className="font-medium text-shark-800 dark:text-shark-200">{d.asset?.name || "Unknown"}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={`w-1.5 h-1.5 rounded-full ${d.isResolved ? "bg-action-500" : "bg-red-500"}`} />
@@ -1192,25 +1192,25 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             </div>
             {/* Performance Summary */}
             <div className="border-t border-shark-100 dark:border-shark-700 pt-4">
-              <h3 className="text-sm font-semibold text-shark-700 mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-3 flex items-center gap-2">
                 <Icon name="bar-chart" size={14} className="text-action-500" />
                 Performance Summary
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
-                  <p className="text-lg font-bold text-shark-900">{detailUser.assetAssignments.length}</p>
+                  <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.assetAssignments.length}</p>
                   <p className="text-[10px] text-shark-400">Assets Assigned</p>
                 </div>
                 <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
-                  <p className="text-lg font-bold text-shark-900">{detailUser.consumableAssignments?.length || 0}</p>
+                  <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.consumableAssignments?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Supplies</p>
                 </div>
                 <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
-                  <p className="text-lg font-bold text-shark-900">{detailUser.conditionChecks?.length || 0}</p>
+                  <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.conditionChecks?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Inspections Done</p>
                 </div>
                 <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
-                  <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-[#E8532E]" : "text-shark-900"}`}>{detailUser.damageReports?.length || 0}</p>
+                  <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-[#E8532E]" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Damage Reports</p>
                 </div>
               </div>

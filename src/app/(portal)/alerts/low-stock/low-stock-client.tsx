@@ -54,11 +54,11 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
               <Icon name="alert-triangle" size={14} className="text-[#E8532E]" />
             </div>
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-shark-900">Low Stock Alerts</h3>
+              <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Low Stock Alerts</h3>
               <p className="text-xs text-shark-400">{items.length} item{items.length !== 1 ? "s" : ""} need attention</p>
             </div>
             <div className="text-right shrink-0">
-              <p className="text-lg font-bold text-shark-900">{items.length}</p>
+              <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{items.length}</p>
               <p className="text-[10px] text-shark-400">items at or below threshold</p>
             </div>
           </div>
@@ -71,7 +71,7 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
             <div className="w-14 h-14 rounded-2xl bg-action-100 flex items-center justify-center mx-auto mb-4">
               <Icon name="check" size={24} className="text-action-600" />
             </div>
-            <p className="text-lg font-semibold text-shark-900">All stock levels OK</p>
+            <p className="text-lg font-semibold text-shark-900 dark:text-shark-100">All stock levels OK</p>
             <p className="text-sm text-shark-400 mt-1">No supplies are below their minimum threshold.</p>
           </div>
         </Card>
@@ -83,14 +83,14 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
               <Card key={group.regionId} className="overflow-hidden">
                 <button
                   onClick={() => toggleRegion(group.regionId)}
-                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50/50 transition-colors"
+                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
                       <Icon name="alert-triangle" size={16} className="text-[#E8532E]" />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-shark-900">{group.name}</span>
+                      <span className="font-semibold text-shark-900 dark:text-shark-100">{group.name}</span>
                       <span className="ml-2 text-xs text-shark-400">{group.stateName}</span>
                     </div>
                     <span className="ml-2 text-xs font-semibold text-[#E8532E] bg-amber-50 px-2 py-0.5 rounded-full">
@@ -110,7 +110,7 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
                         return (
                           <div key={item.id} className="px-4 py-3 flex items-center justify-between gap-3">
                             <div className="min-w-0">
-                              <p className="text-sm font-medium text-shark-800">{item.name}</p>
+                              <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{item.name}</p>
                               <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>
                             </div>
                             <div className="shrink-0 text-right">
@@ -142,9 +142,9 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
                             const isOut = item.quantityOnHand === 0;
                             const isCritical = item.quantityOnHand <= Math.floor(item.minimumThreshold / 2);
                             return (
-                              <tr key={item.id} className="border-t border-shark-50 hover:bg-shark-50/30">
+                              <tr key={item.id} className="border-t border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/30 dark:hover:bg-shark-800/30">
                                 <td className="px-5 py-3">
-                                  <p className="text-sm font-medium text-shark-800">{item.name}</p>
+                                  <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{item.name}</p>
                                   <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>
                                 </td>
                                 <td className="px-5 py-3 text-right">

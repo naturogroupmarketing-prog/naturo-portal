@@ -319,7 +319,7 @@ export function ImportClient({ regions }: Props) {
           <Icon name="upload" size={14} className="text-action-600" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-shark-900">Import Data</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Import Data</h3>
           <p className="text-xs text-shark-400">Bulk import assets, supplies, or staff from CSV or Excel files</p>
         </div>
       </div>
@@ -346,7 +346,7 @@ export function ImportClient({ regions }: Props) {
                 >
                   {isDone ? <Icon name="check" size={12} /> : i + 1}
                 </div>
-                <span className={`text-xs hidden sm:inline ${isActive ? "text-shark-900 font-medium" : "text-shark-400"}`}>
+                <span className={`text-xs hidden sm:inline ${isActive ? "text-shark-900 dark:text-shark-100 font-medium" : "text-shark-400"}`}>
                   {labels[i]}
                 </span>
               </div>
@@ -376,7 +376,7 @@ export function ImportClient({ regions }: Props) {
                 }`}>
                   <Icon name={item.icon} size={24} />
                 </div>
-                <h3 className="font-semibold text-shark-900">{item.label}</h3>
+                <h3 className="font-semibold text-shark-900 dark:text-shark-100">{item.label}</h3>
                 <p className="text-xs text-shark-400 mt-1">{item.desc}</p>
                 <div className="mt-3 flex flex-wrap gap-1 justify-center">
                   {getFields(item.type)
@@ -419,7 +419,7 @@ export function ImportClient({ regions }: Props) {
             {/* Region selector for assets/consumables */}
             {importType !== "staff" && (
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                   Assign all items to region <span className="text-red-500">*</span>
                 </label>
                 <Select
@@ -441,7 +441,7 @@ export function ImportClient({ regions }: Props) {
 
             {importType === "staff" && (
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                   Default region for staff (optional)
                 </label>
                 <Select
@@ -524,7 +524,7 @@ export function ImportClient({ regions }: Props) {
             {importType !== "staff" && (
               <div className="flex items-center gap-3 pb-3 mb-3 border-b border-shark-100 dark:border-shark-700">
                 <div className="w-48 flex-shrink-0">
-                  <span className="text-sm text-shark-700 font-medium">Region</span>
+                  <span className="text-sm text-shark-700 dark:text-shark-300 font-medium">Region</span>
                   <span className="text-red-500 ml-1">*</span>
                 </div>
                 <Icon name="arrow-right" size={14} className="text-shark-300 flex-shrink-0" />
@@ -545,7 +545,7 @@ export function ImportClient({ regions }: Props) {
             {importType === "staff" && (
               <div className="flex items-center gap-3 pb-3 mb-3 border-b border-shark-100 dark:border-shark-700">
                 <div className="w-48 flex-shrink-0">
-                  <span className="text-sm text-shark-700 font-medium">Default Region</span>
+                  <span className="text-sm text-shark-700 dark:text-shark-300 font-medium">Default Region</span>
                 </div>
                 <Icon name="arrow-right" size={14} className="text-shark-300 flex-shrink-0" />
                 <Select
@@ -566,7 +566,7 @@ export function ImportClient({ regions }: Props) {
             {fields.map((field) => (
               <div key={field.key} className="flex items-center gap-3">
                 <div className="w-48 flex-shrink-0">
-                  <span className="text-sm text-shark-700 font-medium">{field.label}</span>
+                  <span className="text-sm text-shark-700 dark:text-shark-300 font-medium">{field.label}</span>
                   {field.required && <span className="text-red-500 ml-1">*</span>}
                 </div>
                 <Icon name="arrow-right" size={14} className="text-shark-300 flex-shrink-0" />
@@ -659,7 +659,7 @@ export function ImportClient({ regions }: Props) {
                       >
                         <td className="py-2 px-3 text-xs text-shark-400">{i + 2}</td>
                         {fields.map((f) => (
-                          <td key={f.key} className="py-2 px-3 text-shark-700 max-w-[200px] truncate">
+                          <td key={f.key} className="py-2 px-3 text-shark-700 dark:text-shark-300 max-w-[200px] truncate">
                             {row[f.key]?.toString() || <span className="text-shark-300">—</span>}
                           </td>
                         ))}

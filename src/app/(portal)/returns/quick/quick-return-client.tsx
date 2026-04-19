@@ -104,7 +104,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
         <div className="flex items-center gap-3 px-4 py-4">
           <Link
             href="/returns"
-            className="flex items-center gap-1.5 text-sm font-medium text-shark-500 hover:text-shark-900 transition-colors min-h-[44px] pr-2"
+            className="flex items-center gap-1.5 text-sm font-medium text-shark-500 hover:text-shark-900 dark:text-shark-100 transition-colors min-h-[44px] pr-2"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m15 18-6-6 6-6" />
@@ -112,7 +112,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
             Back
           </Link>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-shark-900 leading-tight">Quick Returns</h1>
+            <h1 className="text-xl font-bold text-shark-900 dark:text-shark-100 leading-tight">Quick Returns</h1>
           </div>
           {totalPending > 0 && (
             <span className="shrink-0 inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-full bg-action-600 text-white text-xs font-bold">
@@ -143,7 +143,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name or person..."
-              className="w-full rounded-xl border border-shark-200 bg-shark-50 pl-10 pr-4 text-base text-shark-900 placeholder:text-shark-400 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-xl border border-shark-200 bg-shark-50 pl-10 pr-4 text-base text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
               style={{ height: "48px" }}
             />
           </div>
@@ -207,7 +207,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-xl font-bold text-shark-900 leading-tight truncate">
+                  <p className="text-xl font-bold text-shark-900 dark:text-shark-100 leading-tight truncate">
                     {item.assignedTo}
                   </p>
                   <p className="mt-0.5 text-base text-shark-500 truncate">{itemName}</p>

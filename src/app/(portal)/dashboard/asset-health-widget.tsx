@@ -137,7 +137,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
             <Icon name="bar-chart" size={14} className="text-action-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-sm font-semibold text-shark-900">Asset Health</h2>
+            <h2 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Asset Health</h2>
             <p className="text-xs text-shark-400">
               {totalAssets} asset{totalAssets !== 1 ? "s" : ""} scored
             </p>
@@ -221,7 +221,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                     <Link
                       key={asset.assetId}
                       href={`/assets?search=${encodeURIComponent(asset.assetCode)}`}
-                      className="flex items-center gap-2 py-1 px-1.5 rounded-lg hover:bg-shark-50 transition-colors group"
+                      className="flex items-center gap-2 py-1 px-1.5 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
                     >
                       <span className="w-5 h-5 rounded-md bg-green-50 flex items-center justify-center text-[10px] font-bold text-green-700 shrink-0">
                         A
@@ -286,7 +286,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
 
                         {/* Name + code */}
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-shark-800 truncate group-hover:text-action-600 transition-colors">
+                          <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate group-hover:text-action-600 transition-colors">
                             {asset.assetName}
                           </p>
                           <p className="text-[11px] text-shark-400">

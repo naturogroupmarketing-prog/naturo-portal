@@ -57,16 +57,16 @@ const PO_STATUS_ACTIONS_ADMIN: Record<string, { value: string; label: string; ic
   ],
   APPROVED: [
     { value: "ORDERED", label: "Mark Ordered", icon: "package", color: "text-action-600 hover:bg-action-50" },
-    { value: "PENDING", label: "Undo Approval", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50" },
+    { value: "PENDING", label: "Undo Approval", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800" },
   ],
   ORDERED: [
     { value: "RECEIVED", label: "Mark Received", icon: "check", color: "text-action-600 hover:bg-action-50" },
   ],
   RECEIVED: [
-    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50" },
+    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800" },
   ],
   REJECTED: [
-    { value: "PENDING", label: "Re-open", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50" },
+    { value: "PENDING", label: "Re-open", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800" },
   ],
 };
 
@@ -76,7 +76,7 @@ const PO_STATUS_ACTIONS_MANAGER: Record<string, { value: string; label: string; 
     { value: "RECEIVED", label: "Mark Received", icon: "check", color: "text-action-600 hover:bg-action-50" },
   ],
   RECEIVED: [
-    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50" },
+    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800" },
   ],
 };
 
@@ -418,7 +418,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-semibold text-shark-800 truncate">{po.consumable.name}</p>
+                    <p className="text-sm font-semibold text-shark-800 dark:text-shark-200 truncate">{po.consumable.name}</p>
                     {renderStatus(po)}
                   </div>
                   <p className="text-xs text-shark-400 mt-0.5">In stock: {po.consumable.quantityOnHand} · Order: {po.quantity} {po.consumable.unitType} · {po.region.name}</p>
@@ -476,7 +476,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                       )}
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-shark-800">{po.consumable.name}</span>
+                          <span className="font-medium text-shark-800 dark:text-shark-200">{po.consumable.name}</span>
                           {po.consumable.shopUrl && (
                             <a
                               href={po.consumable.shopUrl}
@@ -496,12 +496,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                     </div>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className={`font-semibold ${po.consumable.quantityOnHand <= po.consumable.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>
+                    <span className={`font-semibold ${po.consumable.quantityOnHand <= po.consumable.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>
                       {po.consumable.quantityOnHand}
                     </span>
                     <span className="text-xs text-shark-400 ml-1">{po.consumable.unitType}</span>
                   </td>
-                  <td className="px-5 py-3.5 font-semibold text-shark-800">{po.quantity} <span className="font-normal text-xs text-shark-400">{po.consumable.unitType}</span></td>
+                  <td className="px-5 py-3.5 font-semibold text-shark-800 dark:text-shark-200">{po.quantity} <span className="font-normal text-xs text-shark-400">{po.consumable.unitType}</span></td>
                   <td className="px-5 py-3.5 text-shark-500">{po.region.name}</td>
                   <td className="px-5 py-3.5 text-right">
                     {renderStatus(po)}
@@ -523,14 +523,14 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           <div className="relative" ref={regionDropdownRef}>
             <button
               onClick={() => { setRegionDropdownOpen((o) => !o); setRegionSearch(""); }}
-              className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50/50 dark:hover:bg-shark-800/50 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors text-left"
             >
               <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
                 <Icon name="map-pin" size={15} className="text-action-600" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <h2 className="text-base font-semibold text-shark-900">{selectedRegion.name}</h2>
+                  <h2 className="text-base font-semibold text-shark-900 dark:text-shark-100">{selectedRegion.name}</h2>
                   {regions.length > 1 && (
                     <Icon
                       name="chevron-down"
@@ -630,7 +630,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 <Icon name="truck" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-shark-900">Purchase Orders</h3>
+                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Purchase Orders</h3>
                 <p className="text-xs text-shark-400">
                   {regionPOs.length} total · {pendingCount} pending
                 </p>
@@ -694,7 +694,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                   activeTab === tab
                     ? "bg-action-500 text-white shadow-sm"
-                    : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-700 hover:text-shark-700 dark:hover:text-shark-200"
+                    : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-700 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
                 }`}
               >
                 {tab}
@@ -779,7 +779,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             >
               {/* Read-only item info */}
               <div className="bg-shark-50 dark:bg-shark-800 rounded-lg p-4">
-                <h3 className="text-base font-semibold text-shark-900">{viewOrder.consumable.name}</h3>
+                <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{viewOrder.consumable.name}</h3>
                 <div className="flex gap-4 mt-1 text-xs text-shark-400">
                   <span>{viewOrder.consumable.category}</span>
                   <span>{viewOrder.consumable.unitType}</span>
@@ -805,7 +805,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               {/* Editable fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Status</label>
                   <Select name="status" defaultValue={viewOrder.status}>
                     <option value="PENDING">Pending</option>
                     <option value="APPROVED">Approved</option>
@@ -816,19 +816,19 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                   <p className="text-xs text-shark-400 mt-1">Change status to correct mistakes</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">Quantity</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity</label>
                   <Input name="quantity" type="number" min={1} defaultValue={viewOrder.quantity} required disabled={!canEditQty} className={!canEditQty ? "opacity-60 cursor-not-allowed" : ""} />
                   {!canEditQty && <p className="text-xs text-shark-400 mt-1">Permission required to edit qty</p>}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
                 <Input name="supplier" defaultValue={viewOrder.supplier || ""} placeholder="Supplier name" />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
                 <textarea
                   name="notes"
                   defaultValue={viewOrder.notes || ""}
@@ -848,7 +848,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             /* Read-only view for Branch Manager */
             <div className="space-y-5">
               <div className="bg-shark-50 dark:bg-shark-800 rounded-lg p-4">
-                <h3 className="text-base font-semibold text-shark-900">{viewOrder.consumable.name}</h3>
+                <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{viewOrder.consumable.name}</h3>
                 <div className="flex gap-4 mt-1 text-xs text-shark-400">
                   <span>{viewOrder.consumable.category}</span>
                   <span>{viewOrder.consumable.unitType}</span>
@@ -878,14 +878,14 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 </div>
                 <div>
                   <p className="text-xs font-medium text-shark-400 uppercase mb-1">Quantity</p>
-                  <p className="font-semibold text-shark-900">{viewOrder.quantity} {viewOrder.consumable.unitType}</p>
+                  <p className="font-semibold text-shark-900 dark:text-shark-100">{viewOrder.quantity} {viewOrder.consumable.unitType}</p>
                 </div>
               </div>
 
               {viewOrder.supplier && (
                 <div>
                   <p className="text-xs font-medium text-shark-400 uppercase mb-1">Supplier</p>
-                  <p className="text-sm text-shark-800">{viewOrder.supplier}</p>
+                  <p className="text-sm text-shark-800 dark:text-shark-200">{viewOrder.supplier}</p>
                 </div>
               )}
 
@@ -908,7 +908,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Purchase Order">
         <form id="create-po-form" className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Supply *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supply *</label>
             <Select name="consumableId" required>
               <option value="">Select supply</option>
               {consumables.map((c) => (
@@ -920,16 +920,16 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Quantity *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity *</label>
             <Input name="quantity" type="number" min="1" required placeholder="e.g. 50" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
             <Input name="supplier" placeholder="Leave blank to use default" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
-            <textarea name="notes" placeholder="Optional notes..." className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
+            <textarea name="notes" placeholder="Optional notes..." className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>

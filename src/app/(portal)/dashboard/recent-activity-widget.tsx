@@ -44,7 +44,7 @@ export function RecentActivityWidget({ items }: { items: RecentActivityItem[] })
             <Icon name="clock" size={14} className="text-shark-500" />
           </div>
           <div className="flex-1">
-            <h3 className="text-sm font-bold text-shark-900">Recent Activity</h3>
+            <h3 className="text-sm font-bold text-shark-900 dark:text-shark-100">Recent Activity</h3>
             <p className="text-xs text-shark-400">Latest actions across your organisation</p>
           </div>
           <Link href="/reports" className="text-[11px] font-semibold text-action-600 hover:text-action-700 transition-colors shrink-0">
@@ -64,7 +64,7 @@ export function RecentActivityWidget({ items }: { items: RecentActivityItem[] })
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="flex items-start gap-3 px-3 py-2.5 rounded-xl hover:bg-shark-50 transition-colors group"
+                  className="flex items-start gap-3 px-3 py-2.5 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
                 >
                   {/* Icon */}
                   <div className={`w-8 h-8 rounded-lg ${cfg.iconBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
@@ -73,7 +73,7 @@ export function RecentActivityWidget({ items }: { items: RecentActivityItem[] })
 
                   {/* Text */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] text-shark-800 leading-snug">
+                    <p className="text-[13px] text-shark-800 dark:text-shark-200 leading-snug">
                       <span className="font-semibold">{item.staffName}</span>
                       {" "}{cfg.verb}{" "}
                       <span className="font-medium">{item.itemName}</span>

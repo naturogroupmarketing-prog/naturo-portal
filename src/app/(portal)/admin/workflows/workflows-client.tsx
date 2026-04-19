@@ -149,7 +149,7 @@ function RuleCard({
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-1.5">
-              <span className="text-sm font-semibold text-shark-900">{rule.name}</span>
+              <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{rule.name}</span>
               {isCustom && (
                 <span className="inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full bg-action-50 text-action-600">
                   Custom
@@ -310,11 +310,11 @@ function WorkflowModal({
             <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
               <Icon name="git-branch" size={14} className="text-action-600" />
             </div>
-            <h2 className="text-sm font-semibold text-shark-900">
+            <h2 className="text-sm font-semibold text-shark-900 dark:text-shark-100">
               {editRule ? "Edit Rule" : "Create Automation Rule"}
             </h2>
           </div>
-          <button type="button" onClick={onClose} className="p-1.5 text-shark-400 hover:text-shark-700 hover:bg-shark-100 rounded-lg transition-colors">
+          <button type="button" onClick={onClose} className="p-1.5 text-shark-400 hover:text-shark-700 dark:text-shark-300 hover:bg-shark-100 rounded-lg transition-colors">
             <Icon name="x" size={16} />
           </button>
         </div>
@@ -322,27 +322,27 @@ function WorkflowModal({
         <form ref={formRef} className="p-5 space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Rule Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Rule Name *</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Weekly Low-Stock Alert"
               maxLength={100}
-              className="w-full rounded-xl border border-shark-200 px-3.5 py-2.5 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-xl border border-shark-200 px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
             />
           </div>
 
           {/* Trigger */}
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Trigger *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Trigger *</label>
             <div className="space-y-2">
               {TRIGGER_OPTIONS.map((opt) => (
                 <label key={opt.value} className={cn(
                   "flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
                   trigger === opt.value
                     ? "border-action-400 bg-action-50"
-                    : "border-shark-200 hover:border-shark-300 hover:bg-shark-50"
+                    : "border-shark-200 hover:border-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"
                 )}>
                   <input
                     type="radio"
@@ -353,7 +353,7 @@ function WorkflowModal({
                     className="mt-0.5 accent-action-500"
                   />
                   <div>
-                    <p className="text-sm font-medium text-shark-900">{opt.label}</p>
+                    <p className="text-sm font-medium text-shark-900 dark:text-shark-100">{opt.label}</p>
                     <p className="text-xs text-shark-400 mt-0.5">{opt.description}</p>
                   </div>
                 </label>
@@ -364,7 +364,7 @@ function WorkflowModal({
           {/* Conditions (dynamic based on trigger) */}
           {conditionFields.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-2">Conditions</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-2">Conditions</label>
               <div className="space-y-2">
                 {conditionFields.map((field) => (
                   <div key={field.key}>
@@ -375,7 +375,7 @@ function WorkflowModal({
                       onChange={(e) => setConditionValues((prev) => ({ ...prev, [field.key]: e.target.value }))}
                       placeholder={field.placeholder}
                       min={field.type === "number" ? 1 : undefined}
-                      className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+                      className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
                     />
                   </div>
                 ))}
@@ -385,14 +385,14 @@ function WorkflowModal({
 
           {/* Action */}
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Action *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Action *</label>
             <div className="space-y-2">
               {ACTION_OPTIONS.map((opt) => (
                 <label key={opt.value} className={cn(
                   "flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
                   action === opt.value
                     ? "border-action-400 bg-action-50"
-                    : "border-shark-200 hover:border-shark-300 hover:bg-shark-50"
+                    : "border-shark-200 hover:border-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"
                 )}>
                   <input
                     type="radio"
@@ -403,7 +403,7 @@ function WorkflowModal({
                     className="mt-0.5 accent-action-500"
                   />
                   <div>
-                    <p className="text-sm font-medium text-shark-900">{opt.label}</p>
+                    <p className="text-sm font-medium text-shark-900 dark:text-shark-100">{opt.label}</p>
                     <p className="text-xs text-shark-400 mt-0.5">{opt.description}</p>
                   </div>
                 </label>
@@ -441,12 +441,12 @@ function DeleteConfirm({ ruleName, onConfirm, onCancel }: { ruleName: string; on
             <Icon name="trash-2" size={18} className="text-red-500" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">Delete Rule</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Delete Rule</h3>
             <p className="text-xs text-shark-400 mt-0.5">This action cannot be undone.</p>
           </div>
         </div>
         <p className="text-sm text-shark-600">
-          Are you sure you want to delete <span className="font-semibold text-shark-900">{ruleName}</span>?
+          Are you sure you want to delete <span className="font-semibold text-shark-900 dark:text-shark-100">{ruleName}</span>?
         </p>
         <div className="flex gap-3">
           <Button type="button" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
@@ -532,7 +532,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
                 <Icon name="git-branch" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-shark-900">Workflow Automation</h3>
+                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Workflow Automation</h3>
                 <p className="text-xs text-shark-400">Rules run every 6 hours automatically</p>
               </div>
             </div>
@@ -580,7 +580,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
                   <div className="w-10 h-10 rounded-full bg-shark-100 flex items-center justify-center mx-auto mb-3">
                     <Icon name="git-branch" size={18} className="text-shark-400" />
                   </div>
-                  <p className="text-sm font-medium text-shark-700">No custom rules yet</p>
+                  <p className="text-sm font-medium text-shark-700 dark:text-shark-300">No custom rules yet</p>
                   <p className="text-xs text-shark-400 mt-1 mb-4">Create rules tailored to your organisation&apos;s needs.</p>
                   <Button size="sm" variant="outline" onClick={openCreate} className="flex items-center gap-1.5 mx-auto">
                     <Icon name="plus" size={14} />
@@ -612,7 +612,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
                   <Icon name="clock" size={20} className="text-shark-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-shark-700">No executions yet</p>
+                  <p className="text-sm font-semibold text-shark-700 dark:text-shark-300">No executions yet</p>
                   <p className="text-xs text-shark-400 mt-0.5">Workflows run every 6 hours.</p>
                 </div>
               </div>

@@ -107,12 +107,12 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
         {/* Approval / Receival stats */}
         <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden mb-3">
           <div className="grid grid-cols-2 divide-x divide-shark-50">
-            <Link href="/purchase-orders" className="px-3 py-2.5 hover:bg-shark-50 transition-colors">
+            <Link href="/purchase-orders" className="px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
               <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Approval</p>
               <p className={`text-lg font-bold ${data.ordersAwaitingApproval > 0 ? "text-[#E8532E]" : "text-shark-900"}`}>{data.ordersAwaitingApproval}</p>
               <p className="text-[10px] text-shark-400">purchase orders</p>
             </Link>
-            <Link href="/purchase-orders?status=ORDERED" className="px-3 py-2.5 hover:bg-shark-50 transition-colors">
+            <Link href="/purchase-orders?status=ORDERED" className="px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
               <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Receival</p>
               <p className={`text-lg font-bold ${data.ordersAwaitingReceival > 0 ? "text-action-500" : "text-shark-900"}`}>{data.ordersAwaitingReceival}</p>
               <p className="text-[10px] text-shark-400">purchase orders</p>
@@ -133,7 +133,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
           return issues.length > 0 ? (
             <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden mb-3">
               {issues.map((item) => (
-                <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors">
+                <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
                   <div className="flex items-center gap-2.5">
                     <Icon name={item.icon} size={14} className={item.danger ? "text-[#E8532E]" : "text-action-500"} />
                     <span className="text-sm text-shark-600">{item.label}</span>

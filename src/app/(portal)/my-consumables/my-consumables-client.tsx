@@ -143,7 +143,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
           <Icon name="droplet" size={14} className="text-action-600" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-shark-900">My Supplies</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">My Supplies</h3>
           <p className="text-xs text-shark-400">Your supply assignments and requests</p>
         </div>
       </div>
@@ -157,7 +157,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
                 <Icon name="clipboard" size={14} className="text-[#E8532E]" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-shark-900">Confirm Receipt</p>
+                <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Confirm Receipt</p>
                 <p className="text-xs text-shark-400">{pendingAssignments.length} item{pendingAssignments.length !== 1 ? "s" : ""} awaiting confirmation</p>
               </div>
             </div>
@@ -168,7 +168,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
                     {a.consumable.imageUrl ? <img src={a.consumable.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-shark-800 truncate">{a.quantity}x {a.consumable.name}</p>
+                    <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{a.quantity}x {a.consumable.name}</p>
                     <p className="text-xs text-shark-400">{a.consumable.unitType} · {a.consumable.category}</p>
                   </div>
                   <Button
@@ -216,7 +216,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
                 <Icon name="droplet" size={16} className={colors.color} />
               </div>
               <div className="flex items-center gap-2 flex-1">
-                <h2 className="text-lg font-semibold text-shark-900">{sectionName}</h2>
+                <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">{sectionName}</h2>
                 {sectionAssignments.length > 0 && (
                   <span className="text-xs font-medium text-white bg-action-500 px-2 py-0.5 rounded-full">
                     {sectionAssignments.reduce((sum, a) => sum + a.quantity, 0)} assigned
@@ -277,7 +277,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
                 <CardContent className="py-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-semibold text-shark-800">{r.consumable.name}</h3>
+                      <h3 className="font-semibold text-shark-800 dark:text-shark-200">{r.consumable.name}</h3>
                       <p className="text-sm text-shark-400">
                         {r.quantity} {r.consumable.unitType} &middot; {r.consumable.region.name}
                       </p>
@@ -291,7 +291,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
                     )}
                   </div>
                   {r.notes && (
-                    <p className="mt-2 text-sm text-shark-500 bg-shark-50 rounded-xl p-3">{r.notes}</p>
+                    <p className="mt-2 text-sm text-shark-500 bg-shark-50 dark:bg-shark-800 rounded-xl p-3">{r.notes}</p>
                   )}
                 </CardContent>
               </Card>
@@ -367,17 +367,17 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-semibold text-shark-900 truncate">{ca.consumable.name}</h3>
+                <h3 className="font-semibold text-shark-900 dark:text-shark-100 truncate">{ca.consumable.name}</h3>
                 <p className="text-xs text-shark-400 mt-0.5">{ca.consumable.unitType} · {ca.consumable.region.name}</p>
               </div>
-              <span className={`text-lg font-bold ml-2 ${displayQty === 0 ? "text-shark-400" : "text-shark-800"}`}>×{displayQty}</span>
+              <span className={`text-lg font-bold ml-2 ${displayQty === 0 ? "text-shark-400" : "text-shark-800 dark:text-shark-200"}`}>×{displayQty}</span>
             </div>
             <p className="text-xs text-shark-400 mt-1">Assigned: {formatDate(ca.assignedDate)}</p>
           </div>
         </div>
 
         {ca.consumable.notes && (
-          <div className="mt-3 bg-shark-50 rounded-lg p-2.5">
+          <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-lg p-2.5">
             <p className="text-xs font-medium text-shark-400 mb-0.5">Notes</p>
             <p className="text-sm text-shark-600 whitespace-pre-wrap">{ca.consumable.notes}</p>
           </div>
@@ -393,7 +393,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
 
         {/* Mark Used mode */}
         {mode === "use" && !success && (
-          <div className="mt-3 space-y-2 bg-shark-50 rounded-lg p-3">
+          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-lg p-3">
             <p className="text-xs font-medium text-shark-600">How many did you use?</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
@@ -442,7 +442,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
 
         {/* Request More mode */}
         {mode === "request" && !success && (
-          <div className="mt-3 space-y-2 bg-shark-50 rounded-lg p-3">
+          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-lg p-3">
             <p className="text-xs font-medium text-shark-600">Request more</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
@@ -547,7 +547,7 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
               className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-shark-100 dark:border-shark-700"
             />
           ) : (
-            <div className="w-14 h-14 rounded-lg bg-shark-50 flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0">
               <Icon name="droplet" size={20} className="text-shark-400" />
             </div>
           )}
@@ -566,7 +566,7 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
         )}
 
         {showRequest && !success && (
-          <div className="mt-3 space-y-2 bg-shark-50 rounded-lg p-3">
+          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-lg p-3">
             <p className="text-xs font-medium text-shark-600">Request this item</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">

@@ -104,7 +104,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                 <Icon name="package" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-shark-900">Choose your location</h3>
+                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Choose your location</h3>
                 <p className="text-xs text-shark-400">
                   {totalRegions} locations · {totalAssets} assets · {totalConsumables} supplies
                 </p>
@@ -159,7 +159,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                         onClick={async (e) => {
                           e.stopPropagation();
                           const fd = new FormData(); fd.set("id", state.id);
-                          try { await deleteState(fd); addToast("State deleted", "success"); } catch { addToast("Failed", "error"); }
+                          try { await deleteState(fd); addToast("State removed successfully", "success"); } catch { addToast("Something went wrong — please try again", "error"); }
                         }}
                         className="text-shark-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
@@ -258,17 +258,17 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
             try {
               fd.set("id", editLocationRegion.id);
               await updateRegion(fd);
-              addToast("Location updated", "success");
+              addToast("Location details updated", "success");
               setEditLocationRegion(null);
               router.refresh();
             } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
           }} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
               <Input name="name" required defaultValue={editLocationRegion.name} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Address</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Address</label>
               <Input name="address" defaultValue={editLocationRegion.address || ""} />
             </div>
             <div className="flex justify-end gap-3">
@@ -293,15 +293,15 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-shark-50 rounded-lg px-3 py-2 text-center">
-                <p className="text-lg font-bold text-shark-900">{archiveConfirm.assets}</p>
+                <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{archiveConfirm.assets}</p>
                 <p className="text-xs text-shark-400">Assets</p>
               </div>
               <div className="bg-shark-50 rounded-lg px-3 py-2 text-center">
-                <p className="text-lg font-bold text-shark-900">{archiveConfirm.consumables}</p>
+                <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{archiveConfirm.consumables}</p>
                 <p className="text-xs text-shark-400">Supplies</p>
               </div>
               <div className="bg-shark-50 rounded-lg px-3 py-2 text-center">
-                <p className="text-lg font-bold text-shark-900">{archiveConfirm.users}</p>
+                <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{archiveConfirm.users}</p>
                 <p className="text-xs text-shark-400">Staff</p>
               </div>
             </div>
@@ -415,7 +415,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex-1 justify-center ${
                   manageTab === tab.key
                     ? "bg-action-500 text-white shadow-sm"
-                    : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+                    : "text-shark-500 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
                 }`}
               >
                 <Icon name={tab.icon} size={14} />
@@ -467,7 +467,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                   fd.set("id", state.id);
                                   fd.set("name", editingStateName.name);
                                   await updateState(fd);
-                                  addToast("State renamed", "success");
+                                  addToast("State name updated", "success");
                                   router.refresh();
                                 } catch (err) { addToast(err instanceof Error ? err.message : "Failed", "error"); }
                                 setEditingStateName(null);
@@ -488,7 +488,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                             </form>
                           ) : (
                             <>
-                              <span className="text-sm font-semibold text-shark-800 flex-1">{state.name}</span>
+                              <span className="text-sm font-semibold text-shark-800 dark:text-shark-200 flex-1">{state.name}</span>
                               <span className="text-xs text-shark-400">{state.regions.length} location{state.regions.length !== 1 ? "s" : ""}</span>
                               <button
                                 onClick={() => setEditingStateName({ id: state.id, name: state.name })}
@@ -501,7 +501,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                 <button
                                   onClick={async () => {
                                     const fd = new FormData(); fd.set("id", state.id);
-                                    try { await deleteState(fd); addToast("State deleted", "success"); router.refresh(); } catch { addToast("Cannot delete state with locations", "error"); }
+                                    try { await deleteState(fd); addToast("State removed successfully", "success"); router.refresh(); } catch { addToast("Cannot delete state with locations", "error"); }
                                   }}
                                   className="p-1 text-shark-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
                                   title="Delete state"
@@ -517,9 +517,9 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                         {filteredRegions.map((region) => {
                           const total = region._count.assets + region._count.consumables + region._count.users;
                           return (
-                            <div key={region.id} className="flex items-center gap-2 ml-9 group py-1 px-2 rounded-lg hover:bg-shark-50 transition-colors">
+                            <div key={region.id} className="flex items-center gap-2 ml-9 group py-1 px-2 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm text-shark-700">{region.name}</p>
+                                <p className="text-sm text-shark-700 dark:text-shark-300">{region.name}</p>
                                 {region.address && (
                                   <p className="text-xs text-shark-400 truncate">{region.address}</p>
                                 )}
@@ -565,13 +565,13 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
             <form action={async (fd) => {
               try {
                 await createState(fd);
-                addToast("State added", "success");
+                addToast("State added successfully", "success");
                 setManageTab("locations");
                 router.refresh();
               } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
             }} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">State Name *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">State Name *</label>
                 <Input name="name" required placeholder="e.g. New South Wales" />
               </div>
               <div className="flex justify-end gap-3">
@@ -592,27 +592,27 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
             }} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">State *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">State *</label>
                 <Select name="stateId" required>
                   <option value="">Select state</option>
                   {locations.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Location Name *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Location Name *</label>
                 <Input name="name" required placeholder="e.g. Sydney Metro" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Storage Address</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Storage Address</label>
                 <Input name="address" placeholder="e.g. 123 Main St, Sydney NSW 2000" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">Latitude</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Latitude</label>
                   <Input name="latitude" type="number" step="any" placeholder="-33.8688" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 mb-1">Longitude</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Longitude</label>
                   <Input name="longitude" type="number" step="any" placeholder="151.2093" />
                 </div>
               </div>

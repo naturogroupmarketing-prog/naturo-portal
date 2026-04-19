@@ -466,7 +466,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           <Icon name="home" size={14} className="text-action-600" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-shark-900">Dashboard</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Dashboard</h3>
           <p className="text-xs text-shark-400">Your personal overview</p>
         </div>
       </div>
@@ -526,7 +526,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                               {item.asset.imageUrl ? <img src={item.asset.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>{item.asset.name}</p>
+                              <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{item.asset.name}</p>
                               <p className="text-xs text-shark-400">{item.asset.category}</p>
                               {isNotReceived && state.reason && <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>}
                             </div>
@@ -565,7 +565,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                               {item.consumable.imageUrl ? <img src={item.consumable.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800"}`}>{item.quantity}x {item.consumable.name}</p>
+                              <p className={`text-sm font-medium ${isReceived ? "line-through text-action-600" : isNotReceived ? "line-through text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{item.quantity}x {item.consumable.name}</p>
                               <p className="text-xs text-shark-400">{item.consumable.unitType}</p>
                               {isNotReceived && state.reason && <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>}
                             </div>
@@ -661,7 +661,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 {/* Kit header */}
                 <div className="flex items-center justify-between px-4 py-3 bg-shark-50/50">
                   <div>
-                    <p className="text-sm font-semibold text-shark-900">{app.kitName}</p>
+                    <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">{app.kitName}</p>
                     <p className="text-xs text-shark-400">
                       Assigned {new Date(app.appliedAt).toLocaleDateString("en-AU")} · {app.assets.length + app.consumables.length} items
                     </p>
@@ -690,7 +690,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         {asset.imageUrl ? <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-shark-800">{asset.name}</p>
+                        <p className="text-sm text-shark-800 dark:text-shark-200">{asset.name}</p>
                         <p className="text-xs text-shark-400">{asset.category}</p>
                       </div>
                     </div>
@@ -701,7 +701,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         {consumable.imageUrl ? <img src={consumable.imageUrl} alt={consumable.name} className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-shark-800">{consumable.quantity}x {consumable.name}</p>
+                        <p className="text-sm text-shark-800 dark:text-shark-200">{consumable.quantity}x {consumable.name}</p>
                         <p className="text-xs text-shark-400">{consumable.unitType}</p>
                       </div>
                     </div>
@@ -714,7 +714,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             {(visibleIndividualAssets.length > 0 || visibleIndividualConsumables.length > 0) && (
               <div className="border border-shark-100 rounded-lg overflow-hidden">
                 <div className="px-4 py-3 bg-shark-50/50">
-                  <p className="text-sm font-semibold text-shark-900">Individually Assigned Items</p>
+                  <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Individually Assigned Items</p>
                   <p className="text-xs text-shark-400">These items are not part of a starter kit</p>
                 </div>
                 <div className="divide-y divide-shark-50 dark:divide-shark-800">
@@ -724,7 +724,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         {asset.imageUrl ? <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-shark-800">{asset.name}</p>
+                        <p className="text-sm text-shark-800 dark:text-shark-200">{asset.name}</p>
                         <p className="text-xs text-shark-400">{asset.category}</p>
                       </div>
                       <button
@@ -746,7 +746,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         {consumable.imageUrl ? <img src={consumable.imageUrl} alt={consumable.name} className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-action-500" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-shark-800">{consumable.quantity}x {consumable.name}</p>
+                        <p className="text-sm text-shark-800 dark:text-shark-200">{consumable.quantity}x {consumable.name}</p>
                         <p className="text-xs text-shark-400">{consumable.unitType}</p>
                       </div>
                       <button
@@ -817,7 +817,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                                   {a.imageUrl ? <img src={a.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className={`text-sm truncate ${isExcluded ? "line-through text-shark-400" : "text-shark-800"}`}>{a.name}</p>
+                                  <p className={`text-sm truncate ${isExcluded ? "line-through text-shark-400" : "text-shark-800 dark:text-shark-200"}`}>{a.name}</p>
                                   <p className="text-xs text-shark-400">{a.category}</p>
                                 </div>
                               </label>
@@ -844,7 +844,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                                   {c.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className={`text-sm truncate ${isExcluded ? "line-through text-shark-400" : "text-shark-800"}`}>{c.quantity}x {c.name}</p>
+                                  <p className={`text-sm truncate ${isExcluded ? "line-through text-shark-400" : "text-shark-800 dark:text-shark-200"}`}>{c.quantity}x {c.name}</p>
                                   <p className="text-xs text-shark-400">{c.unitType}</p>
                                 </div>
                               </label>
@@ -921,7 +921,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     {item.imageUrl ? <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" /> : <Icon name={item.type === "asset" ? "package" : "droplet"} size={14} className="text-shark-400" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-shark-800 truncate">{item.type === "consumable" && item.quantity ? `${item.quantity}x ` : ""}{item.name}</p>
+                    <p className="text-sm text-shark-800 dark:text-shark-200 truncate">{item.type === "consumable" && item.quantity ? `${item.quantity}x ` : ""}{item.name}</p>
                   </div>
                 </label>
               ))}
@@ -981,7 +981,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <select
                   value={returnCondition}
                   onChange={(e) => setReturnCondition(e.target.value)}
-                  className="w-full border border-shark-200 rounded-lg px-3 py-2 text-sm text-shark-800 focus:ring-2 focus:ring-action-500 focus:border-action-500"
+                  className="w-full border border-shark-200 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500"
                 >
                   <option value="GOOD">Good</option>
                   <option value="FAIR">Fair</option>
@@ -998,7 +998,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   onChange={(e) => setReturnNotes(e.target.value)}
                   placeholder="Any additional details about the return..."
                   rows={3}
-                  className="w-full border border-shark-200 rounded-lg px-3 py-2 text-sm text-shark-800 focus:ring-2 focus:ring-action-500 focus:border-action-500 resize-none"
+                  className="w-full border border-shark-200 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500 resize-none"
                 />
               </div>
             </div>
@@ -1116,7 +1116,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-shark-500 truncate">{stat.label}</p>
-                    <p className="text-xl font-bold text-shark-900">{stat.value}</p>
+                    <p className="text-xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                   </div>
                   <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
                 </div>
@@ -1138,7 +1138,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <Icon name="droplet" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-shark-900">Supply Usage</h3>
+                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Supply Usage</h3>
                 <p className="text-xs text-shark-400">Last 6 months</p>
               </div>
             </div>
@@ -1158,13 +1158,13 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           {m.items.map((item) => (
                             <div key={item.name} className="flex items-center justify-between text-sm">
                               <span className="text-shark-700">{item.name}</span>
-                              <span className="text-xs font-semibold text-shark-900">{item.quantity} {item.unitType}</span>
+                              <span className="text-xs font-semibold text-shark-900 dark:text-shark-100">{item.quantity} {item.unitType}</span>
                             </div>
                           ))}
                         </div>
                       )}
                     </div>
-                    <div className="w-12 text-right text-sm font-bold text-shark-900 pt-0.5">{m.totalUsed}</div>
+                    <div className="w-12 text-right text-sm font-bold text-shark-900 dark:text-shark-100 pt-0.5">{m.totalUsed}</div>
                   </div>
                 ))}
               </div>
@@ -1193,7 +1193,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <Icon name="search" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-shark-900">{freqLabel} Condition Check</h3>
+                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">{freqLabel} Condition Check</h3>
                 <p className="text-xs text-shark-400">
                   {checkedCount === conditionCheckItems.length ? (
                     <span className="text-action-600 font-medium">All {conditionCheckItems.length} items checked ✓</span>
@@ -1251,7 +1251,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-shark-800 truncate">
+                          <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">
                             {item.name}
                             {item.photoLabel && <span className="text-xs text-blue-500 ml-1.5 font-normal">— {item.photoLabel}</span>}
                           </p>
@@ -1358,7 +1358,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   <Icon name="alert-triangle" size={24} className="text-white" />
                 </div>
                 <div>
-                  <p className="font-semibold text-shark-900">Report Damage/Loss</p>
+                  <p className="font-semibold text-shark-900 dark:text-shark-100">Report Damage/Loss</p>
                   <p className="text-xs text-shark-400">Report an issue with your assets</p>
                 </div>
               </CardContent>

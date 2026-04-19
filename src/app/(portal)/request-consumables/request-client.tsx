@@ -128,17 +128,17 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
           <Icon name="clipboard" size={14} className="text-action-600" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-shark-900">Requests</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Requests</h3>
           <p className="text-xs text-shark-400">Request items and confirm what you&apos;ve received</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
         <button
           onClick={() => setTab("request")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "request" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+            tab === "request" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
           }`}
         >
           Request
@@ -153,7 +153,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         <button
           onClick={() => setTab("confirm")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "confirm" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+            tab === "confirm" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
           }`}
         >
           Confirm Receipt
@@ -178,7 +178,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                     <CardContent className="py-4">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h3 className="font-semibold text-shark-800">{r.consumable.name}</h3>
+                          <h3 className="font-semibold text-shark-800 dark:text-shark-200">{r.consumable.name}</h3>
                           <p className="text-sm text-shark-400">
                             {r.quantity} {r.consumable.unitType} &middot; {r.consumable.region.name}
                           </p>
@@ -217,7 +217,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                         )}
                       </div>
                       {r.notes && (
-                        <p className="mt-2 text-sm text-shark-500 bg-shark-50 rounded-xl p-3">{r.notes}</p>
+                        <p className="mt-2 text-sm text-shark-500 bg-shark-50 dark:bg-shark-800 rounded-xl p-3">{r.notes}</p>
                       )}
                     </CardContent>
                   </Card>
@@ -250,7 +250,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                     <Icon name="droplet" size={16} className={colors.color} />
                   </div>
                   <div className="flex items-center gap-2 flex-1">
-                    <h2 className="text-lg font-semibold text-shark-900">{sectionName}</h2>
+                    <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">{sectionName}</h2>
                     <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
                       {sectionConsumables.length}
                     </span>
@@ -295,7 +295,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                 <div className="w-14 h-14 rounded-full bg-action-50 flex items-center justify-center mx-auto mb-4">
                   <Icon name="check" size={28} className="text-action-500" />
                 </div>
-                <p className="text-lg font-semibold text-shark-900">All items confirmed</p>
+                <p className="text-lg font-semibold text-shark-900 dark:text-shark-100">All items confirmed</p>
                 <p className="text-sm text-shark-400 mt-1">No items awaiting receipt confirmation.</p>
               </CardContent>
             </Card>
@@ -316,7 +316,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-shark-900 truncate">{a.quantity}x {a.consumable.name}</p>
+                        <p className="text-sm font-semibold text-shark-900 dark:text-shark-100 truncate">{a.quantity}x {a.consumable.name}</p>
                         <p className="text-xs text-shark-400 mt-0.5">{a.consumable.unitType} · {a.consumable.category}</p>
                         <p className="text-xs text-shark-400">Issued: {formatDate(a.createdAt)}</p>
                       </div>
@@ -397,19 +397,19 @@ function ConsumableRequestCard({
               className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-shark-100 dark:border-shark-700"
             />
           ) : (
-            <div className="w-14 h-14 rounded-lg bg-shark-50 flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0">
               <Icon name="droplet" size={20} className="text-shark-400" />
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-shark-900 truncate">{c.name}</h3>
+            <h3 className="font-semibold text-shark-900 dark:text-shark-100 truncate">{c.name}</h3>
             <p className="text-xs text-shark-400 mt-0.5">{c.unitType} &middot; {c.region.name}</p>
           </div>
         </div>
 
         {/* Request form */}
         {showRequest && (
-          <div className="mt-3 space-y-2 bg-shark-50 rounded-lg p-3">
+          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-lg p-3">
             <p className="text-xs font-medium text-shark-600">How many do you need?</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">

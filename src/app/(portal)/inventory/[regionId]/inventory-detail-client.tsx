@@ -104,14 +104,14 @@ export function InventoryDetailClient({
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => { setLocationDropdownOpen((o) => !o); setLocationSearch(""); }}
-            className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50/50 transition-colors group text-left"
+            className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors group text-left"
           >
             <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
               <Icon name="map-pin" size={15} className="text-action-600" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <h1 className="text-base font-semibold text-shark-900">{region.name}</h1>
+                <h1 className="text-base font-semibold text-shark-900 dark:text-shark-100">{region.name}</h1>
                 <Icon
                   name="chevron-down"
                   size={14}
@@ -211,7 +211,7 @@ export function InventoryDetailClient({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                   activeTab === tab
                     ? "bg-action-500 text-white shadow-sm"
-                    : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+                    : "text-shark-500 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
                 }`}
               >
                 {tab}
@@ -231,7 +231,7 @@ export function InventoryDetailClient({
             <div className="w-12 h-12 rounded-2xl bg-action-500 flex items-center justify-center mx-auto mb-4">
               <Icon name="plus" size={22} className="text-white" />
             </div>
-            <h3 className="text-base font-semibold text-shark-900">Set Up This Location</h3>
+            <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">Set Up This Location</h3>
             <p className="text-sm text-shark-500 mt-1 max-w-md mx-auto">Apply standard items from your existing locations to get started quickly.</p>
             <Button className="mt-4" onClick={handleApplyStandard} loading={applying} disabled={applying}>
               <Icon name="package" size={16} className="mr-2" />

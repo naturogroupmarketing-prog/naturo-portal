@@ -285,7 +285,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-shark-700 hover:bg-shark-50 dark:text-shark-300 dark:hover:bg-shark-800/50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800 dark:text-shark-300 dark:hover:bg-shark-800/50 transition-colors"
       >
         <span className="flex items-center gap-2">
           <Icon name="settings" size={15} className="text-shark-400" />

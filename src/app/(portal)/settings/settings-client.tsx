@@ -121,7 +121,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
     setSavingProfile(true);
     try {
       await updateProfile({ name: editName, email: editEmail, phone: editPhone });
-      addToast("Profile updated", "success");
+      addToast("Profile saved successfully", "success");
       router.refresh();
     } catch (err) {
       addToast(err instanceof Error ? err.message : "Failed to update", "error");
@@ -179,7 +179,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Settings</h1>
+        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Settings</h1>
         <p className="text-sm text-shark-400 mt-1">Manage your account, privacy, and preferences</p>
       </div>
 
@@ -194,15 +194,15 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
         <CardContent>
           <form onSubmit={handleSaveProfile} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Name</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name</label>
               <Input value={editName} onChange={(e) => setEditName(e.target.value)} required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email</label>
               <Input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
               <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="Optional" />
             </div>
             <div className="flex justify-end">
@@ -223,7 +223,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-shark-800">Receive email notifications</p>
+              <p className="text-sm font-medium text-shark-800 dark:text-shark-200">Receive email notifications</p>
               <p className="text-xs text-shark-400 mt-0.5">Get emailed when you receive in-app notifications</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -246,15 +246,15 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
           <CardContent>
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Current Password</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Current Password</label>
                 <Input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">New Password</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">New Password</label>
                 <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={8} placeholder="Min 8 chars, 1 uppercase, 1 number" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Confirm New Password</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Confirm New Password</label>
                 <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
               </div>
               <div className="flex justify-end">
@@ -276,7 +276,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-shark-800">
+              <p className="text-sm font-medium text-shark-800 dark:text-shark-200">
                 {mfaEnabled ? "MFA is enabled" : "Add an extra layer of security"}
               </p>
               <p className="text-xs text-shark-400 mt-0.5">
@@ -310,7 +310,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
           {/* Download my data */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-shark-800">Download My Data</p>
+              <p className="text-sm font-medium text-shark-800 dark:text-shark-200">Download My Data</p>
               <p className="text-xs text-shark-400 mt-0.5">Export all your personal data as a JSON file (APP 12)</p>
             </div>
             <Button variant="outline" size="sm" onClick={handleExportData} disabled={exporting} loading={exporting}>
@@ -322,7 +322,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
           {/* Privacy policy link */}
           <div className="flex items-center justify-between border-t border-shark-100 dark:border-shark-700 pt-4">
             <div>
-              <p className="text-sm font-medium text-shark-800">Privacy Policy</p>
+              <p className="text-sm font-medium text-shark-800 dark:text-shark-200">Privacy Policy</p>
               <p className="text-xs text-shark-400 mt-0.5">Read how we handle your personal information</p>
             </div>
             <Link href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-sm text-action-500 hover:text-action-600 font-medium flex items-center gap-1">
@@ -351,7 +351,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
             <p className="text-xs text-red-600 mt-1">Your account will be deactivated immediately. Your administrator will be notified to complete the deletion of your data.</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Enter your password to confirm</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Enter your password to confirm</label>
             <Input type="password" value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)} placeholder="Your current password" />
           </div>
           <div className="flex justify-end gap-3">
@@ -381,7 +381,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
                   />
                 </div>
                 <p className="text-xs text-shark-400 mt-3">Or enter this code manually:</p>
-                <code className="block mt-1.5 text-sm font-mono bg-shark-50 px-3 py-2 rounded-lg text-shark-700 select-all break-all">
+                <code className="block mt-1.5 text-sm font-mono bg-shark-50 dark:bg-shark-800 px-3 py-2 rounded-lg text-shark-700 dark:text-shark-300 select-all break-all">
                   {mfaSecret}
                 </code>
               </div>

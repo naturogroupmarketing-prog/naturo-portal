@@ -73,7 +73,7 @@ export function BillingClient({ org }: Props) {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Billing & Plans</h1>
+        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Billing & Plans</h1>
         <p className="text-sm text-shark-400 mt-1">Manage your subscription and usage</p>
       </div>
 
@@ -83,7 +83,7 @@ export function BillingClient({ org }: Props) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold text-shark-900">Current Plan: {currentPlan.name}</h3>
+                <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Current Plan: {currentPlan.name}</h3>
                 <Badge status={org.subscriptionStatus} />
               </div>
               {isTrialing && trialDaysLeft > 0 && (
@@ -92,7 +92,7 @@ export function BillingClient({ org }: Props) {
               <p className="text-sm text-shark-400 mt-1">{org.name}</p>
             </div>
             <div className="text-right">
-              <p className="text-2xl font-bold text-shark-900">{currentPlan.price}</p>
+              <p className="text-2xl font-bold text-shark-900 dark:text-shark-100">{currentPlan.price}</p>
               {currentPlan.period && <p className="text-xs text-shark-400">{currentPlan.period}</p>}
             </div>
           </div>
@@ -100,7 +100,7 @@ export function BillingClient({ org }: Props) {
           <div className="grid grid-cols-2 gap-4 mt-5">
             <div className="bg-shark-50 rounded-xl px-4 py-3">
               <p className="text-xs text-shark-400">Users</p>
-              <p className="text-lg font-bold text-shark-900">{org._count.users} <span className="text-sm font-normal text-shark-400">/ {currentPlan.users === Infinity ? "Unlimited" : currentPlan.users}</span></p>
+              <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{org._count.users} <span className="text-sm font-normal text-shark-400">/ {currentPlan.users === Infinity ? "Unlimited" : currentPlan.users}</span></p>
               {currentPlan.users !== Infinity && (
                 <div className="w-full h-1.5 bg-shark-200 rounded-full mt-2 overflow-hidden">
                   <div className="h-full bg-action-500 rounded-full" style={{ width: `${Math.min(100, (org._count.users / currentPlan.users) * 100)}%` }} />
@@ -109,7 +109,7 @@ export function BillingClient({ org }: Props) {
             </div>
             <div className="bg-shark-50 rounded-xl px-4 py-3">
               <p className="text-xs text-shark-400">Assets</p>
-              <p className="text-lg font-bold text-shark-900">{org._count.assets} <span className="text-sm font-normal text-shark-400">/ {currentPlan.assets === Infinity ? "Unlimited" : currentPlan.assets}</span></p>
+              <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{org._count.assets} <span className="text-sm font-normal text-shark-400">/ {currentPlan.assets === Infinity ? "Unlimited" : currentPlan.assets}</span></p>
               {currentPlan.assets !== Infinity && (
                 <div className="w-full h-1.5 bg-shark-200 rounded-full mt-2 overflow-hidden">
                   <div className="h-full bg-action-500 rounded-full" style={{ width: `${Math.min(100, (org._count.assets / currentPlan.assets) * 100)}%` }} />
@@ -122,7 +122,7 @@ export function BillingClient({ org }: Props) {
 
       {/* Plans */}
       <div>
-        <h3 className="text-lg font-semibold text-shark-900 mb-4">Available Plans</h3>
+        <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mb-4">Available Plans</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {PLANS.map((plan, idx) => {
             const isCurrent = plan.key === org.plan;
@@ -149,9 +149,9 @@ export function BillingClient({ org }: Props) {
                   </div>
                 )}
                 <div className="px-4 sm:px-5 py-5">
-                  <h4 className="text-lg font-bold text-shark-900">{plan.name}</h4>
+                  <h4 className="text-lg font-bold text-shark-900 dark:text-shark-100">{plan.name}</h4>
                   <div className="mt-2">
-                    <span className="text-3xl font-bold text-shark-900">{plan.price}</span>
+                    <span className="text-3xl font-bold text-shark-900 dark:text-shark-100">{plan.price}</span>
                     <span className="text-sm text-shark-400">{plan.period}</span>
                   </div>
                   <ul className="mt-4 space-y-2">
@@ -181,7 +181,7 @@ export function BillingClient({ org }: Props) {
                           ? "bg-action-500 text-white hover:bg-action-600"
                           : isDowngrade
                             ? "border-2 border-shark-200 text-shark-500 hover:border-shark-300"
-                            : "border-2 border-shark-200 text-shark-700 hover:border-action-500 hover:text-action-500"
+                            : "border-2 border-shark-200 text-shark-700 dark:text-shark-300 hover:border-action-500 hover:text-action-500"
                     }`}
                   >
                     {changing === plan.key ? "Changing..." :

@@ -150,7 +150,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
             <Icon name="alert-triangle" size={14} className="text-action-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">Report Damage / Loss</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Report Damage / Loss</h3>
           </div>
         </div>
         <Card>
@@ -158,7 +158,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
             <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4 animate-check-pop">
               <Icon name="alert-triangle" size={28} className="text-[#E8532E]" />
             </div>
-            <h2 className="text-lg font-semibold text-shark-900">Report Submitted</h2>
+            <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Report Submitted</h2>
             <p className="text-sm text-shark-400 mt-2">
               Your manager has been notified and will review this report.
             </p>
@@ -180,7 +180,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
           <Icon name="alert-triangle" size={14} className="text-action-600" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-shark-900">Report Damage / Loss</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Report Damage / Loss</h3>
         </div>
       </div>
 
@@ -210,7 +210,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
               className="space-y-4 max-w-md"
             >
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Asset *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Asset *</label>
                 <CustomSelect
                   name="assetId"
                   value={selectedAssetId}
@@ -228,7 +228,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Report Type *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Report Type *</label>
                 <CustomSelect
                   name="type"
                   value={reportType}
@@ -241,19 +241,19 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Description *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description *</label>
                 <textarea
                   ref={descRef}
                   name="description"
                   required
-                  className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+                  className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
                   rows={4}
                   maxLength={2000}
                   placeholder="Describe the damage or circumstances of loss..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Photo (optional)</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo (optional)</label>
                 <input
                   ref={fileRef}
                   type="file"
@@ -287,7 +287,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                       <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                     </svg>
                   </div>
-                  <p className="text-sm font-medium text-shark-700">Submitting report...</p>
+                  <p className="text-sm font-medium text-shark-700 dark:text-shark-300">Submitting report...</p>
                   <p className="text-xs text-shark-400 mt-0.5">Notifying your manager</p>
                 </div>
               ) : (

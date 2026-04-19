@@ -86,7 +86,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       fd.set("id", id);
       fd.set("name", editValue);
       await updateState(fd);
-      addToast("State renamed", "success");
+      addToast("State name updated", "success");
     } catch (e) {
       addToast(e instanceof Error ? e.message : "Failed to save", "error");
     }
@@ -100,7 +100,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       fd.set("id", id);
       fd.set("name", editValue);
       await updateRegion(fd);
-      addToast("Region renamed", "success");
+      addToast("Region name updated", "success");
     } catch (e) {
       addToast(e instanceof Error ? e.message : "Failed to save", "error");
     }
@@ -112,7 +112,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       const fd = new FormData();
       fd.set("id", id);
       await deleteState(fd);
-      addToast("State deleted", "success");
+      addToast("State removed successfully", "success");
     } catch (e) {
       addToast(e instanceof Error ? e.message : "Failed to delete", "error");
     }
@@ -123,7 +123,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       const fd = new FormData();
       fd.set("id", id);
       await deleteRegion(fd);
-      addToast("Region deleted", "success");
+      addToast("Region removed successfully", "success");
     } catch (e) {
       addToast(e instanceof Error ? e.message : "Failed to delete", "error");
     }
@@ -134,7 +134,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Locations</h1>
+          <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Locations</h1>
           <p className="text-sm text-shark-400 mt-1">{locations.length} states &middot; {totalRegions} regions</p>
         </div>
         <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-shark-900">{stat.value}</p>
+                  <p className="text-2xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
@@ -224,11 +224,11 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                         if (e.key === "Enter") handleSaveState(state.id);
                         if (e.key === "Escape") setEditingState(null);
                       }}
-                      className="text-xl font-bold text-shark-900 bg-transparent border-b-2 border-action-400 outline-none px-0 py-0.5"
+                      className="text-xl font-bold text-shark-900 dark:text-shark-100 bg-transparent border-b-2 border-action-400 outline-none px-0 py-0.5"
                       autoFocus
                     />
                   ) : (
-                    <h2 className="text-xl font-bold text-shark-900">{state.name}</h2>
+                    <h2 className="text-xl font-bold text-shark-900 dark:text-shark-100">{state.name}</h2>
                   )}
                   <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
                     {state.regions.length} region{state.regions.length !== 1 ? "s" : ""}
@@ -294,12 +294,12 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                                         if (e.key === "Enter") handleSaveRegion(region.id);
                                         if (e.key === "Escape") setEditingRegion(null);
                                       }}
-                                      className="text-sm font-semibold text-shark-800 bg-transparent border-b-2 border-action-400 outline-none px-0 py-0.5"
+                                      className="text-sm font-semibold text-shark-800 dark:text-shark-200 bg-transparent border-b-2 border-action-400 outline-none px-0 py-0.5"
                                       autoFocus
                                     />
                                   ) : (
                                     <div>
-                                      <h3 className="text-sm font-semibold text-shark-800">{region.name}</h3>
+                                      <h3 className="text-sm font-semibold text-shark-800 dark:text-shark-200">{region.name}</h3>
                                       {region.address && (
                                         <p className="text-xs text-shark-400 mt-0.5 flex items-center gap-1">
                                           <Icon name="map-pin" size={10} className="text-shark-300" />
@@ -367,14 +367,14 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
         <form action={async (fd) => {
           try {
             await createState(fd);
-            addToast("State added", "success");
+            addToast("State added successfully", "success");
             setModal(null);
           } catch (e) {
             addToast(e instanceof Error ? e.message : "Failed to add state", "error");
           }
         }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">State Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">State Name *</label>
             <Input name="name" required placeholder="e.g. New South Wales" />
           </div>
           <div className="flex justify-end gap-3">
@@ -389,34 +389,34 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
         <form action={async (fd) => {
           try {
             await createRegion(fd);
-            addToast("Region added", "success");
+            addToast("Region added successfully", "success");
             setModal(null);
           } catch (e) {
             addToast(e instanceof Error ? e.message : "Failed to add region", "error");
           }
         }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">State *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">State *</label>
             <Select name="stateId" required>
               <option value="">Select state</option>
               {locations.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Region Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region Name *</label>
             <Input name="name" required placeholder="e.g. Sydney Metro" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Storage Address</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Storage Address</label>
             <Input name="address" placeholder="e.g. 123 Main St, Sydney NSW 2000" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Latitude</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Latitude</label>
               <Input name="latitude" type="number" step="any" placeholder="-33.8688" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Longitude</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Longitude</label>
               <Input name="longitude" type="number" step="any" placeholder="151.2093" />
             </div>
           </div>
@@ -435,27 +435,27 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
             try {
               fd.set("id", editLocationRegion.id);
               await updateRegion(fd);
-              addToast("Location updated", "success");
+              addToast("Location details updated", "success");
               setEditLocationRegion(null);
             } catch (e) {
               addToast(e instanceof Error ? e.message : "Failed to update", "error");
             }
           }} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Region Name *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region Name *</label>
               <Input name="name" required defaultValue={editLocationRegion.name} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Storage Address</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Storage Address</label>
               <Input name="address" defaultValue={editLocationRegion.address || ""} placeholder="e.g. 123 Main St, Sydney NSW 2000" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Latitude</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Latitude</label>
                 <Input name="latitude" type="number" step="any" defaultValue={editLocationRegion.latitude ?? ""} placeholder="-33.8688" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Longitude</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Longitude</label>
                 <Input name="longitude" type="number" step="any" defaultValue={editLocationRegion.longitude ?? ""} placeholder="151.2093" />
               </div>
             </div>

@@ -97,7 +97,7 @@ export function MyActivityClient({
           <Icon name="clock" size={14} className="text-action-600" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-shark-900">Recent Activity</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Recent Activity</h3>
           <p className="text-xs text-shark-400">Your assignment and request history</p>
         </div>
       </div>
@@ -119,7 +119,7 @@ export function MyActivityClient({
                     <Icon name={item.icon} size={16} className={item.iconColor} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-shark-800 truncate">{item.title}</p>
+                    <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{item.title}</p>
                     <p className="text-xs text-shark-400">{item.detail}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1 shrink-0">

@@ -135,7 +135,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
             <Icon name="arrow-left" size={14} className="text-action-600" />
           </div>
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-shark-900">Returns</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Returns</h3>
             <p className="text-xs text-shark-400">All returns processed</p>
           </div>
         </div>
@@ -144,7 +144,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
             <div className="w-14 h-14 rounded-full bg-action-50 flex items-center justify-center mx-auto mb-4">
               <Icon name="check" size={28} className="text-action-500" />
             </div>
-            <p className="text-lg font-semibold text-shark-900">All returns processed</p>
+            <p className="text-lg font-semibold text-shark-900 dark:text-shark-100">All returns processed</p>
             <p className="text-sm text-shark-400 mt-1">Items have been restocked and staff notified.</p>
           </div>
         </Card>
@@ -160,7 +160,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
           <Icon name="arrow-left" size={14} className="text-action-600" />
         </div>
         <div className="flex-1">
-          <h3 className="text-sm font-semibold text-shark-900">Returns</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Returns</h3>
           <p className="text-xs text-shark-400">
             {totalItems} item{totalItems !== 1 ? "s" : ""} pending verification
             {processedCount > 0 && <span> · {processedCount} marked</span>}
@@ -168,7 +168,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <div className="text-right">
-            <p className="text-lg font-bold text-shark-900">{totalItems}</p>
+            <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{totalItems}</p>
             <p className="text-[10px] text-shark-400">pending</p>
           </div>
           {totalItems > 0 && (
@@ -206,14 +206,14 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                 {/* Staff header — click to expand */}
                 <button
                   onClick={() => toggleStaff(group.email)}
-                  className="w-full flex items-center justify-between px-5 py-4 hover:bg-shark-50/50 transition-colors"
+                  className="w-full flex items-center justify-between px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-action-500 flex items-center justify-center shrink-0">
                       <span className="text-white text-sm font-semibold">{(group.name || group.email)[0].toUpperCase()}</span>
                     </div>
                     <div className="text-left">
-                      <p className="text-sm font-semibold text-shark-900">{group.name}</p>
+                      <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">{group.name}</p>
                       <p className="text-xs text-shark-400">{group.regionName}{group.regionName ? " · " : ""}{group.items.length} item{group.items.length !== 1 ? "s" : ""}</p>
                     </div>
                   </div>
@@ -274,7 +274,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
-                                <p className={`text-sm font-medium truncate ${isVerified ? "line-through text-action-600" : isRejected ? "line-through text-red-500" : "text-shark-800"}`}>
+                                <p className={`text-sm font-medium truncate ${isVerified ? "line-through text-action-600" : isRejected ? "line-through text-red-500" : "text-shark-800 dark:text-shark-200"}`}>
                                   {name}
                                 </p>
                                 {isNotReturned && (

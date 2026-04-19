@@ -465,7 +465,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         </div>
 
         {/* Name + category */}
-        <h3 className="font-semibold text-shark-900 dark:text-white text-sm mb-0.5 truncate">{c.name}</h3>
+        <h3 className="font-semibold text-shark-900 dark:text-shark-100 dark:text-white text-sm mb-0.5 truncate">{c.name}</h3>
         <p className="text-xs text-shark-400 mb-3 truncate">{c.category} · {c.region.name}</p>
 
         {/* Stock bar */}
@@ -511,10 +511,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <div
         key={c.id}
         onClick={() => setEditConsumable(c)}
-        className="flex items-center gap-3 px-3 border-b border-shark-50 hover:bg-shark-50/60 cursor-pointer"
+        className="flex items-center gap-3 px-3 border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/60 cursor-pointer"
         style={{ height: 36, minHeight: 36 }}
       >
-        <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 truncate">{c.name}</span>
+        <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 dark:text-shark-200 truncate">{c.name}</span>
         <span className={`shrink-0 text-[11px] font-bold px-1.5 py-0.5 rounded ${
           isCritical ? "bg-red-50 text-red-600" : isLow ? "bg-amber-50 text-amber-600" : "bg-green-50 text-green-600"
         }`}>{c.quantityOnHand} {c.unitType}</span>
@@ -558,10 +558,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-shark-800 truncate">{c.name}</p>
+                          <p className="text-sm font-semibold text-shark-800 dark:text-shark-200 truncate">{c.name}</p>
                           <p className="text-xs text-shark-400">{c.unitType}</p>
                         </div>
-                        <span className={`text-sm font-bold shrink-0 ${isLow ? "text-red-500" : "text-shark-800"}`}>
+                        <span className={`text-sm font-bold shrink-0 ${isLow ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>
                           {c.quantityOnHand}
                         </span>
                       </div>
@@ -625,7 +625,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 const activeAssignments = c.assignments || [];
                 const canDelete = deletableIds.has(c.id);
                 return (
-                  <tr key={c.id} onClick={() => setEditConsumable(c)} draggable onDragStart={() => handleItemDragStart(c.id)} onDragOver={(e) => handleItemDragOver(e, c.id)} onDragEnd={() => handleItemDragEnd(sectionItems)} className={`border-b border-shark-50 hover:bg-shark-50/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}>
+                  <tr key={c.id} onClick={() => setEditConsumable(c)} draggable onDragStart={() => handleItemDragStart(c.id)} onDragOver={(e) => handleItemDragOver(e, c.id)} onDragEnd={() => handleItemDragEnd(sectionItems)} className={`border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}>
                     <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
                       <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
                     </td>
@@ -638,10 +638,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       : <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center"><Icon name="droplet" size={18} className="text-shark-300" /></div>}
                     </td>
                     )}
-                    {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
+                    {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800 dark:text-shark-200">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
                     {visibleColumns.qty && <td className="px-4 py-3 text-right">
-                      <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800"}`}>{c.quantityOnHand}</span>
+                      <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
                       {c.avgDailyUsage && c.avgDailyUsage > 0 && (
                         <span className={`ml-1.5 text-[10px] font-medium px-1 py-0.5 rounded ${
                           c.riskLevel === "critical" ? "bg-red-50 text-red-500" :
@@ -703,7 +703,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <Icon name="droplet" size={14} className="text-action-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">Supplies</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Supplies</h3>
             <p className="text-xs text-shark-400">{consumables.length} total items</p>
           </div>
         </div>
@@ -731,7 +731,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         <button
           onClick={() => setTab("stock")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "stock" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"
+            tab === "stock" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
           }`}
         >
           Stock Levels
@@ -739,7 +739,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         <button
           onClick={() => setTab("requests")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "requests" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"
+            tab === "requests" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
           }`}
         >
           Requests {pendingRequests.length > 0 && (
@@ -819,7 +819,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                               className="flex items-center gap-3 px-1 w-full text-left group"
                             >
                               <div className="flex items-center gap-2 flex-1">
-                                <h3 className="text-base font-semibold text-shark-900">{cat.name}</h3>
+                                <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{cat.name}</h3>
                                 <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
                                   {catItems.length}
                                 </span>
@@ -884,7 +884,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       className="flex items-center gap-3 px-1 w-full text-left group"
                     >
                       <div className="flex items-center gap-2 flex-1">
-                        <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
+                        <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">{section.name}</h2>
                         <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
                           {section.items.length}
                         </span>
@@ -976,10 +976,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               </thead>
               <tbody>
                 {pendingRequests.map((r) => (
-                  <tr key={r.id} className="border-b border-shark-50 hover:bg-shark-50/50">
-                    <td className="px-5 py-3.5 font-medium text-shark-800">{r.consumable.name}</td>
+                  <tr key={r.id} className="border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
+                    <td className="px-5 py-3.5 font-medium text-shark-800 dark:text-shark-200">{r.consumable.name}</td>
                     <td className="px-5 py-3.5 text-shark-500">{r.user.name || r.user.email}</td>
-                    <td className="px-5 py-3.5 text-right font-medium text-shark-700">{r.quantity} {r.consumable.unitType}</td>
+                    <td className="px-5 py-3.5 text-right font-medium text-shark-700 dark:text-shark-300">{r.quantity} {r.consumable.unitType}</td>
                     <td className="px-5 py-3.5 text-shark-400 hidden md:table-cell">{formatDate(r.createdAt)}</td>
                     <td className="px-5 py-3.5 text-right">
                       <div className="flex items-center justify-end gap-1">
@@ -1021,7 +1021,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           <div className="bg-shark-50 rounded-xl p-4 max-h-40 overflow-y-auto">
             {consumables.filter((c) => selectedIds.has(c.id)).map((c) => (
                 <div key={c.id} className="flex items-center gap-2 py-1">
-                  <span className="font-medium text-shark-800 text-sm">{c.name}</span>
+                  <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{c.name}</span>
                   <span className="text-xs text-shark-400">{c.category}</span>
                 </div>
               ))}
@@ -1051,7 +1051,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               const itemCount = consumables.filter((c) => c.category === cat.name).length;
               const isEditing = editingSectionId === cat.id;
               return (
-                <div key={cat.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50">
+                <div key={cat.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800">
                   {isEditing ? (
                     <div className="flex items-center gap-2 flex-1 mr-2">
                       <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center shrink-0`}>
@@ -1083,7 +1083,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center`}>
                           <Icon name="package" size={12} className={colors.color} />
                         </div>
-                        <span className="text-sm font-medium text-shark-800">{cat.name}</span>
+                        <span className="text-sm font-medium text-shark-800 dark:text-shark-200">{cat.name}</span>
                         <span className="text-xs text-shark-400">{itemCount} item{itemCount !== 1 ? "s" : ""}</span>
                       </div>
                       <div className="flex items-center gap-1">
@@ -1113,7 +1113,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
           {/* Add new section */}
           <div className="border-t border-shark-100 dark:border-shark-700 pt-4">
-            <label className="block text-sm font-medium text-shark-700 mb-1">Add New Section</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Add New Section</label>
             <div className="flex gap-2">
               <Input
                 value={newSectionName}
@@ -1143,7 +1143,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <Modal open={showCreate} onClose={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }} title="Add New Supply">
         <form action={handleCreateSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Photo</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
             <div className="flex items-start gap-4">
               {imagePreview ? (
                 <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200">
@@ -1174,11 +1174,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
             <Input name="name" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Category *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Category *</label>
             <div className="flex gap-2">
               <Select name="category" required className="flex-1">
                 <option value="">Select category</option>
@@ -1193,26 +1193,26 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Unit Type *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Unit Type *</label>
               <Input name="unitType" required placeholder="e.g. boxes, packs, rolls" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Initial Qty</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Initial Qty</label>
               <Input name="quantityOnHand" type="number" defaultValue="0" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Min Threshold</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Min Threshold</label>
               <Input name="minimumThreshold" type="number" defaultValue="5" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Reorder Level</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Reorder Level</label>
               <Input name="reorderLevel" type="number" defaultValue="10" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Region *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region *</label>
             <Select name="regionId" required>
               <option value="">Select</option>
               {regions.map((r) => (
@@ -1222,16 +1222,16 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
               <Input name="supplier" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Unit Cost (AUD)</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Unit Cost (AUD)</label>
               <Input name="unitCost" type="number" step="0.01" placeholder="0.00" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Shop / Order Link</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Shop / Order Link</label>
             <Input name="shopUrl" type="url" placeholder="https://shop.example.com/product/..." />
             <p className="text-[11px] text-shark-400 mt-1">Direct link to the product page for quick reordering</p>
           </div>
@@ -1273,14 +1273,14 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 <button
                   type="button"
                   onClick={() => setStockMode("add")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "add" ? "bg-white dark:bg-shark-700 text-action-700 dark:text-action-400 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"}`}
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "add" ? "bg-white dark:bg-shark-700 text-action-700 dark:text-action-400 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"}`}
                 >
                   + Add Stock
                 </button>
                 <button
                   type="button"
                   onClick={() => setStockMode("deduct")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "deduct" ? "bg-white dark:bg-shark-700 text-red-700 dark:text-red-400 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"}`}
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "deduct" ? "bg-white dark:bg-shark-700 text-red-700 dark:text-red-400 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"}`}
                 >
                   − Deduct Stock
                 </button>
@@ -1292,7 +1292,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </p>
 
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                 Quantity to {stockMode === "add" ? "Add" : "Deduct"} *
               </label>
               <Input
@@ -1306,7 +1306,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
             {stockMode === "deduct" && (
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Reason *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Reason *</label>
                 <Input name="reason" placeholder="e.g. Stock correction, write-off, expired..." required />
               </div>
             )}
@@ -1347,7 +1347,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               Available stock: <strong>{showAssign.quantityOnHand} {showAssign.unitType}</strong>
             </p>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Assign to *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Assign to *</label>
               <Select name="userId" required>
                 <option value="">Select staff member</option>
                 {users
@@ -1361,7 +1361,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Quantity *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity *</label>
               <Input name="quantity" type="number" min="1" max={showAssign.quantityOnHand} required />
               <p className="text-xs text-gray-400 mt-1">Max: {showAssign.quantityOnHand}</p>
             </div>
@@ -1394,11 +1394,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               {" \u2014 "}{showReturn.assignment.quantity} {showReturn.consumable.unitType}
             </p>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Quantity Returning *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity Returning *</label>
               <Input name="returnQuantity" type="number" min="1" max={showReturn.assignment.quantity} defaultValue={showReturn.assignment.quantity} required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Return Condition *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Return Condition *</label>
               <Select name="returnCondition" required>
                 <option value="">Select condition</option>
                 <option value="Good">Good</option>
@@ -1408,8 +1408,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
-              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
+              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
@@ -1425,7 +1425,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           <div className="text-center space-y-4">
             <img src={showImage.imageUrl} alt={showImage.name} className="mx-auto max-w-full max-h-[60vh] rounded-xl object-contain" />
             <div>
-              <p className="font-bold text-shark-900">{showImage.name}</p>
+              <p className="font-bold text-shark-900 dark:text-shark-100">{showImage.name}</p>
               <p className="text-sm text-shark-400">{showImage.category} &middot; {showImage.unitType}</p>
             </div>
           </div>
@@ -1443,7 +1443,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
             {/* Photo */}
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Photo</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-lg border border-shark-200 overflow-hidden bg-shark-50 flex items-center justify-center">
                   {(editImagePreview || (!editImageRemoved && editConsumable.imageUrl)) ? (
@@ -1483,11 +1483,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
               <Input name="name" required defaultValue={editConsumable.name} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Category *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Category *</label>
               <Select name="category" required defaultValue={editConsumable.category}>
                 <option value="">Select category</option>
                 {categories.map((cat) => (
@@ -1496,11 +1496,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Unit Type *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Unit Type *</label>
               <Input name="unitType" required defaultValue={editConsumable.unitType} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Region *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region *</label>
               <Select name="regionId" required defaultValue={editConsumable.region.id}>
                 <option value="">Select region</option>
                 {regions.map((r) => (
@@ -1513,33 +1513,33 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             {/* Current Stock — Super Admin or users with stock adjust permission */}
             {(isSuperAdmin || canAdjustStock) && (
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Current Stock</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Current Stock</label>
                 <Input name="quantityOnHand" type="number" min="0" defaultValue={editConsumable.quantityOnHand} />
                 <p className="text-xs text-shark-400 mt-1">Directly set the stock quantity</p>
               </div>
             )}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Minimum Threshold</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Minimum Threshold</label>
                 <Input name="minimumThreshold" type="number" defaultValue={editConsumable.minimumThreshold} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Reorder Level</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Reorder Level</label>
                 <Input name="reorderLevel" type="number" defaultValue={editConsumable.reorderLevel} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
                 <Input name="supplier" defaultValue={editConsumable.supplier || ""} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Unit Cost (AUD)</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Unit Cost (AUD)</label>
                 <Input name="unitCost" type="number" step="0.01" defaultValue={editConsumable.unitCost ?? ""} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Shop / Order Link</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Shop / Order Link</label>
               <div className="flex gap-2 items-center">
                 <Input name="shopUrl" type="url" placeholder="https://shop.example.com/product/..." defaultValue={editConsumable.shopUrl || ""} className="flex-1" />
                 {editConsumable.shopUrl && (
@@ -1552,8 +1552,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <p className="text-[11px] text-shark-400 mt-1">Direct link to the product page for quick reordering</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
-              <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
+              <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }}>Cancel</Button>
@@ -1612,7 +1612,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   <Icon name="user" size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-shark-800">{staffAssignments[0]?.user.name || staffAssignments[0]?.user.email}</p>
+                  <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{staffAssignments[0]?.user.name || staffAssignments[0]?.user.email}</p>
                   <p className="text-xs text-shark-400">{staffAssignments.length} item{staffAssignments.length !== 1 ? "s" : ""} · {totalItems} total qty</p>
                 </div>
               </div>
@@ -1631,7 +1631,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     </thead>
                     <tbody>
                       {staffAssignments.map((a) => (
-                        <tr key={a.id} className="border-b border-shark-50 last:border-0 hover:bg-shark-50/50">
+                        <tr key={a.id} className="border-b border-shark-50 last:border-0 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
                           <td className="px-3 py-2">
                             <div className="flex items-center gap-2">
                               {a.consumable.imageUrl ? (
@@ -1644,12 +1644,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                                 </div>
                               )}
                               <div>
-                                <span className="font-medium text-shark-800">{a.consumable.name}</span>
+                                <span className="font-medium text-shark-800 dark:text-shark-200">{a.consumable.name}</span>
                                 <span className="text-shark-400 text-xs ml-1">({a.consumable.unitType})</span>
                               </div>
                             </div>
                           </td>
-                          <td className="px-3 py-2 text-right font-bold text-shark-800">{a.quantity}</td>
+                          <td className="px-3 py-2 text-right font-bold text-shark-800 dark:text-shark-200">{a.quantity}</td>
                           <td className="px-3 py-2 text-xs text-shark-500">{formatDate(a.assignedDate)}</td>
                           <td className="px-3 py-2 text-xs text-shark-500">{a.consumable.region.name}</td>
                         </tr>

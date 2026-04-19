@@ -49,7 +49,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
           <Icon name="arrow-left" size={18} />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Lost Items</h1>
+          <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Lost Items</h1>
           <p className="text-sm text-shark-400 mt-0.5">
             {items.length} lost asset{items.length !== 1 ? "s" : ""}
             {totalCost > 0 && <span> · Est. value: ${totalCost.toLocaleString()}</span>}
@@ -63,7 +63,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
             <div className="w-14 h-14 rounded-2xl bg-action-100 flex items-center justify-center mx-auto mb-4">
               <Icon name="check" size={24} className="text-action-600" />
             </div>
-            <p className="text-lg font-semibold text-shark-900">No Lost Items</p>
+            <p className="text-lg font-semibold text-shark-900 dark:text-shark-100">No Lost Items</p>
             <p className="text-sm text-shark-400 mt-1">All assets are accounted for.</p>
           </div>
         </Card>
@@ -76,14 +76,14 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
               <Card key={group.regionId} className="overflow-hidden">
                 <button
                   onClick={() => toggleRegion(group.regionId)}
-                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50/50 transition-colors"
+                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-shark-700 flex items-center justify-center">
                       <Icon name="shield" size={16} className="text-white" />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-shark-900">{group.name}</span>
+                      <span className="font-semibold text-shark-900 dark:text-shark-100">{group.name}</span>
                       <span className="ml-2 text-xs text-shark-400">{group.stateName}</span>
                     </div>
                     <span className="ml-2 text-xs font-semibold text-shark-600 bg-shark-100 px-2 py-0.5 rounded-full">
@@ -97,11 +97,11 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                 {isExpanded && (
                   <div className="border-t border-shark-100 dark:border-shark-700 divide-y divide-shark-50 dark:divide-shark-800">
                     {group.items.map((item) => (
-                      <div key={item.id} className="px-5 py-4 hover:bg-shark-50/30">
+                      <div key={item.id} className="px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/30 dark:hover:bg-shark-800/30">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <p className="text-sm font-semibold text-shark-800">{item.name}</p>
+                              <p className="text-sm font-semibold text-shark-800 dark:text-shark-200">{item.name}</p>
                               <span className="text-xs font-mono text-shark-400">{item.assetCode}</span>
                               {item.isHighValue && <span className="text-xs text-[#E8532E] font-medium">High Value</span>}
                             </div>

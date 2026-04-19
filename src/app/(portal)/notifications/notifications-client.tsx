@@ -75,7 +75,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
     <div className="space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Notifications</h1>
+          <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Notifications</h1>
           <p className="text-sm text-shark-400 mt-1">
             {unreadCount > 0 ? `${unreadCount} unread` : "All caught up"}
           </p>
@@ -97,7 +97,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
             className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
               filter === f
                 ? "bg-action-500 text-white shadow-sm"
-                : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+                : "text-shark-500 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
             }`}
           >
             {f === "all" ? "All" : `Unread (${unreadCount})`}
@@ -145,7 +145,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className={`text-sm font-medium ${isAcked ? "text-shark-500" : "text-shark-900"}`}>
+                      <p className={`text-sm font-medium ${isAcked ? "text-shark-500" : "text-shark-900 dark:text-shark-100"}`}>
                         {n.title}
                       </p>
                       {!isAcked && (

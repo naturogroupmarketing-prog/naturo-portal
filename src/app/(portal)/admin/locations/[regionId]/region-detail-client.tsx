@@ -266,7 +266,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">{region.name}</h1>
+        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">{region.name}</h1>
         <p className="text-sm text-shark-400 mt-1">{region.state.name}</p>
       </div>
 
@@ -277,7 +277,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-shark-900">{stat.value}</p>
+                  <p className="text-2xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
@@ -296,7 +296,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             <div className="w-14 h-14 rounded-2xl bg-action-500 flex items-center justify-center mx-auto mb-4">
               <Icon name="plus" size={24} className="text-white" />
             </div>
-            <h3 className="text-lg font-semibold text-shark-900">Set Up This Location</h3>
+            <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Set Up This Location</h3>
             <p className="text-sm text-shark-500 mt-1 max-w-md mx-auto">
               This location has no assets or supplies. Apply standard items from your existing locations to get started quickly.
             </p>
@@ -387,7 +387,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                       <Icon name="package" size={14} className={colors.color} />
                     </div>
                     <div className="flex items-center gap-2 flex-1">
-                      <h3 className="text-base font-semibold text-shark-900">{catName}</h3>
+                      <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{catName}</h3>
                       <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
                         {catAssets.length}
                       </span>
@@ -413,7 +413,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                           </thead>
                           <tbody>
                             {catAssets.map((asset) => (
-                              <tr key={asset.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50/50 dark:hover:bg-shark-800/50">
+                              <tr key={asset.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
                                 <td className="px-4 py-2.5">
                                   <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
                                     {asset.imageUrl ? (
@@ -424,7 +424,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                   </div>
                                 </td>
                                 <td className="px-4 py-2.5 text-xs font-mono text-shark-500">{asset.assetCode}</td>
-                                <td className="px-4 py-2.5 text-sm font-medium text-shark-800">
+                                <td className="px-4 py-2.5 text-sm font-medium text-shark-800 dark:text-shark-200">
                                   {asset.name}
                                   {asset.isHighValue && <span className="text-[#E8532E] ml-1">★</span>}
                                 </td>
@@ -470,7 +470,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                       <Icon name="droplet" size={14} className={colors.color} />
                     </div>
                     <div className="flex items-center gap-2 flex-1">
-                      <h3 className="text-base font-semibold text-shark-900">{catName}</h3>
+                      <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{catName}</h3>
                       <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
                         {catItems.length}
                       </span>
@@ -499,7 +499,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                               const isLow = item.quantityOnHand <= item.minimumThreshold;
                               const isOut = item.quantityOnHand === 0;
                               return (
-                                <tr key={item.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50/50 dark:hover:bg-shark-800/50">
+                                <tr key={item.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
                                   <td className="px-4 py-2.5">
                                     <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
                                       {item.imageUrl ? (
@@ -510,11 +510,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                     </div>
                                   </td>
                                   <td className="px-4 py-2.5">
-                                    <p className="text-sm font-medium text-shark-800">{item.name}</p>
+                                    <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{item.name}</p>
                                     <p className="text-xs text-shark-400">{item.unitType}</p>
                                   </td>
                                   <td className="px-4 py-2.5">
-                                    <span className={`text-sm font-semibold ${isOut ? "text-red-600" : isLow ? "text-[#E8532E]" : "text-shark-700"}`}>
+                                    <span className={`text-sm font-semibold ${isOut ? "text-red-600" : isLow ? "text-[#E8532E]" : "text-shark-700 dark:text-shark-300"}`}>
                                       {item.quantityOnHand}
                                     </span>
                                     {isOut && <span className="ml-1.5 text-xs text-red-500 font-medium">OUT</span>}
@@ -561,8 +561,8 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                   </thead>
                   <tbody>
                     {filteredStaff.map((user) => (
-                      <tr key={user.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50/50 dark:hover:bg-shark-800/50">
-                        <td className="px-4 py-3 text-sm font-medium text-shark-800">{user.name || "—"}</td>
+                      <tr key={user.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
+                        <td className="px-4 py-3 text-sm font-medium text-shark-800 dark:text-shark-200">{user.name || "—"}</td>
                         <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
                         <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
                         <td className="px-4 py-3 hidden md:table-cell">
@@ -593,7 +593,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             {templates.assets.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-shark-700">Assets ({totalAssetCount} items)</h3>
+                  <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Assets ({totalAssetCount} items)</h3>
                   <div className="flex items-center gap-2">
                     <button onClick={() => { const q: Record<string, number> = {}; templates.assets.forEach((a) => { q[`${a.category}|${a.name}`] = 1; }); setAssetQtys(q); }} className="text-xs text-action-500 hover:text-action-600">All to 1</button>
                     <button onClick={() => { const q: Record<string, number> = {}; templates.assets.forEach((a) => { q[`${a.category}|${a.name}`] = 0; }); setAssetQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600">Clear</button>
@@ -604,14 +604,14 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     const key = `${a.category}|${a.name}`;
                     const qty = assetQtys[key] || 0;
                     return (
-                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50"}`}>
+                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50 dark:hover:bg-shark-800"}`}>
                         <div className="flex items-center gap-1 shrink-0">
                           <button onClick={() => setAssetQty(key, qty - 1)} className="w-7 h-7 rounded-lg border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-sm font-bold">−</button>
-                          <span className="w-8 text-center text-sm font-semibold text-shark-800">{qty}</span>
+                          <span className="w-8 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{qty}</span>
                           <button onClick={() => setAssetQty(key, qty + 1)} className="w-7 h-7 rounded-lg border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-sm font-bold">+</button>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-shark-800">{a.name}</p>
+                          <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{a.name}</p>
                           <p className="text-xs text-shark-400">{a.category}{a.supplier ? ` · ${a.supplier}` : ""}{a.purchaseCost ? ` · $${a.purchaseCost}` : ""}</p>
                         </div>
                         {a.isHighValue && <span className="text-xs text-[#E8532E] font-medium">HV</span>}
@@ -626,7 +626,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             {templates.consumables.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-shark-700">Supplies ({totalConsumableCount}/{templates.consumables.length})</h3>
+                  <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Supplies ({totalConsumableCount}/{templates.consumables.length})</h3>
                   <div className="flex items-center gap-2">
                     <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 10; }); setConsumableQtys(q); }} className="text-xs text-action-500 hover:text-action-600">All to 10</button>
                     <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 0; }); setConsumableQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600">Clear</button>
@@ -638,7 +638,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     const key = `${c.category}|${c.name}`;
                     const qty = consumableQtys[key] || 0;
                     return (
-                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50"}`}>
+                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50 dark:hover:bg-shark-800"}`}>
                         <input
                           type="number"
                           min="0"
@@ -647,7 +647,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                           className="w-16 text-center text-sm border border-shark-200 rounded-lg py-1 focus:border-action-400 focus:outline-none"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-shark-800">{c.name}</p>
+                          <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{c.name}</p>
                           <p className="text-xs text-shark-400">{c.category} · {c.unitType}{c.supplier ? ` · ${c.supplier}` : ""}</p>
                         </div>
                       </div>

@@ -184,7 +184,7 @@ export function HelpClient({ role }: { role: string }) {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Help & Support</h1>
+        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Help & Support</h1>
         <p className="text-sm text-shark-400 mt-1">Find answers to common questions</p>
       </div>
 
@@ -196,7 +196,7 @@ export function HelpClient({ role }: { role: string }) {
               <Icon name="message-circle" size={20} className="text-white" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-shark-900">AI Assistant</p>
+              <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">AI Assistant</p>
               <p className="text-xs text-shark-400">Click the chat bubble — available 24/7</p>
             </div>
           </div>
@@ -208,7 +208,7 @@ export function HelpClient({ role }: { role: string }) {
                 <Icon name="mail" size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-shark-900">Email Support</p>
+                <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Email Support</p>
                 <p className="text-xs text-shark-400">support@trackio.com.au — response within 24hrs</p>
               </div>
             </div>
@@ -244,14 +244,14 @@ export function HelpClient({ role }: { role: string }) {
               <Card key={section.title} className="overflow-hidden">
                 <button
                   onClick={() => setExpandedSection(isExpanded && !search ? null : section.title)}
-                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50/50 transition-colors"
+                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-action-500 flex items-center justify-center">
                       <Icon name={section.icon} size={16} className="text-white" />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-shark-900">{section.title}</span>
+                      <span className="font-semibold text-shark-900 dark:text-shark-100">{section.title}</span>
                       <span className="ml-2 text-xs text-shark-400">{section.faqs.length} article{section.faqs.length !== 1 ? "s" : ""}</span>
                     </div>
                   </div>
@@ -262,7 +262,7 @@ export function HelpClient({ role }: { role: string }) {
                   <div className="border-t border-shark-100 dark:border-shark-700 px-5 py-2">
                     {section.faqs.map((faq, i) => (
                       <details key={i} className="group" open={!!search}>
-                        <summary className="flex items-center justify-between cursor-pointer text-sm font-medium text-shark-700 hover:text-shark-900 py-3 border-b border-shark-50 last:border-0">
+                        <summary className="flex items-center justify-between cursor-pointer text-sm font-medium text-shark-700 dark:text-shark-300 hover:text-shark-900 dark:text-shark-100 py-3 border-b border-shark-50 last:border-0">
                           {faq.q}
                           <Icon name="chevron-down" size={14} className="text-shark-400 group-open:rotate-180 transition-transform shrink-0 ml-2" />
                         </summary>

@@ -163,7 +163,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             </tr>
           ) : (
             sectionUsers.map((user) => (
-              <tr key={user.id} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50/50 dark:hover:bg-shark-800/50 ${selected.has(user.id) ? "bg-action-50/40" : ""}`}>
+              <tr key={user.id} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 ${selected.has(user.id) ? "bg-action-50/40" : ""}`}>
                 <td className="px-3 py-3.5 text-center">
                   {user.isActive ? (
                     <input
@@ -176,7 +176,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                     <span className="text-xs text-shark-300">—</span>
                   )}
                 </td>
-                <td className="px-5 py-3.5 font-medium text-shark-800">{user.name || "—"}</td>
+                <td className="px-5 py-3.5 font-medium text-shark-800 dark:text-shark-200">{user.name || "—"}</td>
                 <td className="px-5 py-3.5 text-shark-500">{user.email}</td>
                 <td className="px-5 py-3.5"><Badge status={user.role} /></td>
                 <td className="px-5 py-3.5 text-center">
@@ -199,7 +199,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
     <div className="space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">User Management</h1>
+          <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">User Management</h1>
           <p className="text-sm text-shark-400 mt-1">{filtered.length} total users</p>
         </div>
         <Button size="sm" onClick={() => setShowCreate(true)}>
@@ -242,7 +242,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                   <Icon name="map-pin" size={16} className={section.color} />
                 </div>
                 <div className="flex items-center gap-2 flex-1">
-                  <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
+                  <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">{section.name}</h2>
                   <span className="text-xs text-shark-400">{section.stateName}</span>
                   <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                     {section.users.length}
@@ -274,7 +274,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
               <Icon name="dashboard" size={16} className={headOfficeColors.color} />
             </div>
             <div className="flex items-center gap-2 flex-1">
-              <h2 className="text-lg font-semibold text-shark-900">Head Office</h2>
+              <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Head Office</h2>
               <span className="text-xs text-shark-400">No region assigned</span>
               <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                 {headOfficeUsers.length}
@@ -306,23 +306,23 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
           }
         }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
             <Input name="name" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Email *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email *</label>
             <Input name="email" type="email" required placeholder="user@company.com" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
             <Input name="phone" type="tel" placeholder="e.g. 0412 345 678" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Password *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Password *</label>
             <Input name="password" type="password" required minLength={8} placeholder="Min 8 characters" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Role *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Role *</label>
             <Select name="role" required>
               <option value="STAFF">Staff</option>
               <option value="BRANCH_MANAGER">Regional Manager</option>
@@ -330,7 +330,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Region</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region</label>
             <Select name="regionId">
               <option value="">No region (head office)</option>
               {regions.map((r) => (
@@ -362,19 +362,19 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             }} className="space-y-4">
               <input type="hidden" name="userId" value={editUser.id} />
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email</label>
                 <Input name="email" type="email" required defaultValue={editUser.email} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
                 <Input name="name" required defaultValue={editUser.name || ""} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
                 <Input name="phone" type="tel" defaultValue={editUser.phone || ""} placeholder="e.g. 0412 345 678" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Role *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Role *</label>
                 <Select name="role" required defaultValue={editUser.role}>
                   <option value="STAFF">Staff</option>
                   <option value="BRANCH_MANAGER">Regional Manager</option>
@@ -382,7 +382,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Region</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region</label>
                 <Select name="regionId" defaultValue={editUser.region?.id || ""}>
                   <option value="">No region (head office)</option>
                   {regions.map((r) => (
@@ -399,7 +399,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             </form>
             <hr className="border-shark-100 dark:border-shark-700" />
             <form action={async (fd) => { await resetPassword(editUser.id, fd.get("newPassword") as string); setEditUser(null); }} className="space-y-3">
-              <label className="block text-sm font-medium text-shark-700">Reset Password</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300">Reset Password</label>
               <Input name="newPassword" type="password" required minLength={6} placeholder="New password (min 6 characters)" />
               <Button type="submit" size="sm" variant="secondary">Reset Password</Button>
             </form>

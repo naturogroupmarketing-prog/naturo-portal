@@ -160,7 +160,7 @@ export function PermissionsClient({ managers }: { managers: Manager[] }) {
           <Icon name="lock" size={14} className="text-action-600" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-shark-900">Permission Management</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Permission Management</h3>
           <p className="text-xs text-shark-400">Manage granular permissions for Branch Managers.</p>
         </div>
       </div>

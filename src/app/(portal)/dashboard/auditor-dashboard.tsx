@@ -32,7 +32,7 @@ function KpiCard({ label, value, suffix, icon }: { label: string; value: number;
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-shark-500 truncate">{label}</p>
-            <p className="text-xl font-bold text-shark-900">
+            <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
               {value}{suffix && <span className="text-sm font-medium text-shark-400 ml-0.5">{suffix}</span>}
             </p>
           </div>
@@ -53,7 +53,7 @@ function AlertCard({ label, value, description, icon }: { label: string; value: 
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-shark-500 truncate">{label}</p>
-            <p className={`text-xl font-bold ${isWarning ? "text-[#E8532E]" : "text-shark-900"}`}>{value}</p>
+            <p className={`text-xl font-bold ${isWarning ? "text-[#E8532E]" : "text-shark-900 dark:text-shark-100"}`}>{value}</p>
             <p className="text-[10px] text-shark-400 leading-tight mt-0.5">{description}</p>
           </div>
         </div>
@@ -72,7 +72,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
             <Icon name="bar-chart" size={14} className="text-action-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">
               Executive Overview
               <span className="text-shark-400 font-normal"> · {orgName}</span>
             </h3>
@@ -136,7 +136,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
                     <Icon name="clock" size={14} className="text-action-500" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-shark-800 truncate">
+                    <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">
                       {entry.action.replace(/_/g, " ")}
                     </p>
                     <p className="text-xs text-shark-400">by {entry.performedBy}</p>

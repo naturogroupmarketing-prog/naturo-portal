@@ -210,7 +210,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
             <Icon name="clipboard" size={14} className="text-action-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">Condition Checks</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Condition Checks</h3>
             <p className="text-xs text-shark-400">{monthLabel} · {totalChecked}/{staffStatus.length} staff completed</p>
           </div>
         </div>
@@ -235,7 +235,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       {/* Scheduled Inspections — Super Admin Only */}
       {isSuperAdmin && schedules.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-shark-700">Scheduled Inspections</h3>
+          <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Scheduled Inspections</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {schedules.map((s) => {
               const due = new Date(s.dueDate);
@@ -247,7 +247,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   <div className="px-4 py-3">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-sm font-semibold text-shark-800">{s.title}</p>
+                        <p className="text-sm font-semibold text-shark-800 dark:text-shark-200">{s.title}</p>
                         <p className="text-xs text-shark-400 mt-0.5">
                           Due: {due.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
                           {isOverdue ? (
@@ -274,7 +274,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       {isSuperAdmin && showConfig && (
         <Card>
           <div className="px-5 py-4 border-b border-shark-100 dark:border-shark-700">
-            <h3 className="text-sm font-semibold text-shark-900">Inspection Configuration</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Inspection Configuration</h3>
             <p className="text-xs text-shark-400 mt-0.5">Choose which categories require monthly photos and define what photos staff need to submit.</p>
           </div>
           <div className="divide-y divide-shark-50 dark:divide-shark-800">
@@ -308,7 +308,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                         <div className="w-9 h-5 bg-shark-200 peer-focus:ring-2 peer-focus:ring-action-400/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-action-500" />
                       </label>
                       <div>
-                        <span className="text-sm font-medium text-shark-800">{cat.name}</span>
+                        <span className="text-sm font-medium text-shark-800 dark:text-shark-200">{cat.name}</span>
                         <span className="text-xs text-shark-400 ml-2">({cat.type === "ASSET" ? "Assets" : "Supplies"})</span>
                         {isSaving && <span className="text-xs text-action-500 ml-2 animate-pulse">Saving...</span>}
                       </div>
@@ -398,7 +398,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
         <Card>
           <div className="px-5 py-4 border-b border-shark-100 dark:border-shark-700 flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-shark-900">Staff Condition Check Schedules</h3>
+              <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Staff Condition Check Schedules</h3>
               <p className="text-xs text-shark-400 mt-0.5">Set how often each staff member must submit condition checks.</p>
             </div>
             {!bulkMode ? (
@@ -457,7 +457,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                       />
                     )}
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-shark-800 truncate">{s.userName || s.userEmail}</p>
+                      <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{s.userName || s.userEmail}</p>
                       <p className="text-xs text-shark-400">{s.regionName}</p>
                     </div>
                   </div>
@@ -514,7 +514,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                     />
                   )}
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-shark-800 truncate">{u.name || u.email}</p>
+                    <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{u.name || u.email}</p>
                     <p className="text-xs text-shark-400">{u.regionName}</p>
                   </div>
                 </div>
@@ -546,13 +546,13 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
         {editingScheduleUser && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Frequency</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Frequency</label>
               <Select value={editFrequency} onChange={(e) => setEditFrequency(e.target.value as ConditionCheckFrequency)}>
                 {FREQUENCY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Next Due Date</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Next Due Date</label>
               <Input type="date" value={editDueDate} onChange={(e) => setEditDueDate(e.target.value)} min={new Date().toISOString().split("T")[0]} />
             </div>
             <p className="text-xs text-shark-400">After the staff member completes all checks, the next due date will automatically advance based on the frequency.</p>
@@ -597,7 +597,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-shark-500 truncate">{stat.label}</p>
-                  <p className="text-xl font-bold text-shark-900">{stat.value}</p>
+                  <p className="text-xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                 </div>
                 <Icon name="arrow-right" size={14} className="text-shark-400 flex-shrink-0" />
               </div>
@@ -651,7 +651,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                       {isComplete ? <Icon name="check" size={16} /> : `${pct}%`}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-shark-800">{staff.name || staff.email}</p>
+                      <p className="text-sm font-semibold text-shark-800 dark:text-shark-200">{staff.name || staff.email}</p>
                       {staff.name && <p className="text-xs text-shark-400">{staff.email}</p>}
                     </div>
                   </div>
@@ -703,7 +703,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                             </div>
                             {/* Info */}
                             <div className="px-3 py-2.5">
-                              <p className="text-sm font-medium text-shark-800 truncate">{itemName}</p>
+                              <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{itemName}</p>
                               {itemCode && <p className="text-xs font-mono text-shark-400">{itemCode}</p>}
                               {check.notes && <p className="text-xs text-shark-400 mt-1 truncate">{check.notes}</p>}
                               <p className="text-xs text-shark-300 mt-1">
@@ -741,7 +741,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-shark-800">
+                <p className="text-sm font-medium text-shark-800 dark:text-shark-200">
                   {photoModal.asset?.name || photoModal.consumable?.name}
                 </p>
                 {photoModal.asset?.assetCode && (
@@ -769,20 +769,20 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       <Modal open={showScheduleModal} onClose={() => setShowScheduleModal(false)} title="Schedule Inspection">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Title *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Title *</label>
             <Input value={scheduleTitle} onChange={(e) => setScheduleTitle(e.target.value)} placeholder="e.g. April Equipment Inspection" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Due Date *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Due Date *</label>
             <Input type="date" value={scheduleDueDate} onChange={(e) => setScheduleDueDate(e.target.value)} min={new Date().toISOString().split("T")[0]} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Notes / Instructions</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes / Instructions</label>
             <textarea
               value={scheduleNotes}
               onChange={(e) => setScheduleNotes(e.target.value)}
               placeholder="Instructions for staff (optional)"
-              className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
               rows={3}
             />
           </div>

@@ -102,7 +102,7 @@ export function StarterKitsClient({
             <Icon name="box" size={14} className="text-action-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">Starter Kits</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Starter Kits</h3>
             <p className="text-xs text-shark-400">Pre-defined sets of assets and supplies assigned to new staff automatically.</p>
           </div>
         </div>
@@ -187,7 +187,7 @@ export function StarterKitsClient({
                                 <div className="w-6 h-6 rounded-lg bg-action-500 flex items-center justify-center">
                                   <Icon name="package" size={12} className="text-white" />
                                 </div>
-                                <h4 className="text-sm font-semibold text-shark-700">Assets ({assetItems.reduce((s, i) => s + i.quantity, 0)})</h4>
+                                <h4 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Assets ({assetItems.reduce((s, i) => s + i.quantity, 0)})</h4>
                               </div>
                               {[...assetsByCategory.entries()].map(([catName, items]) => (
                                 <div key={catName} className="mb-3">
@@ -201,15 +201,15 @@ export function StarterKitsClient({
                                             <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 flex items-center justify-center shrink-0">
                                               {photo ? <img src={photo} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                                             </div>
-                                            <span className="text-sm text-shark-700">{item.category}</span>
+                                            <span className="text-sm text-shark-700 dark:text-shark-300">{item.category}</span>
                                           </div>
                                           <div className="flex items-center gap-2">
                                             <div className="flex items-center gap-1">
-                                              <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch {} } }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">−</button>
-                                              <span className="w-6 text-center text-sm font-semibold text-shark-800">{item.quantity}</span>
-                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch {} }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
+                                              <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-600 flex items-center justify-center text-shark-500 hover:bg-shark-100 dark:hover:bg-shark-700 text-xs font-bold">−</button>
+                                              <span className="w-6 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{item.quantity}</span>
+                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
                                             </div>
-                                            <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Removed", "success"); router.refresh(); } catch { addToast("Failed", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
+                                            <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Item removed from kit", "success"); router.refresh(); } catch { addToast("Something went wrong — please try again", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
                                           </div>
                                         </div>
                                       );
@@ -227,7 +227,7 @@ export function StarterKitsClient({
                                 <div className="w-6 h-6 rounded-lg bg-action-500 flex items-center justify-center">
                                   <Icon name="droplet" size={12} className="text-white" />
                                 </div>
-                                <h4 className="text-sm font-semibold text-shark-700">Supplies ({consumableItems.reduce((s, i) => s + i.quantity, 0)})</h4>
+                                <h4 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Supplies ({consumableItems.reduce((s, i) => s + i.quantity, 0)})</h4>
                               </div>
                               {[...consumablesByCategory.entries()].map(([catName, items]) => (
                                 <div key={catName} className="mb-3">
@@ -242,17 +242,17 @@ export function StarterKitsClient({
                                               {c?.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                                             </div>
                                             <div>
-                                              <span className="text-sm text-shark-700">{c?.name || "Unknown"}</span>
+                                              <span className="text-sm text-shark-700 dark:text-shark-300">{c?.name || "Unknown"}</span>
                                               <span className="text-xs text-shark-400 ml-1">({c?.unitType || ""})</span>
                                             </div>
                                           </div>
                                           <div className="flex items-center gap-2">
                                             <div className="flex items-center gap-1">
-                                              <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch {} } }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">−</button>
-                                              <span className="w-6 text-center text-sm font-semibold text-shark-800">{item.quantity}</span>
-                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch {} }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
+                                              <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-600 flex items-center justify-center text-shark-500 hover:bg-shark-100 dark:hover:bg-shark-700 text-xs font-bold">−</button>
+                                              <span className="w-6 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{item.quantity}</span>
+                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
                                             </div>
-                                            <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Removed", "success"); router.refresh(); } catch { addToast("Failed", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
+                                            <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Item removed from kit", "success"); router.refresh(); } catch { addToast("Something went wrong — please try again", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
                                           </div>
                                         </div>
                                       );
@@ -543,7 +543,7 @@ function AddItemsChecklist({
                 <div
                   key={cat.id}
                   className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
-                    alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 border border-transparent"
+                    alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 dark:hover:bg-shark-800 border border-transparent"
                   }`}
                 >
                   <input
@@ -561,7 +561,7 @@ function AddItemsChecklist({
                     )}
                   </div>
                   <label
-                    className={`text-sm text-shark-700 flex-1 ${alreadyAdded ? "cursor-not-allowed" : "cursor-pointer"}`}
+                    className={`text-sm text-shark-700 dark:text-shark-300 flex-1 ${alreadyAdded ? "cursor-not-allowed" : "cursor-pointer"}`}
                     onClick={() => !alreadyAdded && toggleCategory(cat.name)}
                   >
                     {cat.name}
@@ -606,7 +606,7 @@ function AddItemsChecklist({
                   <div
                     key={c.id}
                     className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
-                      alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 border border-transparent"
+                      alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 dark:hover:bg-shark-800 border border-transparent"
                     }`}
                   >
                     <input
@@ -624,7 +624,7 @@ function AddItemsChecklist({
                       )}
                     </div>
                     <label
-                      className={`text-sm text-shark-700 flex-1 truncate ${alreadyAdded ? "cursor-not-allowed" : "cursor-pointer"}`}
+                      className={`text-sm text-shark-700 dark:text-shark-300 flex-1 truncate ${alreadyAdded ? "cursor-not-allowed" : "cursor-pointer"}`}
                       onClick={() => !alreadyAdded && toggleConsumable(c.id)}
                     >
                       {c.name} <span className="text-shark-400 text-xs">({c.unitType})</span>
@@ -703,7 +703,7 @@ function ApplyToStaffForm({
           <div className="w-12 h-12 rounded-full bg-action-500 flex items-center justify-center mx-auto mb-3">
             <Icon name="check" size={24} className="text-white" />
           </div>
-          <p className="text-sm font-semibold text-shark-900">Kit assigned to {user?.name || user?.email}</p>
+          <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Kit assigned to {user?.name || user?.email}</p>
           <p className="text-xs text-shark-500 mt-1">{result.applied} item{result.applied !== 1 ? "s" : ""} assigned</p>
         </div>
         <div className="flex justify-end gap-3">
@@ -726,7 +726,7 @@ function ApplyToStaffForm({
   return (
     <div className="space-y-5">
       <div>
-        <label className="block text-sm font-medium text-shark-700 mb-1.5">Region</label>
+        <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1.5">Region</label>
         <Select
           value={selectedRegion}
           onChange={(e) => { setSelectedRegion(e.target.value); setSelectedUserId(""); }}
@@ -739,7 +739,7 @@ function ApplyToStaffForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-shark-700 mb-1.5">Assign to</label>
+        <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1.5">Assign to</label>
         <Select
           value={selectedUserId}
           onChange={(e) => setSelectedUserId(e.target.value)}

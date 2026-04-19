@@ -100,7 +100,7 @@ const STATUS_BADGE: Record<string, { label: string; bg: string; text: string }> 
   CHECKED_OUT: { label: "Pending", bg: "bg-amber-100", text: "text-amber-700" },
   PENDING_RETURN: { label: "Pending Return", bg: "bg-amber-100", text: "text-amber-700" },
   DAMAGED: { label: "Damaged", bg: "bg-red-100", text: "text-red-700" },
-  LOST: { label: "Lost", bg: "bg-shark-100", text: "text-shark-700" },
+  LOST: { label: "Lost", bg: "bg-shark-100", text: "text-shark-700 dark:text-shark-300" },
   UNAVAILABLE: { label: "Unavailable", bg: "bg-shark-100", text: "text-shark-500" },
 };
 
@@ -696,7 +696,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             {badge.label}
           </span>
         </div>
-        <h3 className="font-semibold text-shark-900 dark:text-white text-sm mb-0.5 truncate">
+        <h3 className="font-semibold text-shark-900 dark:text-shark-100 dark:text-white text-sm mb-0.5 truncate">
           {asset.name}
           {asset.isHighValue && <span className="ml-1 text-gold-500 text-xs">★</span>}
         </h3>
@@ -731,10 +731,10 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       <div
         key={asset.id}
         onClick={() => permissions.canEdit && setEditAsset(asset)}
-        className="flex items-center gap-3 px-3 border-b border-shark-50 hover:bg-shark-50/60 cursor-pointer"
+        className="flex items-center gap-3 px-3 border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/60 cursor-pointer"
         style={{ height: 36, minHeight: 36 }}
       >
-        <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 truncate">
+        <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 dark:text-shark-200 truncate">
           {asset.name}
           {asset.isHighValue && <span className="ml-1 text-gold-500">★</span>}
         </span>
@@ -780,7 +780,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-shark-800 truncate">{asset.name}</p>
+                          <p className="text-sm font-semibold text-shark-800 dark:text-shark-200 truncate">{asset.name}</p>
                           <button onClick={(e) => { e.stopPropagation(); setShowQR(asset); }} className="text-xs text-action-500 hover:text-action-600 transition-colors flex items-center gap-1">
                             <Icon name="qr-code" size={12} /> QR
                           </button>
@@ -855,7 +855,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     onDragStart={() => handleItemDragStart(asset.id)}
                     onDragOver={(e) => handleItemDragOver(e, asset.id)}
                     onDragEnd={() => handleItemDragEnd(sectionAssets)}
-                    className={`border-b border-shark-50 hover:bg-shark-50/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""} ${dragItemId === asset.id ? "opacity-40" : ""} ${dragOverItemId === asset.id ? "border-t-2 border-t-action-500" : ""}`}
+                    className={`border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""} ${dragItemId === asset.id ? "opacity-40" : ""} ${dragOverItemId === asset.id ? "border-t-2 border-t-action-500" : ""}`}
                   >
                     {permissions.canEdit && (
                       <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
@@ -884,7 +884,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     {visibleColumns.name && (
                     <td className="px-4 py-3 max-w-[200px]">
                       <div className="truncate">
-                        <span className="font-medium text-shark-800">{asset.name}</span>
+                        <span className="font-medium text-shark-800 dark:text-shark-200">{asset.name}</span>
                         {asset.isHighValue && <span className="ml-1 text-gold-500 text-xs" title="High value">&#9733;</span>}
                       </div>
                     </td>
@@ -928,7 +928,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <Icon name="package" size={14} className="text-action-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">Assets</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Assets</h3>
             <p className="text-xs text-shark-400">{assets.length} total assets</p>
           </div>
         </div>
@@ -1216,7 +1216,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           <div className="bg-shark-50 rounded-xl p-4 max-h-40 overflow-y-auto">
             {assets.filter((a) => selectedIds.has(a.id)).map((a) => (
                 <div key={a.id} className="flex items-center gap-2 py-1">
-                  <span className="font-medium text-shark-800 text-sm">{a.name}</span>
+                  <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{a.name}</span>
                   <span className="text-xs text-shark-400 font-mono">{a.assetCode}</span>
                 </div>
               ))}
@@ -1250,7 +1250,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                 {assetToDelete && (
                   <div className="bg-shark-50 rounded-xl p-4">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-shark-800 text-sm">{assetToDelete.name}</span>
+                      <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{assetToDelete.name}</span>
                       <span className="text-xs text-shark-400 font-mono">{assetToDelete.assetCode}</span>
                     </div>
                     <p className="text-xs text-shark-500 mt-1">{assetToDelete.region.name} &middot; {assetToDelete.category}</p>
@@ -1292,7 +1292,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   onDragEnd={handleSectionDragEnd}
                   className={`${dragSectionIdx === idx ? "opacity-40" : ""} ${dragOverSectionIdx === idx ? "border-t-2 border-t-action-500" : ""}`}
                 >
-                  <div className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50">
+                  <div className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800">
                     {isEditing ? (
                       <div className="flex items-center gap-2 flex-1 mr-2">
                         <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center shrink-0`}>
@@ -1327,7 +1327,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                           <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center`}>
                             <Icon name="package" size={12} className={colors.color} />
                           </div>
-                          <span className="text-sm font-medium text-shark-800">{cat.name}</span>
+                          <span className="text-sm font-medium text-shark-800 dark:text-shark-200">{cat.name}</span>
                           <span className="text-xs text-shark-400">{assetCount} item{assetCount !== 1 ? "s" : ""}</span>
                         </div>
                         <div className="flex items-center gap-1">
@@ -1358,7 +1358,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
           {/* Add new section */}
           <div className="border-t border-shark-100 dark:border-shark-700 pt-4">
-            <label className="block text-sm font-medium text-shark-700 mb-1">Add New Section</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Add New Section</label>
             <div className="flex gap-2">
               <Input
                 value={newSectionName}
@@ -1389,7 +1389,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         <form action={handleCreateSubmit} className="space-y-4">
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Photo</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
             <div className="flex items-start gap-4">
               {imagePreview ? (
                 <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200">
@@ -1426,11 +1426,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
             <Input name="name" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">System *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">System *</label>
             <div className="flex gap-2">
               <Select name="category" required className="flex-1">
                 <option value="">Select system</option>
@@ -1444,7 +1444,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Region *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region *</label>
             <Select name="regionId" required>
               <option value="">Select region</option>
               {regions.map((r) => (
@@ -1455,25 +1455,25 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Serial Number</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Serial Number</label>
             <Input name="serialNumber" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Description</label>
-            <textarea name="description" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
+            <textarea name="description" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Purchase Date</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Purchase Date</label>
               <Input name="purchaseDate" type="date" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Cost (AUD)</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Cost (AUD)</label>
               <Input name="purchaseCost" type="number" step="0.01" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
             <Input name="supplier" />
           </div>
           <div className="flex items-center gap-2">
@@ -1481,15 +1481,15 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <label htmlFor="isHighValue" className="text-sm text-gray-700">High-value asset</label>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Quantity</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity</label>
             <div className="flex items-center gap-2">
               <Input name="quantity" type="number" min={1} max={50} defaultValue={1} className="w-24" />
               <span className="text-xs text-shark-400">Add multiple identical assets (max 50). Names will be numbered automatically.</span>
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
-            <textarea name="notes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
+            <textarea name="notes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }}>Cancel</Button>
@@ -1520,7 +1520,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           >
             <input type="hidden" name="assetId" value={showAssign.id} />
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Assign to *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Assign to *</label>
               <Select name="userId" required>
                 <option value="">Select staff member</option>
                 {users
@@ -1536,14 +1536,14 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Assignment Type *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Assignment Type *</label>
               <Select name="assignmentType" required>
                 <option value="TEMPORARY">Temporary (Check-out)</option>
                 <option value="PERMANENT">Permanent</option>
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Expected Return Date</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Expected Return Date</label>
               <Input name="expectedReturnDate" type="date" />
               <p className="text-xs text-gray-400 mt-1">Leave blank for permanent assignments</p>
             </div>
@@ -1575,7 +1575,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           >
             <input type="hidden" name="assignmentId" value={showReturn.assignmentId} />
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Return Condition *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Return Condition *</label>
               <Select name="returnCondition" required>
                 <option value="">Select condition</option>
                 <option value="Good">Good</option>
@@ -1589,8 +1589,8 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               <label htmlFor="isDamaged" className="text-sm text-gray-700">Mark as damaged (makes asset unavailable)</label>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
-              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
+              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
@@ -1606,7 +1606,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           <div className="text-center space-y-4">
             <img src={showQR.qrCodeData} alt={`QR code for ${showQR.assetCode}`} className="mx-auto w-48 h-48" />
             <div>
-              <p className="font-bold text-shark-900">{showQR.name}</p>
+              <p className="font-bold text-shark-900 dark:text-shark-100">{showQR.name}</p>
               <p className="text-sm text-shark-400 font-mono">{showQR.assetCode}</p>
             </div>
             <Button
@@ -1634,7 +1634,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               className="mx-auto max-w-full max-h-[60vh] rounded-xl object-contain"
             />
             <div>
-              <p className="font-bold text-shark-900">{showImage.name}</p>
+              <p className="font-bold text-shark-900 dark:text-shark-100">{showImage.name}</p>
               <p className="text-sm text-shark-400 font-mono">{showImage.assetCode}</p>
               <p className="text-xs text-shark-400 mt-1">{showImage.category}</p>
             </div>
@@ -1670,7 +1670,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
             {/* Image Upload/Edit */}
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Photo</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
               <div className="flex items-start gap-4">
                 {(editImagePreview || (!editImageRemoved && editAsset.imageUrl)) ? (
                   <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200">
@@ -1719,11 +1719,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
               <Input name="name" required defaultValue={editAsset.name} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">System *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">System *</label>
               <Select name="category" required defaultValue={editAsset.category}>
                 <option value="">Select system</option>
                 {categories.map((cat) => (
@@ -1732,7 +1732,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Region *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region *</label>
               <Select name="regionId" required defaultValue={editAsset.region.id}>
                 <option value="">Select region</option>
                 {regions.map((r) => (
@@ -1743,7 +1743,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Status *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Status *</label>
               <Select name="status" required defaultValue={editAsset.status}>
                 <option value="AVAILABLE">Available</option>
                 <option value="ASSIGNED">Assigned</option>
@@ -1755,29 +1755,29 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Serial Number</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Serial Number</label>
               <Input name="serialNumber" defaultValue={editAsset.serialNumber || ""} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Description</label>
-              <textarea name="description" defaultValue={editAsset.description || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
+              <textarea name="description" defaultValue={editAsset.description || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Purchase Date</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Purchase Date</label>
                 <Input name="purchaseDate" type="date" defaultValue={editAsset.purchaseDate ? editAsset.purchaseDate.substring(0, 10) : ""} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Cost (AUD)</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Cost (AUD)</label>
                 <Input name="purchaseCost" type="number" step="0.01" defaultValue={editAsset.purchaseCost ?? ""} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Warranty Expiry</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Warranty Expiry</label>
               <Input name="warrantyExpiry" type="date" defaultValue={editAsset.warrantyExpiry ? editAsset.warrantyExpiry.substring(0, 10) : ""} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Supplier</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
               <Input name="supplier" defaultValue={editAsset.supplier || ""} />
             </div>
             <div className="flex items-center gap-2">
@@ -1785,8 +1785,8 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               <label htmlFor="editIsHighValue" className="text-sm text-gray-700">High-value asset</label>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
-              <textarea name="notes" defaultValue={editAsset.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
+              <textarea name="notes" defaultValue={editAsset.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
 
             {/* Equipment Checklist for this category */}
@@ -1796,13 +1796,13 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               if (!cat) return null;
               return (
                 <div className="border-t border-shark-100 dark:border-shark-700 pt-3">
-                  <p className="text-sm font-medium text-shark-700 mb-2">Equipment Checklist</p>
+                  <p className="text-sm font-medium text-shark-700 dark:text-shark-300 mb-2">Equipment Checklist</p>
                   {equipmentList.length === 0 ? (
                     <p className="text-xs text-shark-400">No equipment defined for this section.</p>
                   ) : (
                     <div className="flex flex-wrap gap-1.5">
                       {equipmentList.map((item) => (
-                        <span key={item} className="inline-flex items-center gap-1 text-xs font-medium text-shark-700 bg-shark-50 border border-shark-200 rounded-full px-2.5 py-1">
+                        <span key={item} className="inline-flex items-center gap-1 text-xs font-medium text-shark-700 dark:text-shark-300 bg-shark-50 border border-shark-200 rounded-full px-2.5 py-1">
                           {item}
                           {isSuperAdmin && (
                             <button

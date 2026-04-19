@@ -92,7 +92,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-shark-100 dark:border-shark-800 bg-shark-50/40 dark:bg-shark-800/40">
         <Icon name="bell" size={14} className="text-shark-500 flex-shrink-0" />
-        <span className="text-sm font-semibold text-shark-800 flex-1">
+        <span className="text-sm font-semibold text-shark-800 dark:text-shark-200 flex-1">
           {items.length === 0 ? "All caught up" : "Action Required"}
         </span>
         {items.length > 0 && (
@@ -159,7 +159,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-shark-800 leading-snug">{item.title}</p>
+                    <p className="text-[13px] font-semibold text-shark-800 dark:text-shark-200 leading-snug">{item.title}</p>
                     <p className="text-[11px] text-shark-400 mt-0.5 leading-snug">{item.description}</p>
                     <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full mt-1.5 ${config.badge}`}>
                       <Icon name={icon} size={9} />

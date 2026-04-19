@@ -63,7 +63,7 @@ export default async function MyAssetsPage() {
               <CardContent className="py-4">
                 <div className="flex items-start gap-3">
                   {/* Photo */}
-                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                     {a.asset.imageUrl ? (
                       <img src={a.asset.imageUrl} alt={a.asset.name} className="w-full h-full object-cover" />
                     ) : (
@@ -86,7 +86,7 @@ export default async function MyAssetsPage() {
                   <p>Assigned: {formatDate(a.checkoutDate)}</p>
                 </div>
                 {a.asset.notes && (
-                  <div className="mt-3 bg-shark-50 rounded-lg p-2.5">
+                  <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-lg p-2.5">
                     <p className="text-xs font-medium text-shark-400 mb-0.5">Notes</p>
                     <p className="text-sm text-shark-600 whitespace-pre-wrap">{a.asset.notes}</p>
                   </div>

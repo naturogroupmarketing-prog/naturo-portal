@@ -161,7 +161,7 @@ function QuickActionsBar({ role }: { role: string }) {
           className="flex flex-col items-center gap-2 p-3 rounded-xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 hover:shadow-md transition-all duration-200 group text-center"
         >
           <Icon name={action.icon} size={20} className="text-shark-500 dark:text-shark-400 group-hover:text-action-500 transition-colors duration-150" />
-          <span className="text-xs font-medium text-shark-600 dark:text-shark-400 group-hover:text-shark-800 dark:group-hover:text-shark-200 transition-colors">{action.label}</span>
+          <span className="text-xs font-medium text-shark-600 dark:text-shark-400 group-hover:text-shark-800 dark:text-shark-200 dark:group-hover:text-shark-200 transition-colors">{action.label}</span>
         </Link>
       ))}
     </div>
@@ -328,7 +328,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <div className="flex-1 min-w-0">
                             <p className="text-xs text-shark-500 truncate">{s.label}</p>
                             <div className="flex items-center gap-1">
-                              <AnimatedCounter value={s.value} className="text-xl font-bold text-shark-900" />
+                              <AnimatedCounter value={s.value} className="text-xl font-bold text-shark-900 dark:text-shark-100" />
                               {s.trend && (
                                 <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                   s.trend.direction === "down" ? "bg-green-50 text-green-600" :
@@ -398,7 +398,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="bar-chart" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h2 className="text-sm font-semibold text-shark-900">Finance</h2>
+                          <h2 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Finance</h2>
                           <p className="text-xs text-shark-400">Asset &amp; Supply Value</p>
                         </div>
                       </div>
@@ -411,7 +411,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <span className="w-2 h-2 rounded-full" style={{ background: "#1F3DD9" }} />
                             <span className="text-xs text-shark-500">Assets</span>
                           </div>
-                          <p className="text-xl font-bold text-shark-900">
+                          <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
                             ${portfolioValue.current.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
                           </p>
                           {portfolioValue.depreciation > 0 && (
@@ -425,7 +425,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <span className="w-2 h-2 rounded-full" style={{ background: "#E8532E" }} />
                             <span className="text-xs text-shark-500">Supplies</span>
                           </div>
-                          <p className="text-xl font-bold text-shark-900">
+                          <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
                             ${portfolioValue.consumableValue.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
                           </p>
                         </div>
@@ -490,7 +490,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       {/* Total */}
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-shark-100 dark:border-shark-700/60">
                         <span className="text-xs font-medium text-shark-500">Total Portfolio</span>
-                        <span className="text-lg font-bold text-shark-900">
+                        <span className="text-lg font-bold text-shark-900 dark:text-shark-100">
                           ${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
                         </span>
                       </div>
@@ -533,7 +533,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="package" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-shark-900">Asset Status</h3>
+                          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Asset Status</h3>
                           <p className="text-xs text-shark-400">Breakdown by status</p>
                         </div>
                       </div>
@@ -544,10 +544,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           const statusMap: Record<string, string> = { Available: "AVAILABLE", Assigned: "ASSIGNED", "Checked Out": "CHECKED_OUT", Damaged: "DAMAGED", Lost: "LOST", Unavailable: "UNAVAILABLE" };
                           const statusParam = statusMap[item.name] || "";
                           return (
-                            <Link key={item.name} href={`/assets${statusParam ? `?status=${statusParam}` : ""}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
+                            <Link key={item.name} href={`/assets${statusParam ? `?status=${statusParam}` : ""}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                               <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                              <span className="text-sm text-shark-700 flex-1">{item.name}</span>
-                              <span className="text-sm font-semibold text-shark-900">{item.value}</span>
+                              <span className="text-sm text-shark-700 dark:text-shark-300 flex-1">{item.name}</span>
+                              <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
                               <div className="w-20 bg-shark-100 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
                               </div>
@@ -567,7 +567,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="box" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-shark-900">Assets by Category</h3>
+                          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Assets by Category</h3>
                           <p className="text-xs text-shark-400">Distribution across categories</p>
                         </div>
                       </div>
@@ -578,9 +578,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           const colors = ["#7C3AED", "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4"];
                           const color = colors[idx % colors.length];
                           return (
-                            <Link key={item.name} href={`/assets?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
-                              <span className="text-sm text-shark-700 flex-1 truncate">{item.name}</span>
-                              <span className="text-sm font-semibold text-shark-900">{item.value}</span>
+                            <Link key={item.name} href={`/assets?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
+                              <span className="text-sm text-shark-700 dark:text-shark-300 flex-1 truncate">{item.name}</span>
+                              <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
                               <div className="w-24 bg-shark-100 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
                               </div>
@@ -605,7 +605,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="droplet" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-shark-900">Supply Status</h3>
+                          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Supply Status</h3>
                           <p className="text-xs text-shark-400">Breakdown by stock level</p>
                         </div>
                       </div>
@@ -616,10 +616,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           const stockMap: Record<string, string> = { Adequate: "adequate", "Low Stock": "low", Critical: "critical", "Out of Stock": "out" };
                           const stockParam = stockMap[item.name] || "";
                           return (
-                            <Link key={item.name} href={`/consumables${stockParam ? `?stock=${stockParam}` : ""}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
+                            <Link key={item.name} href={`/consumables${stockParam ? `?stock=${stockParam}` : ""}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                               <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                              <span className="text-sm text-shark-700 flex-1">{item.name}</span>
-                              <span className="text-sm font-semibold text-shark-900">{item.value}</span>
+                              <span className="text-sm text-shark-700 dark:text-shark-300 flex-1">{item.name}</span>
+                              <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
                               <div className="w-20 bg-shark-100 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
                               </div>
@@ -639,7 +639,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="clipboard" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-shark-900">Supplies by Category</h3>
+                          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Supplies by Category</h3>
                           <p className="text-xs text-shark-400">Distribution across categories</p>
                         </div>
                       </div>
@@ -650,9 +650,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           const colors = ["#06b6d4", "#8b5cf6", "#ec4899", "#f97316", "#14b8a6", "#a855f7", "#f43f5e", "#0ea5e9"];
                           const color = colors[idx % colors.length];
                           return (
-                            <Link key={item.name} href={`/consumables?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
-                              <span className="text-sm text-shark-700 flex-1 truncate">{item.name}</span>
-                              <span className="text-sm font-semibold text-shark-900">{item.value}</span>
+                            <Link key={item.name} href={`/consumables?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
+                              <span className="text-sm text-shark-700 dark:text-shark-300 flex-1 truncate">{item.name}</span>
+                              <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
                               <div className="w-24 bg-shark-100 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
                               </div>
@@ -677,7 +677,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <Icon name="alert-triangle" size={14} className="text-red-500" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-shark-900">Low Stock Alerts</h3>
+                        <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Low Stock Alerts</h3>
                         <p className="text-xs text-shark-400">Items below minimum threshold</p>
                       </div>
                     </div>
@@ -696,9 +696,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   ) : (
                     <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                       {lowStockItems.map((item) => (
-                        <Link key={item.id} href={isSuperAdmin ? `/alerts/low-stock${item.region?.id ? `?region=${item.region.id}` : ""}` : "/purchase-orders"} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
+                        <Link key={item.id} href={isSuperAdmin ? `/alerts/low-stock${item.region?.id ? `?region=${item.region.id}` : ""}` : "/purchase-orders"} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                           <div className="flex-1 min-w-0 mr-3">
-                            <p className="text-sm font-medium text-shark-800 truncate">{item.name}</p>
+                            <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{item.name}</p>
                             <p className="text-xs text-shark-400">{item.region?.name || ""}</p>
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
@@ -736,7 +736,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-shark-900">Predicted Shortages</h3>
+                      <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Predicted Shortages</h3>
                       <p className="text-xs text-shark-400">AI-powered depletion forecasts</p>
                     </div>
                     <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
@@ -745,17 +745,17 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   {/* Items */}
                   <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                     {predictedShortages.map((item) => (
-                      <Link key={item.id} href={`/purchase-orders`} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
+                      <Link key={item.id} href={`/purchase-orders`} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                           <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${item.riskLevel === "critical" ? "bg-red-500" : "bg-amber-400"}`} />
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-shark-800 truncate">{item.name}</p>
+                            <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{item.name}</p>
                             <p className="text-xs text-shark-400">{item.regionName} · {item.avgDailyUsage.toFixed(1)}/day usage</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <div className="text-right">
-                            <p className="text-sm font-bold text-shark-900">{item.quantityOnHand} <span className="text-xs font-normal text-shark-400">{item.unitType}</span></p>
+                            <p className="text-sm font-bold text-shark-900 dark:text-shark-100">{item.quantityOnHand} <span className="text-xs font-normal text-shark-400">{item.unitType}</span></p>
                             {item.daysRemaining !== null && (
                               <span className={`text-xs font-semibold ${item.riskLevel === "critical" ? "text-red-500" : "text-amber-500"}`}>
                                 {item.daysRemaining === 0 ? "Depleted today" : `~${item.daysRemaining}d left`}
@@ -801,7 +801,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <Icon name="map-pin" size={14} className="text-action-600" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-shark-900">Regions</h3>
+                        <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Regions</h3>
                         <p className="text-xs text-shark-400">Status by region</p>
                       </div>
                     </div>
@@ -817,13 +817,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             {/* Region header row */}
                             <button
                               onClick={() => toggleRegion(region.regionId)}
-                              className="w-full flex items-center gap-2 px-3 py-3 hover:bg-shark-50/50 transition-colors"
+                              className="w-full flex items-center gap-2 px-3 py-3 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors"
                             >
                               <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
                                 <Icon name="map-pin" size={12} className={colors.color} />
                               </div>
                               <div className="flex-1 min-w-0 text-left overflow-hidden">
-                                <p className="text-sm font-semibold text-shark-900 truncate leading-tight">{region.regionName}</p>
+                                <p className="text-sm font-semibold text-shark-900 dark:text-shark-100 truncate leading-tight">{region.regionName}</p>
                                 {region.stateName && <p className="text-xs text-shark-400 truncate leading-tight">{region.stateName}</p>}
                               </div>
                               {hasActions ? (
@@ -884,7 +884,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <div className={`w-11 h-11 rounded-xl ${link.iconBg} flex items-center justify-center transition-transform`}>
                           <Icon name={link.icon} size={20} className={link.iconColor} />
                         </div>
-                        <p className="text-sm font-medium text-shark-700">{link.label}</p>
+                        <p className="text-sm font-medium text-shark-700 dark:text-shark-300">{link.label}</p>
                       </CardContent>
                     </Card>
                   </Link>
@@ -906,7 +906,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <div className="w-11 h-11 rounded-xl bg-action-50 flex items-center justify-center group-hover:scale-105 transition-transform">
                               <Icon name={shortcut.icon} size={20} className="text-action-500" />
                             </div>
-                            <p className="text-sm font-medium text-shark-700">{shortcut.label}</p>
+                            <p className="text-sm font-medium text-shark-700 dark:text-shark-300">{shortcut.label}</p>
                           </CardContent>
                         </Card>
                       </Link>
@@ -938,7 +938,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 <Icon name="map-pin" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-shark-900">Storage Locations</h3>
+                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Storage Locations</h3>
                 <p className="text-xs text-shark-400">Map and location overview</p>
               </div>
             </div>
@@ -961,14 +961,14 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   href={`https://www.google.com/maps?q=${loc.latitude},${loc.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors group"
+                  className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
                       <Icon name="map-pin" size={13} className="text-action-600" />
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-shark-700 group-hover:text-action-500 transition-colors">{loc.name}</span>
+                      <span className="text-sm font-medium text-shark-700 dark:text-shark-300 group-hover:text-action-500 transition-colors">{loc.name}</span>
                       <span className="text-xs text-shark-400 ml-2">{loc.stateName}</span>
                     </div>
                   </div>
