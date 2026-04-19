@@ -129,21 +129,20 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
   const hasCritical = criticalAssets.length > 0;
 
   return (
-    <Card className="border-action-100">
+    <Card className="border-action-200">
       <div className="p-4 sm:p-5">
         {/* ── Header ── */}
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-              <Icon name="bar-chart" size={14} className="text-action-600" />
-            </div>
-            <div>
-              <h2 className="text-sm font-semibold text-shark-900">Asset Health</h2>
-              <p className="text-xs text-shark-400">
-                {totalAssets} asset{totalAssets !== 1 ? "s" : ""} scored
-              </p>
-            </div>
+        <div className="flex items-center gap-2 mb-5">
+          <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+            <Icon name="bar-chart" size={14} className="text-action-600" />
           </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-sm font-semibold text-shark-900">Asset Health</h2>
+            <p className="text-xs text-shark-400">
+              {totalAssets} asset{totalAssets !== 1 ? "s" : ""} scored
+            </p>
+          </div>
+          <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
           {/* Average score badge */}
           <div
             className={cn(

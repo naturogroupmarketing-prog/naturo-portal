@@ -20,11 +20,11 @@ export const metadata: Metadata = {
   title: "Asset & Supply Tracking Software for Operational Teams",
   description:
     "Track equipment, manage supplies, and keep every location accountable. trackio is the all-in-one asset and consumable tracking platform trusted by 500+ teams across Australia.",
-  alternates: { canonical: "/welcome" },
+  alternates: { canonical: "https://trackio.au/" },
   openGraph: {
     title: "trackio — Asset & Supply Tracking Software",
     description: "Track equipment, manage supplies, and keep every location accountable. Trusted by 500+ operational teams.",
-    url: "/welcome",
+    url: "https://trackio.au/",
   },
 };
 
@@ -35,7 +35,7 @@ const jsonLd = {
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   description: "All-in-one asset and consumable tracking platform for operational teams. Track equipment, manage supplies, and keep every location accountable.",
-  url: "https://app.trackio.au/welcome",
+  url: "https://trackio.au/",
   offers: {
     "@type": "AggregateOffer",
     priceCurrency: "AUD",
@@ -52,8 +52,8 @@ const jsonLd = {
   publisher: {
     "@type": "Organization",
     name: "trackio",
-    url: "https://app.trackio.au",
-    logo: "https://app.trackio.au/trackio_t_full_logo.svg",
+    url: "https://trackio.au",
+    logo: "https://trackio.au/trackio_t_full_logo.svg",
   },
 };
 

@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@/components/ui/icon";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Anomaly, AnomalySeverity, AnomalyCategory } from "@/lib/anomaly-detection";
 import type { IconName } from "@/components/ui/icon";
@@ -47,32 +48,32 @@ const CATEGORY_CONFIG: Record<
   stock: {
     label: "Stock",
     icon: "package",
-    bg: "bg-violet-50 dark:bg-violet-950/50",
-    text: "text-violet-700 dark:text-violet-400",
+    bg: "bg-action-50",
+    text: "text-action-600",
   },
   asset: {
     label: "Asset",
     icon: "box",
-    bg: "bg-sky-50 dark:bg-sky-950/50",
-    text: "text-sky-700 dark:text-sky-400",
+    bg: "bg-[#E8532E]/10",
+    text: "text-[#E8532E]",
   },
   staff: {
     label: "Staff",
     icon: "users",
-    bg: "bg-emerald-50 dark:bg-emerald-950/50",
-    text: "text-emerald-700 dark:text-emerald-400",
+    bg: "bg-action-50",
+    text: "text-action-600",
   },
   damage: {
     label: "Damage",
     icon: "alert-triangle",
-    bg: "bg-orange-50 dark:bg-orange-950/50",
-    text: "text-orange-700 dark:text-orange-400",
+    bg: "bg-[#E8532E]/10",
+    text: "text-[#E8532E]",
   },
   procurement: {
     label: "Procurement",
     icon: "truck",
-    bg: "bg-indigo-50 dark:bg-indigo-950/50",
-    text: "text-indigo-700 dark:text-indigo-400",
+    bg: "bg-action-50",
+    text: "text-action-600",
   },
 };
 
@@ -127,13 +128,10 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.2, delay: index * 0.04, ease: "easeOut" }}
-      className="relative flex gap-0 rounded-xl border border-shark-100 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60"
+      className="rounded-xl border border-shark-100 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60"
     >
-      {/* Left severity bar */}
-      <div className={cn("w-1 shrink-0", sev.bar)} aria-hidden />
-
       {/* Card body */}
-      <div className="flex-1 min-w-0 px-4 py-4">
+      <div className="px-4 py-4">
         {/* Top row: category badge + metric pill + timestamp */}
         <div className="flex flex-wrap items-center gap-2 mb-2.5">
           <span
@@ -437,25 +435,30 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
         <SettingsPanel currentSettings={currentSettings} />
       )}
 
+      <Card padding="none">
+      <div className="p-5 space-y-8">
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-shark-900 dark:text-shark-100">
-            Anomaly Alerts
-          </h1>
-          <p className="mt-0.5 text-sm text-shark-500 dark:text-shark-400">
-            {anomalies.length === 0 ? (
-              "No anomalies detected — all systems normal."
-            ) : (
-              <>
-                <span className="font-semibold text-shark-700 dark:text-shark-300">
-                  {anomalies.length} {anomalies.length === 1 ? "anomaly" : "anomalies"} detected
-                </span>
-                <span className="mx-1.5 text-shark-300 dark:text-shark-600">·</span>
-                Last checked {lastChecked}
-              </>
-            )}
-          </p>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="alert-triangle" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">Anomaly Alerts</h3>
+            <p className="text-xs text-shark-400">
+              {anomalies.length === 0 ? (
+                "No anomalies detected — all systems normal."
+              ) : (
+                <>
+                  <span className="font-semibold text-shark-700">
+                    {anomalies.length} {anomalies.length === 1 ? "anomaly" : "anomalies"} detected
+                  </span>
+                  <span className="mx-1.5 text-shark-300">·</span>
+                  Last checked {lastChecked}
+                </>
+              )}
+            </p>
+          </div>
         </div>
 
         {/* Severity summary pills */}
@@ -489,7 +492,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-1 border-b border-shark-100 dark:border-shark-800 pb-px">
+      <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
         {FILTER_TABS.map((tab) => {
           const isActive = activeFilter === tab.id;
           const count = counts[tab.id];
@@ -497,38 +500,19 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
             <button
               key={tab.id}
               onClick={() => setActiveFilter(tab.id)}
-              className={cn(
-                "relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors rounded-t",
+              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
                 isActive
-                  ? "text-shark-900 dark:text-shark-100"
-                  : "text-shark-400 hover:text-shark-600 dark:text-shark-500 dark:hover:text-shark-300"
-              )}
+                  ? "bg-action-500 text-white shadow-sm"
+                  : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+              }`}
             >
               {tab.label}
               {count > 0 && (
-                <span
-                  className={cn(
-                    "inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold leading-none",
-                    isActive
-                      ? tab.id === "critical"
-                        ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400"
-                        : tab.id === "warning"
-                          ? "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
-                          : tab.id === "info"
-                            ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400"
-                            : "bg-shark-100 text-shark-600 dark:bg-shark-800 dark:text-shark-300"
-                      : "bg-shark-100 text-shark-500 dark:bg-shark-800 dark:text-shark-500"
-                  )}
-                >
+                <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
+                  isActive ? "text-white bg-[#E8532E]" : "text-shark-500 bg-shark-200"
+                }`}>
                   {count}
                 </span>
-              )}
-              {isActive && (
-                <motion.div
-                  layoutId="anomaly-filter-underline"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-shark-900 dark:bg-shark-100 rounded-full"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                />
               )}
             </button>
           );
@@ -554,6 +538,8 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
+      </Card>
     </div>
   );
 }

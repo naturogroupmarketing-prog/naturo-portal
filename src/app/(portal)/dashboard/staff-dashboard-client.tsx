@@ -459,11 +459,16 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
   return (
     <PullToRefresh>
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Dashboard</h1>
-        <p className="text-sm text-shark-400 mt-1">Your personal overview</p>
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+          <Icon name="home" size={14} className="text-action-600" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-shark-900">Dashboard</h3>
+          <p className="text-xs text-shark-400">Your personal overview</p>
+        </div>
       </div>
 
       {/* Pending Starter Kit Checklist */}
@@ -1100,19 +1105,20 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
       {/* Stat Cards */}
       <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
         {stats.map((stat) => (
-          <Link key={stat.label} href={stat.href}>
-            <Card className={` hover:shadow-md transition-shadow cursor-pointer`}>
-              <CardContent className="py-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-shark-400">{stat.label}</p>
-                    <p className="text-3xl font-bold text-shark-900 mt-1">{stat.value}</p>
+          <Link key={stat.label} href={stat.href} className="block group">
+            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
+              <CardContent className="px-3 py-3">
+                <div className="flex items-center gap-2">
+                  <div className={`w-9 h-9 rounded-lg ${stat.iconBg} flex items-center justify-center flex-shrink-0`}>
+                    <Icon name={stat.icon} size={16} className={stat.iconColor} />
                   </div>
-                  <div className={`w-12 h-12 rounded-xl ${stat.iconBg} flex items-center justify-center`}>
-                    <Icon name={stat.icon} size={24} className={stat.iconColor} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-shark-500 truncate">{stat.label}</p>
+                    <p className="text-xl font-bold text-shark-900">{stat.value}</p>
                   </div>
+                  <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
                 </div>
               </CardContent>
             </Card>
@@ -1124,16 +1130,16 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {consumableUsageHistory.some((m) => m.totalUsed > 0) && (
         <Card>
           <div
-            className="px-6 py-4 flex items-center justify-between cursor-pointer"
+            className="px-4 py-4 flex items-center justify-between cursor-pointer"
             onClick={() => setShowUsageHistory(!showUsageHistory)}
           >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-action-500 flex items-center justify-center">
-                <Icon name="droplet" size={20} className="text-white" />
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                <Icon name="droplet" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-shark-900">Supply Usage</h3>
-                <p className="text-xs text-shark-400 mt-0.5">Last 6 months</p>
+                <h3 className="text-sm font-semibold text-shark-900">Supply Usage</h3>
+                <p className="text-xs text-shark-400">Last 6 months</p>
               </div>
             </div>
             <Icon name="chevron-down" size={16} className={`text-shark-400 transition-transform ${showUsageHistory ? "" : "-rotate-90"}`} />
@@ -1179,16 +1185,16 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         return (
         <Card className="">
           <div
-            className="px-6 py-4 flex items-center justify-between cursor-pointer"
+            className="px-4 py-4 flex items-center justify-between cursor-pointer"
             onClick={() => setShowConditionChecks(!showConditionChecks)}
           >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-action-500 flex items-center justify-center">
-                <Icon name="search" size={20} className="text-white" />
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                <Icon name="search" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-shark-900">{freqLabel} Condition Check</h3>
-                <p className="text-xs text-shark-400 mt-0.5">
+                <h3 className="text-sm font-semibold text-shark-900">{freqLabel} Condition Check</h3>
+                <p className="text-xs text-shark-400">
                   {checkedCount === conditionCheckItems.length ? (
                     <span className="text-action-600 font-medium">All {conditionCheckItems.length} items checked ✓</span>
                   ) : (

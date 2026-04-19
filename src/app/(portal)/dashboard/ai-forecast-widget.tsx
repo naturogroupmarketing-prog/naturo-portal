@@ -46,18 +46,18 @@ export function AiForecastWidget({ items }: Props) {
   const hasAny = items.length > 0;
 
   return (
-    <Card>
+    <Card className="border-action-200">
       <div className="p-5">
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">
           <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
             <Icon name="bar-chart" size={14} className="text-action-600" />
           </div>
-          <div className="flex-1">
-            <h3 className="text-sm font-bold text-shark-900">AI Stock Forecast</h3>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-shark-900">AI Stock Forecast</h3>
             <p className="text-xs text-shark-400">Next 14 days — based on usage patterns</p>
           </div>
-          <span className="text-[10px] font-semibold bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
+          <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
         </div>
 
         {/* All clear */}

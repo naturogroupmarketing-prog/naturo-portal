@@ -120,21 +120,25 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
     });
 
   return (
-    <div className="space-y-10">
+    <Card>
+    <div className="p-4 sm:p-5 space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Requests</h1>
-        <p className="text-sm text-shark-400 mt-1">
-          Request items and confirm what you&apos;ve received
-        </p>
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+          <Icon name="clipboard" size={14} className="text-action-600" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-shark-900">Requests</h3>
+          <p className="text-xs text-shark-400">Request items and confirm what you&apos;ve received</p>
+        </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-50 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
         <button
           onClick={() => setTab("request")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "request" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
+            tab === "request" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
           }`}
         >
           Request
@@ -149,7 +153,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         <button
           onClick={() => setTab("confirm")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "confirm" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
+            tab === "confirm" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
           }`}
         >
           Confirm Receipt
@@ -167,7 +171,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
           {/* Active Requests */}
           {recentRequests.length > 0 && (
             <div>
-              <h2 className="text-lg font-semibold text-shark-900 mb-3">My Requests</h2>
+              <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest mb-3">My Requests</p>
               <div className="space-y-3">
                 {recentRequests.map((r) => (
                   <Card key={r.id}>
@@ -344,6 +348,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         </>
       )}
     </div>
+    </Card>
   );
 }
 

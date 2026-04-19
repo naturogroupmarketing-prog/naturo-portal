@@ -1,13 +1,11 @@
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.trackio.au";
-
   return {
     rules: [
       {
         userAgent: "*",
-        allow: ["/welcome", "/privacy-policy", "/terms-of-service"],
+        allow: ["/", "/privacy-policy", "/terms-of-service"],
         disallow: [
           "/dashboard",
           "/admin",
@@ -22,9 +20,10 @@ export default function robots(): MetadataRoute.Robots {
           "/login",
           "/forgot-password",
           "/reset-password",
+          "/setup",
         ],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: "https://trackio.au/sitemap.xml",
   };
 }

@@ -94,13 +94,17 @@ export function StarterKitsClient({
   };
 
   return (
-    <div className="space-y-10">
+    <Card>
+    <div className="p-4 sm:p-5 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Starter Kits</h1>
-          <p className="text-sm text-shark-400 mt-1">
-            Pre-defined sets of assets and supplies assigned to new staff automatically.
-          </p>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="box" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">Starter Kits</h3>
+            <p className="text-xs text-shark-400">Pre-defined sets of assets and supplies assigned to new staff automatically.</p>
+          </div>
         </div>
         <Button size="sm" onClick={() => setShowCreate(true)}>
           <Icon name="plus" size={14} className="mr-1.5" />
@@ -334,6 +338,7 @@ export function StarterKitsClient({
         )}
       </Modal>
     </div>
+    </Card>
   );
 }
 

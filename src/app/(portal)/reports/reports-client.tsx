@@ -36,10 +36,16 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
   }
 
   return (
-    <div className="space-y-10">
-      <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Reports</h1>
-        <p className="text-sm text-shark-400 mt-1">Export data as CSV or printable reports</p>
+    <Card>
+    <div className="p-4 sm:p-5 space-y-8">
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+          <Icon name="bar-chart" size={14} className="text-action-600" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-shark-900">Reports</h3>
+          <p className="text-xs text-shark-400">Export data as CSV or printable reports</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -80,5 +86,6 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
         ))}
       </div>
     </div>
+    </Card>
   );
 }

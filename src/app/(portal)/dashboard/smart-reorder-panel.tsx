@@ -144,34 +144,30 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="border-action-200 overflow-hidden">
       {/* Header */}
       <div className="border-b border-shark-100 dark:border-shark-800 px-5 py-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
-              <Icon name="truck" size={15} className="text-action-600" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-shark-900 dark:text-shark-100">Smart Reorder</h3>
-              <p className="text-[11px] text-shark-400">Powered by AI predictions</p>
-            </div>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+            <Icon name="truck" size={14} className="text-action-600" />
           </div>
-
-          <div className="flex items-center gap-2 mt-0.5">
-            {hasItems && (
-              <span
-                className={cn(
-                  "text-[11px] font-bold px-2 py-0.5 rounded-full",
-                  criticalCount > 0
-                    ? "bg-red-50 text-red-600"
-                    : "bg-shark-100 text-shark-600"
-                )}
-              >
-                {recommendations.length} item{recommendations.length !== 1 ? "s" : ""}
-              </span>
-            )}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Smart Reorder</h3>
+            <p className="text-xs text-shark-400">Powered by AI predictions</p>
           </div>
+          <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
+          {hasItems && (
+            <span
+              className={cn(
+                "text-[11px] font-bold px-2 py-0.5 rounded-full",
+                criticalCount > 0
+                  ? "bg-red-50 text-red-600"
+                  : "bg-shark-100 text-shark-600"
+              )}
+            >
+              {recommendations.length} item{recommendations.length !== 1 ? "s" : ""}
+            </span>
+          )}
         </div>
       </div>
 

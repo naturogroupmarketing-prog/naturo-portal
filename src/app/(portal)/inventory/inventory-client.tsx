@@ -104,7 +104,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                 <Icon name="package" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-shark-900">Inventory</h3>
+                <h3 className="text-sm font-semibold text-shark-900">Choose your location</h3>
                 <p className="text-xs text-shark-400">
                   {totalRegions} locations · {totalAssets} assets · {totalConsumables} supplies
                 </p>
@@ -133,25 +133,25 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
             <p className="text-sm text-shark-400">{search ? "No locations match your search." : "No locations yet."}</p>
           </div>
         ) : (
-          <div className="divide-y-2 divide-shark-100">
+          <div className="space-y-6 pt-2 pb-4">
             {filteredLocations.map((state, sIdx) => {
               const sc = STATE_COLORS[sIdx % STATE_COLORS.length];
               const isCollapsed = collapsedStates.has(state.id);
 
               return (
-                <div key={state.id}>
-                  {/* State header row */}
+                <div key={state.id} className="space-y-2">
+                  {/* State header — section label style */}
                   <button
                     onClick={() => toggleState(state.id)}
-                    className="w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 bg-shark-50/70 hover:bg-shark-100/60 transition-colors group text-left"
+                    className="w-full flex items-center gap-2.5 px-4 sm:px-5 py-2.5 bg-shark-50 dark:bg-shark-800/30 hover:bg-shark-100/70 dark:hover:bg-shark-800/50 transition-colors group text-left"
                   >
-                    <div className={`w-7 h-7 rounded-lg ${sc.bg} flex items-center justify-center shrink-0`}>
-                      <Icon name="map-pin" size={14} className={sc.color} />
+                    <div className={`w-5 h-5 rounded-md ${sc.bg} flex items-center justify-center shrink-0`}>
+                      <Icon name="map-pin" size={11} className={sc.color} />
                     </div>
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <span className="text-sm font-semibold text-shark-900">{state.name}</span>
-                      <span className="text-[10px] font-semibold text-shark-500 bg-shark-200/60 px-2 py-0.5 rounded-full">
-                        {state.regions.length} location{state.regions.length !== 1 ? "s" : ""}
+                      <span className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">{state.name}</span>
+                      <span className="text-[10px] font-semibold text-shark-400 dark:text-shark-500 bg-shark-200/80 dark:bg-shark-700 px-1.5 py-0.5 rounded-full">
+                        {state.regions.length}
                       </span>
                     </div>
                     {isSuperAdmin && state.regions.length === 0 && (
@@ -163,33 +163,33 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                         }}
                         className="text-shark-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <Icon name="x" size={14} />
+                        <Icon name="x" size={13} />
                       </button>
                     )}
                     <Icon
                       name="chevron-down"
-                      size={14}
+                      size={12}
                       className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
                     />
                   </button>
 
-                  {/* Region rows */}
+                  {/* Region rows — navigable items, clearly subordinate */}
                   {!isCollapsed && (
-                    <div className="divide-y divide-shark-50">
+                    <div className="divide-y divide-shark-100 dark:divide-shark-800">
                       {state.regions.length === 0 ? (
-                        <p className="text-sm text-shark-400 px-4 sm:px-5 py-3">No locations yet.</p>
+                        <p className="text-sm text-shark-400 px-4 sm:px-5 py-3 pl-10">No locations yet.</p>
                       ) : (
                         state.regions.map((region) => {
                           const alerts = regionAlerts[region.id];
                           return (
-                            <Link key={region.id} href={`/inventory/${region.id}`} className="flex items-center gap-3 px-4 sm:px-5 py-3 hover:bg-shark-50/60 transition-colors group cursor-pointer">
-                              {/* Icon */}
-                              <div className={`w-7 h-7 rounded-lg ${sc.bg} flex items-center justify-center shrink-0`}>
+                            <Link key={region.id} href={`/inventory/${region.id}`} className="flex items-center gap-3 px-4 sm:px-5 py-3.5 pl-10 sm:pl-12 hover:bg-action-50/50 dark:hover:bg-shark-800/30 transition-colors group cursor-pointer">
+                              {/* Icon — rounded-full to differ from state's rounded-md */}
+                              <div className={`w-7 h-7 rounded-full ${sc.bg} flex items-center justify-center shrink-0`}>
                                 <Icon name="map-pin" size={13} className={sc.color} />
                               </div>
                               {/* Name + meta */}
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-shark-800">{region.name}</p>
+                                <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">{region.name}</p>
                                 <p className="text-xs text-shark-400">
                                   {region._count.assets} assets · {region._count.consumables} supplies · {region._count.users} staff
                                   {region.address && <span className="hidden lg:inline"> · {region.address}</span>}

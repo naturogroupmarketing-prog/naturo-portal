@@ -73,16 +73,25 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
   const overdueCount = schedules.filter((s) => s.isActive && new Date(s.nextDueDate) < new Date()).length;
 
   return (
-    <div className="space-y-10">
+    <Card>
+    <div className="p-4 sm:p-5 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Maintenance</h1>
-          <p className="text-sm text-shark-400 mt-1">
-            {schedules.filter((s) => s.isActive).length} scheduled tasks
-            {overdueCount > 0 && <span className="text-red-500 font-medium"> · {overdueCount} overdue</span>}
-          </p>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="wrench" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">Maintenance</h3>
+            <p className="text-xs text-shark-400">
+              {schedules.filter((s) => s.isActive).length} scheduled tasks
+              {overdueCount > 0 && <span className="text-red-500 font-medium"> · {overdueCount} overdue</span>}
+            </p>
+          </div>
         </div>
-        <Button onClick={() => setShowCreate(true)}>+ Schedule Maintenance</Button>
+        <Button size="sm" onClick={() => setShowCreate(true)}>
+          <Icon name="plus" size={14} className="mr-1.5" />
+          Schedule Maintenance
+        </Button>
       </div>
 
       <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
@@ -245,5 +254,6 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
         )}
       </Modal>
     </div>
+    </Card>
   );
 }

@@ -158,7 +158,7 @@ function QuickActionsBar({ role }: { role: string }) {
         <Link
           key={action.label}
           href={action.href}
-          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 hover:bg-shark-50 dark:hover:bg-shark-800 hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group text-center"
+          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 hover:shadow-md transition-all duration-200 group text-center"
         >
           <Icon name={action.icon} size={20} className="text-shark-500 dark:text-shark-400 group-hover:text-action-500 transition-colors duration-150" />
           <span className="text-xs font-medium text-shark-600 dark:text-shark-400 group-hover:text-shark-800 dark:group-hover:text-shark-200 transition-colors">{action.label}</span>
@@ -296,9 +296,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </div>
       )}
 
-      {/* Header with settings gear */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-shark-900 tracking-tight">Dashboard</h1>
+      {/* Settings gear */}
+      <div className="flex justify-end">
         <button
           onClick={() => setSettingsOpen(true)}
           className="p-2 rounded-full text-shark-400 hover:text-shark-600 hover:bg-shark-100 transition-colors"
@@ -308,32 +307,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </button>
       </div>
 
-      {/* Quick Actions */}
-      {isSuperAdmin && (
-        <div className="flex flex-wrap gap-1.5 sm:gap-2">
-          <Link href="/assets?action=add" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="plus" size={12} className="text-action-500" />
-            Add Asset
-          </Link>
-          <Link href="/consumables?action=add" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="plus" size={12} className="text-action-500" />
-            Add Supply
-          </Link>
-          <Link href="/purchase-orders?action=create" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="truck" size={12} className="text-action-500" />
-            Create PO
-          </Link>
-          <Link href="/staff" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="users" size={12} className="text-action-500" />
-            Staff
-          </Link>
-          <Link href="/admin/import" className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-shark-200 bg-white text-xs sm:text-sm text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm transition-all">
-            <Icon name="upload" size={12} className="text-action-500" />
-            Import
-          </Link>
-          <RecalcPredictionsButton />
-        </div>
-      )}
 
       {preferences.sectionOrder.map((sectionId) => {
         switch (sectionId) {
@@ -346,16 +319,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
                     <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
-                      <CardContent className="px-3 py-3 sm:px-5 sm:py-5">
-                        <div className="flex items-center gap-2 sm:gap-4">
-                          <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
-                            <Icon name={s.icon} size={16} className={`${s.iconColor} sm:hidden`} />
-                            <Icon name={s.icon} size={22} className={`${s.iconColor} hidden sm:block`} />
+                      <CardContent className="px-3 py-3">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-9 h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                            <Icon name={s.icon} size={16} className={s.iconColor} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm text-shark-500 truncate">{s.label}</p>
-                            <div className="flex items-center gap-1 sm:gap-2">
-                              <AnimatedCounter value={s.value} className="text-xl sm:text-3xl font-bold text-shark-900" />
+                            <p className="text-xs text-shark-500 truncate">{s.label}</p>
+                            <div className="flex items-center gap-1">
+                              <AnimatedCounter value={s.value} className="text-xl font-bold text-shark-900" />
                               {s.trend && (
                                 <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                   s.trend.direction === "down" ? "bg-green-50 text-green-600" :
@@ -369,8 +341,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               )}
                             </div>
                           </div>
-                          <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 sm:hidden" />
-                          <Icon name="arrow-right" size={18} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden sm:block" />
+                          <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
                         </div>
                       </CardContent>
                     </Card>
@@ -383,25 +354,25 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               {/* Procurement cost banner — shows whenever there are active POs */}
               {isSuperAdmin && activePOCount > 0 && (
                 <Link href="/purchase-orders" className="block group">
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-shark-100 bg-shark-50/50 hover:border-shark-200 hover:shadow-sm transition-all">
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-action-200 bg-action-50/60 backdrop-blur-sm hover:shadow-md transition-all duration-200">
                     <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
                       <Icon name="truck" size={15} className="text-action-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-shark-500">Active Procurement</p>
-                      <p className="text-[11px] text-shark-400">
+                      <p className="text-xs font-semibold text-action-600">Active Procurement</p>
+                      <p className="text-[11px] text-action-400">
                         {activePOCount} order{activePOCount !== 1 ? "s" : ""} in pipeline across all regions
                         {(!procurementCost || procurementCost === 0) && " · Add unit costs to see total value"}
                       </p>
                     </div>
                     <div className="text-right shrink-0">
                       {procurementCost && procurementCost > 0 ? (
-                        <p className="text-xl font-bold text-shark-900">{fmtAUD(procurementCost)}</p>
+                        <p className="text-xl font-bold text-action-700">{fmtAUD(procurementCost)}</p>
                       ) : (
-                        <p className="text-sm font-semibold text-shark-400">{activePOCount} PO{activePOCount !== 1 ? "s" : ""}</p>
+                        <p className="text-sm font-semibold text-action-500">{activePOCount} PO{activePOCount !== 1 ? "s" : ""}</p>
                       )}
                     </div>
-                    <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors shrink-0" />
+                    <Icon name="arrow-right" size={16} className="text-action-400 group-hover:text-action-600 transition-colors shrink-0" />
                   </div>
                 </Link>
               )}
@@ -756,21 +727,19 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           case "predicted-shortages":
             return showPredictions && predictedShortages.length > 0 ? (
-              <Card key="predicted-shortages" className="border-[#E8532E]/20">
+              <Card key="predicted-shortages" className="border-[#E8532E]/30">
                 <div className="p-4 sm:p-5">
                   {/* Header */}
-                  <Link href="/purchase-orders" className="flex items-center justify-between mb-4 group cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center shrink-0">
-                        <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-semibold text-shark-900">Predicted Shortages</h3>
-                        <p className="text-xs text-shark-400">AI-powered depletion forecasts</p>
-                      </div>
-                      <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
+                  <Link href="/purchase-orders" className="flex items-center gap-2 mb-4 group cursor-pointer">
+                    <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center shrink-0">
+                      <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
                     </div>
-                    <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors" />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-semibold text-shark-900">Predicted Shortages</h3>
+                      <p className="text-xs text-shark-400">AI-powered depletion forecasts</p>
+                    </div>
+                    <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
+                    <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors shrink-0" />
                   </Link>
                   {/* Items */}
                   <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">

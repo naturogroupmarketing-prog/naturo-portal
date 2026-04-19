@@ -131,7 +131,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         )}
 
         {/* Main content */}
-        <main id="main-content" className={`flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 sm:p-6 lg:p-12 animate-page-in ${role === "STAFF" ? "pb-20 lg:pb-12" : "pb-16 sm:pb-6 lg:pb-12"}`}>
+        <main id="main-content" className={`flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 sm:p-6 lg:p-12 ${role === "STAFF" ? "pb-20 lg:pb-12" : "pb-16 sm:pb-6 lg:pb-12"}`}>
           <div className="hidden lg:flex mb-4">
             <Breadcrumbs />
           </div>

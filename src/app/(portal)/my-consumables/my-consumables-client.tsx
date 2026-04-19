@@ -136,12 +136,16 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
   const totalAssigned = mergedAssignments.length;
 
   return (
-    <div className="space-y-10">
-      <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">My Supplies</h1>
-        <p className="text-sm text-shark-400 mt-1">
-          Your supply assignments and requests
-        </p>
+    <Card>
+    <div className="p-4 sm:p-5 space-y-8">
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+          <Icon name="droplet" size={14} className="text-action-600" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-shark-900">My Supplies</h3>
+          <p className="text-xs text-shark-400">Your supply assignments and requests</p>
+        </div>
       </div>
 
       {/* Pending Assignments — need confirmation */}
@@ -266,7 +270,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
       {/* Pending & Recent Requests */}
       {recentRequests.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-shark-900 mb-3">Pending & Recent Requests</h2>
+          <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest mb-3">Pending & Recent Requests</p>
           <div className="space-y-3">
             {recentRequests.map((r) => (
               <Card key={r.id}>
@@ -296,6 +300,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
         </div>
       )}
     </div>
+    </Card>
   );
 }
 

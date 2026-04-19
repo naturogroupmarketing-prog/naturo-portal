@@ -153,7 +153,8 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   }
 
   return (
-    <div className="space-y-10">
+    <Card>
+    <div className="p-4 sm:p-5 space-y-8">
       <div className="flex items-center gap-2">
         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
           <Icon name="arrow-left" size={14} className="text-action-600" />
@@ -344,5 +345,6 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
         </div>
       )}
     </div>
+    </Card>
   );
 }
