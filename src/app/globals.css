@@ -107,6 +107,8 @@ a, button, [role="button"], input, select, textarea, label {
   .safe-top { padding-top: env(safe-area-inset-top); }
   .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
   .safe-x { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+  /* safe-area-pb: adds bottom padding on top of existing pb (additive) */
+  .safe-area-pb { padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
 }
 
 /* Prevent iOS zoom on input focus (font-size < 16px triggers zoom) */

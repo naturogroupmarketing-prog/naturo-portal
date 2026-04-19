@@ -308,7 +308,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                 <Card key={a.id}>
                   <CardContent className="py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                         {a.consumable.imageUrl ? (
                           <img src={a.consumable.imageUrl} alt="" className="w-full h-full object-cover" />
                         ) : (

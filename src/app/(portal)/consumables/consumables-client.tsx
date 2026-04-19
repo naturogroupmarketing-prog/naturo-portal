@@ -551,7 +551,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" />
                       </div>
                     ) : (
-                      <div className="w-11 h-11 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                      <div className="w-11 h-11 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                         <Icon name="droplet" size={18} className="text-shark-300" />
                       </div>
                     )}
@@ -635,7 +635,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {visibleColumns.photo && (
                     <td className="px-3 py-2">
                       {c.imageUrl ? <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100"><img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" /></div>
-                      : <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center"><Icon name="droplet" size={18} className="text-shark-300" /></div>}
+                      : <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center"><Icon name="droplet" size={18} className="text-shark-300" /></div>}
                     </td>
                     )}
                     {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
@@ -1639,7 +1639,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                                   <img src={a.consumable.imageUrl} alt={a.consumable.name} className="w-full h-full object-cover" />
                                 </div>
                               ) : (
-                                <div className="w-7 h-7 rounded bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                                <div className="w-7 h-7 rounded bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                                   <Icon name="droplet" size={14} className="text-shark-300" />
                                 </div>
                               )}

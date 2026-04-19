@@ -164,7 +164,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
             <div className="space-y-2">
               {pendingAssignments.map((a) => (
                 <div key={a.id} className="flex items-center gap-3 bg-white dark:bg-shark-800 rounded-lg px-3 py-2.5 border border-shark-100 dark:border-shark-700">
-                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                     {a.consumable.imageUrl ? <img src={a.consumable.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                   </div>
                   <div className="flex-1 min-w-0">

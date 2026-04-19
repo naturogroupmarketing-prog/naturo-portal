@@ -522,7 +522,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         return (
                           <div key={key} className={`flex items-center gap-3 px-3 py-2.5 transition-all ${isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""}`}>
                             <input type="checkbox" checked={isReceived} onChange={() => toggleItem(key, "received")} className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0" />
-                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                               {item.asset.imageUrl ? <img src={item.asset.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -561,7 +561,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         return (
                           <div key={key} className={`flex items-center gap-3 px-3 py-2.5 transition-all ${isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""}`}>
                             <input type="checkbox" checked={isReceived} onChange={() => toggleItem(key, "received")} className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0" />
-                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                               {item.consumable.imageUrl ? <img src={item.consumable.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                             </div>
                             <div className="flex-1 min-w-0">

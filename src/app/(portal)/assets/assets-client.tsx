@@ -773,7 +773,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                         <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" />
                       </div>
                     ) : (
-                      <div className="w-11 h-11 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                      <div className="w-11 h-11 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                         <Icon name="package" size={18} className="text-shark-300" />
                       </div>
                     )}
@@ -872,7 +872,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       {asset.imageUrl ? (
                         <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100"><img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /></div>
                       ) : (
-                        <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center"><Icon name="package" size={18} className="text-shark-300" /></div>
+                        <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center"><Icon name="package" size={18} className="text-shark-300" /></div>
                       )}
                     </td>
                     )}
@@ -955,7 +955,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       </div>
 
       {/* Filters + Delete Selected */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
         <Input
           placeholder="Search assets..."
           value={search}

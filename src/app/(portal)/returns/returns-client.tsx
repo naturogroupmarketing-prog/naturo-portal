@@ -265,7 +265,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                                 isNotReturned ? "text-[#E8532E] focus:ring-amber-400" : "text-action-500 focus:ring-action-400"
                               }`}
                             />
-                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                               {photo ? (
                                 <img src={photo} alt="" className="w-full h-full object-cover" />
                               ) : (

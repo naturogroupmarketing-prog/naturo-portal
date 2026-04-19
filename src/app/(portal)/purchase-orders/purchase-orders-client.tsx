@@ -412,7 +412,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                     <img src={po.consumable.imageUrl} alt={po.consumable.name} className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                     <Icon name="droplet" size={16} className="text-shark-300" />
                   </div>
                 )}
@@ -470,7 +470,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                           <img src={po.consumable.imageUrl} alt={po.consumable.name} className="w-full h-full object-cover" />
                         </div>
                       ) : (
-                        <div className="w-8 h-8 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                           <Icon name="droplet" size={14} className="text-shark-300" />
                         </div>
                       )}
