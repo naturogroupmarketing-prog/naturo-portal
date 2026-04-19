@@ -106,7 +106,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
       {/* Mobile search button — opens command search */}
       <button
         onClick={() => setSearchOpen(true)}
-        className="lg:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-shark-400 hover:text-shark-700 rounded-full hover:bg-shark-50 transition-colors"
+        className="lg:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 rounded-full hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
         aria-label="Search"
       >
         <Icon name="search" size={18} />

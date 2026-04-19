@@ -180,8 +180,8 @@ export function BillingClient({ org }: Props) {
                         : isUpgrade
                           ? "bg-action-500 text-white hover:bg-action-600"
                           : isDowngrade
-                            ? "border-2 border-shark-200 text-shark-500 hover:border-shark-300"
-                            : "border-2 border-shark-200 text-shark-700 dark:text-shark-300 hover:border-action-500 hover:text-action-500"
+                            ? "border-2 border-shark-200 dark:border-shark-700 text-shark-500 hover:border-shark-300 dark:hover:border-shark-600"
+                            : "border-2 border-shark-200 dark:border-shark-700 text-shark-700 dark:text-shark-300 hover:border-action-500 hover:text-action-500"
                     }`}
                   >
                     {changing === plan.key ? "Changing..." :

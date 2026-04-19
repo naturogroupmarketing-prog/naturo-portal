@@ -593,7 +593,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   </div>
                   <p className="text-sm font-medium text-shark-700">Processing your receipt...</p>
                   <p className="text-xs text-shark-400 mt-1">Updating inventory records</p>
-                  <div className="w-48 h-1.5 bg-shark-100 rounded-full mt-3 overflow-hidden">
+                  <div className="w-48 h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full mt-3 overflow-hidden">
                     <div className="h-full bg-action-400 rounded-full animate-progress-bar" />
                   </div>
                 </div>
@@ -963,7 +963,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Return Item</h3>
               <button
                 onClick={() => setReturningItemId(null)}
-                className="p-1.5 rounded-lg hover:bg-shark-100 text-shark-400"
+                className="p-1.5 rounded-lg hover:bg-shark-100 dark:bg-shark-700 text-shark-400"
               >
                 <Icon name="x" size={18} />
               </button>
@@ -981,7 +981,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <select
                   value={returnCondition}
                   onChange={(e) => setReturnCondition(e.target.value)}
-                  className="w-full border border-shark-200 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500"
+                  className="w-full border border-shark-200 dark:border-shark-700 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500"
                 >
                   <option value="GOOD">Good</option>
                   <option value="FAIR">Fair</option>
@@ -998,7 +998,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   onChange={(e) => setReturnNotes(e.target.value)}
                   placeholder="Any additional details about the return..."
                   rows={3}
-                  className="w-full border border-shark-200 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500 resize-none"
+                  className="w-full border border-shark-200 dark:border-shark-700 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500 resize-none"
                 />
               </div>
             </div>
@@ -1018,7 +1018,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 </div>
                 <p className="text-sm font-medium text-shark-700">Processing return...</p>
                 <p className="text-xs text-shark-400 mt-1">Notifying your manager</p>
-                <div className="w-48 h-1.5 bg-shark-100 rounded-full mt-3 overflow-hidden">
+                <div className="w-48 h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full mt-3 overflow-hidden">
                   <div className="h-full bg-red-400 rounded-full animate-progress-bar" />
                 </div>
               </div>
@@ -1274,14 +1274,14 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         <div className="flex items-center gap-2 shrink-0">
                           {/* Photo preview */}
                           {hasPhoto && (
-                            <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-200">
+                            <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-200 dark:border-shark-700">
                               <img src={state.photoUrl} alt={`${item.name} condition photo`} className="w-full h-full object-cover" />
                             </div>
                           )}
 
                           {/* Take photo button */}
                           <label className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                            hasPhoto ? "bg-shark-100 text-shark-600 hover:bg-shark-200" : "bg-blue-500 text-white hover:bg-blue-600"
+                            hasPhoto ? "bg-shark-100 dark:bg-shark-700 text-shark-600 hover:bg-shark-200" : "bg-blue-500 text-white hover:bg-blue-600"
                           } ${isUploading ? "opacity-50 pointer-events-none" : ""}`}>
                             {isUploading ? (
                               <span className="animate-pulse">Uploading...</span>
@@ -1325,7 +1325,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           placeholder="Notes (optional)"
                           value={state?.notes || ""}
                           onChange={(e) => setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], notes: e.target.value } }))}
-                          className="flex-1 text-xs border border-shark-200 rounded-lg px-2.5 py-1.5 focus:border-action-400 focus:outline-none focus:ring-1 focus:ring-action-400/20"
+                          className="flex-1 text-xs border border-shark-200 dark:border-shark-700 rounded-lg px-2.5 py-1.5 focus:border-action-400 focus:outline-none focus:ring-1 focus:ring-action-400/20"
                         />
                         <Button
                           size="sm"

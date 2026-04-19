@@ -1392,7 +1392,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
             <div className="flex items-start gap-4">
               {imagePreview ? (
-                <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200">
+                <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200 dark:border-shark-700">
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -1460,7 +1460,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
-            <textarea name="description" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <textarea name="description" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -1489,7 +1489,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-            <textarea name="notes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <textarea name="notes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }}>Cancel</Button>
@@ -1590,7 +1590,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
+              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
@@ -1673,7 +1673,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
               <div className="flex items-start gap-4">
                 {(editImagePreview || (!editImageRemoved && editAsset.imageUrl)) ? (
-                  <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200">
+                  <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200 dark:border-shark-700">
                     <img src={editImagePreview || editAsset.imageUrl!} alt="Preview" className="w-full h-full object-cover" />
                     <button
                       type="button"
@@ -1760,7 +1760,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
-              <textarea name="description" defaultValue={editAsset.description || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+              <textarea name="description" defaultValue={editAsset.description || ""} className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -1786,7 +1786,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="notes" defaultValue={editAsset.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+              <textarea name="notes" defaultValue={editAsset.notes || ""} className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
 
             {/* Equipment Checklist for this category */}
@@ -1802,7 +1802,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   ) : (
                     <div className="flex flex-wrap gap-1.5">
                       {equipmentList.map((item) => (
-                        <span key={item} className="inline-flex items-center gap-1 text-xs font-medium text-shark-700 dark:text-shark-300 bg-shark-50 border border-shark-200 rounded-full px-2.5 py-1">
+                        <span key={item} className="inline-flex items-center gap-1 text-xs font-medium text-shark-700 dark:text-shark-300 bg-shark-50 border border-shark-200 dark:border-shark-700 rounded-full px-2.5 py-1">
                           {item}
                           {isSuperAdmin && (
                             <button

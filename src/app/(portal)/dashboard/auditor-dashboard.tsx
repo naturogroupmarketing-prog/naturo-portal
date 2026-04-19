@@ -79,7 +79,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
             <p className="text-xs text-shark-400">Organisation-wide summary</p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-shark-100 text-shark-500 border border-shark-200 self-start sm:self-auto">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-shark-100 dark:bg-shark-700 text-shark-500 border border-shark-200 dark:border-shark-700 self-start sm:self-auto">
           <Icon name="lock" size={12} />
           Read-only access
         </span>
@@ -124,7 +124,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
           <div className="divide-y divide-shark-50 dark:divide-shark-800">
             {recentActivity.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 gap-3 text-center px-6">
-                <div className="w-10 h-10 rounded-full bg-shark-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-shark-100 dark:bg-shark-700 flex items-center justify-center">
                   <Icon name="clock" size={18} className="text-shark-400" />
                 </div>
                 <p className="text-sm text-shark-400">No recent activity to display.</p>

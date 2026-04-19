@@ -143,7 +143,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name or person..."
-              className="w-full rounded-xl border border-shark-200 bg-shark-50 pl-10 pr-4 text-base text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-shark-50 dark:bg-shark-800 pl-10 pr-4 text-base text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
               style={{ height: "48px" }}
             />
           </div>

@@ -63,7 +63,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: () => void }) 
       role="alert"
     >
       {ICONS[toast.type]}
-      <p className="text-sm font-medium text-shark-800 flex-1">{toast.message}</p>
+      <p className="text-sm font-medium text-shark-800 dark:text-shark-100 flex-1">{toast.message}</p>
       <button onClick={onRemove} aria-label="Dismiss" className="text-shark-400 hover:text-shark-600 transition-colors shrink-0 min-w-[44px] min-h-[44px] -mr-2 flex items-center justify-center">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

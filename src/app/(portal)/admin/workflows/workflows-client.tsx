@@ -107,7 +107,7 @@ function ConditionChips({ conditions }: { conditions: Record<string, unknown> })
   return (
     <div className="flex flex-wrap gap-1.5 mt-2">
       {entries.map(([key, value]) => (
-        <span key={key} className="inline-flex items-center gap-1 text-[11px] bg-shark-100 text-shark-600 px-2 py-0.5 rounded-full">
+        <span key={key} className="inline-flex items-center gap-1 text-[11px] bg-shark-100 dark:bg-shark-700 text-shark-600 px-2 py-0.5 rounded-full">
           <span className="text-shark-400">{key}:</span>
           <span className="font-medium">{String(value)}</span>
           {(key === "daysOverdue" || key === "daysOpen" || key === "daysPending") && (
@@ -161,7 +161,7 @@ function RuleCard({
                   {triggerCfg.label}
                 </span>
               )}
-              <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-shark-100 text-shark-600">
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-shark-100 dark:bg-shark-700 text-shark-600">
                 <Icon name="arrow-right" size={10} className="text-shark-400" />
                 {actionLabel}
               </span>
@@ -314,7 +314,7 @@ function WorkflowModal({
               {editRule ? "Edit Rule" : "Create Automation Rule"}
             </h2>
           </div>
-          <button type="button" onClick={onClose} className="p-1.5 text-shark-400 hover:text-shark-700 dark:text-shark-300 hover:bg-shark-100 rounded-lg transition-colors">
+          <button type="button" onClick={onClose} className="p-1.5 text-shark-400 hover:text-shark-700 dark:text-shark-300 hover:bg-shark-100 dark:bg-shark-700 rounded-lg transition-colors">
             <Icon name="x" size={16} />
           </button>
         </div>
@@ -329,7 +329,7 @@ function WorkflowModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Weekly Low-Stock Alert"
               maxLength={100}
-              className="w-full rounded-xl border border-shark-200 px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
             />
           </div>
 
@@ -342,7 +342,7 @@ function WorkflowModal({
                   "flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
                   trigger === opt.value
                     ? "border-action-400 bg-action-50"
-                    : "border-shark-200 hover:border-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"
+                    : "border-shark-200 dark:border-shark-700 hover:border-shark-300 dark:hover:border-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800"
                 )}>
                   <input
                     type="radio"
@@ -375,7 +375,7 @@ function WorkflowModal({
                       onChange={(e) => setConditionValues((prev) => ({ ...prev, [field.key]: e.target.value }))}
                       placeholder={field.placeholder}
                       min={field.type === "number" ? 1 : undefined}
-                      className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+                      className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
                     />
                   </div>
                 ))}
@@ -392,7 +392,7 @@ function WorkflowModal({
                   "flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
                   action === opt.value
                     ? "border-action-400 bg-action-50"
-                    : "border-shark-200 hover:border-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"
+                    : "border-shark-200 dark:border-shark-700 hover:border-shark-300 dark:hover:border-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800"
                 )}>
                   <input
                     type="radio"
@@ -577,7 +577,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
             {customRules.length === 0 ? (
               <Card className="border-dashed border-shark-200">
                 <CardContent className="py-10 text-center">
-                  <div className="w-10 h-10 rounded-full bg-shark-100 flex items-center justify-center mx-auto mb-3">
+                  <div className="w-10 h-10 rounded-full bg-shark-100 dark:bg-shark-700 flex items-center justify-center mx-auto mb-3">
                     <Icon name="git-branch" size={18} className="text-shark-400" />
                   </div>
                   <p className="text-sm font-medium text-shark-700 dark:text-shark-300">No custom rules yet</p>
@@ -608,7 +608,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
             <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Recent Executions</p>
             <Card className="border-shark-100">
               <div className="flex flex-col items-center justify-center py-12 gap-3 text-center px-6">
-                <div className="w-12 h-12 rounded-full bg-shark-100 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-shark-100 dark:bg-shark-700 flex items-center justify-center">
                   <Icon name="clock" size={20} className="text-shark-400" />
                 </div>
                 <div>

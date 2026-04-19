@@ -659,7 +659,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     <td className="px-4 py-3 text-shark-500 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
                       {activeAssignments.length > 0 ? (
                         <select
-                          className="text-xs bg-transparent border border-shark-200 rounded px-2 py-1 text-action-600 cursor-pointer hover:border-action-300 focus:outline-none focus:ring-1 focus:ring-action-300"
+                          className="text-xs bg-transparent border border-shark-200 dark:border-shark-700 rounded px-2 py-1 text-action-600 cursor-pointer hover:border-action-300 focus:outline-none focus:ring-1 focus:ring-action-300"
                           value=""
                           onChange={(e) => {
                             if (e.target.value) setStaffModalUserId(e.target.value);
@@ -1146,7 +1146,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
             <div className="flex items-start gap-4">
               {imagePreview ? (
-                <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200">
+                <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200 dark:border-shark-700">
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -1409,7 +1409,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
+              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
@@ -1445,7 +1445,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-lg border border-shark-200 overflow-hidden bg-shark-50 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-lg border border-shark-200 dark:border-shark-700 overflow-hidden bg-shark-50 flex items-center justify-center">
                   {(editImagePreview || (!editImageRemoved && editConsumable.imageUrl)) ? (
                     <img src={editImagePreview || editConsumable.imageUrl!} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
@@ -1553,7 +1553,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+              <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }}>Cancel</Button>

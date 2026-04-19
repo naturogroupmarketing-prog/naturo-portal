@@ -43,7 +43,7 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
           <Icon name="bar-chart" size={14} className="text-action-600" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-shark-900">Reports</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Reports</h3>
           <p className="text-xs text-shark-400">Export data as CSV or printable reports</p>
         </div>
       </div>
@@ -57,7 +57,7 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
                   <Icon name={report.icon} size={18} className={report.iconColor} />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-shark-800">{report.name}</h3>
+                  <h3 className="font-semibold text-shark-800 dark:text-shark-200">{report.name}</h3>
                   <p className="text-xs text-shark-400 mt-1">{report.description}</p>
                   <div className="flex gap-2 mt-3">
                     <Button

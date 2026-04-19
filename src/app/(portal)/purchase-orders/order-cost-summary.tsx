@@ -92,7 +92,7 @@ export function OrderCostSummary({ regions }: Props) {
                           <span className="text-sm font-bold text-shark-900 ml-2 shrink-0">{fmt(region.total)}</span>
                         </div>
                         {/* Progress bar */}
-                        <div className="h-1.5 bg-shark-100 rounded-full overflow-hidden">
+                        <div className="h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-action-400 rounded-full transition-all"
                             style={{ width: `${pct}%` }}

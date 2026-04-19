@@ -185,7 +185,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 mb-1">Description</label>
-            <textarea name="description" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <textarea name="description" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -244,7 +244,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
-              <textarea name="notes" className="w-full rounded-xl border border-shark-200 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} placeholder="What was done..." />
+              <textarea name="notes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} placeholder="What was done..." />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowComplete(null)}>Cancel</Button>

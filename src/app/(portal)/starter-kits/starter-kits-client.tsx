@@ -207,7 +207,7 @@ export function StarterKitsClient({
                                             <div className="flex items-center gap-1">
                                               <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-600 flex items-center justify-center text-shark-500 hover:bg-shark-100 dark:hover:bg-shark-700 text-xs font-bold">−</button>
                                               <span className="w-6 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{item.quantity}</span>
-                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
+                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
                                             </div>
                                             <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Item removed from kit", "success"); router.refresh(); } catch { addToast("Something went wrong — please try again", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
                                           </div>
@@ -250,7 +250,7 @@ export function StarterKitsClient({
                                             <div className="flex items-center gap-1">
                                               <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-600 flex items-center justify-center text-shark-500 hover:bg-shark-100 dark:hover:bg-shark-700 text-xs font-bold">−</button>
                                               <span className="w-6 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{item.quantity}</span>
-                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
+                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 hover:bg-shark-100 text-xs font-bold">+</button>
                                             </div>
                                             <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Item removed from kit", "success"); router.refresh(); } catch { addToast("Something went wrong — please try again", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
                                           </div>
@@ -575,7 +575,7 @@ function AddItemsChecklist({
                         min="1"
                         value={selectedCategories.get(cat.name) || 1}
                         onChange={(e) => setCategoryQty(cat.name, parseInt(e.target.value) || 1)}
-                        className="w-14 text-center text-sm rounded-lg border border-shark-200 py-0.5"
+                        className="w-14 text-center text-sm rounded-lg border border-shark-200 dark:border-shark-700 py-0.5"
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>
@@ -638,7 +638,7 @@ function AddItemsChecklist({
                           min="1"
                           value={selectedConsumables.get(c.id) || 1}
                           onChange={(e) => setConsumableQty(c.id, parseInt(e.target.value) || 1)}
-                          className="w-14 text-center text-sm rounded-lg border border-shark-200 py-0.5"
+                          className="w-14 text-center text-sm rounded-lg border border-shark-200 dark:border-shark-700 py-0.5"
                           onClick={(e) => e.stopPropagation()}
                         />
                       </div>

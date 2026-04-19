@@ -317,7 +317,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="10"
                 defaultValue={currentSettings.stockConsumptionMultiplier}
                 required
-                className="w-full rounded-lg border border-shark-200 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -333,7 +333,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="90"
                 defaultValue={currentSettings.overdueReturnDays}
                 required
-                className="w-full rounded-lg border border-shark-200 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -349,7 +349,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="20"
                 defaultValue={currentSettings.damageReportsThreshold}
                 required
-                className="w-full rounded-lg border border-shark-200 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -365,7 +365,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="200"
                 defaultValue={currentSettings.maxAnomalies}
                 required
-                className="w-full rounded-lg border border-shark-200 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div className="sm:col-span-2 flex items-center gap-3">

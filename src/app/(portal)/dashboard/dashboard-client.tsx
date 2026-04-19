@@ -300,7 +300,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <div className="flex justify-end">
         <button
           onClick={() => setSettingsOpen(true)}
-          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-shark-400 hover:text-shark-600 hover:bg-shark-100 transition-colors"
+          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-shark-400 hover:text-shark-600 hover:bg-shark-100 dark:bg-shark-700 transition-colors"
           aria-label="Dashboard settings"
           title="Dashboard settings"
         >
@@ -548,7 +548,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                               <span className="text-sm text-shark-700 dark:text-shark-300 flex-1">{item.name}</span>
                               <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
-                              <div className="w-20 bg-shark-100 rounded-full h-1.5 overflow-hidden">
+                              <div className="w-20 bg-shark-100 dark:bg-shark-700 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
                               </div>
                               <span className="text-xs text-shark-400 w-8 text-right">{pct}%</span>
@@ -581,7 +581,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <Link key={item.name} href={`/assets?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                               <span className="text-sm text-shark-700 dark:text-shark-300 flex-1 truncate">{item.name}</span>
                               <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
-                              <div className="w-24 bg-shark-100 rounded-full h-1.5 overflow-hidden">
+                              <div className="w-24 bg-shark-100 dark:bg-shark-700 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
                               </div>
                             </Link>
@@ -620,7 +620,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                               <span className="text-sm text-shark-700 dark:text-shark-300 flex-1">{item.name}</span>
                               <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
-                              <div className="w-20 bg-shark-100 rounded-full h-1.5 overflow-hidden">
+                              <div className="w-20 bg-shark-100 dark:bg-shark-700 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
                               </div>
                               <span className="text-xs text-shark-400 w-8 text-right">{pct}%</span>
@@ -653,7 +653,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <Link key={item.name} href={`/consumables?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                               <span className="text-sm text-shark-700 dark:text-shark-300 flex-1 truncate">{item.name}</span>
                               <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
-                              <div className="w-24 bg-shark-100 rounded-full h-1.5 overflow-hidden">
+                              <div className="w-24 bg-shark-100 dark:bg-shark-700 rounded-full h-1.5 overflow-hidden">
                                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
                               </div>
                             </Link>
@@ -703,7 +703,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
                             <div className="w-16">
-                              <div className="h-1.5 rounded-full bg-shark-100 overflow-hidden">
+                              <div className="h-1.5 rounded-full bg-shark-100 dark:bg-shark-700 overflow-hidden">
                                 <div
                                   className={`h-full rounded-full transition-all ${
                                     item.quantityOnHand === 0 ? "bg-red-500" : item.quantityOnHand <= item.minimumThreshold / 2 ? "bg-red-400" : "bg-amber-400"

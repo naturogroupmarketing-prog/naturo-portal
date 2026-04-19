@@ -73,7 +73,7 @@ export function ChatMessage({ role, content, isLoading, isLast, onOptionClick }:
   if (isLoading) {
     return (
       <div className="flex justify-start">
-        <div className="bg-shark-50 text-shark-900 rounded-2xl rounded-bl-md px-4 py-3 max-w-[85%]">
+        <div className="bg-shark-50 dark:bg-shark-800 text-shark-900 dark:text-shark-100 rounded-2xl rounded-bl-md px-4 py-3 max-w-[85%]">
           <div className="flex items-center gap-2.5">
             <div className="w-4 h-4 shrink-0">
               <svg className="animate-spin" viewBox="0 0 16 16" fill="none">
@@ -117,7 +117,7 @@ export function ChatMessage({ role, content, isLoading, isLast, onOptionClick }:
               <button
                 key={i}
                 onClick={() => onOptionClick?.(option)}
-                className="text-xs text-action-600 bg-white border border-action-200 hover:bg-action-50 hover:border-action-300 px-2.5 py-1.5 rounded-lg transition-colors text-left"
+                className="text-xs text-action-600 bg-white dark:bg-shark-800 border border-action-200 dark:border-action-600/30 hover:bg-action-50 dark:hover:bg-action-500/10 hover:border-action-300 px-2.5 py-1.5 rounded-lg transition-colors text-left"
               >
                 {option}
               </button>

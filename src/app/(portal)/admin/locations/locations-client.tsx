@@ -230,7 +230,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                   ) : (
                     <h2 className="text-xl font-bold text-shark-900 dark:text-shark-100">{state.name}</h2>
                   )}
-                  <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                     {state.regions.length} region{state.regions.length !== 1 ? "s" : ""}
                   </span>
                   <span className="text-xs text-shark-400 hidden sm:inline">

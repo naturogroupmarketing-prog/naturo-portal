@@ -188,7 +188,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                     </span>
 
                     {/* Bar track */}
-                    <div className="flex-1 h-5 bg-shark-100 rounded-full overflow-hidden">
+                    <div className="flex-1 h-5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
                       <motion.div
                         className={cn("h-full rounded-full", cfg.bar)}
                         initial={{ width: 0 }}

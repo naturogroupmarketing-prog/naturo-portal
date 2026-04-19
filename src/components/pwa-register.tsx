@@ -49,13 +49,13 @@ export function PWARegister() {
   if (!installPrompt || dismissed) return null;
 
   return (
-    <div className="fixed bottom-36 sm:bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-30 bg-white border border-shark-200 rounded-xl shadow-lg p-4 animate-slide-in safe-bottom">
+    <div className="fixed bottom-36 sm:bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-30 bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-xl shadow-lg p-4 animate-slide-in safe-bottom">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center shrink-0">
           <Icon name="download" size={18} className="text-action-500" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-shark-900">Install trackio</p>
+          <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Install trackio</p>
           <p className="text-xs text-shark-400 mt-0.5">Install as an app for faster access and mic permissions</p>
           <div className="flex items-center gap-2 mt-2.5">
             <button onClick={handleInstall} className="text-xs font-semibold text-white bg-action-500 hover:bg-action-600 px-3 py-1.5 rounded-lg transition-colors">

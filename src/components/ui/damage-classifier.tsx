@@ -106,9 +106,9 @@ export function DamageClassifier({
       )}
 
       {result && sev && (
-        <div className="mt-3 rounded-xl border border-shark-100 bg-white shadow-sm overflow-hidden">
+        <div className="mt-3 rounded-xl border border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-800 shadow-sm overflow-hidden">
           {/* Header bar */}
-          <div className="px-4 py-3 bg-shark-50/60 border-b border-shark-100 flex items-center justify-between gap-3">
+          <div className="px-4 py-3 bg-shark-50/60 dark:bg-shark-800/60 border-b border-shark-100 dark:border-shark-700 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-action-500">
                 <circle cx="11" cy="11" r="8" />
@@ -141,15 +141,15 @@ export function DamageClassifier({
             </div>
 
             {/* Description */}
-            <p className="text-sm text-shark-700 leading-relaxed">{result.description}</p>
+            <p className="text-sm text-shark-700 dark:text-shark-300 leading-relaxed">{result.description}</p>
 
             {/* Confidence bar */}
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-shark-400 font-medium">Confidence</span>
-                <span className="text-xs font-semibold text-shark-700">{confidencePct}%</span>
+                <span className="text-xs font-semibold text-shark-700 dark:text-shark-300">{confidencePct}%</span>
               </div>
-              <div className="h-1.5 rounded-full bg-shark-100 overflow-hidden">
+              <div className="h-1.5 rounded-full bg-shark-100 dark:bg-shark-700 overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all ${
                     confidencePct >= 80
