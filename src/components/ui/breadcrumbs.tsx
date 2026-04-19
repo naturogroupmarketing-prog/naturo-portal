@@ -65,7 +65,7 @@ export function Breadcrumbs() {
                 <path d="M9 18l6-6-6-6" />
               </svg>
               {isLast ? (
-                <span className="text-shark-700 font-medium">{crumb.label}</span>
+                <span className="text-shark-700 dark:text-shark-300 font-medium">{crumb.label}</span>
               ) : (
                 <Link
                   href={crumb.href}

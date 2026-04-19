@@ -106,7 +106,7 @@ export default async function ChangelogPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">What&apos;s New</h1>
+        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">What&apos;s New</h1>
       </div>
 
       <div className="space-y-4">
@@ -119,7 +119,7 @@ export default async function ChangelogPage() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-base font-semibold text-shark-900">{release.title}</h3>
+                    <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{release.title}</h3>
                     <Badge status={release.tag === "new" ? "AVAILABLE" : release.tag === "improved" ? "ASSIGNED" : "PENDING_RETURN"} />
                   </div>
                   <p className="text-xs text-shark-400 mt-0.5">v{release.version} &middot; {release.date}</p>

@@ -40,11 +40,11 @@ export function OrderCostSummary({ regions }: Props) {
             <Icon name="bar-chart" size={14} className="text-action-600" />
           </div>
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-shark-900">Procurement Pipeline</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Procurement Pipeline</h3>
             <p className="text-xs text-shark-400">Active purchase orders by region (excl. received)</p>
           </div>
           <div className="text-right shrink-0 mr-2">
-            <p className="text-lg font-bold text-shark-900">{fmt(grandTotal)}</p>
+            <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{fmt(grandTotal)}</p>
             <p className="text-[10px] text-shark-400">total committed</p>
           </div>
           <Icon
@@ -88,8 +88,8 @@ export function OrderCostSummary({ regions }: Props) {
                     <div className="flex items-center gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-sm font-semibold text-shark-800 truncate">{region.regionName}</span>
-                          <span className="text-sm font-bold text-shark-900 ml-2 shrink-0">{fmt(region.total)}</span>
+                          <span className="text-sm font-semibold text-shark-800 dark:text-shark-200 truncate">{region.regionName}</span>
+                          <span className="text-sm font-bold text-shark-900 dark:text-shark-100 ml-2 shrink-0">{fmt(region.total)}</span>
                         </div>
                         {/* Progress bar */}
                         <div className="h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">

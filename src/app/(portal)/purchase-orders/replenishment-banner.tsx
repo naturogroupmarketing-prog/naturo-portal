@@ -122,7 +122,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
             <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-shark-900">Smart Replenishment</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Smart Replenishment</h3>
             <p className="text-xs text-shark-400">
               {criticalCount > 0 && <span className="text-red-500 font-medium">{criticalCount} critical</span>}
               {criticalCount > 0 && warningCount > 0 && " · "}
@@ -133,7 +133,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
           </div>
           {grandEstimatedCost > 0 && (
             <div className="text-right shrink-0 mr-2">
-              <p className="text-sm font-bold text-shark-900">{fmtCost(grandEstimatedCost)}</p>
+              <p className="text-sm font-bold text-shark-900 dark:text-shark-100">{fmtCost(grandEstimatedCost)}</p>
               <p className="text-[10px] text-shark-400">est. total</p>
             </div>
           )}
@@ -161,7 +161,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                 {/* Shop header */}
                 <div className="flex items-center gap-2 px-3 py-2 border-b border-shark-50 dark:border-shark-800 bg-shark-50/50 dark:bg-shark-800/40">
                   <Icon name="truck" size={13} className="text-shark-400 shrink-0" />
-                  <span className="text-xs font-semibold text-shark-700 flex-1 truncate">
+                  <span className="text-xs font-semibold text-shark-700 dark:text-shark-300 flex-1 truncate">
                     {hostname || "No shop link set"}
                   </span>
                   <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full shrink-0 ${groupCritical > 0 ? "bg-red-50 text-red-500" : "bg-amber-50 text-amber-600"}`}>
@@ -176,7 +176,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={() => handleCopyList(groupVisible, groupKey)}
-                      className="inline-flex items-center gap-1 text-[10px] font-medium text-shark-500 hover:text-shark-700 bg-shark-100 hover:bg-shark-200 px-1.5 py-1.5 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-1 text-[10px] font-medium text-shark-500 hover:text-shark-700 dark:text-shark-300 bg-shark-100 hover:bg-shark-200 px-1.5 py-1.5 rounded-lg transition-colors"
                       title="Copy shopping list to clipboard"
                     >
                       <Icon name={copiedKey === groupKey ? "check" : "copy"} size={10} />
@@ -203,7 +203,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                     <div key={s.consumableId} className="flex items-center gap-2 px-3 py-2">
                       <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${s.riskLevel === "critical" ? "bg-red-500" : "bg-amber-400"}`} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-shark-800 truncate">{s.consumableName}</p>
+                        <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{s.consumableName}</p>
                         <p className="text-xs text-shark-400">
                           {s.regionName} · {s.currentStock} in stock
                           {s.daysRemaining !== null && (
@@ -214,7 +214,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                         </p>
                       </div>
                       <div className="text-right shrink-0 mr-1">
-                        <p className="text-sm font-bold text-shark-900">{s.suggestedOrderQty} <span className="text-xs font-normal text-shark-400">{s.unitType}</span></p>
+                        <p className="text-sm font-bold text-shark-900 dark:text-shark-100">{s.suggestedOrderQty} <span className="text-xs font-normal text-shark-400">{s.unitType}</span></p>
                         {s.estimatedCost ? (
                           <p className="text-[10px] font-semibold text-action-600">~{fmtCost(s.estimatedCost)}</p>
                         ) : (

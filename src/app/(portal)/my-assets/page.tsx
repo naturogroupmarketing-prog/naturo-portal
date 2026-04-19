@@ -43,7 +43,7 @@ export default async function MyAssetsPage() {
           <Icon name="package" size={14} className="text-action-600" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-shark-900">My Assets</h3>
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">My Assets</h3>
           <p className="text-xs text-shark-400">
             {assignments.length} item{assignments.length !== 1 ? "s" : ""} currently assigned to you
           </p>
@@ -73,7 +73,7 @@ export default async function MyAssetsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="font-semibold text-shark-900">{a.asset.name}</h3>
+                        <h3 className="font-semibold text-shark-900 dark:text-shark-100">{a.asset.name}</h3>
                         <p className="text-xs font-mono text-shark-400 mt-0.5">{a.asset.assetCode}</p>
                       </div>
                       <Badge status={a.assignmentType} />

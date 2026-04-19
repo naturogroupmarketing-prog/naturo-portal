@@ -981,7 +981,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <select
                   value={returnCondition}
                   onChange={(e) => setReturnCondition(e.target.value)}
-                  className="w-full border border-shark-200 dark:border-shark-700 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500"
+                  className="w-full border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500"
                 >
                   <option value="GOOD">Good</option>
                   <option value="FAIR">Fair</option>
@@ -998,7 +998,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   onChange={(e) => setReturnNotes(e.target.value)}
                   placeholder="Any additional details about the return..."
                   rows={3}
-                  className="w-full border border-shark-200 dark:border-shark-700 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500 resize-none"
+                  className="w-full border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500 resize-none"
                 />
               </div>
             </div>
