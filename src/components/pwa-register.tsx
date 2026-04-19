@@ -49,7 +49,7 @@ export function PWARegister() {
   if (!installPrompt || dismissed) return null;
 
   return (
-    <div className="fixed bottom-20 sm:bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-30 bg-white border border-shark-200 rounded-xl shadow-lg p-4 animate-slide-in safe-bottom">
+    <div className="fixed bottom-36 sm:bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-30 bg-white border border-shark-200 rounded-xl shadow-lg p-4 animate-slide-in safe-bottom">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center shrink-0">
           <Icon name="download" size={18} className="text-action-500" />

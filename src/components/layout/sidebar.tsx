@@ -228,7 +228,7 @@ function CollapsibleSection({ heading, children, className }: { heading?: string
       <div
         className={cn(
           "overflow-hidden transition-all duration-200",
-          collapsed ? "max-h-0 opacity-0" : "max-h-[500px] opacity-100"
+          collapsed ? "max-h-0 opacity-0" : "max-h-[600px] opacity-100"
         )}
       >
         {children}

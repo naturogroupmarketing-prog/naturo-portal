@@ -137,7 +137,7 @@ function POStatusDropdown({ po, canManage, isSuperAdmin, onAction, loading }: {
     <div
       ref={menuRef}
       style={{ position: "fixed", top: pos.top, left: pos.left, zIndex: 9999 }}
-      className="bg-white rounded-xl shadow-lg border border-shark-100 py-1 min-w-[180px]"
+      className="bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1 min-w-[180px]"
       onClick={(e) => e.stopPropagation()}
     >
       {actions.map((action) => (
@@ -145,7 +145,7 @@ function POStatusDropdown({ po, canManage, isSuperAdmin, onAction, loading }: {
           key={action.value}
           onClick={() => { onAction(po.id, action.value); setOpen(false); }}
           disabled={loading}
-          className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${action.color} disabled:opacity-50`}
+          className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 dark:hover:bg-shark-700 ${action.color} disabled:opacity-50`}
         >
           <Icon name={action.icon as any} size={12} /> {action.label}
         </button>

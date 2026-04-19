@@ -300,7 +300,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <div className="flex justify-end">
         <button
           onClick={() => setSettingsOpen(true)}
-          className="p-2 rounded-full text-shark-400 hover:text-shark-600 hover:bg-shark-100 transition-colors"
+          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-shark-400 hover:text-shark-600 hover:bg-shark-100 transition-colors"
+          aria-label="Dashboard settings"
           title="Dashboard settings"
         >
           <Icon name="settings" size={18} />

@@ -32,6 +32,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const [quickLinksOpen, setQuickLinksOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const quickAddRef = useRef<HTMLDivElement>(null);
   const [isMac, setIsMac] = useState(false);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Close dropdown on click outside
+  // Close user dropdown on click outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -60,6 +61,17 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
     if (dropdownOpen) document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [dropdownOpen]);
+
+  // Close QuickAdd menu on click outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (quickAddRef.current && !quickAddRef.current.contains(e.target as Node)) {
+        setQuickAddOpen(false);
+      }
+    };
+    if (quickAddOpen) document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [quickAddOpen]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,7 +131,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
       <div className="flex items-center gap-2">
         {/* Quick Add button */}
-        <div className="relative">
+        <div ref={quickAddRef} className="relative">
           <button
             onClick={() => setQuickAddOpen(!quickAddOpen)}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-action-500 hover:bg-action-600 text-white rounded-lg transition-colors"
@@ -251,7 +263,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                   <div className="px-3 pt-1 pb-0.5">
                     <button
                       onClick={() => { setDropdownOpen(false); router.push("/admin/billing"); }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-white bg-shark-900 hover:bg-shark-800 transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-white bg-shark-900 hover:bg-shark-800 rounded-xl transition-colors"
                     >
                       <Icon name="award" size={14} className="text-white" />
                       Upgrade Now

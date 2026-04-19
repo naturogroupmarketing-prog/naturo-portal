@@ -332,7 +332,7 @@ export function ChatWidget() {
 
       {/* Chat panel — floating on all screens */}
       {isOpen && (
-        <div className="fixed bottom-20 right-3 sm:bottom-24 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-96 h-[60vh] sm:h-[32rem] max-h-[32rem] flex flex-col rounded-2xl border border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-900 shadow-2xl overflow-hidden">
+        <div className="fixed bottom-36 right-3 sm:bottom-24 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-96 h-[55vh] sm:h-[32rem] max-h-[32rem] flex flex-col rounded-2xl border border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-900 shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 bg-action-400 rounded-t-2xl">
             <div className="flex items-center gap-2">
