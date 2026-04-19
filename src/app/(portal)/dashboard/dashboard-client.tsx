@@ -816,26 +816,24 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             {/* Region header row */}
                             <button
                               onClick={() => toggleRegion(region.regionId)}
-                              className="w-full flex items-center justify-between px-4 py-3 hover:bg-shark-50/50 transition-colors"
+                              className="w-full flex items-center gap-2 px-3 py-3 hover:bg-shark-50/50 transition-colors"
                             >
-                              <div className="flex items-center gap-3">
-                                <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
-                                  <Icon name="map-pin" size={12} className={colors.color} />
-                                </div>
-                                <div className="text-left">
-                                  <span className="text-sm font-semibold text-shark-900">{region.regionName}</span>
-                                  <span className="ml-2 text-xs text-shark-400">{region.stateName}</span>
-                                </div>
-                                {hasActions ? (
-                                  <span className="ml-1 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 text-red-500 rounded-full border border-red-100">
-                                    {totalIssues} {totalIssues === 1 ? "issue" : "issues"}
-                                  </span>
-                                ) : (
-                                  <span className="ml-1 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-green-50 text-green-600 rounded-full border border-green-100">
-                                    All clear
-                                  </span>
-                                )}
+                              <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
+                                <Icon name="map-pin" size={12} className={colors.color} />
                               </div>
+                              <div className="flex-1 min-w-0 text-left">
+                                <span className="text-sm font-semibold text-shark-900 truncate">{region.regionName}</span>
+                                {region.stateName && <span className="ml-1.5 text-xs text-shark-400 shrink-0">{region.stateName}</span>}
+                              </div>
+                              {hasActions ? (
+                                <span className="shrink-0 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 text-red-500 rounded-full border border-red-100">
+                                  {totalIssues} {totalIssues === 1 ? "issue" : "issues"}
+                                </span>
+                              ) : (
+                                <span className="shrink-0 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-green-50 text-green-600 rounded-full border border-green-100">
+                                  All clear
+                                </span>
+                              )}
                               <Icon
                                 name="chevron-down"
                                 size={14}
