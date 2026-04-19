@@ -60,17 +60,21 @@
   font-family: var(--font-exo), sans-serif;
 }
 
+html {
+  /* Lock the rem base to 16px so the app layout matches desktop DevTools exactly,
+     regardless of the Android system Font Size or Display Size setting.
+     Users can still pinch-to-zoom if they need larger text. */
+  font-size: 16px;
+  /* Prevent iOS/Android from auto-scaling text in narrow viewports */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Remove blue tap highlight on iOS — use :active styles instead */
+  -webkit-tap-highlight-color: transparent;
+}
+
 html, body {
   overflow-x: hidden;
   max-width: 100vw;
-  /* Prevent iOS Safari from auto-scaling text when rotating or on small screens */
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-html {
-  /* Remove blue tap highlight on iOS — use :active styles instead */
-  -webkit-tap-highlight-color: transparent;
 }
 
 body {
