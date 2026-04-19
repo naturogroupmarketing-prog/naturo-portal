@@ -115,7 +115,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
                 </button>
 
                 {isExpanded && (
-                  <div className="border-t border-shark-100 divide-y divide-shark-50">
+                  <div className="border-t border-shark-100 dark:border-shark-700 divide-y divide-shark-50 dark:divide-shark-800">
                     {group.items.map((report) => (
                       <div key={report.id} className="px-5 py-4 hover:bg-shark-50/30">
                         <div className="flex items-start justify-between gap-4">

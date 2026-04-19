@@ -227,7 +227,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
                 {/* Expanded items */}
                 {isExpanded && (
-                  <div className="border-t border-shark-100">
+                  <div className="border-t border-shark-100 dark:border-shark-700">
                     {/* Select all for this staff */}
                     <div className="flex items-center justify-between px-5 py-2 bg-shark-50/50">
                       <span className="text-xs text-shark-400">{groupProcessed} of {group.items.length} marked</span>
@@ -239,7 +239,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                       </button>
                     </div>
 
-                    <div className="divide-y divide-shark-50">
+                    <div className="divide-y divide-shark-50 dark:divide-shark-800">
                       {group.items.map((item) => {
                         const state = itemStates[item.id];
                         const isVerified = state?.status === "verified";
@@ -320,7 +320,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
                     {/* Per-staff confirm button */}
                     {allGroupMarked && (
-                      <div className="px-5 py-3 border-t border-shark-100">
+                      <div className="px-5 py-3 border-t border-shark-100 dark:border-shark-700">
                         <Button
                           className="w-full"
                           size="sm"

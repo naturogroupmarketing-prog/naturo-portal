@@ -822,7 +822,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               {visibleColumns.assignedTo && <col className="w-44" />}
             </colgroup>
             <thead>
-              <tr className="border-b border-shark-100">
+              <tr className="border-b border-shark-100 dark:border-shark-700">
                 {permissions.canEdit && <th scope="col" className="px-1 py-3"></th>}
                 <th scope="col" className="px-3 py-3 text-left">
                   {deletableInSection.length > 0 && (
@@ -1357,7 +1357,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           </div>
 
           {/* Add new section */}
-          <div className="border-t border-shark-100 pt-4">
+          <div className="border-t border-shark-100 dark:border-shark-700 pt-4">
             <label className="block text-sm font-medium text-shark-700 mb-1">Add New Section</label>
             <div className="flex gap-2">
               <Input
@@ -1795,7 +1795,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               const equipmentList = cat?.equipment || [];
               if (!cat) return null;
               return (
-                <div className="border-t border-shark-100 pt-3">
+                <div className="border-t border-shark-100 dark:border-shark-700 pt-3">
                   <p className="text-sm font-medium text-shark-700 mb-2">Equipment Checklist</p>
                   {equipmentList.length === 0 ? (
                     <p className="text-xs text-shark-400">No equipment defined for this section.</p>

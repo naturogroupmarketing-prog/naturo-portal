@@ -320,7 +320,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
           </div>
 
           {/* Privacy policy link */}
-          <div className="flex items-center justify-between border-t border-shark-100 pt-4">
+          <div className="flex items-center justify-between border-t border-shark-100 dark:border-shark-700 pt-4">
             <div>
               <p className="text-sm font-medium text-shark-800">Privacy Policy</p>
               <p className="text-xs text-shark-400 mt-0.5">Read how we handle your personal information</p>
@@ -331,7 +331,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
           </div>
 
           {/* Delete account */}
-          <div className="flex items-center justify-between border-t border-shark-100 pt-4">
+          <div className="flex items-center justify-between border-t border-shark-100 dark:border-shark-700 pt-4">
             <div>
               <p className="text-sm font-medium text-red-600">Delete Account</p>
               <p className="text-xs text-shark-400 mt-0.5">Permanently deactivate your account and request data deletion</p>

@@ -121,7 +121,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
       <div className="space-y-3">
         <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Recent Activity</p>
         <Card>
-          <div className="divide-y divide-shark-50">
+          <div className="divide-y divide-shark-50 dark:divide-shark-800">
             {recentActivity.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 gap-3 text-center px-6">
                 <div className="w-10 h-10 rounded-full bg-shark-100 flex items-center justify-center">

@@ -408,7 +408,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                   <input type="checkbox" checked={selected.has(po.id)} onChange={(e) => { e.stopPropagation(); toggleSelect(po.id); }} className="w-4 h-4 mt-1 rounded border-shark-300 text-action-500 focus:ring-action-400 shrink-0" />
                 )}
                 {po.consumable.imageUrl ? (
-                  <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100 shrink-0">
+                  <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-700 shrink-0">
                     <img src={po.consumable.imageUrl} alt={po.consumable.name} className="w-full h-full object-cover" />
                   </div>
                 ) : (
@@ -439,7 +439,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       <div className="hidden sm:block overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-shark-100 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
+            <tr className="border-b border-shark-100 dark:border-shark-700 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
               {canApprovePO && <th scope="col" className="px-3 py-3 w-10"><input type="checkbox" checked={selected.size > 0 && selected.size === orders.length} onChange={() => { if (selected.size === orders.length) setSelected(new Set()); else setSelected(new Set(orders.map((o) => o.id))); }} className="rounded border-shark-300 text-action-500" /></th>}
               <th scope="col" className="px-5 py-3">Item</th>
               <th scope="col" className="px-5 py-3">In Stock</th>
@@ -448,7 +448,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               <th scope="col" className="px-5 py-3 text-right">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-shark-50">
+          <tbody className="divide-y divide-shark-50 dark:divide-shark-800">
             {orders.length === 0 ? (
               <tr>
                 <td colSpan={canApprovePO ? 6 : 5} className="px-5 py-8 text-center text-shark-400">
@@ -466,7 +466,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
                       {po.consumable.imageUrl ? (
-                        <div className="w-8 h-8 rounded-lg overflow-hidden border border-shark-100 shrink-0">
+                        <div className="w-8 h-8 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-700 shrink-0">
                           <img src={po.consumable.imageUrl} alt={po.consumable.name} className="w-full h-full object-cover" />
                         </div>
                       ) : (
@@ -523,7 +523,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           <div className="relative" ref={regionDropdownRef}>
             <button
               onClick={() => { setRegionDropdownOpen((o) => !o); setRegionSearch(""); }}
-              className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 hover:bg-shark-50/50 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50/50 dark:hover:bg-shark-800/50 transition-colors text-left"
             >
               <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
                 <Icon name="map-pin" size={15} className="text-action-600" />
@@ -752,7 +752,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             />
           </div>
         ) : (
-          <div className="border-t border-shark-100">
+          <div className="border-t border-shark-100 dark:border-shark-700">
             {renderTable(filtered)}
           </div>
         )}
@@ -778,7 +778,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               className="space-y-5"
             >
               {/* Read-only item info */}
-              <div className="bg-shark-50 rounded-lg p-4">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg p-4">
                 <h3 className="text-base font-semibold text-shark-900">{viewOrder.consumable.name}</h3>
                 <div className="flex gap-4 mt-1 text-xs text-shark-400">
                   <span>{viewOrder.consumable.category}</span>
@@ -839,7 +839,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               </div>
 
               {/* Actions */}
-              <div className="flex justify-end gap-2 pt-2 border-t border-shark-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-shark-100 dark:border-shark-700">
                 <Button variant="outline" type="button" onClick={() => setViewOrder(null)}>Cancel</Button>
                 <Button type="submit" disabled={loading === viewOrder.id + "update"} loading={loading === viewOrder.id + "update"}>Save Changes</Button>
               </div>
@@ -847,7 +847,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           ) : (
             /* Read-only view for Branch Manager */
             <div className="space-y-5">
-              <div className="bg-shark-50 rounded-lg p-4">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg p-4">
                 <h3 className="text-base font-semibold text-shark-900">{viewOrder.consumable.name}</h3>
                 <div className="flex gap-4 mt-1 text-xs text-shark-400">
                   <span>{viewOrder.consumable.category}</span>
@@ -892,11 +892,11 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               {viewOrder.notes && (
                 <div>
                   <p className="text-xs font-medium text-shark-400 uppercase mb-1">Notes</p>
-                  <p className="text-sm text-shark-600 whitespace-pre-wrap bg-shark-50 rounded-lg p-3">{viewOrder.notes}</p>
+                  <p className="text-sm text-shark-600 dark:text-shark-300 whitespace-pre-wrap bg-shark-50 dark:bg-shark-800 rounded-lg p-3">{viewOrder.notes}</p>
                 </div>
               )}
 
-              <div className="flex justify-end pt-2 border-t border-shark-100">
+              <div className="flex justify-end pt-2 border-t border-shark-100 dark:border-shark-700">
                 <Button variant="outline" onClick={() => setViewOrder(null)}>Close</Button>
               </div>
             </div>

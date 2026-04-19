@@ -309,7 +309,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
       )}
 
       {/* Tabs */}
-      <div className="border-b border-shark-100">
+      <div className="border-b border-shark-100 dark:border-shark-700">
         <div className="flex gap-6">
           {tabs.map((tab) => (
             <button
@@ -403,7 +403,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                       <div className="overflow-x-auto">
                         <table className="w-full">
                           <thead>
-                            <tr className="border-b border-shark-100">
+                            <tr className="border-b border-shark-100 dark:border-shark-700">
                               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Photo</th>
                               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Code</th>
                               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
@@ -413,9 +413,9 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                           </thead>
                           <tbody>
                             {catAssets.map((asset) => (
-                              <tr key={asset.id} className="border-b border-shark-50 hover:bg-shark-50/50">
+                              <tr key={asset.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50/50 dark:hover:bg-shark-800/50">
                                 <td className="px-4 py-2.5">
-                                  <div className="w-9 h-9 rounded-lg bg-shark-50 overflow-hidden flex items-center justify-center">
+                                  <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
                                     {asset.imageUrl ? (
                                       <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" />
                                     ) : (
@@ -486,7 +486,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                       <div className="overflow-x-auto">
                         <table className="w-full">
                           <thead>
-                            <tr className="border-b border-shark-100">
+                            <tr className="border-b border-shark-100 dark:border-shark-700">
                               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Photo</th>
                               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>
                               <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>
@@ -499,9 +499,9 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                               const isLow = item.quantityOnHand <= item.minimumThreshold;
                               const isOut = item.quantityOnHand === 0;
                               return (
-                                <tr key={item.id} className="border-b border-shark-50 hover:bg-shark-50/50">
+                                <tr key={item.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50/50 dark:hover:bg-shark-800/50">
                                   <td className="px-4 py-2.5">
-                                    <div className="w-9 h-9 rounded-lg bg-shark-50 overflow-hidden flex items-center justify-center">
+                                    <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
                                       {item.imageUrl ? (
                                         <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                                       ) : (
@@ -552,7 +552,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-shark-100">
+                    <tr className="border-b border-shark-100 dark:border-shark-700">
                       <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
                       <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Email</th>
                       <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Role</th>
@@ -561,7 +561,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                   </thead>
                   <tbody>
                     {filteredStaff.map((user) => (
-                      <tr key={user.id} className="border-b border-shark-50 hover:bg-shark-50/50">
+                      <tr key={user.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50/50 dark:hover:bg-shark-800/50">
                         <td className="px-4 py-3 text-sm font-medium text-shark-800">{user.name || "—"}</td>
                         <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
                         <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
@@ -664,7 +664,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
         ) : null}
 
         {templates && (templates.assets.length > 0 || templates.consumables.length > 0) && (
-          <div className="flex items-center justify-between border-t border-shark-100 pt-4 mt-4">
+          <div className="flex items-center justify-between border-t border-shark-100 dark:border-shark-700 pt-4 mt-4">
             <p className="text-xs text-shark-400">
               {totalAssetCount} assets + {totalConsumableCount} supplies — each asset gets a unique code
             </p>

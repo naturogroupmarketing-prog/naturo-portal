@@ -513,7 +513,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 return Array.from(assetsByCategory.entries()).map(([cat, items]) => (
                   <div key={`asset-cat-${cat}`}>
                     <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider px-3 mb-1">{cat}</p>
-                    <div className="divide-y divide-shark-100">
+                    <div className="divide-y divide-shark-100 dark:divide-shark-700">
                       {items.map((item) => {
                         const key = `asset-${item.id}`;
                         const state = itemStates[key];
@@ -552,7 +552,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 return Array.from(consumablesByCategory.entries()).map(([cat, items]) => (
                   <div key={`consumable-cat-${cat}`}>
                     <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider px-3 mb-1">{cat}</p>
-                    <div className="divide-y divide-shark-100">
+                    <div className="divide-y divide-shark-100 dark:divide-shark-700">
                       {items.map((item) => {
                         const key = `consumable-${item.id}`;
                         const state = itemStates[key];
@@ -583,7 +583,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
             {/* Processing overlay */}
             {submitting && (
-              <div className="relative mt-4 pt-3 border-t border-shark-100">
+              <div className="relative mt-4 pt-3 border-t border-shark-100 dark:border-shark-700">
                 <div className="flex flex-col items-center py-6 animate-fade-in">
                   <div className="w-12 h-12 rounded-full bg-action-50 flex items-center justify-center mb-3">
                     <svg className="animate-spinner text-action-500" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -602,7 +602,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
             {/* Final confirm button */}
             {allProcessed && !submitting && (
-              <div className="mt-4 pt-3 border-t border-shark-100">
+              <div className="mt-4 pt-3 border-t border-shark-100 dark:border-shark-700">
                 <Button
                   className="w-full"
                   onClick={handleFinalConfirm}
@@ -683,7 +683,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 </div>
 
                 {/* Kit items list */}
-                <div className="divide-y divide-shark-50">
+                <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {app.assets.map((asset) => (
                     <div key={asset.id} className="flex items-center gap-3 px-4 py-2.5">
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
@@ -717,7 +717,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   <p className="text-sm font-semibold text-shark-900">Individually Assigned Items</p>
                   <p className="text-xs text-shark-400">These items are not part of a starter kit</p>
                 </div>
-                <div className="divide-y divide-shark-50">
+                <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {visibleIndividualAssets.map((asset) => (
                     <div key={asset.id} className="flex items-center gap-3 px-4 py-2.5">
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
@@ -1024,7 +1024,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               </div>
             )}
             {!returnSubmitting && (
-              <div className="flex gap-3 px-6 py-4 border-t border-shark-100">
+              <div className="flex gap-3 px-6 py-4 border-t border-shark-100 dark:border-shark-700">
                 <Button
                   variant="outline"
                   className="flex-1"
@@ -1223,7 +1223,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           </div>
 
           {showConditionChecks && (
-            <div className="border-t border-shark-100 divide-y divide-shark-50">
+            <div className="border-t border-shark-100 dark:border-shark-700 divide-y divide-shark-50 dark:divide-shark-800">
               {conditionCheckItems.map((item, idx) => {
                 const key = getCheckKey(item);
                 const state = checkStates[key];

@@ -198,7 +198,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                 </div>
 
                 {/* Items in this group */}
-                <div className="divide-y divide-shark-50">
+                <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {groupVisible.map((s) => (
                     <div key={s.consumableId} className="flex items-center gap-2 px-3 py-2">
                       <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${s.riskLevel === "critical" ? "bg-red-500" : "bg-amber-400"}`} />

@@ -133,7 +133,7 @@ export default async function ActivityPage({
                 {date}
               </h2>
               <Card>
-                <div className="divide-y divide-shark-50">
+                <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {entries.map((log) => {
                     const config = ACTION_CONFIG[log.action] || defaultConfig;
                     const time = new Date(log.createdAt).toLocaleTimeString("en-AU", {

@@ -128,7 +128,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
 
         {/* Location list — divided sections inside the card */}
         {filteredLocations.length === 0 ? (
-          <div className="border-t border-shark-100 py-12 text-center">
+          <div className="border-t border-shark-100 dark:border-shark-700 py-12 text-center">
             <Icon name="map-pin" size={36} className="text-shark-200 mx-auto mb-3" />
             <p className="text-sm text-shark-400">{search ? "No locations match your search." : "No locations yet."}</p>
           </div>

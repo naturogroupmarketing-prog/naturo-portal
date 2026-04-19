@@ -140,7 +140,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
           )}
 
           {/* Action list */}
-          <div className="divide-y divide-shark-50 max-h-[480px] overflow-y-auto">
+          <div className="divide-y divide-shark-50 dark:divide-shark-800 max-h-[480px] overflow-y-auto">
             {items.map((item) => {
               const config = PRIORITY_CONFIG[item.priority];
               const icon = TYPE_ICON[item.type];

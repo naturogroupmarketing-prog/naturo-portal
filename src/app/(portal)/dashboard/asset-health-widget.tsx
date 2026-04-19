@@ -212,7 +212,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
 
             {/* Top performers teaser */}
             {topPerformers.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-shark-100">
+              <div className="mt-4 pt-4 border-t border-shark-100 dark:border-shark-700">
                 <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-wider mb-2">
                   Top Performers
                 </p>
@@ -314,7 +314,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
         </div>
 
         {/* ── Footer ── */}
-        <div className="mt-4 pt-4 border-t border-shark-100 flex justify-end">
+        <div className="mt-4 pt-4 border-t border-shark-100 dark:border-shark-700 flex justify-end">
           <Link
             href="/assets"
             className="inline-flex items-center gap-1.5 text-xs font-medium text-action-600 hover:text-action-700 transition-colors"

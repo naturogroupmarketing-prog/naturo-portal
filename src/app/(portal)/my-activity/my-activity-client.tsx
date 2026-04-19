@@ -112,7 +112,7 @@ export function MyActivityClient({
       ) : (
         <Card>
           <CardContent className="p-0">
-            <div className="divide-y divide-shark-50">
+            <div className="divide-y divide-shark-50 dark:divide-shark-800">
               {activities.map((item) => (
                 <div key={item.id} className="flex items-center gap-3 px-4 py-3">
                   <div className={`w-8 h-8 rounded-lg ${item.iconBg} flex items-center justify-center flex-shrink-0`}>

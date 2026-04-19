@@ -116,7 +116,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
         </Card>
       ) : (
         <Card>
-          <div className="divide-y divide-shark-100">
+          <div className="divide-y divide-shark-100 dark:divide-shark-700">
             {filtered.map((n) => {
               const config = TYPE_CONFIG[n.type] || TYPE_CONFIG.GENERAL;
               const isAcked = n.isRead || acknowledgedIds.has(n.id);

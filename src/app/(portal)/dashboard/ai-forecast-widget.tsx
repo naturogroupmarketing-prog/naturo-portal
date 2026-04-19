@@ -86,7 +86,7 @@ export function AiForecastWidget({ items }: Props) {
                   </div>
 
                   {/* Items */}
-                  <div className={`rounded-xl border divide-y divide-shark-50 overflow-hidden ${cfg.bg}`}>
+                  <div className={`rounded-xl border divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden ${cfg.bg}`}>
                     {bandItems.map((item) => (
                       <Link
                         key={item.id}
@@ -122,7 +122,7 @@ export function AiForecastWidget({ items }: Props) {
 
         {/* Footer */}
         {hasAny && (
-          <div className="mt-4 pt-3 border-t border-shark-100 flex items-center justify-between">
+          <div className="mt-4 pt-3 border-t border-shark-100 dark:border-shark-700 flex items-center justify-between">
             <p className="text-[10px] text-shark-400">{items.length} item{items.length !== 1 ? "s" : ""} tracked · Updated by AI Predict</p>
             <Link href="/purchase-orders" className="text-[11px] font-semibold text-action-600 hover:text-action-700 transition-colors">
               View all POs →

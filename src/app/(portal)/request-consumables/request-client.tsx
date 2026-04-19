@@ -394,7 +394,7 @@ function ConsumableRequestCard({
             <img
               src={c.imageUrl}
               alt={c.name}
-              className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-shark-100"
+              className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-shark-100 dark:border-shark-700"
             />
           ) : (
             <div className="w-14 h-14 rounded-lg bg-shark-50 flex items-center justify-center flex-shrink-0">

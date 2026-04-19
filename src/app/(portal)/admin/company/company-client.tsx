@@ -96,7 +96,7 @@ export function CompanyClient({ org }: Props) {
               )}
             </div>
 
-            <div className="flex justify-end pt-2 border-t border-shark-100">
+            <div className="flex justify-end pt-2 border-t border-shark-100 dark:border-shark-700">
               <Button type="submit" disabled={saving} loading={saving}>
                 <Icon name="check" size={14} className="mr-1.5" />
                 Save Changes

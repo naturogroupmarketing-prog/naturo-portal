@@ -259,7 +259,7 @@ export function HelpClient({ role }: { role: string }) {
                 </button>
 
                 {isExpanded && (
-                  <div className="border-t border-shark-100 px-5 py-2">
+                  <div className="border-t border-shark-100 dark:border-shark-700 px-5 py-2">
                     {section.faqs.map((faq, i) => (
                       <details key={i} className="group" open={!!search}>
                         <summary className="flex items-center justify-between cursor-pointer text-sm font-medium text-shark-700 hover:text-shark-900 py-3 border-b border-shark-50 last:border-0">

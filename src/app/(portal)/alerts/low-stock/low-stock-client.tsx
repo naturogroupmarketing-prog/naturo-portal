@@ -101,9 +101,9 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
                 </button>
 
                 {isExpanded && (
-                  <div className="border-t border-shark-100">
+                  <div className="border-t border-shark-100 dark:border-shark-700">
                     {/* Mobile: card layout */}
-                    <div className="sm:hidden divide-y divide-shark-50">
+                    <div className="sm:hidden divide-y divide-shark-50 dark:divide-shark-800">
                       {group.items.map((item) => {
                         const isOut = item.quantityOnHand === 0;
                         const isCritical = item.quantityOnHand <= Math.floor(item.minimumThreshold / 2);

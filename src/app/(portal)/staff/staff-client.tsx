@@ -354,7 +354,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             <col className="w-[10%]" />
           </colgroup>
           <thead>
-            <tr className="border-b border-shark-100">
+            <tr className="border-b border-shark-100 dark:border-shark-700">
               <th scope="col" className="px-1 py-3"></th>
               <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
               <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
@@ -816,7 +816,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 {editError && <p className="text-sm text-red-500">{editError}</p>}
 
                 {/* Action buttons row */}
-                <div className="flex items-center justify-between border-t border-shark-100 pt-3">
+                <div className="flex items-center justify-between border-t border-shark-100 dark:border-shark-700 pt-3">
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" onClick={() => { setShowResetPassword(true); setResetSuccess(false); setResetError(""); setNewPassword(""); }}>
                       <Icon name="lock" size={14} className="mr-1" />
@@ -836,7 +836,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               /* Read-only view for Branch Managers */
               <>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 pb-3 border-b border-shark-100">
+                  <div className="flex items-center gap-3 pb-3 border-b border-shark-100 dark:border-shark-700">
                     <div className="w-12 h-12 rounded-full bg-action-50 flex items-center justify-center">
                       <Icon name="user" size={24} className="text-action-500" />
                     </div>
@@ -1037,7 +1037,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
         {detailUser && (
           <div className="space-y-5 max-h-[70vh] overflow-y-auto">
             {/* Profile header */}
-            <div className="flex items-center gap-3 pb-4 border-b border-shark-100">
+            <div className="flex items-center gap-3 pb-4 border-b border-shark-100 dark:border-shark-700">
               <div className="w-12 h-12 rounded-full bg-action-100 flex items-center justify-center text-lg font-bold text-action-500">
                 {detailUser.name?.charAt(0)?.toUpperCase() || "?"}
               </div>
@@ -1191,7 +1191,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               )}
             </div>
             {/* Performance Summary */}
-            <div className="border-t border-shark-100 pt-4">
+            <div className="border-t border-shark-100 dark:border-shark-700 pt-4">
               <h3 className="text-sm font-semibold text-shark-700 mb-3 flex items-center gap-2">
                 <Icon name="bar-chart" size={14} className="text-action-500" />
                 Performance Summary

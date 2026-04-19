@@ -605,7 +605,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-shark-100">
+              <tr className="border-b border-shark-100 dark:border-shark-700">
                 <th scope="col" className="px-1 py-3 w-6"></th>
                 <th scope="col" className="px-3 py-3 text-left w-10">
                   {deletableInSection.length > 0 && (
@@ -838,7 +838,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                                 </div>
                               ) : viewMode === "compact" ? (
                                 <div className="rounded-xl border border-shark-100 overflow-hidden">
-                                  <div className="flex items-center gap-3 px-3 border-b border-shark-100 bg-shark-50/60" style={{ height: 30 }}>
+                                  <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50/60" style={{ height: 30 }}>
                                     <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                                     <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
                                     <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
@@ -904,7 +904,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       </div>
                     ) : viewMode === "compact" ? (
                       <div className="rounded-xl border border-shark-100 overflow-hidden">
-                        <div className="flex items-center gap-3 px-3 border-b border-shark-100 bg-shark-50/60" style={{ height: 30 }}>
+                        <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50/60" style={{ height: 30 }}>
                           <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                           <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
                           <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
@@ -927,7 +927,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {tab === "requests" && (
         <Card>
           {/* Mobile: card layout */}
-          <div className="sm:hidden divide-y divide-shark-50">
+          <div className="sm:hidden divide-y divide-shark-50 dark:divide-shark-800">
             {pendingRequests.length === 0 ? (
               <p className="text-center text-shark-400 py-8 text-sm">No pending requests.</p>
             ) : (
@@ -966,7 +966,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-shark-100">
+                <tr className="border-b border-shark-100 dark:border-shark-700">
                   <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>
                   <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Requested By</th>
                   <th scope="col" className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>
@@ -1112,7 +1112,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
 
           {/* Add new section */}
-          <div className="border-t border-shark-100 pt-4">
+          <div className="border-t border-shark-100 dark:border-shark-700 pt-4">
             <label className="block text-sm font-medium text-shark-700 mb-1">Add New Section</label>
             <div className="flex gap-2">
               <Input
@@ -1622,7 +1622,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 <div className="border border-shark-100 rounded-lg overflow-hidden">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-shark-50/60 border-b border-shark-100">
+                      <tr className="bg-shark-50/60 dark:bg-shark-800/40 border-b border-shark-100 dark:border-shark-700">
                         <th scope="col" className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Item</th>
                         <th scope="col" className="px-3 py-2 text-right text-xs font-semibold text-shark-400 uppercase tracking-wider">Qty</th>
                         <th scope="col" className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Assigned</th>

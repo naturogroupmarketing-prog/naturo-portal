@@ -273,11 +273,11 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       {/* Configuration Panel — Super Admin Only */}
       {isSuperAdmin && showConfig && (
         <Card>
-          <div className="px-5 py-4 border-b border-shark-100">
+          <div className="px-5 py-4 border-b border-shark-100 dark:border-shark-700">
             <h3 className="text-sm font-semibold text-shark-900">Inspection Configuration</h3>
             <p className="text-xs text-shark-400 mt-0.5">Choose which categories require monthly photos and define what photos staff need to submit.</p>
           </div>
-          <div className="divide-y divide-shark-50">
+          <div className="divide-y divide-shark-50 dark:divide-shark-800">
             {inspectionConfig.map((cat) => {
               const isSaving = savingConfig.has(cat.id);
               return (
@@ -396,7 +396,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       {/* Staff Schedules Panel — Super Admin Only */}
       {isSuperAdmin && showStaffSchedules && (
         <Card>
-          <div className="px-5 py-4 border-b border-shark-100 flex items-center justify-between">
+          <div className="px-5 py-4 border-b border-shark-100 dark:border-shark-700 flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold text-shark-900">Staff Condition Check Schedules</h3>
               <p className="text-xs text-shark-400 mt-0.5">Set how often each staff member must submit condition checks.</p>
@@ -434,7 +434,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
             )}
           </div>
 
-          <div className="divide-y divide-shark-50 max-h-[500px] overflow-y-auto">
+          <div className="divide-y divide-shark-50 dark:divide-shark-800 max-h-[500px] overflow-y-auto">
             {/* Staff with existing schedules */}
             {staffSchedules.map((s) => {
               const due = new Date(s.nextDueDate);
@@ -678,7 +678,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
 
                 {/* Expanded checks */}
                 {isExpanded && userChecks.length > 0 && (
-                  <div className="border-t border-shark-100">
+                  <div className="border-t border-shark-100 dark:border-shark-700">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4">
                       {userChecks.map((check) => {
                         const itemName = check.asset?.name || check.consumable?.name || "Unknown";
@@ -718,7 +718,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                 )}
 
                 {isExpanded && userChecks.length === 0 && (
-                  <div className="border-t border-shark-100 px-5 py-4">
+                  <div className="border-t border-shark-100 dark:border-shark-700 px-5 py-4">
                     <p className="text-sm text-shark-400">No condition checks submitted yet this month.</p>
                   </div>
                 )}

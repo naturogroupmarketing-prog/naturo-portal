@@ -138,7 +138,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-shark-100">
+          <tr className="border-b border-shark-100 dark:border-shark-700">
             <th scope="col" className="px-3 py-3.5 text-center w-10">
               <input
                 type="checkbox"
@@ -163,7 +163,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             </tr>
           ) : (
             sectionUsers.map((user) => (
-              <tr key={user.id} className={`border-b border-shark-50 hover:bg-shark-50/50 ${selected.has(user.id) ? "bg-action-50/40" : ""}`}>
+              <tr key={user.id} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50/50 dark:hover:bg-shark-800/50 ${selected.has(user.id) ? "bg-action-50/40" : ""}`}>
                 <td className="px-3 py-3.5 text-center">
                   {user.isActive ? (
                     <input
@@ -244,7 +244,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                 <div className="flex items-center gap-2 flex-1">
                   <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
                   <span className="text-xs text-shark-400">{section.stateName}</span>
-                  <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                     {section.users.length}
                   </span>
                 </div>
@@ -276,7 +276,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             <div className="flex items-center gap-2 flex-1">
               <h2 className="text-lg font-semibold text-shark-900">Head Office</h2>
               <span className="text-xs text-shark-400">No region assigned</span>
-              <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                 {headOfficeUsers.length}
               </span>
             </div>
@@ -397,13 +397,13 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                 <Button type="submit">Save Changes</Button>
               </div>
             </form>
-            <hr className="border-shark-100" />
+            <hr className="border-shark-100 dark:border-shark-700" />
             <form action={async (fd) => { await resetPassword(editUser.id, fd.get("newPassword") as string); setEditUser(null); }} className="space-y-3">
               <label className="block text-sm font-medium text-shark-700">Reset Password</label>
               <Input name="newPassword" type="password" required minLength={6} placeholder="New password (min 6 characters)" />
               <Button type="submit" size="sm" variant="secondary">Reset Password</Button>
             </form>
-            <hr className="border-shark-100" />
+            <hr className="border-shark-100 dark:border-shark-700" />
             <div className="space-y-3">
               <label className="block text-sm font-medium text-red-600">Danger Zone</label>
               <p className="text-xs text-shark-400">Permanently delete this user. Their assignment history will be archived in the audit log.</p>

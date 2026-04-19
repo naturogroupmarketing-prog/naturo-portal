@@ -488,7 +488,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       )}
 
                       {/* Total */}
-                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-shark-100/60">
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-shark-100 dark:border-shark-700/60">
                         <span className="text-xs font-medium text-shark-500">Total Portfolio</span>
                         <span className="text-lg font-bold text-shark-900">
                           ${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { maximumFractionDigits: 0 })}

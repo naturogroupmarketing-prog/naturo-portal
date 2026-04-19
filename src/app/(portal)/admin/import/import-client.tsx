@@ -522,7 +522,7 @@ export function ImportClient({ regions }: Props) {
           <CardContent className="space-y-3">
             {/* Region selector (shown on map step too for convenience) */}
             {importType !== "staff" && (
-              <div className="flex items-center gap-3 pb-3 mb-3 border-b border-shark-100">
+              <div className="flex items-center gap-3 pb-3 mb-3 border-b border-shark-100 dark:border-shark-700">
                 <div className="w-48 flex-shrink-0">
                   <span className="text-sm text-shark-700 font-medium">Region</span>
                   <span className="text-red-500 ml-1">*</span>
@@ -543,7 +543,7 @@ export function ImportClient({ regions }: Props) {
               </div>
             )}
             {importType === "staff" && (
-              <div className="flex items-center gap-3 pb-3 mb-3 border-b border-shark-100">
+              <div className="flex items-center gap-3 pb-3 mb-3 border-b border-shark-100 dark:border-shark-700">
                 <div className="w-48 flex-shrink-0">
                   <span className="text-sm text-shark-700 font-medium">Default Region</span>
                 </div>
@@ -590,7 +590,7 @@ export function ImportClient({ regions }: Props) {
               </div>
             ))}
 
-            <div className="flex items-center gap-3 pt-4 border-t border-shark-100">
+            <div className="flex items-center gap-3 pt-4 border-t border-shark-100 dark:border-shark-700">
               <Button variant="outline" onClick={() => setStep("upload")}>
                 <Icon name="arrow-left" size={16} className="mr-2" />
                 Back
@@ -639,7 +639,7 @@ export function ImportClient({ regions }: Props) {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-shark-100">
+                  <tr className="border-b border-shark-100 dark:border-shark-700">
                     <th scope="col" className="text-left py-2 px-3 text-xs font-medium text-shark-400 w-10">#</th>
                     {fields.map((f) => (
                       <th key={f.key} scope="col" className="text-left py-2 px-3 text-xs font-medium text-shark-400">
@@ -682,7 +682,7 @@ export function ImportClient({ regions }: Props) {
               )}
             </div>
 
-            <div className="flex items-center gap-3 pt-4 border-t border-shark-100 mt-4">
+            <div className="flex items-center gap-3 pt-4 border-t border-shark-100 dark:border-shark-700 mt-4">
               <Button variant="outline" onClick={() => setStep("map")}>
                 <Icon name="arrow-left" size={16} className="mr-2" />
                 Back to Mapping
@@ -746,7 +746,7 @@ export function ImportClient({ regions }: Props) {
               </div>
             )}
 
-            <div className="flex items-center gap-3 pt-4 border-t border-shark-100">
+            <div className="flex items-center gap-3 pt-4 border-t border-shark-100 dark:border-shark-700">
               <Button onClick={reset}>
                 <Icon name="upload" size={16} className="mr-2" />
                 Import More

@@ -410,7 +410,7 @@ function EditStarterKitForm({
         </div>
 
         {/* Footer */}
-        <div className="flex justify-between pt-4 border-t border-shark-100">
+        <div className="flex justify-between pt-4 border-t border-shark-100 dark:border-shark-700">
           <Button
             type="button"
             variant="danger"
@@ -651,7 +651,7 @@ function AddItemsChecklist({
         ));
       })()}
 
-      <div className="flex justify-between items-center pt-3 border-t border-shark-100">
+      <div className="flex justify-between items-center pt-3 border-t border-shark-100 dark:border-shark-700">
         <span className="text-sm text-shark-400">{totalSelected} item{totalSelected !== 1 ? "s" : ""} selected</span>
         <div className="flex gap-3">
           <Button type="button" variant="secondary" onClick={onDone}>Cancel</Button>

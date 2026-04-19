@@ -104,7 +104,7 @@ export function InventoryDetailClient({
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => { setLocationDropdownOpen((o) => !o); setLocationSearch(""); }}
-            className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 hover:bg-shark-50/50 transition-colors group text-left"
+            className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50/50 transition-colors group text-left"
           >
             <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
               <Icon name="map-pin" size={15} className="text-action-600" />
@@ -202,7 +202,7 @@ export function InventoryDetailClient({
         </div>
 
         {/* Tab bar — scrollable so it never squeezes at narrow widths */}
-        <div className="px-3 sm:px-4 py-3 border-b border-shark-100 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+        <div className="px-3 sm:px-4 py-3 border-b border-shark-100 dark:border-shark-700 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
           <div className="flex gap-1 bg-shark-50 rounded-xl p-1 min-w-max">
             {TABS.map((tab) => (
               <button
@@ -227,7 +227,7 @@ export function InventoryDetailClient({
 
         {/* Apply Standard Items — when empty */}
         {isEmpty && isSuperAdmin && (
-          <div className="px-6 py-10 text-center border-b border-shark-100">
+          <div className="px-6 py-10 text-center border-b border-shark-100 dark:border-shark-700">
             <div className="w-12 h-12 rounded-2xl bg-action-500 flex items-center justify-center mx-auto mb-4">
               <Icon name="plus" size={22} className="text-white" />
             </div>
