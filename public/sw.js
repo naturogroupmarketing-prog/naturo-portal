@@ -1,4 +1,4 @@
-const CACHE_NAME = "trackio-v3";
+const CACHE_NAME = "trackio-v5";
 const OFFLINE_URL = "/offline";
 
 // Critical pages to cache for offline use
@@ -68,12 +68,18 @@ self.addEventListener("fetch", (event) => {
   // Skip API calls and auth routes
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/_next/")) return;
 
-  // Static assets — cache first
+  // Immutable media/fonts — cache first (these never change between deploys)
+  if (url.pathname.match(/\.(png|jpg|jpeg|ico|webp|woff2?)$/)) {
+    event.respondWith(CACHE_STRATEGIES.cacheFirst(request));
+    return;
+  }
+
+  // CSS, JS, SVG, manifest — network first so deployments land immediately
   if (
-    url.pathname.match(/\.(png|jpg|jpeg|svg|ico|webp|woff2?|css|js)$/) ||
+    url.pathname.match(/\.(svg|css|js)$/) ||
     url.pathname === "/manifest.webmanifest"
   ) {
-    event.respondWith(CACHE_STRATEGIES.cacheFirst(request));
+    event.respondWith(CACHE_STRATEGIES.networkFirst(request));
     return;
   }
 
