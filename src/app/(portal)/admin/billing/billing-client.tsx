@@ -98,7 +98,7 @@ export function BillingClient({ org }: Props) {
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-5">
-            <div className="bg-shark-50 rounded-xl px-4 py-3">
+            <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-4 py-3">
               <p className="text-xs text-shark-400">Users</p>
               <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{org._count.users} <span className="text-sm font-normal text-shark-400">/ {currentPlan.users === Infinity ? "Unlimited" : currentPlan.users}</span></p>
               {currentPlan.users !== Infinity && (
@@ -107,7 +107,7 @@ export function BillingClient({ org }: Props) {
                 </div>
               )}
             </div>
-            <div className="bg-shark-50 rounded-xl px-4 py-3">
+            <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-4 py-3">
               <p className="text-xs text-shark-400">Assets</p>
               <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{org._count.assets} <span className="text-sm font-normal text-shark-400">/ {currentPlan.assets === Infinity ? "Unlimited" : currentPlan.assets}</span></p>
               {currentPlan.assets !== Infinity && (

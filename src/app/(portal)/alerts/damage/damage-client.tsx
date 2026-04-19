@@ -152,12 +152,12 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
       <Modal open={!!resolvingReport} onClose={() => setResolvingReport(null)} title={`Resolve: ${resolvingReport?.asset.name || ""}`}>
         {resolvingReport && (
           <div className="space-y-4">
-            <div className="bg-shark-50 rounded-xl p-3">
+            <div className="bg-shark-50 dark:bg-shark-800 rounded-xl p-3">
               <p className="text-sm text-shark-700">{resolvingReport.description}</p>
               <p className="text-xs text-shark-400 mt-1">Reported {new Date(resolvingReport.createdAt).toLocaleDateString("en-AU")}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Resolution *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Resolution *</label>
               <Select value={resolution} onChange={(e) => setResolution(e.target.value)}>
                 <option value="REPAIRED">Repaired — asset returned to service</option>
                 <option value="REPLACED">Replaced — new asset provided</option>
@@ -166,7 +166,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
               <Input value={resolutionNotes} onChange={(e) => setResolutionNotes(e.target.value)} placeholder="Optional resolution details" />
             </div>
             <div className="flex justify-end gap-3">

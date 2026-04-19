@@ -591,7 +591,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                       <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                     </svg>
                   </div>
-                  <p className="text-sm font-medium text-shark-700">Processing your receipt...</p>
+                  <p className="text-sm font-medium text-shark-700 dark:text-shark-300">Processing your receipt...</p>
                   <p className="text-xs text-shark-400 mt-1">Updating inventory records</p>
                   <div className="w-48 h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full mt-3 overflow-hidden">
                     <div className="h-full bg-action-400 rounded-full animate-progress-bar" />
@@ -686,7 +686,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {app.assets.map((asset) => (
                     <div key={asset.id} className="flex items-center gap-3 px-4 py-2.5">
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                         {asset.imageUrl ? <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -697,7 +697,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   ))}
                   {app.consumables.map((consumable) => (
                     <div key={consumable.id} className={`flex items-center gap-3 px-4 py-2.5 ${consumable.quantity === 0 ? "opacity-40" : ""}`}>
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                         {consumable.imageUrl ? <img src={consumable.imageUrl} alt={consumable.name} className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -720,7 +720,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {visibleIndividualAssets.map((asset) => (
                     <div key={asset.id} className="flex items-center gap-3 px-4 py-2.5">
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                         {asset.imageUrl ? <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -742,7 +742,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   ))}
                   {visibleIndividualConsumables.map((consumable) => (
                     <div key={consumable.id} className={`flex items-center gap-3 px-4 py-2.5 ${consumable.quantity === 0 ? "opacity-40" : ""}`}>
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                         {consumable.imageUrl ? <img src={consumable.imageUrl} alt={consumable.name} className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-action-500" />}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -917,7 +917,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     })}
                     className="rounded border-shark-300 text-action-500 focus:ring-action-400"
                   />
-                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                     {item.imageUrl ? <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" /> : <Icon name={item.type === "asset" ? "package" : "droplet"} size={14} className="text-shark-400" />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -977,7 +977,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
               {/* Condition */}
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Condition</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Condition</label>
                 <select
                   value={returnCondition}
                   onChange={(e) => setReturnCondition(e.target.value)}
@@ -992,7 +992,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-medium text-shark-700 mb-1">Notes (optional)</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes (optional)</label>
                 <textarea
                   value={returnNotes}
                   onChange={(e) => setReturnNotes(e.target.value)}
@@ -1016,7 +1016,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                   </svg>
                 </div>
-                <p className="text-sm font-medium text-shark-700">Processing return...</p>
+                <p className="text-sm font-medium text-shark-700 dark:text-shark-300">Processing return...</p>
                 <p className="text-xs text-shark-400 mt-1">Notifying your manager</p>
                 <div className="w-48 h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full mt-3 overflow-hidden">
                   <div className="h-full bg-red-400 rounded-full animate-progress-bar" />
@@ -1238,7 +1238,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                       <div className="flex items-center gap-3 min-w-0">
                         {/* Item photo or status indicator */}
                         <div className={`w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center shrink-0 ${
-                          isChecked ? "ring-2 ring-action-400" : "bg-shark-50"
+                          isChecked ? "ring-2 ring-action-400" : "bg-shark-50 dark:bg-shark-800"
                         }`}>
                           {item.imageUrl ? (
                             <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />

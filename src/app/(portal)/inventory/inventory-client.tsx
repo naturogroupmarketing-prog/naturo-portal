@@ -27,7 +27,7 @@ const STATE_COLORS = [
   { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-amber-50", color: "text-[#E8532E]" },
   { bg: "bg-cyan-50", color: "text-cyan-600" },
-  { bg: "bg-shark-50", color: "text-shark-600" },
+  { bg: "bg-shark-50 dark:bg-shark-800", color: "text-shark-600" },
   { bg: "bg-rose-50", color: "text-rose-600" },
   { bg: "bg-teal-50", color: "text-teal-600" },
   { bg: "bg-orange-50", color: "text-orange-600" },
@@ -264,11 +264,11 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
             } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
           }} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
               <Input name="name" required defaultValue={editLocationRegion.name} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Address</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Address</label>
               <Input name="address" defaultValue={editLocationRegion.address || ""} />
             </div>
             <div className="flex justify-end gap-3">
@@ -292,15 +292,15 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               </p>
             </div>
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-shark-50 rounded-lg px-3 py-2 text-center">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2 text-center">
                 <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{archiveConfirm.assets}</p>
                 <p className="text-xs text-shark-400">Assets</p>
               </div>
-              <div className="bg-shark-50 rounded-lg px-3 py-2 text-center">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2 text-center">
                 <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{archiveConfirm.consumables}</p>
                 <p className="text-xs text-shark-400">Supplies</p>
               </div>
-              <div className="bg-shark-50 rounded-lg px-3 py-2 text-center">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2 text-center">
                 <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{archiveConfirm.users}</p>
                 <p className="text-xs text-shark-400">Staff</p>
               </div>
@@ -403,7 +403,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
       <Modal open={showManageModal} onClose={() => { setShowManageModal(false); setManageSearch(""); setEditingStateName(null); }} title="Manage Locations">
         <div className="space-y-4">
           {/* Tab Navigation */}
-          <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
+          <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
             {[
               { key: "locations" as const, label: "All Locations", icon: "map-pin" as const },
               { key: "add-state" as const, label: "Add State", icon: "plus" as const },
@@ -571,7 +571,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
             }} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">State Name *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">State Name *</label>
                 <Input name="name" required placeholder="e.g. New South Wales" />
               </div>
               <div className="flex justify-end gap-3">
@@ -592,27 +592,27 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
             }} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">State *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">State *</label>
                 <Select name="stateId" required>
                   <option value="">Select state</option>
                   {locations.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Location Name *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Location Name *</label>
                 <Input name="name" required placeholder="e.g. Sydney Metro" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Storage Address</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Storage Address</label>
                 <Input name="address" placeholder="e.g. 123 Main St, Sydney NSW 2000" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Latitude</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Latitude</label>
                   <Input name="latitude" type="number" step="any" placeholder="-33.8688" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Longitude</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Longitude</label>
                   <Input name="longitude" type="number" step="any" placeholder="151.2093" />
                 </div>
               </div>

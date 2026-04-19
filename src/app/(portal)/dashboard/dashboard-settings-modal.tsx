@@ -231,11 +231,11 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         {preferences.customShortcuts.map((s) => (
           <div key={s.id} className="flex items-center justify-between py-1.5">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-shark-50 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center">
                 <Icon name={s.icon} size={14} className="text-shark-500" />
               </div>
               <div>
-                <span className="text-sm font-medium text-shark-700">{s.label}</span>
+                <span className="text-sm font-medium text-shark-700 dark:text-shark-300">{s.label}</span>
                 <span className="ml-2 text-xs text-shark-400">{s.href}</span>
               </div>
             </div>
@@ -250,7 +250,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         ))}
 
         {showAddForm ? (
-          <div className="space-y-3 p-3 bg-shark-50 rounded-xl">
+          <div className="space-y-3 p-3 bg-shark-50 dark:bg-shark-800 rounded-xl">
             <Input
               placeholder="Label (e.g. Import Data)"
               value={newLabel}

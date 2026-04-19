@@ -325,7 +325,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                     <div className="mt-2.5 ml-12 space-y-1.5">
                       {cat.inspectionPhotos.map((label, idx) => (
                         <div key={idx} className="flex items-center gap-2">
-                          <span className="text-xs text-shark-600 bg-shark-50 px-2.5 py-1 rounded-lg flex-1">{label}</span>
+                          <span className="text-xs text-shark-600 bg-shark-50 dark:bg-shark-800 px-2.5 py-1 rounded-lg flex-1">{label}</span>
                           <button
                             onClick={async () => {
                               const updated = cat.inspectionPhotos.filter((_, i) => i !== idx);
@@ -519,7 +519,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className="text-xs text-shark-400 bg-shark-50 px-2 py-0.5 rounded-full">Default (Monthly)</span>
+                  <span className="text-xs text-shark-400 bg-shark-50 dark:bg-shark-800 px-2 py-0.5 rounded-full">Default (Monthly)</span>
                   {!bulkMode && (
                     <button
                       onClick={() => { setEditingScheduleUser({ userId: u.id, name: u.name, email: u.email }); setEditFrequency("MONTHLY"); setEditDueDate(""); }}
@@ -546,13 +546,13 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
         {editingScheduleUser && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Frequency</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Frequency</label>
               <Select value={editFrequency} onChange={(e) => setEditFrequency(e.target.value as ConditionCheckFrequency)}>
                 {FREQUENCY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Next Due Date</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Next Due Date</label>
               <Input type="date" value={editDueDate} onChange={(e) => setEditDueDate(e.target.value)} min={new Date().toISOString().split("T")[0]} />
             </div>
             <p className="text-xs text-shark-400">After the staff member completes all checks, the next due date will automatically advance based on the frequency.</p>
@@ -691,7 +691,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                             onClick={() => setPhotoModal(check)}
                           >
                             {/* Photo */}
-                            <div className="aspect-[4/3] bg-shark-50 relative">
+                            <div className="aspect-[4/3] bg-shark-50 dark:bg-shark-800 relative">
                               <img
                                 src={check.photoUrl}
                                 alt={itemName}
@@ -732,7 +732,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       <Modal open={!!photoModal} onClose={() => setPhotoModal(null)} title={photoModal?.asset?.name || photoModal?.consumable?.name || "Condition Check"}>
         {photoModal && (
           <div className="space-y-4">
-            <div className="rounded-xl overflow-hidden bg-shark-50">
+            <div className="rounded-xl overflow-hidden bg-shark-50 dark:bg-shark-800">
               <img
                 src={photoModal.photoUrl}
                 alt="Condition check"
@@ -753,7 +753,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
               </span>
             </div>
             {photoModal.notes && (
-              <p className="text-sm text-shark-600 bg-shark-50 px-3 py-2 rounded-lg">{photoModal.notes}</p>
+              <p className="text-sm text-shark-600 bg-shark-50 dark:bg-shark-800 px-3 py-2 rounded-lg">{photoModal.notes}</p>
             )}
             <div className="flex items-center gap-2 text-xs text-shark-400">
               <Icon name="user" size={12} />
@@ -769,15 +769,15 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       <Modal open={showScheduleModal} onClose={() => setShowScheduleModal(false)} title="Schedule Inspection">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Title *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Title *</label>
             <Input value={scheduleTitle} onChange={(e) => setScheduleTitle(e.target.value)} placeholder="e.g. April Equipment Inspection" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Due Date *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Due Date *</label>
             <Input type="date" value={scheduleDueDate} onChange={(e) => setScheduleDueDate(e.target.value)} min={new Date().toISOString().split("T")[0]} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes / Instructions</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Notes / Instructions</label>
             <textarea
               value={scheduleNotes}
               onChange={(e) => setScheduleNotes(e.target.value)}

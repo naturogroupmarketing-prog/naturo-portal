@@ -21,7 +21,7 @@ const SECTION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-shark-600", bg: "bg-shark-50" },
+  { color: "text-shark-600", bg: "bg-shark-50 dark:bg-shark-800" },
   { color: "text-pink-600", bg: "bg-pink-50" },
   { color: "text-orange-600", bg: "bg-orange-50" },
   { color: "text-lime-600", bg: "bg-lime-50" },
@@ -538,7 +538,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           }
         }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Staff Member</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Staff Member</label>
             <Select value={assignKitUserId} onChange={(e) => setAssignKitUserId(e.target.value)}>
               <option value="">Select staff member...</option>
               {regions.map((region) => {
@@ -556,7 +556,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           </div>
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300">Starter Kit</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300">Starter Kit</label>
               <Link href="/starter-kits" className="text-xs text-action-500 hover:text-action-600 font-medium flex items-center gap-1">
                 <Icon name="edit" size={12} />
                 Edit Kits
@@ -599,23 +599,23 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           }
         }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
             <Input name="name" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Email *</label>
             <Input name="email" type="email" required placeholder="user@company.com" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Phone</label>
             <Input name="phone" type="tel" placeholder="e.g. 0412 345 678" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Password *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Password *</label>
             <Input name="password" type="password" required minLength={6} placeholder="Min 6 characters" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Role *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Role *</label>
             <Select name="role" required>
               <option value="STAFF">Staff</option>
               <option value="BRANCH_MANAGER">Branch Manager</option>
@@ -624,7 +624,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Region</label>
             <Select name="regionId">
               <option value="">No region (head office)</option>
               {allRegions.map((r) => (
@@ -651,19 +651,19 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               isSuperAdmin ? (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Email</label>
                   <p className="text-sm text-shark-500">{editUser.email}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name</label>
                   <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Phone</label>
                   <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="e.g. 0412 345 678" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Role</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Role</label>
                   <Select value={editRole} onChange={(e) => setEditRole(e.target.value)}>
                     <option value="STAFF">Staff</option>
                     <option value="BRANCH_MANAGER">Branch Manager</option>
@@ -672,7 +672,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Region</label>
                   <Select value={editRegionId} onChange={(e) => setEditRegionId(e.target.value)}>
                     <option value="">Head Office (No Region)</option>
                     {allRegions.map((r) => (
@@ -991,7 +991,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   Reset password for <span className="font-medium text-shark-800 dark:text-shark-200">{editUser.name || editUser.email}</span>
                 </p>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">New Password</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">New Password</label>
                   <Input
                     type="password"
                     value={newPassword}
@@ -1197,19 +1197,19 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 Performance Summary
               </h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.assetAssignments.length}</p>
                   <p className="text-[10px] text-shark-400">Assets Assigned</p>
                 </div>
-                <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.consumableAssignments?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Supplies</p>
                 </div>
-                <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.conditionChecks?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Inspections Done</p>
                 </div>
-                <div className="bg-shark-50 rounded-xl px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-3 py-2.5 text-center">
                   <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-[#E8532E]" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Damage Reports</p>
                 </div>

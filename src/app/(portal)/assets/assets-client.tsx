@@ -1358,7 +1358,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
           {/* Add new section */}
           <div className="border-t border-shark-100 dark:border-shark-700 pt-4">
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Add New Section</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Add New Section</label>
             <div className="flex gap-2">
               <Input
                 value={newSectionName}
@@ -1389,7 +1389,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         <form action={handleCreateSubmit} className="space-y-4">
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Photo</label>
             <div className="flex items-start gap-4">
               {imagePreview ? (
                 <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200 dark:border-shark-700">
@@ -1426,11 +1426,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
             <Input name="name" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">System *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">System *</label>
             <div className="flex gap-2">
               <Select name="category" required className="flex-1">
                 <option value="">Select system</option>
@@ -1444,7 +1444,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Region *</label>
             <Select name="regionId" required>
               <option value="">Select region</option>
               {regions.map((r) => (
@@ -1455,25 +1455,25 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Serial Number</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Serial Number</label>
             <Input name="serialNumber" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Description</label>
             <textarea name="description" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Purchase Date</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Purchase Date</label>
               <Input name="purchaseDate" type="date" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Cost (AUD)</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Cost (AUD)</label>
               <Input name="purchaseCost" type="number" step="0.01" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Supplier</label>
             <Input name="supplier" />
           </div>
           <div className="flex items-center gap-2">
@@ -1481,14 +1481,14 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <label htmlFor="isHighValue" className="text-sm text-gray-700">High-value asset</label>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Quantity</label>
             <div className="flex items-center gap-2">
               <Input name="quantity" type="number" min={1} max={50} defaultValue={1} className="w-24" />
               <span className="text-xs text-shark-400">Add multiple identical assets (max 50). Names will be numbered automatically.</span>
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Notes</label>
             <textarea name="notes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
@@ -1520,7 +1520,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           >
             <input type="hidden" name="assetId" value={showAssign.id} />
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Assign to *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Assign to *</label>
               <Select name="userId" required>
                 <option value="">Select staff member</option>
                 {users
@@ -1536,14 +1536,14 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Assignment Type *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Assignment Type *</label>
               <Select name="assignmentType" required>
                 <option value="TEMPORARY">Temporary (Check-out)</option>
                 <option value="PERMANENT">Permanent</option>
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Expected Return Date</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Expected Return Date</label>
               <Input name="expectedReturnDate" type="date" />
               <p className="text-xs text-gray-400 mt-1">Leave blank for permanent assignments</p>
             </div>
@@ -1575,7 +1575,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           >
             <input type="hidden" name="assignmentId" value={showReturn.assignmentId} />
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Return Condition *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Return Condition *</label>
               <Select name="returnCondition" required>
                 <option value="">Select condition</option>
                 <option value="Good">Good</option>
@@ -1589,7 +1589,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               <label htmlFor="isDamaged" className="text-sm text-gray-700">Mark as damaged (makes asset unavailable)</label>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Notes</label>
               <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
@@ -1670,7 +1670,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
             {/* Image Upload/Edit */}
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Photo</label>
               <div className="flex items-start gap-4">
                 {(editImagePreview || (!editImageRemoved && editAsset.imageUrl)) ? (
                   <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200 dark:border-shark-700">
@@ -1719,11 +1719,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
               <Input name="name" required defaultValue={editAsset.name} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">System *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">System *</label>
               <Select name="category" required defaultValue={editAsset.category}>
                 <option value="">Select system</option>
                 {categories.map((cat) => (
@@ -1732,7 +1732,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Region *</label>
               <Select name="regionId" required defaultValue={editAsset.region.id}>
                 <option value="">Select region</option>
                 {regions.map((r) => (
@@ -1743,7 +1743,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Status *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Status *</label>
               <Select name="status" required defaultValue={editAsset.status}>
                 <option value="AVAILABLE">Available</option>
                 <option value="ASSIGNED">Assigned</option>
@@ -1755,29 +1755,29 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Serial Number</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Serial Number</label>
               <Input name="serialNumber" defaultValue={editAsset.serialNumber || ""} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Description</label>
               <textarea name="description" defaultValue={editAsset.description || ""} className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Purchase Date</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Purchase Date</label>
                 <Input name="purchaseDate" type="date" defaultValue={editAsset.purchaseDate ? editAsset.purchaseDate.substring(0, 10) : ""} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Cost (AUD)</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Cost (AUD)</label>
                 <Input name="purchaseCost" type="number" step="0.01" defaultValue={editAsset.purchaseCost ?? ""} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Warranty Expiry</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Warranty Expiry</label>
               <Input name="warrantyExpiry" type="date" defaultValue={editAsset.warrantyExpiry ? editAsset.warrantyExpiry.substring(0, 10) : ""} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Supplier</label>
               <Input name="supplier" defaultValue={editAsset.supplier || ""} />
             </div>
             <div className="flex items-center gap-2">
@@ -1785,7 +1785,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               <label htmlFor="editIsHighValue" className="text-sm text-gray-700">High-value asset</label>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Notes</label>
               <textarea name="notes" defaultValue={editAsset.notes || ""} className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
 

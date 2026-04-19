@@ -121,7 +121,7 @@ function ManagerCard({ manager }: { manager: Manager }) {
                       return (
                         <div key={key} className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm font-medium text-shark-700">{info.label}</p>
+                            <p className="text-sm font-medium text-shark-700 dark:text-shark-300">{info.label}</p>
                             <p className="text-xs text-shark-400">{info.description}</p>
                           </div>
                           <Toggle

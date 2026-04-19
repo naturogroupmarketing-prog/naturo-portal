@@ -168,7 +168,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                     {groupVisible.length} item{groupVisible.length !== 1 ? "s" : ""}
                   </span>
                   {groupCost > 0 && (
-                    <span className="text-[10px] font-semibold text-shark-600 bg-shark-50 px-1.5 py-0.5 rounded-full shrink-0">
+                    <span className="text-[10px] font-semibold text-shark-600 bg-shark-50 dark:bg-shark-800 px-1.5 py-0.5 rounded-full shrink-0">
                       {fmtCost(groupCost)}
                     </span>
                   )}

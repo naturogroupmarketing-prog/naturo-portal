@@ -322,7 +322,7 @@ function WorkflowModal({
         <form ref={formRef} className="p-5 space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Rule Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Rule Name *</label>
             <input
               type="text"
               value={name}
@@ -335,7 +335,7 @@ function WorkflowModal({
 
           {/* Trigger */}
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Trigger *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Trigger *</label>
             <div className="space-y-2">
               {TRIGGER_OPTIONS.map((opt) => (
                 <label key={opt.value} className={cn(
@@ -364,7 +364,7 @@ function WorkflowModal({
           {/* Conditions (dynamic based on trigger) */}
           {conditionFields.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-2">Conditions</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-2">Conditions</label>
               <div className="space-y-2">
                 {conditionFields.map((field) => (
                   <div key={field.key}>
@@ -385,7 +385,7 @@ function WorkflowModal({
 
           {/* Action */}
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Action *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Action *</label>
             <div className="space-y-2">
               {ACTION_OPTIONS.map((opt) => (
                 <label key={opt.value} className={cn(

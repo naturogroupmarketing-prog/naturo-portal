@@ -51,7 +51,7 @@ export function ReturnAssetButton({ assignmentId, assetName }: { assignmentId: s
             Submit this asset for return. Your branch manager will verify and restock.
           </p>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Condition</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Condition</label>
             <Select value={condition} onChange={(e) => setCondition(e.target.value)}>
               <option value="GOOD">Good</option>
               <option value="FAIR">Fair</option>
@@ -60,7 +60,7 @@ export function ReturnAssetButton({ assignmentId, assetName }: { assignmentId: s
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Notes (optional)</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes (optional)</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}

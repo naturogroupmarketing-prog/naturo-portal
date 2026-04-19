@@ -94,7 +94,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
         </Button>
       </div>
 
-      <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
         {(["all", "overdue", "upcoming"] as const).map((f) => (
           <button
             key={f}
@@ -171,7 +171,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Schedule Maintenance">
         <form action={async (fd) => { await createMaintenanceSchedule(fd); setShowCreate(false); }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Asset *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Asset *</label>
             <Select name="assetId" required>
               <option value="">Select asset...</option>
               {assets.map((a) => (
@@ -180,16 +180,16 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Task Title *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Task Title *</label>
             <Input name="title" required placeholder="e.g. Oil change, Filter replacement" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
             <textarea name="description" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Frequency *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Frequency *</label>
               <Select name="frequency" required>
                 <option value="ONCE">One-time</option>
                 <option value="WEEKLY">Weekly</option>
@@ -199,12 +199,12 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Next Due Date *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Next Due Date *</label>
               <Input name="nextDueDate" type="date" required />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 mb-1">Assign To</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Assign To</label>
             <Select name="assignedToId">
               <option value="">Unassigned</option>
               {users.map((u) => (
@@ -229,7 +229,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
               <span className="font-semibold">{showComplete.asset.name}</span>
             </p>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Condition</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Condition</label>
               <Select name="condition">
                 <option value="">Not assessed</option>
                 <option value="GOOD">Good</option>
@@ -239,11 +239,11 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Cost</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Cost</label>
               <Input name="cost" type="number" step="0.01" placeholder="0.00" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 mb-1">Notes</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
               <textarea name="notes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} placeholder="What was done..." />
             </div>
             <div className="flex justify-end gap-3 pt-2">

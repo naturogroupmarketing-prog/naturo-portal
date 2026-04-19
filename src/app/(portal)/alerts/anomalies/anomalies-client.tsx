@@ -492,7 +492,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
         {FILTER_TABS.map((tab) => {
           const isActive = activeFilter === tab.id;
           const count = counts[tab.id];

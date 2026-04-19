@@ -203,7 +203,7 @@ export function InventoryDetailClient({
 
         {/* Tab bar — scrollable so it never squeezes at narrow widths */}
         <div className="px-3 sm:px-4 py-3 border-b border-shark-100 dark:border-shark-700 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-          <div className="flex gap-1 bg-shark-50 rounded-xl p-1 min-w-max">
+          <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1 min-w-max">
             {TABS.map((tab) => (
               <button
                 key={tab}
