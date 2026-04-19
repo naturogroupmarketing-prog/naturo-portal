@@ -151,7 +151,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
               className={`flex items-center gap-2 py-2 px-3 rounded-lg border transition-all cursor-grab active:cursor-grabbing ${
                 dragIndex === idx
                   ? "border-action-400 bg-action-50 opacity-60"
-                  : "border-shark-100 bg-white hover:border-shark-200 hover:bg-shark-25"
+                  : "border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-800 hover:border-shark-200 dark:hover:border-shark-600 hover:bg-shark-25 dark:hover:bg-shark-700"
               }`}
             >
               <Icon name="menu" size={14} className="text-shark-300 shrink-0" />

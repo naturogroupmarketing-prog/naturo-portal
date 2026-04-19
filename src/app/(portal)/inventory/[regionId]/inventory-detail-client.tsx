@@ -134,17 +134,17 @@ export function InventoryDetailClient({
 
           {/* Location dropdown */}
           {locationDropdownOpen && allRegions.length > 0 && (
-            <div className="absolute left-0 right-0 top-full z-50 bg-white border border-shark-100 shadow-xl rounded-b-xl overflow-hidden">
+            <div className="absolute left-0 right-0 top-full z-50 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 shadow-xl rounded-b-xl overflow-hidden">
               {/* Search */}
-              <div className="px-3 py-2.5 border-b border-shark-100">
-                <div className="flex items-center gap-2 bg-shark-50 rounded-lg px-3 py-1.5">
+              <div className="px-3 py-2.5 border-b border-shark-100 dark:border-shark-700">
+                <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-1.5">
                   <Icon name="search" size={13} className="text-shark-400 shrink-0" />
                   <input
                     autoFocus
                     value={locationSearch}
                     onChange={(e) => setLocationSearch(e.target.value)}
                     placeholder="Search locations..."
-                    className="flex-1 bg-transparent text-sm text-shark-800 placeholder-shark-400 outline-none"
+                    className="flex-1 bg-transparent text-sm text-shark-800 dark:text-shark-100 placeholder-shark-400 outline-none"
                   />
                 </div>
               </div>
@@ -168,7 +168,7 @@ export function InventoryDetailClient({
 
                   return Object.entries(byState).map(([stateName, regions]) => (
                     <div key={stateName}>
-                      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 border-b border-shark-50">
+                      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
                         {stateName}
                       </p>
                       {regions.map((r) => (
@@ -176,8 +176,8 @@ export function InventoryDetailClient({
                           key={r.id}
                           href={`/inventory/${r.id}`}
                           onClick={() => { setLocationDropdownOpen(false); setLocationSearch(""); }}
-                          className={`flex items-center gap-3 px-4 py-2.5 hover:bg-action-50 transition-colors ${
-                            r.id === region.id ? "bg-action-50" : ""
+                          className={`flex items-center gap-3 px-4 py-2.5 hover:bg-action-50 dark:hover:bg-action-500/10 transition-colors ${
+                            r.id === region.id ? "bg-action-50 dark:bg-action-500/10" : ""
                           }`}
                         >
                           <Icon
@@ -185,7 +185,7 @@ export function InventoryDetailClient({
                             size={13}
                             className={r.id === region.id ? "text-action-500" : "text-shark-300"}
                           />
-                          <span className={`text-sm ${r.id === region.id ? "font-semibold text-action-600" : "text-shark-700"}`}>
+                          <span className={`text-sm ${r.id === region.id ? "font-semibold text-action-600 dark:text-action-400" : "text-shark-700 dark:text-shark-200"}`}>
                             {r.name}
                           </span>
                           {r.id === region.id && (

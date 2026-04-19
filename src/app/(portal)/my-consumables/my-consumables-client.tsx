@@ -163,7 +163,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
             </div>
             <div className="space-y-2">
               {pendingAssignments.map((a) => (
-                <div key={a.id} className="flex items-center gap-3 bg-white rounded-lg px-3 py-2.5 border border-shark-100">
+                <div key={a.id} className="flex items-center gap-3 bg-white dark:bg-shark-800 rounded-lg px-3 py-2.5 border border-shark-100 dark:border-shark-700">
                   <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
                     {a.consumable.imageUrl ? <img src={a.consumable.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                   </div>
@@ -400,7 +400,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
                 <button
                   type="button"
                   onClick={() => setUseQty(Math.max(0, useQty - 1))}
-                  className="w-7 h-7 rounded-lg bg-white border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700"
                   disabled={useQty <= 0}
                 >
                   <span className="text-sm font-bold leading-none">−</span>
@@ -416,7 +416,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
                 <button
                   type="button"
                   onClick={() => setUseQty(Math.min(ca.quantity, useQty + 1))}
-                  className="w-7 h-7 rounded-lg bg-white border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700"
                   disabled={useQty >= ca.quantity}
                 >
                   <Icon name="plus" size={12} />
@@ -449,7 +449,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
                 <button
                   type="button"
                   onClick={() => setReqQty(Math.max(1, reqQty - 1))}
-                  className="w-7 h-7 rounded-lg bg-white border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700"
                   disabled={reqQty <= 1}
                 >
                   <span className="text-sm font-bold leading-none">−</span>
@@ -464,7 +464,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
                 <button
                   type="button"
                   onClick={() => setReqQty(reqQty + 1)}
-                  className="w-7 h-7 rounded-lg bg-white border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700"
                 >
                   <Icon name="plus" size={12} />
                 </button>
@@ -573,7 +573,7 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
                 <button
                   type="button"
                   onClick={() => setReqQty(Math.max(1, reqQty - 1))}
-                  className="w-7 h-7 rounded-lg bg-white border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700"
                   disabled={reqQty <= 1}
                 >
                   <span className="text-sm font-bold leading-none">−</span>
@@ -588,7 +588,7 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
                 <button
                   type="button"
                   onClick={() => setReqQty(reqQty + 1)}
-                  className="w-7 h-7 rounded-lg bg-white border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700"
                 >
                   <Icon name="plus" size={12} />
                 </button>

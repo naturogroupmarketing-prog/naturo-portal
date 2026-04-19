@@ -401,7 +401,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             <div
               key={po.id}
               onClick={() => setViewOrder(po)}
-              className={`border rounded-xl p-4 bg-white transition-shadow cursor-pointer ${selected.has(po.id) ? "border-action-400 bg-action-50/20" : "border-shark-100 hover:shadow-sm"}`}
+              className={`border rounded-xl p-4 bg-white dark:bg-shark-900 transition-shadow cursor-pointer ${selected.has(po.id) ? "border-action-400 bg-action-50/20 dark:bg-action-500/10" : "border-shark-100 dark:border-shark-800 hover:shadow-sm"}`}
             >
               <div className="flex items-start gap-3">
                 {canApprovePO && (
@@ -551,17 +551,17 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
 
             {/* Region dropdown */}
             {regionDropdownOpen && regions.length > 1 && (
-              <div className="absolute left-0 right-0 top-full z-50 bg-white border border-shark-100 shadow-xl rounded-b-xl overflow-hidden">
+              <div className="absolute left-0 right-0 top-full z-50 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 shadow-xl rounded-b-xl overflow-hidden">
                 {/* Search */}
-                <div className="px-3 py-2.5 border-b border-shark-100">
-                  <div className="flex items-center gap-2 bg-shark-50 rounded-lg px-3 py-1.5">
+                <div className="px-3 py-2.5 border-b border-shark-100 dark:border-shark-700">
+                  <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-1.5">
                     <Icon name="search" size={13} className="text-shark-400 shrink-0" />
                     <input
                       autoFocus
                       value={regionSearch}
                       onChange={(e) => setRegionSearch(e.target.value)}
                       placeholder="Search regions..."
-                      className="flex-1 bg-transparent text-sm text-shark-800 placeholder-shark-400 outline-none"
+                      className="flex-1 bg-transparent text-sm text-shark-800 dark:text-shark-100 placeholder-shark-400 outline-none"
                     />
                   </div>
                 </div>
@@ -583,7 +583,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                     }, {});
                     return Object.entries(byState).map(([stateName, stateRegions]) => (
                       <div key={stateName}>
-                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 border-b border-shark-50">
+                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
                           {stateName}
                         </p>
                         {stateRegions.map((r) => {
@@ -592,14 +592,14 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                             <button
                               key={r.id}
                               onClick={() => { setSelectedRegionId(r.id); setRegionDropdownOpen(false); setRegionSearch(""); }}
-                              className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-action-50 transition-colors text-left ${r.id === selectedRegionId ? "bg-action-50" : ""}`}
+                              className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-action-50 dark:hover:bg-action-500/10 transition-colors text-left ${r.id === selectedRegionId ? "bg-action-50 dark:bg-action-500/10" : ""}`}
                             >
                               <Icon
                                 name="map-pin"
                                 size={13}
                                 className={r.id === selectedRegionId ? "text-action-500" : "text-shark-300"}
                               />
-                              <span className={`text-sm flex-1 ${r.id === selectedRegionId ? "font-semibold text-action-600" : "text-shark-700"}`}>
+                              <span className={`text-sm flex-1 ${r.id === selectedRegionId ? "font-semibold text-action-600 dark:text-action-400" : "text-shark-700 dark:text-shark-200"}`}>
                                 {r.name}
                               </span>
                               {rPending > 0 && (
@@ -686,15 +686,15 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           </div>
 
           {/* Tab bar */}
-          <div className="hidden sm:flex gap-1 bg-shark-50 rounded-xl p-1">
+          <div className="hidden sm:flex overflow-x-auto gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1 scrollbar-none">
             {TABS.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                   activeTab === tab
                     ? "bg-action-500 text-white shadow-sm"
-                    : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+                    : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-700 hover:text-shark-700 dark:hover:text-shark-200"
                 }`}
               >
                 {tab}
@@ -834,7 +834,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                   defaultValue={viewOrder.notes || ""}
                   placeholder="Order notes..."
                   rows={3}
-                  className="w-full rounded-lg border border-shark-200 bg-white px-3 py-2 text-sm text-shark-900 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-500 focus:border-transparent"
+                  className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3 py-2 text-sm text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-500 focus:border-transparent"
                 />
               </div>
 

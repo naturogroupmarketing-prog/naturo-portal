@@ -128,7 +128,7 @@ function RecalcPredictionsButton() {
           ? "border-action-300 bg-action-50 text-action-600"
           : status === "error"
           ? "border-red-300 bg-red-50 text-red-600"
-          : "border-shark-200 bg-white text-shark-600 hover:border-action-300 hover:text-action-600 hover:shadow-sm"
+          : "border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 text-shark-600 dark:text-shark-300 hover:border-action-300 hover:text-action-600 hover:shadow-sm"
       }`}
       title="Recalculate AI predictions from consumption history"
     >
@@ -404,7 +404,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       </div>
 
                       {/* Summary cards */}
-                      <div className="bg-white rounded-xl border border-shark-100 overflow-hidden mb-4">
+                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden mb-4">
                         <div className="grid grid-cols-2 divide-x divide-shark-50">
                         <div className="px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
@@ -537,7 +537,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <p className="text-xs text-shark-400">Breakdown by status</p>
                         </div>
                       </div>
-                      <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {assetStatusChart.map((item) => {
                           const total = assetStatusChart.reduce((sum, i) => sum + i.value, 0);
                           const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
@@ -571,7 +571,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <p className="text-xs text-shark-400">Distribution across categories</p>
                         </div>
                       </div>
-                      <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {categoryChart.map((item, idx) => {
                           const maxVal = Math.max(...categoryChart.map((c) => c.value));
                           const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
@@ -609,7 +609,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <p className="text-xs text-shark-400">Breakdown by stock level</p>
                         </div>
                       </div>
-                      <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {consumableStatusChart.map((item) => {
                           const total = consumableStatusChart.reduce((sum, i) => sum + i.value, 0);
                           const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
@@ -643,7 +643,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <p className="text-xs text-shark-400">Distribution across categories</p>
                         </div>
                       </div>
-                      <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {consumableCategoryChart.map((item, idx) => {
                           const maxVal = Math.max(...consumableCategoryChart.map((c) => c.value));
                           const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
@@ -685,7 +685,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Link>
                   {/* Content */}
                   {lowStockItems.length === 0 ? (
-                    <div className="bg-white rounded-xl border border-shark-100 overflow-hidden">
+                    <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
                       <div className="flex items-center gap-3 px-4 py-3.5">
                         <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
                           <Icon name="check" size={14} className="text-action-500" />
@@ -694,7 +694,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
+                    <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                       {lowStockItems.map((item) => (
                         <Link key={item.id} href={isSuperAdmin ? `/alerts/low-stock${item.region?.id ? `?region=${item.region.id}` : ""}` : "/purchase-orders"} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
                           <div className="flex-1 min-w-0 mr-3">
@@ -743,7 +743,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors shrink-0" />
                   </Link>
                   {/* Items */}
-                  <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
+                  <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                     {predictedShortages.map((item) => (
                       <Link key={item.id} href={`/purchase-orders`} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors cursor-pointer">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -813,7 +813,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         const hasActions = region.lowStockCount > 0 || region.pendingRequests > 0 || region.pendingPOs > 0;
                         const totalIssues = (region.damaged + region.lost) + region.pendingRequests + region.pendingPOs;
                         return (
-                          <div key={region.regionId} className="bg-white rounded-xl border border-shark-100 overflow-hidden">
+                          <div key={region.regionId} className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
                             {/* Region header row */}
                             <button
                               onClick={() => toggleRegion(region.regionId)}
@@ -913,7 +913,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <button
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleRemoveShortcut(shortcut.id); }}
                         disabled={isPending}
-                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white shadow-sm border border-shark-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-shark-400 hover:text-red-500 hover:border-red-200 disabled:opacity-50"
+                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white dark:bg-shark-800 shadow-sm border border-shark-100 dark:border-shark-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-shark-400 hover:text-red-500 hover:border-red-200 disabled:opacity-50"
                       >
                         <Icon name="x" size={12} />
                       </button>
@@ -954,7 +954,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               />
             </div>
             {/* Location list */}
-            <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden">
+            <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
               {mapLocations.map((loc) => (
                 <a
                   key={loc.id}

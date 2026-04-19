@@ -105,7 +105,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
         </div>
 
         {/* Approval / Receival stats */}
-        <div className="bg-white rounded-xl border border-shark-100 overflow-hidden mb-3">
+        <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden mb-3">
           <div className="grid grid-cols-2 divide-x divide-shark-50">
             <Link href="/purchase-orders" className="px-3 py-2.5 hover:bg-shark-50 transition-colors">
               <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Approval</p>
@@ -131,7 +131,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
           ].filter((item) => item.value > 0);
 
           return issues.length > 0 ? (
-            <div className="bg-white rounded-xl border border-shark-100 divide-y divide-shark-50 overflow-hidden mb-3">
+            <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden mb-3">
               {issues.map((item) => (
                 <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 transition-colors">
                   <div className="flex items-center gap-2.5">
@@ -143,7 +143,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-xl border border-shark-100 overflow-hidden mb-3">
+            <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden mb-3">
               <div className="flex items-center gap-2 px-3 py-3">
                 <Icon name="check" size={16} className="text-action-500" />
                 <span className="text-sm text-action-600 font-medium">All clear — no outstanding issues</span>
@@ -153,7 +153,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
         })()}
 
         {/* Staff footer */}
-        <Link href="/staff" className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-white border border-shark-100 hover:border-action-200 hover:bg-action-50/30 transition-colors">
+        <Link href="/staff" className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 hover:border-action-200 hover:bg-action-50/30 dark:hover:bg-action-500/10 transition-colors">
           <div className="flex items-center gap-2">
             <Icon name="users" size={14} className="text-shark-400" />
             <span className="text-xs text-shark-500">Active Staff</span>

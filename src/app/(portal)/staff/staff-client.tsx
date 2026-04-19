@@ -319,7 +319,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             <div
               key={user.id}
               onClick={() => (isSuperAdmin || canViewStaffDetails) && openEdit(user)}
-              className="border border-shark-100 rounded-xl p-4 bg-white hover:shadow-sm transition-shadow cursor-pointer"
+              className="border border-shark-100 dark:border-shark-800 rounded-xl p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">

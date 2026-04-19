@@ -416,7 +416,7 @@ function ConsumableRequestCard({
                 <button
                   type="button"
                   onClick={() => setReqQty(Math.max(1, reqQty - 1))}
-                  className="w-7 h-7 rounded-lg bg-white border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700"
                   disabled={reqQty <= 1}
                 >
                   <span className="text-sm font-bold leading-none">−</span>
@@ -431,7 +431,7 @@ function ConsumableRequestCard({
                 <button
                   type="button"
                   onClick={() => setReqQty(reqQty + 1)}
-                  className="w-7 h-7 rounded-lg bg-white border border-shark-200 flex items-center justify-center text-shark-500 hover:bg-shark-100"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700"
                 >
                   <Icon name="plus" size={12} />
                 </button>

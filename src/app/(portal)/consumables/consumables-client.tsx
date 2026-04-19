@@ -543,7 +543,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 <div
                   key={c.id}
                   onClick={() => setEditConsumable(c)}
-                  className="border border-shark-100 rounded-xl p-4 bg-white hover:shadow-sm transition-shadow cursor-pointer"
+                  className="border border-shark-100 dark:border-shark-800 rounded-xl p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
                 >
                   <div className="flex items-start gap-3">
                     {c.imageUrl ? (
@@ -727,11 +727,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
         <button
           onClick={() => setTab("stock")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "stock" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
+            tab === "stock" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"
           }`}
         >
           Stock Levels
@@ -739,7 +739,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         <button
           onClick={() => setTab("requests")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "requests" ? "bg-white text-shark-900 shadow-sm" : "text-shark-500 hover:text-shark-700"
+            tab === "requests" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"
           }`}
         >
           Requests {pendingRequests.length > 0 && (
@@ -935,9 +935,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 <div key={r.id} className="p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-shark-800">{r.consumable.name}</p>
+                      <p className="text-sm font-semibold text-shark-800 dark:text-shark-100">{r.consumable.name}</p>
                       <p className="text-xs text-shark-400">{r.user.name || r.user.email} · {r.quantity} {r.consumable.unitType}</p>
+                      <p className="text-xs text-shark-400 mt-0.5">{formatDate(r.createdAt)}</p>
                     </div>
+                    <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${r.consumable.quantityOnHand >= r.quantity ? "bg-amber-50 text-amber-600" : "bg-red-50 text-red-600"}`}>
+                      {r.consumable.quantityOnHand >= r.quantity ? "Pending" : "Low Stock"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5 mt-3">
                     {r.consumable.quantityOnHand < r.quantity ? (
@@ -1265,18 +1269,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
             {/* Add / Deduct toggle — users with stockAdjust permission */}
             {canAdjustStock && (
-              <div className="flex rounded-lg bg-shark-50 p-1 gap-1">
+              <div className="flex rounded-lg bg-shark-50 dark:bg-shark-800 p-1 gap-1">
                 <button
                   type="button"
                   onClick={() => setStockMode("add")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "add" ? "bg-white text-action-700 shadow-sm" : "text-shark-500 hover:text-shark-700"}`}
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "add" ? "bg-white dark:bg-shark-700 text-action-700 dark:text-action-400 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"}`}
                 >
                   + Add Stock
                 </button>
                 <button
                   type="button"
                   onClick={() => setStockMode("deduct")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "deduct" ? "bg-white text-red-700 shadow-sm" : "text-shark-500 hover:text-shark-700"}`}
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${stockMode === "deduct" ? "bg-white dark:bg-shark-700 text-red-700 dark:text-red-400 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"}`}
                 >
                   − Deduct Stock
                 </button>

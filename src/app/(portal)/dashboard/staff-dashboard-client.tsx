@@ -52,8 +52,8 @@ function ConditionSelect({ value, onChange }: { value: string; onChange: (val: s
         ref={btnRef}
         type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between rounded-xl border border-shark-200 bg-white px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
-          open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300"
+        className={`w-full flex items-center justify-between rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
+          open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300 dark:hover:border-shark-600"
         }`}
       >
         <span className={`font-medium ${selected.color}`}>{selected.label}</span>
@@ -63,7 +63,7 @@ function ConditionSelect({ value, onChange }: { value: string; onChange: (val: s
         <div
           ref={menuRef}
           style={{ position: "fixed", top: pos.top, left: pos.left, width: pos.width, zIndex: 9999 }}
-          className="bg-white rounded-xl shadow-lg border border-shark-100 py-1"
+          className="bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1"
         >
           {options.map((opt) => (
             <button
@@ -71,7 +71,7 @@ function ConditionSelect({ value, onChange }: { value: string; onChange: (val: s
               type="button"
               onClick={() => { onChange(opt.value); setOpen(false); }}
               className={`w-full text-left px-3.5 py-2.5 text-sm transition-colors flex items-center justify-between ${
-                opt.value === value ? "bg-action-50 font-medium" : "hover:bg-shark-50"
+                opt.value === value ? "bg-action-50 dark:bg-action-500/20 font-medium" : "hover:bg-shark-50 dark:hover:bg-shark-700"
               } ${opt.color}`}
             >
               {opt.label}
@@ -813,7 +813,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                             <div key={a.id}>
                               <label className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50"}`}>
                                 <input type="checkbox" checked={!isExcluded} onChange={() => setKitItemExclusions((prev) => ({ ...prev, [key]: { excluded: !isExcluded, note: prev[key]?.note || "" } }))} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
-                                <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-shark-100 flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                                   {a.imageUrl ? <img src={a.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -840,7 +840,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                             <div key={c.id}>
                               <label className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50"}`}>
                                 <input type="checkbox" checked={!isExcluded} onChange={() => setKitItemExclusions((prev) => ({ ...prev, [key]: { excluded: !isExcluded, note: prev[key]?.note || "" } }))} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
-                                <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-shark-100 flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                                   {c.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -958,9 +958,9 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {/* Return Individual Item Modal */}
       {returningItemId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md my-auto animate-fade-in">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100">
-              <h3 className="text-lg font-semibold text-shark-900">Return Item</h3>
+          <div className="bg-white dark:bg-shark-900 rounded-xl shadow-2xl w-full max-w-md my-auto animate-fade-in">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100 dark:border-shark-800">
+              <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Return Item</h3>
               <button
                 onClick={() => setReturningItemId(null)}
                 className="p-1.5 rounded-lg hover:bg-shark-100 text-shark-400"

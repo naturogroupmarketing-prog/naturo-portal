@@ -88,9 +88,9 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
   }
 
   return (
-    <div className="bg-white border border-shark-100 rounded-2xl shadow-sm overflow-hidden">
+    <div className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-2xl shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-shark-100 bg-shark-50/40">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-shark-100 dark:border-shark-800 bg-shark-50/40 dark:bg-shark-800/40">
         <Icon name="bell" size={14} className="text-shark-500 flex-shrink-0" />
         <span className="text-sm font-semibold text-shark-800 flex-1">
           {items.length === 0 ? "All caught up" : "Action Required"}

@@ -190,7 +190,7 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
     <div
       ref={menuRef}
       style={{ position: "fixed", top: pos.top, left: pos.left, zIndex: 9999 }}
-      className="bg-white rounded-xl shadow-lg border border-shark-100 py-1 min-w-[160px]"
+      className="bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1 min-w-[160px]"
       onClick={(e) => e.stopPropagation()}
     >
       {actions.map((action) => {
@@ -198,7 +198,7 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
           if (!canAssign || asset.status !== "AVAILABLE") return null;
           return (
             <button key={action.value} onClick={() => { onAssign(); setOpen(false); }}
-              className="w-full text-left px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors flex items-center gap-2">
+              className="w-full text-left px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors flex items-center gap-2">
               <Icon name="user" size={12} /> {action.label}
             </button>
           );
@@ -207,7 +207,7 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
           if (!canAssign || !activeAssignment) return null;
           return (
             <button key={action.value} onClick={() => { onReturn(); setOpen(false); }}
-              className="w-full text-left px-3 py-2 text-xs font-medium text-action-600 hover:bg-action-50 transition-colors flex items-center gap-2">
+              className="w-full text-left px-3 py-2 text-xs font-medium text-action-600 hover:bg-action-50 dark:hover:bg-action-500/10 transition-colors flex items-center gap-2">
               <Icon name="arrow-left" size={12} /> {action.label}
             </button>
           );
@@ -216,16 +216,16 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
         const isDestructive = action.value === "DAMAGED" || action.value === "LOST";
         return (
           <button key={action.value} onClick={() => { onStatusChange(asset.id, action.value); setOpen(false); }}
-            className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${isDestructive ? "text-red-600 hover:bg-red-50" : "text-green-600 hover:bg-green-50"}`}>
+            className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${isDestructive ? "text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10" : "text-green-600 hover:bg-green-50 dark:hover:bg-green-500/10"}`}>
             <Icon name={isDestructive ? "alert-triangle" : "check"} size={12} /> {action.label}
           </button>
         );
       })}
       {isDeletable && (
         <>
-          <div className="border-t border-shark-100 my-1" />
+          <div className="border-t border-shark-100 dark:border-shark-700 my-1" />
           <button onClick={() => { onDelete(asset.id); setOpen(false); }}
-            className="w-full text-left px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2">
+            className="w-full text-left px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors flex items-center gap-2">
             <Icon name="trash-2" size={12} /> Delete Asset
           </button>
         </>
@@ -765,7 +765,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                 <div
                   key={asset.id}
                   onClick={() => permissions.canEdit && setEditAsset(asset)}
-                  className="border border-shark-100 rounded-xl p-4 bg-white hover:shadow-sm transition-shadow cursor-pointer"
+                  className="border border-shark-100 dark:border-shark-800 rounded-xl p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
                 >
                   <div className="flex items-start gap-3">
                     {asset.imageUrl ? (
@@ -1005,7 +1005,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             Columns
           </Button>
           {showColumnMenu && (
-            <div className="absolute right-0 top-full mt-1 bg-white border border-shark-200 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
+            <div className="absolute right-0 top-full mt-1 bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
               {([
                 ["photo", "Photo"],
                 ["code", "Code"],
@@ -1014,7 +1014,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                 ["status", "Status"],
                 ["assignedTo", "Assigned To"],
               ] as [keyof typeof visibleColumns, string][]).map(([key, label]) => (
-                <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 cursor-pointer text-sm">
+                <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 dark:hover:bg-shark-700 cursor-pointer text-sm text-shark-700 dark:text-shark-200">
                   <input
                     type="checkbox"
                     checked={visibleColumns[key]}
@@ -1040,7 +1040,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
       {/* Advanced Filters */}
       {showAdvancedFilters && (
-        <div className="bg-white rounded-xl border border-shark-100 p-4 shadow-sm">
+        <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 p-4 shadow-sm">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
               <label className="block text-xs font-medium text-shark-500 mb-1">Category</label>

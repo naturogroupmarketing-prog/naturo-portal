@@ -553,7 +553,7 @@ function AddItemsChecklist({
                     onChange={() => !alreadyAdded && toggleCategory(cat.name)}
                     className="rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer"
                   />
-                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-shark-100 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                     {assetPhotos[cat.name] ? (
                       <img src={assetPhotos[cat.name]!} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -616,7 +616,7 @@ function AddItemsChecklist({
                       onChange={() => !alreadyAdded && toggleConsumable(c.id)}
                       className="rounded border-shark-300 text-action-500 focus:ring-action-400"
                     />
-                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-shark-100 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                       {c.imageUrl ? (
                         <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
                       ) : (

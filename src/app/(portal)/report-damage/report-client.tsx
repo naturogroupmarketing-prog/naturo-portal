@@ -51,9 +51,9 @@ function CustomSelect({ value, onChange, options, placeholder, name }: {
         ref={btnRef}
         type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between rounded-xl border border-shark-200 bg-white px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
-          open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300"
-        } ${value ? "text-shark-900" : "text-shark-400"}`}
+        className={`w-full flex items-center justify-between rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
+          open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300 dark:hover:border-shark-600"
+        } ${value ? "text-shark-900 dark:text-shark-100" : "text-shark-400"}`}
       >
         <span className="truncate">{selected ? selected.label : placeholder}</span>
         <Icon name="chevron-down" size={16} className={`text-shark-400 transition-transform ${open ? "rotate-180" : ""}`} />
@@ -62,7 +62,7 @@ function CustomSelect({ value, onChange, options, placeholder, name }: {
         <div
           ref={menuRef}
           style={{ position: "fixed", top: pos.top, left: pos.left, width: pos.width, zIndex: 9999 }}
-          className="bg-white rounded-xl shadow-lg border border-shark-100 py-1 max-h-64 overflow-y-auto"
+          className="bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1 max-h-64 overflow-y-auto"
         >
           {options.map((opt) => (
             <button
@@ -70,16 +70,16 @@ function CustomSelect({ value, onChange, options, placeholder, name }: {
               type="button"
               onClick={() => { onChange(opt.value); setOpen(false); }}
               className={`w-full text-left px-3.5 py-2.5 text-sm transition-colors flex items-center gap-3 ${
-                opt.value === value ? "bg-action-50 text-action-700 font-medium" : "text-shark-700 hover:bg-shark-50"
+                opt.value === value ? "bg-action-50 dark:bg-action-500/20 text-action-700 dark:text-action-400 font-medium" : "text-shark-700 dark:text-shark-200 hover:bg-shark-50 dark:hover:bg-shark-700"
               }`}
             >
               {opt.imageUrl && (
-                <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 border border-shark-100 shrink-0">
+                <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-700 border border-shark-100 dark:border-shark-600 shrink-0">
                   <img src={opt.imageUrl} alt="" className="w-full h-full object-cover" />
                 </div>
               )}
               {!opt.imageUrl && opt.sublabel && (
-                <div className="w-8 h-8 rounded-lg bg-shark-50 border border-shark-100 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-shark-50 dark:bg-shark-700 border border-shark-100 dark:border-shark-600 flex items-center justify-center shrink-0">
                   <Icon name="package" size={14} className="text-shark-400" />
                 </div>
               )}

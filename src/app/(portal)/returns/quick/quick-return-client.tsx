@@ -100,7 +100,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
   return (
     <div className="min-h-screen bg-shark-50">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-shark-100 shadow-sm">
+      <div className="sticky top-0 z-30 bg-white dark:bg-shark-900 border-b border-shark-100 dark:border-shark-800 shadow-sm">
         <div className="flex items-center gap-3 px-4 py-4">
           <Link
             href="/returns"
@@ -181,8 +181,8 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
           return (
             <div
               key={item.id}
-              className={`rounded-2xl bg-white border transition-all shadow-sm overflow-hidden ${
-                isSelected ? "border-action-400 ring-2 ring-action-400/20" : "border-shark-100"
+              className={`rounded-2xl bg-white dark:bg-shark-900 border transition-all shadow-sm overflow-hidden ${
+                isSelected ? "border-action-400 ring-2 ring-action-400/20" : "border-shark-100 dark:border-shark-800"
               }`}
             >
               {/* Card header — tap to select */}
@@ -284,7 +284,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
 
       {/* Sticky batch footer */}
       {selected.size > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-shark-100 shadow-lg px-4 py-4 safe-area-pb">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-shark-900 border-t border-shark-100 dark:border-shark-700 shadow-lg px-4 py-4 safe-area-pb">
           <button
             type="button"
             onClick={handleConfirmAll}
