@@ -10,15 +10,19 @@
  *   - Dark mode (no extra classes needed by callers)
  *   - Keyboard: Escape closes
  *
- * Usage:
+ * Usage (fixed width):
  *   <PortalDropdown
- *     trigger={<button ref={...}>Open</button>}
- *     triggerRef={ref}
+ *     triggerRef={btnRef}
  *     open={open}
  *     onClose={() => setOpen(false)}
- *     align="right"      // "left" | "right" | "center"
- *     width={220}        // min-width of the menu in px
+ *     align="right"    // "left" | "right" | "center"
+ *     width={220}      // min-width in px (default: 180)
  *   >
+ *     {menu content}
+ *   </PortalDropdown>
+ *
+ * Usage (full-width — matches trigger element width):
+ *   <PortalDropdown triggerRef={btnRef} open={open} onClose={...} matchTriggerWidth>
  *     {menu content}
  *   </PortalDropdown>
  */
@@ -42,12 +46,16 @@ interface PortalDropdownProps {
   onClose: () => void;
   /** Menu content. */
   children: ReactNode;
-  /** Alignment relative to the trigger. Default: "right". */
+  /** Alignment relative to the trigger. Default: "right". Ignored when matchTriggerWidth=true. */
   align?: "left" | "right" | "center";
-  /** Min-width of the menu in px. Default: 180. */
+  /** Min-width of the menu in px. Default: 180. Ignored when matchTriggerWidth=true. */
   width?: number;
+  /** When true the menu matches the trigger element's width exactly (left-aligned). */
+  matchTriggerWidth?: boolean;
   /** Extra classes applied to the menu container. */
   className?: string;
+  /** Max-height override (e.g. "max-h-64 overflow-y-auto"). Default: none. */
+  maxHeightClass?: string;
 }
 
 export function PortalDropdown({
@@ -57,13 +65,26 @@ export function PortalDropdown({
   children,
   align = "right",
   width = 180,
+  matchTriggerWidth = false,
   className,
+  maxHeightClass,
 }: PortalDropdownProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const getPos = useCallback(() => {
-    if (!triggerRef.current) return { top: 0, left: 0 };
+  const getStyle = useCallback((): React.CSSProperties => {
+    if (!triggerRef.current) return { top: 0, left: 0, zIndex: 9999 };
     const rect = triggerRef.current.getBoundingClientRect();
+
+    if (matchTriggerWidth) {
+      return {
+        position: "fixed",
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+        zIndex: 9999,
+      };
+    }
+
     let left: number;
     if (align === "right") {
       left = Math.max(8, rect.right - width);
@@ -72,8 +93,8 @@ export function PortalDropdown({
     } else {
       left = Math.max(8, rect.left + rect.width / 2 - width / 2);
     }
-    return { top: rect.bottom + 4, left };
-  }, [triggerRef, align, width]);
+    return { position: "fixed", top: rect.bottom + 4, left, minWidth: width, zIndex: 9999 };
+  }, [triggerRef, align, width, matchTriggerWidth]);
 
   useEffect(() => {
     if (!open) return;
@@ -102,20 +123,13 @@ export function PortalDropdown({
 
   if (!open || typeof document === "undefined") return null;
 
-  const { top, left } = getPos();
-
   return createPortal(
     <div
       ref={menuRef}
-      style={{
-        position: "fixed",
-        top,
-        left,
-        zIndex: 9999,
-        minWidth: width,
-      }}
+      style={getStyle()}
       className={cn(
         "bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1",
+        maxHeightClass,
         className
       )}
       onClick={(e) => e.stopPropagation()}
@@ -147,7 +161,7 @@ export function DropdownItem({
       disabled={disabled}
       className={cn(
         "w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2",
-        "hover:bg-shark-50 dark:hover:bg-shark-700",
+        "hover:bg-shark-50 dark:hover:bg-shark-800",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         className
       )}

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
+import { PortalDropdown } from "@/components/ui/portal-dropdown";
 import { reportDamage } from "@/app/actions/damage";
 import { DamageClassifier } from "@/components/ui/damage-classifier";
 import type { DamageClassification } from "@/app/api/vision/classify-damage/route";
@@ -14,7 +14,7 @@ interface Assignment {
   asset: { id: string; name: string; assetCode: string; imageUrl?: string | null };
 }
 
-// Custom styled dropdown matching app design
+// Custom styled dropdown — uses PortalDropdown primitive for positioning/dark mode
 function CustomSelect({ value, onChange, options, placeholder, name }: {
   value: string;
   onChange: (val: string) => void;
@@ -23,26 +23,8 @@ function CustomSelect({ value, onChange, options, placeholder, name }: {
   name: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-
   const selected = options.find((o) => o.value === value);
-
-  useEffect(() => {
-    if (!open) return;
-    if (btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      setPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
-    }
-    const handle = (e: MouseEvent) => {
-      if (btnRef.current?.contains(e.target as Node)) return;
-      if (menuRef.current?.contains(e.target as Node)) return;
-      setOpen(false);
-    };
-    document.addEventListener("mousedown", handle);
-    return () => document.removeEventListener("mousedown", handle);
-  }, [open]);
 
   return (
     <>
@@ -58,41 +40,42 @@ function CustomSelect({ value, onChange, options, placeholder, name }: {
         <span className="truncate">{selected ? selected.label : placeholder}</span>
         <Icon name="chevron-down" size={16} className={`text-shark-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
-      {open && typeof document !== "undefined" && createPortal(
-        <div
-          ref={menuRef}
-          style={{ position: "fixed", top: pos.top, left: pos.left, width: pos.width, zIndex: 9999 }}
-          className="bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1 max-h-64 overflow-y-auto"
-        >
-          {options.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => { onChange(opt.value); setOpen(false); }}
-              className={`w-full text-left px-3.5 py-2.5 text-sm transition-colors flex items-center gap-3 ${
-                opt.value === value ? "bg-action-50 dark:bg-action-500/20 text-action-700 dark:text-action-400 font-medium" : "text-shark-700 dark:text-shark-200 hover:bg-shark-50 dark:hover:bg-shark-700"
-              }`}
-            >
-              {opt.imageUrl && (
-                <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-700 border border-shark-100 dark:border-shark-600 shrink-0">
-                  <img src={opt.imageUrl} alt="" className="w-full h-full object-cover" />
-                </div>
-              )}
-              {!opt.imageUrl && opt.sublabel && (
-                <div className="w-8 h-8 rounded-lg bg-shark-50 dark:bg-shark-700 border border-shark-100 dark:border-shark-600 flex items-center justify-center shrink-0">
-                  <Icon name="package" size={14} className="text-shark-400" />
-                </div>
-              )}
-              <div className="min-w-0">
-                <p className="truncate">{opt.label}</p>
-                {opt.sublabel && <p className="text-xs text-shark-400">{opt.sublabel}</p>}
+      <PortalDropdown
+        triggerRef={btnRef}
+        open={open}
+        onClose={() => setOpen(false)}
+        matchTriggerWidth
+        maxHeightClass="max-h-64 overflow-y-auto"
+      >
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => { onChange(opt.value); setOpen(false); }}
+            className={`w-full text-left px-3.5 py-2.5 text-sm transition-colors flex items-center gap-3 ${
+              opt.value === value
+                ? "bg-action-50 dark:bg-action-500/20 text-action-700 dark:text-action-400 font-medium"
+                : "text-shark-700 dark:text-shark-200 hover:bg-shark-50 dark:hover:bg-shark-800"
+            }`}
+          >
+            {opt.imageUrl && (
+              <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 shrink-0">
+                <img src={opt.imageUrl} alt="" className="w-full h-full object-cover" />
               </div>
-              {opt.value === value && <Icon name="check" size={16} className="text-action-500 ml-auto shrink-0" />}
-            </button>
-          ))}
-        </div>,
-        document.body
-      )}
+            )}
+            {!opt.imageUrl && opt.sublabel && (
+              <div className="w-8 h-8 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                <Icon name="package" size={14} className="text-shark-400" />
+              </div>
+            )}
+            <div className="min-w-0">
+              <p className="truncate">{opt.label}</p>
+              {opt.sublabel && <p className="text-xs text-shark-400">{opt.sublabel}</p>}
+            </div>
+            {opt.value === value && <Icon name="check" size={16} className="text-action-500 ml-auto shrink-0" />}
+          </button>
+        ))}
+      </PortalDropdown>
     </>
   );
 }

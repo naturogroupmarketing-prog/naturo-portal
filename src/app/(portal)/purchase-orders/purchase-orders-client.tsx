@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { createPortal } from "react-dom";
+import { useState, useRef, useEffect } from "react";
+import { PortalDropdown } from "@/components/ui/portal-dropdown";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,9 +89,7 @@ function POStatusDropdown({ po, canManage, isSuperAdmin, onAction, loading }: {
   loading: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   // Super Admin gets all transitions, Branch Manager only ORDERED ↔ RECEIVED
   const actionMap = isSuperAdmin ? PO_STATUS_ACTIONS_ADMIN : PO_STATUS_ACTIONS_MANAGER;
@@ -110,50 +108,6 @@ function POStatusDropdown({ po, canManage, isSuperAdmin, onAction, loading }: {
   // Branch managers always have access to their limited actions (ORDERED ↔ RECEIVED)
   const hasActions = (canManage || actions.length > 0) && actions.length > 0;
 
-  const updatePos = useCallback(() => {
-    if (!btnRef.current) return;
-    const rect = btnRef.current.getBoundingClientRect();
-    setPos({ top: rect.bottom + 4, left: Math.max(8, rect.right - 180) });
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    updatePos();
-    const handleClick = (e: MouseEvent) => {
-      if (btnRef.current?.contains(e.target as Node)) return;
-      if (menuRef.current?.contains(e.target as Node)) return;
-      setOpen(false);
-    };
-    const handleScroll = () => setOpen(false);
-    document.addEventListener("mousedown", handleClick);
-    window.addEventListener("scroll", handleScroll, true);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      window.removeEventListener("scroll", handleScroll, true);
-    };
-  }, [open, updatePos]);
-
-  const menuContent = open && typeof document !== "undefined" ? createPortal(
-    <div
-      ref={menuRef}
-      style={{ position: "fixed", top: pos.top, left: pos.left, zIndex: 9999 }}
-      className="bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1 min-w-[180px]"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {actions.map((action) => (
-        <button
-          key={action.value}
-          onClick={() => { onAction(po.id, action.value); setOpen(false); }}
-          disabled={loading}
-          className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 dark:hover:bg-shark-700 ${action.color} disabled:opacity-50`}
-        >
-          <Icon name={action.icon as any} size={12} /> {action.label}
-        </button>
-      ))}
-    </div>,
-    document.body
-  ) : null;
-
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <button
@@ -164,7 +118,18 @@ function POStatusDropdown({ po, canManage, isSuperAdmin, onAction, loading }: {
         {po.status.replace(/_/g, " ")}
         {hasActions && <Icon name="chevron-down" size={10} className={`transition-transform ${open ? "rotate-180" : ""}`} />}
       </button>
-      {menuContent}
+      <PortalDropdown triggerRef={btnRef} open={open} onClose={() => setOpen(false)} align="right" width={180}>
+        {actions.map((action) => (
+          <button
+            key={action.value}
+            onClick={() => { onAction(po.id, action.value); setOpen(false); }}
+            disabled={loading}
+            className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 dark:hover:bg-shark-700 ${action.color} disabled:opacity-50`}
+          >
+            <Icon name={action.icon as any} size={12} /> {action.label}
+          </button>
+        ))}
+      </PortalDropdown>
     </div>
   );
 }

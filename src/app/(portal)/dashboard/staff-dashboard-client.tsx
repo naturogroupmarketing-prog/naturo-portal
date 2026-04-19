@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,13 +14,12 @@ import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { PullToRefresh } from "@/components/ui/pull-to-refresh";
+import { PortalDropdown } from "@/components/ui/portal-dropdown";
 
-// Custom styled condition dropdown matching app design
+// Custom styled condition dropdown — uses PortalDropdown primitive
 function ConditionSelect({ value, onChange }: { value: string; onChange: (val: string) => void }) {
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   const options = [
     { value: "GOOD", label: "Good", color: "text-green-600" },
@@ -30,21 +28,6 @@ function ConditionSelect({ value, onChange }: { value: string; onChange: (val: s
     { value: "DAMAGED", label: "Damaged", color: "text-red-600" },
   ];
   const selected = options.find((o) => o.value === value) || options[0];
-
-  useEffect(() => {
-    if (!open) return;
-    if (btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      setPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
-    }
-    const handle = (e: MouseEvent) => {
-      if (btnRef.current?.contains(e.target as Node)) return;
-      if (menuRef.current?.contains(e.target as Node)) return;
-      setOpen(false);
-    };
-    document.addEventListener("mousedown", handle);
-    return () => document.removeEventListener("mousedown", handle);
-  }, [open]);
 
   return (
     <>
@@ -59,28 +42,26 @@ function ConditionSelect({ value, onChange }: { value: string; onChange: (val: s
         <span className={`font-medium ${selected.color}`}>{selected.label}</span>
         <Icon name="chevron-down" size={16} className={`text-shark-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
-      {open && typeof document !== "undefined" && createPortal(
-        <div
-          ref={menuRef}
-          style={{ position: "fixed", top: pos.top, left: pos.left, width: pos.width, zIndex: 9999 }}
-          className="bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1"
-        >
-          {options.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => { onChange(opt.value); setOpen(false); }}
-              className={`w-full text-left px-3.5 py-2.5 text-sm transition-colors flex items-center justify-between ${
-                opt.value === value ? "bg-action-50 dark:bg-action-500/20 font-medium" : "hover:bg-shark-50 dark:hover:bg-shark-700"
-              } ${opt.color}`}
-            >
-              {opt.label}
-              {opt.value === value && <Icon name="check" size={16} className="text-action-500" />}
-            </button>
-          ))}
-        </div>,
-        document.body
-      )}
+      <PortalDropdown
+        triggerRef={btnRef}
+        open={open}
+        onClose={() => setOpen(false)}
+        matchTriggerWidth
+      >
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => { onChange(opt.value); setOpen(false); }}
+            className={`w-full text-left px-3.5 py-2.5 text-sm transition-colors flex items-center justify-between ${
+              opt.value === value ? "bg-action-50 dark:bg-action-500/20 font-medium" : "hover:bg-shark-50 dark:hover:bg-shark-800"
+            } ${opt.color}`}
+          >
+            {opt.label}
+            {opt.value === value && <Icon name="check" size={16} className="text-action-500" />}
+          </button>
+        ))}
+      </PortalDropdown>
     </>
   );
 }

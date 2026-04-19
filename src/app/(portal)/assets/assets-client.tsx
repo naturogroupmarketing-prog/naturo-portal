@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { createPortal } from "react-dom";
+import { useState, useRef, useEffect } from "react";
+import { PortalDropdown } from "@/components/ui/portal-dropdown";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -154,85 +154,12 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
   onDelete: (assetId: string) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
   const isDeletable = canDelete && !activeAssignment;
   const hasActions = canAssign || canEdit || isDeletable;
 
-  const updatePos = useCallback(() => {
-    if (!btnRef.current) return;
-    const rect = btnRef.current.getBoundingClientRect();
-    setPos({ top: rect.bottom + 4, left: Math.max(8, rect.right - 160) });
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    updatePos();
-    const handleClick = (e: MouseEvent) => {
-      if (btnRef.current?.contains(e.target as Node)) return;
-      if (menuRef.current?.contains(e.target as Node)) return;
-      setOpen(false);
-    };
-    const handleScroll = () => setOpen(false);
-    document.addEventListener("mousedown", handleClick);
-    window.addEventListener("scroll", handleScroll, true);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      window.removeEventListener("scroll", handleScroll, true);
-    };
-  }, [open, updatePos]);
-
   const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600" };
   const actions = STATUS_ACTIONS[asset.status] || [];
-
-  const menuContent = open && typeof document !== "undefined" ? createPortal(
-    <div
-      ref={menuRef}
-      style={{ position: "fixed", top: pos.top, left: pos.left, zIndex: 9999 }}
-      className="bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1 min-w-[160px]"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {actions.map((action) => {
-        if (action.value === "_assign") {
-          if (!canAssign || asset.status !== "AVAILABLE") return null;
-          return (
-            <button key={action.value} onClick={() => { onAssign(); setOpen(false); }}
-              className="w-full text-left px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors flex items-center gap-2">
-              <Icon name="user" size={12} /> {action.label}
-            </button>
-          );
-        }
-        if (action.value === "_return") {
-          if (!canAssign || !activeAssignment) return null;
-          return (
-            <button key={action.value} onClick={() => { onReturn(); setOpen(false); }}
-              className="w-full text-left px-3 py-2 text-xs font-medium text-action-600 hover:bg-action-50 dark:hover:bg-action-500/10 transition-colors flex items-center gap-2">
-              <Icon name="arrow-left" size={12} /> {action.label}
-            </button>
-          );
-        }
-        if (!canAssign && !canEdit) return null;
-        const isDestructive = action.value === "DAMAGED" || action.value === "LOST";
-        return (
-          <button key={action.value} onClick={() => { onStatusChange(asset.id, action.value); setOpen(false); }}
-            className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${isDestructive ? "text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10" : "text-green-600 hover:bg-green-50 dark:hover:bg-green-500/10"}`}>
-            <Icon name={isDestructive ? "alert-triangle" : "check"} size={12} /> {action.label}
-          </button>
-        );
-      })}
-      {isDeletable && (
-        <>
-          <div className="border-t border-shark-100 dark:border-shark-700 my-1" />
-          <button onClick={() => { onDelete(asset.id); setOpen(false); }}
-            className="w-full text-left px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors flex items-center gap-2">
-            <Icon name="trash-2" size={12} /> Delete Asset
-          </button>
-        </>
-      )}
-    </div>,
-    document.body
-  ) : null;
 
   return (
     <div className="inline-block" onClick={(e) => e.stopPropagation()}>
@@ -244,7 +171,45 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
         {badge.label}
         {hasActions && <Icon name="chevron-down" size={10} className={`transition-transform ${open ? "rotate-180" : ""}`} />}
       </button>
-      {menuContent}
+      <PortalDropdown triggerRef={btnRef} open={open} onClose={() => setOpen(false)} align="right" width={160}>
+        {actions.map((action) => {
+          if (action.value === "_assign") {
+            if (!canAssign || asset.status !== "AVAILABLE") return null;
+            return (
+              <button key={action.value} onClick={() => { onAssign(); setOpen(false); }}
+                className="w-full text-left px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors flex items-center gap-2">
+                <Icon name="user" size={12} /> {action.label}
+              </button>
+            );
+          }
+          if (action.value === "_return") {
+            if (!canAssign || !activeAssignment) return null;
+            return (
+              <button key={action.value} onClick={() => { onReturn(); setOpen(false); }}
+                className="w-full text-left px-3 py-2 text-xs font-medium text-action-600 hover:bg-action-50 dark:hover:bg-action-500/10 transition-colors flex items-center gap-2">
+                <Icon name="arrow-left" size={12} /> {action.label}
+              </button>
+            );
+          }
+          if (!canAssign && !canEdit) return null;
+          const isDestructive = action.value === "DAMAGED" || action.value === "LOST";
+          return (
+            <button key={action.value} onClick={() => { onStatusChange(asset.id, action.value); setOpen(false); }}
+              className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${isDestructive ? "text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10" : "text-green-600 hover:bg-green-50 dark:hover:bg-green-500/10"}`}>
+              <Icon name={isDestructive ? "alert-triangle" : "check"} size={12} /> {action.label}
+            </button>
+          );
+        })}
+        {isDeletable && (
+          <>
+            <div className="border-t border-shark-100 dark:border-shark-700 my-1" />
+            <button onClick={() => { onDelete(asset.id); setOpen(false); }}
+              className="w-full text-left px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors flex items-center gap-2">
+              <Icon name="trash-2" size={12} /> Delete Asset
+            </button>
+          </>
+        )}
+      </PortalDropdown>
     </div>
   );
 }
