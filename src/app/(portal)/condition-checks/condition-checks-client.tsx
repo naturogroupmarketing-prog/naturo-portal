@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -201,12 +201,18 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
   const totalChecked = staffStatus.filter((s) => s.checkedItems >= s.totalItems).length;
 
   return (
-    <div className="space-y-10">
+    <Card>
+    <div className="p-4 sm:p-5 space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Condition Checks</h1>
-          <p className="text-sm text-shark-400 mt-1">{monthLabel} &middot; {totalChecked}/{staffStatus.length} staff completed</p>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="clipboard" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">Condition Checks</h3>
+            <p className="text-xs text-shark-400">{monthLabel} · {totalChecked}/{staffStatus.length} staff completed</p>
+          </div>
         </div>
         {isSuperAdmin && (
           <div className="flex items-center gap-2 flex-wrap">
@@ -576,25 +582,26 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
 
       {/* Summary Stats */}
       <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
         {[
-          { label: "Staff with Items", value: staffStatus.length, icon: "users" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
-          { label: "Completed", value: totalChecked, icon: "check" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
-          { label: "Incomplete", value: staffStatus.length - totalChecked, icon: "clock" as const, color: "text-white", bg: "bg-[#E8532E]", border: "border-[#E8532E]" },
-          { label: "Photos Submitted", value: checks.length, icon: "search" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
+          { label: "Staff with Items", value: staffStatus.length, icon: "users" as const, iconBg: "bg-action-500", iconColor: "text-white" },
+          { label: "Completed", value: totalChecked, icon: "check" as const, iconBg: "bg-action-500", iconColor: "text-white" },
+          { label: "Incomplete", value: staffStatus.length - totalChecked, icon: "clock" as const, iconBg: "bg-[#E8532E]", iconColor: "text-white" },
+          { label: "Photos Submitted", value: checks.length, icon: "search" as const, iconBg: "bg-action-500", iconColor: "text-white" },
         ].map((stat) => (
-          <Card key={stat.label} className="">
-            <div className="px-4 py-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-shark-900">{stat.value}</p>
-                  <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
+          <Card key={stat.label} className="hover:shadow-md transition-all duration-200">
+            <CardContent className="px-3 py-3">
+              <div className="flex items-center gap-2">
+                <div className={`w-9 h-9 rounded-lg ${stat.iconBg} flex items-center justify-center flex-shrink-0`}>
+                  <Icon name={stat.icon} size={16} className={stat.iconColor} />
                 </div>
-                <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
-                  <Icon name={stat.icon} size={18} className={stat.color} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-shark-500 truncate">{stat.label}</p>
+                  <p className="text-xl font-bold text-shark-900">{stat.value}</p>
                 </div>
+                <Icon name="arrow-right" size={14} className="text-shark-400 flex-shrink-0" />
               </div>
-            </div>
+            </CardContent>
           </Card>
         ))}
       </div>
@@ -789,5 +796,6 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
         </div>
       </Modal>
     </div>
+    </Card>
   );
 }

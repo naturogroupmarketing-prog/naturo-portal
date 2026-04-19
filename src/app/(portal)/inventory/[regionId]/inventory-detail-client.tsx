@@ -203,7 +203,7 @@ export function InventoryDetailClient({
 
         {/* Tab bar */}
         <div className="flex items-center gap-3 px-4 sm:px-5 py-3 border-b border-shark-100">
-          <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
+          <div className="flex gap-1 bg-shark-50 rounded-xl p-1 w-full">
             {TABS.map((tab) => (
               <button
                 key={tab}

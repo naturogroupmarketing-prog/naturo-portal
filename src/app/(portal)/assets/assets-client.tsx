@@ -235,7 +235,7 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
   ) : null;
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
+    <div className="inline-block" onClick={(e) => e.stopPropagation()}>
       <button
         ref={btnRef}
         onClick={() => hasActions && setOpen(!open)}
@@ -810,11 +810,21 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
         {/* Desktop: table layout */}
         <div className="hidden sm:block overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
+            <colgroup>
+              {permissions.canEdit && <col className="w-8" />}
+              <col className="w-8" />
+              {visibleColumns.photo && <col className="w-14" />}
+              {visibleColumns.code && <col className="w-16" />}
+              {visibleColumns.name && <col />}
+              {visibleColumns.location && <col className="w-44" />}
+              {visibleColumns.status && <col className="w-36" />}
+              {visibleColumns.assignedTo && <col className="w-44" />}
+            </colgroup>
             <thead>
               <tr className="border-b border-shark-100">
-                {permissions.canEdit && <th scope="col" className="px-1 py-3 w-6"></th>}
-                <th scope="col" className="px-3 py-3 text-left w-10">
+                {permissions.canEdit && <th scope="col" className="px-1 py-3"></th>}
+                <th scope="col" className="px-3 py-3 text-left">
                   {deletableInSection.length > 0 && (
                     <input
                       type="checkbox"
@@ -825,12 +835,12 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     />
                   )}
                 </th>
-                {visibleColumns.photo && <th scope="col" className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
+                {visibleColumns.photo && <th scope="col" className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Photo</th>}
                 {visibleColumns.code && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">QR</th>}
                 {visibleColumns.name && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>}
                 {visibleColumns.location && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
-                {visibleColumns.status && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>}
-                {visibleColumns.assignedTo && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
+                {visibleColumns.status && <th scope="col" className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>}
+                {visibleColumns.assignedTo && <th scope="col" className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
               </tr>
             </thead>
             <tbody>
@@ -879,8 +889,8 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       </div>
                     </td>
                     )}
-                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{asset.region.name}</td>}
-                    {visibleColumns.status && <td className="px-4 py-3">
+                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell truncate">{asset.region.name}</td>}
+                    {visibleColumns.status && <td className="px-4 py-3 text-right">
                       <StatusDropdown
                         asset={asset}
                         canAssign={permissions.canAssign}
@@ -894,7 +904,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       />
                     </td>}
                     {visibleColumns.assignedTo && (
-                    <td className="px-4 py-3 text-shark-500 hidden md:table-cell">{activeAssignment ? activeAssignment.user.name || activeAssignment.user.email : "\u2014"}</td>
+                    <td className="px-4 py-3 text-right text-shark-500 hidden md:table-cell truncate">{activeAssignment ? activeAssignment.user.name || activeAssignment.user.email : "\u2014"}</td>
                     )}
                   </tr>
                 );
@@ -910,12 +920,17 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Assets</h1>
-          <p className="text-sm text-shark-400 mt-1">{assets.length} total assets</p>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="package" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">Assets</h3>
+            <p className="text-xs text-shark-400">{assets.length} total assets</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowScanner(true)}>
@@ -1064,37 +1079,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         />
       ) : isSuperAdmin ? (
         // Super Admin: group by region first, then category within each region
-        regions.map((region, rIdx) => {
+        regions.map((region) => {
           const regionAssets = filtered.filter((a) => a.region.id === region.id);
           if (regionAssets.length === 0 && search) return null;
-          const rc = REGION_COLORS[rIdx % REGION_COLORS.length];
-          const regionCollapsed = collapsedRegions.has(region.id);
           return (
-            <div key={region.id} className="space-y-4">
-              {/* Region Header */}
-              <button
-                onClick={() => toggleRegion(region.id)}
-                className="flex items-center gap-3 px-1 pt-2 w-full text-left group"
-              >
-                <div className={`w-9 h-9 rounded-xl ${rc.bg} flex items-center justify-center`}>
-                  <Icon name="map-pin" size={18} className={rc.color} />
-                </div>
-                <div className="flex items-center gap-2 flex-1">
-                  <h2 className="text-xl font-bold text-shark-900">{region.name}</h2>
-                  <span className="text-sm text-shark-400">{region.state.name}</span>
-                  <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
-                    {regionAssets.length}
-                  </span>
-                </div>
-                <Icon
-                  name="chevron-down"
-                  size={18}
-                  className={`text-shark-400 group-hover:text-shark-600 transition-transform ${regionCollapsed ? "-rotate-90" : ""}`}
-                />
-              </button>
-
-              {!regionCollapsed && (
-                <>
+            <div key={region.id} className="space-y-10">
                   {/* Category sections within this region */}
                   {categories.map((cat, idx) => {
                     const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
@@ -1103,31 +1092,34 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     const catKey = `${region.id}-${cat.name}`;
                     const catCollapsed = collapsedCategories.has(catKey);
                     return (
-                      <div key={cat.name} className="space-y-2 ml-4">
+                      <div key={cat.name} className="space-y-4">
                         <button
                           onClick={() => toggleCategory(catKey)}
-                          className="flex items-center gap-3 px-1 w-full text-left group"
+                          className="flex items-center gap-2.5 w-full text-left group"
                         >
+                          <div className={`w-6 h-6 rounded-md ${colors.bg} flex items-center justify-center shrink-0`}>
+                            <Icon name="package" size={12} className={colors.color} />
+                          </div>
                           <div className="flex items-center gap-2 flex-1">
-                            <h3 className="text-base font-semibold text-shark-900">{cat.name}</h3>
-                            <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                            <h3 className="text-sm font-semibold text-shark-800 dark:text-shark-100">{cat.name}</h3>
+                            <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded-full ${colors.color} ${colors.bg}`}>
                               {catAssets.length}
                             </span>
                           </div>
                           <Icon
                             name="chevron-down"
-                            size={16}
+                            size={14}
                             className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
                           />
                         </button>
                         {!catCollapsed && (
                           viewMode === "card" ? (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 pt-2">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                               {catAssets.map(renderAssetCard)}
                             </div>
                           ) : viewMode === "compact" ? (
-                            <div className="rounded-xl border border-shark-100 overflow-hidden">
-                              <div className="flex items-center gap-3 px-3 py-1.5 bg-shark-50 border-b border-shark-100 text-[11px] font-semibold text-shark-400 uppercase tracking-wide">
+                            <div className="rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
+                              <div className="flex items-center gap-3 px-3 py-1.5 bg-shark-50 dark:bg-shark-800/40 border-b border-shark-100 dark:border-shark-800 text-[11px] font-semibold text-shark-400 uppercase tracking-wide">
                                 <span className="flex-1">Name</span>
                                 <span className="w-20 shrink-0">Status</span>
                                 <span className="w-28 shrink-0 hidden md:block">Assigned To</span>
@@ -1144,10 +1136,8 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   })}
 
                   {regionAssets.length === 0 && (
-                    <p className="text-sm text-shark-400 ml-4 px-1">No assets in this region.</p>
+                    <p className="text-sm text-shark-400">No assets in this region.</p>
                   )}
-                </>
-              )}
             </div>
           );
         })
@@ -1158,7 +1148,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           return (
             <div
               key={section.name}
-              className={`space-y-2 ${dragSectionIdx === sIdx ? "opacity-40" : ""} ${dragOverSectionIdx === sIdx ? "border-t-2 border-t-action-500 pt-1" : ""}`}
+              className={`space-y-4 ${dragSectionIdx === sIdx ? "opacity-40" : ""} ${dragOverSectionIdx === sIdx ? "border-t-2 border-t-action-500 pt-1" : ""}`}
               draggable={permissions.canEdit}
               onDragStart={() => handleSectionDragStart(sIdx)}
               onDragOver={(e) => handleSectionDragOver(e, sIdx)}
@@ -1166,35 +1156,38 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             >
               <div className="flex items-center gap-1">
                 {permissions.canEdit && (
-                  <div className="cursor-grab active:cursor-grabbing p-1">
-                    <svg className="w-5 h-5 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                  <div className="cursor-grab active:cursor-grabbing p-1 shrink-0">
+                    <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
                   </div>
                 )}
                 <button
                   onClick={() => toggleCategory(section.name)}
-                  className="flex items-center gap-3 px-1 w-full text-left group"
+                  className="flex items-center gap-2.5 w-full text-left group flex-1"
                 >
+                  <div className={`w-6 h-6 rounded-md ${section.bg} flex items-center justify-center shrink-0`}>
+                    <Icon name="package" size={12} className={section.color} />
+                  </div>
                   <div className="flex items-center gap-2 flex-1">
-                    <h2 className="text-lg font-semibold text-shark-900">{section.name}</h2>
-                    <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                    <h2 className="text-sm font-semibold text-shark-800 dark:text-shark-100">{section.name}</h2>
+                    <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded-full ${section.color} ${section.bg}`}>
                       {section.assets.length}
                     </span>
                   </div>
                   <Icon
                     name="chevron-down"
-                    size={16}
+                    size={14}
                     className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
                   />
                 </button>
               </div>
               {!catCollapsed && (
                 viewMode === "card" ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 pt-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                     {section.assets.map(renderAssetCard)}
                   </div>
                 ) : viewMode === "compact" ? (
-                  <div className="rounded-xl border border-shark-100 overflow-hidden">
-                    <div className="flex items-center gap-3 px-3 py-1.5 bg-shark-50 border-b border-shark-100 text-[11px] font-semibold text-shark-400 uppercase tracking-wide">
+                  <div className="rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
+                    <div className="flex items-center gap-3 px-3 py-1.5 bg-shark-50 dark:bg-shark-800/40 border-b border-shark-100 dark:border-shark-800 text-[11px] font-semibold text-shark-400 uppercase tracking-wide">
                       <span className="flex-1">Name</span>
                       <span className="w-20 shrink-0">Status</span>
                       <span className="w-28 shrink-0 hidden md:block">Assigned To</span>

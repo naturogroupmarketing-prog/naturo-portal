@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useBreadcrumbOverrides } from "@/components/ui/breadcrumb-context";
 
 const staticOverrides: Record<string, string> = {
+  "inventory": "Choose your location",
   "purchase-orders": "Purchase Orders",
   "my-assets": "My Assets",
   "my-consumables": "My Supplies",

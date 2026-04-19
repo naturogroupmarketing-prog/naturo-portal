@@ -132,6 +132,12 @@ model Organization {
   aiResetDate        DateTime?
   anomalySettings    Json               @default("{}")
 
+  // Onboarding
+  industry              String?
+  onboardingCompletedAt DateTime?
+  onboardingSkippedAt   DateTime?
+  onboardingData        Json?
+
   users          User[]
   states         State[]
   regions        Region[]
@@ -146,6 +152,7 @@ model Organization {
   conditionCheckSchedules    ConditionCheckSchedule[]
   customFieldDefs            CustomFieldDefinition[]
   starterKits    StarterKit[]
+  workflowRules  WorkflowRule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -814,6 +821,26 @@ model MaintenanceLog {
   completedAt DateTime @default(now())
 
   @@index([scheduleId])
+}
+
+// ─── MANAGER PERMISSIONS ────────────────────────────────
+
+// ─── WORKFLOW RULES ─────────────────────────────────────
+
+model WorkflowRule {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  trigger        String   // WorkflowTrigger value
+  conditions     Json     @default("{}")
+  action         String   // WorkflowAction value
+  actionConfig   Json     @default("{}")
+  enabled        Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([organizationId])
 }
 
 // ─── MANAGER PERMISSIONS ────────────────────────────────

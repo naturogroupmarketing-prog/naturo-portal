@@ -30,6 +30,17 @@ export default async function PortalLayout({
     redirect("/login?error=disabled");
   }
 
+  // Redirect super admins to setup if they haven't completed or skipped onboarding
+  if (session.user.role === "SUPER_ADMIN" && session.user.organizationId) {
+    const org = await db.organization.findUnique({
+      where: { id: session.user.organizationId },
+      select: { onboardingCompletedAt: true, onboardingSkippedAt: true },
+    });
+    if (org && !org.onboardingCompletedAt && !org.onboardingSkippedAt) {
+      redirect("/setup");
+    }
+  }
+
   // Count pending POs and pending returns for sidebar badges (managers/admins only)
   let pendingPOCount = 0;
   let pendingReturnsCount = 0;

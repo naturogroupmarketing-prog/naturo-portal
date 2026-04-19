@@ -1,4 +1,6 @@
 import { formatDistanceToNow } from "date-fns";
+import { Card, CardContent } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 
 interface AuditorDashboardProps {
   orgName: string;
@@ -20,156 +22,133 @@ interface AuditorDashboardProps {
   }>;
 }
 
-function KpiCard({ label, value, suffix }: { label: string; value: number; suffix?: string }) {
+function KpiCard({ label, value, suffix, icon }: { label: string; value: number; suffix?: string; icon: "package" | "droplet" | "users" | "bar-chart" }) {
   return (
-    <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 p-5">
-      <p className="text-xs font-semibold uppercase tracking-wider text-shark-400 dark:text-shark-500 mb-2">
-        {label}
-      </p>
-      <p className="text-3xl font-bold text-shark-900 dark:text-white">
-        {value}
-        {suffix && <span className="text-lg font-medium text-shark-400 ml-1">{suffix}</span>}
-      </p>
-    </div>
+    <Card className="hover:shadow-md transition-all duration-200">
+      <CardContent className="px-3 py-3">
+        <div className="flex items-center gap-2">
+          <div className="w-9 h-9 rounded-lg bg-action-500 flex items-center justify-center flex-shrink-0">
+            <Icon name={icon} size={16} className="text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-shark-500 truncate">{label}</p>
+            <p className="text-xl font-bold text-shark-900">
+              {value}{suffix && <span className="text-sm font-medium text-shark-400 ml-0.5">{suffix}</span>}
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
-function AlertCard({ label, value, description }: { label: string; value: number; description: string }) {
+function AlertCard({ label, value, description, icon }: { label: string; value: number; description: string; icon: "alert-triangle" | "truck" | "clock" | "x" }) {
   const isWarning = value > 0;
   return (
-    <div
-      className={`rounded-xl border p-5 ${
-        isWarning
-          ? "bg-amber-50 border-amber-200 dark:bg-amber-950/30 dark:border-amber-800"
-          : "bg-white border-shark-100 dark:bg-shark-900 dark:border-shark-800"
-      }`}
-    >
-      <p className="text-xs font-semibold uppercase tracking-wider text-shark-400 dark:text-shark-500 mb-2">
-        {label}
-      </p>
-      <p
-        className={`text-3xl font-bold mb-1 ${
-          isWarning ? "text-amber-700 dark:text-amber-400" : "text-shark-900 dark:text-white"
-        }`}
-      >
-        {value}
-      </p>
-      <p className="text-xs text-shark-500 dark:text-shark-400">{description}</p>
-    </div>
+    <Card className={`hover:shadow-md transition-all duration-200 ${isWarning ? "border-amber-200" : ""}`}>
+      <CardContent className="px-3 py-3">
+        <div className="flex items-center gap-2">
+          <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isWarning ? "bg-[#E8532E]" : "bg-action-500"}`}>
+            <Icon name={icon} size={16} className="text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-shark-500 truncate">{label}</p>
+            <p className={`text-xl font-bold ${isWarning ? "text-[#E8532E]" : "text-shark-900"}`}>{value}</p>
+            <p className="text-[10px] text-shark-400 leading-tight mt-0.5">{description}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDashboardProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-shark-900 dark:text-white">
-            Executive Overview
-            <span className="text-shark-400 dark:text-shark-500 font-normal"> · {orgName}</span>
-          </h1>
-          <p className="text-sm text-shark-500 dark:text-shark-400 mt-0.5">
-            Organisation-wide summary
-          </p>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="bar-chart" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">
+              Executive Overview
+              <span className="text-shark-400 font-normal"> · {orgName}</span>
+            </h3>
+            <p className="text-xs text-shark-400">Organisation-wide summary</p>
+          </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-shark-100 dark:bg-shark-800 text-shark-500 dark:text-shark-400 border border-shark-200 dark:border-shark-700 self-start sm:self-auto">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-shark-100 text-shark-500 border border-shark-200 self-start sm:self-auto">
+          <Icon name="lock" size={12} />
           Read-only access
         </span>
       </div>
 
       {/* Read-only notice banner */}
-      <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
-        <svg className="mt-0.5 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-        </svg>
-        <span>
+      <div className="flex items-start gap-3 px-4 py-3.5 rounded-xl bg-blue-50 border border-blue-100">
+        <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+          <Icon name="info" size={14} className="text-blue-600" />
+        </div>
+        <p className="text-sm text-blue-700 leading-relaxed">
           You have read-only access. Contact your administrator to make changes.
-        </span>
+        </p>
       </div>
 
-      {/* Top KPI row */}
-      <div>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-shark-400 dark:text-shark-500 mb-3">
-          Key Metrics
-        </h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <KpiCard label="Total Assets" value={stats.totalAssets} />
-          <KpiCard label="Total Consumables" value={stats.totalConsumables} />
-          <KpiCard label="Total Staff" value={stats.totalStaff} />
-          <KpiCard label="Health Score" value={stats.healthScore} suffix="/100" />
+      {/* Key Metrics */}
+      <div className="space-y-3">
+        <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Key Metrics</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+          <KpiCard label="Total Assets" value={stats.totalAssets} icon="package" />
+          <KpiCard label="Total Consumables" value={stats.totalConsumables} icon="droplet" />
+          <KpiCard label="Total Staff" value={stats.totalStaff} icon="users" />
+          <KpiCard label="Health Score" value={stats.healthScore} suffix="/100" icon="bar-chart" />
         </div>
       </div>
 
-      {/* Alert metrics row */}
-      <div>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-shark-400 dark:text-shark-500 mb-3">
-          Alerts
-        </h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <AlertCard
-            label="Low Stock"
-            value={stats.lowStockCount}
-            description="Items at or below minimum threshold"
-          />
-          <AlertCard
-            label="Damage Reports"
-            value={stats.damageReports}
-            description="Unresolved damage or loss reports"
-          />
-          <AlertCard
-            label="Pending POs"
-            value={stats.pendingPOs}
-            description="Purchase orders awaiting approval"
-          />
-          <AlertCard
-            label="Overdue Returns"
-            value={stats.overdueReturns}
-            description="Items not returned by due date"
-          />
+      {/* Alerts */}
+      <div className="space-y-3">
+        <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Alerts</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+          <AlertCard label="Low Stock" value={stats.lowStockCount} description="Items at or below minimum threshold" icon="alert-triangle" />
+          <AlertCard label="Damage Reports" value={stats.damageReports} description="Unresolved damage or loss reports" icon="x" />
+          <AlertCard label="Pending POs" value={stats.pendingPOs} description="Purchase orders awaiting approval" icon="truck" />
+          <AlertCard label="Overdue Returns" value={stats.overdueReturns} description="Items not returned by due date" icon="clock" />
         </div>
       </div>
 
-      {/* Recent Activity feed */}
-      <div>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-shark-400 dark:text-shark-500 mb-3">
-          Recent Activity
-        </h2>
-        <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800">
-          {recentActivity.length === 0 ? (
-            <p className="px-5 py-6 text-sm text-shark-400 dark:text-shark-500 text-center">
-              No recent activity to display.
-            </p>
-          ) : (
-            recentActivity.map((entry, idx) => (
-              <div key={idx} className="flex items-start gap-3 px-5 py-3">
-                <div className="mt-0.5 w-7 h-7 rounded-full bg-shark-100 dark:bg-shark-800 flex items-center justify-center flex-shrink-0">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-shark-400">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
+      {/* Recent Activity */}
+      <div className="space-y-3">
+        <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Recent Activity</p>
+        <Card>
+          <div className="divide-y divide-shark-50">
+            {recentActivity.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-3 text-center px-6">
+                <div className="w-10 h-10 rounded-full bg-shark-100 flex items-center justify-center">
+                  <Icon name="clock" size={18} className="text-shark-400" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-shark-800 dark:text-shark-100 truncate">
-                    {entry.action.replace(/_/g, " ")}
-                  </p>
-                  <p className="text-xs text-shark-400 dark:text-shark-500">
-                    by {entry.performedBy}
-                  </p>
-                </div>
-                <span className="text-xs text-shark-400 dark:text-shark-500 flex-shrink-0 mt-0.5">
-                  {formatDistanceToNow(new Date(entry.createdAt), { addSuffix: true })}
-                </span>
+                <p className="text-sm text-shark-400">No recent activity to display.</p>
               </div>
-            ))
-          )}
-        </div>
+            ) : (
+              recentActivity.map((entry, idx) => (
+                <div key={idx} className="flex items-center gap-3 px-4 py-3">
+                  <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center flex-shrink-0">
+                    <Icon name="clock" size={14} className="text-action-500" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-shark-800 truncate">
+                      {entry.action.replace(/_/g, " ")}
+                    </p>
+                    <p className="text-xs text-shark-400">by {entry.performedBy}</p>
+                  </div>
+                  <span className="text-xs text-shark-400 flex-shrink-0">
+                    {formatDistanceToNow(new Date(entry.createdAt), { addSuffix: true })}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </Card>
       </div>
     </div>
   );

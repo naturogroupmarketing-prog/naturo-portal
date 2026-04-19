@@ -11,6 +11,9 @@ import { AuditorDashboard } from "./auditor-dashboard";
 import { getReplenishmentSuggestions } from "@/app/actions/predictions";
 import { detectAnomalies } from "@/lib/anomaly-detection";
 import { getAssetHealthSummary } from "@/lib/asset-health";
+import { SetupBanner } from "@/components/ui/setup-banner";
+import { INDUSTRY_TEMPLATES } from "@/lib/industry-templates";
+import type { IndustryId } from "@/lib/industry-templates";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -1262,13 +1265,23 @@ export default async function DashboardPage() {
   // Fetch org name for AI briefing
   const orgRecord = await db.organization.findUnique({
     where: { id: organizationId },
-    select: { name: true },
+    select: { name: true, industry: true, onboardingSkippedAt: true, onboardingCompletedAt: true },
   });
 
   // Super Admin — standard dashboard
+  const showSetupBanner =
+    isSuperAdmin &&
+    !!orgRecord?.onboardingSkippedAt &&
+    !orgRecord?.onboardingCompletedAt;
+
+  const industryLabel = orgRecord?.industry
+    ? INDUSTRY_TEMPLATES[orgRecord.industry as IndustryId]?.name
+    : undefined;
+
   if (isSuperAdmin) {
     return (
       <>
+        {showSetupBanner && <SetupBanner industry={industryLabel} />}
         <AiBriefingWidget
           orgName={orgRecord?.name ?? "Your Organisation"}
           lowStockCount={(lowStockItems as unknown[]).length}

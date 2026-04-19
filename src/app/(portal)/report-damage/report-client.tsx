@@ -143,8 +143,16 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
 
   if (submitted) {
     return (
-      <div className="space-y-10">
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Report Damage / Loss</h1>
+      <Card>
+      <div className="p-4 sm:p-5 space-y-8">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="alert-triangle" size={14} className="text-action-600" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-shark-900">Report Damage / Loss</h3>
+          </div>
+        </div>
         <Card>
           <CardContent className="py-12 text-center animate-fade-in">
             <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4 animate-check-pop">
@@ -160,13 +168,20 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
           </CardContent>
         </Card>
       </div>
+      </Card>
     );
   }
 
   return (
-    <div className="space-y-10">
-      <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Report Damage / Loss</h1>
+    <Card>
+    <div className="p-4 sm:p-5 space-y-8">
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+          <Icon name="alert-triangle" size={14} className="text-action-600" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-shark-900">Report Damage / Loss</h3>
+        </div>
       </div>
 
       {assignments.length === 0 ? (
@@ -285,5 +300,6 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
         </Card>
       )}
     </div>
+    </Card>
   );
 }

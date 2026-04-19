@@ -686,7 +686,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           </div>
 
           {/* Tab bar */}
-          <div className="hidden sm:flex gap-1 bg-shark-50 rounded-xl p-1 w-fit">
+          <div className="hidden sm:flex gap-1 bg-shark-50 rounded-xl p-1">
             {TABS.map((tab) => (
               <button
                 key={tab}

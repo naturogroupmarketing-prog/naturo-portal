@@ -115,6 +115,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   const [assignKitId, setAssignKitId] = useState("");
   const [assignKitSubmitting, setAssignKitSubmitting] = useState(false);
   const [search, setSearch] = useState("");
+  const [locationFilter, setLocationFilter] = useState("all");
   // If initialRegion is set, collapse all OTHER regions so the target region is visible
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
     if (!initialRegion) return new Set();
@@ -194,7 +195,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
   const headOfficeUsers = sortUsers(filtered.filter((u) => !u.region));
   const headOfficeColors = SECTION_COLORS[regions.length % SECTION_COLORS.length];
-  const isHeadOfficeCollapsed = collapsedSections.has("head-office");
 
   const openEdit = (user: StaffUser) => {
     setEditUser(user);
@@ -345,13 +345,21 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
       {/* Desktop: table layout */}
       <div className="hidden sm:block overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm table-fixed">
+          <colgroup>
+            <col className="w-8" />
+            <col className="w-[45%]" />
+            <col className="w-[30%]" />
+            <col className="w-[15%]" />
+            <col className="w-[10%]" />
+          </colgroup>
           <thead>
             <tr className="border-b border-shark-100">
-              <th scope="col" className="px-1 py-3 w-6"></th>
+              <th scope="col" className="px-1 py-3"></th>
               <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Name</th>
               <th scope="col" className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Role</th>
               <th scope="col" className="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-shark-400">Status</th>
+              <th scope="col" className="px-3 py-3.5"></th>
             </tr>
           </thead>
           <tbody>
@@ -405,7 +413,8 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   );
 
   return (
-    <div className="space-y-10">
+    <Card>
+    <div className="p-4 sm:p-5 space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -432,13 +441,26 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         <Input
           placeholder="Search staff..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="max-w-xs"
+          className="max-w-xs min-h-[36px] sm:min-h-[32px] py-2 text-xs"
         />
+        <Select
+          value={locationFilter}
+          onChange={(e) => setLocationFilter(e.target.value)}
+          className="max-w-[180px] min-h-[36px] sm:min-h-[32px] py-2 text-xs"
+        >
+          <option value="all">All locations</option>
+          {regions.map((r) => (
+            <option key={r.id} value={r.id}>{r.name}</option>
+          ))}
+          {headOfficeUsers.length > 0 && (
+            <option value="head-office">Head Office</option>
+          )}
+        </Select>
         <Button variant="outline" size="sm" onClick={exportCSV}>
           <Icon name="download" size={14} className="mr-1.5" />
           Export CSV
@@ -454,14 +476,11 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
         />
       ) : regionGroups
         .filter((g) => g.users.length > 0)
+        .filter((g) => locationFilter === "all" || locationFilter === g.id)
         .map((section) => {
-          const isCollapsed = collapsedSections.has(section.id);
           return (
-            <div key={section.id} className="space-y-2">
-              <button
-                onClick={() => toggleSection(section.id)}
-                className="flex items-center gap-3 px-1 w-full text-left group"
-              >
+            <div key={section.id} className="space-y-4">
+              <div className="flex items-center gap-3 px-1">
                 <div className={`w-8 h-8 rounded-lg ${section.bg} flex items-center justify-center`}>
                   <Icon name="map-pin" size={16} className={section.color} />
                 </div>
@@ -472,28 +491,16 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     {section.users.length}
                   </span>
                 </div>
-                <Icon
-                  name="chevron-down"
-                  size={16}
-                  className={`text-shark-400 group-hover:text-shark-600 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
-                />
-              </button>
-              {!isCollapsed && (
-                <Card>
-                  {renderTable(section.users)}
-                </Card>
-              )}
+              </div>
+              {renderTable(section.users)}
             </div>
           );
         })}
 
       {/* Head Office (no region) */}
-      {headOfficeUsers.length > 0 && (
-        <div className="space-y-2">
-          <button
-            onClick={() => toggleSection("head-office")}
-            className="flex items-center gap-3 px-1 w-full text-left group"
-          >
+      {headOfficeUsers.length > 0 && (locationFilter === "all" || locationFilter === "head-office") && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 px-1">
             <div className={`w-8 h-8 rounded-lg ${headOfficeColors.bg} flex items-center justify-center`}>
               <Icon name="dashboard" size={16} className={headOfficeColors.color} />
             </div>
@@ -504,17 +511,8 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 {headOfficeUsers.length}
               </span>
             </div>
-            <Icon
-              name="chevron-down"
-              size={16}
-              className={`text-shark-400 group-hover:text-shark-600 transition-transform ${isHeadOfficeCollapsed ? "-rotate-90" : ""}`}
-            />
-          </button>
-          {!isHeadOfficeCollapsed && (
-            <Card>
-              {renderTable(headOfficeUsers)}
-            </Card>
-          )}
+          </div>
+          {renderTable(headOfficeUsers)}
         </div>
       )}
 
@@ -1298,5 +1296,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
         </div>
       )}
     </div>
+    </Card>
   );
 }

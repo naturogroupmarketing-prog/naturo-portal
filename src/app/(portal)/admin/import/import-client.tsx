@@ -311,13 +311,17 @@ export function ImportClient({ regions }: Props) {
   // ─── Render ───────────────────────────────────────
 
   return (
-    <div className="space-y-10">
+    <Card>
+    <div className="p-4 sm:p-5 space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Import Data</h1>
-        <p className="text-sm text-shark-400 mt-1">
-          Bulk import assets, supplies, or staff from CSV or Excel files
-        </p>
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+          <Icon name="upload" size={14} className="text-action-600" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-shark-900">Import Data</h3>
+          <p className="text-xs text-shark-400">Bulk import assets, supplies, or staff from CSV or Excel files</p>
+        </div>
       </div>
 
       {/* Progress Bar */}
@@ -766,5 +770,6 @@ export function ImportClient({ regions }: Props) {
         </Card>
       )}
     </div>
+    </Card>
   );
 }

@@ -696,7 +696,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -727,7 +727,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-50 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
         <button
           onClick={() => setTab("stock")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
@@ -801,36 +801,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             />
           ) : isSuperAdmin ? (
             // Super Admin: group by region first, then category within each region
-            regions.map((region, rIdx) => {
+            regions.map((region) => {
               const regionItems = filtered.filter((c) => c.region.id === region.id);
               if (regionItems.length === 0 && search) return null;
-              const rc = REGION_COLORS[rIdx % REGION_COLORS.length];
-              const regionCollapsed = collapsedRegions.has(region.id);
               return (
-                <div key={region.id} className="space-y-4">
-                  <button
-                    onClick={() => toggleRegion(region.id)}
-                    className="flex items-center gap-3 px-1 pt-2 w-full text-left group"
-                  >
-                    <div className={`w-9 h-9 rounded-xl ${rc.bg} flex items-center justify-center`}>
-                      <Icon name="map-pin" size={18} className={rc.color} />
-                    </div>
-                    <div className="flex items-center gap-2 flex-1">
-                      <h2 className="text-xl font-bold text-shark-900">{region.name}</h2>
-                      <span className="text-sm text-shark-400">{region.state.name}</span>
-                      <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
-                        {regionItems.length}
-                      </span>
-                    </div>
-                    <Icon
-                      name="chevron-down"
-                      size={18}
-                      className={`text-shark-400 group-hover:text-shark-600 transition-transform ${regionCollapsed ? "-rotate-90" : ""}`}
-                    />
-                  </button>
-
-                  {!regionCollapsed && (
-                    <>
+                <div key={region.id} className="space-y-10">
                       {categories.map((cat, idx) => {
                         const colors = SECTION_COLORS[idx % SECTION_COLORS.length];
                         const catItems = regionItems.filter((c) => c.category === cat.name);
@@ -838,7 +813,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         const catKey = `${region.id}-${cat.name}`;
                         const catCollapsed = collapsedCategories.has(catKey);
                         return (
-                          <div key={cat.name} className="space-y-2 ml-4">
+                          <div key={cat.name} className="space-y-4 ml-4">
                             <button
                               onClick={() => toggleCategory(catKey)}
                               className="flex items-center gap-3 px-1 w-full text-left group"
@@ -862,22 +837,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                                   {catItems.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
                                 </div>
                               ) : viewMode === "compact" ? (
-                                <Card>
-                                  <div className="overflow-hidden">
-                                    <div className="flex items-center gap-3 px-3 border-b border-shark-100 bg-shark-50/60" style={{ height: 30 }}>
-                                      <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
-                                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
-                                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
-                                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden lg:block w-28">Location</span>
-                                    </div>
-                                    {catItems.map(renderCompactRow)}
-                                    {catItems.length === 0 && <p className="text-center text-shark-400 py-4 text-sm">No items in this section.</p>}
+                                <div className="rounded-xl border border-shark-100 overflow-hidden">
+                                  <div className="flex items-center gap-3 px-3 border-b border-shark-100 bg-shark-50/60" style={{ height: 30 }}>
+                                    <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
+                                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
+                                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
+                                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden lg:block w-28">Location</span>
                                   </div>
-                                </Card>
+                                  {catItems.map(renderCompactRow)}
+                                  {catItems.length === 0 && <p className="text-center text-shark-400 py-4 text-sm">No items in this section.</p>}
+                                </div>
                               ) : (
-                                <Card>
-                                  {renderConsumableTable(catItems)}
-                                </Card>
+                                renderConsumableTable(catItems)
                               )
                             )}
                           </div>
@@ -887,8 +858,6 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       {regionItems.length === 0 && (
                         <p className="text-sm text-shark-400 ml-4 px-1">No supplies in this region.</p>
                       )}
-                    </>
-                  )}
                 </div>
               );
             })
@@ -900,7 +869,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               return (
                 <div
                   key={section.name}
-                  className={`space-y-2 ${dragSectionIdx === sIdx ? "opacity-40" : ""} ${dragOverSectionIdx === sIdx ? "border-t-2 border-t-action-500 pt-1" : ""}`}
+                  className={`space-y-4 ${dragSectionIdx === sIdx ? "opacity-40" : ""} ${dragOverSectionIdx === sIdx ? "border-t-2 border-t-action-500 pt-1" : ""}`}
                   draggable
                   onDragStart={() => handleSectionDragStart(sIdx)}
                   onDragOver={(e) => handleSectionDragOver(e, sIdx)}
@@ -934,22 +903,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         {section.items.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
                       </div>
                     ) : viewMode === "compact" ? (
-                      <Card>
-                        <div className="overflow-hidden">
-                          <div className="flex items-center gap-3 px-3 border-b border-shark-100 bg-shark-50/60" style={{ height: 30 }}>
-                            <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
-                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
-                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
-                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden lg:block w-28">Location</span>
-                          </div>
-                          {section.items.map(renderCompactRow)}
-                          {section.items.length === 0 && <p className="text-center text-shark-400 py-4 text-sm">No items in this section.</p>}
+                      <div className="rounded-xl border border-shark-100 overflow-hidden">
+                        <div className="flex items-center gap-3 px-3 border-b border-shark-100 bg-shark-50/60" style={{ height: 30 }}>
+                          <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
+                          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
+                          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
+                          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden lg:block w-28">Location</span>
                         </div>
-                      </Card>
+                        {section.items.map(renderCompactRow)}
+                        {section.items.length === 0 && <p className="text-center text-shark-400 py-4 text-sm">No items in this section.</p>}
+                      </div>
                     ) : (
-                      <Card>
-                        {renderConsumableTable(section.items)}
-                      </Card>
+                      renderConsumableTable(section.items)
                     )
                   )}
                 </div>
