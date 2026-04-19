@@ -523,7 +523,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
 
   return (
     <>
-      <Card>
+      <Card padding="none">
         <div className="p-4 sm:p-5 space-y-8">
           {/* Page header */}
           <div className="flex items-center justify-between gap-3">

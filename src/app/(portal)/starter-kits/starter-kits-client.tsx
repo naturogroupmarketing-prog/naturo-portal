@@ -94,7 +94,7 @@ export function StarterKitsClient({
   };
 
   return (
-    <Card>
+    <Card padding="none">
     <div className="p-4 sm:p-5 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">

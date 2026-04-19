@@ -136,7 +136,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
   const totalAssigned = mergedAssignments.length;
 
   return (
-    <Card>
+    <Card padding="none">
     <div className="p-4 sm:p-5 space-y-8">
       <div className="flex items-center gap-2">
         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">

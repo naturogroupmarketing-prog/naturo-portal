@@ -413,7 +413,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   );
 
   return (
-    <Card>
+    <Card padding="none">
     <div className="p-4 sm:p-5 space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">

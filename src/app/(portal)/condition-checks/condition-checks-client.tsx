@@ -201,7 +201,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
   const totalChecked = staffStatus.filter((s) => s.checkedItems >= s.totalItems).length;
 
   return (
-    <Card>
+    <Card padding="none">
     <div className="p-4 sm:p-5 space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

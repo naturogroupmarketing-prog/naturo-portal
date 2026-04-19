@@ -99,7 +99,7 @@ export function InventoryDetailClient({
       </Link>
 
       {/* Unified card: header + tab pills + content */}
-      <Card>
+      <Card padding="none">
         {/* Region name header — click to switch location */}
         <div className="relative" ref={dropdownRef}>
           <button
@@ -201,21 +201,21 @@ export function InventoryDetailClient({
           )}
         </div>
 
-        {/* Tab bar */}
-        <div className="flex items-center gap-3 px-4 sm:px-5 py-3 border-b border-shark-100">
-          <div className="flex gap-1 bg-shark-50 rounded-xl p-1 w-full">
+        {/* Tab bar — scrollable so it never squeezes at narrow widths */}
+        <div className="px-3 sm:px-4 py-3 border-b border-shark-100 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+          <div className="flex gap-1 bg-shark-50 rounded-xl p-1 min-w-max">
             {TABS.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                   activeTab === tab
                     ? "bg-action-500 text-white shadow-sm"
                     : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
                 }`}
               >
                 {tab}
-                <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
+                <span className={`inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[11px] font-bold rounded-full ${
                   activeTab === tab ? "bg-white/20 text-white" : "bg-shark-200 text-shark-500"
                 }`}>
                   {tabCounts[tab]}

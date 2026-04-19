@@ -389,7 +389,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
                 {/* CENTRE — Portfolio Line Chart (Assets vs Consumables value) */}
                 {showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
-                  <Card>
+                  <Card padding="none">
                     <div className="p-4 sm:p-6">
                       {/* Header */}
                       <div className="flex items-center gap-2 mb-4">
@@ -525,7 +525,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return showAssetCharts && ((assetStatusChart && assetStatusChart.length > 0) || (categoryChart && categoryChart.length > 0)) ? (
               <div key="asset-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {assetStatusChart && assetStatusChart.length > 0 && (
-                  <Card>
+                  <Card padding="none">
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -559,7 +559,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Card>
                 )}
                 {categoryChart && categoryChart.length > 0 && (
-                  <Card>
+                  <Card padding="none">
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -597,7 +597,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return showConsumableCharts && ((consumableStatusChart && consumableStatusChart.length > 0) || (consumableCategoryChart && consumableCategoryChart.length > 0)) ? (
               <div key="consumable-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {consumableStatusChart && consumableStatusChart.length > 0 && (
-                  <Card>
+                  <Card padding="none">
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -631,7 +631,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Card>
                 )}
                 {consumableCategoryChart && consumableCategoryChart.length > 0 && (
-                  <Card>
+                  <Card padding="none">
                     <div className="p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -792,7 +792,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "regional":
             return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
               <div key="regional">
-                <Card>
+                <Card padding="none">
                   <div className="p-4 sm:p-5">
                     {/* Header */}
                     <div className="flex items-center gap-2 mb-4">
@@ -821,9 +821,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
                                 <Icon name="map-pin" size={12} className={colors.color} />
                               </div>
-                              <div className="flex-1 min-w-0 text-left">
-                                <span className="text-sm font-semibold text-shark-900 truncate">{region.regionName}</span>
-                                {region.stateName && <span className="ml-1.5 text-xs text-shark-400 shrink-0">{region.stateName}</span>}
+                              <div className="flex-1 min-w-0 text-left overflow-hidden">
+                                <p className="text-sm font-semibold text-shark-900 truncate leading-tight">{region.regionName}</p>
+                                {region.stateName && <p className="text-xs text-shark-400 truncate leading-tight">{region.stateName}</p>}
                               </div>
                               {hasActions ? (
                                 <span className="shrink-0 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 text-red-500 rounded-full border border-red-100">
@@ -935,7 +935,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* Storage Locations Map */}
       {isSuperAdmin && showMap && mapLocations.length > 0 && (
-        <Card>
+        <Card padding="none">
           <div className="p-4 sm:p-5">
             {/* Header */}
             <div className="flex items-center gap-2 mb-4">

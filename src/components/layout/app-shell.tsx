@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, createContext, useContext, useEffect } from "react";
+import { useState, useRef, useCallback, createContext, useContext } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
@@ -22,28 +22,6 @@ interface AppShellProps {
 // Context so child pages can know if sidebar is expanded
 export const SidebarContext = createContext<{ expanded: boolean; toggle: () => void }>({ expanded: false, toggle: () => {} });
 export const useSidebar = () => useContext(SidebarContext);
-
-// Temporary viewport debug — remove after diagnosis
-function ViewportDebug() {
-  const [info, setInfo] = useState("");
-  useEffect(() => {
-    const update = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const dpr = window.devicePixelRatio;
-      const fs = parseFloat(getComputedStyle(document.documentElement).fontSize);
-      setInfo(`${w}×${h} dpr:${dpr} fs:${fs}px`);
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-  return (
-    <div style={{ position: "fixed", bottom: 80, left: 8, zIndex: 9999, background: "rgba(0,0,0,0.85)", color: "#0f0", fontFamily: "monospace", fontSize: 11, padding: "4px 8px", borderRadius: 6, pointerEvents: "none" }}>
-      {info}
-    </div>
-  );
-}
 
 export function AppShell({ children, role, userName, userImage, pendingPOCount = 0, pendingReturnsCount = 0 }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -163,9 +141,6 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
 
       {/* Bottom navigation for Staff on mobile/tablet */}
       {role === "STAFF" && <BottomNav />}
-
-      {/* Temporary viewport debug — remove after diagnosis */}
-      <ViewportDebug />
 
       {/* Floating Quick Actions button — admins and managers only */}
       {(role === "SUPER_ADMIN" || role === "BRANCH_MANAGER") && <QuickActionsFab />}

@@ -19,8 +19,8 @@ export function Card({ className, variant = "default", padding = "md", children,
         {
           "p-0": padding === "none",
           "p-3": padding === "sm",
-          "p-5": padding === "md",
-          "p-6 sm:p-8": padding === "lg",
+          "p-4 sm:p-5": padding === "md",
+          "p-5 sm:p-8": padding === "lg",
         },
         className
       )}

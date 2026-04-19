@@ -36,8 +36,8 @@ function timeAgoLabel(isoDate: string): string {
 
 export function RecentActivityWidget({ items }: { items: RecentActivityItem[] }) {
   return (
-    <Card>
-      <div className="p-5">
+    <Card padding="none">
+      <div className="p-4 sm:p-5">
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">
           <div className="w-7 h-7 rounded-lg bg-shark-100 flex items-center justify-center shrink-0">
