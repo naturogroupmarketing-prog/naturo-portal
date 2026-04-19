@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Exo } from "next/font/google";
 import { PWARegister } from "@/components/pwa-register";
 import { ToastProvider } from "@/components/ui/toast";
@@ -74,6 +74,15 @@ export const metadata: Metadata = {
   },
 };
 
+// Viewport is exported separately — Next.js merges this into a single
+// <meta name="viewport"> tag. Having it here AND manually in <head>
+// creates duplicates that cause mobile browsers to ignore device-width.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -85,7 +94,6 @@ export default function RootLayout({
         <link rel="icon" href="/trackio_t_logo.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/trackio_t_logo.svg" />
         <meta name="theme-color" content="#f5f5f5" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             try {
