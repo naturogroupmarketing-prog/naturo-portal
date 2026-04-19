@@ -842,28 +842,22 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             </button>
                             {/* Expanded detail */}
                             {!isCollapsed && (
-                              <div className="px-4 pb-3 pt-0 border-t border-shark-50">
+                              <div className="px-3 pb-3 pt-0 border-t border-shark-50">
                                 <div className="grid grid-cols-3 gap-2 mt-3">
-                                  <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex items-center gap-2 rounded-xl bg-red-50 border border-red-100 px-3 py-2 hover:bg-red-100 transition-colors">
-                                    <Icon name="alert-triangle" size={13} className="text-red-500 shrink-0" />
-                                    <div>
-                                      <p className="text-base font-bold text-red-600 leading-tight">{region.lowStockCount}</p>
-                                      <p className="text-[10px] text-red-400">Low Stock</p>
-                                    </div>
+                                  <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-red-50 border border-red-100 py-3 hover:bg-red-100 transition-colors">
+                                    <Icon name="alert-triangle" size={12} className="text-red-400" />
+                                    <span className="text-base font-extrabold text-red-600 leading-none tabular-nums">{region.lowStockCount}</span>
+                                    <span className="text-[9px] font-semibold text-red-400 text-center leading-tight">Low Stock</span>
                                   </Link>
-                                  <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex items-center gap-2 rounded-xl bg-amber-50 border border-amber-100 px-3 py-2 hover:bg-amber-100 transition-colors">
-                                    <Icon name="clipboard" size={13} className="text-[#E8532E] shrink-0" />
-                                    <div>
-                                      <p className="text-base font-bold text-[#E8532E] leading-tight">{region.pendingRequests}</p>
-                                      <p className="text-[10px] text-amber-500">Requests</p>
-                                    </div>
+                                  <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-amber-50 border border-amber-100 py-3 hover:bg-amber-100 transition-colors">
+                                    <Icon name="clipboard" size={12} className="text-amber-500" />
+                                    <span className="text-base font-extrabold text-[#E8532E] leading-none tabular-nums">{region.pendingRequests}</span>
+                                    <span className="text-[9px] font-semibold text-amber-500 text-center leading-tight">Requests</span>
                                   </Link>
-                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex items-center gap-2 rounded-xl bg-shark-50 border border-shark-100 px-3 py-2 hover:bg-shark-100 transition-colors">
-                                    <Icon name="truck" size={13} className="text-action-500 shrink-0" />
-                                    <div>
-                                      <p className="text-base font-bold text-action-600 leading-tight">{region.pendingPOs}</p>
-                                      <p className="text-[10px] text-action-400">POs</p>
-                                    </div>
+                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-action-50 border border-action-100 py-3 hover:bg-action-100 transition-colors">
+                                    <Icon name="truck" size={12} className="text-action-400" />
+                                    <span className="text-base font-extrabold text-action-600 leading-none tabular-nums">{region.pendingPOs}</span>
+                                    <span className="text-[9px] font-semibold text-action-400 text-center leading-tight">POs</span>
                                   </Link>
                                 </div>
                               </div>
