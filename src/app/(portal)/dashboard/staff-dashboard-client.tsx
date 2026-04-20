@@ -792,7 +792,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           const isExcluded = kitItemExclusions[key]?.excluded || false;
                           return (
                             <div key={a.id}>
-                              <label className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50"}`}>
+                              <label className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50 dark:bg-shark-800"}`}>
                                 <input type="checkbox" checked={!isExcluded} onChange={() => setKitItemExclusions((prev) => ({ ...prev, [key]: { excluded: !isExcluded, note: prev[key]?.note || "" } }))} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
                                 <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                                   {a.imageUrl ? <img src={a.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
@@ -819,7 +819,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           const isExcluded = kitItemExclusions[key]?.excluded || false;
                           return (
                             <div key={c.id}>
-                              <label className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50"}`}>
+                              <label className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50 dark:bg-shark-800"}`}>
                                 <input type="checkbox" checked={!isExcluded} onChange={() => setKitItemExclusions((prev) => ({ ...prev, [key]: { excluded: !isExcluded, note: prev[key]?.note || "" } }))} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
                                 <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                                   {c.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
@@ -1138,7 +1138,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         <div className="space-y-1">
                           {m.items.map((item) => (
                             <div key={item.name} className="flex items-center justify-between text-sm">
-                              <span className="text-shark-700">{item.name}</span>
+                              <span className="text-shark-700 dark:text-shark-300">{item.name}</span>
                               <span className="text-xs font-semibold text-shark-900 dark:text-shark-100">{item.quantity} {item.unitType}</span>
                             </div>
                           ))}

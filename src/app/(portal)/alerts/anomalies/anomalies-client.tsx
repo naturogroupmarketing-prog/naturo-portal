@@ -285,7 +285,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800 dark:text-shark-300 dark:hover:bg-shark-800/50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-shark-700 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800 dark:text-shark-300 dark:hover:bg-shark-800/50 transition-colors"
       >
         <span className="flex items-center gap-2">
           <Icon name="settings" size={15} className="text-shark-400" />
@@ -317,7 +317,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="10"
                 defaultValue={currentSettings.stockConsumptionMultiplier}
                 required
-                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -333,7 +333,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="90"
                 defaultValue={currentSettings.overdueReturnDays}
                 required
-                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -349,7 +349,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="20"
                 defaultValue={currentSettings.damageReportsThreshold}
                 required
-                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -365,7 +365,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="200"
                 defaultValue={currentSettings.maxAnomalies}
                 required
-                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div className="sm:col-span-2 flex items-center gap-3">
@@ -444,13 +444,13 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
             <Icon name="alert-triangle" size={14} className="text-action-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">Anomaly Alerts</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Anomaly Alerts</h3>
             <p className="text-xs text-shark-400">
               {anomalies.length === 0 ? (
                 "No anomalies detected — all systems normal."
               ) : (
                 <>
-                  <span className="font-semibold text-shark-700">
+                  <span className="font-semibold text-shark-700 dark:text-shark-300">
                     {anomalies.length} {anomalies.length === 1 ? "anomaly" : "anomalies"} detected
                   </span>
                   <span className="mx-1.5 text-shark-300">·</span>
@@ -503,7 +503,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
               className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
                 isActive
                   ? "bg-action-500 text-white shadow-sm"
-                  : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700"
+                  : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700 dark:text-shark-300"
               }`}
             >
               {tab.label}

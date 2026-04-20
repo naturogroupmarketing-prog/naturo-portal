@@ -32,7 +32,7 @@ const SECTION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50", border: "border-amber-200" },
   { color: "text-cyan-600", bg: "bg-cyan-50", border: "border-cyan-200" },
   { color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
-  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50", border: "border-shark-200" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800", border: "border-shark-200" },
   { color: "text-pink-600", bg: "bg-pink-50", border: "border-pink-200" },
   { color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200" },
   { color: "text-lime-600", bg: "bg-lime-50", border: "border-lime-200" },
@@ -86,7 +86,7 @@ const REGION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
   { color: "text-pink-600", bg: "bg-pink-50" },
   { color: "text-orange-600", bg: "bg-orange-50" },
   { color: "text-lime-600", bg: "bg-lime-50" },
@@ -650,7 +650,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-xl p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
       >
         <div className="flex items-start justify-between mb-3">
-          <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
+          <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
             {asset.imageUrl ? (
               <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover rounded-lg" />
             ) : (
@@ -696,7 +696,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       <div
         key={asset.id}
         onClick={() => permissions.canEdit && setEditAsset(asset)}
-        className="flex items-center gap-3 px-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/60 cursor-pointer"
+        className="flex items-center gap-3 px-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800/60 cursor-pointer"
         style={{ height: 36, minHeight: 36 }}
       >
         <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 dark:text-shark-200 truncate">
@@ -820,7 +820,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     onDragStart={() => handleItemDragStart(asset.id)}
                     onDragOver={(e) => handleItemDragOver(e, asset.id)}
                     onDragEnd={() => handleItemDragEnd(sectionAssets)}
-                    className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""} ${dragItemId === asset.id ? "opacity-40" : ""} ${dragOverItemId === asset.id ? "border-t-2 border-t-action-500" : ""}`}
+                    className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""} ${dragItemId === asset.id ? "opacity-40" : ""} ${dragOverItemId === asset.id ? "border-t-2 border-t-action-500" : ""}`}
                   >
                     {permissions.canEdit && (
                       <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
@@ -979,7 +979,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                 ["status", "Status"],
                 ["assignedTo", "Assigned To"],
               ] as [keyof typeof visibleColumns, string][]).map(([key, label]) => (
-                <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 dark:hover:bg-shark-700 cursor-pointer text-sm text-shark-700 dark:text-shark-200">
+                <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-700 cursor-pointer text-sm text-shark-700 dark:text-shark-200">
                   <input
                     type="checkbox"
                     checked={visibleColumns[key]}
@@ -1178,7 +1178,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </p>
             <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
           </div>
-          <div className="bg-shark-50 rounded-xl p-4 max-h-40 overflow-y-auto">
+          <div className="bg-shark-50 dark:bg-shark-800 rounded-xl p-4 max-h-40 overflow-y-auto">
             {assets.filter((a) => selectedIds.has(a.id)).map((a) => (
                 <div key={a.id} className="flex items-center gap-2 py-1">
                   <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{a.name}</span>
@@ -1213,7 +1213,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
                 </div>
                 {assetToDelete && (
-                  <div className="bg-shark-50 rounded-xl p-4">
+                  <div className="bg-shark-50 dark:bg-shark-800 rounded-xl p-4">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{assetToDelete.name}</span>
                       <span className="text-xs text-shark-400 font-mono">{assetToDelete.assetCode}</span>
@@ -1257,7 +1257,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   onDragEnd={handleSectionDragEnd}
                   className={`${dragSectionIdx === idx ? "opacity-40" : ""} ${dragOverSectionIdx === idx ? "border-t-2 border-t-action-500" : ""}`}
                 >
-                  <div className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800">
+                  <div className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800">
                     {isEditing ? (
                       <div className="flex items-center gap-2 flex-1 mr-2">
                         <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center shrink-0`}>
@@ -1767,7 +1767,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   ) : (
                     <div className="flex flex-wrap gap-1.5">
                       {equipmentList.map((item) => (
-                        <span key={item} className="inline-flex items-center gap-1 text-xs font-medium text-shark-700 dark:text-shark-300 bg-shark-50 border border-shark-200 dark:border-shark-700 rounded-full px-2.5 py-1">
+                        <span key={item} className="inline-flex items-center gap-1 text-xs font-medium text-shark-700 dark:text-shark-300 bg-shark-50 dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-full px-2.5 py-1">
                           {item}
                           {isSuperAdmin && (
                             <button

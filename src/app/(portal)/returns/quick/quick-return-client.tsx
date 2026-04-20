@@ -98,7 +98,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
   ).length;
 
   return (
-    <div className="min-h-screen bg-shark-50">
+    <div className="min-h-screen bg-shark-50 dark:bg-shark-800">
       {/* Header */}
       <div className="sticky top-0 z-30 bg-white dark:bg-shark-900 border-b border-shark-100 dark:border-shark-800 shadow-sm">
         <div className="flex items-center gap-3 px-4 py-4">

@@ -61,7 +61,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 tracking-tight">Data Backup</h1>
+        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Data Backup</h1>
         <p className="text-sm text-shark-400 mt-1">Download your data as CSV files that can be re-imported anytime</p>
       </div>
 
@@ -70,7 +70,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
         <CardContent className="py-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h3 className="text-lg font-semibold text-shark-900">Full Backup</h3>
+              <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Full Backup</h3>
               <p className="text-sm text-shark-400 mt-0.5">
                 Downloads all 4 files at once — assets, supplies, staff, and regions
               </p>
@@ -102,7 +102,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
                     <Icon name={item.icon} size={18} className="text-action-500" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-shark-900">{item.label}</h4>
+                    <h4 className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.label}</h4>
                     <p className="text-xs text-shark-400 mt-0.5">{item.description}</p>
                     <p className="text-xs text-shark-500 dark:text-shark-400 font-medium mt-1">{item.count} records</p>
                   </div>
@@ -130,7 +130,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
           <div className="flex items-start gap-3">
             <Icon name="help-circle" size={18} className="text-shark-400 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-semibold text-shark-700">How to restore from backup</h4>
+              <h4 className="text-sm font-semibold text-shark-700 dark:text-shark-300">How to restore from backup</h4>
               <p className="text-sm text-shark-500 dark:text-shark-400 mt-1">
                 Go to <Link href="/admin/import" className="text-action-500 hover:text-action-600 font-medium">Import Data</Link> and
                 upload any of the downloaded CSV files. The column headers will be matched automatically. Assets and supplies will be

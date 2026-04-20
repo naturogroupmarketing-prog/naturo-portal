@@ -24,7 +24,7 @@ const ACTION_CONFIG: Record<string, { icon: "package" | "droplet" | "users" | "c
   ASSET_RETURNED: { icon: "arrow-left", label: "Returned", color: "text-action-500", bg: "bg-action-50" },
   ASSET_DAMAGED: { icon: "alert-triangle", label: "Damaged", color: "text-red-500", bg: "bg-red-50" },
   ASSET_LOST: { icon: "alert-triangle", label: "Lost", color: "text-red-500", bg: "bg-red-50" },
-  ASSET_UPDATED: { icon: "package", label: "Updated", color: "text-shark-500 dark:text-shark-400", bg: "bg-shark-50" },
+  ASSET_UPDATED: { icon: "package", label: "Updated", color: "text-shark-500 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
   ASSET_DELETED: { icon: "package", label: "Deleted", color: "text-red-500", bg: "bg-red-50" },
   CONSUMABLE_CREATED: { icon: "plus", label: "Created", color: "text-action-500", bg: "bg-action-50" },
   CONSUMABLE_STOCK_ADDED: { icon: "droplet", label: "Restocked", color: "text-action-500", bg: "bg-action-50" },
@@ -41,7 +41,7 @@ const ACTION_CONFIG: Record<string, { icon: "package" | "droplet" | "users" | "c
   BULK_ITEMS_APPLIED: { icon: "star", label: "Items Applied", color: "text-action-500", bg: "bg-action-50" },
 };
 
-const defaultConfig = { icon: "clock" as const, label: "Activity", color: "text-shark-400", bg: "bg-shark-50" };
+const defaultConfig = { icon: "clock" as const, label: "Activity", color: "text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" };
 
 /** Strip asset codes like (AST-001) from description to keep it clean */
 function cleanDescription(desc: string): string {

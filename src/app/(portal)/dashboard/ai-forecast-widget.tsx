@@ -54,7 +54,7 @@ export function AiForecastWidget({ items }: Props) {
             <Icon name="bar-chart" size={14} className="text-action-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-shark-900">AI Stock Forecast</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">AI Stock Forecast</h3>
             <p className="text-xs text-shark-400">Next 14 days — based on usage patterns</p>
           </div>
           <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
@@ -66,7 +66,7 @@ export function AiForecastWidget({ items }: Props) {
             <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-2">
               <Icon name="check-circle" size={20} className="text-green-600" />
             </div>
-            <p className="text-sm font-semibold text-shark-700">All stocked for 2 weeks</p>
+            <p className="text-sm font-semibold text-shark-700 dark:text-shark-300">All stocked for 2 weeks</p>
             <p className="text-xs text-shark-400 mt-1">No predicted shortfalls — keep it up!</p>
           </div>
         )}
@@ -95,7 +95,7 @@ export function AiForecastWidget({ items }: Props) {
                       >
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
-                            <p className="text-[13px] font-semibold text-shark-800 truncate">{item.name}</p>
+                            <p className="text-[13px] font-semibold text-shark-800 dark:text-shark-200 truncate">{item.name}</p>
                             {item.spiking && (
                               <span className="text-[9px] font-bold bg-[#E8532E]/10 text-[#E8532E] px-1 py-0.5 rounded shrink-0 uppercase tracking-wide">
                                 ↑ spike

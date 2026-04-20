@@ -122,7 +122,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                             </div>
                           </div>
                           {item.purchaseCost && (
-                            <p className="text-sm font-bold text-shark-700 shrink-0">${item.purchaseCost.toLocaleString()}</p>
+                            <p className="text-sm font-bold text-shark-700 dark:text-shark-300 shrink-0">${item.purchaseCost.toLocaleString()}</p>
                           )}
                         </div>
                       </div>

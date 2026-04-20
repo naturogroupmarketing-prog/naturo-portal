@@ -128,7 +128,7 @@ export async function AiBriefingWidget(props: AiBriefingWidgetProps) {
             <Icon name="star" size={13} className="text-indigo-500" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-shark-900">AI Briefing</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">AI Briefing</h3>
             <p className="text-xs text-shark-400">{displayDate}</p>
           </div>
           <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>

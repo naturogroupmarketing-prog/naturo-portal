@@ -32,7 +32,7 @@ const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false })
 // Lazy-load map — heavy dependency, only needed when locations have coordinates
 const LocationMap = dynamic(
   () => import("@/components/ui/location-map").then((m) => m.LocationMap),
-  { ssr: false, loading: () => <div className="flex items-center justify-center bg-shark-50 rounded-xl text-shark-400 text-sm" style={{ minHeight: 300 }}>Loading map...</div> }
+  { ssr: false, loading: () => <div className="flex items-center justify-center bg-shark-50 dark:bg-shark-800 rounded-xl text-shark-400 text-sm" style={{ minHeight: 300 }}>Loading map...</div> }
 );
 
 interface StatCard {
@@ -333,7 +333,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                 <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                                   s.trend.direction === "down" ? "bg-green-50 text-green-600" :
                                   s.trend.direction === "up" ? "bg-red-50 text-red-500" :
-                                  "bg-shark-50 text-shark-400"
+                                  "bg-shark-50 dark:bg-shark-800 text-shark-400"
                                 }`}>
                                   {s.trend.direction === "up" && "↑"}
                                   {s.trend.direction === "down" && "↓"}

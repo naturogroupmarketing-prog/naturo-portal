@@ -682,7 +682,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </div>
 
                 {/* Status */}
-                <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-shark-50">
+                <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-shark-50 dark:bg-shark-800">
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-action-500" : "bg-shark-300"}`} />
                     <span className="text-sm text-shark-700 dark:text-shark-300">{editUser.isActive ? "Active" : "Disabled"}</span>

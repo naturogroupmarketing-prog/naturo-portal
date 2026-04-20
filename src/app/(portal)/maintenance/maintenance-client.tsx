@@ -81,7 +81,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
             <Icon name="wrench" size={14} className="text-action-600" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900">Maintenance</h3>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Maintenance</h3>
             <p className="text-xs text-shark-400">
               {schedules.filter((s) => s.isActive).length} scheduled tasks
               {overdueCount > 0 && <span className="text-red-500 font-medium"> · {overdueCount} overdue</span>}
@@ -126,7 +126,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
                 <div className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-shark-900">{schedule.title}</h3>
+                      <h3 className="font-semibold text-shark-900 dark:text-shark-100">{schedule.title}</h3>
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${due.color}`}>{due.label}</span>
                       <span className="text-xs text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">{FREQ_LABELS[schedule.frequency]}</span>
                     </div>

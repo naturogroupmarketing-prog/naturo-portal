@@ -23,7 +23,7 @@ const SECTION_COLORS = [
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
   { color: "text-gray-600", bg: "bg-gray-100" },
   { color: "text-orange-600", bg: "bg-orange-50" },
   { color: "text-pink-600", bg: "bg-pink-50" },
@@ -86,7 +86,7 @@ const REGION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
   { color: "text-pink-600", bg: "bg-pink-50" },
   { color: "text-orange-600", bg: "bg-orange-50" },
   { color: "text-lime-600", bg: "bg-lime-50" },
@@ -448,7 +448,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       >
         {/* Image or icon + status badge */}
         <div className="flex items-start justify-between mb-3">
-          <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
+          <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
             {c.imageUrl ? (
               <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover rounded-lg" />
             ) : (
@@ -511,7 +511,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <div
         key={c.id}
         onClick={() => setEditConsumable(c)}
-        className="flex items-center gap-3 px-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/60 cursor-pointer"
+        className="flex items-center gap-3 px-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800/60 cursor-pointer"
         style={{ height: 36, minHeight: 36 }}
       >
         <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 dark:text-shark-200 truncate">{c.name}</span>
@@ -573,7 +573,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                           <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
                             c.riskLevel === "critical" ? "bg-red-50 text-red-600" :
                             c.riskLevel === "warning" ? "bg-amber-50 text-amber-600" :
-                            "bg-shark-50 text-shark-500 dark:text-shark-400"
+                            "bg-shark-50 dark:bg-shark-800 text-shark-500 dark:text-shark-400"
                           }`}>
                             {(() => {
                               const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
@@ -625,7 +625,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 const activeAssignments = c.assignments || [];
                 const canDelete = deletableIds.has(c.id);
                 return (
-                  <tr key={c.id} onClick={() => setEditConsumable(c)} draggable onDragStart={() => handleItemDragStart(c.id)} onDragOver={(e) => handleItemDragOver(e, c.id)} onDragEnd={() => handleItemDragEnd(sectionItems)} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}>
+                  <tr key={c.id} onClick={() => setEditConsumable(c)} draggable onDragStart={() => handleItemDragStart(c.id)} onDragOver={(e) => handleItemDragOver(e, c.id)} onDragEnd={() => handleItemDragEnd(sectionItems)} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}>
                     <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
                       <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
                     </td>
@@ -838,7 +838,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                                 </div>
                               ) : viewMode === "compact" ? (
                                 <div className="rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
-                                  <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50/60" style={{ height: 30 }}>
+                                  <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50 dark:bg-shark-800/60" style={{ height: 30 }}>
                                     <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                                     <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
                                     <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
@@ -904,7 +904,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       </div>
                     ) : viewMode === "compact" ? (
                       <div className="rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
-                        <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50/60" style={{ height: 30 }}>
+                        <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50 dark:bg-shark-800/60" style={{ height: 30 }}>
                           <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                           <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
                           <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 hidden md:block w-24">Category</span>
@@ -976,7 +976,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               </thead>
               <tbody>
                 {pendingRequests.map((r) => (
-                  <tr key={r.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50">
+                  <tr key={r.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800/50">
                     <td className="px-5 py-3.5 font-medium text-shark-800 dark:text-shark-200">{r.consumable.name}</td>
                     <td className="px-5 py-3.5 text-shark-500 dark:text-shark-400">{r.user.name || r.user.email}</td>
                     <td className="px-5 py-3.5 text-right font-medium text-shark-700 dark:text-shark-300">{r.quantity} {r.consumable.unitType}</td>
@@ -1018,7 +1018,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </p>
             <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
           </div>
-          <div className="bg-shark-50 rounded-xl p-4 max-h-40 overflow-y-auto">
+          <div className="bg-shark-50 dark:bg-shark-800 rounded-xl p-4 max-h-40 overflow-y-auto">
             {consumables.filter((c) => selectedIds.has(c.id)).map((c) => (
                 <div key={c.id} className="flex items-center gap-2 py-1">
                   <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{c.name}</span>
@@ -1051,7 +1051,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               const itemCount = consumables.filter((c) => c.category === cat.name).length;
               const isEditing = editingSectionId === cat.id;
               return (
-                <div key={cat.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800">
+                <div key={cat.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800">
                   {isEditing ? (
                     <div className="flex items-center gap-2 flex-1 mr-2">
                       <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center shrink-0`}>
@@ -1445,7 +1445,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-lg border border-shark-200 dark:border-shark-700 overflow-hidden bg-shark-50 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-lg border border-shark-200 dark:border-shark-700 overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center">
                   {(editImagePreview || (!editImageRemoved && editConsumable.imageUrl)) ? (
                     <img src={editImagePreview || editConsumable.imageUrl!} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
@@ -1622,7 +1622,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 <div className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-shark-50/60 dark:bg-shark-800/40 border-b border-shark-100 dark:border-shark-700">
+                      <tr className="bg-shark-50 dark:bg-shark-800/60 dark:bg-shark-800/40 border-b border-shark-100 dark:border-shark-700">
                         <th scope="col" className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Item</th>
                         <th scope="col" className="px-3 py-2 text-right text-xs font-semibold text-shark-400 uppercase tracking-wider">Qty</th>
                         <th scope="col" className="px-3 py-2 text-left text-xs font-semibold text-shark-400 uppercase tracking-wider">Assigned</th>
@@ -1631,7 +1631,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     </thead>
                     <tbody>
                       {staffAssignments.map((a) => (
-                        <tr key={a.id} className="border-b border-shark-50 dark:border-shark-800 last:border-0 hover:bg-shark-50 dark:hover:bg-shark-800/50">
+                        <tr key={a.id} className="border-b border-shark-50 dark:border-shark-800 last:border-0 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800/50">
                           <td className="px-3 py-2">
                             <div className="flex items-center gap-2">
                               {a.consumable.imageUrl ? (

@@ -153,7 +153,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
         {resolvingReport && (
           <div className="space-y-4">
             <div className="bg-shark-50 dark:bg-shark-800 rounded-xl p-3">
-              <p className="text-sm text-shark-700">{resolvingReport.description}</p>
+              <p className="text-sm text-shark-700 dark:text-shark-300">{resolvingReport.description}</p>
               <p className="text-xs text-shark-400 mt-1">Reported {new Date(resolvingReport.createdAt).toLocaleDateString("en-AU")}</p>
             </div>
             <div>

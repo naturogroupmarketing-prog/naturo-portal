@@ -38,7 +38,7 @@ const TYPE_CONFIG: Record<string, { icon: string; color: string; bg: string }> =
   REQUEST_REJECTED: { icon: "x", color: "text-red-500", bg: "bg-red-50" },
   MAINTENANCE_DUE: { icon: "settings", color: "text-[#E8532E]", bg: "bg-amber-50" },
   WARRANTY_EXPIRING: { icon: "shield", color: "text-[#E8532E]", bg: "bg-amber-50" },
-  GENERAL: { icon: "bell", color: "text-shark-500 dark:text-shark-400", bg: "bg-shark-50" },
+  GENERAL: { icon: "bell", color: "text-shark-500 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
 };
 
 export function NotificationsClient({ notifications }: { notifications: Notification[] }) {
@@ -89,7 +89,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
         </div>
       </div>
 
-      <div className="flex gap-1 bg-shark-50 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800 rounded-xl p-1">
         {(["all", "unread"] as const).map((f) => (
           <button
             key={f}

@@ -115,7 +115,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
           <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
             <Icon name="check-circle" size={20} className="text-green-600" />
           </div>
-          <p className="text-sm font-semibold text-shark-700">Everything is on track</p>
+          <p className="text-sm font-semibold text-shark-700 dark:text-shark-300">Everything is on track</p>
           <p className="text-xs text-shark-400 mt-1">No outstanding actions right now</p>
         </div>
       ) : (

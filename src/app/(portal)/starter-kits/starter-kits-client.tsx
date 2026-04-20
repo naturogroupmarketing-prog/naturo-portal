@@ -196,7 +196,7 @@ export function StarterKitsClient({
                                     {items.map((item) => {
                                       const photo = assetPhotos[item.category || ""];
                                       return (
-                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 rounded-lg px-3 py-2">
+                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2">
                                           <div className="flex items-center gap-2.5">
                                             <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 dark:bg-shark-800 flex items-center justify-center shrink-0">
                                               {photo ? <img src={photo} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
@@ -236,7 +236,7 @@ export function StarterKitsClient({
                                     {items.map((item) => {
                                       const c = consumables.find((con) => con.id === item.consumableId);
                                       return (
-                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 rounded-lg px-3 py-2">
+                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2">
                                           <div className="flex items-center gap-2.5">
                                             <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 dark:bg-shark-800 flex items-center justify-center shrink-0">
                                               {c?.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
@@ -543,7 +543,7 @@ function AddItemsChecklist({
                 <div
                   key={cat.id}
                   className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
-                    alreadyAdded ? "bg-shark-100 dark:bg-shark-800 opacity-50" : isSelected ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 dark:hover:bg-shark-800 border border-transparent"
+                    alreadyAdded ? "bg-shark-100 dark:bg-shark-800 opacity-50" : isSelected ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800 border border-transparent"
                   }`}
                 >
                   <input
@@ -606,7 +606,7 @@ function AddItemsChecklist({
                   <div
                     key={c.id}
                     className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
-                      alreadyAdded ? "bg-shark-100 dark:bg-shark-800 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 dark:hover:bg-shark-800 border border-transparent"
+                      alreadyAdded ? "bg-shark-100 dark:bg-shark-800 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800 border border-transparent"
                     }`}
                   >
                     <input

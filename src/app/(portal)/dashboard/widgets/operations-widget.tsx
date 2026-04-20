@@ -48,7 +48,7 @@ function HealthRing({ score, size = 64 }: { score: number; size?: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-sm font-bold text-shark-700">{score}<span className="text-[10px] text-shark-400 font-normal">/100</span></span>
+        <span className="text-sm font-bold text-shark-700 dark:text-shark-300">{score}<span className="text-[10px] text-shark-400 font-normal">/100</span></span>
       </div>
     </div>
   );
@@ -65,7 +65,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
               <Icon name="settings" size={14} className="text-action-600" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-shark-900">Operations</h2>
+              <h2 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Operations</h2>
               <p className="text-xs text-shark-400">Business health overview</p>
             </div>
           </div>
@@ -109,12 +109,12 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
           <div className="grid grid-cols-2 divide-x divide-shark-50">
             <Link href="/purchase-orders" className="px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
               <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Approval</p>
-              <p className={`text-lg font-bold ${data.ordersAwaitingApproval > 0 ? "text-[#E8532E]" : "text-shark-900"}`}>{data.ordersAwaitingApproval}</p>
+              <p className={`text-lg font-bold ${data.ordersAwaitingApproval > 0 ? "text-[#E8532E]" : "text-shark-900 dark:text-shark-100"}`}>{data.ordersAwaitingApproval}</p>
               <p className="text-[10px] text-shark-400">purchase orders</p>
             </Link>
             <Link href="/purchase-orders?status=ORDERED" className="px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
               <p className="text-[10px] text-shark-400 uppercase tracking-wider">Awaiting Receival</p>
-              <p className={`text-lg font-bold ${data.ordersAwaitingReceival > 0 ? "text-action-500" : "text-shark-900"}`}>{data.ordersAwaitingReceival}</p>
+              <p className={`text-lg font-bold ${data.ordersAwaitingReceival > 0 ? "text-action-500" : "text-shark-900 dark:text-shark-100"}`}>{data.ordersAwaitingReceival}</p>
               <p className="text-[10px] text-shark-400">purchase orders</p>
             </Link>
           </div>
@@ -138,7 +138,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
                     <Icon name={item.icon} size={14} className={item.danger ? "text-[#E8532E]" : "text-action-500"} />
                     <span className="text-sm text-shark-600 dark:text-shark-400">{item.label}</span>
                   </div>
-                  <span className={`text-sm font-bold ${item.danger ? "text-[#E8532E]" : "text-shark-700"}`}>{item.value}</span>
+                  <span className={`text-sm font-bold ${item.danger ? "text-[#E8532E]" : "text-shark-700 dark:text-shark-300"}`}>{item.value}</span>
                 </Link>
               ))}
             </div>
@@ -159,7 +159,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
             <span className="text-xs text-shark-500 dark:text-shark-400">Active Staff</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-sm font-semibold text-shark-700">{data.totalStaff}</span>
+            <span className="text-sm font-semibold text-shark-700 dark:text-shark-300">{data.totalStaff}</span>
             <Icon name="arrow-right" size={14} className="text-shark-400" />
           </div>
         </Link>

@@ -202,7 +202,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                     </div>
 
                     {/* Count */}
-                    <span className="text-xs font-semibold text-shark-700 w-6 text-right shrink-0">
+                    <span className="text-xs font-semibold text-shark-700 dark:text-shark-300 w-6 text-right shrink-0">
                       {item.count}
                     </span>
                   </div>
@@ -226,7 +226,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                       <span className="w-5 h-5 rounded-md bg-green-50 flex items-center justify-center text-[10px] font-bold text-green-700 shrink-0">
                         A
                       </span>
-                      <span className="text-xs font-medium text-shark-700 truncate flex-1 group-hover:text-action-600 transition-colors">
+                      <span className="text-xs font-medium text-shark-700 dark:text-shark-300 truncate flex-1 group-hover:text-action-600 transition-colors">
                         {asset.assetName}
                       </span>
                       <span className="text-[10px] text-shark-400">
