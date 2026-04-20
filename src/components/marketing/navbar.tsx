@@ -54,9 +54,9 @@ export function Navbar() {
           </Link>
           <Link
             href="/login"
-            className="glean-cta relative text-sm font-medium text-white px-5 py-2 rounded-full hover:-translate-y-px active:scale-[0.97] transition-transform"
+            className="text-sm font-medium text-white bg-action-500 px-5 py-2 rounded-full hover:bg-action-600 hover:-translate-y-px active:scale-[0.97] transition-all"
           >
-            <span className="relative z-10">Start Free Trial</span>
+            Start Free Trial
           </Link>
         </div>
 
