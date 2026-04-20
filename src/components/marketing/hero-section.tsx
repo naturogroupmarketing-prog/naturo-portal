@@ -126,7 +126,7 @@ function DashboardShowcase() {
               <div className="flex items-center gap-1.5 px-2 mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/trackio_t_full_logo.svg"
+                  src="/Logo_trackio.svg"
                   alt="trackio"
                   style={{ height: "18px", width: "auto" }}
                   draggable={false}

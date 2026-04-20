@@ -9,7 +9,7 @@ export function Footer() {
           <div className="text-center sm:text-left">
             <Link href="/welcome" className="inline-block">
               <img
-                src="/trackio_t_full_logo.svg"
+                src="/Logo_trackio.svg"
                 alt="trackio"
                 className="h-6 w-auto"
               />
