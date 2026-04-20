@@ -179,7 +179,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
           </div>
 
           {/* Footer */}
-          <div className="px-4 py-2.5 border-t border-shark-50 bg-shark-50/30">
+          <div className="px-4 py-2.5 border-t border-shark-50 dark:border-shark-800 bg-shark-50/30 dark:bg-shark-800/30">
             <p className="text-[10px] text-shark-400 text-center">Tap any item to go directly to it</p>
           </div>
         </>

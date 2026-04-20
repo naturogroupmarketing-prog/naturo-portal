@@ -143,7 +143,7 @@ export function NotificationBell() {
                   <button
                     key={n.id}
                     onClick={() => handleClick(n)}
-                    className={`w-full text-left px-4 py-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors ${!n.isRead ? "bg-action-50/20 dark:bg-action-900/20" : ""}`}
+                    className={`w-full text-left px-4 py-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors ${!n.isRead ? "bg-action-50/20 dark:bg-action-900/20" : ""}`}
                   >
                     <div className="flex gap-3">
                       <Icon name={typeInfo.icon as "bell"} size={16} className={`${typeInfo.color} mt-0.5 shrink-0`} />

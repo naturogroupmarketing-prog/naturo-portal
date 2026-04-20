@@ -655,7 +655,7 @@ export function ImportClient({ regions }: Props) {
                     return (
                       <tr
                         key={i}
-                        className={`border-b border-shark-50 ${hasError ? "bg-red-50/50" : ""}`}
+                        className={`border-b border-shark-50 dark:border-shark-800 ${hasError ? "bg-red-50/50" : ""}`}
                       >
                         <td className="py-2 px-3 text-xs text-shark-400">{i + 2}</td>
                         {fields.map((f) => (

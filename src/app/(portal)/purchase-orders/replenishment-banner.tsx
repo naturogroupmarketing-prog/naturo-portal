@@ -251,7 +251,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
 
                 {/* Group footer: "Create PO for all" */}
                 {groupVisible.length > 1 && (
-                  <div className="px-3 py-2 border-t border-shark-50 bg-shark-50/30 flex items-center justify-between">
+                  <div className="px-3 py-2 border-t border-shark-50 dark:border-shark-800 bg-shark-50/30 dark:bg-shark-800/30 flex items-center justify-between">
                     <p className="text-[11px] text-shark-400">
                       Order all {groupVisible.length} items from this supplier to save on postage
                       {groupCost > 0 && <span className="ml-1 font-semibold text-shark-600 dark:text-shark-400">· Est. {fmtCost(groupCost)}</span>}

@@ -413,7 +413,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                           </thead>
                           <tbody>
                             {catAssets.map((asset) => (
-                              <tr key={asset.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
+                              <tr key={asset.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50">
                                 <td className="px-4 py-2.5">
                                   <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
                                     {asset.imageUrl ? (
@@ -499,7 +499,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                               const isLow = item.quantityOnHand <= item.minimumThreshold;
                               const isOut = item.quantityOnHand === 0;
                               return (
-                                <tr key={item.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
+                                <tr key={item.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50">
                                   <td className="px-4 py-2.5">
                                     <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
                                       {item.imageUrl ? (
@@ -561,7 +561,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                   </thead>
                   <tbody>
                     {filteredStaff.map((user) => (
-                      <tr key={user.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
+                      <tr key={user.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50">
                         <td className="px-4 py-3 text-sm font-medium text-shark-800 dark:text-shark-200">{user.name || "—"}</td>
                         <td className="px-4 py-3 text-sm text-shark-500 dark:text-shark-400">{user.email}</td>
                         <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>

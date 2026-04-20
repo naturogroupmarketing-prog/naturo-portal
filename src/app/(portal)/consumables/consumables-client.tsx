@@ -511,7 +511,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <div
         key={c.id}
         onClick={() => setEditConsumable(c)}
-        className="flex items-center gap-3 px-3 border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/60 cursor-pointer"
+        className="flex items-center gap-3 px-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/60 cursor-pointer"
         style={{ height: 36, minHeight: 36 }}
       >
         <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 dark:text-shark-200 truncate">{c.name}</span>
@@ -585,7 +585,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-shark-50" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-shark-50 dark:border-shark-800" onClick={(e) => e.stopPropagation()}>
                     <Button size="sm" variant="outline" onClick={() => {
                       if (!canAdjustStock) { addToast("You don't have permission to adjust stock. To update stock, confirm receival in Purchase Orders.", "error"); return; }
                       setStockMode("add"); setShowAddStock(c);
@@ -625,7 +625,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 const activeAssignments = c.assignments || [];
                 const canDelete = deletableIds.has(c.id);
                 return (
-                  <tr key={c.id} onClick={() => setEditConsumable(c)} draggable onDragStart={() => handleItemDragStart(c.id)} onDragOver={(e) => handleItemDragOver(e, c.id)} onDragEnd={() => handleItemDragEnd(sectionItems)} className={`border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}>
+                  <tr key={c.id} onClick={() => setEditConsumable(c)} draggable onDragStart={() => handleItemDragStart(c.id)} onDragOver={(e) => handleItemDragOver(e, c.id)} onDragEnd={() => handleItemDragEnd(sectionItems)} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}>
                     <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
                       <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
                     </td>
@@ -976,7 +976,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               </thead>
               <tbody>
                 {pendingRequests.map((r) => (
-                  <tr key={r.id} className="border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
+                  <tr key={r.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50">
                     <td className="px-5 py-3.5 font-medium text-shark-800 dark:text-shark-200">{r.consumable.name}</td>
                     <td className="px-5 py-3.5 text-shark-500 dark:text-shark-400">{r.user.name || r.user.email}</td>
                     <td className="px-5 py-3.5 text-right font-medium text-shark-700 dark:text-shark-300">{r.quantity} {r.consumable.unitType}</td>
@@ -1631,7 +1631,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     </thead>
                     <tbody>
                       {staffAssignments.map((a) => (
-                        <tr key={a.id} className="border-b border-shark-50 last:border-0 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
+                        <tr key={a.id} className="border-b border-shark-50 dark:border-shark-800 last:border-0 hover:bg-shark-50 dark:hover:bg-shark-800/50">
                           <td className="px-3 py-2">
                             <div className="flex items-center gap-2">
                               {a.consumable.imageUrl ? (

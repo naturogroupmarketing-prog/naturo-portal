@@ -817,7 +817,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             {/* Region header row */}
                             <button
                               onClick={() => toggleRegion(region.regionId)}
-                              className="w-full flex items-center gap-2 px-3 py-3 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors"
+                              className="w-full flex items-center gap-2 px-3 py-3 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
                             >
                               <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
                                 <Icon name="map-pin" size={12} className={colors.color} />
@@ -843,7 +843,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             </button>
                             {/* Expanded detail */}
                             {!isCollapsed && (
-                              <div className="px-3 pb-3 pt-0 border-t border-shark-50">
+                              <div className="px-3 pb-3 pt-0 border-t border-shark-50 dark:border-shark-800">
                                 <div className="grid grid-cols-3 gap-2 mt-3">
                                   <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-red-50 border border-red-100 py-3 hover:bg-red-100 transition-colors">
                                     <Icon name="alert-triangle" size={12} className="text-red-400" />

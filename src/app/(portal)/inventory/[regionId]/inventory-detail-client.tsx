@@ -104,7 +104,7 @@ export function InventoryDetailClient({
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => { setLocationDropdownOpen((o) => !o); setLocationSearch(""); }}
-            className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors group text-left"
+            className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors group text-left"
           >
             <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
               <Icon name="map-pin" size={15} className="text-action-600" />

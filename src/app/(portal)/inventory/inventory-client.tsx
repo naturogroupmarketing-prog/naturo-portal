@@ -343,7 +343,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
           {showArchived && (
             <div className="mt-3 space-y-2">
               {archivedRegions.map((region) => (
-                <Card key={region.id} className="border-dashed border-shark-200 bg-shark-50/50">
+                <Card key={region.id} className="border-dashed border-shark-200 bg-shark-50/50 dark:bg-shark-800/50">
                   <div className="px-4 py-3 flex items-center justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-shark-600 dark:text-shark-400">{region.name}</p>

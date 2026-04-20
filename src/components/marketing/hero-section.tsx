@@ -103,7 +103,7 @@ function DashboardShowcase() {
           {/* Bottom fade to suggest more content */}
           <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none rounded-b-2xl" />
           {/* Browser chrome */}
-          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-shark-100 dark:border-shark-800 bg-shark-50/50">
+          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-shark-100 dark:border-shark-800 bg-shark-50/50 dark:bg-shark-800/50">
             <div className="flex gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-red-300" />
               <div className="w-2.5 h-2.5 rounded-full bg-amber-300" />
@@ -329,7 +329,7 @@ function DashboardShowcase() {
                         ))}
                       </div>
                     </div>
-                    <div className="mt-2 pt-1.5 border-t border-shark-50 flex items-center justify-between">
+                    <div className="mt-2 pt-1.5 border-t border-shark-50 dark:border-shark-800 flex items-center justify-between">
                       <span className="text-[8px] text-shark-400">Total Portfolio</span>
                       <span className="text-[10px] font-bold text-shark-900">$16,041</span>
                     </div>
@@ -390,7 +390,7 @@ function DashboardShowcase() {
                         </div>
                       ))}
                     </div>
-                    <div className="mt-2 pt-1.5 border-t border-shark-50 flex items-center justify-between">
+                    <div className="mt-2 pt-1.5 border-t border-shark-50 dark:border-shark-800 flex items-center justify-between">
                       <span className="text-[8px] text-shark-400">Total Items</span>
                       <span className="text-[10px] font-bold text-shark-900">585</span>
                     </div>

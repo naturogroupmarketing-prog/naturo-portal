@@ -110,7 +110,7 @@ export function SocialProofSection() {
           {testimonials.map((t, i) => (
             <ScrollReveal key={t.name} delay={i * 150}>
             <div
-              className="bg-shark-50/50 rounded-2xl p-6 border border-shark-100 dark:border-shark-800/80 hover:border-shark-200 hover:shadow-sm transition-all relative h-full"
+              className="bg-shark-50/50 dark:bg-shark-800/50 rounded-2xl p-6 border border-shark-100 dark:border-shark-800/80 hover:border-shark-200 hover:shadow-sm transition-all relative h-full"
             >
               {/* Quote mark */}
               <svg

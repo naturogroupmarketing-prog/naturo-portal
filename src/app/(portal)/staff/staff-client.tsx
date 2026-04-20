@@ -330,7 +330,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </div>
                 <Badge status={user.role} />
               </div>
-              <div className="flex items-center justify-end mt-2.5 pt-2.5 border-t border-shark-50">
+              <div className="flex items-center justify-end mt-2.5 pt-2.5 border-t border-shark-50 dark:border-shark-800">
                 <button
                   onClick={(e) => { e.stopPropagation(); setDetailUser(user); }}
                   className="text-xs text-action-500 font-medium px-2 py-1 rounded-lg hover:bg-action-50 transition-colors"
@@ -378,7 +378,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   onDragStart={() => setDragItemId(user.id)}
                   onDragOver={(e) => { e.preventDefault(); setDragOverItemId(user.id); }}
                   onDragEnd={() => { setDragItemId(null); setDragOverItemId(null); }}
-                  className={`border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 ${(isSuperAdmin || canViewStaffDetails) ? "cursor-pointer" : ""} ${dragItemId === user.id ? "opacity-40" : ""} ${dragOverItemId === user.id ? "border-t-2 border-t-action-500" : ""}`}
+                  className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 ${(isSuperAdmin || canViewStaffDetails) ? "cursor-pointer" : ""} ${dragItemId === user.id ? "opacity-40" : ""} ${dragOverItemId === user.id ? "border-t-2 border-t-action-500" : ""}`}
                 >
                   <td className="px-1 py-2" onClick={(e) => e.stopPropagation()}>
                     {isSuperAdmin && (
@@ -1145,7 +1145,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               ) : (
                 <div className="space-y-1 pl-5">
                   {detailUser.consumableRequests.map((r) => (
-                    <div key={r.id} className="flex items-center justify-between text-sm py-1.5 border-b border-shark-50 last:border-0">
+                    <div key={r.id} className="flex items-center justify-between text-sm py-1.5 border-b border-shark-50 dark:border-shark-800 last:border-0">
                       <div>
                         <span className="font-medium text-shark-800 dark:text-shark-200">{r.consumable.name}</span>
                         <span className="text-xs text-shark-400 ml-2">{r.quantity} {r.consumable.unitType}</span>
@@ -1171,7 +1171,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               ) : (
                 <div className="space-y-1.5 pl-5">
                   {detailUser.damageReports.map((d) => (
-                    <div key={d.id} className="text-sm py-2 border-b border-shark-50 last:border-0">
+                    <div key={d.id} className="text-sm py-2 border-b border-shark-50 dark:border-shark-800 last:border-0">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${d.type === "DAMAGE" ? "bg-amber-100 text-[#E8532E]" : "bg-red-100 text-red-700"}`}>
@@ -1233,7 +1233,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           {showDeleted && (
             <div className="mt-3 space-y-2">
               {deletedUsers.map((u) => (
-                <Card key={u.id} className="border-dashed border-shark-200 bg-shark-50/50">
+                <Card key={u.id} className="border-dashed border-shark-200 bg-shark-50/50 dark:bg-shark-800/50">
                   <div className="px-4 py-3 flex items-center justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-shark-600 dark:text-shark-400">{u.name || u.email}</p>

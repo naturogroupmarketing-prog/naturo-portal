@@ -696,7 +696,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       <div
         key={asset.id}
         onClick={() => permissions.canEdit && setEditAsset(asset)}
-        className="flex items-center gap-3 px-3 border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/60 cursor-pointer"
+        className="flex items-center gap-3 px-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/60 cursor-pointer"
         style={{ height: 36, minHeight: 36 }}
       >
         <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 dark:text-shark-200 truncate">
@@ -820,7 +820,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     onDragStart={() => handleItemDragStart(asset.id)}
                     onDragOver={(e) => handleItemDragOver(e, asset.id)}
                     onDragEnd={() => handleItemDragEnd(sectionAssets)}
-                    className={`border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""} ${dragItemId === asset.id ? "opacity-40" : ""} ${dragOverItemId === asset.id ? "border-t-2 border-t-action-500" : ""}`}
+                    className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 ${permissions.canEdit ? "cursor-pointer" : ""} ${selectedIds.has(asset.id) ? "bg-action-50/30" : ""} ${dragItemId === asset.id ? "opacity-40" : ""} ${dragOverItemId === asset.id ? "border-t-2 border-t-action-500" : ""}`}
                   >
                     {permissions.canEdit && (
                       <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>

@@ -28,7 +28,7 @@ export function ProductPreviewSection() {
 
           <div className="relative bg-white rounded-2xl border border-shark-200 shadow-xl shadow-shark-200/30 overflow-hidden">
             {/* App frame top bar */}
-            <div className="flex items-center gap-2 px-4 py-2 border-b border-shark-100 dark:border-shark-800 bg-shark-50/50">
+            <div className="flex items-center gap-2 px-4 py-2 border-b border-shark-100 dark:border-shark-800 bg-shark-50/50 dark:bg-shark-800/50">
               <div className="flex gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-red-300" />
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-300" />

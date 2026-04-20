@@ -206,7 +206,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                 {/* Staff header — click to expand */}
                 <button
                   onClick={() => toggleStaff(group.email)}
-                  className="w-full flex items-center justify-between px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors"
+                  className="w-full flex items-center justify-between px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-action-500 flex items-center justify-center shrink-0">
@@ -229,7 +229,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                 {isExpanded && (
                   <div className="border-t border-shark-100 dark:border-shark-700">
                     {/* Select all for this staff */}
-                    <div className="flex items-center justify-between px-5 py-2 bg-shark-50/50">
+                    <div className="flex items-center justify-between px-5 py-2 bg-shark-50/50 dark:bg-shark-800/50">
                       <span className="text-xs text-shark-400">{groupProcessed} of {group.items.length} marked</span>
                       <button
                         onClick={() => selectAllForStaff(group)}

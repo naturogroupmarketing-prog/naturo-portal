@@ -170,7 +170,7 @@ export function AIChatWidget() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-shark-50/30">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-shark-50/30 dark:bg-shark-800/30">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div

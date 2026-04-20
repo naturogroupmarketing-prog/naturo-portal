@@ -83,7 +83,7 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
               <Card key={group.regionId} className="overflow-hidden">
                 <button
                   onClick={() => toggleRegion(group.regionId)}
-                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors"
+                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
@@ -129,7 +129,7 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
                     <div className="hidden sm:block">
                       <table className="w-full">
                         <thead>
-                          <tr className="bg-shark-50/50">
+                          <tr className="bg-shark-50/50 dark:bg-shark-800/50">
                             <th scope="col" className="px-5 py-2.5 text-left text-xs font-semibold text-shark-400">Item</th>
                             <th scope="col" className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400">Stock</th>
                             <th scope="col" className="px-5 py-2.5 text-right text-xs font-semibold text-shark-400">Threshold</th>
@@ -142,7 +142,7 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
                             const isOut = item.quantityOnHand === 0;
                             const isCritical = item.quantityOnHand <= Math.floor(item.minimumThreshold / 2);
                             return (
-                              <tr key={item.id} className="border-t border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/30 dark:hover:bg-shark-800/30">
+                              <tr key={item.id} className="border-t border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/30">
                                 <td className="px-5 py-3">
                                   <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{item.name}</p>
                                   <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>

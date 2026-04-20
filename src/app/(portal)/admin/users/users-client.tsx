@@ -163,7 +163,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             </tr>
           ) : (
             sectionUsers.map((user) => (
-              <tr key={user.id} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 ${selected.has(user.id) ? "bg-action-50/40" : ""}`}>
+              <tr key={user.id} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 ${selected.has(user.id) ? "bg-action-50/40" : ""}`}>
                 <td className="px-3 py-3.5 text-center">
                   {user.isActive ? (
                     <input

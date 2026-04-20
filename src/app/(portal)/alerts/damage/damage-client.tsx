@@ -97,7 +97,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
               <Card key={group.regionId} className="overflow-hidden">
                 <button
                   onClick={() => toggleRegion(group.regionId)}
-                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50 transition-colors"
+                  className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center">
@@ -117,7 +117,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
                 {isExpanded && (
                   <div className="border-t border-shark-100 dark:border-shark-700 divide-y divide-shark-50 dark:divide-shark-800">
                     {group.items.map((report) => (
-                      <div key={report.id} className="px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/30 dark:hover:bg-shark-800/30">
+                      <div key={report.id} className="px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/30">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2">

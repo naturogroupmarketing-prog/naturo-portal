@@ -125,7 +125,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
       </div>
 
       {/* Restore Info */}
-      <Card className="bg-shark-50/50">
+      <Card className="bg-shark-50/50 dark:bg-shark-800/50">
         <CardContent className="py-4">
           <div className="flex items-start gap-3">
             <Icon name="help-circle" size={18} className="text-shark-400 shrink-0 mt-0.5" />
