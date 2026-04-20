@@ -341,7 +341,7 @@ export function ImportClient({ regions }: Props) {
                       ? "bg-action-400 text-white"
                       : isActive
                       ? "bg-action-50 text-action-600 ring-2 ring-action-400"
-                      : "bg-shark-100 text-shark-400"
+                      : "bg-shark-100 dark:bg-shark-800 text-shark-400"
                   }`}
                 >
                   {isDone ? <Icon name="check" size={12} /> : i + 1}
@@ -372,7 +372,7 @@ export function ImportClient({ regions }: Props) {
             >
               <CardContent className="py-6 text-center">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 ${
-                  importType === item.type ? "bg-action-100 text-action-600" : "bg-shark-100 text-shark-400"
+                  importType === item.type ? "bg-action-100 text-action-600" : "bg-shark-100 dark:bg-shark-800 text-shark-400"
                 }`}>
                   <Icon name={item.icon} size={24} />
                 </div>
@@ -382,7 +382,7 @@ export function ImportClient({ regions }: Props) {
                   {getFields(item.type)
                     .filter((f) => f.required)
                     .map((f) => (
-                      <span key={f.key} className="text-[10px] px-1.5 py-0.5 bg-shark-100 text-shark-500 dark:text-shark-400 rounded">
+                      <span key={f.key} className="text-[10px] px-1.5 py-0.5 bg-shark-100 dark:bg-shark-800 text-shark-500 dark:text-shark-400 rounded">
                         {f.label} *
                       </span>
                     ))}

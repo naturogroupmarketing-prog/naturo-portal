@@ -87,7 +87,7 @@ export function UseCasesSection() {
           {cases.map((useCase, i) => (
             <ScrollReveal key={useCase.title} delay={i * 100}>
             <div
-              className="flex items-start gap-4 p-5 rounded-2xl border border-shark-100/80 bg-shark-50/30 hover:bg-white hover:border-shark-200 hover:shadow-sm hover:-translate-y-1 transition-all duration-300 h-full"
+              className="flex items-start gap-4 p-5 rounded-2xl border border-shark-100 dark:border-shark-800/80 bg-shark-50/30 hover:bg-white hover:border-shark-200 hover:shadow-sm hover:-translate-y-1 transition-all duration-300 h-full"
             >
               <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center text-action-500 shrink-0">
                 {useCase.icon}

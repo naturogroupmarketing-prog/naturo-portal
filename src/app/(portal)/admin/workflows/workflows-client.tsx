@@ -141,7 +141,7 @@ function RuleCard({
   const description = RULE_DESCRIPTIONS[rule.id] ?? "Custom automation rule.";
 
   return (
-    <Card className={cn("transition-all duration-200", enabled ? "border-action-100" : "border-shark-100 opacity-60")}>
+    <Card className={cn("transition-all duration-200", enabled ? "border-action-100" : "border-shark-100 dark:border-shark-800 opacity-60")}>
       <div className="p-4 sm:p-5">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 shrink-0">
@@ -314,7 +314,7 @@ function WorkflowModal({
               {editRule ? "Edit Rule" : "Create Automation Rule"}
             </h2>
           </div>
-          <button type="button" onClick={onClose} className="p-1.5 text-shark-400 hover:text-shark-700 dark:text-shark-300 hover:bg-shark-100 dark:bg-shark-700 rounded-lg transition-colors">
+          <button type="button" onClick={onClose} className="p-1.5 text-shark-400 hover:text-shark-700 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 rounded-lg transition-colors">
             <Icon name="x" size={16} />
           </button>
         </div>
@@ -606,7 +606,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
           {/* Recent executions */}
           <div className="space-y-3">
             <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Recent Executions</p>
-            <Card className="border-shark-100">
+            <Card className="border-shark-100 dark:border-shark-800">
               <div className="flex flex-col items-center justify-center py-12 gap-3 text-center px-6">
                 <div className="w-12 h-12 rounded-full bg-shark-100 dark:bg-shark-700 flex items-center justify-center">
                   <Icon name="clock" size={20} className="text-shark-400" />

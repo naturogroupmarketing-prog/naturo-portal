@@ -160,7 +160,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
                 <button
                   onClick={() => moveSection(idx, "up")}
                   disabled={idx === 0 || isPending}
-                  className="p-1 rounded text-shark-400 hover:text-shark-700 hover:bg-shark-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  className="p-1 rounded text-shark-400 hover:text-shark-700 hover:bg-shark-100 dark:hover:bg-shark-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                   title="Move up"
                 >
                   <Icon name="chevron-up" size={14} />
@@ -168,7 +168,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
                 <button
                   onClick={() => moveSection(idx, "down")}
                   disabled={idx === sectionOrder.length - 1 || isPending}
-                  className="p-1 rounded text-shark-400 hover:text-shark-700 hover:bg-shark-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  className="p-1 rounded text-shark-400 hover:text-shark-700 hover:bg-shark-100 dark:hover:bg-shark-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                   title="Move down"
                 >
                   <Icon name="chevron-down" size={14} />
@@ -179,7 +179,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         </div>
       </div>
 
-      <hr className="my-5 border-shark-100" />
+      <hr className="my-5 border-shark-100 dark:border-shark-800" />
 
       {/* Widget Visibility */}
       <div className="space-y-4">
@@ -218,7 +218,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         </div>
       </div>
 
-      <hr className="my-5 border-shark-100" />
+      <hr className="my-5 border-shark-100 dark:border-shark-800" />
 
       {/* Custom Shortcuts */}
       <div className="space-y-3">

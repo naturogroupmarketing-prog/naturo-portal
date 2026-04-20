@@ -100,8 +100,8 @@ const STATUS_BADGE: Record<string, { label: string; bg: string; text: string }> 
   CHECKED_OUT: { label: "Pending", bg: "bg-amber-100", text: "text-amber-700" },
   PENDING_RETURN: { label: "Pending Return", bg: "bg-amber-100", text: "text-amber-700" },
   DAMAGED: { label: "Damaged", bg: "bg-red-100", text: "text-red-700" },
-  LOST: { label: "Lost", bg: "bg-shark-100", text: "text-shark-700 dark:text-shark-300" },
-  UNAVAILABLE: { label: "Unavailable", bg: "bg-shark-100", text: "text-shark-500 dark:text-shark-400" },
+  LOST: { label: "Lost", bg: "bg-shark-100 dark:bg-shark-800", text: "text-shark-700 dark:text-shark-300" },
+  UNAVAILABLE: { label: "Unavailable", bg: "bg-shark-100 dark:bg-shark-800", text: "text-shark-500 dark:text-shark-400" },
 };
 
 // Status transitions available per status
@@ -158,7 +158,7 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
   const isDeletable = canDelete && !activeAssignment;
   const hasActions = canAssign || canEdit || isDeletable;
 
-  const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600 dark:text-shark-400" };
+  const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100 dark:bg-shark-800", text: "text-shark-600 dark:text-shark-400" };
   const actions = STATUS_ACTIONS[asset.status] || [];
 
   return (
@@ -642,7 +642,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
   const renderAssetCard = (asset: Asset) => {
     const activeAssignment = asset.assignments[0];
-    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600 dark:text-shark-400" };
+    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100 dark:bg-shark-800", text: "text-shark-600 dark:text-shark-400" };
     return (
       <div
         key={asset.id}
@@ -650,7 +650,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-xl p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
       >
         <div className="flex items-start justify-between mb-3">
-          <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
+          <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
             {asset.imageUrl ? (
               <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover rounded-lg" />
             ) : (
@@ -679,7 +679,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             {asset.status === "AVAILABLE" ? "Assign" : "View"}
           </button>
           <button
-            className="text-xs py-1.5 px-3 rounded-lg bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 font-medium transition-colors"
+            className="text-xs py-1.5 px-3 rounded-lg bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 font-medium transition-colors"
             onClick={() => setShowQR(asset)}
           >
             QR
@@ -691,7 +691,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
   const renderAssetCompact = (asset: Asset) => {
     const activeAssignment = asset.assignments[0];
-    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600 dark:text-shark-400" };
+    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100 dark:bg-shark-800", text: "text-shark-600 dark:text-shark-400" };
     return (
       <div
         key={asset.id}
@@ -734,7 +734,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                 >
                   <div className="flex items-start gap-3">
                     {asset.imageUrl ? (
-                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-shark-100 shrink-0">
+                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-800 shrink-0">
                         <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" />
                       </div>
                     ) : (
@@ -835,7 +835,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     {visibleColumns.photo && (
                     <td className="px-3 py-2">
                       {asset.imageUrl ? (
-                        <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100"><img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /></div>
+                        <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-800"><img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /></div>
                       ) : (
                         <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center"><Icon name="package" size={18} className="text-shark-300" /></div>
                       )}

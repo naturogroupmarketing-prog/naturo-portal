@@ -487,7 +487,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 <div className="flex items-center gap-2 flex-1">
                   <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">{section.name}</h2>
                   <span className="text-xs text-shark-400">{section.stateName}</span>
-                  <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">
                     {section.users.length}
                   </span>
                 </div>
@@ -507,7 +507,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             <div className="flex items-center gap-2 flex-1">
               <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Head Office</h2>
               <span className="text-xs text-shark-400">No region assigned</span>
-              <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">
                 {headOfficeUsers.length}
               </span>
             </div>
@@ -694,7 +694,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
                 {/* Inventory Summary */}
                 {(editUser.assetAssignments.length > 0 || (editUser.consumableAssignments?.length ?? 0) > 0 || (editUser.consumableRequests?.length ?? 0) > 0) && (
-                  <div className="border border-shark-100 rounded-lg p-3 space-y-3">
+                  <div className="border border-shark-100 dark:border-shark-800 rounded-lg p-3 space-y-3">
                     <p className="text-xs font-semibold uppercase tracking-wider text-shark-400">On Hand</p>
                     {editUser.assetAssignments.length > 0 && (() => {
                       const grouped = editUser.assetAssignments.reduce((acc, a) => {
@@ -777,7 +777,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
                 {/* Consumable Usage History */}
                 {editUser.consumableUsageHistory && editUser.consumableUsageHistory.some((m) => m.totalUsed > 0) && (
-                  <div className="border border-shark-100 rounded-lg overflow-hidden">
+                  <div className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
                     <button
                       type="button"
                       onClick={() => setUsageExpanded(!usageExpanded)}
@@ -944,7 +944,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   )}
                   {/* Consumable Usage History (Branch Manager view) */}
                   {editUser.consumableUsageHistory && editUser.consumableUsageHistory.some((m) => m.totalUsed > 0) && (
-                    <div className="border border-shark-100 rounded-lg overflow-hidden">
+                    <div className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
                       <button
                         type="button"
                         onClick={() => setUsageExpanded(!usageExpanded)}

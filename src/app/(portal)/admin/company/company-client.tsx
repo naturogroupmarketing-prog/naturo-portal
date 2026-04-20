@@ -90,7 +90,7 @@ export function CompanyClient({ org }: Props) {
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Logo URL</label>
               <Input name="logo" defaultValue={org.logo || ""} placeholder="https://..." />
               {org.logo && (
-                <div className="mt-2 w-16 h-16 rounded-lg overflow-hidden border border-shark-100">
+                <div className="mt-2 w-16 h-16 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-800">
                   <img src={org.logo} alt="Logo" className="w-full h-full object-contain" />
                 </div>
               )}

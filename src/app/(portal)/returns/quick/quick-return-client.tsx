@@ -213,7 +213,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
                   <p className="mt-0.5 text-base text-shark-500 dark:text-shark-400 truncate">{itemName}</p>
                   <div className="mt-2 flex items-center gap-2 flex-wrap">
                     <OverdueBadge days={item.daysOverdue} />
-                    <span className="text-xs font-medium text-shark-400 bg-shark-100 rounded-full px-2.5 py-1 capitalize">
+                    <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 rounded-full px-2.5 py-1 capitalize">
                       {item.type}
                     </span>
                   </div>

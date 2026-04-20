@@ -208,7 +208,7 @@ export function PricingSection() {
                   className={`block w-full text-center text-sm font-medium py-3 rounded-full transition-all ${
                     plan.popular
                       ? "bg-action-500 text-white hover:bg-action-600 hover:-translate-y-px hover:shadow-md"
-                      : "bg-shark-50 text-shark-700 border border-shark-200 hover:bg-shark-100"
+                      : "bg-shark-50 text-shark-700 border border-shark-200 hover:bg-shark-100 dark:hover:bg-shark-800"
                   }`}
                 >
                   {plan.cta}

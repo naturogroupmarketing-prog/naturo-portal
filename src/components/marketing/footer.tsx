@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-t border-shark-100 bg-white">
+    <footer className="border-t border-shark-100 dark:border-shark-800 bg-white">
       <div className="max-w-6xl mx-auto px-6 py-10 sm:py-12">
         <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6">
           {/* Logo + tagline */}
@@ -33,7 +33,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-shark-100 text-center">
+        <div className="mt-8 pt-6 border-t border-shark-100 dark:border-shark-800 text-center">
           <p className="text-[11px] text-shark-300">
             &copy; {new Date().getFullYear()} trackio. All rights reserved.
           </p>

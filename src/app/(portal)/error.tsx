@@ -38,7 +38,7 @@ export default function PortalError({
           </button>
           <button
             onClick={() => (window.location.href = "/dashboard")}
-            className="px-5 py-2.5 text-sm font-semibold text-shark-700 bg-shark-100 rounded-xl hover:bg-shark-200 transition-colors"
+            className="px-5 py-2.5 text-sm font-semibold text-shark-700 bg-shark-100 dark:bg-shark-800 rounded-xl hover:bg-shark-200 transition-colors"
           >
             Go to Dashboard
           </button>

@@ -125,7 +125,7 @@ export function MyActivityClient({
                   <div className="flex flex-col items-end gap-1 shrink-0">
                     {item.badge && <Badge status={item.badge} />}
                     {item.isActive !== undefined && (
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${item.isActive ? "bg-action-50 text-action-600" : "bg-shark-100 text-shark-400"}`}>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${item.isActive ? "bg-action-50 text-action-600" : "bg-shark-100 dark:bg-shark-800 text-shark-400"}`}>
                         {item.isActive ? "Active" : "Returned"}
                       </span>
                     )}

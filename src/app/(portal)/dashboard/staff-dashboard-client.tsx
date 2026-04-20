@@ -638,7 +638,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           {equipmentExpanded && <CardContent className="space-y-4">
             {/* Kit-based assignments */}
             {visibleKitApplications.map((app) => (
-              <div key={app.id} className="border border-shark-100 rounded-lg overflow-hidden">
+              <div key={app.id} className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
                 {/* Kit header */}
                 <div className="flex items-center justify-between px-4 py-3 bg-shark-50/50">
                   <div>
@@ -693,7 +693,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
             {/* Individual (non-kit) assignments */}
             {(visibleIndividualAssets.length > 0 || visibleIndividualConsumables.length > 0) && (
-              <div className="border border-shark-100 rounded-lg overflow-hidden">
+              <div className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
                 <div className="px-4 py-3 bg-shark-50/50">
                   <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Individually Assigned Items</p>
                   <p className="text-xs text-shark-400">These items are not part of a starter kit</p>
@@ -944,7 +944,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Return Item</h3>
               <button
                 onClick={() => setReturningItemId(null)}
-                className="p-1.5 rounded-lg hover:bg-shark-100 dark:bg-shark-700 text-shark-400"
+                className="p-1.5 rounded-lg hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-shark-400"
               >
                 <Icon name="x" size={18} />
               </button>

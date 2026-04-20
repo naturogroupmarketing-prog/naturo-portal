@@ -143,7 +143,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                   {/* State header — section label style */}
                   <button
                     onClick={() => toggleState(state.id)}
-                    className="w-full flex items-center gap-2.5 px-4 sm:px-5 py-2.5 bg-shark-50 dark:bg-shark-800/30 hover:bg-shark-100/70 dark:hover:bg-shark-800/50 transition-colors group text-left"
+                    className="w-full flex items-center gap-2.5 px-4 sm:px-5 py-2.5 bg-shark-50 dark:bg-shark-800/30 hover:bg-shark-100 dark:hover:bg-shark-800/70 dark:hover:bg-shark-800/50 transition-colors group text-left"
                   >
                     <div className={`w-5 h-5 rounded-md ${sc.bg} flex items-center justify-center shrink-0`}>
                       <Icon name="map-pin" size={11} className={sc.color} />
@@ -415,7 +415,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex-1 justify-center ${
                   manageTab === tab.key
                     ? "bg-action-500 text-white shadow-sm"
-                    : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
+                    : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700 dark:text-shark-300"
                 }`}
               >
                 <Icon name={tab.icon} size={14} />

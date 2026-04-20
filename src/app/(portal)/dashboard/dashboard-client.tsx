@@ -300,7 +300,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <div className="flex justify-end">
         <button
           onClick={() => setSettingsOpen(true)}
-          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-shark-400 hover:text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:bg-shark-700 transition-colors"
+          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-shark-400 hover:text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 transition-colors"
           aria-label="Dashboard settings"
           title="Dashboard settings"
         >
@@ -943,7 +943,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               </div>
             </div>
             {/* Google Maps embed — no API key needed */}
-            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-xl overflow-hidden border border-shark-100 mb-3">
+            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-xl overflow-hidden border border-shark-100 dark:border-shark-800 mb-3">
               <iframe
                 width="100%"
                 height="100%"

@@ -177,7 +177,7 @@ export function AIChatWidget() {
                     className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed ${
                       msg.role === "user"
                         ? "bg-action-500 text-white rounded-br-md"
-                        : "bg-white border border-shark-100 text-shark-700 rounded-bl-md shadow-sm"
+                        : "bg-white border border-shark-100 dark:border-shark-800 text-shark-700 rounded-bl-md shadow-sm"
                     }`}
                   >
                     {msg.content}
@@ -187,7 +187,7 @@ export function AIChatWidget() {
 
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white border border-shark-100 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
+                  <div className="bg-white border border-shark-100 dark:border-shark-800 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
                     <div className="flex gap-1">
                       <span className="w-1.5 h-1.5 bg-shark-300 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                       <span className="w-1.5 h-1.5 bg-shark-300 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -207,7 +207,7 @@ export function AIChatWidget() {
                     <button
                       key={q}
                       onClick={() => handleSend(q)}
-                      className="block w-full text-left text-[12px] text-action-600 bg-white hover:bg-action-50 border border-shark-100 hover:border-action-200 rounded-xl px-3 py-2 transition-colors"
+                      className="block w-full text-left text-[12px] text-action-600 bg-white hover:bg-action-50 border border-shark-100 dark:border-shark-800 hover:border-action-200 rounded-xl px-3 py-2 transition-colors"
                     >
                       {q}
                     </button>
@@ -217,7 +217,7 @@ export function AIChatWidget() {
             </div>
 
             {/* Input */}
-            <div className="border-t border-shark-100 px-3 py-3 bg-white shrink-0">
+            <div className="border-t border-shark-100 dark:border-shark-800 px-3 py-3 bg-white shrink-0">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -231,7 +231,7 @@ export function AIChatWidget() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your question..."
-                  className="flex-1 text-sm text-shark-800 placeholder:text-shark-400 bg-shark-50 border border-shark-100 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-action-300 focus:ring-2 focus:ring-action-100 transition-all"
+                  className="flex-1 text-sm text-shark-800 placeholder:text-shark-400 bg-shark-50 border border-shark-100 dark:border-shark-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-action-300 focus:ring-2 focus:ring-action-100 transition-all"
                 />
                 <button
                   type="submit"

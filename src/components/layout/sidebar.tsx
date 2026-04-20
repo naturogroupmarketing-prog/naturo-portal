@@ -159,7 +159,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl min-h-[44px] transition-all duration-200",
                           active
                             ? "bg-action-50 text-action-600 font-medium dark:bg-transparent dark:text-action-400"
-                            : "text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:bg-transparent dark:hover:bg-shark-800/40 hover:text-shark-900 dark:hover:text-white"
+                            : "text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800 dark:bg-transparent dark:hover:bg-shark-800/40 hover:text-shark-900 dark:hover:text-white"
                         )}
                       >
                         <Icon name={item.icon} size={18} className={active ? "text-action-600 dark:text-action-400" : "text-shark-400 dark:text-shark-400"} />
@@ -185,7 +185,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
       </div>
 
       {/* Keyboard shortcut hint */}
-      <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-t border-shark-100 dark:border-transparent">
+      <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-t border-shark-100 dark:border-shark-800 dark:border-transparent">
         <button
           onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
           className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-shark-400 dark:text-shark-300 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-100 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-xs"

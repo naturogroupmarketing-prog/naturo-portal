@@ -448,7 +448,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       >
         {/* Image or icon + status badge */}
         <div className="flex items-start justify-between mb-3">
-          <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
+          <div className="w-10 h-10 rounded-lg bg-shark-50 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
             {c.imageUrl ? (
               <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover rounded-lg" />
             ) : (
@@ -494,7 +494,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             Add Stock
           </button>
           <button
-            className="flex-1 text-xs py-1.5 rounded-lg bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 font-medium transition-colors"
+            className="flex-1 text-xs py-1.5 rounded-lg bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 font-medium transition-colors"
             onClick={() => setShowAssign(c)}
           >
             Assign
@@ -547,7 +547,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 >
                   <div className="flex items-start gap-3">
                     {c.imageUrl ? (
-                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-shark-100 shrink-0">
+                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-800 shrink-0">
                         <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" />
                       </div>
                     ) : (
@@ -634,7 +634,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     </td>
                     {visibleColumns.photo && (
                     <td className="px-3 py-2">
-                      {c.imageUrl ? <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100"><img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" /></div>
+                      {c.imageUrl ? <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-800"><img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" /></div>
                       : <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center"><Icon name="droplet" size={18} className="text-shark-300" /></div>}
                     </td>
                     )}
@@ -820,7 +820,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                             >
                               <div className="flex items-center gap-2 flex-1">
                                 <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{cat.name}</h3>
-                                <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                                <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">
                                   {catItems.length}
                                 </span>
                               </div>
@@ -837,7 +837,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                                   {catItems.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
                                 </div>
                               ) : viewMode === "compact" ? (
-                                <div className="rounded-xl border border-shark-100 overflow-hidden">
+                                <div className="rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
                                   <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50/60" style={{ height: 30 }}>
                                     <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                                     <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
@@ -885,7 +885,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     >
                       <div className="flex items-center gap-2 flex-1">
                         <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">{section.name}</h2>
-                        <span className="text-xs font-medium text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">
+                        <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">
                           {section.items.length}
                         </span>
                       </div>
@@ -903,7 +903,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         {section.items.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
                       </div>
                     ) : viewMode === "compact" ? (
-                      <div className="rounded-xl border border-shark-100 overflow-hidden">
+                      <div className="rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
                         <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50/60" style={{ height: 30 }}>
                           <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                           <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
@@ -1619,7 +1619,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
               {/* Items list */}
               {staffAssignments.length > 0 ? (
-                <div className="border border-shark-100 rounded-lg overflow-hidden">
+                <div className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-shark-50/60 dark:bg-shark-800/40 border-b border-shark-100 dark:border-shark-700">
@@ -1635,7 +1635,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                           <td className="px-3 py-2">
                             <div className="flex items-center gap-2">
                               {a.consumable.imageUrl ? (
-                                <div className="w-7 h-7 rounded overflow-hidden border border-shark-100 shrink-0">
+                                <div className="w-7 h-7 rounded overflow-hidden border border-shark-100 dark:border-shark-800 shrink-0">
                                   <img src={a.consumable.imageUrl} alt={a.consumable.name} className="w-full h-full object-cover" />
                                 </div>
                               ) : (

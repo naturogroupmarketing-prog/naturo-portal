@@ -91,7 +91,7 @@ function AnimatedCounter({
 
 export function SocialProofSection() {
   return (
-    <section className="py-12 sm:py-16 lg:py-20 bg-white border-t border-shark-100">
+    <section className="py-12 sm:py-16 lg:py-20 bg-white border-t border-shark-100 dark:border-shark-800">
       <div className="max-w-6xl mx-auto px-6">
         {/* Stats bar */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
@@ -110,7 +110,7 @@ export function SocialProofSection() {
           {testimonials.map((t, i) => (
             <ScrollReveal key={t.name} delay={i * 150}>
             <div
-              className="bg-shark-50/50 rounded-2xl p-6 border border-shark-100/80 hover:border-shark-200 hover:shadow-sm transition-all relative h-full"
+              className="bg-shark-50/50 rounded-2xl p-6 border border-shark-100 dark:border-shark-800/80 hover:border-shark-200 hover:shadow-sm transition-all relative h-full"
             >
               {/* Quote mark */}
               <svg
@@ -134,7 +134,7 @@ export function SocialProofSection() {
                 &ldquo;{t.quote}&rdquo;
               </p>
 
-              <div className="flex items-center gap-3 pt-4 border-t border-shark-100">
+              <div className="flex items-center gap-3 pt-4 border-t border-shark-100 dark:border-shark-800">
                 <div
                   className={`w-9 h-9 rounded-full ${t.color} flex items-center justify-center text-white text-xs font-bold`}
                 >

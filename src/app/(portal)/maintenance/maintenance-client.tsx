@@ -102,7 +102,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
             className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
               filter === f
                 ? "bg-action-500 text-white shadow-sm"
-                : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 hover:text-shark-700"
+                : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700"
             }`}
           >
             {f === "all" ? "All" : f === "overdue" ? "Overdue" : "Due Soon"}
@@ -128,7 +128,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-shark-900">{schedule.title}</h3>
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${due.color}`}>{due.label}</span>
-                      <span className="text-xs text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">{FREQ_LABELS[schedule.frequency]}</span>
+                      <span className="text-xs text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">{FREQ_LABELS[schedule.frequency]}</span>
                     </div>
                     <p className="text-sm text-shark-500 dark:text-shark-400 mt-1">
                       <span className="font-mono text-xs text-shark-400">{schedule.asset.assetCode}</span>{" "}

@@ -83,7 +83,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-14 items-center justify-between border-b border-shark-100 dark:border-transparent bg-white dark:bg-shark-900 px-3 sm:px-4 lg:px-6 safe-top transition-colors">
+    <header className="sticky top-0 z-30 flex min-h-14 items-center justify-between border-b border-shark-100 dark:border-shark-800 dark:border-transparent bg-white dark:bg-shark-900 px-3 sm:px-4 lg:px-6 safe-top transition-colors">
       {/* Left side: mobile menu + logo */}
       <div className="flex items-center gap-2">
         {/* Mobile menu toggle */}

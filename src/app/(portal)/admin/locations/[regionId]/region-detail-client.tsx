@@ -606,9 +606,9 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     return (
                       <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50 dark:hover:bg-shark-800"}`}>
                         <div className="flex items-center gap-1 shrink-0">
-                          <button onClick={() => setAssetQty(key, qty - 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:bg-shark-700 text-sm font-bold">−</button>
+                          <button onClick={() => setAssetQty(key, qty - 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-sm font-bold">−</button>
                           <span className="w-8 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{qty}</span>
-                          <button onClick={() => setAssetQty(key, qty + 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:bg-shark-700 text-sm font-bold">+</button>
+                          <button onClick={() => setAssetQty(key, qty + 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-sm font-bold">+</button>
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{a.name}</p>

@@ -21,7 +21,7 @@ const RECOMMENDATION_STYLES: Record<DamageClassification["repairRecommendation"]
   repair: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
   replace: "bg-red-50 text-red-700 ring-1 ring-red-200",
   monitor: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
-  decommission: "bg-shark-100 text-shark-600 dark:text-shark-400 ring-1 ring-shark-200",
+  decommission: "bg-shark-100 dark:bg-shark-800 text-shark-600 dark:text-shark-400 ring-1 ring-shark-200",
 };
 
 export function DamageClassifier({
@@ -73,7 +73,7 @@ export function DamageClassifier({
           disabled={!imageBase64 || loading}
           className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
             !imageBase64
-              ? "bg-shark-100 text-shark-400 cursor-not-allowed"
+              ? "bg-shark-100 dark:bg-shark-800 text-shark-400 cursor-not-allowed"
               : loading
               ? "bg-action-50 text-action-500 cursor-wait"
               : "bg-action-600 text-white hover:bg-action-700 shadow-sm hover:shadow active:scale-[0.98]"

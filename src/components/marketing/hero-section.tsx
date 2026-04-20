@@ -72,7 +72,7 @@ export function HeroSection() {
             </Link>
             <a
               href="#features"
-              className="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium text-shark-600 dark:text-shark-400 bg-white border border-shark-200 px-8 py-3.5 rounded-full hover:bg-shark-50 hover:border-shark-300 transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium text-shark-600 dark:text-shark-400 bg-white border border-shark-200 px-8 py-3.5 rounded-full hover:bg-shark-50 dark:hover:bg-shark-800 hover:border-shark-300 transition-all"
             >
               See How It Works
             </a>
@@ -103,7 +103,7 @@ function DashboardShowcase() {
           {/* Bottom fade to suggest more content */}
           <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none rounded-b-2xl" />
           {/* Browser chrome */}
-          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-shark-100 bg-shark-50/50">
+          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-shark-100 dark:border-shark-800 bg-shark-50/50">
             <div className="flex gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-red-300" />
               <div className="w-2.5 h-2.5 rounded-full bg-amber-300" />
@@ -121,7 +121,7 @@ function DashboardShowcase() {
           {/* App layout */}
           <div className="flex">
             {/* Sidebar */}
-            <div className="hidden sm:flex flex-col w-[185px] shrink-0 bg-white border-r border-shark-100 py-3 px-3">
+            <div className="hidden sm:flex flex-col w-[185px] shrink-0 bg-white border-r border-shark-100 dark:border-shark-800 py-3 px-3">
               {/* Logo - uses actual trackio logo */}
               <div className="flex items-center gap-1.5 px-2 mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -153,7 +153,7 @@ function DashboardShowcase() {
                   { icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2", label: "Reports" },
                   { icon: "M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35", label: "Inspections" },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-2.5 px-2.5 py-1.5 text-shark-500 dark:text-shark-400 hover:bg-shark-50 rounded-lg">
+                  <div key={item.label} className="flex items-center gap-2.5 px-2.5 py-1.5 text-shark-500 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 rounded-lg">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon}/></svg>
                     <span className="text-[11px] flex-1">{item.label}</span>
                     {item.badge && (
@@ -183,11 +183,11 @@ function DashboardShowcase() {
             {/* Main content area */}
             <div className="flex-1 bg-shark-50/40">
               {/* Top bar */}
-              <div className="flex items-center justify-between px-4 py-2.5 bg-white/80 border-b border-shark-100">
-                <div className="flex items-center gap-2 bg-shark-50 rounded-lg border border-shark-100 px-3 py-1.5 w-32 sm:w-48">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-white/80 border-b border-shark-100 dark:border-shark-800">
+                <div className="flex items-center gap-2 bg-shark-50 rounded-lg border border-shark-100 dark:border-shark-800 px-3 py-1.5 w-32 sm:w-48">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                   <span className="text-[10px] text-shark-400">Search</span>
-                  <span className="ml-auto text-[9px] text-shark-300 bg-white px-1.5 py-0.5 rounded border border-shark-100">⌘K</span>
+                  <span className="ml-auto text-[9px] text-shark-300 bg-white px-1.5 py-0.5 rounded border border-shark-100 dark:border-shark-800">⌘K</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="relative">
@@ -222,7 +222,7 @@ function DashboardShowcase() {
                     { label: "Requests", value: "1", iconBg: "bg-action-500", iconPath: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
                     { label: "Returns", value: "0", iconBg: "bg-action-500", iconPath: "M19 12H5M12 19l-7-7 7-7" },
                   ].map(s => (
-                    <div key={s.label} className="bg-white rounded-2xl border border-shark-100 p-2.5 flex items-center gap-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_2px_8px_rgba(0,0,0,0.04)]">
+                    <div key={s.label} className="bg-white rounded-2xl border border-shark-100 dark:border-shark-800 p-2.5 flex items-center gap-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_2px_8px_rgba(0,0,0,0.04)]">
                       <div className={`w-9 h-9 rounded-xl ${s.iconBg} flex items-center justify-center shrink-0`}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={s.iconPath}/></svg>
                       </div>
@@ -238,7 +238,7 @@ function DashboardShowcase() {
                 {/* Operations + Finance row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {/* Operations */}
-                  <div className="bg-white rounded-xl border border-shark-100 p-3">
+                  <div className="bg-white rounded-xl border border-shark-100 dark:border-shark-800 p-3">
                     <div className="flex items-center justify-between mb-2">
                       <div>
                         <p className="text-[10px] font-semibold text-shark-800">Operations</p>
@@ -265,7 +265,7 @@ function DashboardShowcase() {
                   </div>
 
                   {/* Finance */}
-                  <div className="bg-white rounded-xl border border-shark-100 p-3">
+                  <div className="bg-white rounded-xl border border-shark-100 dark:border-shark-800 p-3">
                     <div className="flex items-center justify-between mb-2">
                       <div>
                         <p className="text-[10px] font-semibold text-shark-800">Finance</p>
@@ -339,7 +339,7 @@ function DashboardShowcase() {
                 {/* Recent Activity + Stock by Region row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {/* Recent Activity */}
-                  <div className="bg-white rounded-xl border border-shark-100 p-3">
+                  <div className="bg-white rounded-xl border border-shark-100 dark:border-shark-800 p-3">
                     <div className="flex items-center justify-between mb-2">
                       <div>
                         <p className="text-[10px] font-semibold text-shark-800">Recent Activity</p>
@@ -365,7 +365,7 @@ function DashboardShowcase() {
                   </div>
 
                   {/* Stock by Region */}
-                  <div className="bg-white rounded-xl border border-shark-100 p-3">
+                  <div className="bg-white rounded-xl border border-shark-100 dark:border-shark-800 p-3">
                     <div className="flex items-center justify-between mb-2">
                       <div>
                         <p className="text-[10px] font-semibold text-shark-800">Stock by Region</p>
@@ -384,7 +384,7 @@ function DashboardShowcase() {
                             <span className="text-[8px] text-shark-700 font-medium">{r.region}</span>
                             <span className="text-[7px] text-shark-400">{r.assets}A / {r.consumables}C</span>
                           </div>
-                          <div className="w-full h-1 bg-shark-100 rounded-full overflow-hidden">
+                          <div className="w-full h-1 bg-shark-100 dark:bg-shark-800 rounded-full overflow-hidden">
                             <div className="h-full bg-action-500 rounded-full" style={{ width: `${r.pct}%` }} />
                           </div>
                         </div>

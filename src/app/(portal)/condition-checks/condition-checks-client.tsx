@@ -646,7 +646,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
-                      isComplete ? "bg-action-100 text-action-600" : "bg-shark-100 text-shark-500 dark:text-shark-400"
+                      isComplete ? "bg-action-100 text-action-600" : "bg-shark-100 dark:bg-shark-800 text-shark-500 dark:text-shark-400"
                     }`}>
                       {isComplete ? <Icon name="check" size={16} /> : `${pct}%`}
                     </div>
@@ -662,7 +662,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                       {staff.checkedItems}/{staff.totalItems} items
                     </span>
                     {/* Progress bar */}
-                    <div className="w-20 h-1.5 bg-shark-100 rounded-full hidden sm:block overflow-hidden">
+                    <div className="w-20 h-1.5 bg-shark-100 dark:bg-shark-800 rounded-full hidden sm:block overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all ${isComplete ? "bg-action-400" : "bg-[#E8532E]"}`}
                         style={{ width: `${pct}%` }}
@@ -687,7 +687,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                         return (
                           <div
                             key={check.id}
-                            className="border border-shark-100 rounded-xl overflow-hidden hover:shadow-sm transition-shadow cursor-pointer"
+                            className="border border-shark-100 dark:border-shark-800 rounded-xl overflow-hidden hover:shadow-sm transition-shadow cursor-pointer"
                             onClick={() => setPhotoModal(check)}
                           >
                             {/* Photo */}
@@ -697,7 +697,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                                 alt={itemName}
                                 className="w-full h-full object-cover"
                               />
-                              <span className={`absolute top-2 right-2 text-xs font-medium px-2 py-0.5 rounded-full ${CONDITION_COLORS[check.condition] || "bg-shark-100 text-shark-600 dark:text-shark-400"}`}>
+                              <span className={`absolute top-2 right-2 text-xs font-medium px-2 py-0.5 rounded-full ${CONDITION_COLORS[check.condition] || "bg-shark-100 dark:bg-shark-800 text-shark-600 dark:text-shark-400"}`}>
                                 {check.condition}
                               </span>
                             </div>
@@ -748,7 +748,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   <p className="text-xs font-mono text-shark-400">{photoModal.asset.assetCode}</p>
                 )}
               </div>
-              <span className={`text-xs font-medium px-3 py-1 rounded-full ${CONDITION_COLORS[photoModal.condition] || "bg-shark-100 text-shark-600 dark:text-shark-400"}`}>
+              <span className={`text-xs font-medium px-3 py-1 rounded-full ${CONDITION_COLORS[photoModal.condition] || "bg-shark-100 dark:bg-shark-800 text-shark-600 dark:text-shark-400"}`}>
                 {photoModal.condition}
               </span>
             </div>

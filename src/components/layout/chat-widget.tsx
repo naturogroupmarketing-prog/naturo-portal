@@ -334,7 +334,7 @@ export function ChatWidget() {
       {isOpen && (
         <div className="fixed bottom-36 right-3 sm:bottom-24 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-96 h-[55vh] sm:h-[32rem] max-h-[32rem] flex flex-col rounded-2xl border border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-900 shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 dark:border-action-600 bg-action-400 rounded-t-2xl">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 dark:border-shark-800 dark:border-action-600 bg-action-400 rounded-t-2xl">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

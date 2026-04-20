@@ -81,7 +81,7 @@ export function QuickLinks({ open, onClose }: QuickLinksProps) {
                   <button
                     key={item.href}
                     onClick={() => handleNavigate(item.href)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-shark-50 dark:bg-transparent dark:hover:bg-shark-800/40 transition-colors text-left group"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-800 dark:bg-transparent dark:hover:bg-shark-800/40 transition-colors text-left group"
                   >
                     <Icon
                       name={item.icon}

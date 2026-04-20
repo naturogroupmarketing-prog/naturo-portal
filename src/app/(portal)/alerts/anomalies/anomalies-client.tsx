@@ -128,7 +128,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.2, delay: index * 0.04, ease: "easeOut" }}
-      className="rounded-xl border border-shark-100 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60"
+      className="rounded-xl border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60"
     >
       {/* Card body */}
       <div className="px-4 py-4">
@@ -281,7 +281,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
   }
 
   return (
-    <div className="rounded-xl border border-shark-100 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60">
+    <div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -503,7 +503,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
               className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
                 isActive
                   ? "bg-action-500 text-white shadow-sm"
-                  : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 hover:text-shark-700"
+                  : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700"
               }`}
             >
               {tab.label}

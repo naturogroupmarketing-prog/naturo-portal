@@ -66,7 +66,7 @@ export function FAQSection() {
                 className={`bg-white rounded-2xl border transition-all ${
                   isOpen
                     ? "border-action-200 shadow-sm"
-                    : "border-shark-100 hover:border-shark-200"
+                    : "border-shark-100 dark:border-shark-800 hover:border-shark-200"
                 }`}
               >
                 <button

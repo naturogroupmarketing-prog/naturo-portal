@@ -138,7 +138,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         <button
           onClick={() => setTab("request")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "request" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
+            tab === "request" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
           }`}
         >
           Request
@@ -153,7 +153,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         <button
           onClick={() => setTab("confirm")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "confirm" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
+            tab === "confirm" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
           }`}
         >
           Confirm Receipt
@@ -416,7 +416,7 @@ function ConsumableRequestCard({
                 <button
                   type="button"
                   onClick={() => setReqQty(Math.max(1, reqQty - 1))}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                   disabled={reqQty <= 1}
                 >
                   <span className="text-sm font-bold leading-none">−</span>
@@ -431,7 +431,7 @@ function ConsumableRequestCard({
                 <button
                   type="button"
                   onClick={() => setReqQty(reqQty + 1)}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                 >
                   <Icon name="plus" size={12} />
                 </button>

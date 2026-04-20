@@ -198,7 +198,7 @@ export function StarterKitsClient({
                                       return (
                                         <div key={item.id} className="flex items-center justify-between bg-shark-50 rounded-lg px-3 py-2">
                                           <div className="flex items-center gap-2.5">
-                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 flex items-center justify-center shrink-0">
+                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 dark:bg-shark-800 flex items-center justify-center shrink-0">
                                               {photo ? <img src={photo} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                                             </div>
                                             <span className="text-sm text-shark-700 dark:text-shark-300">{item.category}</span>
@@ -207,7 +207,7 @@ export function StarterKitsClient({
                                             <div className="flex items-center gap-1">
                                               <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-600 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-700 text-xs font-bold">−</button>
                                               <span className="w-6 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{item.quantity}</span>
-                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 text-xs font-bold">+</button>
+                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 text-xs font-bold">+</button>
                                             </div>
                                             <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Item removed from kit", "success"); router.refresh(); } catch { addToast("Something went wrong — please try again", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
                                           </div>
@@ -238,7 +238,7 @@ export function StarterKitsClient({
                                       return (
                                         <div key={item.id} className="flex items-center justify-between bg-shark-50 rounded-lg px-3 py-2">
                                           <div className="flex items-center gap-2.5">
-                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 flex items-center justify-center shrink-0">
+                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 dark:bg-shark-800 flex items-center justify-center shrink-0">
                                               {c?.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                                             </div>
                                             <div>
@@ -250,7 +250,7 @@ export function StarterKitsClient({
                                             <div className="flex items-center gap-1">
                                               <button onClick={async () => { if (item.quantity > 1) { try { await updateStarterKitItemQuantity(item.id, item.quantity - 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-600 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-700 text-xs font-bold">−</button>
                                               <span className="w-6 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{item.quantity}</span>
-                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 text-xs font-bold">+</button>
+                                              <button onClick={async () => { try { await updateStarterKitItemQuantity(item.id, item.quantity + 1); router.refresh(); } catch { addToast("Could not update quantity", "error"); } }} className="w-6 h-6 rounded border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 text-xs font-bold">+</button>
                                             </div>
                                             <button onClick={async () => { try { await removeStarterKitItem(item.id); addToast("Item removed from kit", "success"); router.refresh(); } catch { addToast("Something went wrong — please try again", "error"); } }} className="text-shark-400 hover:text-red-500 p-1" title="Remove"><Icon name="x" size={14} /></button>
                                           </div>
@@ -543,7 +543,7 @@ function AddItemsChecklist({
                 <div
                   key={cat.id}
                   className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
-                    alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 dark:hover:bg-shark-800 border border-transparent"
+                    alreadyAdded ? "bg-shark-100 dark:bg-shark-800 opacity-50" : isSelected ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 dark:hover:bg-shark-800 border border-transparent"
                   }`}
                 >
                   <input
@@ -606,7 +606,7 @@ function AddItemsChecklist({
                   <div
                     key={c.id}
                     className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
-                      alreadyAdded ? "bg-shark-100 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 dark:hover:bg-shark-800 border border-transparent"
+                      alreadyAdded ? "bg-shark-100 dark:bg-shark-800 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 dark:hover:bg-shark-800 border border-transparent"
                     }`}
                   >
                     <input

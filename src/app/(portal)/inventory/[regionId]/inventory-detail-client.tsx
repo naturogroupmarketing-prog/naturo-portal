@@ -211,7 +211,7 @@ export function InventoryDetailClient({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                   activeTab === tab
                     ? "bg-action-500 text-white shadow-sm"
-                    : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
+                    : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700 dark:text-shark-300"
                 }`}
               >
                 {tab}
