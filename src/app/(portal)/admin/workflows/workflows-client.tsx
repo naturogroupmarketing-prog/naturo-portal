@@ -87,7 +87,7 @@ function ToggleSwitch({ enabled, onChange }: { enabled: boolean; onChange: (v: b
       onClick={() => onChange(!enabled)}
       className={cn(
         "relative inline-flex rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-action-500 focus:ring-offset-1 shrink-0",
-        enabled ? "bg-action-500" : "bg-shark-200"
+        enabled ? "bg-action-500" : "bg-shark-200 dark:bg-shark-700"
       )}
       style={{ height: 22, width: 40 }}
     >

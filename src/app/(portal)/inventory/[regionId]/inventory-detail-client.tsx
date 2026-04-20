@@ -216,7 +216,7 @@ export function InventoryDetailClient({
               >
                 {tab}
                 <span className={`inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[11px] font-bold rounded-full ${
-                  activeTab === tab ? "bg-white/20 text-white" : "bg-shark-200 text-shark-500 dark:text-shark-400"
+                  activeTab === tab ? "bg-white/20 text-white" : "bg-shark-200 dark:bg-shark-700 text-shark-500 dark:text-shark-400"
                 }`}>
                   {tabCounts[tab]}
                 </span>

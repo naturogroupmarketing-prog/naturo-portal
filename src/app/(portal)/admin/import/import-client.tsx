@@ -333,7 +333,7 @@ export function ImportClient({ regions }: Props) {
           const isDone = i < stepIndex;
           return (
             <div key={s} className="flex items-center gap-2">
-              {i > 0 && <div className={`w-8 h-0.5 ${isDone ? "bg-action-400" : "bg-shark-200"}`} />}
+              {i > 0 && <div className={`w-8 h-0.5 ${isDone ? "bg-action-400" : "bg-shark-200 dark:bg-shark-700"}`} />}
               <div className="flex items-center gap-1.5">
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${

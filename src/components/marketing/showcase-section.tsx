@@ -316,7 +316,7 @@ export function ShowcaseSection() {
 
                   {/* Separator line between steps */}
                   {!isActive && (
-                    <div className="absolute bottom-0 left-6 right-6 h-px bg-shark-200/60" />
+                    <div className="absolute bottom-0 left-6 right-6 h-px bg-shark-200 dark:bg-shark-700/60" />
                   )}
                 </button>
               );

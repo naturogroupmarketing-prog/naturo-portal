@@ -236,7 +236,7 @@ export function AIChatWidget() {
                 <button
                   type="submit"
                   disabled={!input.trim()}
-                  className="w-9 h-9 rounded-xl bg-action-500 hover:bg-action-600 disabled:bg-shark-200 disabled:cursor-not-allowed flex items-center justify-center transition-colors shrink-0"
+                  className="w-9 h-9 rounded-xl bg-action-500 hover:bg-action-600 disabled:bg-shark-200 dark:bg-shark-700 disabled:cursor-not-allowed flex items-center justify-center transition-colors shrink-0"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13" />

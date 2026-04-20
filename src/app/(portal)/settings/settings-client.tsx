@@ -228,7 +228,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={emailEnabled} onChange={handleToggleEmail} disabled={togglingEmail} className="sr-only peer" />
-              <div className="w-11 h-6 bg-shark-200 peer-focus:ring-2 peer-focus:ring-action-400/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-action-500" />
+              <div className="w-11 h-6 bg-shark-200 dark:bg-shark-700 peer-focus:ring-2 peer-focus:ring-action-400/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-action-500" />
             </label>
           </div>
         </CardContent>

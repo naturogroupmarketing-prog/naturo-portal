@@ -665,7 +665,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 {tab}
                 {tabCounts[tab] > 0 && (
                   <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
-                    tab === "Pending" ? "text-white bg-[#E8532E]" : "text-shark-500 dark:text-shark-400 bg-shark-200"
+                    tab === "Pending" ? "text-white bg-[#E8532E]" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
                   }`}>
                     {tabCounts[tab]}
                   </span>

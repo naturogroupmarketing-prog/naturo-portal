@@ -140,11 +140,11 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
                     ? "bg-action-500 ring-4 ring-action-100"
                     : i < step
                     ? "bg-action-500"
-                    : "bg-shark-200"
+                    : "bg-shark-200 dark:bg-shark-700"
                 }`}
               />
               {i < TOTAL_STEPS - 1 && (
-                <div className={`w-8 h-px ${i < step ? "bg-action-400" : "bg-shark-200"}`} />
+                <div className={`w-8 h-px ${i < step ? "bg-action-400" : "bg-shark-200 dark:bg-shark-700"}`} />
               )}
             </div>
           ))}

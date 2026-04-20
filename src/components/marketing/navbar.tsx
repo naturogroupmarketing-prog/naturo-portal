@@ -45,7 +45,7 @@ export function Navbar() {
           <a href="#pricing" className="text-sm text-shark-500 dark:text-shark-400 hover:text-shark-900 transition-colors">
             Pricing
           </a>
-          <div className="w-px h-5 bg-shark-200" />
+          <div className="w-px h-5 bg-shark-200 dark:bg-shark-700" />
           <Link
             href="/login"
             className="text-sm font-medium text-shark-700 hover:text-shark-900 transition-colors"

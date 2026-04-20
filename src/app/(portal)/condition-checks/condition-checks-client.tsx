@@ -305,7 +305,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                           disabled={isSaving}
                           className="sr-only peer"
                         />
-                        <div className="w-9 h-5 bg-shark-200 peer-focus:ring-2 peer-focus:ring-action-400/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-action-500" />
+                        <div className="w-9 h-5 bg-shark-200 dark:bg-shark-700 peer-focus:ring-2 peer-focus:ring-action-400/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-action-500" />
                       </label>
                       <div>
                         <span className="text-sm font-medium text-shark-800 dark:text-shark-200">{cat.name}</span>

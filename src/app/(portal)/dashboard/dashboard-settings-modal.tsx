@@ -28,7 +28,7 @@ function Toggle({
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-action-500 focus:ring-offset-2 ${
         disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-      } ${checked ? "bg-action-500" : "bg-shark-200"}`}
+      } ${checked ? "bg-action-500" : "bg-shark-200 dark:bg-shark-700"}`}
     >
       <span
         className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-200 ${

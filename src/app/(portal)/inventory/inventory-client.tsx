@@ -150,7 +150,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                     </div>
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">{state.name}</span>
-                      <span className="text-[10px] font-semibold text-shark-400 dark:text-shark-500 dark:text-shark-400 bg-shark-200/80 dark:bg-shark-700 px-1.5 py-0.5 rounded-full">
+                      <span className="text-[10px] font-semibold text-shark-400 dark:text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700/80 dark:bg-shark-700 px-1.5 py-0.5 rounded-full">
                         {state.regions.length}
                       </span>
                     </div>

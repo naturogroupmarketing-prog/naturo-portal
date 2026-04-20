@@ -106,7 +106,7 @@ export function PricingSection() {
           <button
             onClick={() => setIsAnnual(!isAnnual)}
             className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ${
-              isAnnual ? "bg-action-500" : "bg-shark-200"
+              isAnnual ? "bg-action-500" : "bg-shark-200 dark:bg-shark-700"
             }`}
             aria-label="Toggle annual pricing"
           >
