@@ -28,7 +28,7 @@ export default function UsersError({
             <Icon name="alert-triangle" size={24} className="text-red-500" />
           </div>
           <h3 className="text-lg font-semibold text-shark-900 mb-2">Something went wrong</h3>
-          <p className="text-sm text-shark-500 mb-6 max-w-md mx-auto">
+          <p className="text-sm text-shark-500 dark:text-shark-400 mb-6 max-w-md mx-auto">
             {error.message || "Failed to load user management. Please try again."}
           </p>
           <Button onClick={reset}>Try Again</Button>

@@ -47,7 +47,7 @@ export function ReturnAssetButton({ assignmentId, assetName }: { assignmentId: s
 
       <Modal open={showModal} onClose={() => setShowModal(false)} title={`Return: ${assetName}`}>
         <div className="space-y-4">
-          <p className="text-sm text-shark-500">
+          <p className="text-sm text-shark-500 dark:text-shark-400">
             Submit this asset for return. Your branch manager will verify and restock.
           </p>
           <div>

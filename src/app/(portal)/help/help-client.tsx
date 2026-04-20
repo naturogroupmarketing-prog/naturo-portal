@@ -232,7 +232,7 @@ export function HelpClient({ role }: { role: string }) {
         <Card>
           <div className="py-12 text-center">
             <Icon name="search" size={40} className="text-shark-200 mx-auto mb-3" />
-            <p className="text-shark-500">No results found for &quot;{search}&quot;</p>
+            <p className="text-shark-500 dark:text-shark-400">No results found for &quot;{search}&quot;</p>
             <p className="text-xs text-shark-400 mt-1">Try different keywords or ask the AI Assistant</p>
           </div>
         </Card>
@@ -266,7 +266,7 @@ export function HelpClient({ role }: { role: string }) {
                           {faq.q}
                           <Icon name="chevron-down" size={14} className="text-shark-400 group-open:rotate-180 transition-transform shrink-0 ml-2" />
                         </summary>
-                        <p className="text-sm text-shark-500 leading-relaxed pb-3 pl-1">
+                        <p className="text-sm text-shark-500 dark:text-shark-400 leading-relaxed pb-3 pl-1">
                           {faq.a}
                         </p>
                       </details>

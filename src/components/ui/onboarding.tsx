@@ -243,7 +243,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mb-1 text-center">
                 How many branches do you have?
               </h2>
-              <p className="text-sm text-shark-500 mb-6 text-center">
+              <p className="text-sm text-shark-500 dark:text-shark-400 mb-6 text-center">
                 A branch is a physical location or site you manage.
               </p>
 
@@ -254,7 +254,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
                     setBranchCount(n);
                     setBranchNames((prev) => prev.slice(0, n));
                   }}
-                  className="w-10 h-10 rounded-full border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-lg"
+                  className="w-10 h-10 rounded-full border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-lg"
                 >
                   −
                 </button>
@@ -267,7 +267,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
                     setBranchCount(n);
                     setBranchNames((prev) => [...prev, ""]);
                   }}
-                  className="w-10 h-10 rounded-full border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-lg"
+                  className="w-10 h-10 rounded-full border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-lg"
                 >
                   +
                 </button>
@@ -299,7 +299,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mb-1 text-center">
                 Make it your own
               </h2>
-              <p className="text-sm text-shark-500 mb-1 text-center">
+              <p className="text-sm text-shark-500 dark:text-shark-400 mb-1 text-center">
                 This will help us make your dashboard fit your company
               </p>
               <p className="text-sm text-shark-400 mb-6 text-center">
@@ -345,7 +345,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
                 </div>
                 <div className="text-sm">
                   <p className="text-shark-500 dark:text-shark-400">Drag your logo here</p>
-                  <p className="text-shark-400 dark:text-shark-500">
+                  <p className="text-shark-400 dark:text-shark-500 dark:text-shark-400">
                     Or{" "}
                     <button
                       type="button"
@@ -414,7 +414,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mb-2">
                 What&apos;s your mobile number?
               </h2>
-              <p className="text-sm text-shark-500 mb-6 leading-relaxed">
+              <p className="text-sm text-shark-500 dark:text-shark-400 mb-6 leading-relaxed">
                 Log in to your app easily and securely<br />with your mobile phone number
               </p>
 
@@ -449,7 +449,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mb-1">
                 You&apos;re all set
               </h2>
-              <p className="text-sm text-shark-500 leading-relaxed">
+              <p className="text-sm text-shark-500 dark:text-shark-400 leading-relaxed">
                 Start by adding a location and inviting your team.
               </p>
             </div>

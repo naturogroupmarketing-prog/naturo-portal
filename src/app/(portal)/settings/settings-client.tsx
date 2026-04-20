@@ -371,7 +371,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
               <div className="text-center">
                 <p className="text-sm text-shark-600 mb-4">Scan this QR code with your authenticator app:</p>
                 {/* QR Code rendered as a link to otpauth URI */}
-                <div className="bg-white p-4 rounded-xl inline-block border border-shark-200 dark:border-shark-700 mx-auto">
+                <div className="bg-white dark:bg-shark-900 p-4 rounded-xl inline-block border border-shark-200 dark:border-shark-700 mx-auto">
                   <img
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(mfaQrUri)}`}
                     alt="MFA QR Code"

@@ -23,7 +23,7 @@ export default function PortalError({
           </svg>
         </div>
         <h2 className="text-xl font-bold text-shark-900 mb-2">Something went wrong</h2>
-        <p className="text-sm text-shark-500 mb-1">
+        <p className="text-sm text-shark-500 dark:text-shark-400 mb-1">
           {error.message || "An unexpected error occurred. Please try again."}
         </p>
         {error.digest && (

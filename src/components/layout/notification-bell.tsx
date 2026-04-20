@@ -39,7 +39,7 @@ const TYPE_ICONS: Record<string, { icon: string; color: string }> = {
   WARRANTY_EXPIRING: { icon: "shield", color: "text-[#E8532E]" },
   PO_STATUS_CHANGED: { icon: "file-text", color: "text-blue-500" },
   REPLENISHMENT_SUGGESTION: { icon: "truck", color: "text-action-500" },
-  GENERAL: { icon: "bell", color: "text-shark-500" },
+  GENERAL: { icon: "bell", color: "text-shark-500 dark:text-shark-400" },
 };
 
 export function NotificationBell() {
@@ -115,7 +115,7 @@ export function NotificationBell() {
         title="Notifications"
         aria-label="Notifications"
       >
-        <Icon name="bell" size={20} className="text-shark-500" />
+        <Icon name="bell" size={20} className="text-shark-500 dark:text-shark-400" />
         {unreadCount > 0 && (
           <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
             {unreadCount > 9 ? "9+" : unreadCount}

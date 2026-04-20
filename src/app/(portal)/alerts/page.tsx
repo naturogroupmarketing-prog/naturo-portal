@@ -118,7 +118,7 @@ export default async function AlertsPage() {
                   >
                     {card.count}
                   </span>
-                  <span className="ml-2 text-sm text-shark-400 dark:text-shark-500">
+                  <span className="ml-2 text-sm text-shark-400 dark:text-shark-500 dark:text-shark-400">
                     {card.count === 1 ? "item" : "items"}
                   </span>
                 </div>

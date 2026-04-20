@@ -297,7 +297,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
               <Icon name="plus" size={24} className="text-white" />
             </div>
             <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Set Up This Location</h3>
-            <p className="text-sm text-shark-500 mt-1 max-w-md mx-auto">
+            <p className="text-sm text-shark-500 dark:text-shark-400 mt-1 max-w-md mx-auto">
               This location has no assets or supplies. Apply standard items from your existing locations to get started quickly.
             </p>
             <Button className="mt-5" onClick={handleOpenApply}>
@@ -423,13 +423,13 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                     )}
                                   </div>
                                 </td>
-                                <td className="px-4 py-2.5 text-xs font-mono text-shark-500">{asset.assetCode}</td>
+                                <td className="px-4 py-2.5 text-xs font-mono text-shark-500 dark:text-shark-400">{asset.assetCode}</td>
                                 <td className="px-4 py-2.5 text-sm font-medium text-shark-800 dark:text-shark-200">
                                   {asset.name}
                                   {asset.isHighValue && <span className="text-[#E8532E] ml-1">★</span>}
                                 </td>
                                 <td className="px-4 py-2.5 hidden md:table-cell"><Badge status={asset.status} /></td>
-                                <td className="px-4 py-2.5 text-sm text-shark-500 hidden lg:table-cell">
+                                <td className="px-4 py-2.5 text-sm text-shark-500 dark:text-shark-400 hidden lg:table-cell">
                                   {asset.assignments[0]?.user?.name || asset.assignments[0]?.user?.email || "—"}
                                 </td>
                               </tr>
@@ -563,7 +563,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     {filteredStaff.map((user) => (
                       <tr key={user.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
                         <td className="px-4 py-3 text-sm font-medium text-shark-800 dark:text-shark-200">{user.name || "—"}</td>
-                        <td className="px-4 py-3 text-sm text-shark-500">{user.email}</td>
+                        <td className="px-4 py-3 text-sm text-shark-500 dark:text-shark-400">{user.email}</td>
                         <td className="px-4 py-3 hidden md:table-cell"><Badge status={user.role} /></td>
                         <td className="px-4 py-3 hidden md:table-cell">
                           <span className={`inline-flex items-center gap-1 text-xs ${user.isActive ? "text-action-600" : "text-shark-400"}`}>
@@ -606,9 +606,9 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     return (
                       <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50 dark:hover:bg-shark-800"}`}>
                         <div className="flex items-center gap-1 shrink-0">
-                          <button onClick={() => setAssetQty(key, qty - 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 hover:bg-shark-100 dark:bg-shark-700 text-sm font-bold">−</button>
+                          <button onClick={() => setAssetQty(key, qty - 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:bg-shark-700 text-sm font-bold">−</button>
                           <span className="w-8 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{qty}</span>
-                          <button onClick={() => setAssetQty(key, qty + 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 hover:bg-shark-100 dark:bg-shark-700 text-sm font-bold">+</button>
+                          <button onClick={() => setAssetQty(key, qty + 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:bg-shark-700 text-sm font-bold">+</button>
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{a.name}</p>

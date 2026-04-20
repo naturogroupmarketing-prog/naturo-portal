@@ -104,7 +104,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
         <div className="flex items-center gap-3 px-4 py-4">
           <Link
             href="/returns"
-            className="flex items-center gap-1.5 text-sm font-medium text-shark-500 hover:text-shark-900 dark:text-shark-100 transition-colors min-h-[44px] pr-2"
+            className="flex items-center gap-1.5 text-sm font-medium text-shark-500 dark:text-shark-400 hover:text-shark-900 dark:text-shark-100 transition-colors min-h-[44px] pr-2"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m15 18-6-6 6-6" />
@@ -210,7 +210,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
                   <p className="text-xl font-bold text-shark-900 dark:text-shark-100 leading-tight truncate">
                     {item.assignedTo}
                   </p>
-                  <p className="mt-0.5 text-base text-shark-500 truncate">{itemName}</p>
+                  <p className="mt-0.5 text-base text-shark-500 dark:text-shark-400 truncate">{itemName}</p>
                   <div className="mt-2 flex items-center gap-2 flex-wrap">
                     <OverdueBadge days={item.daysOverdue} />
                     <span className="text-xs font-medium text-shark-400 bg-shark-100 rounded-full px-2.5 py-1 capitalize">

@@ -177,7 +177,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                   )}
                 </td>
                 <td className="px-5 py-3.5 font-medium text-shark-800 dark:text-shark-200">{user.name || "—"}</td>
-                <td className="px-5 py-3.5 text-shark-500">{user.email}</td>
+                <td className="px-5 py-3.5 text-shark-500 dark:text-shark-400">{user.email}</td>
                 <td className="px-5 py-3.5"><Badge status={user.role} /></td>
                 <td className="px-5 py-3.5 text-center">
                   <span className={`inline-block w-2.5 h-2.5 rounded-full ${user.isActive ? "bg-action-500" : "bg-red-400"}`} />

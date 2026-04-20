@@ -463,7 +463,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <span className="text-xs font-medium text-action-600 bg-action-50 px-2 py-0.5 rounded-full">{freqLabel}</span>
-                    <span className={`text-xs ${isOverdue ? "text-red-600 font-medium" : daysUntil <= 7 ? "text-[#E8532E]" : "text-shark-500"}`}>
+                    <span className={`text-xs ${isOverdue ? "text-red-600 font-medium" : daysUntil <= 7 ? "text-[#E8532E]" : "text-shark-500 dark:text-shark-400"}`}>
                       Due: {due.toLocaleDateString("en-AU", { day: "numeric", month: "short" })}
                       {isOverdue && " (overdue)"}
                     </span>
@@ -596,7 +596,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   <Icon name={stat.icon} size={16} className={stat.iconColor} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-shark-500 truncate">{stat.label}</p>
+                  <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{stat.label}</p>
                   <p className="text-xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                 </div>
                 <Icon name="arrow-right" size={14} className="text-shark-400 flex-shrink-0" />
@@ -646,7 +646,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
-                      isComplete ? "bg-action-100 text-action-600" : "bg-shark-100 text-shark-500"
+                      isComplete ? "bg-action-100 text-action-600" : "bg-shark-100 text-shark-500 dark:text-shark-400"
                     }`}>
                       {isComplete ? <Icon name="check" size={16} /> : `${pct}%`}
                     </div>

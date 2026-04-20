@@ -754,7 +754,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {returningKitId && returningKit && (
         <Modal open onClose={() => { setReturningKitId(null); setReturnError(null); }} title={`Return "${returningKit.kitName}"`}>
           <div className="space-y-4">
-            <p className="text-sm text-shark-500">Uncheck any items you are not returning and provide a reason.</p>
+            <p className="text-sm text-shark-500 dark:text-shark-400">Uncheck any items you are not returning and provide a reason.</p>
 
             {/* Items grouped by category with photos */}
             {(() => {
@@ -873,11 +873,11 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {showReturnAll && (
         <Modal open onClose={() => setShowReturnAll(false)} title="Return All Items">
           <div className="space-y-4">
-            <p className="text-sm text-shark-500">Select the items you are returning. Deselect any items you don&apos;t have.</p>
+            <p className="text-sm text-shark-500 dark:text-shark-400">Select the items you are returning. Deselect any items you don&apos;t have.</p>
 
             {/* Select/Deselect All */}
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-shark-500">{returnAllSelected.size} of {allReturnableItems.length} selected</span>
+              <span className="text-xs font-medium text-shark-500 dark:text-shark-400">{returnAllSelected.size} of {allReturnableItems.length} selected</span>
               <div className="flex gap-2">
                 <button onClick={() => setReturnAllSelected(new Set(allReturnableItems.map((i) => i.key)))} className="text-xs text-action-500 hover:underline">Select All</button>
                 <button onClick={() => setReturnAllSelected(new Set())} className="text-xs text-shark-400 hover:underline">Deselect All</button>
@@ -1096,7 +1096,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     <Icon name={stat.icon} size={16} className={stat.iconColor} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-shark-500 truncate">{stat.label}</p>
+                    <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{stat.label}</p>
                     <p className="text-xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                   </div>
                   <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
@@ -1130,7 +1130,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               <div className="space-y-3">
                 {consumableUsageHistory.map((m) => (
                   <div key={m.month} className="flex items-start gap-3">
-                    <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
+                    <div className="w-16 shrink-0 text-xs font-medium text-shark-500 dark:text-shark-400 pt-0.5">{m.label}</div>
                     <div className="flex-1">
                       {m.totalUsed === 0 ? (
                         <span className="text-xs text-shark-400">No usage</span>

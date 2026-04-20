@@ -138,13 +138,13 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         <button
           onClick={() => setTab("request")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "request" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 hover:bg-shark-100 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
+            tab === "request" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
           }`}
         >
           Request
           {recentRequests.length > 0 && (
             <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
-              recentRequests.some((r) => r.status === "PENDING") ? "text-white bg-[#E8532E]" : "text-shark-500 bg-shark-200"
+              recentRequests.some((r) => r.status === "PENDING") ? "text-white bg-[#E8532E]" : "text-shark-500 dark:text-shark-400 bg-shark-200"
             }`}>
               {recentRequests.length}
             </span>
@@ -153,7 +153,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         <button
           onClick={() => setTab("confirm")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "confirm" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 hover:bg-shark-100 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
+            tab === "confirm" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
           }`}
         >
           Confirm Receipt
@@ -217,7 +217,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                         )}
                       </div>
                       {r.notes && (
-                        <p className="mt-2 text-sm text-shark-500 bg-shark-50 dark:bg-shark-800 rounded-xl p-3">{r.notes}</p>
+                        <p className="mt-2 text-sm text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 rounded-xl p-3">{r.notes}</p>
                       )}
                     </CardContent>
                   </Card>
@@ -301,7 +301,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
             </Card>
           ) : (
             <div className="space-y-3">
-              <p className="text-sm text-shark-500">
+              <p className="text-sm text-shark-500 dark:text-shark-400">
                 {pendingAssignments.length} item{pendingAssignments.length !== 1 ? "s" : ""} issued to you. Confirm once you&apos;ve received them.
               </p>
               {pendingAssignments.map((a) => (

@@ -101,7 +101,7 @@ const STATUS_BADGE: Record<string, { label: string; bg: string; text: string }> 
   PENDING_RETURN: { label: "Pending Return", bg: "bg-amber-100", text: "text-amber-700" },
   DAMAGED: { label: "Damaged", bg: "bg-red-100", text: "text-red-700" },
   LOST: { label: "Lost", bg: "bg-shark-100", text: "text-shark-700 dark:text-shark-300" },
-  UNAVAILABLE: { label: "Unavailable", bg: "bg-shark-100", text: "text-shark-500" },
+  UNAVAILABLE: { label: "Unavailable", bg: "bg-shark-100", text: "text-shark-500 dark:text-shark-400" },
 };
 
 // Status transitions available per status
@@ -667,7 +667,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         </h3>
         <p className="text-xs text-shark-400 mb-3 truncate">{asset.category} · {asset.region.name}</p>
         {activeAssignment ? (
-          <p className="text-xs text-shark-500 mb-3 truncate">Assigned: {activeAssignment.user.name || activeAssignment.user.email}</p>
+          <p className="text-xs text-shark-500 dark:text-shark-400 mb-3 truncate">Assigned: {activeAssignment.user.name || activeAssignment.user.email}</p>
         ) : (
           <p className="text-xs text-shark-300 mb-3">Unassigned</p>
         )}
@@ -763,7 +763,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                         />
                       </div>
                       {activeAssignment && (
-                        <p className="text-xs text-shark-500 mt-1">Assigned: {activeAssignment.user.name || activeAssignment.user.email}</p>
+                        <p className="text-xs text-shark-500 dark:text-shark-400 mt-1">Assigned: {activeAssignment.user.name || activeAssignment.user.email}</p>
                       )}
                     </div>
                   </div>
@@ -854,7 +854,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       </div>
                     </td>
                     )}
-                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell truncate">{asset.region.name}</td>}
+                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden lg:table-cell truncate">{asset.region.name}</td>}
                     {visibleColumns.status && <td className="px-4 py-3 text-right">
                       <StatusDropdown
                         asset={asset}
@@ -869,7 +869,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       />
                     </td>}
                     {visibleColumns.assignedTo && (
-                    <td className="px-4 py-3 text-right text-shark-500 hidden md:table-cell truncate">{activeAssignment ? activeAssignment.user.name || activeAssignment.user.email : "\u2014"}</td>
+                    <td className="px-4 py-3 text-right text-shark-500 dark:text-shark-400 hidden md:table-cell truncate">{activeAssignment ? activeAssignment.user.name || activeAssignment.user.email : "\u2014"}</td>
                     )}
                   </tr>
                 );
@@ -1008,7 +1008,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 p-4 shadow-sm">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
-              <label className="block text-xs font-medium text-shark-500 mb-1">Category</label>
+              <label className="block text-xs font-medium text-shark-500 dark:text-shark-400 mb-1">Category</label>
               <Select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="text-sm">
                 <option value="ALL">All categories</option>
                 {categories.map((c) => (
@@ -1017,11 +1017,11 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               </Select>
             </div>
             <div className="flex-1">
-              <label className="block text-xs font-medium text-shark-500 mb-1">Date From</label>
+              <label className="block text-xs font-medium text-shark-500 dark:text-shark-400 mb-1">Date From</label>
               <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="text-sm" />
             </div>
             <div className="flex-1">
-              <label className="block text-xs font-medium text-shark-500 mb-1">Date To</label>
+              <label className="block text-xs font-medium text-shark-500 dark:text-shark-400 mb-1">Date To</label>
               <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="text-sm" />
             </div>
             <div className="flex items-end">
@@ -1218,7 +1218,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                       <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{assetToDelete.name}</span>
                       <span className="text-xs text-shark-400 font-mono">{assetToDelete.assetCode}</span>
                     </div>
-                    <p className="text-xs text-shark-500 mt-1">{assetToDelete.region.name} &middot; {assetToDelete.category}</p>
+                    <p className="text-xs text-shark-500 dark:text-shark-400 mt-1">{assetToDelete.region.name} &middot; {assetToDelete.category}</p>
                   </div>
                 )}
                 <div className="flex justify-end gap-3 pt-2">
@@ -1240,7 +1240,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       {/* Manage Sections Modal */}
       <Modal open={showManageSections} onClose={() => { setShowManageSections(false); setAddingSectionError(""); setNewSectionName(""); setEditingSectionId(null); }} title="Manage Asset Sections">
         <div className="space-y-4">
-          <p className="text-sm text-shark-500">Add, rename, or remove sections for organising assets.</p>
+          <p className="text-sm text-shark-500 dark:text-shark-400">Add, rename, or remove sections for organising assets.</p>
 
           {/* Existing sections — draggable to reorder */}
           <div className="space-y-1">

@@ -31,7 +31,7 @@ function KpiCard({ label, value, suffix, icon }: { label: string; value: number;
             <Icon name={icon} size={16} className="text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-shark-500 truncate">{label}</p>
+            <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{label}</p>
             <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
               {value}{suffix && <span className="text-sm font-medium text-shark-400 ml-0.5">{suffix}</span>}
             </p>
@@ -52,7 +52,7 @@ function AlertCard({ label, value, description, icon }: { label: string; value: 
             <Icon name={icon} size={16} className="text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-shark-500 truncate">{label}</p>
+            <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{label}</p>
             <p className={`text-xl font-bold ${isWarning ? "text-[#E8532E]" : "text-shark-900 dark:text-shark-100"}`}>{value}</p>
             <p className="text-[10px] text-shark-400 leading-tight mt-0.5">{description}</p>
           </div>
@@ -79,7 +79,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
             <p className="text-xs text-shark-400">Organisation-wide summary</p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-shark-100 dark:bg-shark-700 text-shark-500 border border-shark-200 dark:border-shark-700 self-start sm:self-auto">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-shark-100 dark:bg-shark-700 text-shark-500 dark:text-shark-400 border border-shark-200 dark:border-shark-700 self-start sm:self-auto">
           <Icon name="lock" size={12} />
           Read-only access
         </span>

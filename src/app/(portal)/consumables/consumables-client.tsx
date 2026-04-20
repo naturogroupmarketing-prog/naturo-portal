@@ -470,7 +470,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
         {/* Stock bar */}
         <div className="mb-3">
-          <div className="flex justify-between text-xs text-shark-500 mb-1">
+          <div className="flex justify-between text-xs text-shark-500 dark:text-shark-400 mb-1">
             <span>{c.quantityOnHand} {c.unitType}</span>
             <span>Min: {c.minimumThreshold}</span>
           </div>
@@ -566,14 +566,14 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         </span>
                       </div>
                       {activeAssignments.length > 0 && (
-                        <p className="text-xs text-shark-500 mt-1">Assigned to {activeAssignments.length} staff</p>
+                        <p className="text-xs text-shark-500 dark:text-shark-400 mt-1">Assigned to {activeAssignments.length} staff</p>
                       )}
                       {c.avgDailyUsage && c.avgDailyUsage > 0 && (
                         <div className="flex items-center gap-1.5 mt-1">
                           <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
                             c.riskLevel === "critical" ? "bg-red-50 text-red-600" :
                             c.riskLevel === "warning" ? "bg-amber-50 text-amber-600" :
-                            "bg-shark-50 text-shark-500"
+                            "bg-shark-50 text-shark-500 dark:text-shark-400"
                           }`}>
                             {(() => {
                               const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
@@ -639,7 +639,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     </td>
                     )}
                     {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800 dark:text-shark-200">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
-                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
+                    {visibleColumns.location && <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
                     {visibleColumns.qty && <td className="px-4 py-3 text-right">
                       <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
                       {c.avgDailyUsage && c.avgDailyUsage > 0 && (
@@ -656,7 +656,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       )}
                     </td>}
                     {visibleColumns.assignedTo && (
-                    <td className="px-4 py-3 text-shark-500 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
+                    <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
                       {activeAssignments.length > 0 ? (
                         <select
                           className="text-xs bg-transparent border border-shark-200 dark:border-shark-700 rounded px-2 py-1 text-action-600 cursor-pointer hover:border-action-300 focus:outline-none focus:ring-1 focus:ring-action-300"
@@ -978,7 +978,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 {pendingRequests.map((r) => (
                   <tr key={r.id} className="border-b border-shark-50 hover:bg-shark-50 dark:hover:bg-shark-800/50 dark:hover:bg-shark-800/50">
                     <td className="px-5 py-3.5 font-medium text-shark-800 dark:text-shark-200">{r.consumable.name}</td>
-                    <td className="px-5 py-3.5 text-shark-500">{r.user.name || r.user.email}</td>
+                    <td className="px-5 py-3.5 text-shark-500 dark:text-shark-400">{r.user.name || r.user.email}</td>
                     <td className="px-5 py-3.5 text-right font-medium text-shark-700 dark:text-shark-300">{r.quantity} {r.consumable.unitType}</td>
                     <td className="px-5 py-3.5 text-shark-400 hidden md:table-cell">{formatDate(r.createdAt)}</td>
                     <td className="px-5 py-3.5 text-right">
@@ -1042,7 +1042,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {/* Manage Sections Modal */}
       <Modal open={showManageSections} onClose={() => { setShowManageSections(false); setAddingSectionError(""); setNewSectionName(""); setEditingSectionId(null); }} title="Manage Supply Sections">
         <div className="space-y-4">
-          <p className="text-sm text-shark-500">Add, rename, or remove sections for organising supplies.</p>
+          <p className="text-sm text-shark-500 dark:text-shark-400">Add, rename, or remove sections for organising supplies.</p>
 
           {/* Existing sections */}
           <div className="space-y-1 max-h-60 overflow-y-auto">
@@ -1650,8 +1650,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                             </div>
                           </td>
                           <td className="px-3 py-2 text-right font-bold text-shark-800 dark:text-shark-200">{a.quantity}</td>
-                          <td className="px-3 py-2 text-xs text-shark-500">{formatDate(a.assignedDate)}</td>
-                          <td className="px-3 py-2 text-xs text-shark-500">{a.consumable.region.name}</td>
+                          <td className="px-3 py-2 text-xs text-shark-500 dark:text-shark-400">{formatDate(a.assignedDate)}</td>
+                          <td className="px-3 py-2 text-xs text-shark-500 dark:text-shark-400">{a.consumable.region.name}</td>
                         </tr>
                       ))}
                     </tbody>

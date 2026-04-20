@@ -155,7 +155,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
             {sev.label}
           </span>
 
-          <span className="ml-auto shrink-0 text-xs text-shark-400 dark:text-shark-500 tabular-nums">
+          <span className="ml-auto shrink-0 text-xs text-shark-400 dark:text-shark-500 dark:text-shark-400 tabular-nums">
             {formatRelativeTime(anomaly.detectedAt)}
           </span>
         </div>
@@ -197,7 +197,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
         </div>
 
         {/* Recommendation */}
-        <p className="text-xs italic text-shark-400 dark:text-shark-500 mb-3 leading-relaxed">
+        <p className="text-xs italic text-shark-400 dark:text-shark-500 dark:text-shark-400 mb-3 leading-relaxed">
           {anomaly.recommendation}
         </p>
 
@@ -245,7 +245,7 @@ function EmptyState({ filter }: { filter: FilterTab }) {
         <Icon name="check-circle" size={28} className="text-emerald-500 dark:text-emerald-400" />
       </div>
       <p className="text-base font-semibold text-shark-900 dark:text-shark-100">{label}</p>
-      <p className="mt-1.5 text-sm text-shark-400 dark:text-shark-500 max-w-xs">{sub}</p>
+      <p className="mt-1.5 text-sm text-shark-400 dark:text-shark-500 dark:text-shark-400 max-w-xs">{sub}</p>
     </motion.div>
   );
 }
@@ -503,13 +503,13 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
               className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
                 isActive
                   ? "bg-action-500 text-white shadow-sm"
-                  : "text-shark-500 hover:bg-shark-100 hover:text-shark-700"
+                  : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 hover:text-shark-700"
               }`}
             >
               {tab.label}
               {count > 0 && (
                 <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
-                  isActive ? "text-white bg-[#E8532E]" : "text-shark-500 bg-shark-200"
+                  isActive ? "text-white bg-[#E8532E]" : "text-shark-500 dark:text-shark-400 bg-shark-200"
                 }`}>
                   {count}
                 </span>

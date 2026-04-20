@@ -154,9 +154,9 @@ export function LowStockClient({ items, focusRegionId }: { items: LowStockItem[]
                                   {isOut && <span className="ml-1.5 text-[10px] font-semibold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">OUT</span>}
                                   {isCritical && !isOut && <span className="ml-1.5 text-[10px] font-semibold text-[#E8532E] bg-red-50 px-1.5 py-0.5 rounded">CRITICAL</span>}
                                 </td>
-                                <td className="px-5 py-3 text-right text-sm text-shark-500">{item.minimumThreshold}</td>
-                                <td className="px-5 py-3 text-right text-sm text-shark-500 hidden md:table-cell">{item.reorderLevel}</td>
-                                <td className="px-5 py-3 text-right text-sm text-shark-500 hidden lg:table-cell">{item.supplier || "—"}</td>
+                                <td className="px-5 py-3 text-right text-sm text-shark-500 dark:text-shark-400">{item.minimumThreshold}</td>
+                                <td className="px-5 py-3 text-right text-sm text-shark-500 dark:text-shark-400 hidden md:table-cell">{item.reorderLevel}</td>
+                                <td className="px-5 py-3 text-right text-sm text-shark-500 dark:text-shark-400 hidden lg:table-cell">{item.supplier || "—"}</td>
                               </tr>
                             );
                           })}

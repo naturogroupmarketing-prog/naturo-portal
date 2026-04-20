@@ -326,7 +326,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <Icon name={s.icon} size={16} className={s.iconColor} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs text-shark-500 truncate">{s.label}</p>
+                            <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{s.label}</p>
                             <div className="flex items-center gap-1">
                               <AnimatedCounter value={s.value} className="text-xl font-bold text-shark-900 dark:text-shark-100" />
                               {s.trend && (
@@ -409,7 +409,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <div className="px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
                             <span className="w-2 h-2 rounded-full" style={{ background: "#1F3DD9" }} />
-                            <span className="text-xs text-shark-500">Assets</span>
+                            <span className="text-xs text-shark-500 dark:text-shark-400">Assets</span>
                           </div>
                           <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
                             ${portfolioValue.current.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
@@ -423,7 +423,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <div className="px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
                             <span className="w-2 h-2 rounded-full" style={{ background: "#E8532E" }} />
-                            <span className="text-xs text-shark-500">Supplies</span>
+                            <span className="text-xs text-shark-500 dark:text-shark-400">Supplies</span>
                           </div>
                           <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
                             ${portfolioValue.consumableValue.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
@@ -489,7 +489,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
                       {/* Total */}
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-shark-100 dark:border-shark-700/60">
-                        <span className="text-xs font-medium text-shark-500">Total Portfolio</span>
+                        <span className="text-xs font-medium text-shark-500 dark:text-shark-400">Total Portfolio</span>
                         <span className="text-lg font-bold text-shark-900 dark:text-shark-100">
                           ${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
                         </span>
@@ -690,7 +690,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
                           <Icon name="check" size={14} className="text-action-500" />
                         </div>
-                        <p className="text-sm text-shark-500">All stock levels are OK.</p>
+                        <p className="text-sm text-shark-500 dark:text-shark-400">All stock levels are OK.</p>
                       </div>
                     </div>
                   ) : (

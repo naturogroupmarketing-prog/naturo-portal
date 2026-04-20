@@ -97,7 +97,7 @@ export function FAQSection() {
                 </button>
                 {isOpen && (
                   <div className="px-6 pb-5 -mt-1">
-                    <p className="text-sm text-shark-500 leading-relaxed">
+                    <p className="text-sm text-shark-500 dark:text-shark-400 leading-relaxed">
                       {faq.answer}
                     </p>
                   </div>

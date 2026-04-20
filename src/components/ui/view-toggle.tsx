@@ -54,7 +54,7 @@ export function ViewToggle({ value, onChange, className }: ViewToggleProps) {
             "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all duration-150",
             value === mode
               ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-white shadow-sm"
-              : "text-shark-500 hover:text-shark-700 dark:hover:text-shark-300"
+              : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-300"
           )}
         >
           {icon}

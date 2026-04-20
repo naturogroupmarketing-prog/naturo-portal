@@ -38,7 +38,7 @@ const TYPE_CONFIG: Record<string, { icon: string; color: string; bg: string }> =
   REQUEST_REJECTED: { icon: "x", color: "text-red-500", bg: "bg-red-50" },
   MAINTENANCE_DUE: { icon: "settings", color: "text-[#E8532E]", bg: "bg-amber-50" },
   WARRANTY_EXPIRING: { icon: "shield", color: "text-[#E8532E]", bg: "bg-amber-50" },
-  GENERAL: { icon: "bell", color: "text-shark-500", bg: "bg-shark-50" },
+  GENERAL: { icon: "bell", color: "text-shark-500 dark:text-shark-400", bg: "bg-shark-50" },
 };
 
 export function NotificationsClient({ notifications }: { notifications: Notification[] }) {
@@ -97,7 +97,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
             className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
               filter === f
                 ? "bg-action-500 text-white shadow-sm"
-                : "text-shark-500 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
+                : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
             }`}
           >
             {f === "all" ? "All" : `Unread (${unreadCount})`}
@@ -145,7 +145,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className={`text-sm font-medium ${isAcked ? "text-shark-500" : "text-shark-900 dark:text-shark-100"}`}>
+                      <p className={`text-sm font-medium ${isAcked ? "text-shark-500 dark:text-shark-400" : "text-shark-900 dark:text-shark-100"}`}>
                         {n.title}
                       </p>
                       {!isAcked && (

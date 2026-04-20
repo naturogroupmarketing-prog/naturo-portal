@@ -33,7 +33,7 @@ export function BottomNav() {
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex flex-col items-center justify-center gap-0.5 py-2 px-3 min-h-[52px] flex-1 transition-colors",
-                active ? "text-action-500" : "text-shark-400 dark:text-shark-500"
+                active ? "text-action-500" : "text-shark-400 dark:text-shark-500 dark:text-shark-400"
               )}
             >
               <Icon name={item.icon} size={20} />

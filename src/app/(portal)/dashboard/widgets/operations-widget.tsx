@@ -156,7 +156,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
         <Link href="/staff" className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 hover:border-action-200 hover:bg-action-50/30 dark:hover:bg-action-500/10 transition-colors">
           <div className="flex items-center gap-2">
             <Icon name="users" size={14} className="text-shark-400" />
-            <span className="text-xs text-shark-500">Active Staff</span>
+            <span className="text-xs text-shark-500 dark:text-shark-400">Active Staff</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-semibold text-shark-700">{data.totalStaff}</span>

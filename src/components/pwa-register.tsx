@@ -66,7 +66,7 @@ export function PWARegister() {
             </button>
           </div>
         </div>
-        <button onClick={handleDismiss} className="text-shark-300 hover:text-shark-500 p-0.5">
+        <button onClick={handleDismiss} className="text-shark-300 hover:text-shark-500 dark:text-shark-400 p-0.5">
           <Icon name="x" size={14} />
         </button>
       </div>

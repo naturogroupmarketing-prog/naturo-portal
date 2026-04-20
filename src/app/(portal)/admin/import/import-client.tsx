@@ -382,7 +382,7 @@ export function ImportClient({ regions }: Props) {
                   {getFields(item.type)
                     .filter((f) => f.required)
                     .map((f) => (
-                      <span key={f.key} className="text-[10px] px-1.5 py-0.5 bg-shark-100 text-shark-500 rounded">
+                      <span key={f.key} className="text-[10px] px-1.5 py-0.5 bg-shark-100 text-shark-500 dark:text-shark-400 rounded">
                         {f.label} *
                       </span>
                     ))}

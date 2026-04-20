@@ -106,7 +106,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         pageNum === "ellipsis" ? (
           <span
             key={`ellipsis-${idx}`}
-            className="inline-flex items-center justify-center min-h-[44px] min-w-[36px] text-sm text-shark-400 dark:text-shark-500 select-none"
+            className="inline-flex items-center justify-center min-h-[44px] min-w-[36px] text-sm text-shark-400 dark:text-shark-500 dark:text-shark-400 select-none"
             aria-hidden="true"
           >
             ...

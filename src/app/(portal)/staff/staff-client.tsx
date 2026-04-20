@@ -652,7 +652,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               <>
                 <div>
                   <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Email</label>
-                  <p className="text-sm text-shark-500">{editUser.email}</p>
+                  <p className="text-sm text-shark-500 dark:text-shark-400">{editUser.email}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name</label>
@@ -706,7 +706,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                           <p className="text-xs text-shark-400">Assets ({editUser.assetAssignments.length})</p>
                           {Object.entries(grouped).map(([cat, items]) => (
                             <div key={cat}>
-                              <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                              <p className="text-[11px] font-semibold text-shark-500 dark:text-shark-400 uppercase tracking-wider mb-1">{cat}</p>
                               <div className="space-y-0.5">
                                 {items.map((a, idx) => (
                                   <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 dark:text-shark-300 py-0.5">
@@ -737,7 +737,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                           <p className="text-xs text-shark-400">Supplies ({editUser.consumableAssignments!.length})</p>
                           {Object.entries(grouped).map(([cat, items]) => (
                             <div key={cat}>
-                              <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                              <p className="text-[11px] font-semibold text-shark-500 dark:text-shark-400 uppercase tracking-wider mb-1">{cat}</p>
                               <div className="space-y-0.5">
                                 {items!.map((c, idx) => (
                                   <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 dark:text-shark-300 py-0.5">
@@ -790,7 +790,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                       <div className="px-3 pb-3 space-y-2">
                         {editUser.consumableUsageHistory.map((m) => (
                           <div key={m.month} className="flex items-start gap-3">
-                            <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
+                            <div className="w-16 shrink-0 text-xs font-medium text-shark-500 dark:text-shark-400 pt-0.5">{m.label}</div>
                             <div className="flex-1">
                               {m.totalUsed === 0 ? (
                                 <span className="text-xs text-shark-300">—</span>
@@ -874,7 +874,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                         <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Assets ({editUser.assetAssignments.length})</label>
                         {Object.entries(grouped).map(([cat, items]) => (
                           <div key={cat}>
-                            <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                            <p className="text-[11px] font-semibold text-shark-500 dark:text-shark-400 uppercase tracking-wider mb-1">{cat}</p>
                             <div className="space-y-1">
                               {items.map((a, idx) => (
                                 <div key={idx} className="flex items-center gap-2.5 py-1">
@@ -905,7 +905,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                         <label className="block text-xs font-semibold uppercase tracking-wider text-shark-400">Assigned Supplies ({editUser.consumableAssignments!.length})</label>
                         {Object.entries(grouped).map(([cat, items]) => (
                           <div key={cat}>
-                            <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                            <p className="text-[11px] font-semibold text-shark-500 dark:text-shark-400 uppercase tracking-wider mb-1">{cat}</p>
                             <div className="space-y-1">
                               {items!.map((c, idx) => (
                                 <div key={idx} className="flex items-center gap-2.5 py-1">
@@ -957,7 +957,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                         <div className="px-3 pb-3 space-y-2">
                           {editUser.consumableUsageHistory.map((m) => (
                             <div key={m.month} className="flex items-start gap-3">
-                              <div className="w-16 shrink-0 text-xs font-medium text-shark-500 pt-0.5">{m.label}</div>
+                              <div className="w-16 shrink-0 text-xs font-medium text-shark-500 dark:text-shark-400 pt-0.5">{m.label}</div>
                               <div className="flex-1">
                                 {m.totalUsed === 0 ? (
                                   <span className="text-xs text-shark-300">—</span>
@@ -987,7 +987,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               )
             ) : showResetPassword ? (
               <>
-                <p className="text-sm text-shark-500">
+                <p className="text-sm text-shark-500 dark:text-shark-400">
                   Reset password for <span className="font-medium text-shark-800 dark:text-shark-200">{editUser.name || editUser.email}</span>
                 </p>
                 <div>
@@ -1072,7 +1072,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   <div className="space-y-3 pl-5">
                     {Object.entries(grouped).map(([cat, items]) => (
                       <div key={cat}>
-                        <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                        <p className="text-[11px] font-semibold text-shark-500 dark:text-shark-400 uppercase tracking-wider mb-1">{cat}</p>
                         <div className="space-y-1">
                           {items.map((a, i) => (
                             <div key={i} className="flex items-center gap-2.5 text-sm py-1">
@@ -1111,7 +1111,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   <div className="space-y-3 pl-5">
                     {Object.entries(grouped).map(([cat, items]) => (
                       <div key={cat}>
-                        <p className="text-[11px] font-semibold text-shark-500 uppercase tracking-wider mb-1">{cat}</p>
+                        <p className="text-[11px] font-semibold text-shark-500 dark:text-shark-400 uppercase tracking-wider mb-1">{cat}</p>
                         <div className="space-y-1">
                           {items!.map((c, i) => (
                             <div key={i} className="flex items-center gap-2.5 text-sm py-1">
@@ -1184,7 +1184,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                           <span className="text-[10px] text-shark-300">{new Date(d.createdAt).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}</span>
                         </div>
                       </div>
-                      <p className="text-xs text-shark-500 mt-1">{d.description}</p>
+                      <p className="text-xs text-shark-500 dark:text-shark-400 mt-1">{d.description}</p>
                     </div>
                   ))}
                 </div>

@@ -33,16 +33,16 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
-          <a href="#features" className="text-sm text-shark-500 hover:text-shark-900 transition-colors">
+          <a href="#features" className="text-sm text-shark-500 dark:text-shark-400 hover:text-shark-900 transition-colors">
             Features
           </a>
-          <a href="#how-it-works" className="text-sm text-shark-500 hover:text-shark-900 transition-colors">
+          <a href="#how-it-works" className="text-sm text-shark-500 dark:text-shark-400 hover:text-shark-900 transition-colors">
             How It Works
           </a>
-          <a href="#use-cases" className="text-sm text-shark-500 hover:text-shark-900 transition-colors">
+          <a href="#use-cases" className="text-sm text-shark-500 dark:text-shark-400 hover:text-shark-900 transition-colors">
             Use Cases
           </a>
-          <a href="#pricing" className="text-sm text-shark-500 hover:text-shark-900 transition-colors">
+          <a href="#pricing" className="text-sm text-shark-500 dark:text-shark-400 hover:text-shark-900 transition-colors">
             Pricing
           </a>
           <div className="w-px h-5 bg-shark-200" />

@@ -41,7 +41,7 @@ export function RecentActivityWidget({ items }: { items: RecentActivityItem[] })
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">
           <div className="w-7 h-7 rounded-lg bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
-            <Icon name="clock" size={14} className="text-shark-500" />
+            <Icon name="clock" size={14} className="text-shark-500 dark:text-shark-400" />
           </div>
           <div className="flex-1">
             <h3 className="text-sm font-bold text-shark-900 dark:text-shark-100">Recent Activity</h3>

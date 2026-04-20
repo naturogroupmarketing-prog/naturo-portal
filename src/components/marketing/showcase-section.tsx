@@ -81,7 +81,7 @@ const steps = [
             </div>
             <span className="flex items-center gap-1.5">
               <span className={`w-1.5 h-1.5 rounded-full ${a.statusColor}`} />
-              <span className="text-[10px] font-medium text-shark-500">{a.status}</span>
+              <span className="text-[10px] font-medium text-shark-500 dark:text-shark-400">{a.status}</span>
             </span>
           </div>
         ))}
@@ -169,11 +169,11 @@ const steps = [
               { branch: "South", pct: 65 },
             ].map((b) => (
               <div key={b.branch} className="flex items-center gap-2">
-                <span className="text-[9px] text-shark-500 w-10">{b.branch}</span>
+                <span className="text-[9px] text-shark-500 dark:text-shark-400 w-10">{b.branch}</span>
                 <div className="flex-1 h-2 bg-shark-50 rounded-full overflow-hidden">
                   <div className="h-full bg-action-500 rounded-full" style={{ width: `${b.pct}%` }} />
                 </div>
-                <span className="text-[9px] text-shark-500 w-7 text-right">{b.pct}%</span>
+                <span className="text-[9px] text-shark-500 dark:text-shark-400 w-7 text-right">{b.pct}%</span>
               </div>
             ))}
           </div>

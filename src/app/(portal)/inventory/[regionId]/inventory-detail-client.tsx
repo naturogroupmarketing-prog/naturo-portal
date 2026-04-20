@@ -211,12 +211,12 @@ export function InventoryDetailClient({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                   activeTab === tab
                     ? "bg-action-500 text-white shadow-sm"
-                    : "text-shark-500 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
+                    : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
                 }`}
               >
                 {tab}
                 <span className={`inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[11px] font-bold rounded-full ${
-                  activeTab === tab ? "bg-white/20 text-white" : "bg-shark-200 text-shark-500"
+                  activeTab === tab ? "bg-white/20 text-white" : "bg-shark-200 text-shark-500 dark:text-shark-400"
                 }`}>
                   {tabCounts[tab]}
                 </span>
@@ -232,7 +232,7 @@ export function InventoryDetailClient({
               <Icon name="plus" size={22} className="text-white" />
             </div>
             <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">Set Up This Location</h3>
-            <p className="text-sm text-shark-500 mt-1 max-w-md mx-auto">Apply standard items from your existing locations to get started quickly.</p>
+            <p className="text-sm text-shark-500 dark:text-shark-400 mt-1 max-w-md mx-auto">Apply standard items from your existing locations to get started quickly.</p>
             <Button className="mt-4" onClick={handleApplyStandard} loading={applying} disabled={applying}>
               <Icon name="package" size={16} className="mr-2" />
               Apply Standard Items

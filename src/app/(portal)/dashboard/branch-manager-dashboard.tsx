@@ -35,7 +35,7 @@ export function BranchManagerDashboard({ managerProps, staffProps }: Props) {
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               view === "manager"
                 ? "bg-white dark:bg-shark-800 text-shark-900 dark:text-shark-100 shadow-sm"
-                : "text-shark-500 hover:text-shark-700"
+                : "text-shark-500 dark:text-shark-400 hover:text-shark-700"
             }`}
           >
             <Icon name="bar-chart" size={14} />
@@ -46,7 +46,7 @@ export function BranchManagerDashboard({ managerProps, staffProps }: Props) {
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               view === "staff"
                 ? "bg-white dark:bg-shark-800 text-shark-900 dark:text-shark-100 shadow-sm"
-                : "text-shark-500 hover:text-shark-700"
+                : "text-shark-500 dark:text-shark-400 hover:text-shark-700"
             }`}
           >
             <Icon name="user" size={14} />

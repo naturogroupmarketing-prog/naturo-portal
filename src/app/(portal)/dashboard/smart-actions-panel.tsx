@@ -91,7 +91,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
     <div className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-2xl shadow-sm overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-shark-100 dark:border-shark-800 bg-shark-50/40 dark:bg-shark-800/40">
-        <Icon name="bell" size={14} className="text-shark-500 flex-shrink-0" />
+        <Icon name="bell" size={14} className="text-shark-500 dark:text-shark-400 flex-shrink-0" />
         <span className="text-sm font-semibold text-shark-800 dark:text-shark-200 flex-1">
           {items.length === 0 ? "All caught up" : "Action Required"}
         </span>
@@ -102,7 +102,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
         )}
         <button
           onClick={handleDismiss}
-          className="text-shark-300 hover:text-shark-500 transition-colors ml-1 flex-shrink-0"
+          className="text-shark-300 hover:text-shark-500 dark:text-shark-400 transition-colors ml-1 flex-shrink-0"
           title="Dismiss for 8 hours"
         >
           <Icon name="x" size={13} />

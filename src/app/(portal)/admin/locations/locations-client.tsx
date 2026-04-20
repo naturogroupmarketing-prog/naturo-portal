@@ -313,15 +313,15 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                                 <div className="flex items-center gap-4">
                                   {/* Stats pills */}
                                   <div className="flex items-center gap-3 text-xs">
-                                    <span className="flex items-center gap-1 text-shark-500">
+                                    <span className="flex items-center gap-1 text-shark-500 dark:text-shark-400">
                                       <Icon name="package" size={12} className="text-action-400" />
                                       {region._count.assets}
                                     </span>
-                                    <span className="flex items-center gap-1 text-shark-500">
+                                    <span className="flex items-center gap-1 text-shark-500 dark:text-shark-400">
                                       <Icon name="droplet" size={12} className="text-blue-400" />
                                       {region._count.consumables}
                                     </span>
-                                    <span className="flex items-center gap-1 text-shark-500">
+                                    <span className="flex items-center gap-1 text-shark-500 dark:text-shark-400">
                                       <Icon name="users" size={12} className="text-action-400" />
                                       {region._count.users}
                                     </span>

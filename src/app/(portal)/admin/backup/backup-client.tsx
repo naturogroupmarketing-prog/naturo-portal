@@ -104,7 +104,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
                   <div>
                     <h4 className="text-sm font-semibold text-shark-900">{item.label}</h4>
                     <p className="text-xs text-shark-400 mt-0.5">{item.description}</p>
-                    <p className="text-xs text-shark-500 font-medium mt-1">{item.count} records</p>
+                    <p className="text-xs text-shark-500 dark:text-shark-400 font-medium mt-1">{item.count} records</p>
                   </div>
                 </div>
               </div>
@@ -131,7 +131,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
             <Icon name="help-circle" size={18} className="text-shark-400 shrink-0 mt-0.5" />
             <div>
               <h4 className="text-sm font-semibold text-shark-700">How to restore from backup</h4>
-              <p className="text-sm text-shark-500 mt-1">
+              <p className="text-sm text-shark-500 dark:text-shark-400 mt-1">
                 Go to <Link href="/admin/import" className="text-action-500 hover:text-action-600 font-medium">Import Data</Link> and
                 upload any of the downloaded CSV files. The column headers will be matched automatically. Assets and supplies will be
                 created in their original regions.

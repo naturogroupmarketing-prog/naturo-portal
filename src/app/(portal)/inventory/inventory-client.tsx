@@ -150,7 +150,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                     </div>
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">{state.name}</span>
-                      <span className="text-[10px] font-semibold text-shark-400 dark:text-shark-500 bg-shark-200/80 dark:bg-shark-700 px-1.5 py-0.5 rounded-full">
+                      <span className="text-[10px] font-semibold text-shark-400 dark:text-shark-500 dark:text-shark-400 bg-shark-200/80 dark:bg-shark-700 px-1.5 py-0.5 rounded-full">
                         {state.regions.length}
                       </span>
                     </div>
@@ -415,7 +415,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex-1 justify-center ${
                   manageTab === tab.key
                     ? "bg-action-500 text-white shadow-sm"
-                    : "text-shark-500 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
+                    : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 hover:text-shark-700 dark:text-shark-300"
                 }`}
               >
                 <Icon name={tab.icon} size={14} />

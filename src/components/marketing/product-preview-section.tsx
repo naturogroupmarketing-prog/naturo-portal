@@ -52,7 +52,7 @@ export function ProductPreviewSection() {
                   <p className="text-xs text-shark-400 mt-0.5">8 locations · 255 assets · 524 supplies</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="h-7 px-3 rounded-lg bg-shark-50 text-shark-500 text-[11px] font-medium flex items-center gap-1.5 border border-shark-100">
+                  <div className="h-7 px-3 rounded-lg bg-shark-50 text-shark-500 dark:text-shark-400 text-[11px] font-medium flex items-center gap-1.5 border border-shark-100">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83"/></svg>
                     Manage Locations
                   </div>
@@ -72,7 +72,7 @@ export function ProductPreviewSection() {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   </div>
                   <h4 className="text-base font-bold text-shark-900">New South Wales</h4>
-                  <span className="text-[10px] font-medium text-shark-500 bg-shark-100 px-2 py-0.5 rounded-full">4 locations</span>
+                  <span className="text-[10px] font-medium text-shark-500 dark:text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">4 locations</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="ml-auto"><path d="M6 9l6 6 6-6"/></svg>
                 </div>
 
@@ -120,7 +120,7 @@ export function ProductPreviewSection() {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b5bdb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   </div>
                   <h4 className="text-base font-bold text-shark-900">Victoria</h4>
-                  <span className="text-[10px] font-medium text-shark-500 bg-shark-100 px-2 py-0.5 rounded-full">2 locations</span>
+                  <span className="text-[10px] font-medium text-shark-500 dark:text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">2 locations</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="ml-auto -rotate-90"><path d="M6 9l6 6 6-6"/></svg>
                 </div>
               </div>
@@ -132,7 +132,7 @@ export function ProductPreviewSection() {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   </div>
                   <h4 className="text-base font-bold text-shark-900">Queensland</h4>
-                  <span className="text-[10px] font-medium text-shark-500 bg-shark-100 px-2 py-0.5 rounded-full">2 locations</span>
+                  <span className="text-[10px] font-medium text-shark-500 dark:text-shark-400 bg-shark-100 px-2 py-0.5 rounded-full">2 locations</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="ml-auto -rotate-90"><path d="M6 9l6 6 6-6"/></svg>
                 </div>
               </div>

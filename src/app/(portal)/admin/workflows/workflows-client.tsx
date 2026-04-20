@@ -166,11 +166,11 @@ function RuleCard({
                 {actionLabel}
               </span>
             </div>
-            <p className="text-xs text-shark-500 leading-relaxed">{description}</p>
+            <p className="text-xs text-shark-500 dark:text-shark-400 leading-relaxed">{description}</p>
             <ConditionChips conditions={rule.conditions} />
             <div className="mt-2 flex items-center justify-between">
               <p className="text-[11px] text-shark-400">
-                Last run: <span className="text-shark-500 font-medium">Never</span>
+                Last run: <span className="text-shark-500 dark:text-shark-400 font-medium">Never</span>
               </p>
               {isCustom && (
                 <div className="flex items-center gap-1">
@@ -368,7 +368,7 @@ function WorkflowModal({
               <div className="space-y-2">
                 {conditionFields.map((field) => (
                   <div key={field.key}>
-                    <label className="block text-xs text-shark-500 mb-1">{field.label}</label>
+                    <label className="block text-xs text-shark-500 dark:text-shark-400 mb-1">{field.label}</label>
                     <input
                       type={field.type}
                       value={conditionValues[field.key] ?? ""}

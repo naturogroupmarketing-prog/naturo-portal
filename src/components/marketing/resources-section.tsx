@@ -247,7 +247,7 @@ export function ResourcesSection() {
           <h2 className="text-3xl sm:text-4xl font-bold font-exo tracking-tight text-shark-900">
             Everything you need to get started
           </h2>
-          <p className="mt-4 text-lg text-shark-500 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-shark-500 dark:text-shark-400 max-w-2xl mx-auto">
             From setup guides to video walkthroughs, we&apos;ve got the resources to help you hit the ground running.
           </p>
         </div>

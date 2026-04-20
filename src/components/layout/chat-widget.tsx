@@ -420,7 +420,7 @@ export function ChatWidget() {
                       <Icon name="search" size={20} className="text-action-500" />
                     </div>
                     <p className="text-sm font-medium text-shark-700 dark:text-shark-200">How can I help?</p>
-                    <p className="text-xs text-shark-400 dark:text-shark-500 mt-1">Ask about assets, consumables, or inventory</p>
+                    <p className="text-xs text-shark-400 dark:text-shark-500 dark:text-shark-400 mt-1">Ask about assets, consumables, or inventory</p>
                     <div className="mt-4 space-y-2">
                       {SUGGESTIONS.map((q) => (
                         <button
@@ -450,7 +450,7 @@ export function ChatWidget() {
                   placeholder={isListening ? "Listening..." : "Ask about assets, stock..."}
                   disabled={isLoading}
                   aria-label="Type your message"
-                  className={`flex-1 min-w-0 rounded-xl border bg-white dark:bg-shark-800 px-3 py-2 text-sm text-shark-900 dark:text-shark-100 placeholder:text-shark-400 dark:placeholder:text-shark-500 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50 ${isListening ? "border-red-400 ring-2 ring-red-200" : "border-shark-200 dark:border-shark-700"}`}
+                  className={`flex-1 min-w-0 rounded-xl border bg-white dark:bg-shark-800 px-3 py-2 text-sm text-shark-900 dark:text-shark-100 placeholder:text-shark-400 dark:placeholder:text-shark-500 dark:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50 ${isListening ? "border-red-400 ring-2 ring-red-200" : "border-shark-200 dark:border-shark-700"}`}
                 />
                 {!isLoading && (
                   <button

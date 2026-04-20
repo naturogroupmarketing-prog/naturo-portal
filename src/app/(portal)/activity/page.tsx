@@ -24,7 +24,7 @@ const ACTION_CONFIG: Record<string, { icon: "package" | "droplet" | "users" | "c
   ASSET_RETURNED: { icon: "arrow-left", label: "Returned", color: "text-action-500", bg: "bg-action-50" },
   ASSET_DAMAGED: { icon: "alert-triangle", label: "Damaged", color: "text-red-500", bg: "bg-red-50" },
   ASSET_LOST: { icon: "alert-triangle", label: "Lost", color: "text-red-500", bg: "bg-red-50" },
-  ASSET_UPDATED: { icon: "package", label: "Updated", color: "text-shark-500", bg: "bg-shark-50" },
+  ASSET_UPDATED: { icon: "package", label: "Updated", color: "text-shark-500 dark:text-shark-400", bg: "bg-shark-50" },
   ASSET_DELETED: { icon: "package", label: "Deleted", color: "text-red-500", bg: "bg-red-50" },
   CONSUMABLE_CREATED: { icon: "plus", label: "Created", color: "text-action-500", bg: "bg-action-50" },
   CONSUMABLE_STOCK_ADDED: { icon: "droplet", label: "Restocked", color: "text-action-500", bg: "bg-action-50" },
@@ -189,7 +189,7 @@ export default async function ActivityPage({
                   Previous
                 </Button>
               )}
-              <span className="text-sm text-shark-500 px-2">
+              <span className="text-sm text-shark-500 dark:text-shark-400 px-2">
                 {currentPage} / {totalPages}
               </span>
               {hasNext ? (

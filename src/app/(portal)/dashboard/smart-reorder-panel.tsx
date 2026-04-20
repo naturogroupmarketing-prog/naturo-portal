@@ -81,7 +81,7 @@ function RecommendationCard({ item, index }: RecommendationCardProps) {
               {item.name}
             </span>
             {/* Category badge */}
-            <span className="text-[10px] font-medium bg-shark-100 dark:bg-shark-800 text-shark-500 px-1.5 py-0.5 rounded-full shrink-0">
+            <span className="text-[10px] font-medium bg-shark-100 dark:bg-shark-800 text-shark-500 dark:text-shark-400 px-1.5 py-0.5 rounded-full shrink-0">
               {item.category}
             </span>
             {/* Risk badge */}

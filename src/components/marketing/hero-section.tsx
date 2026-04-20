@@ -153,7 +153,7 @@ function DashboardShowcase() {
                   { icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2", label: "Reports" },
                   { icon: "M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35", label: "Inspections" },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-2.5 px-2.5 py-1.5 text-shark-500 hover:bg-shark-50 rounded-lg">
+                  <div key={item.label} className="flex items-center gap-2.5 px-2.5 py-1.5 text-shark-500 dark:text-shark-400 hover:bg-shark-50 rounded-lg">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon}/></svg>
                     <span className="text-[11px] flex-1">{item.label}</span>
                     {item.badge && (
@@ -172,7 +172,7 @@ function DashboardShowcase() {
                   { icon: "M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12", label: "Import Data" },
                   { icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", label: "Activity Log" },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-2.5 px-2.5 py-1.5 text-shark-500 rounded-lg">
+                  <div key={item.label} className="flex items-center gap-2.5 px-2.5 py-1.5 text-shark-500 dark:text-shark-400 rounded-lg">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon}/></svg>
                     <span className="text-[11px]">{item.label}</span>
                   </div>
@@ -227,7 +227,7 @@ function DashboardShowcase() {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={s.iconPath}/></svg>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[9px] text-shark-500">{s.label}</p>
+                        <p className="text-[9px] text-shark-500 dark:text-shark-400">{s.label}</p>
                         <span className="text-base font-bold text-shark-900">{s.value}</span>
                       </div>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -257,7 +257,7 @@ function DashboardShowcase() {
                         { label: "Active Staff", value: "14", color: "text-shark-800" },
                       ].map(m => (
                         <div key={m.label} className="flex items-center justify-between">
-                          <span className="text-[8px] text-shark-500">{m.label}</span>
+                          <span className="text-[8px] text-shark-500 dark:text-shark-400">{m.label}</span>
                           <span className={`text-[9px] font-semibold ${m.color}`}>{m.value}</span>
                         </div>
                       ))}
@@ -275,12 +275,12 @@ function DashboardShowcase() {
                     <div className="flex gap-3 mb-2">
                       <div className="flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-action-500" />
-                        <span className="text-[8px] text-shark-500">Assets</span>
+                        <span className="text-[8px] text-shark-500 dark:text-shark-400">Assets</span>
                         <span className="text-[9px] font-bold text-shark-800">$9,449</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                        <span className="text-[8px] text-shark-500">Supplies</span>
+                        <span className="text-[8px] text-shark-500 dark:text-shark-400">Supplies</span>
                         <span className="text-[9px] font-bold text-shark-800">$6,593</span>
                       </div>
                     </div>

@@ -34,7 +34,7 @@ export function FormField({
       )}
 
       {!error && hint && (
-        <p className="text-sm text-shark-400 dark:text-shark-500">{hint}</p>
+        <p className="text-sm text-shark-400 dark:text-shark-500 dark:text-shark-400">{hint}</p>
       )}
     </div>
   );

@@ -80,7 +80,7 @@ export default async function MyAssetsPage() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-3 space-y-1 text-sm text-shark-500">
+                <div className="mt-3 space-y-1 text-sm text-shark-500 dark:text-shark-400">
                   <p>Category: {a.asset.category}</p>
                   <p>Region: {a.asset.region.name}</p>
                   <p>Assigned: {formatDate(a.checkoutDate)}</p>

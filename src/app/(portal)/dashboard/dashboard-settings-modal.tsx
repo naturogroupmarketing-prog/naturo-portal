@@ -187,7 +187,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
 
         {/* Stat Cards */}
         <div>
-          <p className="text-xs font-medium text-shark-500 mb-2">Stat Cards</p>
+          <p className="text-xs font-medium text-shark-500 dark:text-shark-400 mb-2">Stat Cards</p>
           <div className="space-y-1">
             {(["stat-total-assets", "stat-checked-out", "stat-overdue", "stat-damaged", "stat-pending-requests", "stat-pending-pos"] as WidgetId[]).map((id) => {
               const isVisible = !preferences.hiddenWidgets.includes(id);
@@ -203,7 +203,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
 
         {/* Sections */}
         <div>
-          <p className="text-xs font-medium text-shark-500 mb-2">Sections</p>
+          <p className="text-xs font-medium text-shark-500 dark:text-shark-400 mb-2">Sections</p>
           <div className="space-y-1">
             {(["operations-overview", "portfolio-valuation", "maintenance-due", "asset-charts", "consumable-charts", "low-stock-alerts", "predicted-shortages", "ai-forecast", "recent-activity", "regional-breakdown", "location-map", "quick-links"] as WidgetId[]).map((id) => {
               const isVisible = !preferences.hiddenWidgets.includes(id);
@@ -232,7 +232,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
           <div key={s.id} className="flex items-center justify-between py-1.5">
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center">
-                <Icon name={s.icon} size={14} className="text-shark-500" />
+                <Icon name={s.icon} size={14} className="text-shark-500 dark:text-shark-400" />
               </div>
               <div>
                 <span className="text-sm font-medium text-shark-700 dark:text-shark-300">{s.label}</span>
