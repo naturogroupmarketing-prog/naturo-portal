@@ -21,7 +21,7 @@ const SECTION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-shark-600", bg: "bg-shark-50 dark:bg-shark-800" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
   { color: "text-pink-600", bg: "bg-pink-50" },
   { color: "text-orange-600", bg: "bg-orange-50" },
   { color: "text-lime-600", bg: "bg-lime-50" },
@@ -1010,7 +1010,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               </>
             ) : (
               <>
-                <p className="text-sm text-shark-600">
+                <p className="text-sm text-shark-600 dark:text-shark-400">
                   Are you sure you want to permanently delete <span className="font-bold text-shark-900 dark:text-shark-100">{editUser.name || editUser.email}</span>?
                 </p>
                 <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
@@ -1224,7 +1224,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
         <div className="mt-6">
           <button
             onClick={() => setShowDeleted(!showDeleted)}
-            className="flex items-center gap-2 text-sm text-shark-400 hover:text-shark-600 transition-colors"
+            className="flex items-center gap-2 text-sm text-shark-400 hover:text-shark-600 dark:text-shark-400 transition-colors"
           >
             <Icon name="clock" size={14} />
             <span>{deletedUsers.length} deleted user{deletedUsers.length !== 1 ? "s" : ""}</span>
@@ -1236,7 +1236,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 <Card key={u.id} className="border-dashed border-shark-200 bg-shark-50/50">
                   <div className="px-4 py-3 flex items-center justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-shark-600">{u.name || u.email}</p>
+                      <p className="text-sm font-medium text-shark-600 dark:text-shark-400">{u.name || u.email}</p>
                       <p className="text-xs text-shark-400">
                         {u.email} · {u.role.replace(/_/g, " ")} · {u.region?.name || "Head Office"}
                       </p>

@@ -125,7 +125,7 @@ export default async function ChangelogPage() {
                   <p className="text-xs text-shark-400 mt-0.5">v{release.version} &middot; {release.date}</p>
                   <ul className="mt-3 space-y-1.5">
                     {release.changes.map((change, i) => (
-                      <li key={i} className="text-sm text-shark-600 flex items-start gap-2">
+                      <li key={i} className="text-sm text-shark-600 dark:text-shark-400 flex items-start gap-2">
                         <Icon name="check" size={14} className="text-action-500 shrink-0 mt-0.5" />
                         {change}
                       </li>

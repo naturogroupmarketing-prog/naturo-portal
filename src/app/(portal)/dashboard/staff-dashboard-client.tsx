@@ -842,13 +842,13 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
             {/* Condition */}
             <div>
-              <label className="text-xs font-medium text-shark-600 block mb-1">Return Condition</label>
+              <label className="text-xs font-medium text-shark-600 dark:text-shark-400 block mb-1">Return Condition</label>
               <ConditionSelect value={returnCondition} onChange={setReturnCondition} />
             </div>
 
             {/* Notes */}
             <div>
-              <label className="text-xs font-medium text-shark-600 block mb-1">Notes (optional)</label>
+              <label className="text-xs font-medium text-shark-600 dark:text-shark-400 block mb-1">Notes (optional)</label>
               <Input value={returnNotes} onChange={(e) => setReturnNotes(e.target.value)} placeholder="Any additional details about the return..." />
             </div>
 
@@ -910,12 +910,12 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
             {/* Condition */}
             <div>
-              <label className="text-xs font-medium text-shark-600 block mb-1">Return Condition</label>
+              <label className="text-xs font-medium text-shark-600 dark:text-shark-400 block mb-1">Return Condition</label>
               <ConditionSelect value={returnCondition} onChange={setReturnCondition} />
             </div>
 
             <div>
-              <label className="text-xs font-medium text-shark-600 block mb-1">Notes (optional)</label>
+              <label className="text-xs font-medium text-shark-600 dark:text-shark-400 block mb-1">Notes (optional)</label>
               <Input value={returnNotes} onChange={(e) => setReturnNotes(e.target.value)} placeholder="Any notes about the return..." />
             </div>
 
@@ -1262,7 +1262,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
                           {/* Take photo button */}
                           <label className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                            hasPhoto ? "bg-shark-100 dark:bg-shark-700 text-shark-600 hover:bg-shark-200" : "bg-blue-500 text-white hover:bg-blue-600"
+                            hasPhoto ? "bg-shark-100 dark:bg-shark-700 text-shark-600 dark:text-shark-400 hover:bg-shark-200" : "bg-blue-500 text-white hover:bg-blue-600"
                           } ${isUploading ? "opacity-50 pointer-events-none" : ""}`}>
                             {isUploading ? (
                               <span className="animate-pulse">Uploading...</span>

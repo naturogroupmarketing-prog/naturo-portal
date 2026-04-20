@@ -224,7 +224,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
         {showComplete && (
           <form action={async (fd) => { await completeMaintenanceTask(fd); setShowComplete(null); }} className="space-y-4">
             <input type="hidden" name="scheduleId" value={showComplete.id} />
-            <p className="text-sm text-shark-600">
+            <p className="text-sm text-shark-600 dark:text-shark-400">
               Completing: <span className="font-semibold">{showComplete.title}</span> for{" "}
               <span className="font-semibold">{showComplete.asset.name}</span>
             </p>

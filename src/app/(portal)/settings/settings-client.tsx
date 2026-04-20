@@ -369,7 +369,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
           {mfaStep === "qr" && (
             <>
               <div className="text-center">
-                <p className="text-sm text-shark-600 mb-4">Scan this QR code with your authenticator app:</p>
+                <p className="text-sm text-shark-600 dark:text-shark-400 mb-4">Scan this QR code with your authenticator app:</p>
                 {/* QR Code rendered as a link to otpauth URI */}
                 <div className="bg-white dark:bg-shark-900 p-4 rounded-xl inline-block border border-shark-200 dark:border-shark-700 mx-auto">
                   <img
@@ -392,7 +392,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
           )}
           {mfaStep === "verify" && (
             <>
-              <p className="text-sm text-shark-600">Enter the 6-digit code from your authenticator app to verify:</p>
+              <p className="text-sm text-shark-600 dark:text-shark-400">Enter the 6-digit code from your authenticator app to verify:</p>
               <Input
                 value={mfaCode}
                 onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
@@ -415,7 +415,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
       {/* Disable MFA Modal */}
       <Modal open={showDisableMfa} onClose={() => { setShowDisableMfa(false); setDisablePassword(""); }} title="Disable Two-Factor Authentication">
         <div className="space-y-4">
-          <p className="text-sm text-shark-600">Enter your password to disable MFA. This will make your account less secure.</p>
+          <p className="text-sm text-shark-600 dark:text-shark-400">Enter your password to disable MFA. This will make your account less secure.</p>
           <Input type="password" value={disablePassword} onChange={(e) => setDisablePassword(e.target.value)} placeholder="Your current password" />
           <div className="flex justify-end gap-3">
             <Button variant="secondary" onClick={() => { setShowDisableMfa(false); setDisablePassword(""); }}>Cancel</Button>

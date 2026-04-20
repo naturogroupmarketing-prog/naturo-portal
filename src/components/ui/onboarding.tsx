@@ -461,7 +461,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               {step > 0 ? (
                 <button
                   onClick={handleBack}
-                  className="text-sm text-shark-400 hover:text-shark-600 transition-colors flex items-center gap-1"
+                  className="text-sm text-shark-400 hover:text-shark-600 dark:text-shark-400 transition-colors flex items-center gap-1"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
                   Back
@@ -469,7 +469,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               ) : (
                 <button
                   onClick={handleSkip}
-                  className="text-sm text-shark-400 hover:text-shark-600 transition-colors"
+                  className="text-sm text-shark-400 hover:text-shark-600 dark:text-shark-400 transition-colors"
                 >
                   Skip
                 </button>

@@ -32,7 +32,7 @@ const SECTION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50", border: "border-amber-200" },
   { color: "text-cyan-600", bg: "bg-cyan-50", border: "border-cyan-200" },
   { color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
-  { color: "text-shark-600", bg: "bg-shark-50", border: "border-shark-200" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50", border: "border-shark-200" },
   { color: "text-pink-600", bg: "bg-pink-50", border: "border-pink-200" },
   { color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200" },
   { color: "text-lime-600", bg: "bg-lime-50", border: "border-lime-200" },
@@ -86,7 +86,7 @@ const REGION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-shark-600", bg: "bg-shark-50" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50" },
   { color: "text-pink-600", bg: "bg-pink-50" },
   { color: "text-orange-600", bg: "bg-orange-50" },
   { color: "text-lime-600", bg: "bg-lime-50" },
@@ -158,7 +158,7 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
   const isDeletable = canDelete && !activeAssignment;
   const hasActions = canAssign || canEdit || isDeletable;
 
-  const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600" };
+  const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600 dark:text-shark-400" };
   const actions = STATUS_ACTIONS[asset.status] || [];
 
   return (
@@ -642,7 +642,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
   const renderAssetCard = (asset: Asset) => {
     const activeAssignment = asset.assignments[0];
-    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600" };
+    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600 dark:text-shark-400" };
     return (
       <div
         key={asset.id}
@@ -679,7 +679,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             {asset.status === "AVAILABLE" ? "Assign" : "View"}
           </button>
           <button
-            className="text-xs py-1.5 px-3 rounded-lg bg-shark-50 text-shark-600 hover:bg-shark-100 font-medium transition-colors"
+            className="text-xs py-1.5 px-3 rounded-lg bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 font-medium transition-colors"
             onClick={() => setShowQR(asset)}
           >
             QR
@@ -691,7 +691,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
   const renderAssetCompact = (asset: Asset) => {
     const activeAssignment = asset.assignments[0];
-    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600" };
+    const badge = STATUS_BADGE[asset.status] || { label: asset.status, bg: "bg-shark-100", text: "text-shark-600 dark:text-shark-400" };
     return (
       <div
         key={asset.id}
@@ -1074,7 +1074,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                           <Icon
                             name="chevron-down"
                             size={14}
-                            className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
+                            className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
                           />
                         </button>
                         {!catCollapsed && (
@@ -1141,7 +1141,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   <Icon
                     name="chevron-down"
                     size={14}
-                    className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
+                    className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
                   />
                 </button>
               </div>
@@ -1278,7 +1278,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                         </Button>
                         <button
                           onClick={() => { setEditingSectionId(null); setEditingSectionName(""); }}
-                          className="text-shark-400 hover:text-shark-600 p-1"
+                          className="text-shark-400 hover:text-shark-600 dark:text-shark-400 p-1"
                         >
                           <Icon name="x" size={14} />
                         </button>

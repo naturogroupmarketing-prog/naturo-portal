@@ -63,7 +63,7 @@ export function Navbar() {
         {/* Mobile menu button */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 -mr-2 text-shark-600"
+          className="md:hidden p-2 -mr-2 text-shark-600 dark:text-shark-400"
           aria-label="Toggle menu"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
@@ -80,10 +80,10 @@ export function Navbar() {
       {mobileOpen && (
         <div className="md:hidden bg-white border-t border-shark-100 shadow-lg animate-fade-in">
           <div className="px-6 py-4 space-y-1">
-            <a href="#features" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 hover:text-shark-900">Features</a>
-            <a href="#how-it-works" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 hover:text-shark-900">How It Works</a>
-            <a href="#use-cases" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 hover:text-shark-900">Use Cases</a>
-            <a href="#pricing" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 hover:text-shark-900">Pricing</a>
+            <a href="#features" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 dark:text-shark-400 hover:text-shark-900">Features</a>
+            <a href="#how-it-works" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 dark:text-shark-400 hover:text-shark-900">How It Works</a>
+            <a href="#use-cases" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 dark:text-shark-400 hover:text-shark-900">Use Cases</a>
+            <a href="#pricing" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 dark:text-shark-400 hover:text-shark-900">Pricing</a>
             <div className="pt-3 border-t border-shark-100 mt-3 space-y-2">
               <Link href="/login" className="block py-2.5 text-sm font-medium text-shark-700">Sign In</Link>
               <Link href="/login" className="block text-center text-sm font-medium bg-action-500 text-white px-5 py-2.5 rounded-full">Start Free Trial</Link>

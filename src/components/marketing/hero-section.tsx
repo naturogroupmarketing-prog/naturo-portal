@@ -72,7 +72,7 @@ export function HeroSection() {
             </Link>
             <a
               href="#features"
-              className="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium text-shark-600 bg-white border border-shark-200 px-8 py-3.5 rounded-full hover:bg-shark-50 hover:border-shark-300 transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium text-shark-600 dark:text-shark-400 bg-white border border-shark-200 px-8 py-3.5 rounded-full hover:bg-shark-50 hover:border-shark-300 transition-all"
             >
               See How It Works
             </a>

@@ -61,7 +61,7 @@ export function PWARegister() {
             <button onClick={handleInstall} className="text-xs font-semibold text-white bg-action-500 hover:bg-action-600 px-3 py-1.5 rounded-lg transition-colors">
               Install
             </button>
-            <button onClick={handleDismiss} className="text-xs text-shark-400 hover:text-shark-600 px-2 py-1.5 transition-colors">
+            <button onClick={handleDismiss} className="text-xs text-shark-400 hover:text-shark-600 dark:text-shark-400 px-2 py-1.5 transition-colors">
               Not now
             </button>
           </div>

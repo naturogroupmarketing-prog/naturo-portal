@@ -17,7 +17,7 @@ const SECTION_COLORS = [
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-shark-600", bg: "bg-shark-50" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50" },
   { color: "text-gray-600", bg: "bg-gray-100" },
   { color: "text-orange-600", bg: "bg-orange-50" },
   { color: "text-pink-600", bg: "bg-pink-50" },
@@ -258,7 +258,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                   <Icon
                     name="chevron-down"
                     size={16}
-                    className={`text-shark-400 group-hover:text-shark-600 transition-transform ${collapsed ? "-rotate-90" : ""}`}
+                    className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${collapsed ? "-rotate-90" : ""}`}
                   />
                 </button>
 
@@ -410,7 +410,7 @@ function ConsumableRequestCard({
         {/* Request form */}
         {showRequest && (
           <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-lg p-3">
-            <p className="text-xs font-medium text-shark-600">How many do you need?</p>
+            <p className="text-xs font-medium text-shark-600 dark:text-shark-400">How many do you need?</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <button

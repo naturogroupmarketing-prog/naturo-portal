@@ -21,7 +21,7 @@ const RECOMMENDATION_STYLES: Record<DamageClassification["repairRecommendation"]
   repair: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
   replace: "bg-red-50 text-red-700 ring-1 ring-red-200",
   monitor: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
-  decommission: "bg-shark-100 text-shark-600 ring-1 ring-shark-200",
+  decommission: "bg-shark-100 text-shark-600 dark:text-shark-400 ring-1 ring-shark-200",
 };
 
 export function DamageClassifier({
@@ -114,12 +114,12 @@ export function DamageClassifier({
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.35-4.35" />
               </svg>
-              <span className="text-xs font-semibold text-shark-600 uppercase tracking-wide">AI Damage Analysis</span>
+              <span className="text-xs font-semibold text-shark-600 dark:text-shark-400 uppercase tracking-wide">AI Damage Analysis</span>
             </div>
             <button
               type="button"
               onClick={() => { setResult(null); setError(null); }}
-              className="text-xs text-shark-400 hover:text-shark-600 transition-colors"
+              className="text-xs text-shark-400 hover:text-shark-600 dark:text-shark-400 transition-colors"
             >
               Re-analyse
             </button>
@@ -167,7 +167,7 @@ export function DamageClassifier({
             {result.details.length > 0 && (
               <ul className="space-y-1">
                 {result.details.map((detail, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-shark-600">
+                  <li key={i} className="flex items-start gap-2 text-sm text-shark-600 dark:text-shark-400">
                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-shark-300 shrink-0" />
                     {detail}
                   </li>

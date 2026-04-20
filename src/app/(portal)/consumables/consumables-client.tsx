@@ -23,7 +23,7 @@ const SECTION_COLORS = [
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-shark-600", bg: "bg-shark-50" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50" },
   { color: "text-gray-600", bg: "bg-gray-100" },
   { color: "text-orange-600", bg: "bg-orange-50" },
   { color: "text-pink-600", bg: "bg-pink-50" },
@@ -86,7 +86,7 @@ const REGION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50" },
   { color: "text-cyan-600", bg: "bg-cyan-50" },
   { color: "text-red-600", bg: "bg-red-50" },
-  { color: "text-shark-600", bg: "bg-shark-50" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50" },
   { color: "text-pink-600", bg: "bg-pink-50" },
   { color: "text-orange-600", bg: "bg-orange-50" },
   { color: "text-lime-600", bg: "bg-lime-50" },
@@ -494,7 +494,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             Add Stock
           </button>
           <button
-            className="flex-1 text-xs py-1.5 rounded-lg bg-shark-50 text-shark-600 hover:bg-shark-100 font-medium transition-colors"
+            className="flex-1 text-xs py-1.5 rounded-lg bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 font-medium transition-colors"
             onClick={() => setShowAssign(c)}
           >
             Assign
@@ -827,7 +827,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                               <Icon
                                 name="chevron-down"
                                 size={16}
-                                className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
+                                className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
                               />
                             </button>
                             {!catCollapsed && (
@@ -892,7 +892,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       <Icon
                         name="chevron-down"
                         size={16}
-                        className={`text-shark-400 group-hover:text-shark-600 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
+                        className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${catCollapsed ? "-rotate-90" : ""}`}
                       />
                     </button>
                   </div>
@@ -1072,7 +1072,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       </Button>
                       <button
                         onClick={() => { setEditingSectionId(null); setEditingSectionName(""); }}
-                        className="text-shark-400 hover:text-shark-600 p-1"
+                        className="text-shark-400 hover:text-shark-600 dark:text-shark-400 p-1"
                       >
                         <Icon name="x" size={14} />
                       </button>
@@ -1287,7 +1287,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               </div>
             )}
 
-            <p className="text-sm text-shark-600">
+            <p className="text-sm text-shark-600 dark:text-shark-400">
               Current stock: <strong>{showAddStock.quantityOnHand} {showAddStock.unitType}</strong>
             </p>
 

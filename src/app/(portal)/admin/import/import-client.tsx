@@ -466,7 +466,7 @@ export function ImportClient({ regions }: Props) {
               onClick={() => fileInputRef.current?.click()}
             >
               <Icon name="file-spreadsheet" size={40} className="mx-auto text-shark-300 mb-3" />
-              <p className="text-sm text-shark-600 font-medium">
+              <p className="text-sm text-shark-600 dark:text-shark-400 font-medium">
                 Drop your CSV or Excel file here
               </p>
               <p className="text-xs text-shark-400 mt-1">
@@ -515,8 +515,8 @@ export function ImportClient({ regions }: Props) {
             <CardTitle>Map Columns</CardTitle>
             <p className="text-sm text-shark-400 mt-1">
               Match your file columns to the required fields. We auto-matched what we could.
-              <span className="font-medium text-shark-600"> {rawRows.length} rows</span> found in{" "}
-              <span className="font-medium text-shark-600">{fileName}</span>
+              <span className="font-medium text-shark-600 dark:text-shark-400"> {rawRows.length} rows</span> found in{" "}
+              <span className="font-medium text-shark-600 dark:text-shark-400">{fileName}</span>
             </p>
           </CardHeader>
           <CardContent className="space-y-3">

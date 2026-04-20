@@ -130,7 +130,7 @@ export function SocialProofSection() {
                 />
               </svg>
 
-              <p className="text-sm text-shark-600 leading-relaxed mb-5">
+              <p className="text-sm text-shark-600 dark:text-shark-400 leading-relaxed mb-5">
                 &ldquo;{t.quote}&rdquo;
               </p>
 

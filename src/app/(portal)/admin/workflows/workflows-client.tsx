@@ -107,7 +107,7 @@ function ConditionChips({ conditions }: { conditions: Record<string, unknown> })
   return (
     <div className="flex flex-wrap gap-1.5 mt-2">
       {entries.map(([key, value]) => (
-        <span key={key} className="inline-flex items-center gap-1 text-[11px] bg-shark-100 dark:bg-shark-700 text-shark-600 px-2 py-0.5 rounded-full">
+        <span key={key} className="inline-flex items-center gap-1 text-[11px] bg-shark-100 dark:bg-shark-700 text-shark-600 dark:text-shark-400 px-2 py-0.5 rounded-full">
           <span className="text-shark-400">{key}:</span>
           <span className="font-medium">{String(value)}</span>
           {(key === "daysOverdue" || key === "daysOpen" || key === "daysPending") && (
@@ -161,7 +161,7 @@ function RuleCard({
                   {triggerCfg.label}
                 </span>
               )}
-              <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-shark-100 dark:bg-shark-700 text-shark-600">
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-shark-100 dark:bg-shark-700 text-shark-600 dark:text-shark-400">
                 <Icon name="arrow-right" size={10} className="text-shark-400" />
                 {actionLabel}
               </span>
@@ -445,7 +445,7 @@ function DeleteConfirm({ ruleName, onConfirm, onCancel }: { ruleName: string; on
             <p className="text-xs text-shark-400 mt-0.5">This action cannot be undone.</p>
           </div>
         </div>
-        <p className="text-sm text-shark-600">
+        <p className="text-sm text-shark-600 dark:text-shark-400">
           Are you sure you want to delete <span className="font-semibold text-shark-900 dark:text-shark-100">{ruleName}</span>?
         </p>
         <div className="flex gap-3">

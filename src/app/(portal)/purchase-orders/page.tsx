@@ -220,7 +220,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
     return (
       <div className="p-8">
         <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
-        <p className="text-shark-600">Unable to load purchase orders. Please refresh the page or contact support if the problem persists.</p>
+        <p className="text-shark-600 dark:text-shark-400">Unable to load purchase orders. Please refresh the page or contact support if the problem persists.</p>
       </div>
     );
   }

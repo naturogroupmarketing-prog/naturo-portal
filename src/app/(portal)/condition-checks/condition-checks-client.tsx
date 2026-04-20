@@ -325,7 +325,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                     <div className="mt-2.5 ml-12 space-y-1.5">
                       {cat.inspectionPhotos.map((label, idx) => (
                         <div key={idx} className="flex items-center gap-2">
-                          <span className="text-xs text-shark-600 bg-shark-50 dark:bg-shark-800 px-2.5 py-1 rounded-lg flex-1">{label}</span>
+                          <span className="text-xs text-shark-600 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 px-2.5 py-1 rounded-lg flex-1">{label}</span>
                           <button
                             onClick={async () => {
                               const updated = cat.inspectionPhotos.filter((_, i) => i !== idx);
@@ -671,7 +671,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                     <Icon
                       name="chevron-down"
                       size={16}
-                      className={`text-shark-400 group-hover:text-shark-600 transition-transform ${isExpanded ? "" : "-rotate-90"}`}
+                      className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${isExpanded ? "" : "-rotate-90"}`}
                     />
                   </div>
                 </button>
@@ -697,7 +697,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                                 alt={itemName}
                                 className="w-full h-full object-cover"
                               />
-                              <span className={`absolute top-2 right-2 text-xs font-medium px-2 py-0.5 rounded-full ${CONDITION_COLORS[check.condition] || "bg-shark-100 text-shark-600"}`}>
+                              <span className={`absolute top-2 right-2 text-xs font-medium px-2 py-0.5 rounded-full ${CONDITION_COLORS[check.condition] || "bg-shark-100 text-shark-600 dark:text-shark-400"}`}>
                                 {check.condition}
                               </span>
                             </div>
@@ -748,12 +748,12 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   <p className="text-xs font-mono text-shark-400">{photoModal.asset.assetCode}</p>
                 )}
               </div>
-              <span className={`text-xs font-medium px-3 py-1 rounded-full ${CONDITION_COLORS[photoModal.condition] || "bg-shark-100 text-shark-600"}`}>
+              <span className={`text-xs font-medium px-3 py-1 rounded-full ${CONDITION_COLORS[photoModal.condition] || "bg-shark-100 text-shark-600 dark:text-shark-400"}`}>
                 {photoModal.condition}
               </span>
             </div>
             {photoModal.notes && (
-              <p className="text-sm text-shark-600 bg-shark-50 dark:bg-shark-800 px-3 py-2 rounded-lg">{photoModal.notes}</p>
+              <p className="text-sm text-shark-600 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 px-3 py-2 rounded-lg">{photoModal.notes}</p>
             )}
             <div className="flex items-center gap-2 text-xs text-shark-400">
               <Icon name="user" size={12} />

@@ -88,7 +88,7 @@ export default async function MyAssetsPage() {
                 {a.asset.notes && (
                   <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-lg p-2.5">
                     <p className="text-xs font-medium text-shark-400 mb-0.5">Notes</p>
-                    <p className="text-sm text-shark-600 whitespace-pre-wrap">{a.asset.notes}</p>
+                    <p className="text-sm text-shark-600 dark:text-shark-400 whitespace-pre-wrap">{a.asset.notes}</p>
                   </div>
                 )}
                 {a.asset.isHighValue && (

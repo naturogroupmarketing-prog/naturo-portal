@@ -183,7 +183,7 @@ export function PricingSection() {
                   {plan.features.map((feature) => (
                     <li
                       key={feature}
-                      className="flex items-start gap-2 text-sm text-shark-600"
+                      className="flex items-start gap-2 text-sm text-shark-600 dark:text-shark-400"
                     >
                       <svg
                         width="16"

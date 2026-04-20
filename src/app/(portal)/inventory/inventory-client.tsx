@@ -27,7 +27,7 @@ const STATE_COLORS = [
   { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-amber-50", color: "text-[#E8532E]" },
   { bg: "bg-cyan-50", color: "text-cyan-600" },
-  { bg: "bg-shark-50 dark:bg-shark-800", color: "text-shark-600" },
+  { bg: "bg-shark-50 dark:bg-shark-800", color: "text-shark-600 dark:text-shark-400" },
   { bg: "bg-rose-50", color: "text-rose-600" },
   { bg: "bg-teal-50", color: "text-teal-600" },
   { bg: "bg-orange-50", color: "text-orange-600" },
@@ -334,7 +334,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
         <div className="mt-6">
           <button
             onClick={() => setShowArchived(!showArchived)}
-            className="flex items-center gap-2 text-sm text-shark-400 hover:text-shark-600 transition-colors"
+            className="flex items-center gap-2 text-sm text-shark-400 hover:text-shark-600 dark:text-shark-400 transition-colors"
           >
             <Icon name="clock" size={14} />
             <span>{archivedRegions.length} archived location{archivedRegions.length !== 1 ? "s" : ""}</span>
@@ -346,7 +346,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                 <Card key={region.id} className="border-dashed border-shark-200 bg-shark-50/50">
                   <div className="px-4 py-3 flex items-center justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-shark-600">{region.name}</p>
+                      <p className="text-sm font-medium text-shark-600 dark:text-shark-400">{region.name}</p>
                       <p className="text-xs text-shark-400">
                         {region.state.name} · Archived {new Date(region.archivedAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
                       </p>

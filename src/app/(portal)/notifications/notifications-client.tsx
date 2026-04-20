@@ -152,7 +152,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
                         <span className="w-2 h-2 bg-action-500 rounded-full shrink-0" />
                       )}
                     </div>
-                    <p className={`text-sm mt-0.5 ${isAcked ? "text-shark-400" : "text-shark-600"}`}>
+                    <p className={`text-sm mt-0.5 ${isAcked ? "text-shark-400" : "text-shark-600 dark:text-shark-400"}`}>
                       {n.message}
                     </p>
                     <div className="flex items-center gap-3 mt-1">

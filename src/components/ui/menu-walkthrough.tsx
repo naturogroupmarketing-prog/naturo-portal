@@ -132,7 +132,7 @@ export function MenuWalkthrough({ role }: { role: string }) {
               <div className="flex items-center justify-between">
                 <span className="text-[10px] text-shark-400">{step + 1} / {steps.length}</span>
                 <div className="flex items-center gap-2">
-                  <button onClick={finish} className="text-xs text-shark-400 hover:text-shark-600 dark:hover:text-shark-300 transition-colors">
+                  <button onClick={finish} className="text-xs text-shark-400 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-300 transition-colors">
                     Skip
                   </button>
                   <Button size="sm" onClick={handleNext}>

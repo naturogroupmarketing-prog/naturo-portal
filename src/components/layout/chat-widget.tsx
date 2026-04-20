@@ -456,7 +456,7 @@ export function ChatWidget() {
                   <button
                     type="button"
                     onClick={toggleVoiceInput}
-                    className={`shrink-0 w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${isListening ? "bg-red-500 text-white animate-pulse" : "text-shark-400 hover:text-shark-600 dark:hover:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"}`}
+                    className={`shrink-0 w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${isListening ? "bg-red-500 text-white animate-pulse" : "text-shark-400 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"}`}
                     title={isListening ? "Stop listening" : "Voice input"}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

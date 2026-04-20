@@ -19,7 +19,7 @@ const SECTION_COLORS = [
   { bg: "bg-amber-50", color: "text-[#E8532E]" },
   { bg: "bg-cyan-50", color: "text-cyan-600" },
   { bg: "bg-red-50", color: "text-red-600" },
-  { bg: "bg-shark-50", color: "text-shark-600" },
+  { bg: "bg-shark-50", color: "text-shark-600 dark:text-shark-400" },
   { bg: "bg-pink-50", color: "text-pink-600" },
   { bg: "bg-orange-50", color: "text-orange-600" },
   { bg: "bg-teal-50", color: "text-teal-600" },
@@ -318,7 +318,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
               className={`flex items-center gap-2 pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.key
                   ? "border-action-500 text-action-600"
-                  : "border-transparent text-shark-400 hover:text-shark-600"
+                  : "border-transparent text-shark-400 hover:text-shark-600 dark:text-shark-400"
               }`}
             >
               <Icon name={tab.icon} size={15} />
@@ -395,7 +395,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     <Icon
                       name="chevron-down"
                       size={16}
-                      className={`text-shark-400 group-hover:text-shark-600 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
+                      className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
                     />
                   </button>
                   {!isCollapsed && (
@@ -478,7 +478,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     <Icon
                       name="chevron-down"
                       size={16}
-                      className={`text-shark-400 group-hover:text-shark-600 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
+                      className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
                     />
                   </button>
                   {!isCollapsed && (
@@ -596,7 +596,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                   <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Assets ({totalAssetCount} items)</h3>
                   <div className="flex items-center gap-2">
                     <button onClick={() => { const q: Record<string, number> = {}; templates.assets.forEach((a) => { q[`${a.category}|${a.name}`] = 1; }); setAssetQtys(q); }} className="text-xs text-action-500 hover:text-action-600">All to 1</button>
-                    <button onClick={() => { const q: Record<string, number> = {}; templates.assets.forEach((a) => { q[`${a.category}|${a.name}`] = 0; }); setAssetQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600">Clear</button>
+                    <button onClick={() => { const q: Record<string, number> = {}; templates.assets.forEach((a) => { q[`${a.category}|${a.name}`] = 0; }); setAssetQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600 dark:text-shark-400">Clear</button>
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -629,7 +629,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                   <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Supplies ({totalConsumableCount}/{templates.consumables.length})</h3>
                   <div className="flex items-center gap-2">
                     <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 10; }); setConsumableQtys(q); }} className="text-xs text-action-500 hover:text-action-600">All to 10</button>
-                    <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 0; }); setConsumableQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600">Clear</button>
+                    <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 0; }); setConsumableQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600 dark:text-shark-400">Clear</button>
                   </div>
                 </div>
                 <p className="text-xs text-shark-400 mb-2">Set initial stock quantity for each supply</p>

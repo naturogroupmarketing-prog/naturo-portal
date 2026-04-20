@@ -136,7 +136,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
                 <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
                   <div className="flex items-center gap-2.5">
                     <Icon name={item.icon} size={14} className={item.danger ? "text-[#E8532E]" : "text-action-500"} />
-                    <span className="text-sm text-shark-600">{item.label}</span>
+                    <span className="text-sm text-shark-600 dark:text-shark-400">{item.label}</span>
                   </div>
                   <span className={`text-sm font-bold ${item.danger ? "text-[#E8532E]" : "text-shark-700"}`}>{item.value}</span>
                 </Link>

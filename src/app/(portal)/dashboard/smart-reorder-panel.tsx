@@ -161,7 +161,7 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
                 "text-[11px] font-bold px-2 py-0.5 rounded-full",
                 criticalCount > 0
                   ? "bg-red-50 text-red-600"
-                  : "bg-shark-100 text-shark-600"
+                  : "bg-shark-100 text-shark-600 dark:text-shark-400"
               )}
             >
               {recommendations.length} item{recommendations.length !== 1 ? "s" : ""}

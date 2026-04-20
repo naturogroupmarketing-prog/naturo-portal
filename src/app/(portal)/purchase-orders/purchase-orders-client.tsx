@@ -57,16 +57,16 @@ const PO_STATUS_ACTIONS_ADMIN: Record<string, { value: string; label: string; ic
   ],
   APPROVED: [
     { value: "ORDERED", label: "Mark Ordered", icon: "package", color: "text-action-600 hover:bg-action-50" },
-    { value: "PENDING", label: "Undo Approval", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800" },
+    { value: "PENDING", label: "Undo Approval", icon: "arrow-left", color: "text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800" },
   ],
   ORDERED: [
     { value: "RECEIVED", label: "Mark Received", icon: "check", color: "text-action-600 hover:bg-action-50" },
   ],
   RECEIVED: [
-    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800" },
+    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800" },
   ],
   REJECTED: [
-    { value: "PENDING", label: "Re-open", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800" },
+    { value: "PENDING", label: "Re-open", icon: "arrow-left", color: "text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800" },
   ],
 };
 
@@ -76,7 +76,7 @@ const PO_STATUS_ACTIONS_MANAGER: Record<string, { value: string; label: string; 
     { value: "RECEIVED", label: "Mark Received", icon: "check", color: "text-action-600 hover:bg-action-50" },
   ],
   RECEIVED: [
-    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800" },
+    { value: "UNDO_RECEIVED", label: "Undo Received", icon: "arrow-left", color: "text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800" },
   ],
 };
 

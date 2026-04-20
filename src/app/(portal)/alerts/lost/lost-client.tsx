@@ -86,7 +86,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                       <span className="font-semibold text-shark-900 dark:text-shark-100">{group.name}</span>
                       <span className="ml-2 text-xs text-shark-400">{group.stateName}</span>
                     </div>
-                    <span className="ml-2 text-xs font-semibold text-shark-600 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
+                    <span className="ml-2 text-xs font-semibold text-shark-600 dark:text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                       {group.items.length} item{group.items.length !== 1 ? "s" : ""}
                       {groupCost > 0 && ` · $${groupCost.toLocaleString()}`}
                     </span>
@@ -107,7 +107,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                             </div>
                             <p className="text-xs text-shark-400 mt-0.5">{item.category}</p>
                             {item.report && (
-                              <p className="text-sm text-shark-600 mt-2">{item.report.description}</p>
+                              <p className="text-sm text-shark-600 dark:text-shark-400 mt-2">{item.report.description}</p>
                             )}
                             <div className="flex items-center gap-3 mt-2 text-xs text-shark-400 flex-wrap">
                               {item.lastAssignedTo && <span>Last assigned to: {item.lastAssignedTo}</span>}

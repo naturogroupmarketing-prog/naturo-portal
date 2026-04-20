@@ -127,7 +127,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
                               <p className="text-sm font-semibold text-shark-800 dark:text-shark-200">{report.asset.name}</p>
                               <span className="text-xs font-mono text-shark-400">{report.asset.assetCode}</span>
                             </div>
-                            <p className="text-sm text-shark-600 mt-1">{report.description}</p>
+                            <p className="text-sm text-shark-600 dark:text-shark-400 mt-1">{report.description}</p>
                             <div className="flex items-center gap-3 mt-2 text-xs text-shark-400">
                               <span>Reported by {report.reportedBy.name || report.reportedBy.email}</span>
                               <span>&middot;</span>

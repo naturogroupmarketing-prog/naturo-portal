@@ -188,7 +188,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
       <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-t border-shark-100 dark:border-transparent">
         <button
           onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
-          className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-shark-400 dark:text-shark-300 hover:text-shark-600 dark:hover:text-shark-100 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-xs"
+          className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-shark-400 dark:text-shark-300 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-100 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-xs"
         >
           <Icon name="search" size={13} />
           <span className="flex-1 text-left">Quick search</span>
@@ -215,7 +215,7 @@ function CollapsibleSection({ heading, children, className }: { heading?: string
         onClick={() => setCollapsed((c) => !c)}
         className="w-full flex items-center justify-between px-3 mb-1.5 group cursor-pointer"
       >
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-shark-400 dark:text-shark-300 group-hover:text-shark-600 dark:group-hover:text-shark-100 transition-colors">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-shark-400 dark:text-shark-300 group-hover:text-shark-600 dark:text-shark-400 dark:group-hover:text-shark-100 transition-colors">
           {heading}
         </span>
         <svg

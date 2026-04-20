@@ -156,7 +156,7 @@ export function BillingClient({ org }: Props) {
                   </div>
                   <ul className="mt-4 space-y-2">
                     {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm text-shark-600">
+                      <li key={feature} className="flex items-center gap-2 text-sm text-shark-600 dark:text-shark-400">
                         <Icon name="check" size={14} className="text-action-500 shrink-0" />
                         {feature}
                       </li>

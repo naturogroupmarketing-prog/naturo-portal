@@ -203,7 +203,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
 
         {/* Footer: timestamp + link */}
         <div className="flex items-center justify-between gap-3 pt-2 border-t border-shark-50 dark:border-shark-800">
-          <span className="text-[11px] text-shark-400 dark:text-shark-600 tabular-nums">
+          <span className="text-[11px] text-shark-400 dark:text-shark-600 dark:text-shark-400 tabular-nums">
             Detected {formatTimestamp(anomaly.detectedAt)}
           </span>
 

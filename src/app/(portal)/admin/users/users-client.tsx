@@ -17,7 +17,7 @@ const SECTION_COLORS = [
   { color: "text-[#E8532E]", bg: "bg-amber-50", border: "border-amber-200" },
   { color: "text-cyan-600", bg: "bg-cyan-50", border: "border-cyan-200" },
   { color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
-  { color: "text-shark-600", bg: "bg-shark-50", border: "border-shark-200" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50", border: "border-shark-200" },
   { color: "text-pink-600", bg: "bg-pink-50", border: "border-pink-200" },
   { color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200" },
   { color: "text-lime-600", bg: "bg-lime-50", border: "border-lime-200" },
@@ -251,7 +251,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                 <Icon
                   name="chevron-down"
                   size={16}
-                  className={`text-shark-400 group-hover:text-shark-600 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
+                  className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
                 />
               </button>
               {!isCollapsed && (
@@ -283,7 +283,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             <Icon
               name="chevron-down"
               size={16}
-              className={`text-shark-400 group-hover:text-shark-600 transition-transform ${isHeadOfficeCollapsed ? "-rotate-90" : ""}`}
+              className={`text-shark-400 group-hover:text-shark-600 dark:text-shark-400 transition-transform ${isHeadOfficeCollapsed ? "-rotate-90" : ""}`}
             />
           </button>
           {!isHeadOfficeCollapsed && (
