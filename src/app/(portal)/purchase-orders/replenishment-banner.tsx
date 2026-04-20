@@ -176,7 +176,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={() => handleCopyList(groupVisible, groupKey)}
-                      className="inline-flex items-center gap-1 text-[10px] font-medium text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 bg-shark-100 dark:bg-shark-800 hover:bg-shark-200 dark:bg-shark-700 px-1.5 py-1.5 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-1 text-[10px] font-medium text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 bg-shark-100 dark:bg-shark-800 hover:bg-shark-200 dark:hover:bg-shark-700 dark:bg-shark-700 px-1.5 py-1.5 rounded-lg transition-colors"
                       title="Copy shopping list to clipboard"
                     >
                       <Icon name={copiedKey === groupKey ? "check" : "copy"} size={10} />
