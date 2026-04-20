@@ -1260,7 +1260,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                             } else {
                               addToast(result.error || "Failed", "error");
                             }
-                          } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                          } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
                           setRestoringId(null);
                         }}
                       >
@@ -1281,7 +1281,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                             } else {
                               addToast(result.error || "Failed", "error");
                             }
-                          } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                          } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
                           setRestoringId(null);
                         }}
                       >

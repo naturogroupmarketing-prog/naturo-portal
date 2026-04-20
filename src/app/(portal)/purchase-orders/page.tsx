@@ -216,13 +216,11 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       </div>
     );
   } catch (error) {
-    // Show the actual error so we can debug
+    console.error("[PurchaseOrdersPage] Failed to load:", error);
     return (
       <div className="p-8">
-        <h1 className="text-2xl font-bold text-red-600 mb-4">Purchase Orders Error</h1>
-        <pre className="bg-red-50 p-4 rounded-lg text-sm text-red-800 overflow-auto">
-          {error instanceof Error ? `${error.message}\n\nStack: ${error.stack}` : JSON.stringify(error)}
-        </pre>
+        <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
+        <p className="text-shark-600">Unable to load purchase orders. Please refresh the page or contact support if the problem persists.</p>
       </div>
     );
   }

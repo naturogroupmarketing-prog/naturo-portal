@@ -171,7 +171,7 @@ export function BillingClient({ org }: Props) {
                         await changePlan(plan.key);
                         addToast(`Plan changed to ${plan.name}`, "success");
                         router.refresh();
-                      } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                      } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
                       setChanging(null);
                     }}
                     className={`w-full mt-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${

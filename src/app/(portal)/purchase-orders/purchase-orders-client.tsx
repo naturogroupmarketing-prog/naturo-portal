@@ -351,7 +351,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       addToast(`${result.updated} order${result.updated > 1 ? "s" : ""} updated`, "success");
       setSelected(new Set());
       router.refresh();
-    } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+    } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
     setBulkLoading(false);
   };
 

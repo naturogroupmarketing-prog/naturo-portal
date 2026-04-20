@@ -48,7 +48,7 @@ export function CompanyClient({ org }: Props) {
                   addToast(result.error || "Failed to update", "error");
                 }
               } catch (e) {
-                addToast(e instanceof Error ? e.message : "Failed", "error");
+                addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error");
               }
               setSaving(false);
             }}

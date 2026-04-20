@@ -947,12 +947,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {r.consumable.quantityOnHand < r.quantity ? (
                       <span className="text-xs text-red-500 font-medium">Out of stock ({r.consumable.quantityOnHand} available)</span>
                     ) : (
-                      <form action={async (fd) => { setIssuingId(r.id); try { await issueConsumable(fd); addToast("Assigned", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); } finally { setIssuingId(null); } }}>
+                      <form action={async (fd) => { setIssuingId(r.id); try { await issueConsumable(fd); addToast("Consumable assigned successfully", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); } finally { setIssuingId(null); } }}>
                         <input type="hidden" name="requestId" value={r.id} />
                         <Button size="sm" type="submit" disabled={issuingId === r.id} loading={issuingId === r.id}>Assign</Button>
                       </form>
                     )}
-                    <form action={async (fd) => { setRejectingId(r.id); try { await approveRequest(fd); addToast("Rejected", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); } finally { setRejectingId(null); } }}>
+                    <form action={async (fd) => { setRejectingId(r.id); try { await approveRequest(fd); addToast("Rejected", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); } finally { setRejectingId(null); } }}>
                       <input type="hidden" name="requestId" value={r.id} />
                       <input type="hidden" name="action" value="reject" />
                       <Button size="sm" variant="danger" type="submit" disabled={rejectingId === r.id} loading={rejectingId === r.id}>Reject</Button>
@@ -986,12 +986,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         {r.consumable.quantityOnHand < r.quantity ? (
                           <span className="text-xs text-red-500 font-medium">Out of stock ({r.consumable.quantityOnHand} available)</span>
                         ) : (
-                          <form action={async (fd) => { setIssuingId(r.id); try { await issueConsumable(fd); addToast("Assigned", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); } finally { setIssuingId(null); } }}>
+                          <form action={async (fd) => { setIssuingId(r.id); try { await issueConsumable(fd); addToast("Consumable assigned successfully", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); } finally { setIssuingId(null); } }}>
                             <input type="hidden" name="requestId" value={r.id} />
                             <Button size="sm" variant="primary" type="submit" disabled={issuingId === r.id} loading={issuingId === r.id}>Assign</Button>
                           </form>
                         )}
-                        <form action={async (fd) => { setRejectingId(r.id); try { await approveRequest(fd); addToast("Rejected", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); } finally { setRejectingId(null); } }}>
+                        <form action={async (fd) => { setRejectingId(r.id); try { await approveRequest(fd); addToast("Rejected", "success"); } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); } finally { setRejectingId(null); } }}>
                           <input type="hidden" name="requestId" value={r.id} />
                           <input type="hidden" name="action" value="reject" />
                           <Button size="sm" variant="danger" type="submit" disabled={rejectingId === r.id} loading={rejectingId === r.id}>Reject</Button>

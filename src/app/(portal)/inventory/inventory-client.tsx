@@ -261,7 +261,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               addToast("Location details updated", "success");
               setEditLocationRegion(null);
               router.refresh();
-            } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+            } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
           }} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
@@ -366,7 +366,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                             await restoreRegion(region.id);
                             addToast(`"${region.name}" restored`, "success");
                             router.refresh();
-                          } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                          } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
                           setRestoring(null);
                         }}
                       >
@@ -384,7 +384,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                               await deleteRegion(fd);
                               addToast("Location permanently deleted", "success");
                               router.refresh();
-                            } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                            } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
                           }}
                         >
                           Delete
@@ -539,7 +539,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                   onClick={async () => {
                                     if (!confirm(`Delete "${region.name}"? This cannot be undone.`)) return;
                                     const fd = new FormData(); fd.set("id", region.id);
-                                    try { await deleteRegion(fd); addToast("Location deleted", "success"); router.refresh(); } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                                    try { await deleteRegion(fd); addToast("Location deleted", "success"); router.refresh(); } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
                                   }}
                                   className="p-1 text-shark-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
                                   title="Delete location"
@@ -568,7 +568,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                 addToast("State added successfully", "success");
                 setManageTab("locations");
                 router.refresh();
-              } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+              } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
             }} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">State Name *</label>
@@ -589,7 +589,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                 addToast("Location added", "success");
                 setManageTab("locations");
                 router.refresh();
-              } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+              } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
             }} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">State *</label>

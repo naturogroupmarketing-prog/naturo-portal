@@ -422,7 +422,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                       addToast(`Schedule set for ${res.updated} staff`, "success");
                       setBulkMode(false); setBulkSelected(new Set()); setBulkDueDate("");
                       router.refresh();
-                    } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                    } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
                     setBulkSaving(false);
                   }}
                   className="text-xs"
@@ -567,7 +567,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                     addToast(`Schedule set for ${editingScheduleUser.name || editingScheduleUser.email}`, "success");
                     setEditingScheduleUser(null);
                     router.refresh();
-                  } catch (e) { addToast(e instanceof Error ? e.message : "Failed", "error"); }
+                  } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
                   setEditSaving(false);
                 }}
                 disabled={editSaving || !editDueDate}

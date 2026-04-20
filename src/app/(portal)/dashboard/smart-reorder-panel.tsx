@@ -138,7 +138,6 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
   const hiddenCount = recommendations.length - VISIBLE_COUNT;
 
   const handleDraftAll = () => {
-    console.log("Creating purchase orders for", recommendations.length, "items:", recommendations);
     setDraftToastVisible(true);
     setTimeout(() => setDraftToastVisible(false), 3000);
   };

@@ -97,7 +97,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
       setDisablePassword("");
       router.refresh();
     } catch (err) {
-      addToast(err instanceof Error ? err.message : "Failed", "error");
+      addToast(err instanceof Error ? err.message : "Something went wrong — please try again", "error");
     }
     setDisablingMfa(false);
   };
@@ -111,7 +111,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
       addToast(`Email notifications ${newVal ? "enabled" : "disabled"}`, "success");
     } catch {
       setEmailEnabled(!newVal);
-      addToast("Failed to update", "error");
+      addToast("Failed to save — please try again", "error");
     }
     setTogglingEmail(false);
   };
@@ -124,7 +124,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
       addToast("Profile saved successfully", "success");
       router.refresh();
     } catch (err) {
-      addToast(err instanceof Error ? err.message : "Failed to update", "error");
+      addToast(err instanceof Error ? err.message : "Failed to save — please try again", "error");
     }
     setSavingProfile(false);
   };
