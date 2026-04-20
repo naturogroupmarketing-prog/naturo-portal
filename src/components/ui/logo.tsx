@@ -9,7 +9,7 @@ export function Logo({ size = 32, className = "", iconOnly = false }: LogoProps)
   return (
     <span className={`inline-flex items-center select-none ${className}`}>
       <img
-        src="/Logo_trackio.svg"
+        src="/Logotrackio.svg"
         alt="trackio"
         draggable={false}
         style={{
