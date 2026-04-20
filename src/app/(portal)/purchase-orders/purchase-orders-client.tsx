@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
-import { Icon } from "@/components/ui/icon";
+import { Icon, type IconName } from "@/components/ui/icon";
 import { EmptyState } from "@/components/ui/empty-state";
 import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, createPurchaseOrder, receivePurchaseOrder, undoReceivedPurchaseOrder, batchUpdatePOStatus } from "@/app/actions/purchase-orders";
 import { useToast } from "@/components/ui/toast";
@@ -50,7 +50,7 @@ const STATUS_PRIORITY: Record<string, number> = {
 };
 
 // Super Admin: all status transitions
-const PO_STATUS_ACTIONS_ADMIN: Record<string, { value: string; label: string; icon: string; color: string }[]> = {
+const PO_STATUS_ACTIONS_ADMIN: Record<string, { value: string; label: string; icon: IconName; color: string }[]> = {
   PENDING: [
     { value: "APPROVED", label: "Approve", icon: "check", color: "text-action-600 hover:bg-action-50" },
     { value: "REJECTED", label: "Reject", icon: "x", color: "text-red-600 hover:bg-red-50" },
@@ -71,7 +71,7 @@ const PO_STATUS_ACTIONS_ADMIN: Record<string, { value: string; label: string; ic
 };
 
 // Branch Manager: only ORDERED ↔ RECEIVED
-const PO_STATUS_ACTIONS_MANAGER: Record<string, { value: string; label: string; icon: string; color: string }[]> = {
+const PO_STATUS_ACTIONS_MANAGER: Record<string, { value: string; label: string; icon: IconName; color: string }[]> = {
   ORDERED: [
     { value: "RECEIVED", label: "Mark Received", icon: "check", color: "text-action-600 hover:bg-action-50" },
   ],
@@ -126,7 +126,7 @@ function POStatusDropdown({ po, canManage, isSuperAdmin, onAction, loading }: {
             disabled={loading}
             className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 dark:hover:bg-shark-700 ${action.color} disabled:opacity-50`}
           >
-            <Icon name={action.icon as any} size={12} /> {action.label}
+            <Icon name={action.icon} size={12} /> {action.label}
           </button>
         ))}
       </PortalDropdown>
