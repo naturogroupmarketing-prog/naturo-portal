@@ -297,7 +297,7 @@ a, button, [role="button"], input, select, textarea, label {
   50% { opacity: 0; }
 }
 
-/* Glean-style CTA button */
+/* Glean-style CTA button (legacy — kept for reference) */
 .glean-cta {
   background: hsl(272 75% 52%);
   overflow: hidden;
@@ -323,6 +323,40 @@ a, button, [role="button"], input, select, textarea, label {
   60% { opacity: 1; }
   80% { opacity: 0; }
   100% { opacity: 0; }
+}
+
+/* ── Circulating gradient border (CTA button) ──
+   A conic-gradient spins behind the pill wrapper; only the 1.5px
+   padding gap is visible, giving the impression of a light looping
+   around the button border — identical to Glean's "Get a demo" effect. */
+.cta-border-wrap {
+  position: relative;
+  border-radius: 9999px;
+  padding: 1.5px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cta-border-wrap::before {
+  content: "";
+  position: absolute;
+  /* Extend well beyond the pill so the corners of the square gradient
+     never peek through as the conic rotates */
+  inset: -150%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    #7efff5,   /* cyan      */
+    #d8fd49,   /* lime      */
+    #e16bff,   /* violet    */
+    #5456ef,   /* brand-blue*/
+    #7efff5    /* back to cyan, closes the loop */
+  );
+  animation: cta-rotate 3s linear infinite;
+  z-index: -1;
+}
+
+@keyframes cta-rotate {
+  to { transform: rotate(360deg); }
 }
 
 /* ── Dark mode automatic text contrast ──

@@ -52,12 +52,14 @@ export function Navbar() {
           >
             Sign In
           </Link>
-          <Link
-            href="/login"
-            className="text-sm font-medium text-white bg-action-500 px-5 py-2 rounded-full hover:bg-action-600 hover:-translate-y-px active:scale-[0.97] transition-all"
-          >
-            Start Free Trial
-          </Link>
+          <span className="cta-border-wrap inline-block hover:-translate-y-px active:scale-[0.97] transition-all">
+            <Link
+              href="/login"
+              className="block text-sm font-medium text-white bg-action-500 px-5 py-2 rounded-full hover:bg-action-600 transition-colors"
+            >
+              Start Free Trial
+            </Link>
+          </span>
         </div>
 
         {/* Mobile menu button */}
@@ -86,7 +88,9 @@ export function Navbar() {
             <a href="#pricing" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm text-shark-600 dark:text-shark-400 hover:text-shark-900">Pricing</a>
             <div className="pt-3 border-t border-shark-100 dark:border-shark-800 mt-3 space-y-2">
               <Link href="/login" className="block py-2.5 text-sm font-medium text-shark-700">Sign In</Link>
-              <Link href="/login" className="block text-center text-sm font-medium bg-action-500 text-white px-5 py-2.5 rounded-full">Start Free Trial</Link>
+              <div className="cta-border-wrap block">
+                <Link href="/login" className="block text-center text-sm font-medium bg-action-500 text-white px-5 py-2.5 rounded-full">Start Free Trial</Link>
+              </div>
             </div>
           </div>
         </div>
