@@ -193,7 +193,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
               className="space-y-4 max-w-md"
             >
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Asset *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Asset *</label>
                 <CustomSelect
                   name="assetId"
                   value={selectedAssetId}
@@ -211,7 +211,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Report Type *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Report Type *</label>
                 <CustomSelect
                   name="type"
                   value={reportType}
@@ -224,7 +224,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Description *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description *</label>
                 <textarea
                   ref={descRef}
                   name="description"
@@ -236,7 +236,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Photo (optional)</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo (optional)</label>
                 <input
                   ref={fileRef}
                   type="file"

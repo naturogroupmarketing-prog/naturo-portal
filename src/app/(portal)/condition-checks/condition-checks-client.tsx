@@ -546,13 +546,13 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
         {editingScheduleUser && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Frequency</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Frequency</label>
               <Select value={editFrequency} onChange={(e) => setEditFrequency(e.target.value as ConditionCheckFrequency)}>
                 {FREQUENCY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Next Due Date</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Next Due Date</label>
               <Input type="date" value={editDueDate} onChange={(e) => setEditDueDate(e.target.value)} min={new Date().toISOString().split("T")[0]} />
             </div>
             <p className="text-xs text-shark-400">After the staff member completes all checks, the next due date will automatically advance based on the frequency.</p>
@@ -769,15 +769,15 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       <Modal open={showScheduleModal} onClose={() => setShowScheduleModal(false)} title="Schedule Inspection">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Title *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Title *</label>
             <Input value={scheduleTitle} onChange={(e) => setScheduleTitle(e.target.value)} placeholder="e.g. April Equipment Inspection" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Due Date *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Due Date *</label>
             <Input type="date" value={scheduleDueDate} onChange={(e) => setScheduleDueDate(e.target.value)} min={new Date().toISOString().split("T")[0]} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Notes / Instructions</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes / Instructions</label>
             <textarea
               value={scheduleNotes}
               onChange={(e) => setScheduleNotes(e.target.value)}

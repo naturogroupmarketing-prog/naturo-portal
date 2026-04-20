@@ -306,23 +306,23 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
           }
         }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
             <Input name="name" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Email *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email *</label>
             <Input name="email" type="email" required placeholder="user@company.com" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Phone</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
             <Input name="phone" type="tel" placeholder="e.g. 0412 345 678" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Password *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Password *</label>
             <Input name="password" type="password" required minLength={8} placeholder="Min 8 characters" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Role *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Role *</label>
             <Select name="role" required>
               <option value="STAFF">Staff</option>
               <option value="BRANCH_MANAGER">Regional Manager</option>
@@ -330,7 +330,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Region</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region</label>
             <Select name="regionId">
               <option value="">No region (head office)</option>
               {regions.map((r) => (
@@ -362,19 +362,19 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             }} className="space-y-4">
               <input type="hidden" name="userId" value={editUser.id} />
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Email</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email</label>
                 <Input name="email" type="email" required defaultValue={editUser.email} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
                 <Input name="name" required defaultValue={editUser.name || ""} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
                 <Input name="phone" type="tel" defaultValue={editUser.phone || ""} placeholder="e.g. 0412 345 678" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Role *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Role *</label>
                 <Select name="role" required defaultValue={editUser.role}>
                   <option value="STAFF">Staff</option>
                   <option value="BRANCH_MANAGER">Regional Manager</option>
@@ -382,7 +382,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Region</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region</label>
                 <Select name="regionId" defaultValue={editUser.region?.id || ""}>
                   <option value="">No region (head office)</option>
                   {regions.map((r) => (
@@ -399,7 +399,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             </form>
             <hr className="border-shark-100 dark:border-shark-700" />
             <form action={async (fd) => { await resetPassword(editUser.id, fd.get("newPassword") as string); setEditUser(null); }} className="space-y-3">
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300">Reset Password</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300">Reset Password</label>
               <Input name="newPassword" type="password" required minLength={6} placeholder="New password (min 6 characters)" />
               <Button type="submit" size="sm" variant="secondary">Reset Password</Button>
             </form>

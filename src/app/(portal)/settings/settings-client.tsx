@@ -194,15 +194,15 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
         <CardContent>
           <form onSubmit={handleSaveProfile} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name</label>
               <Input value={editName} onChange={(e) => setEditName(e.target.value)} required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Email</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Email</label>
               <Input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Phone</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Phone</label>
               <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="Optional" />
             </div>
             <div className="flex justify-end">
@@ -246,15 +246,15 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
           <CardContent>
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Current Password</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Current Password</label>
                 <Input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">New Password</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">New Password</label>
                 <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={8} placeholder="Min 8 chars, 1 uppercase, 1 number" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Confirm New Password</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Confirm New Password</label>
                 <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
               </div>
               <div className="flex justify-end">
@@ -351,7 +351,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
             <p className="text-xs text-red-600 mt-1">Your account will be deactivated immediately. Your administrator will be notified to complete the deletion of your data.</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Enter your password to confirm</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Enter your password to confirm</label>
             <Input type="password" value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)} placeholder="Your current password" />
           </div>
           <div className="flex justify-end gap-3">

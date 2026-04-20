@@ -419,7 +419,7 @@ export function ImportClient({ regions }: Props) {
             {/* Region selector for assets/consumables */}
             {importType !== "staff" && (
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                   Assign all items to region <span className="text-red-500">*</span>
                 </label>
                 <Select
@@ -441,7 +441,7 @@ export function ImportClient({ regions }: Props) {
 
             {importType === "staff" && (
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                   Default region for staff (optional)
                 </label>
                 <Select

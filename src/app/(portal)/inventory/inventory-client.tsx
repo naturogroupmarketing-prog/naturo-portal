@@ -264,11 +264,11 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
             } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
           }} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
               <Input name="name" required defaultValue={editLocationRegion.name} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Address</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Address</label>
               <Input name="address" defaultValue={editLocationRegion.address || ""} />
             </div>
             <div className="flex justify-end gap-3">
@@ -571,7 +571,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
             }} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">State Name *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">State Name *</label>
                 <Input name="name" required placeholder="e.g. New South Wales" />
               </div>
               <div className="flex justify-end gap-3">
@@ -592,27 +592,27 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
             }} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">State *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">State *</label>
                 <Select name="stateId" required>
                   <option value="">Select state</option>
                   {locations.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Location Name *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Location Name *</label>
                 <Input name="name" required placeholder="e.g. Sydney Metro" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Storage Address</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Storage Address</label>
                 <Input name="address" placeholder="e.g. 123 Main St, Sydney NSW 2000" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Latitude</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Latitude</label>
                   <Input name="latitude" type="number" step="any" placeholder="-33.8688" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Longitude</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Longitude</label>
                   <Input name="longitude" type="number" step="any" placeholder="151.2093" />
                 </div>
               </div>

@@ -770,7 +770,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               {/* Editable fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Status</label>
                   <Select name="status" defaultValue={viewOrder.status}>
                     <option value="PENDING">Pending</option>
                     <option value="APPROVED">Approved</option>
@@ -781,19 +781,19 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                   <p className="text-xs text-shark-400 mt-1">Change status to correct mistakes</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Quantity</label>
+                  <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity</label>
                   <Input name="quantity" type="number" min={1} defaultValue={viewOrder.quantity} required disabled={!canEditQty} className={!canEditQty ? "opacity-60 cursor-not-allowed" : ""} />
                   {!canEditQty && <p className="text-xs text-shark-400 mt-1">Permission required to edit qty</p>}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Supplier</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
                 <Input name="supplier" defaultValue={viewOrder.supplier || ""} placeholder="Supplier name" />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Notes</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
                 <textarea
                   name="notes"
                   defaultValue={viewOrder.notes || ""}
@@ -873,7 +873,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Purchase Order">
         <form id="create-po-form" className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Supply *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supply *</label>
             <Select name="consumableId" required>
               <option value="">Select supply</option>
               {consumables.map((c) => (
@@ -885,15 +885,15 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Quantity *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity *</label>
             <Input name="quantity" type="number" min="1" required placeholder="e.g. 50" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Supplier</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
             <Input name="supplier" placeholder="Leave blank to use default" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
             <textarea name="notes" placeholder="Optional notes..." className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="flex justify-end gap-3 pt-2">

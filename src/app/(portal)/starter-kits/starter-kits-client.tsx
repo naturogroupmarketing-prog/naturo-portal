@@ -280,11 +280,11 @@ export function StarterKitsClient({
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Starter Kit">
         <form action={async (fd) => { await createStarterKit(fd); setShowCreate(false); }} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
             <Input name="name" required placeholder="e.g. Standard Staff Kit" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Description</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
             <Input name="description" placeholder="What this kit includes" />
           </div>
           <div className="flex items-center gap-2">
@@ -395,11 +395,11 @@ function EditStarterKitForm({
       <form action={async (fd) => { setSaving(true); await updateStarterKit(fd); setSaving(false); onDone(); }} className="space-y-4">
         <input type="hidden" name="id" value={kit.id} />
         <div>
-          <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
+          <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
           <Input name="name" required defaultValue={kit.name} />
         </div>
         <div>
-          <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Description</label>
+          <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
           <Input name="description" defaultValue={kit.description || ""} />
         </div>
         <div className="flex items-center gap-2">
@@ -726,7 +726,7 @@ function ApplyToStaffForm({
   return (
     <div className="space-y-5">
       <div>
-        <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1.5">Region</label>
+        <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1.5">Region</label>
         <Select
           value={selectedRegion}
           onChange={(e) => { setSelectedRegion(e.target.value); setSelectedUserId(""); }}
@@ -739,7 +739,7 @@ function ApplyToStaffForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1.5">Assign to</label>
+        <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1.5">Assign to</label>
         <Select
           value={selectedUserId}
           onChange={(e) => setSelectedUserId(e.target.value)}

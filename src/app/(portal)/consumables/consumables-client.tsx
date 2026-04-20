@@ -1113,7 +1113,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
           {/* Add new section */}
           <div className="border-t border-shark-100 dark:border-shark-700 pt-4">
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Add New Section</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Add New Section</label>
             <div className="flex gap-2">
               <Input
                 value={newSectionName}
@@ -1143,7 +1143,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <Modal open={showCreate} onClose={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }} title="Add New Supply">
         <form action={handleCreateSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Photo</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
             <div className="flex items-start gap-4">
               {imagePreview ? (
                 <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200 dark:border-shark-700">
@@ -1174,11 +1174,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
             <Input name="name" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Category *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Category *</label>
             <div className="flex gap-2">
               <Select name="category" required className="flex-1">
                 <option value="">Select category</option>
@@ -1193,26 +1193,26 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Unit Type *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Unit Type *</label>
               <Input name="unitType" required placeholder="e.g. boxes, packs, rolls" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Initial Qty</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Initial Qty</label>
               <Input name="quantityOnHand" type="number" defaultValue="0" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Min Threshold</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Min Threshold</label>
               <Input name="minimumThreshold" type="number" defaultValue="5" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Reorder Level</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Reorder Level</label>
               <Input name="reorderLevel" type="number" defaultValue="10" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Region *</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region *</label>
             <Select name="regionId" required>
               <option value="">Select</option>
               {regions.map((r) => (
@@ -1222,16 +1222,16 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Supplier</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
               <Input name="supplier" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Unit Cost (AUD)</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Unit Cost (AUD)</label>
               <Input name="unitCost" type="number" step="0.01" placeholder="0.00" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Shop / Order Link</label>
+            <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Shop / Order Link</label>
             <Input name="shopUrl" type="url" placeholder="https://shop.example.com/product/..." />
             <p className="text-[11px] text-shark-400 mt-1">Direct link to the product page for quick reordering</p>
           </div>
@@ -1292,7 +1292,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </p>
 
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">
                 Quantity to {stockMode === "add" ? "Add" : "Deduct"} *
               </label>
               <Input
@@ -1306,7 +1306,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
             {stockMode === "deduct" && (
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Reason *</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Reason *</label>
                 <Input name="reason" placeholder="e.g. Stock correction, write-off, expired..." required />
               </div>
             )}
@@ -1347,7 +1347,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               Available stock: <strong>{showAssign.quantityOnHand} {showAssign.unitType}</strong>
             </p>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Assign to *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Assign to *</label>
               <Select name="userId" required>
                 <option value="">Select staff member</option>
                 {users
@@ -1361,7 +1361,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Quantity *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity *</label>
               <Input name="quantity" type="number" min="1" max={showAssign.quantityOnHand} required />
               <p className="text-xs text-gray-400 mt-1">Max: {showAssign.quantityOnHand}</p>
             </div>
@@ -1394,11 +1394,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               {" \u2014 "}{showReturn.assignment.quantity} {showReturn.consumable.unitType}
             </p>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Quantity Returning *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity Returning *</label>
               <Input name="returnQuantity" type="number" min="1" max={showReturn.assignment.quantity} defaultValue={showReturn.assignment.quantity} required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Return Condition *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Return Condition *</label>
               <Select name="returnCondition" required>
                 <option value="">Select condition</option>
                 <option value="Good">Good</option>
@@ -1408,7 +1408,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Notes</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
               <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
@@ -1443,7 +1443,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
             {/* Photo */}
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Photo</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-lg border border-shark-200 dark:border-shark-700 overflow-hidden bg-shark-50 flex items-center justify-center">
                   {(editImagePreview || (!editImageRemoved && editConsumable.imageUrl)) ? (
@@ -1483,11 +1483,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Name *</label>
               <Input name="name" required defaultValue={editConsumable.name} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Category *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Category *</label>
               <Select name="category" required defaultValue={editConsumable.category}>
                 <option value="">Select category</option>
                 {categories.map((cat) => (
@@ -1496,11 +1496,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Unit Type *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Unit Type *</label>
               <Input name="unitType" required defaultValue={editConsumable.unitType} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Region *</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Region *</label>
               <Select name="regionId" required defaultValue={editConsumable.region.id}>
                 <option value="">Select region</option>
                 {regions.map((r) => (
@@ -1513,33 +1513,33 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             {/* Current Stock — Super Admin or users with stock adjust permission */}
             {(isSuperAdmin || canAdjustStock) && (
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Current Stock</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Current Stock</label>
                 <Input name="quantityOnHand" type="number" min="0" defaultValue={editConsumable.quantityOnHand} />
                 <p className="text-xs text-shark-400 mt-1">Directly set the stock quantity</p>
               </div>
             )}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Minimum Threshold</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Minimum Threshold</label>
                 <Input name="minimumThreshold" type="number" defaultValue={editConsumable.minimumThreshold} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Reorder Level</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Reorder Level</label>
                 <Input name="reorderLevel" type="number" defaultValue={editConsumable.reorderLevel} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Supplier</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Supplier</label>
                 <Input name="supplier" defaultValue={editConsumable.supplier || ""} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Unit Cost (AUD)</label>
+                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Unit Cost (AUD)</label>
                 <Input name="unitCost" type="number" step="0.01" defaultValue={editConsumable.unitCost ?? ""} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Shop / Order Link</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Shop / Order Link</label>
               <div className="flex gap-2 items-center">
                 <Input name="shopUrl" type="url" placeholder="https://shop.example.com/product/..." defaultValue={editConsumable.shopUrl || ""} className="flex-1" />
                 {editConsumable.shopUrl && (
@@ -1552,7 +1552,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <p className="text-[11px] text-shark-400 mt-1">Direct link to the product page for quick reordering</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 dark:text-shark-300 mb-1">Notes</label>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
               <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
