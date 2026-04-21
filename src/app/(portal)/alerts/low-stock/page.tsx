@@ -4,6 +4,12 @@ import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { LowStockClient } from "./low-stock-client";
 import { autoSyncLowStockPOs } from "@/lib/auto-sync-pos";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Low Stock Alerts",
+  description: "Supplies at or below their minimum threshold",
+};
 
 export const dynamic = "force-dynamic";
 
