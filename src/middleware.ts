@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SUPPORT_COOKIE, verifySupportToken } from "@/lib/support-session";
+import { SUPPORT_COOKIE, verifySupportTokenEdge } from "@/lib/support-token-edge";
 
 // Domains that serve the marketing site
 const MARKETING_DOMAINS = new Set(["trackio.au", "www.trackio.au"]);
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get("host") ?? "";
   const isMarketingDomain = MARKETING_DOMAINS.has(hostname);
@@ -92,7 +92,7 @@ export function middleware(request: NextRequest) {
   // the DB on every request.  DB validation happens in API routes.
   const supportToken = request.cookies.get(SUPPORT_COOKIE)?.value;
   if (supportToken) {
-    const payload = verifySupportToken(supportToken);
+    const payload = await verifySupportTokenEdge(supportToken);
     if (payload) {
       response.headers.set("x-support-session-id", payload.sessionId);
       response.headers.set("x-support-org-id", payload.orgId);
