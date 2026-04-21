@@ -47,7 +47,7 @@ export function AiForecastWidget({ items }: Props) {
 
   return (
     <div className="ai-card-border"><div className="ai-card-inner">
-    <Card className="border-0 rounded-none">
+    <Card className="border-0 rounded-none shadow-none">
       <div className="p-5">
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">

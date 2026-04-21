@@ -111,7 +111,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
 
   return (
     <div className="ai-card-border"><div className="ai-card-inner">
-    <Card className="border-0 rounded-none">
+    <Card className="border-0 rounded-none shadow-none">
       <CardContent className="py-4 space-y-3">
 
         {/* Header — clickable to collapse/expand */}
