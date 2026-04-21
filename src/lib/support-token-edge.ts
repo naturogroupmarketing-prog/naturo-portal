@@ -21,18 +21,24 @@ export interface SupportTokenPayload {
 
 // ── Web Crypto helpers ────────────────────────────────────────────────────────
 
-function base64urlToUint8Array(b64url: string): Uint8Array {
-  // Restore standard base64 padding and characters
+/**
+ * Decode a base64url string into a plain ArrayBuffer.
+ * Returning ArrayBuffer (not ArrayBufferLike) satisfies TypeScript 5's strict
+ * BufferSource typing required by crypto.subtle.verify / importKey.
+ */
+function base64urlToBuffer(b64url: string): ArrayBuffer {
   const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
   const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
   const binary = atob(padded);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return bytes;
+  const buf = new ArrayBuffer(binary.length);
+  const view = new Uint8Array(buf);
+  for (let i = 0; i < binary.length; i++) view[i] = binary.charCodeAt(i);
+  return buf;
 }
 
 async function importHmacKey(secret: string): Promise<CryptoKey> {
   const enc = new TextEncoder();
+  // enc.encode() returns Uint8Array whose .buffer is a plain ArrayBuffer — OK
   return crypto.subtle.importKey(
     "raw",
     enc.encode(secret),
@@ -67,16 +73,17 @@ export async function verifySupportTokenEdge(
     const key = await importHmacKey(secret);
     const enc = new TextEncoder();
 
+    // base64urlToBuffer returns a plain ArrayBuffer — satisfies BufferSource
     const valid = await crypto.subtle.verify(
       "HMAC",
       key,
-      base64urlToUint8Array(sig),
+      base64urlToBuffer(sig),
       enc.encode(encoded)
     );
     if (!valid) return null;
 
-    // Decode payload JSON
-    const payloadJson = new TextDecoder().decode(base64urlToUint8Array(encoded));
+    // Decode payload JSON from the plain ArrayBuffer
+    const payloadJson = new TextDecoder().decode(base64urlToBuffer(encoded));
     const payload = JSON.parse(payloadJson) as SupportTokenPayload;
 
     // Reject expired tokens
