@@ -375,20 +375,21 @@ a, button, [role="button"], input, select, textarea, label {
 }
 
 /* ── AI card — rotating gradient border + subtle gradient wash ──
-   Wraps any AI-generated card with a slow-spinning conic-gradient border
-   (violet → blue → cyan → back) and a faint gradient blush inside.    */
+   Uses the CSS mask technique for a thin, unbroken gradient border.
+   The ::before pseudo-element draws only the border ring (via mask-composite
+   exclude), so there's no overflow clipping and no broken corners.     */
 .ai-card-border {
   position: relative;
   border-radius: 0.75rem; /* matches rounded-xl */
-  padding: 2px;
-  overflow: hidden;
   isolation: isolate;
 }
 
 .ai-card-border::before {
   content: "";
   position: absolute;
-  inset: -150%;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px; /* border thickness */
   background: conic-gradient(
     from 0deg at 50% 50%,
     #a78bfa,   /* violet-400  */
@@ -397,13 +398,19 @@ a, button, [role="button"], input, select, textarea, label {
     #e879f9,   /* fuchsia-400 */
     #a78bfa    /* back to violet */
   );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
   animation: cta-rotate 6s linear infinite;
-  z-index: -1;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Inner wrapper that restores the card's rounded corners */
+/* Inner wrapper — no longer needs to clip; just stacks above the border ring */
 .ai-card-inner {
-  border-radius: calc(0.75rem - 2px);
+  border-radius: calc(0.75rem - 1.5px);
   overflow: hidden;
   position: relative;
 }
