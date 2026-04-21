@@ -97,7 +97,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
         {/* Logo — always visible at original size */}
         <Link href="/dashboard" className="flex items-center hover:opacity-80 transition-opacity">
-          <Logo size={44} />
+          <Logo size={72} />
         </Link>
       </div>
 

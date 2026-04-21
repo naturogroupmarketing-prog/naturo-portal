@@ -17,7 +17,7 @@ export function Logo({ size = 32, className = "", iconOnly = false }: LogoProps)
           // SVG from overflowing the header on narrow phones (360 px Android).
           // Both constraints together let the browser scale proportionally.
           maxHeight: `${size * 0.7}px`,
-          maxWidth: "110px",
+          maxWidth: "160px",
           width: "auto",
           height: "auto",
         }}
