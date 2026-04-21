@@ -32,6 +32,8 @@ interface Props {
   allRegions?: { id: string; name: string; state: { name: string } }[];
   initialTab?: "assets" | "consumables" | "staff";
   initialAction?: string;
+  /** Consumable ID to scroll to and highlight (from Low Stock deep-link) */
+  highlightId?: string;
 }
 
 const TABS = ["Assets", "Supplies", "Staff"] as const;
@@ -39,7 +41,7 @@ type Tab = typeof TABS[number];
 
 export function InventoryDetailClient({
   region, assets, consumables, staff, users, assetCategories, consumableCategories,
-  pendingRequests, lowStockCount, permissions, isSuperAdmin, allRegions = [], initialTab, initialAction,
+  pendingRequests, lowStockCount, permissions, isSuperAdmin, allRegions = [], initialTab, initialAction, highlightId,
 }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
@@ -60,7 +62,7 @@ export function InventoryDetailClient({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const defaultTab: Tab = initialTab === "consumables" ? "Supplies" : initialTab === "staff" ? "Staff" : "Assets";
+  const defaultTab: Tab = highlightId ? "Supplies" : initialTab === "consumables" ? "Supplies" : initialTab === "staff" ? "Staff" : "Assets";
   const [activeTab, setActiveTab] = useState<Tab>(defaultTab);
 
   const isEmpty = (assets as unknown[]).length === 0 && (consumables as unknown[]).length === 0;
@@ -269,6 +271,7 @@ export function InventoryDetailClient({
               initialTab={undefined}
               initialStock={undefined}
               initialCategory={undefined}
+              highlightId={highlightId}
             />
           )}
 

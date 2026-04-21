@@ -4,12 +4,12 @@ import { isAdminOrManager, isSuperAdmin, hasPermission } from "@/lib/permissions
 import { db } from "@/lib/db";
 import { InventoryDetailClient } from "./inventory-detail-client";
 
-export default async function InventoryDetailPage({ params, searchParams }: { params: Promise<{ regionId: string }>; searchParams: Promise<{ tab?: string; action?: string }> }) {
+export default async function InventoryDetailPage({ params, searchParams }: { params: Promise<{ regionId: string }>; searchParams: Promise<{ tab?: string; action?: string; highlight?: string }> }) {
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/dashboard");
 
   const { regionId } = await params;
-  const { tab, action } = await searchParams;
+  const { tab, action, highlight } = await searchParams;
 
   // Branch Manager can only see their own region
   if (session.user.role === "BRANCH_MANAGER" && session.user.regionId && session.user.regionId !== regionId) {
@@ -171,6 +171,7 @@ export default async function InventoryDetailPage({ params, searchParams }: { pa
       allRegions={JSON.parse(JSON.stringify(allRegions.map((r) => ({ id: r.id, name: r.name, state: { name: r.state.name } }))))}
       initialTab={tab as "assets" | "consumables" | "staff" | undefined}
       initialAction={action}
+      highlightId={highlight}
     />
   );
 }

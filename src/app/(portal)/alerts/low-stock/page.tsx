@@ -44,11 +44,43 @@ export default async function LowStockPage({ searchParams }: { searchParams: Pro
 
   const filtered = lowStockItems.filter((c) => c.quantityOnHand <= c.minimumThreshold);
 
+  // Fetch active POs for all low-stock items in one query
+  const consumableIds = filtered.map((c) => c.id);
+  const activePOs = consumableIds.length > 0
+    ? await db.purchaseOrder.findMany({
+        where: {
+          consumableId: { in: consumableIds },
+          status: { in: ["PENDING", "APPROVED", "ORDERED"] },
+        },
+        select: {
+          id: true,
+          consumableId: true,
+          quantity: true,
+          supplier: true,
+          status: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      })
+    : [];
+
+  // Group POs by consumableId
+  const posByConsumable = new Map<string, typeof activePOs>();
+  for (const po of activePOs) {
+    if (!posByConsumable.has(po.consumableId)) posByConsumable.set(po.consumableId, []);
+    posByConsumable.get(po.consumableId)!.push(po);
+  }
+
+  const itemsWithPOs = filtered.map((item) => ({
+    ...item,
+    activePOs: posByConsumable.get(item.id) ?? [],
+  }));
+
   const { region: focusRegion } = await searchParams;
 
   return (
     <LowStockClient
-      items={JSON.parse(JSON.stringify(filtered))}
+      items={JSON.parse(JSON.stringify(itemsWithPOs))}
       regions={JSON.parse(JSON.stringify(regions))}
       focusRegionId={focusRegion ?? (isBM ? session.user.regionId! : undefined)}
       isSuperAdmin={isSuperAdmin}

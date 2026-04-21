@@ -105,12 +105,14 @@ interface ConsumablesClientProps {
   initialTab?: string;
   initialStock?: string;
   initialCategory?: string;
+  /** Consumable ID to scroll to and highlight on mount (from Low Stock deep-link) */
+  highlightId?: string;
 }
 
 import { compressImage } from "@/lib/image-utils";
 
 
-export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory }: ConsumablesClientProps) {
+export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId }: ConsumablesClientProps) {
   const { addToast } = useToast();
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [showCreate, setShowCreate] = useState(false);
@@ -207,6 +209,22 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       return next;
     });
   };
+
+  // ── Deep-link highlight: scroll to and flash the target consumable ──────
+  useEffect(() => {
+    if (!highlightId) return;
+    // Small delay so the DOM has rendered and any collapsed sections have expanded
+    const timer = setTimeout(() => {
+      const el = document.querySelector(`[data-consumable-id="${highlightId}"]`) as HTMLElement | null;
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("consumable-highlight");
+      // Remove the highlight class after the animation finishes
+      const cleanup = setTimeout(() => el.classList.remove("consumable-highlight"), 2800);
+      return () => clearTimeout(cleanup);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [highlightId]);
 
   // Drag and drop state for sections
   const [dragSectionIdx, setDragSectionIdx] = useState<number | null>(null);
@@ -443,6 +461,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     return (
       <div
         key={c.id}
+        data-consumable-id={c.id}
         onClick={() => setEditConsumable(c)}
         className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-xl p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
       >
@@ -510,6 +529,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     return (
       <div
         key={c.id}
+        data-consumable-id={c.id}
         onClick={() => setEditConsumable(c)}
         className="flex items-center gap-3 px-3 border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800/60 cursor-pointer"
         style={{ height: 36, minHeight: 36 }}
@@ -542,6 +562,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               return (
                 <div
                   key={c.id}
+                  data-consumable-id={c.id}
                   onClick={() => setEditConsumable(c)}
                   className="border border-shark-100 dark:border-shark-800 rounded-xl p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
                 >
@@ -625,7 +646,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 const activeAssignments = c.assignments || [];
                 const canDelete = deletableIds.has(c.id);
                 return (
-                  <tr key={c.id} onClick={() => setEditConsumable(c)} draggable onDragStart={() => handleItemDragStart(c.id)} onDragOver={(e) => handleItemDragOver(e, c.id)} onDragEnd={() => handleItemDragEnd(sectionItems)} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}>
+                  <tr key={c.id} data-consumable-id={c.id} onClick={() => setEditConsumable(c)} draggable onDragStart={() => handleItemDragStart(c.id)} onDragOver={(e) => handleItemDragOver(e, c.id)} onDragEnd={() => handleItemDragEnd(sectionItems)} className={`border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800/50 cursor-pointer ${selectedIds.has(c.id) ? "bg-action-50/30" : ""} ${dragItemId === c.id ? "opacity-40" : ""} ${dragOverItemId === c.id ? "border-t-2 border-t-action-500" : ""}`}>
                     <td className="px-1 py-2 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()}>
                       <svg className="w-4 h-4 text-shark-300" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
                     </td>

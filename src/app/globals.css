@@ -172,6 +172,21 @@ a, button, [role="button"], input, select, textarea, label {
   display: none;
 }
 
+/* Deep-link highlight pulse — applied via JS to a consumable item element */
+@keyframes consumable-highlight-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(var(--color-action-500-rgb, 0 122 255) / 0.5), inset 0 0 0 2px var(--color-action-400); background-color: rgba(var(--color-action-500-rgb, 0 122 255) / 0.08); }
+  50%  { box-shadow: 0 0 0 6px rgba(var(--color-action-500-rgb, 0 122 255) / 0.12), inset 0 0 0 2px var(--color-action-400); background-color: rgba(var(--color-action-500-rgb, 0 122 255) / 0.12); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--color-action-500-rgb, 0 122 255) / 0); background-color: transparent; }
+}
+.consumable-highlight {
+  animation: consumable-highlight-pulse 2.5s ease-out forwards;
+  border-radius: 8px;
+  outline: 2px solid var(--color-action-400, #4f8ef7);
+  outline-offset: 1px;
+  position: relative;
+  z-index: 1;
+}
+
 @keyframes slide-in {
   from { opacity: 0; transform: translateX(100%); }
   to { opacity: 1; transform: translateX(0); }
