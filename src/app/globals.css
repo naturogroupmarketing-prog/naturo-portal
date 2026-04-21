@@ -374,36 +374,55 @@ a, button, [role="button"], input, select, textarea, label {
   to { transform: rotate(360deg); }
 }
 
-/* ── AI card — rotating gradient border + subtle gradient wash ──
-   Wraps any AI-generated card with a slow-spinning conic-gradient border
-   (violet → blue → cyan → back) and a faint gradient blush inside.    */
+/* ── AI card — travelling gradient border ────────────────────────────────
+   Uses @property to animate the conic-gradient start angle directly.
+   This makes the colours travel *around* the border path rather than
+   sweeping inward, and the mask-composite technique keeps the ring
+   solid with no breaks or seams.                                        */
+
+@property --ai-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes ai-border-travel {
+  to { --ai-border-angle: 360deg; }
+}
+
 .ai-card-border {
   position: relative;
-  border-radius: 0.75rem; /* matches rounded-xl */
-  padding: 3px;
-  overflow: hidden;
+  border-radius: 0.75rem;
   isolation: isolate;
 }
 
 .ai-card-border::before {
   content: "";
   position: absolute;
-  inset: -150%;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px; /* border thickness */
   background: conic-gradient(
-    from 0deg at 50% 50%,
-    #a78bfa,   /* violet-400  */
-    #60a5fa,   /* blue-400    */
-    #67e8f9,   /* cyan-300    */
-    #e879f9,   /* fuchsia-400 */
-    #a78bfa    /* back to violet */
+    from var(--ai-border-angle) at 50% 50%,
+    #a78bfa,   /* violet  */
+    #60a5fa,   /* blue    */
+    #67e8f9,   /* cyan    */
+    #e879f9,   /* fuchsia */
+    #a78bfa    /* back to violet — seamless loop */
   );
-  animation: cta-rotate 6s linear infinite;
-  z-index: -1;
+  /* Punch out the interior so only the 2px border ring is visible */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: ai-border-travel 4s linear infinite;
+  pointer-events: none;
 }
 
-/* Inner wrapper that restores the card's rounded corners */
+/* Inner card sits flush inside the border ring */
 .ai-card-inner {
-  border-radius: calc(0.75rem - 3px);
+  border-radius: calc(0.75rem - 2px);
   overflow: hidden;
   position: relative;
 }
