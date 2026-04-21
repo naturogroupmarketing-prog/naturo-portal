@@ -82,7 +82,7 @@ export function QuickActionsFab() {
   const actions = matchedKey ? PAGE_ACTIONS[matchedKey] : DEFAULT_ACTIONS;
 
   return (
-    <div ref={ref} className="fixed bottom-[72px] right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2.5">
+    <div ref={ref} className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-50 flex flex-col items-end gap-2.5">
       {/* Action items — stagger up from FAB */}
       {open && (
         <div className="flex flex-col items-end gap-2">
