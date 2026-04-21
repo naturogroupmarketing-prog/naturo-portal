@@ -215,7 +215,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     if (!highlightId) return;
     // Small delay so the DOM has rendered and any collapsed sections have expanded
     const timer = setTimeout(() => {
-      const el = document.querySelector(`[data-consumable-id="${highlightId}"]`) as HTMLElement | null;
+      // querySelectorAll because the table view renders both a mobile div
+      // and a desktop tr with the same attribute — pick the visible one.
+      const all = document.querySelectorAll(`[data-consumable-id="${highlightId}"]`);
+      const el = Array.from(all).find(
+        (e) => (e as HTMLElement).offsetParent !== null
+      ) as HTMLElement | null;
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth", block: "center" });
       el.classList.add("consumable-highlight");
