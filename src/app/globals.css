@@ -380,7 +380,7 @@ a, button, [role="button"], input, select, textarea, label {
 .ai-card-border {
   position: relative;
   border-radius: 0.75rem; /* matches rounded-xl */
-  padding: 6px;
+  padding: 2px;
   overflow: hidden;
   isolation: isolate;
 }
@@ -403,7 +403,7 @@ a, button, [role="button"], input, select, textarea, label {
 
 /* Inner wrapper that restores the card's rounded corners */
 .ai-card-inner {
-  border-radius: calc(0.75rem - 6px);
+  border-radius: calc(0.75rem - 2px);
   overflow: hidden;
   position: relative;
 }
