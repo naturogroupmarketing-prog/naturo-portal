@@ -1320,5 +1320,21 @@ export default async function DashboardPage() {
     consumableUsageHistory: staffData.consumableUsageHistory,
   };
 
-  return <BranchManagerDashboard managerProps={managerProps} staffProps={staffProps} />;
+  return (
+    <>
+      <AiBriefingWidget
+        orgName={orgRecord?.name ?? "Your Organisation"}
+        lowStockCount={(lowStockItems as unknown[]).length}
+        criticalStockCount={criticalStockCount}
+        overdueReturns={overdueReturns}
+        pendingApprovals={ordersAwaitingApproval}
+        unresolvedDamage={unresolvedDamageReports + unresolvedLossReports}
+        healthScore={healthScore}
+        depletionForecasts={depletionForecast.map((d) => ({ name: d.name, daysRemaining: d.daysRemaining, riskLevel: d.riskLevel }))}
+        recentAnomalyCount={anomalyCount}
+        date={new Date().toISOString()}
+      />
+      <BranchManagerDashboard managerProps={managerProps} staffProps={staffProps} />
+    </>
+  );
 }
