@@ -7,6 +7,7 @@ interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
   isLoading?: boolean;
+  loadingStatus?: string; // live tool-status text from SSE stream
   isLast?: boolean;
   onOptionClick?: (text: string) => void;
 }
@@ -59,7 +60,7 @@ function extractOptions(content: string): { mainContent: string; options: string
   };
 }
 
-export function ChatMessage({ role, content, isLoading, isLast, onOptionClick }: ChatMessageProps) {
+export function ChatMessage({ role, content, isLoading, loadingStatus, isLast, onOptionClick }: ChatMessageProps) {
   const [workingIdx, setWorkingIdx] = useState(0);
   const [dots, setDots] = useState(1);
 
@@ -82,7 +83,7 @@ export function ChatMessage({ role, content, isLoading, isLast, onOptionClick }:
               </svg>
             </div>
             <span className="text-sm text-shark-500 dark:text-shark-400 font-medium">
-              {WORKING_MESSAGES[workingIdx]}{".".repeat(dots)}
+              {loadingStatus || WORKING_MESSAGES[workingIdx]}{".".repeat(dots)}
             </span>
           </div>
         </div>

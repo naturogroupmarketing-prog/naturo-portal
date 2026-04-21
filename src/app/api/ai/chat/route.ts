@@ -7,6 +7,51 @@ import { rateLimit, RATE_LIMITS, rateLimitHeaders } from "@/lib/rate-limit";
 import { db } from "@/lib/db";
 import type { Role } from "@/generated/prisma/client";
 
+// Human-readable status messages for each tool call
+function getToolStatus(toolName: string, input: Record<string, unknown>): string {
+  const q = (input.query as string) || (input.item_name as string) || "";
+  const label = q ? ` for "${q}"` : "";
+  switch (toolName) {
+    case "search_assets":          return `Searching assets${label}…`;
+    case "search_consumables":     return `Checking stock${label}…`;
+    case "search_users":           return `Looking up staff${label}…`;
+    case "get_inventory_insights": return "Analyzing inventory…";
+    case "list_regions":           return "Loading regions…";
+    case "compare_regions":        return "Comparing regions…";
+    case "view_purchase_orders":   return "Loading purchase orders…";
+    case "view_activity_log":      return "Loading activity log…";
+    case "check_staff_equipment":  return "Checking staff equipment…";
+    case "get_overdue_inspections":return "Checking inspections…";
+    case "create_asset":           return `Creating asset${input.name ? ` "${input.name}"` : ""}…`;
+    case "create_consumable":      return `Adding consumable${input.name ? ` "${input.name}"` : ""}…`;
+    case "create_purchase_order":  return `Creating PO${input.consumable_name ? ` for ${input.consumable_name}` : ""}…`;
+    case "update_asset":           return "Updating asset…";
+    case "update_consumable":      return "Updating supply…";
+    case "bulk_update_assets":     return "Bulk-updating assets…";
+    case "adjust_stock":           return "Adjusting stock levels…";
+    case "approve_purchase_order": return "Approving purchase order…";
+    case "mark_po_received":       return "Marking PO received…";
+    case "verify_return":          return "Verifying return…";
+    case "create_damage_report":   return "Filing damage report…";
+    case "resolve_damage_report":  return "Resolving damage report…";
+    case "deactivate_user":        return "Deactivating user…";
+    case "create_user":            return "Creating user account…";
+    case "reset_user_password":    return "Resetting password…";
+    case "assign_starter_kit":     return "Assigning starter kit…";
+    case "schedule_inspection":    return "Scheduling inspection…";
+    case "manage_category":        return "Managing category…";
+    case "bulk_assign_consumables":return "Bulk-assigning consumables…";
+    case "move_asset_to_region":   return "Moving asset…";
+    case "move_consumable_to_region": return "Moving consumable…";
+    case "copy_photo":             return "Copying photos…";
+    case "delete_asset":           return "Deleting asset…";
+    case "create_region":          return "Creating region…";
+    case "create_state":           return "Creating state…";
+    case "update_region":          return "Updating region…";
+    default:                       return "Working on it…";
+  }
+}
+
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user) {
@@ -30,14 +75,22 @@ export async function POST(request: NextRequest) {
       select: { aiRequestsUsed: true, aiRequestsLimit: true, aiResetDate: true },
     });
     if (org) {
-      // Auto-reset monthly
       const now = new Date();
       const resetDate = org.aiResetDate ? new Date(org.aiResetDate) : null;
-      if (!resetDate || now.getMonth() !== resetDate.getMonth() || now.getFullYear() !== resetDate.getFullYear()) {
-        await db.organization.update({ where: { id: organizationId }, data: { aiRequestsUsed: 0, aiResetDate: now } });
+      if (
+        !resetDate ||
+        now.getMonth() !== resetDate.getMonth() ||
+        now.getFullYear() !== resetDate.getFullYear()
+      ) {
+        await db.organization.update({
+          where: { id: organizationId },
+          data: { aiRequestsUsed: 0, aiResetDate: now },
+        });
       } else if (org.aiRequestsUsed >= org.aiRequestsLimit) {
         return Response.json(
-          { error: `Your organisation has reached its monthly AI limit (${org.aiRequestsLimit} requests). Contact your administrator to upgrade.` },
+          {
+            error: `Your organisation has reached its monthly AI limit (${org.aiRequestsLimit} requests). Contact your administrator to upgrade.`,
+          },
           { status: 429 }
         );
       }
@@ -50,7 +103,6 @@ export async function POST(request: NextRequest) {
 
   const userRole = session.user.role as Role;
 
-  // Determine which AI management tools this user can access
   const AI_MANAGEMENT_TOOLS = [
     "create_asset", "create_consumable", "create_purchase_order", "suggest_category",
     "update_asset", "update_consumable", "adjust_stock", "delete_asset", "assign_asset",
@@ -70,9 +122,7 @@ export async function POST(request: NextRequest) {
   } else if (userRole === "BRANCH_MANAGER") {
     canUseAIManagement = await hasPermission(session.user.id, userRole, "aiAssetCreate");
   }
-  // STAFF: canUseAIManagement stays false
 
-  // Filter tools based on permissions
   const availableTools = canUseAIManagement
     ? AI_TOOLS
     : AI_TOOLS.filter((t) => !AI_MANAGEMENT_TOOLS.includes(t.name));
@@ -106,7 +156,7 @@ IMPORTANT RULES:
 
   const systemPrompt = `You are the AI assistant for "trackio", an internal asset and consumable tracking system. You help staff find assets, check inventory status, get insights, manage inventory, and answer questions.
 
-Current user: ${(session.user.name || session.user.email || "").replace(/["`'\\\n\r]/g, "")}
+Current user: ${(session.user.name || session.user.email || "").replace(/["\`'\\\n\r]/g, "")}
 Role: ${session.user.role}
 ${session.user.regionId ? "Region: restricted to their assigned region only" : "Region: all regions (Super Admin)"}
 
@@ -143,74 +193,115 @@ COMMON TROUBLESHOOTING (answer these if asked):
 - How does pull-to-refresh work? On the staff dashboard (mobile), pull down from the top to refresh data.
 - Bottom navigation on mobile? Staff users see a bottom tab bar (Home, Assets, Request, Help) for quick access on mobile/tablet.`;
 
-  try {
-    let currentMessages = messages.map((m) => ({
-      role: m.role as "user" | "assistant",
-      content: m.content,
-    }));
+  // ── SSE streaming response ───────────────────────────────────────────────
+  const encoder = new TextEncoder();
 
-    let finalText = "";
-    let toolsUsed = false;
-    const READ_ONLY_TOOLS = new Set(["search_assets", "search_consumables", "search_users", "get_inventory_insights", "suggest_category", "view_purchase_orders", "list_regions", "compare_regions", "check_staff_equipment", "get_overdue_inspections", "view_activity_log"]);
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (data: Record<string, unknown>) =>
+        controller.enqueue(
+          encoder.encode(`data: ${JSON.stringify(data)}\n\n`)
+        );
 
-    // Tool-use loop (max 10 iterations for complex multi-step tasks)
-    for (let i = 0; i < 10; i++) {
-      const response = await anthropic.messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 2048,
-        system: systemPrompt,
-        messages: currentMessages,
-        tools: availableTools,
-      });
+      try {
+        let currentMessages = messages.map((m) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        }));
 
-      // Only keep text from the FINAL response (not intermediate thinking)
-      const hasToolUse = response.content.some((b) => b.type === "tool_use");
-      if (!hasToolUse) {
-        // This is the final response — keep the text
-        finalText = "";
-        for (const block of response.content) {
-          if (block.type === "text") finalText += block.text;
+        let toolsUsed = false;
+        const READ_ONLY_TOOLS = new Set([
+          "search_assets", "search_consumables", "search_users",
+          "get_inventory_insights", "suggest_category", "view_purchase_orders",
+          "list_regions", "compare_regions", "check_staff_equipment",
+          "get_overdue_inspections", "view_activity_log",
+        ]);
+
+        // Tool-use loop (max 10 iterations)
+        for (let i = 0; i < 10; i++) {
+          const response = await anthropic.messages.create({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 2048,
+            system: systemPrompt,
+            messages: currentMessages,
+            tools: availableTools,
+          });
+
+          const hasToolUse = response.content.some((b) => b.type === "tool_use");
+
+          if (!hasToolUse) {
+            // Final response — extract text and send
+            let finalText = "";
+            for (const block of response.content) {
+              if (block.type === "text") finalText += block.text;
+            }
+
+            // Increment AI usage counter
+            if (organizationId) {
+              await db.organization
+                .update({
+                  where: { id: organizationId },
+                  data: { aiRequestsUsed: { increment: 1 } },
+                })
+                .catch(() => {});
+            }
+
+            send({ text: finalText.trim(), done: true, dataChanged: toolsUsed });
+            break;
+          }
+
+          // Execute each tool call and emit status events
+          currentMessages.push({
+            role: "assistant",
+            content: response.content as never,
+          });
+
+          const toolResults: {
+            type: "tool_result";
+            tool_use_id: string;
+            content: string;
+          }[] = [];
+
+          for (const block of response.content) {
+            if (block.type !== "tool_use") continue;
+
+            if (!READ_ONLY_TOOLS.has(block.name)) toolsUsed = true;
+
+            // Send a human-readable status to the client
+            send({ status: getToolStatus(block.name, block.input as Record<string, unknown>) });
+
+            const result = await executeAITool(
+              block.name,
+              block.input as Record<string, unknown>,
+              session.user.role as "SUPER_ADMIN" | "BRANCH_MANAGER" | "STAFF",
+              session.user.regionId ?? null,
+              session.user.id,
+              session.user.organizationId ?? undefined
+            );
+
+            toolResults.push({
+              type: "tool_result",
+              tool_use_id: block.id,
+              content: result,
+            });
+          }
+
+          currentMessages.push({ role: "user", content: toolResults as never });
         }
+      } catch (error) {
+        console.error("AI chat error:", error);
+        send({ error: "Failed to process request. Please try again." });
+      } finally {
+        controller.close();
       }
+    },
+  });
 
-      if (response.stop_reason !== "tool_use") break;
-
-      // Execute tool calls
-      currentMessages.push({ role: "assistant", content: response.content as never });
-
-      const toolResults: { type: "tool_result"; tool_use_id: string; content: string }[] = [];
-      for (const block of response.content) {
-        if (block.type === "tool_use") {
-          if (!READ_ONLY_TOOLS.has(block.name)) toolsUsed = true;
-          const result = await executeAITool(
-            block.name,
-            block.input as Record<string, unknown>,
-            session.user.role as "SUPER_ADMIN" | "BRANCH_MANAGER" | "STAFF",
-            session.user.regionId ?? null,
-            session.user.id,
-            session.user.organizationId ?? undefined,
-          );
-          toolResults.push({ type: "tool_result", tool_use_id: block.id, content: result });
-        }
-      }
-
-      currentMessages.push({ role: "user", content: toolResults as never });
-    }
-
-    // Increment AI usage counter
-    if (organizationId) {
-      await db.organization.update({
-        where: { id: organizationId },
-        data: { aiRequestsUsed: { increment: 1 } },
-      }).catch(() => {}); // Don't fail the response if counter update fails
-    }
-
-    return Response.json({ response: finalText, dataChanged: toolsUsed });
-  } catch (error) {
-    console.error("AI chat error:", error);
-    return Response.json(
-      { error: "Failed to process request. Please try again." },
-      { status: 500 },
-    );
-  }
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    },
+  });
 }
