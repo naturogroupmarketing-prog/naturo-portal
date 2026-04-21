@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { Icon } from "@/components/ui/icon";
-import { Logo } from "@/components/ui/logo";
 import { NotificationBell } from "./notification-bell";
 import { useTheme } from "@/components/theme-provider";
 import { CommandSearch } from "@/components/ui/command-search";
@@ -97,7 +96,13 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
         {/* Logo — always visible at original size */}
         <Link href="/dashboard" className="flex items-center hover:opacity-80 transition-opacity">
-          <Logo size={72} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/Logotrackio.svg"
+            alt="trackio"
+            className="h-8 sm:h-[45px] w-auto"
+            draggable={false}
+          />
         </Link>
       </div>
 
