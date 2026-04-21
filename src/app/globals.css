@@ -374,53 +374,24 @@ a, button, [role="button"], input, select, textarea, label {
   to { transform: rotate(360deg); }
 }
 
-/* ── AI card — travelling gradient border ────────────────────────────────
-   Uses @property to animate the conic-gradient start angle directly.
-   This makes the colours travel *around* the border path rather than
-   sweeping inward, and the mask-composite technique keeps the ring
-   solid with no breaks or seams.                                        */
+/* ── AI card — solid animated gradient border ───────────────────────────
+   Outer wrapper provides the 2px gradient border via background + padding.
+   Inner wrapper clips the card content, leaving the gradient strip visible. */
 
-@property --ai-border-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes ai-border-travel {
-  to { --ai-border-angle: 360deg; }
+@keyframes ai-gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .ai-card-border {
-  position: relative;
   border-radius: 0.75rem;
-  isolation: isolate;
+  padding: 2px;
+  background: linear-gradient(135deg, #a78bfa, #60a5fa, #67e8f9, #e879f9, #a78bfa);
+  background-size: 300% 300%;
+  animation: ai-gradient-shift 5s ease infinite;
 }
 
-.ai-card-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 2px; /* border thickness */
-  background: conic-gradient(
-    from var(--ai-border-angle) at 50% 50%,
-    #a78bfa,   /* violet  */
-    #60a5fa,   /* blue    */
-    #67e8f9,   /* cyan    */
-    #e879f9,   /* fuchsia */
-    #a78bfa    /* back to violet — seamless loop */
-  );
-  /* Punch out the interior so only the 2px border ring is visible */
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: ai-border-travel 4s linear infinite;
-  pointer-events: none;
-}
-
-/* Inner card sits flush inside the border ring */
 .ai-card-inner {
   border-radius: calc(0.75rem - 2px);
   overflow: hidden;
