@@ -46,7 +46,8 @@ export function AiForecastWidget({ items }: Props) {
   const hasAny = items.length > 0;
 
   return (
-    <Card className="border-action-200">
+    <div className="ai-card-border"><div className="ai-card-inner">
+    <Card className="border-0 rounded-none">
       <div className="p-5">
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">
@@ -131,5 +132,6 @@ export function AiForecastWidget({ items }: Props) {
         )}
       </div>
     </Card>
+    </div></div>
   );
 }

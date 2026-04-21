@@ -143,7 +143,8 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
   };
 
   return (
-    <Card className="border-action-200 overflow-hidden">
+    <div className="ai-card-border"><div className="ai-card-inner">
+    <Card className="border-0 rounded-none overflow-hidden">
       {/* Header */}
       <div className="border-b border-shark-100 dark:border-shark-800 px-5 py-4">
         <div className="flex items-center gap-2">
@@ -242,5 +243,6 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
         </AnimatePresence>
       </div>
     </Card>
+    </div></div>
   );
 }

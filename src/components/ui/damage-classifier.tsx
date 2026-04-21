@@ -106,7 +106,8 @@ export function DamageClassifier({
       )}
 
       {result && sev && (
-        <div className="mt-3 rounded-xl border border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-800 shadow-sm overflow-hidden">
+        <div className="mt-3 ai-card-border"><div className="ai-card-inner">
+        <div className="rounded-none border-0 bg-white dark:bg-shark-800 shadow-sm overflow-hidden">
           {/* Header bar */}
           <div className="px-4 py-3 bg-shark-50/60 dark:bg-shark-800/60 border-b border-shark-100 dark:border-shark-700 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -190,6 +191,7 @@ export function DamageClassifier({
             </p>
           </div>
         </div>
+        </div></div>
       )}
     </div>
   );

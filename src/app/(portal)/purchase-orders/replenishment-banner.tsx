@@ -110,7 +110,8 @@ export function ReplenishmentBanner({ suggestions }: Props) {
   const grandEstimatedCost = visible.reduce((s, r) => s + (r.estimatedCost || 0), 0);
 
   return (
-    <Card className="border-[#E8532E]/20">
+    <div className="ai-card-border"><div className="ai-card-inner">
+    <Card className="border-0 rounded-none">
       <CardContent className="py-4 space-y-3">
 
         {/* Header — clickable to collapse/expand */}
@@ -274,5 +275,6 @@ export function ReplenishmentBanner({ suggestions }: Props) {
         </div>}
       </CardContent>
     </Card>
+    </div></div>
   );
 }
