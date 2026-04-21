@@ -13,13 +13,12 @@ export function Logo({ size = 32, className = "", iconOnly = false }: LogoProps)
         alt="trackio"
         draggable={false}
         style={{
-          // maxHeight keeps vertical rhythm; maxWidth prevents the 5:1 aspect-ratio
-          // SVG from overflowing the header on narrow phones (360 px Android).
-          // Both constraints together let the browser scale proportionally.
-          maxHeight: `${size * 0.7}px`,
-          maxWidth: "160px",
+          // Explicit height (not max-height) gives the browser a concrete render
+          // target so the SVG stays crisp at all sizes. width:auto preserves
+          // the aspect ratio; maxWidth guards against overflow on narrow phones.
+          height: `${Math.round(size * 0.7)}px`,
           width: "auto",
-          height: "auto",
+          maxWidth: "160px",
         }}
       />
     </span>
