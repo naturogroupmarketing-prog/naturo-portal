@@ -14,6 +14,29 @@ enum Role {
   BRANCH_MANAGER
   STAFF
   AUDITOR
+  TRACKIO_SUPPORT         // Internal Trackio L1/L2 support
+  TRACKIO_SUPPORT_SENIOR  // Internal Trackio L3 impersonation
+}
+
+enum SupportAccessLevel {
+  DIAGNOSTICS    // L1 — view diagnostics only, no tenant entry
+  READONLY       // L2 — enter tenant in strict view-only mode
+  IMPERSONATION  // L3 — act as a specific user, time-limited
+}
+
+enum SupportSessionStatus {
+  ACTIVE
+  ENDED
+  EXPIRED
+  REVOKED
+}
+
+enum SupportRequestStatus {
+  PENDING
+  APPROVED
+  DENIED
+  EXPIRED
+  CANCELLED
 }
 
 enum AssetStatus {
@@ -85,6 +108,17 @@ enum AuditAction {
   PURCHASE_ORDER_UPDATED
   REGION_ARCHIVED
   REGION_RESTORED
+  // Support system
+  SUPPORT_SESSION_STARTED
+  SUPPORT_SESSION_ENDED
+  SUPPORT_IMPERSONATION_STARTED
+  SUPPORT_IMPERSONATION_ENDED
+  SUPPORT_ACCESS_REQUESTED
+  SUPPORT_ACCESS_APPROVED
+  SUPPORT_ACCESS_DENIED
+  SUPPORT_ACCESS_REVOKED
+  SUPPORT_SETTINGS_UPDATED
+  SUPPORT_WRITE_BLOCKED
 }
 
 // ─── ORGANIZATION (Multi-Tenancy) ──────────────────────────
@@ -153,6 +187,9 @@ model Organization {
   customFieldDefs            CustomFieldDefinition[]
   starterKits    StarterKit[]
   workflowRules  WorkflowRule[]
+  supportPolicy   TenantSupportPolicy?
+  supportSessions SupportSession[]
+  supportRequests SupportAccessRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -891,4 +928,111 @@ model ManagerPermission {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ─── SUPPORT ACCESS SYSTEM ──────────────────────────────────────────────────
+
+/// Per-tenant configuration for Trackio support access.
+model TenantSupportPolicy {
+  id             String @id @default(cuid())
+  organizationId String @unique
+
+  supportAccessEnabled   Boolean            @default(true)
+  requireApproval        Boolean            @default(false)
+  defaultAccessLevel     SupportAccessLevel @default(READONLY)
+  sessionDurationMinutes Int                @default(60)
+  notifyOnEntry          Boolean            @default(true)
+  notifyOnImpersonation  Boolean            @default(true)
+  emergencyAccessEnabled Boolean            @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+/// A request from a support agent to access a tenant workspace.
+model SupportAccessRequest {
+  id             String @id @default(cuid())
+  organizationId String
+  agentId        String
+  agentEmail     String
+  agentName      String
+  accessLevel    SupportAccessLevel
+  targetUserId   String?
+  targetUserEmail String?
+  reason         String               @db.Text
+  status         SupportRequestStatus @default(PENDING)
+  approvedById   String?
+  approvedAt     DateTime?
+  deniedAt       DateTime?
+  statusNote     String?
+  sessionDurationMinutes Int @default(60)
+  expiresAt      DateTime
+  session        SupportSession?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([agentId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+/// An active or historical support session.
+model SupportSession {
+  id             String @id @default(cuid())
+  organizationId String
+  orgName        String
+  agentId        String
+  agentEmail     String
+  agentName      String
+  accessLevel    SupportAccessLevel
+  impersonatingUserId    String?
+  impersonatingUserEmail String?
+  impersonatingUserName  String?
+  status         SupportSessionStatus @default(ACTIVE)
+  startedAt      DateTime             @default(now())
+  endedAt        DateTime?
+  expiresAt      DateTime
+  ipAddress      String?
+  userAgent      String?
+  endReason      String?
+  approvedByAdmin      Boolean  @default(false)
+  approvalTimestamp    DateTime?
+  notes          String?  @db.Text
+  pagesVisited   String[] @default([])
+  writeAttempts  Int      @default(0)
+  accessRequestId String? @unique
+
+  organization  Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accessRequest SupportAccessRequest? @relation(fields: [accessRequestId], references: [id])
+  events        SupportSessionEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([agentId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+/// Individual events recorded during a support session.
+model SupportSessionEvent {
+  id          String @id @default(cuid())
+  sessionId   String
+  eventType   String
+  description String
+  metadata    String? @db.Text
+
+  createdAt DateTime @default(now())
+
+  session SupportSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([createdAt])
 }

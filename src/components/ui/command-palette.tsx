@@ -44,6 +44,7 @@ const COMMANDS: CommandItem[] = [
   { label: "Permissions",     href: "/admin/permissions", icon: "lock",      section: "Admin",       keywords: "role access" },
   { label: "Import Data",     href: "/admin/import",      icon: "upload",    section: "Admin",       keywords: "csv bulk" },
   { label: "Activity Log",    href: "/activity",          icon: "clock",     section: "Admin",       keywords: "audit trail history" },
+  { label: "Support Access",  href: "/settings/support-access", icon: "shield", section: "Admin",  keywords: "support access security audit agent session" },
   { label: "Billing",         href: "/admin/billing",     icon: "star",      section: "Admin",       keywords: "plan subscription upgrade" },
   { label: "Settings",        href: "/settings",          icon: "settings",  section: "Account",     keywords: "profile preferences password" },
 ];

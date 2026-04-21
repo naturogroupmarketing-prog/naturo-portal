@@ -57,6 +57,7 @@ const navSections: NavSection[] = [
       { label: "Permissions", href: "/admin/permissions", icon: "lock", roles: ["SUPER_ADMIN"] },
       { label: "Import Data", href: "/admin/import", icon: "upload", roles: ["SUPER_ADMIN"] },
       { label: "Activity Log", href: "/activity", icon: "clock", roles: ["SUPER_ADMIN"] },
+      { label: "Support Access", href: "/settings/support-access", icon: "shield", roles: ["SUPER_ADMIN"] },
       { label: "Workflows", href: "/admin/workflows", icon: "settings", roles: ["SUPER_ADMIN"] },
     ],
   },

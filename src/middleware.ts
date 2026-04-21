@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { SUPPORT_COOKIE, verifySupportToken } from "@/lib/support-session";
 
 // Domains that serve the marketing site
 const MARKETING_DOMAINS = new Set(["trackio.au", "www.trackio.au"]);
@@ -67,7 +68,8 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/api/webhooks") ||
     pathname.startsWith("/api/cron") ||
     pathname.startsWith("/_next") ||
-    pathname === "/favicon.ico"
+    pathname === "/favicon.ico" ||
+    pathname.startsWith("/support") // support console — auth handled in layout
   ) {
     return NextResponse.next();
   }
@@ -82,7 +84,25 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  // ── Support session injection ────────────────────────────────────────────
+  // If a valid support session cookie exists, inject headers so server
+  // components and API routes can read the support context without touching
+  // the DB on every request.  DB validation happens in API routes.
+  const supportToken = request.cookies.get(SUPPORT_COOKIE)?.value;
+  if (supportToken) {
+    const payload = verifySupportToken(supportToken);
+    if (payload) {
+      response.headers.set("x-support-session-id", payload.sessionId);
+      response.headers.set("x-support-org-id", payload.orgId);
+      response.headers.set("x-support-level", payload.level);
+      response.headers.set("x-support-agent-id", payload.agentId);
+      response.headers.set("x-support-expires-at", String(payload.expiresAt));
+    }
+  }
+
+  return response;
 }
 
 export const config = {
