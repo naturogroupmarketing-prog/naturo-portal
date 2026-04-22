@@ -13,6 +13,7 @@ import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { SessionTimeoutWarning } from "@/components/ui/session-timeout-warning";
 import { SupportBanner } from "@/components/support/support-banner";
 import { SupportDiagnosticsCapture } from "@/components/support/error-capture";
+import { InstallPrompt } from "@/components/ui/install-prompt";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -124,6 +125,7 @@ export default async function PortalLayout({
       <KeyboardShortcuts />
       <ScrollToTop />
       <SessionTimeoutWarning />
+      <InstallPrompt />
       {/* Silently captures JS errors & navigation events during support sessions */}
       <SupportDiagnosticsCapture sessionId={activeSupportSession?.sessionId ?? null} />
     </>
