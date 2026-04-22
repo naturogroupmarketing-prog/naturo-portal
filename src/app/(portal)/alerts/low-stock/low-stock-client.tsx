@@ -75,13 +75,13 @@ function ItemTooltip({ data, onKeepOpen, onClose }: { data: TooltipState; onKeep
     const tipH = ref.current.offsetHeight;
     const vpH = window.innerHeight;
 
-    // Horizontal: prefer LEFT of trigger so mouse moves left into tooltip
+    // Horizontal: prefer RIGHT of trigger so mouse moves right into tooltip
     // (avoids crossing the next row when moving down toward a below-tooltip)
-    let left = data.anchorLeft - TIP_W - TIP_GAP;
-    if (left < 8) {
-      // Not enough room on left — try right of trigger
-      left = data.anchorRight + TIP_GAP;
-      if (left + TIP_W > vpW - 8) left = vpW - TIP_W - 8;
+    let left = data.anchorRight + TIP_GAP;
+    if (left + TIP_W > vpW - 8) {
+      // Not enough room on right — try left of trigger
+      left = data.anchorLeft - TIP_W - TIP_GAP;
+      if (left < 8) left = 8;
     }
 
     // Vertical: centre tooltip with the trigger element
