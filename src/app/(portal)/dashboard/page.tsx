@@ -249,6 +249,11 @@ async function fetchStaffData(userId: string, organizationId: string) {
       conditionCheckDueDate: conditionCheckSchedule?.nextDueDate?.toISOString() || null,
       inspectionSchedules: JSON.parse(JSON.stringify(inspectionSchedules)),
       consumableUsageHistory,
+      // Counts for AI briefing
+      assetCount,
+      consumableCount,
+      pendingRequestCount,
+      pendingConfirmCount,
     };
 }
 
@@ -338,26 +343,58 @@ export default async function DashboardPage() {
 
   // Staff dashboard — fetch and render
   if (session.user.role === "STAFF") {
-    const staffData = await fetchStaffData(session.user.id, session.user.organizationId!);
+    const [staffData, staffOrgRecord] = await Promise.all([
+      fetchStaffData(session.user.id, session.user.organizationId!),
+      db.organization.findUnique({
+        where: { id: session.user.organizationId! },
+        select: { name: true },
+      }),
+    ]);
+
+    const staffConditionChecksDue = staffData.conditionCheckItems.filter((i) => !i.checked).length;
+    // pendingConfirmations = unacknowledged consumable kit items + unacknowledged asset kit items
+    const staffPendingConfirmations = staffData.pendingConfirmCount + staffData.unacknowledgedCount;
+
     return (
-      <StaffDashboardClient
-        stats={staffData.staffStats}
-        recentAssets={staffData.recentAssets}
-        recentConsumables={staffData.recentConsumables}
-        recentRequests={staffData.recentRequests}
-        unacknowledgedCount={staffData.unacknowledgedCount}
-        pendingAssetItems={staffData.pendingAssetItems}
-        pendingConsumableItems={staffData.pendingConsumableItems}
-        activeKitApplications={staffData.activeKitApplications}
-        individualAssets={staffData.individualAssets}
-        individualConsumables={staffData.individualConsumables}
-        conditionCheckItems={staffData.conditionCheckItems}
-        conditionCheckMonth={staffData.conditionCheckMonth}
-        conditionCheckFrequency={staffData.conditionCheckFrequency}
-        conditionCheckDueDate={staffData.conditionCheckDueDate}
-        inspectionSchedules={staffData.inspectionSchedules}
-        consumableUsageHistory={staffData.consumableUsageHistory}
-      />
+      <>
+        <AiBriefingWidget
+          orgName={staffOrgRecord?.name ?? "Your Organisation"}
+          lowStockCount={0}
+          criticalStockCount={0}
+          overdueReturns={0}
+          pendingApprovals={staffData.pendingRequestCount}
+          unresolvedDamage={0}
+          healthScore={100}
+          depletionForecasts={[]}
+          recentAnomalyCount={0}
+          staffUnacknowledgedCount={0}
+          date={new Date().toISOString()}
+          userRole="staff"
+          userName={session.user.name ?? undefined}
+          assignedAssetsCount={staffData.assetCount}
+          assignedConsumablesCount={staffData.consumableCount}
+          pendingConfirmations={staffPendingConfirmations}
+          conditionChecksDue={staffConditionChecksDue}
+        />
+        <StaffDashboardClient
+          stats={staffData.staffStats}
+          recentAssets={staffData.recentAssets}
+          recentConsumables={staffData.recentConsumables}
+          recentRequests={staffData.recentRequests}
+          unacknowledgedCount={staffData.unacknowledgedCount}
+          pendingAssetItems={staffData.pendingAssetItems}
+          pendingConsumableItems={staffData.pendingConsumableItems}
+          activeKitApplications={staffData.activeKitApplications}
+          individualAssets={staffData.individualAssets}
+          individualConsumables={staffData.individualConsumables}
+          conditionCheckItems={staffData.conditionCheckItems}
+          conditionCheckMonth={staffData.conditionCheckMonth}
+          conditionCheckFrequency={staffData.conditionCheckFrequency}
+          conditionCheckDueDate={staffData.conditionCheckDueDate}
+          inspectionSchedules={staffData.inspectionSchedules}
+          consumableUsageHistory={staffData.consumableUsageHistory}
+        />
+      </>
     );
   }
 

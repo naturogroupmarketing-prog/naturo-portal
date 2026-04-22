@@ -15,6 +15,13 @@ export interface AiBriefingWidgetProps {
   recentAnomalyCount: number;
   staffUnacknowledgedCount: number;
   date: string;
+  // Staff-specific optional fields
+  userRole?: "admin" | "staff";
+  userName?: string;
+  assignedAssetsCount?: number;
+  assignedConsumablesCount?: number;
+  pendingConfirmations?: number;
+  conditionChecksDue?: number;
 }
 
 function getThirtyMinuteBucket(): string {
@@ -30,6 +37,7 @@ const cachedGenerate = cache(
 
 export async function AiBriefingWidget(props: AiBriefingWidgetProps) {
   const { criticalStockCount, overdueReturns, pendingApprovals, unresolvedDamage, date } = props;
+  const isStaff = props.userRole === "staff";
 
   const displayDate = new Date(date).toLocaleDateString("en-AU", {
     weekday: "short",
@@ -49,26 +57,50 @@ export async function AiBriefingWidget(props: AiBriefingWidgetProps) {
     depletionForecasts: props.depletionForecasts,
     recentAnomalyCount: props.recentAnomalyCount,
     staffUnacknowledgedCount: props.staffUnacknowledgedCount,
+    userRole: props.userRole,
+    userName: props.userName,
+    assignedAssetsCount: props.assignedAssetsCount,
+    assignedConsumablesCount: props.assignedConsumablesCount,
+    pendingConfirmations: props.pendingConfirmations,
+    conditionChecksDue: props.conditionChecksDue,
   };
 
   let initialContent: BriefingContent;
   try {
     initialContent = await cachedGenerate(input, getThirtyMinuteBucket());
   } catch {
-    initialContent = {
-      text: `Operations are running at ${props.healthScore}% health today.`,
-      actions: [],
-      weekAhead: null,
-      staffInsight: null,
-    };
+    initialContent = isStaff
+      ? {
+          text: `You have ${props.assignedAssetsCount ?? 0} assigned asset${(props.assignedAssetsCount ?? 0) !== 1 ? "s" : ""} and ${props.assignedConsumablesCount ?? 0} supply item${(props.assignedConsumablesCount ?? 0) !== 1 ? "s" : ""}.`,
+          actions: [],
+          weekAhead: null,
+          staffInsight: null,
+        }
+      : {
+          text: `Operations are running at ${props.healthScore}% health today.`,
+          actions: [],
+          weekAhead: null,
+          staffInsight: null,
+        };
   }
 
-  // Derive focus chips deterministically
+  // Derive focus chips deterministically — role-aware
   const chips: { label: string; colorClass: string; href?: string }[] = [];
-  if (criticalStockCount > 0) chips.push({ label: "Stock Critical", colorClass: "bg-red-50 text-red-600 ring-1 ring-red-200", href: "/consumables?stock=critical" });
-  if (overdueReturns > 0) chips.push({ label: "Overdue Returns", colorClass: "bg-orange-50 text-orange-600 ring-1 ring-orange-200", href: "/returns" });
-  if (pendingApprovals > 0) chips.push({ label: "Needs Approval", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/purchase-orders?status=PENDING" });
-  if (unresolvedDamage > 0) chips.push({ label: "Damage Open", colorClass: "bg-amber-50 text-amber-600 ring-1 ring-amber-200", href: "/reports" });
+  if (isStaff) {
+    const pendingConfirmations = props.pendingConfirmations ?? 0;
+    const conditionChecksDue = props.conditionChecksDue ?? 0;
+    const assignedAssets = props.assignedAssetsCount ?? 0;
+    const assignedConsumables = props.assignedConsumablesCount ?? 0;
+    if (pendingConfirmations > 0) chips.push({ label: "Confirm Kit", colorClass: "bg-orange-50 text-orange-600 ring-1 ring-orange-200", href: "/my-assets" });
+    if (pendingApprovals > 0) chips.push({ label: "Request Pending", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/request-consumables" });
+    if (conditionChecksDue > 0) chips.push({ label: "Checks Due", colorClass: "bg-amber-50 text-amber-600 ring-1 ring-amber-200", href: "/my-assets" });
+    if (assignedAssets > 0 || assignedConsumables > 0) chips.push({ label: "My Equipment", colorClass: "bg-blue-50 text-blue-600 ring-1 ring-blue-200", href: "/my-assets" });
+  } else {
+    if (criticalStockCount > 0) chips.push({ label: "Stock Critical", colorClass: "bg-red-50 text-red-600 ring-1 ring-red-200", href: "/consumables?stock=critical" });
+    if (overdueReturns > 0) chips.push({ label: "Overdue Returns", colorClass: "bg-orange-50 text-orange-600 ring-1 ring-orange-200", href: "/returns" });
+    if (pendingApprovals > 0) chips.push({ label: "Needs Approval", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/purchase-orders?status=PENDING" });
+    if (unresolvedDamage > 0) chips.push({ label: "Damage Open", colorClass: "bg-amber-50 text-amber-600 ring-1 ring-amber-200", href: "/reports" });
+  }
 
   return (
     <div className="ai-card-border">

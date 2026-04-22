@@ -22,9 +22,40 @@ export interface BriefingInput {
   depletionForecasts: Array<{ name: string; daysRemaining: number; riskLevel: string }>;
   recentAnomalyCount: number;
   staffUnacknowledgedCount: number;
+  // Staff-specific optional fields
+  userRole?: "admin" | "staff";
+  userName?: string;
+  assignedAssetsCount?: number;
+  assignedConsumablesCount?: number;
+  pendingConfirmations?: number;
+  conditionChecksDue?: number;
 }
 
 function buildFallback(input: BriefingInput, mode: BriefingMode): BriefingContent {
+  // Staff-specific fallback
+  if (input.userRole === "staff") {
+    const assignedAssets = input.assignedAssetsCount ?? 0;
+    const assignedConsumables = input.assignedConsumablesCount ?? 0;
+    const pendingConfirmations = input.pendingConfirmations ?? 0;
+    const pendingApprovals = input.pendingApprovals ?? 0;
+    const conditionChecksDue = input.conditionChecksDue ?? 0;
+
+    const parts: string[] = [];
+    parts.push(`You currently have ${assignedAssets} assigned asset${assignedAssets !== 1 ? "s" : ""} and ${assignedConsumables} assigned supply item${assignedConsumables !== 1 ? "s" : ""}.`);
+    if (pendingConfirmations > 0) parts.push(`${pendingConfirmations} kit item${pendingConfirmations !== 1 ? "s" : ""} need${pendingConfirmations === 1 ? "s" : ""} your confirmation.`);
+    if (pendingApprovals > 0) parts.push(`You have ${pendingApprovals} pending supply request${pendingApprovals !== 1 ? "s" : ""}.`);
+    if (conditionChecksDue > 0) parts.push(`${conditionChecksDue} condition check${conditionChecksDue !== 1 ? "s are" : " is"} still due this month.`);
+
+    const text = parts.join(" ");
+
+    const actions: Array<{ label: string; href: string }> = [];
+    actions.push({ label: "My Assets", href: "/my-assets" });
+    if (pendingApprovals > 0) actions.push({ label: "Request Supplies", href: "/request-consumables" });
+
+    return { text, actions, weekAhead: null, staffInsight: null };
+  }
+
+  // Admin fallback (original logic)
   const { healthScore, criticalStockCount, lowStockCount, overdueReturns, pendingApprovals, unresolvedDamage } = input;
   const healthLabel = healthScore >= 85 ? "strong" : healthScore >= 65 ? "moderate" : "reduced";
 
@@ -67,12 +98,6 @@ export async function generateAiBriefing(
   input: BriefingInput,
   mode: BriefingMode
 ): Promise<BriefingContent> {
-  const depletingThisWeek = input.depletionForecasts.filter((d) => d.daysRemaining <= 7);
-  const depletingNames = depletingThisWeek
-    .slice(0, 3)
-    .map((d) => `${d.name} (~${d.daysRemaining}d)`)
-    .join(", ");
-
   const modeInstructions: Record<BriefingMode, string> = {
     summary: "Write 2-3 concise sentences covering key status and top priority only.",
     detailed:
@@ -80,6 +105,64 @@ export async function generateAiBriefing(
     alerts:
       "Focus ONLY on urgent issues requiring immediate action. Skip any positive metrics. Be direct and urgent. If nothing is urgent, say clearly that all systems are clear.",
   };
+
+  // Staff-specific prompt
+  if (input.userRole === "staff") {
+    const prompt = `You are an AI assistant giving a personal daily briefing to ${input.userName || "a staff member"} at ${input.orgName}.
+
+Mode: ${mode.toUpperCase()}
+Instructions for ${mode}: ${modeInstructions[mode]}
+
+Their current status:
+- Assigned assets: ${input.assignedAssetsCount ?? 0}
+- Assigned supplies: ${input.assignedConsumablesCount ?? 0}
+- Items pending your confirmation: ${input.pendingConfirmations ?? 0}
+- Pending supply requests: ${input.pendingApprovals ?? 0}
+- Condition checks still to complete: ${input.conditionChecksDue ?? 0}
+
+Respond ONLY with valid JSON (no markdown):
+{
+  "briefing": "<2-3 sentences personalised for this staff member about their equipment and actions>",
+  "actions": [
+    {"label": "<max 4 words>", "href": "<one of: /my-assets | /my-consumables | /request-consumables | /report-damage>"}
+  ],
+  "weekAhead": null,
+  "staffInsight": null
+}
+
+Only include actions for genuinely outstanding items. Keep tone direct, personal, supportive.`;
+
+    try {
+      const client = new Anthropic();
+      const message = await client.messages.create({
+        model: "claude-3-5-haiku-20241022",
+        max_tokens: 450,
+        messages: [{ role: "user", content: prompt }],
+      });
+
+      const textBlock = message.content.find((b) => b.type === "text");
+      if (!textBlock || textBlock.type !== "text") return buildFallback(input, mode);
+
+      const raw = textBlock.text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/, "");
+      const parsed = JSON.parse(raw);
+
+      return {
+        text: typeof parsed.briefing === "string" ? parsed.briefing : buildFallback(input, mode).text,
+        actions: Array.isArray(parsed.actions) ? parsed.actions.slice(0, 3) : [],
+        weekAhead: null,
+        staffInsight: null,
+      };
+    } catch {
+      return buildFallback(input, mode);
+    }
+  }
+
+  // Admin / manager prompt (original logic)
+  const depletingThisWeek = input.depletionForecasts.filter((d) => d.daysRemaining <= 7);
+  const depletingNames = depletingThisWeek
+    .slice(0, 3)
+    .map((d) => `${d.name} (~${d.daysRemaining}d)`)
+    .join(", ");
 
   const prompt = `You are the AI operations assistant for ${input.orgName}, an asset and inventory management platform.
 Generate an operational briefing for management.
