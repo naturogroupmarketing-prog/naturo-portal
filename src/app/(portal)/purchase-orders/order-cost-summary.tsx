@@ -24,31 +24,32 @@ function fmt(n: number) {
 
 export function OrderCostSummary({ regions, autoExpand }: Props) {
   const [collapsed, setCollapsed] = useState(!autoExpand);
+  const [highlighted, setHighlighted] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   // When arriving via the dashboard "Active Procurement" link, expand + scroll + highlight
   useEffect(() => {
     if (!autoExpand) return;
-    setCollapsed(false); // force open even if component was already mounted collapsed
+    setCollapsed(false);
     const scrollTimer = setTimeout(() => {
       cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      // Pulse the highlight ring after the scroll starts
       const highlightTimer = setTimeout(() => {
-        if (!cardRef.current) return;
-        cardRef.current.classList.add("consumable-highlight");
-        setTimeout(() => cardRef.current?.classList.remove("consumable-highlight"), 2800);
+        setHighlighted(true);
+        setTimeout(() => setHighlighted(false), 2000);
       }, 250);
       return () => clearTimeout(highlightTimer);
     }, 300);
     return () => clearTimeout(scrollTimer);
   }, [autoExpand]);
+
   const grandTotal = regions.reduce((s, r) => s + r.total, 0);
   const pendingTotal = regions.reduce((s, r) => s + r.pending, 0);
   const approvedTotal = regions.reduce((s, r) => s + r.approved, 0);
   const orderedTotal = regions.reduce((s, r) => s + r.ordered, 0);
 
   return (
-    <div ref={cardRef} className="rounded-xl"><Card className="border-action-100">
+    <div ref={cardRef}>
+      <Card className={`transition-all duration-500 ${highlighted ? "ring-2 ring-action-400 shadow-lg shadow-action-200/50 border-action-300" : "border-action-100"}`}>
       <CardContent className="py-4 space-y-3">
         {/* Header — clickable to collapse/expand */}
         <button
@@ -144,6 +145,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
           </>
         )}
       </CardContent>
-    </Card></div>
+    </Card>
+    </div>
   );
 }
