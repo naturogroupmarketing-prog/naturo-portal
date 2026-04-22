@@ -168,6 +168,7 @@ interface Props {
   canEditQty?: boolean;
   initialStatus?: string;
   initialRegion?: string;
+  initialAction?: string;
   showAllHistory?: boolean;
 }
 
@@ -177,7 +178,7 @@ function mapStatusToTab(status?: string, isSuperAdmin?: boolean): string {
   return map[status.toUpperCase()] || (isSuperAdmin ? "Pending" : "Ordered");
 }
 
-export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion, showAllHistory = false }: Props) {
+export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion, initialAction, showAllHistory = false }: Props) {
   const { addToast } = useToast();
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -187,7 +188,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   const [loading, setLoading] = useState<string | null>(null);
   const [viewOrder, setViewOrder] = useState<PurchaseOrder | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [showCreate, setShowCreate] = useState(false);
+  const [showCreate, setShowCreate] = useState(initialAction === "create");
   const [creating, setCreating] = useState(false);
 
   // Region selector state (super admin only)
