@@ -275,6 +275,11 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
   );
   const [regionDropdownOpen, setRegionDropdownOpen] = useState(false);
   const [regionSearch, setRegionSearch] = useState("");
+
+  // Sync region when deep-linking from dashboard (useState won't re-init on prop change)
+  useEffect(() => {
+    if (focusRegionId) setSelectedRegionId(focusRegionId);
+  }, [focusRegionId]);
   const regionDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -347,15 +352,15 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
   // ── Deep-link highlight: scroll to and flash the target item ─────────────
   useEffect(() => {
     if (!highlightId) return;
+    // 600ms gives the region sync useEffect + re-render time to settle
     const timer = setTimeout(() => {
       const all = document.querySelectorAll(`[data-ls-id="${highlightId}"]`);
       const el = Array.from(all).find((e) => (e as HTMLElement).offsetParent !== null) as HTMLElement | null;
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth", block: "center" });
       el.classList.add("consumable-highlight");
-      const cleanup = setTimeout(() => el.classList.remove("consumable-highlight"), 30000);
-      return () => clearTimeout(cleanup);
-    }, 400);
+      setTimeout(() => el.classList.remove("consumable-highlight"), 30000);
+    }, 600);
     return () => clearTimeout(timer);
   }, [highlightId]);
 
