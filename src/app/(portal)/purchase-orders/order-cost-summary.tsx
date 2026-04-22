@@ -24,14 +24,17 @@ function fmt(n: number) {
 
 export function OrderCostSummary({ regions, autoExpand }: Props) {
   const [collapsed, setCollapsed] = useState(!autoExpand);
+  const [glowing, setGlowing] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Scroll into view when arriving from dashboard
+  // Scroll into view and flash a blue ring when arriving from dashboard
   useEffect(() => {
     if (!autoExpand) return;
     setCollapsed(false);
     const timer = setTimeout(() => {
       cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setGlowing(true);
+      setTimeout(() => setGlowing(false), 2200);
     }, 300);
     return () => clearTimeout(timer);
   }, [autoExpand]);
@@ -43,7 +46,10 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
 
   return (
     <div ref={cardRef}>
-      <Card className={`border-action-100 ${autoExpand ? "card-spotlight" : ""}`}>
+      <Card
+        className="border-action-100"
+        style={glowing ? { boxShadow: "inset 0 0 0 2px #3B82F6, inset 0 0 24px rgba(59,130,246,0.15)", transition: "box-shadow 0.4s ease-out" } : { transition: "box-shadow 0.6s ease-out" }}
+      >
       <CardContent className="py-4 space-y-3">
         {/* Header — clickable to collapse/expand */}
         <button
