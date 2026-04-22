@@ -116,6 +116,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const { addToast } = useToast();
   const [hoveredQtyId, setHoveredQtyId] = useState<string | null>(null);
   const [qtyTooltipPos, setQtyTooltipPos] = useState<{ top: number; right: number } | null>(null);
+  const [assignedDropdownId, setAssignedDropdownId] = useState<string | null>(null);
+  const [assignedDropdownPos, setAssignedDropdownPos] = useState<{ top: number; left: number } | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [showCreate, setShowCreate] = useState(false);
   const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
@@ -203,6 +205,17 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showColumnMenu]);
+
+  // Close assigned-to dropdown on outside click
+  useEffect(() => {
+    if (!assignedDropdownId) return;
+    const handler = (e: MouseEvent) => {
+      setAssignedDropdownId(null);
+      setAssignedDropdownPos(null);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [assignedDropdownId]);
 
   const toggleColumn = (col: keyof typeof visibleColumns) => {
     setVisibleColumns((prev) => {
@@ -737,13 +750,54 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
                       {activeAssignments.length > 0 ? (
                         <button
-                          onClick={() => setStaffModalUserId(activeAssignments[0].user.id)}
-                          className="inline-flex items-center gap-1.5 text-xs font-medium text-action-600 bg-action-50 hover:bg-action-100 dark:bg-action-500/10 dark:hover:bg-action-500/20 px-2.5 py-1 rounded-lg max-w-full truncate transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (assignedDropdownId === c.id) {
+                              setAssignedDropdownId(null);
+                              setAssignedDropdownPos(null);
+                            } else {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              setAssignedDropdownId(c.id);
+                              setAssignedDropdownPos({ top: rect.bottom + 4, left: rect.left });
+                            }
+                          }}
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-action-600 bg-action-50 hover:bg-action-100 dark:bg-action-500/10 dark:hover:bg-action-500/20 px-2.5 py-1 rounded-lg max-w-full transition-colors"
                         >
                           <Icon name="users" size={11} />
                           <span className="truncate">{activeAssignments.length} staff ({activeAssignments.reduce((s, a) => s + a.quantity, 0)})</span>
+                          <Icon name="chevron-down" size={10} className={`shrink-0 transition-transform ${assignedDropdownId === c.id ? "rotate-180" : ""}`} />
                         </button>
                       ) : <span className="text-shark-400">{"\u2014"}</span>}
+                      {assignedDropdownId === c.id && assignedDropdownPos && (
+                        <div
+                          className="fixed z-[9999] bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-xl shadow-xl overflow-hidden"
+                          style={{ top: assignedDropdownPos.top, left: assignedDropdownPos.left, minWidth: 200 }}
+                          onMouseDown={(e) => e.stopPropagation()}
+                        >
+                          <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-shark-400 border-b border-shark-100 dark:border-shark-800">
+                            Assigned Staff
+                          </p>
+                          {activeAssignments.map((a) => (
+                            <button
+                              key={a.id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setStaffModalUserId(a.user.id);
+                                setAssignedDropdownId(null);
+                              }}
+                              className="w-full flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 text-left transition-colors"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-6 h-6 rounded-full bg-action-100 dark:bg-action-500/20 flex items-center justify-center shrink-0">
+                                  <Icon name="user" size={12} className="text-action-600" />
+                                </div>
+                                <span className="text-sm text-shark-800 dark:text-shark-200 truncate">{a.user.name || a.user.email}</span>
+                              </div>
+                              <span className="text-xs font-medium text-shark-400 shrink-0">×{a.quantity}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </td>
                     )}
                     <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
