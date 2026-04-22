@@ -144,6 +144,23 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const [stockFilter, setStockFilter] = useState(initialStock || "ALL");
   const [staffModalUserId, setStaffModalUserId] = useState<string | null>(null);
 
+  // Region selector (Super Admin only)
+  const [selectedRegionId, setSelectedRegionId] = useState<string>("ALL");
+  const [regionDropdownOpen, setRegionDropdownOpen] = useState(false);
+  const [regionSearch, setRegionSearch] = useState("");
+  const regionDropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!regionDropdownOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (regionDropdownRef.current && !regionDropdownRef.current.contains(e.target as Node)) {
+        setRegionDropdownOpen(false);
+        setRegionSearch("");
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [regionDropdownOpen]);
+
   // Collapsed sections state
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(new Set());
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
@@ -299,6 +316,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const setSearchAndClear = (v: string) => { setSearch(v); setSelectedIds(new Set()); };
 
   const filtered = consumables.filter((c) => {
+    // Region filter (Super Admin only)
+    if (isSuperAdmin && selectedRegionId !== "ALL" && c.region.id !== selectedRegionId) return false;
     // Stock level filter (set via ?stock= deep-link from dashboard)
     if (stockFilter && stockFilter !== "ALL") {
       if (stockFilter === "critical" && !(c.riskLevel === "critical" || c.quantityOnHand === 0)) return false;
@@ -845,6 +864,100 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   return (
     <>
       <Card padding="none">
+
+      {/* Region selector — Super Admin only */}
+      {isSuperAdmin && regions.length > 0 && (
+        <div className="relative border-b border-shark-100 dark:border-shark-800" ref={regionDropdownRef}>
+          <button
+            onClick={() => { setRegionDropdownOpen((o) => !o); setRegionSearch(""); }}
+            className="w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors text-left"
+          >
+            <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+              <Icon name="map-pin" size={14} className="text-action-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">
+                  {selectedRegionId === "ALL"
+                    ? "All Locations"
+                    : regions.find((r) => r.id === selectedRegionId)?.name ?? "Select location"}
+                </span>
+                <Icon name="chevron-down" size={13} className={`text-shark-400 transition-transform shrink-0 ${regionDropdownOpen ? "rotate-180" : ""}`} />
+              </div>
+              <p className="text-xs text-shark-400">
+                {selectedRegionId === "ALL"
+                  ? `${regions.length} locations · tap to filter`
+                  : `${regions.find((r) => r.id === selectedRegionId)?.state.name ?? ""} · tap to switch`}
+              </p>
+            </div>
+            {selectedRegionId !== "ALL" && (
+              <button
+                onClick={(e) => { e.stopPropagation(); setSelectedRegionId("ALL"); }}
+                className="text-[11px] font-semibold text-shark-400 hover:text-shark-700 px-2 py-1 rounded-lg hover:bg-shark-100 dark:hover:bg-shark-700 transition-colors shrink-0"
+              >
+                Clear
+              </button>
+            )}
+          </button>
+
+          {regionDropdownOpen && (
+            <div className="absolute left-0 right-0 top-full z-50 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 shadow-xl rounded-b-xl overflow-hidden">
+              <div className="px-3 py-2.5 border-b border-shark-100 dark:border-shark-700">
+                <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-1.5">
+                  <Icon name="search" size={13} className="text-shark-400 shrink-0" />
+                  <input
+                    autoFocus
+                    value={regionSearch}
+                    onChange={(e) => setRegionSearch(e.target.value)}
+                    placeholder="Search locations..."
+                    className="flex-1 bg-transparent text-sm text-shark-800 dark:text-shark-100 placeholder-shark-400 outline-none"
+                  />
+                </div>
+              </div>
+              <div className="max-h-64 overflow-y-auto">
+                {/* All locations option */}
+                <button
+                  onClick={() => { setSelectedRegionId("ALL"); setRegionDropdownOpen(false); setRegionSearch(""); }}
+                  className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left hover:bg-action-50 dark:hover:bg-action-500/10 transition-colors ${selectedRegionId === "ALL" ? "bg-action-50 dark:bg-action-500/10 font-semibold text-action-600" : "text-shark-700 dark:text-shark-300"}`}
+                >
+                  <Icon name="map-pin" size={13} className="text-shark-400 shrink-0" />
+                  All Locations
+                </button>
+                {(() => {
+                  const q = regionSearch.toLowerCase();
+                  const filteredRegions = regions.filter(
+                    (r) => r.name.toLowerCase().includes(q) || r.state.name.toLowerCase().includes(q)
+                  );
+                  if (filteredRegions.length === 0) return <p className="text-sm text-shark-400 text-center py-4">No locations found</p>;
+                  const byState = filteredRegions.reduce<Record<string, typeof regions>>((acc, r) => {
+                    const s = r.state.name;
+                    if (!acc[s]) acc[s] = [];
+                    acc[s].push(r);
+                    return acc;
+                  }, {});
+                  return Object.entries(byState).map(([stateName, stateRegions]) => (
+                    <div key={stateName}>
+                      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
+                        {stateName}
+                      </p>
+                      {stateRegions.map((r) => (
+                        <button
+                          key={r.id}
+                          onClick={() => { setSelectedRegionId(r.id); setRegionDropdownOpen(false); setRegionSearch(""); }}
+                          className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left hover:bg-action-50 dark:hover:bg-action-500/10 transition-colors ${r.id === selectedRegionId ? "bg-action-50 dark:bg-action-500/10 font-semibold text-action-600" : "text-shark-700 dark:text-shark-300"}`}
+                        >
+                          <Icon name="map-pin" size={13} className="text-shark-400 shrink-0" />
+                          {r.name}
+                        </button>
+                      ))}
+                    </div>
+                  ));
+                })()}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Header: icon + title + count + actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-800">
