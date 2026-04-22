@@ -722,18 +722,21 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <>
+      <Card padding="none">
+
+      {/* Header: icon + title + count + actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-800">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
             <Icon name="droplet" size={14} className="text-action-600" />
           </div>
           <div>
             <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Supplies</h3>
-            <p className="text-xs text-shark-400">{consumables.length} total items</p>
+            <p className="text-xs text-shark-400">{consumables.length} total items{pendingRequests.length > 0 ? ` · ${pendingRequests.length} pending` : ""}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <ViewToggle value={viewMode} onChange={setViewMode} />
           <Button variant="outline" size="sm" onClick={() => setShowManageSections(true)}>
             <Icon name="settings" size={14} className="mr-1.5" />
@@ -753,71 +756,76 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
-        <button
-          onClick={() => setTab("stock")}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "stock" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
-          }`}
-        >
-          Stock Levels
-        </button>
-        <button
-          onClick={() => setTab("requests")}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-            tab === "requests" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
-          }`}
-        >
-          Requests {pendingRequests.length > 0 && (
-            <span className="ml-1.5 bg-action-400 text-white text-xs rounded-full px-2 py-0.5">
-              {pendingRequests.length}
-            </span>
-          )}
-        </button>
+      <div className="px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-800">
+        <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
+          <button
+            onClick={() => setTab("stock")}
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+              tab === "stock" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
+            }`}
+          >
+            Stock Levels
+          </button>
+          <button
+            onClick={() => setTab("requests")}
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+              tab === "requests" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
+            }`}
+          >
+            Requests {pendingRequests.length > 0 && (
+              <span className="ml-1.5 bg-action-400 text-white text-xs rounded-full px-2 py-0.5">
+                {pendingRequests.length}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
 
+      {/* Search + Export + Bulk Delete — border-b, stock tab only */}
       {tab === "stock" && (
-        <>
-          {/* Search + Delete Selected */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <Input
-              placeholder="Search supplies..."
-              value={search}
-              onChange={(e) => setSearchAndClear(e.target.value)}
-              className="flex-1 sm:max-w-md"
-            />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-800">
+          <Input
+            placeholder="Search supplies..."
+            value={search}
+            onChange={(e) => setSearchAndClear(e.target.value)}
+            className="flex-1 sm:max-w-md"
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              const rows = filtered.map((c) => ({
+                "Name": c.name,
+                "Category": c.category,
+                "Unit Type": c.unitType,
+                "Quantity on Hand": c.quantityOnHand,
+                "Minimum Threshold": c.minimumThreshold,
+                "Reorder Level": c.reorderLevel,
+                "Unit Cost": c.unitCost != null ? c.unitCost : "",
+                "Region": c.region.name,
+              }));
+              exportToCSV(rows as Record<string, unknown>[], "consumables.csv");
+            }}
+          >
+            <Icon name="download" size={14} className="mr-1" />
+            Export
+          </Button>
+          {selectedIds.size > 0 && (
             <Button
+              variant="danger"
               size="sm"
-              variant="outline"
-              onClick={() => {
-                const rows = filtered.map((c) => ({
-                  "Name": c.name,
-                  "Category": c.category,
-                  "Unit Type": c.unitType,
-                  "Quantity on Hand": c.quantityOnHand,
-                  "Minimum Threshold": c.minimumThreshold,
-                  "Reorder Level": c.reorderLevel,
-                  "Unit Cost": c.unitCost != null ? c.unitCost : "",
-                  "Region": c.region.name,
-                }));
-                exportToCSV(rows as Record<string, unknown>[], "consumables.csv");
-              }}
+              onClick={() => setShowBulkDelete(true)}
             >
-              <Icon name="download" size={14} className="mr-1" />
-              Export
+              Delete Selected ({selectedIds.size})
             </Button>
-            {selectedIds.size > 0 && (
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={() => setShowBulkDelete(true)}
-              >
-                Delete Selected ({selectedIds.size})
-              </Button>
-            )}
-          </div>
+          )}
+        </div>
+      )}
 
-          {/* Grouped Sections */}
+      {/* Content */}
+      <div className="p-4 sm:p-5 space-y-6">
+        {tab === "stock" && (
+          <>
           {consumables.length === 0 ? (
             <EmptyState
               icon="droplet"
@@ -947,11 +955,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               );
             })
           )}
-        </>
-      )}
+          </>
+        )}
 
-      {tab === "requests" && (
-        <Card>
+        {tab === "requests" && (
+          <>
           {/* Mobile: card layout */}
           <div className="sm:hidden divide-y divide-shark-50 dark:divide-shark-800">
             {pendingRequests.length === 0 ? (
@@ -1032,8 +1040,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               </tbody>
             </table>
           </div>
-        </Card>
-      )}
+          </>
+        )}
+      </div>
+    </Card>
 
       {/* Bulk Delete Confirmation Modal */}
       <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Supplies">
@@ -1690,6 +1700,6 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           );
         })()}
       </Modal>
-    </div>
+    </>
   );
 }
