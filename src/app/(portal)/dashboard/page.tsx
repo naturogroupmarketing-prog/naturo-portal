@@ -1107,8 +1107,8 @@ export default async function DashboardPage() {
     });
   }
 
-  // 3. Low stock / out-of-stock items (from already-fetched lowStockItems)
-  for (const item of (lowStockItems as { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number; region: { name: string } }[]).slice(0, 5)) {
+  // 3. Low stock / out-of-stock items — link to low-stock alert page (not create modal)
+  for (const item of (lowStockItems as { id: string; name: string; unitType: string; quantityOnHand: number; minimumThreshold: number; region: { id: string; name: string } }[]).slice(0, 5)) {
     const isOut = item.quantityOnHand === 0;
     actionItems.push({
       id: `stock-${item.id}`,
@@ -1116,18 +1116,17 @@ export default async function DashboardPage() {
       type: "stock",
       title: isOut ? `Out of stock: ${item.name}` : `Low stock: ${item.name}`,
       description: `${item.region.name} · ${item.quantityOnHand} left (min: ${item.minimumThreshold} ${item.unitType})`,
-      href: "/purchase-orders?action=create",
+      href: `/alerts/low-stock?region=${item.region.id}`,
       timeLabel: isOut ? "Out of stock" : `${item.quantityOnHand} remaining`,
     });
   }
 
-  // 4. Pending POs — one action item per PO so user can click directly to it
+  // 4. Pending POs — one action item per PO linking directly to that row with highlight
   for (const po of (pendingPOsDetail as { id: string; createdAt: Date; quantity: number; consumable: { name: string; unitType: string }; createdBy: { name: string | null } | null }[])) {
     const ageMs = nowMs - new Date(po.createdAt).getTime();
     const ageDays = Math.floor(ageMs / (24 * 60 * 60 * 1000));
     const ageHours = Math.floor(ageMs / (60 * 60 * 1000));
     const createdBy = po.createdBy?.name || "Admin";
-    // Always urgent — any PO sitting pending is blocking procurement
     const priority: "urgent" | "critical" = ageDays >= 3 ? "critical" : "urgent";
     actionItems.push({
       id: `po-${po.id}`,
@@ -1135,7 +1134,8 @@ export default async function DashboardPage() {
       type: "po",
       title: "Purchase order created — awaiting approval",
       description: `${po.quantity} ${po.consumable.unitType} of ${po.consumable.name} · Created by ${createdBy}`,
-      href: `/purchase-orders?highlight=${po.id}`,
+      // status=PENDING ensures the Pending tab is active from initial render (not just useEffect)
+      href: `/purchase-orders?status=PENDING&highlight=${po.id}`,
       timeLabel: ageDays > 0 ? `${ageDays}d ago` : ageHours > 0 ? `${ageHours}h ago` : "Just now",
     });
   }
