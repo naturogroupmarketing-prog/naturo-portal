@@ -667,19 +667,19 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800 dark:text-shark-200">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
                     {visibleColumns.qty && <td className="px-4 py-3 text-right">
-                      <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
-                      {c.avgDailyUsage && c.avgDailyUsage > 0 && (
-                        <span className={`ml-1.5 text-[10px] font-medium px-1 py-0.5 rounded ${
-                          c.riskLevel === "critical" ? "bg-red-50 text-red-500" :
-                          c.riskLevel === "warning" ? "bg-amber-50 text-amber-500" :
-                          "text-shark-400"
-                        }`}>
-                          {(() => {
-                            const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
-                            return daysLeft <= 0 ? "0d" : `${daysLeft}d`;
-                          })()}
-                        </span>
-                      )}
+                      <div className="relative inline-flex items-center justify-end group/qty">
+                        <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
+                        {c.avgDailyUsage && c.avgDailyUsage > 0 && (() => {
+                          const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
+                          const label = daysLeft <= 0 ? "Depleted" : `~${daysLeft}d left`;
+                          const tipColor = c.riskLevel === "critical" ? "bg-red-600" : c.riskLevel === "warning" ? "bg-amber-500" : "bg-shark-800";
+                          return (
+                            <span className={`pointer-events-none absolute right-0 bottom-full mb-1.5 whitespace-nowrap text-[11px] font-medium text-white px-2 py-1 rounded-lg shadow-lg opacity-0 group-hover/qty:opacity-100 transition-opacity duration-150 z-10 ${tipColor}`}>
+                              {label}
+                            </span>
+                          );
+                        })()}
+                      </div>
                     </td>}
                     {visibleColumns.assignedTo && (
                     <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
