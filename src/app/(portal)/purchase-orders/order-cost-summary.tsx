@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 
@@ -15,21 +15,32 @@ interface RegionCost {
 
 interface Props {
   regions: RegionCost[];
+  autoExpand?: boolean;
 }
 
 function fmt(n: number) {
   return n.toLocaleString("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
 }
 
-export function OrderCostSummary({ regions }: Props) {
-  const [collapsed, setCollapsed] = useState(true);
+export function OrderCostSummary({ regions, autoExpand }: Props) {
+  const [collapsed, setCollapsed] = useState(!autoExpand);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // When arriving via the dashboard "Active Procurement" link, scroll into view
+  useEffect(() => {
+    if (!autoExpand) return;
+    const timer = setTimeout(() => {
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [autoExpand]);
   const grandTotal = regions.reduce((s, r) => s + r.total, 0);
   const pendingTotal = regions.reduce((s, r) => s + r.pending, 0);
   const approvedTotal = regions.reduce((s, r) => s + r.approved, 0);
   const orderedTotal = regions.reduce((s, r) => s + r.ordered, 0);
 
   return (
-    <Card className="border-action-100">
+    <div ref={cardRef}><Card className="border-action-100">
       <CardContent className="py-4 space-y-3">
         {/* Header — clickable to collapse/expand */}
         <button
@@ -125,6 +136,6 @@ export function OrderCostSummary({ regions }: Props) {
           </>
         )}
       </CardContent>
-    </Card>
+    </Card></div>
   );
 }

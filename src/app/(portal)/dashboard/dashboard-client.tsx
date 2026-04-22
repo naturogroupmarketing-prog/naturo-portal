@@ -354,7 +354,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               <QuickActionsBar role={isSuperAdmin ? "superadmin" : "manager"} />
               {/* Procurement cost banner — shows whenever there are active POs */}
               {isSuperAdmin && activePOCount > 0 && (
-                <Link href="/purchase-orders" className="block group">
+                <Link href="/purchase-orders?section=pipeline" className="block group">
                   <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-action-200 bg-action-50/60 backdrop-blur-sm hover:shadow-md transition-all duration-200">
                     <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
                       <Icon name="truck" size={15} className="text-action-600" />

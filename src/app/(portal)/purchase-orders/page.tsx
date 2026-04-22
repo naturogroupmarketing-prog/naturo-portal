@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function PurchaseOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string; showAll?: string; action?: string; highlight?: string }> }) {
+export default async function PurchaseOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string; showAll?: string; action?: string; highlight?: string; section?: string }> }) {
   const params = await searchParams;
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/login");
@@ -199,7 +199,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         <ReplenishmentBanner suggestions={replenishmentSuggestions} />
       )}
       {isSuperAdmin && poCostSummary.length > 0 && (
-        <OrderCostSummary regions={poCostSummary} />
+        <OrderCostSummary regions={poCostSummary} autoExpand={params.section === "pipeline"} />
       )}
       <PurchaseOrdersClient
         purchaseOrders={JSON.parse(JSON.stringify(purchaseOrders))}
