@@ -353,7 +353,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth", block: "center" });
       el.classList.add("consumable-highlight");
-      const cleanup = setTimeout(() => el.classList.remove("consumable-highlight"), 2800);
+      const cleanup = setTimeout(() => el.classList.remove("consumable-highlight"), 30000);
       return () => clearTimeout(cleanup);
     }, 400);
     return () => clearTimeout(timer);

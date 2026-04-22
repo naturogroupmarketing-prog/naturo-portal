@@ -260,7 +260,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       el.scrollIntoView({ behavior: "smooth", block: "center" });
       el.classList.add("consumable-highlight");
       // Remove the highlight class after the animation finishes
-      const cleanup = setTimeout(() => el.classList.remove("consumable-highlight"), 2800);
+      const cleanup = setTimeout(() => el.classList.remove("consumable-highlight"), 30000);
       return () => clearTimeout(cleanup);
     }, 300);
     return () => clearTimeout(timer);

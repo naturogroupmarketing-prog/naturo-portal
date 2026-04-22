@@ -205,7 +205,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth", block: "center" });
       el.classList.add("consumable-highlight");
-      setTimeout(() => el.classList.remove("consumable-highlight"), 2800);
+      setTimeout(() => el.classList.remove("consumable-highlight"), 30000);
     }, 500);
     return () => clearTimeout(timer);
   }, [highlightId]); // eslint-disable-line react-hooks/exhaustive-deps

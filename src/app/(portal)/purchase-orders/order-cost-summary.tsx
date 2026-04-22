@@ -34,7 +34,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
     const timer = setTimeout(() => {
       cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       setGlowing(true);
-      setTimeout(() => setGlowing(false), 2200);
+      setTimeout(() => setGlowing(false), 30000);
     }, 300);
     return () => clearTimeout(timer);
   }, [autoExpand]);
@@ -48,7 +48,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
     <div ref={cardRef}>
       <Card
         className="border-action-100"
-        style={glowing ? { boxShadow: "inset 0 0 0 2px #3B82F6, inset 0 0 24px rgba(59,130,246,0.15)", transition: "box-shadow 0.4s ease-out" } : { transition: "box-shadow 0.6s ease-out" }}
+        style={glowing ? { boxShadow: "inset 0 0 0 2px #3B82F6, inset 0 0 24px rgba(59,130,246,0.15)", transition: "box-shadow 0.4s ease-out" } : { transition: "box-shadow 2s ease-out" }}
       >
       <CardContent className="py-4 space-y-3">
         {/* Header — clickable to collapse/expand */}
