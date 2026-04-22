@@ -169,6 +169,7 @@ interface Props {
   initialStatus?: string;
   initialRegion?: string;
   initialAction?: string;
+  highlightId?: string;
   showAllHistory?: boolean;
 }
 
@@ -178,7 +179,7 @@ function mapStatusToTab(status?: string, isSuperAdmin?: boolean): string {
   return map[status.toUpperCase()] || (isSuperAdmin ? "Pending" : "Ordered");
 }
 
-export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion, initialAction, showAllHistory = false }: Props) {
+export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = [], isSuperAdmin, canManagePO, canApprovePO = false, canEditQty = false, initialStatus, initialRegion, initialAction, highlightId, showAllHistory = false }: Props) {
   const { addToast } = useToast();
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -190,6 +191,22 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(initialAction === "create");
   const [creating, setCreating] = useState(false);
+
+  // Deep-link highlight: switch to Pending tab and scroll/flash the target PO
+  useEffect(() => {
+    if (!highlightId) return;
+    // Switch to Pending tab so the row is visible
+    setActiveTab("Pending");
+    const timer = setTimeout(() => {
+      const el = document.querySelector(`[data-po-id="${highlightId}"]`) as HTMLElement | null;
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("consumable-highlight");
+      const cleanup = setTimeout(() => el.classList.remove("consumable-highlight"), 2800);
+      return () => clearTimeout(cleanup);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [highlightId]);
 
   // Region selector state (super admin only)
   const [selectedRegionId, setSelectedRegionId] = useState<string>(() => {
@@ -423,7 +440,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               </tr>
             ) : (
               orders.map((po) => (
-                <tr key={po.id} onClick={() => setViewOrder(po)} className={`hover:bg-shark-25 transition-colors cursor-pointer ${selected.has(po.id) ? "bg-action-50/30" : ""}`}>
+                <tr key={po.id} data-po-id={po.id} onClick={() => setViewOrder(po)} className={`hover:bg-shark-25 transition-colors cursor-pointer ${selected.has(po.id) ? "bg-action-50/30" : ""}`}>
                   {canApprovePO && (
                     <td className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
                       <input type="checkbox" checked={selected.has(po.id)} onChange={() => toggleSelect(po.id)} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />

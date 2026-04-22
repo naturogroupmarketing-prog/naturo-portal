@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function PurchaseOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string; showAll?: string; action?: string }> }) {
+export default async function PurchaseOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string; region?: string; showAll?: string; action?: string; highlight?: string }> }) {
   const params = await searchParams;
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/login");
@@ -212,6 +212,7 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
         initialStatus={params.status}
         initialRegion={params.region}
         initialAction={params.action}
+        highlightId={params.highlight}
         showAllHistory={showAllHistory}
       />
       </div>

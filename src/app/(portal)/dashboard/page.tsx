@@ -753,8 +753,8 @@ export default async function DashboardPage() {
     });
   }
 
-  // Smart action panel — fetch pending requests + overdue returns with staff/item names
-  const [pendingRequestsDetail, overdueReturnsDetail] = await Promise.all([
+  // Smart action panel — fetch pending requests, overdue returns, and pending POs with details
+  const [pendingRequestsDetail, overdueReturnsDetail, pendingPOsDetail] = await Promise.all([
     db.consumableRequest.findMany({
       where: { status: "PENDING", consumable: regionFilter },
       select: {
@@ -782,6 +782,18 @@ export default async function DashboardPage() {
       },
       orderBy: { expectedReturnDate: "asc" }, // most overdue first
       take: 8,
+    }),
+    db.purchaseOrder.findMany({
+      where: { status: "PENDING", ...regionFilter },
+      select: {
+        id: true,
+        createdAt: true,
+        quantity: true,
+        consumable: { select: { name: true, unitType: true } },
+        createdBy: { select: { name: true } },
+      },
+      orderBy: { createdAt: "asc" }, // oldest first
+      take: 5,
     }),
   ]);
 
@@ -1109,16 +1121,21 @@ export default async function DashboardPage() {
     });
   }
 
-  // 4. Pending POs awaiting approval (use the already-fetched count)
-  if ((ordersAwaitingApproval as number) > 0) {
+  // 4. Pending POs — one action item per PO so user can click directly to it
+  for (const po of (pendingPOsDetail as { id: string; createdAt: Date; quantity: number; consumable: { name: string; unitType: string }; createdBy: { name: string | null } | null }[])) {
+    const ageMs = nowMs - new Date(po.createdAt).getTime();
+    const ageDays = Math.floor(ageMs / (24 * 60 * 60 * 1000));
+    const ageHours = Math.floor(ageMs / (60 * 60 * 1000));
+    const createdBy = po.createdBy?.name || "Admin";
+    const priority = ageDays >= 2 ? "urgent" : "normal";
     actionItems.push({
-      id: "po-pending",
-      priority: (ordersAwaitingApproval as number) >= 3 ? "urgent" : "normal",
+      id: `po-${po.id}`,
+      priority,
       type: "po",
-      title: `${ordersAwaitingApproval} purchase order${(ordersAwaitingApproval as number) !== 1 ? "s" : ""} awaiting approval`,
-      description: "Review and approve to keep stock on order",
-      href: "/purchase-orders",
-      timeLabel: `${ordersAwaitingApproval} pending`,
+      title: "Purchase order awaiting approval",
+      description: `${po.quantity} ${po.consumable.unitType} of ${po.consumable.name} · Created by ${createdBy}`,
+      href: `/purchase-orders?highlight=${po.id}`,
+      timeLabel: ageDays > 0 ? `${ageDays}d ago` : ageHours > 0 ? `${ageHours}h ago` : "Just now",
     });
   }
 
