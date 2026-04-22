@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function StaffPage({ searchParams }: { searchParams: Promise<{ region?: string }> }) {
+export default async function StaffPage({ searchParams }: { searchParams: Promise<{ region?: string; userId?: string }> }) {
   const params = await searchParams;
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/login");
@@ -151,6 +151,7 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
       isSuperAdmin={session.user.role === "SUPER_ADMIN"}
       canViewStaffDetails={canViewStaffDetails}
       initialRegion={params.region}
+      initialUserId={params.userId}
       deletedUsers={JSON.parse(JSON.stringify(deletedUsers))}
       starterKits={starterKits}
     />

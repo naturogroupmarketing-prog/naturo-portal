@@ -99,11 +99,12 @@ interface StaffClientProps {
   isSuperAdmin: boolean;
   canViewStaffDetails?: boolean;
   initialRegion?: string;
+  initialUserId?: string;
   deletedUsers?: DeletedUser[];
   starterKits?: StarterKit[];
 }
 
-export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion, deletedUsers = [], starterKits = [] }: StaffClientProps) {
+export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion, initialUserId, deletedUsers = [], starterKits = [] }: StaffClientProps) {
   const router = useRouter();
   const { addToast } = useToast();
   const [showDeleted, setShowDeleted] = useState(false);
@@ -133,12 +134,13 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
 
-  // Edit modal state
-  const [editUser, setEditUser] = useState<StaffUser | null>(null);
-  const [editName, setEditName] = useState("");
-  const [editPhone, setEditPhone] = useState("");
-  const [editRole, setEditRole] = useState("STAFF");
-  const [editRegionId, setEditRegionId] = useState("");
+  // Edit modal state — pre-populated when arriving via ?userId= link
+  const _initialEditUser = initialUserId ? (users.find((u) => u.id === initialUserId) ?? null) : null;
+  const [editUser, setEditUser] = useState<StaffUser | null>(_initialEditUser);
+  const [editName, setEditName] = useState(_initialEditUser?.name || "");
+  const [editPhone, setEditPhone] = useState(_initialEditUser?.phone || "");
+  const [editRole, setEditRole] = useState(_initialEditUser?.role || "STAFF");
+  const [editRegionId, setEditRegionId] = useState(_initialEditUser?.region?.id || "");
   const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState("");
 

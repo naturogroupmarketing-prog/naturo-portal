@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -113,6 +115,7 @@ import { compressImage } from "@/lib/image-utils";
 
 
 export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId }: ConsumablesClientProps) {
+  const router = useRouter();
   const { addToast } = useToast();
   const [hoveredQtyId, setHoveredQtyId] = useState<string | null>(null);
   const [qtyTooltipPos, setQtyTooltipPos] = useState<{ top: number; right: number } | null>(null);
@@ -296,6 +299,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const setSearchAndClear = (v: string) => { setSearch(v); setSelectedIds(new Set()); };
 
   const filtered = consumables.filter((c) => {
+    // Stock level filter (set via ?stock= deep-link from dashboard)
+    if (stockFilter && stockFilter !== "ALL") {
+      if (stockFilter === "critical" && !(c.riskLevel === "critical" || c.quantityOnHand === 0)) return false;
+      if (stockFilter === "low" && c.quantityOnHand > c.minimumThreshold) return false;
+      if (stockFilter === "out" && c.quantityOnHand !== 0) return false;
+      if (stockFilter === "adequate" && c.quantityOnHand <= c.minimumThreshold) return false;
+    }
     if (!search) return true;
     const q = search.toLowerCase();
     return (
@@ -790,10 +800,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                           {activeAssignments.map((a) => (
                             <button
                               key={a.id}
-                              onClick={(e) => {
+                              onMouseDown={(e) => {
                                 e.stopPropagation();
-                                setStaffModalUserId(a.user.id);
                                 setAssignedDropdownId(null);
+                                setAssignedDropdownPos(null);
+                                window.location.href = `/staff?userId=${a.user.id}`;
                               }}
                               className="w-full flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 text-left transition-colors"
                             >
@@ -894,12 +905,24 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {/* Search + Export + Bulk Delete — border-b, stock tab only */}
       {tab === "stock" && (
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-800">
-          <Input
-            placeholder="Search supplies..."
-            value={search}
-            onChange={(e) => setSearchAndClear(e.target.value)}
-            className="flex-1 sm:max-w-md"
-          />
+          <div className="flex items-center gap-2 flex-1 sm:max-w-md">
+            <Input
+              placeholder="Search supplies..."
+              value={search}
+              onChange={(e) => setSearchAndClear(e.target.value)}
+              className="flex-1"
+            />
+            {stockFilter && stockFilter !== "ALL" && (
+              <button
+                onClick={() => setStockFilter("ALL")}
+                className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100 transition-colors whitespace-nowrap shrink-0"
+                title="Clear stock filter"
+              >
+                {stockFilter === "critical" ? "Critical Only" : stockFilter === "low" ? "Low Stock" : stockFilter === "out" ? "Out of Stock" : stockFilter}
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            )}
+          </div>
           <Button
             size="sm"
             variant="outline"

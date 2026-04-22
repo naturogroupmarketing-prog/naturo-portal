@@ -26,7 +26,7 @@ const MENU_ITEMS: MenuItem[] = [
   },
   {
     label: "Add Stock",
-    href: "/consumables?action=add",
+    href: "/inventory?tab=consumables",
     icon: "droplet",
     roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"],
   },

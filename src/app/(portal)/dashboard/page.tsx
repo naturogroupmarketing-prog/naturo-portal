@@ -1261,6 +1261,7 @@ export default async function DashboardPage() {
 
   // Compute criticalStockCount for AI briefing (items with riskLevel "critical")
   const criticalStockCount = (predictedShortagesRaw as { riskLevel: string | null }[]).filter((i) => i.riskLevel === "critical").length;
+  const staffUnacknowledgedCount = new Set((staffUnackRaw as { user: { id: string } }[]).map((a) => a.user.id)).size;
 
   // Fetch org name for AI briefing
   const orgRecord = await db.organization.findUnique({
@@ -1292,6 +1293,7 @@ export default async function DashboardPage() {
           healthScore={healthScore}
           depletionForecasts={depletionForecast.map((d) => ({ name: d.name, daysRemaining: d.daysRemaining, riskLevel: d.riskLevel }))}
           recentAnomalyCount={anomalyCount}
+          staffUnacknowledgedCount={staffUnacknowledgedCount}
           date={new Date().toISOString()}
         />
         <DashboardClient {...managerProps} assetHealthSummary={assetHealthSummary} />
@@ -1332,6 +1334,7 @@ export default async function DashboardPage() {
         healthScore={healthScore}
         depletionForecasts={depletionForecast.map((d) => ({ name: d.name, daysRemaining: d.daysRemaining, riskLevel: d.riskLevel }))}
         recentAnomalyCount={anomalyCount}
+        staffUnacknowledgedCount={staffUnacknowledgedCount}
         date={new Date().toISOString()}
       />
       <BranchManagerDashboard managerProps={managerProps} staffProps={staffProps} />

@@ -11,13 +11,14 @@ export const metadata: Metadata = {
   description: "Browse and manage inventory across all locations",
 };
 
-export default async function InventoryPage() {
+export default async function InventoryPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  const { tab } = await searchParams;
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/dashboard");
 
-  // Branch Manager → auto-redirect to their region
+  // Branch Manager → auto-redirect to their region (preserve tab param)
   if (session.user.role === "BRANCH_MANAGER" && session.user.regionId) {
-    redirect(`/inventory/${session.user.regionId}`);
+    redirect(`/inventory/${session.user.regionId}${tab ? `?tab=${tab}` : ""}`);
   }
 
   const organizationId = session.user.organizationId!;

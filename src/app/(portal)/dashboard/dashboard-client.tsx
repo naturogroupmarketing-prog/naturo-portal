@@ -144,8 +144,8 @@ function RecalcPredictionsButton() {
 
 function QuickActionsBar({ role }: { role: string }) {
   const actions: { label: string; href: string; icon: IconName }[] = [
-    { label: "Assign Item", href: "/assets", icon: "package" },
-    { label: "Add Stock", href: "/consumables", icon: "droplet" },
+    { label: "Assign Item", href: "/consumables", icon: "droplet" },
+    { label: "Add Stock", href: "/inventory?tab=consumables", icon: "droplet" },
     { label: "Report Issue", href: "/report-damage", icon: "alert-triangle" },
     { label: "New Order", href: "/purchase-orders", icon: "truck" },
     { label: "View Returns", href: "/returns", icon: "arrow-left" },

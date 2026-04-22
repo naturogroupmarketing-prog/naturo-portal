@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -56,6 +57,8 @@ interface ArchivedRegion {
 
 export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin, archivedRegions = [] }: { locations: Location[]; regionAlerts?: Record<string, RegionAlerts>; isSuperAdmin: boolean; archivedRegions?: ArchivedRegion[] }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
   const { addToast } = useToast();
   const [collapsedStates, setCollapsedStates] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
@@ -182,7 +185,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                         state.regions.map((region) => {
                           const alerts = regionAlerts[region.id];
                           return (
-                            <Link key={region.id} href={`/inventory/${region.id}`} className="flex items-center gap-3 px-4 sm:px-5 py-3.5 pl-10 sm:pl-12 hover:bg-action-50/50 dark:hover:bg-shark-800/30 transition-colors group cursor-pointer">
+                            <Link key={region.id} href={`/inventory/${region.id}${tabParam ? `?tab=${tabParam}` : ""}`} className="flex items-center gap-3 px-4 sm:px-5 py-3.5 pl-10 sm:pl-12 hover:bg-action-50/50 dark:hover:bg-shark-800/30 transition-colors group cursor-pointer">
                               {/* Icon — rounded-full to differ from state's rounded-md */}
                               <div className={`w-7 h-7 rounded-full ${sc.bg} flex items-center justify-center shrink-0`}>
                                 <Icon name="map-pin" size={13} className={sc.color} />
