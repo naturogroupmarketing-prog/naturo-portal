@@ -55,9 +55,12 @@ const PO_STATUS_LABEL: Record<string, { label: string; cls: string }> = {
 
 interface TooltipState {
   item: LowStockItem;
-  anchorTop: number;   // px from viewport top
-  anchorLeft: number;  // px from viewport left
-  anchorWidth: number; // width of the anchor element
+  anchorTop: number;    // rect.top of trigger
+  anchorBottom: number; // rect.bottom of trigger
+  anchorLeft: number;   // rect.left of trigger
+  anchorRight: number;  // rect.right of trigger
+  anchorHeight: number; // rect.height of trigger
+  anchorWidth: number;  // rect.width of trigger
 }
 
 function ItemTooltip({ data, onKeepOpen, onClose }: { data: TooltipState; onKeepOpen: () => void; onClose: () => void }) {
@@ -67,19 +70,24 @@ function ItemTooltip({ data, onKeepOpen, onClose }: { data: TooltipState; onKeep
   useEffect(() => {
     if (!ref.current) return;
     const TIP_W = 280;
-    const TIP_OFFSET = 6; // gap below the row
+    const TIP_GAP = 2; // tiny gap between trigger and tooltip edge
     const vpW = window.innerWidth;
     const tipH = ref.current.offsetHeight;
     const vpH = window.innerHeight;
 
-    // Horizontal: try to align left with the row, but clamp inside viewport
-    let left = data.anchorLeft;
-    if (left + TIP_W > vpW - 8) left = vpW - TIP_W - 8;
-    if (left < 8) left = 8;
+    // Horizontal: prefer LEFT of trigger so mouse moves left into tooltip
+    // (avoids crossing the next row when moving down toward a below-tooltip)
+    let left = data.anchorLeft - TIP_W - TIP_GAP;
+    if (left < 8) {
+      // Not enough room on left — try right of trigger
+      left = data.anchorRight + TIP_GAP;
+      if (left + TIP_W > vpW - 8) left = vpW - TIP_W - 8;
+    }
 
-    // Vertical: prefer below, flip above if not enough room
-    let top = data.anchorTop + TIP_OFFSET;
-    if (top + tipH > vpH - 8) top = data.anchorTop - tipH - TIP_OFFSET;
+    // Vertical: centre tooltip with the trigger element
+    let top = data.anchorTop + data.anchorHeight / 2 - tipH / 2;
+    if (top + tipH > vpH - 8) top = vpH - tipH - 8;
+    if (top < 8) top = 8;
 
     setPos({ top, left });
   }, [data]);
@@ -184,14 +192,17 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: 
     const rect = el.getBoundingClientRect();
     setTooltip({
       item,
-      anchorTop: rect.bottom,
+      anchorTop: rect.top,
+      anchorBottom: rect.bottom,
       anchorLeft: rect.left,
+      anchorRight: rect.right,
+      anchorHeight: rect.height,
       anchorWidth: rect.width,
     });
   }, []);
 
   const hideTooltip = useCallback(() => {
-    tooltipTimerRef.current = setTimeout(() => setTooltip(null), 120);
+    tooltipTimerRef.current = setTimeout(() => setTooltip(null), 220);
   }, []);
 
   const cancelHide = useCallback(() => {
