@@ -198,14 +198,15 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     // Find the PO's status so we switch to the right tab (could be Approved or Ordered)
     const po = purchaseOrders.find((p) => p.id === highlightId);
     setActiveTab(po ? mapStatusToTab(po.status, isSuperAdmin) : "Pending");
+    // Wait for tab re-render, then find the visible element (both mobile card and desktop row carry data-po-id)
     const timer = setTimeout(() => {
-      const el = document.querySelector(`[data-po-id="${highlightId}"]`) as HTMLElement | null;
+      const all = document.querySelectorAll(`[data-po-id="${highlightId}"]`);
+      const el = Array.from(all).find((e) => (e as HTMLElement).offsetParent !== null) as HTMLElement | null;
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth", block: "center" });
       el.classList.add("consumable-highlight");
-      const cleanup = setTimeout(() => el.classList.remove("consumable-highlight"), 2800);
-      return () => clearTimeout(cleanup);
-    }, 350);
+      setTimeout(() => el.classList.remove("consumable-highlight"), 2800);
+    }, 500);
     return () => clearTimeout(timer);
   }, [highlightId]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -384,6 +385,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           orders.map((po) => (
             <div
               key={po.id}
+              data-po-id={po.id}
               onClick={() => setViewOrder(po)}
               className={`border rounded-xl p-4 bg-white dark:bg-shark-900 transition-shadow cursor-pointer ${selected.has(po.id) ? "border-action-400 bg-action-50/20 dark:bg-action-500/10" : "border-shark-100 dark:border-shark-800 hover:shadow-sm"}`}
             >

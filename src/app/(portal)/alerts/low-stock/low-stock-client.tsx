@@ -128,7 +128,7 @@ function POPopover({ data, onClose }: { data: POPopoverState; onClose: () => voi
       <div className="p-2 space-y-1">
         {data.activePOs.map((po) => {
           const s = PO_STATUS_LABEL[po.status] ?? { label: po.status, cls: "text-shark-600 bg-shark-50 border-shark-100" };
-          const href = `/purchase-orders?highlight=${po.id}`;
+          const href = `/purchase-orders?status=${po.status}&highlight=${po.id}`;
           return (
             <Link
               key={po.id}
