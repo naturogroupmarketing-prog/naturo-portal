@@ -147,7 +147,7 @@ function QuickActionsBar({ role }: { role: string }) {
     { label: "Assign Item", href: "/inventory", icon: "package" },
     { label: "Add Stock", href: "/inventory?tab=consumables", icon: "droplet" },
     { label: "Report Issue", href: "/report-damage", icon: "alert-triangle" },
-    { label: "New Order", href: "/purchase-orders", icon: "truck" },
+    { label: "New Order", href: "/purchase-orders?action=create", icon: "truck" },
     { label: "View Returns", href: "/returns", icon: "arrow-left" },
     { label: "Quick Return", href: "/returns/quick", icon: "check-circle" },
   ];
