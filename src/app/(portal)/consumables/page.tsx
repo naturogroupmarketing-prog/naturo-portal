@@ -6,7 +6,7 @@ import { ConsumablesClient } from "./consumables-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Low Supplies",
+  title: "Stock Level",
   description: "Manage supply items and stock levels",
 };
 
