@@ -192,11 +192,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
   const [showCreate, setShowCreate] = useState(initialAction === "create");
   const [creating, setCreating] = useState(false);
 
-  // Deep-link highlight: switch to Pending tab and scroll/flash the target PO
+  // Deep-link highlight: switch to the correct tab and scroll/flash the target PO
   useEffect(() => {
     if (!highlightId) return;
-    // Switch to Pending tab so the row is visible
-    setActiveTab("Pending");
+    // Find the PO's status so we switch to the right tab (could be Approved or Ordered)
+    const po = purchaseOrders.find((p) => p.id === highlightId);
+    setActiveTab(po ? mapStatusToTab(po.status, isSuperAdmin) : "Pending");
     const timer = setTimeout(() => {
       const el = document.querySelector(`[data-po-id="${highlightId}"]`) as HTMLElement | null;
       if (!el) return;
@@ -206,7 +207,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
       return () => clearTimeout(cleanup);
     }, 350);
     return () => clearTimeout(timer);
-  }, [highlightId]);
+  }, [highlightId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Region selector state (super admin only)
   const [selectedRegionId, setSelectedRegionId] = useState<string>(() => {

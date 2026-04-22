@@ -52,6 +52,114 @@ const PO_STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   ORDERED:  { label: "Ordered",  cls: "text-blue-700 bg-blue-50 border-blue-100" },
 };
 
+/* ── PO badge popover ───────────────────────────────────────────────────── */
+
+interface POPopoverState {
+  activePOs: ActivePO[];
+  itemName: string;
+  itemId: string; // which badge is currently open
+  anchorTop: number;
+  anchorBottom: number;
+  anchorLeft: number;
+  anchorRight: number;
+}
+
+function POPopover({ data, onClose }: { data: POPopoverState; onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const TIP_W = 288;
+    const TIP_GAP = 6;
+    const vpW = window.innerWidth;
+    const tipH = ref.current.offsetHeight;
+    const vpH = window.innerHeight;
+
+    // Align right edge of popover to right edge of badge
+    let left = data.anchorRight - TIP_W;
+    if (left < 8) left = 8;
+    if (left + TIP_W > vpW - 8) left = vpW - TIP_W - 8;
+
+    // Position below badge, fall back above if not enough room
+    let top = data.anchorBottom + TIP_GAP;
+    if (top + tipH > vpH - 8) top = data.anchorTop - tipH - TIP_GAP;
+    if (top < 8) top = 8;
+
+    setPos({ top, left });
+  }, [data]);
+
+  // Close on outside click — but NOT when clicking a badge button (data-po-badge)
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        ref.current &&
+        !ref.current.contains(target) &&
+        !target.closest("[data-po-badge]")
+      ) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [onClose]);
+
+  return (
+    <div
+      ref={ref}
+      style={{ position: "fixed", top: pos.top, left: pos.left, width: 288, zIndex: 10000 }}
+      className="bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-xl shadow-2xl overflow-hidden pointer-events-auto"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-shark-100 dark:border-shark-800 bg-shark-50/60 dark:bg-shark-800/50">
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400">
+            Purchase Orders
+          </p>
+          <p className="text-xs font-medium text-shark-700 dark:text-shark-200 truncate mt-0.5">{data.itemName}</p>
+        </div>
+        <button onClick={onClose} className="text-shark-300 hover:text-shark-500 dark:hover:text-shark-300 transition-colors ml-2 shrink-0">
+          <Icon name="x" size={13} />
+        </button>
+      </div>
+
+      {/* PO list */}
+      <div className="p-2 space-y-1">
+        {data.activePOs.map((po) => {
+          const s = PO_STATUS_LABEL[po.status] ?? { label: po.status, cls: "text-shark-600 bg-shark-50 border-shark-100" };
+          const href = `/purchase-orders?highlight=${po.id}`;
+          return (
+            <Link
+              key={po.id}
+              href={href}
+              onClick={onClose}
+              className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
+            >
+              <Icon name="package" size={13} className="text-shark-300 shrink-0" />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-shark-700 dark:text-shark-200 leading-tight">
+                  {po.quantity} {po.quantity === 1 ? "unit" : "units"}
+                  {po.supplier ? <span className="text-shark-400 font-normal"> · {po.supplier}</span> : null}
+                </p>
+              </div>
+              <span className={`text-[10px] font-semibold border px-1.5 py-0.5 rounded shrink-0 ${s.cls}`}>
+                {s.label}
+              </span>
+              <Icon name="arrow-right" size={11} className="text-shark-300 group-hover:text-action-500 transition-colors shrink-0" />
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Footer */}
+      <div className="px-3.5 py-2 border-t border-shark-50 dark:border-shark-800 bg-shark-50/30 dark:bg-shark-800/30">
+        <p className="text-[10px] text-shark-400 text-center">Click a PO to view and highlight it</p>
+      </div>
+    </div>
+  );
+}
+
 /* ── Hover tooltip ──────────────────────────────────────────────────────── */
 
 interface TooltipState {
@@ -183,6 +291,26 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
 
   // ── Search ───────────────────────────────────────────────────────────────
   const [search, setSearch] = useState("");
+
+  // ── PO badge popover ─────────────────────────────────────────────────────
+  const [poPopover, setPOPopover] = useState<POPopoverState | null>(null);
+
+  const togglePOPopover = useCallback((item: LowStockItem, el: HTMLElement) => {
+    if (poPopover?.itemId === item.id) {
+      setPOPopover(null);
+    } else {
+      const rect = el.getBoundingClientRect();
+      setPOPopover({
+        activePOs: item.activePOs,
+        itemName: item.name,
+        itemId: item.id,
+        anchorTop: rect.top,
+        anchorBottom: rect.bottom,
+        anchorLeft: rect.left,
+        anchorRight: rect.right,
+      });
+    }
+  }, [poPopover]);
 
   // ── Hover tooltip ────────────────────────────────────────────────────────
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
@@ -335,7 +463,17 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           <div className="flex items-center gap-1.5">
             <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{item.name}</p>
             {hasActivePOs && (
-              <Icon name="package" size={11} className="text-action-400 shrink-0" />
+              <button
+                data-po-badge
+                onClick={(e) => { e.stopPropagation(); togglePOPopover(item, e.currentTarget); }}
+                className={`text-[10px] font-semibold border px-1.5 py-0.5 rounded transition-colors cursor-pointer ${
+                  poPopover?.itemId === item.id
+                    ? "bg-action-100 dark:bg-action-900/50 text-action-700 dark:text-action-300 border-action-200 dark:border-action-700/50"
+                    : "text-action-600 dark:text-action-400 bg-action-50 dark:bg-action-900/30 border-action-100 dark:border-action-800/40"
+                }`}
+              >
+                {item.activePOs.length} PO{item.activePOs.length !== 1 ? "s" : ""}
+              </button>
             )}
           </div>
           <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>
@@ -373,9 +511,17 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           <div className="flex items-center gap-1.5">
             <p className="font-medium text-shark-800 dark:text-shark-200">{item.name}</p>
             {hasActivePOs && (
-              <span className="text-[10px] font-semibold text-action-600 dark:text-action-400 bg-action-50 dark:bg-action-900/30 border border-action-100 dark:border-action-800/40 px-1.5 py-0.5 rounded">
+              <button
+                data-po-badge
+                onClick={(e) => { e.stopPropagation(); togglePOPopover(item, e.currentTarget); }}
+                className={`text-[10px] font-semibold border px-1.5 py-0.5 rounded transition-colors cursor-pointer hover:bg-action-100 dark:hover:bg-action-900/50 ${
+                  poPopover?.itemId === item.id
+                    ? "bg-action-100 dark:bg-action-900/50 text-action-700 dark:text-action-300 border-action-200 dark:border-action-700/50"
+                    : "text-action-600 dark:text-action-400 bg-action-50 dark:bg-action-900/30 border-action-100 dark:border-action-800/40"
+                }`}
+              >
                 {item.activePOs.length} PO{item.activePOs.length !== 1 ? "s" : ""}
-              </span>
+              </button>
             )}
           </div>
           <p className="text-xs text-shark-400 mt-0.5">{item.category} · {item.unitType}</p>
@@ -408,6 +554,14 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           data={tooltip}
           onKeepOpen={cancelHide}
           onClose={hideTooltip}
+        />
+      )}
+
+      {/* PO badge popover */}
+      {poPopover && (
+        <POPopover
+          data={poPopover}
+          onClose={() => setPOPopover(null)}
         />
       )}
 
