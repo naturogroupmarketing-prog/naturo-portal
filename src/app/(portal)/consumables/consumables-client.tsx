@@ -683,21 +683,22 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
                     {visibleColumns.qty && <td className="px-4 py-3 text-right">
                       <div
-                        className="inline-block"
+                        className="inline-block cursor-default"
                         onMouseEnter={(e) => {
-                          if (!c.avgDailyUsage || c.avgDailyUsage <= 0 || c.quantityOnHand > c.reorderLevel) return;
                           const rect = e.currentTarget.getBoundingClientRect();
                           setHoveredQtyId(c.id);
                           setQtyTooltipPos({ top: rect.top, right: window.innerWidth - rect.right });
                         }}
                         onMouseLeave={() => { setHoveredQtyId(null); setQtyTooltipPos(null); }}
                       >
-                        <span className={`font-bold cursor-default ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
+                        <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
                       </div>
-                      {hoveredQtyId === c.id && qtyTooltipPos && c.avgDailyUsage && c.avgDailyUsage > 0 && (() => {
-                        const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
-                        const isDepleted = daysLeft <= 0;
-                        const accentColor = c.riskLevel === "critical" ? "#dc2626" : c.riskLevel === "warning" ? "#f59e0b" : "#16a34a";
+                      {hoveredQtyId === c.id && qtyTooltipPos && (() => {
+                        const isCritical = c.quantityOnHand === 0 || c.riskLevel === "critical";
+                        const isWarning = !isCritical && (c.quantityOnHand <= c.minimumThreshold || c.riskLevel === "warning");
+                        const accentColor = isCritical ? "#dc2626" : isWarning ? "#f59e0b" : "#16a34a";
+                        const statusLabel = isCritical ? "Out of Stock" : isWarning ? "Low Stock" : "In Stock";
+                        const daysLeft = c.avgDailyUsage && c.avgDailyUsage > 0 ? Math.round(c.quantityOnHand / c.avgDailyUsage) : null;
                         const depletionDate = c.predictedDepletionDate
                           ? new Date(c.predictedDepletionDate).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
                           : null;
@@ -711,30 +712,39 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                               borderTop: `3px solid ${accentColor}`,
                             }}
                           >
-                            <div className="px-3 pt-2.5 pb-1">
-                              <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400 mb-1.5">Depletion Estimate</p>
-                              <div className="flex items-baseline gap-1.5 mb-1">
-                                <span className="text-2xl font-bold" style={{ color: accentColor }}>
-                                  {isDepleted ? "0" : daysLeft}
-                                </span>
-                                <span className="text-sm font-medium text-shark-600 dark:text-shark-300">
-                                  {isDepleted ? "days — depleted" : "days remaining"}
-                                </span>
+                            {/* Status header */}
+                            <div className="px-3 pt-2.5 pb-2">
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400 mb-1">Stock Info</p>
+                              <div className="flex items-center gap-2">
+                                <span className="text-2xl font-bold" style={{ color: accentColor }}>{c.quantityOnHand}</span>
+                                <div>
+                                  <p className="text-xs font-semibold" style={{ color: accentColor }}>{statusLabel}</p>
+                                  <p className="text-[11px] text-shark-400">{c.unitType}</p>
+                                </div>
                               </div>
                             </div>
-                            <div className="border-t border-shark-100 dark:border-shark-800 px-3 py-2 space-y-1">
-                              <div className="flex justify-between text-[11px]">
-                                <span className="text-shark-400">Avg daily usage</span>
-                                <span className="font-medium text-shark-700 dark:text-shark-300">{c.avgDailyUsage.toFixed(1)} {c.unitType}/day</span>
-                              </div>
-                              <div className="flex justify-between text-[11px]">
-                                <span className="text-shark-400">Current stock</span>
-                                <span className="font-medium text-shark-700 dark:text-shark-300">{c.quantityOnHand} {c.unitType}</span>
-                              </div>
+                            {/* Details */}
+                            <div className="border-t border-shark-100 dark:border-shark-800 px-3 py-2 space-y-1.5">
                               <div className="flex justify-between text-[11px]">
                                 <span className="text-shark-400">Min threshold</span>
                                 <span className="font-medium text-shark-700 dark:text-shark-300">{c.minimumThreshold} {c.unitType}</span>
                               </div>
+                              <div className="flex justify-between text-[11px]">
+                                <span className="text-shark-400">Reorder level</span>
+                                <span className="font-medium text-shark-700 dark:text-shark-300">{c.reorderLevel} {c.unitType}</span>
+                              </div>
+                              {daysLeft !== null && (
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-shark-400">Days remaining</span>
+                                  <span className="font-medium" style={{ color: accentColor }}>{daysLeft <= 0 ? "Depleted" : `~${daysLeft} days`}</span>
+                                </div>
+                              )}
+                              {c.avgDailyUsage && c.avgDailyUsage > 0 && (
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-shark-400">Daily usage</span>
+                                  <span className="font-medium text-shark-700 dark:text-shark-300">{c.avgDailyUsage.toFixed(1)} {c.unitType}/day</span>
+                                </div>
+                              )}
                               {depletionDate && (
                                 <div className="flex justify-between text-[11px]">
                                   <span className="text-shark-400">Est. depletion</span>
