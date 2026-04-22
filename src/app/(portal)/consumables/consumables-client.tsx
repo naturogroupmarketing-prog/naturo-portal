@@ -734,10 +734,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       })()}
                     </td>}
                     {visibleColumns.assignedTo && (
-                    <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
+                    <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden md:table-cell overflow-hidden" onClick={(e) => e.stopPropagation()}>
                       {activeAssignments.length > 0 ? (
                         <select
-                          className="text-xs bg-transparent border border-shark-200 dark:border-shark-700 rounded px-2 py-1 text-action-600 cursor-pointer hover:border-action-300 focus:outline-none focus:ring-1 focus:ring-action-300"
+                          className="w-full text-xs bg-transparent border border-shark-200 dark:border-shark-700 rounded px-2 py-1 text-action-600 cursor-pointer hover:border-action-300 focus:outline-none focus:ring-1 focus:ring-action-300"
                           value=""
                           onChange={(e) => {
                             if (e.target.value) setStaffModalUserId(e.target.value);
