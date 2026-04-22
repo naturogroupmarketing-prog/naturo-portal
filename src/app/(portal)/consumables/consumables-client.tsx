@@ -673,15 +673,51 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         onMouseEnter={() => setHoveredQtyId(c.id)}
                         onMouseLeave={() => setHoveredQtyId(null)}
                       >
-                        <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
+                        <span className={`font-bold cursor-default ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
                         {hoveredQtyId === c.id && c.avgDailyUsage && c.avgDailyUsage > 0 && (() => {
                           const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
-                          const label = daysLeft <= 0 ? "Depleted" : `~${daysLeft}d left`;
-                          const bg = c.riskLevel === "critical" ? "#dc2626" : c.riskLevel === "warning" ? "#f59e0b" : "#35373e";
+                          const isDepleted = daysLeft <= 0;
+                          const accentColor = c.riskLevel === "critical" ? "#dc2626" : c.riskLevel === "warning" ? "#f59e0b" : "#16a34a";
+                          const depletionDate = c.predictedDepletionDate
+                            ? new Date(c.predictedDepletionDate).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
+                            : null;
                           return (
-                            <span className="pointer-events-none absolute right-0 bottom-full mb-1.5 whitespace-nowrap text-[11px] font-medium text-white px-2 py-1 rounded-lg shadow-lg z-10" style={{ backgroundColor: bg }}>
-                              {label}
-                            </span>
+                            <div
+                              className="pointer-events-none absolute right-0 bottom-full mb-2 z-50 w-52 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-xl shadow-xl overflow-hidden"
+                              style={{ borderTop: `3px solid ${accentColor}` }}
+                            >
+                              <div className="px-3 pt-2.5 pb-1">
+                                <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400 mb-1.5">Depletion Estimate</p>
+                                <div className="flex items-baseline gap-1.5 mb-1">
+                                  <span className="text-2xl font-bold" style={{ color: accentColor }}>
+                                    {isDepleted ? "0" : daysLeft}
+                                  </span>
+                                  <span className="text-sm font-medium text-shark-600 dark:text-shark-300">
+                                    {isDepleted ? "days — depleted" : "days remaining"}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="border-t border-shark-100 dark:border-shark-800 px-3 py-2 space-y-1">
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-shark-400">Avg daily usage</span>
+                                  <span className="font-medium text-shark-700 dark:text-shark-300">{c.avgDailyUsage.toFixed(1)} {c.unitType}/day</span>
+                                </div>
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-shark-400">Current stock</span>
+                                  <span className="font-medium text-shark-700 dark:text-shark-300">{c.quantityOnHand} {c.unitType}</span>
+                                </div>
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-shark-400">Min threshold</span>
+                                  <span className="font-medium text-shark-700 dark:text-shark-300">{c.minimumThreshold} {c.unitType}</span>
+                                </div>
+                                {depletionDate && (
+                                  <div className="flex justify-between text-[11px]">
+                                    <span className="text-shark-400">Est. depletion</span>
+                                    <span className="font-medium text-shark-700 dark:text-shark-300">{depletionDate}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                           );
                         })()}
                       </div>
