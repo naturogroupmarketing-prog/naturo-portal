@@ -172,6 +172,18 @@ a, button, [role="button"], input, select, textarea, label {
   display: none;
 }
 
+/* Card spotlight — used when deep-linking to a card (e.g. Procurement Pipeline) */
+@keyframes card-spotlight {
+  0%   { box-shadow: 0 0 0 3px #E8532E, 0 0 28px 6px rgba(232,83,46,0.45); }
+  35%  { box-shadow: 0 0 0 2px rgba(232,83,46,0.45), 0 0 14px 3px rgba(232,83,46,0.2); }
+  65%  { box-shadow: 0 0 0 3px rgba(232,83,46,0.85), 0 0 24px 5px rgba(232,83,46,0.35); }
+  100% { box-shadow: 0 0 0 0px transparent, 0 0 0px 0px transparent; }
+}
+.card-spotlight {
+  animation: card-spotlight 2.4s ease-out forwards;
+  border-radius: 0.75rem;
+}
+
 /* Deep-link highlight pulse — applied via JS to a consumable item element */
 /* Uses only inset box-shadow so it is never clipped by overflow:auto parents */
 @keyframes consumable-highlight-pulse {

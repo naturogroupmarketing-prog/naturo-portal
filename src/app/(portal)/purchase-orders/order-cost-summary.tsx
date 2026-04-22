@@ -48,8 +48,8 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
   const orderedTotal = regions.reduce((s, r) => s + r.ordered, 0);
 
   return (
-    <div ref={cardRef}>
-      <Card className={`transition-all duration-500 ${highlighted ? "ring-2 ring-action-400 shadow-lg shadow-action-200/50 border-action-300" : "border-action-100"}`}>
+    <div ref={cardRef} className={highlighted ? "card-spotlight" : ""}>
+      <Card className="border-action-100">
       <CardContent className="py-4 space-y-3">
         {/* Header — clickable to collapse/expand */}
         <button
