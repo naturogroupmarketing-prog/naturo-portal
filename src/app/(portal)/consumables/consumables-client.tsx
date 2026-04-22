@@ -629,21 +629,21 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
         {/* Desktop: table layout */}
         <div className="hidden sm:block overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
             <thead>
               <tr className="border-b border-shark-100 dark:border-shark-700">
                 <th scope="col" className="px-1 py-3 w-6"></th>
-                <th scope="col" className="px-3 py-3 text-left w-10">
+                <th scope="col" className="px-3 py-3 w-8">
                   {deletableInSection.length > 0 && (
                     <input type="checkbox" checked={allSelected} ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }} onChange={() => toggleSelectAll(sectionItems)} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
                   )}
                 </th>
-                {visibleColumns.photo && <th scope="col" className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-12">Photo</th>}
+                {visibleColumns.photo && <th scope="col" className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-14">Photo</th>}
                 {visibleColumns.item && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400">Item</th>}
-                {visibleColumns.location && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden lg:table-cell">Location</th>}
-                {visibleColumns.qty && <th scope="col" className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Qty</th>}
-                {visibleColumns.assignedTo && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 hidden md:table-cell">Assigned To</th>}
-                <th scope="col" className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400">Actions</th>
+                {visibleColumns.location && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-44 hidden lg:table-cell">Location</th>}
+                {visibleColumns.qty && <th scope="col" className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400 w-28">Qty</th>}
+                {visibleColumns.assignedTo && <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-shark-400 w-40 hidden md:table-cell">Assigned To</th>}
+                <th scope="col" className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-shark-400 w-44">Actions</th>
               </tr>
             </thead>
             <tbody>
