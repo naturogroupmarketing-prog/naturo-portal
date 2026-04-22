@@ -77,7 +77,7 @@ function buildFallback(input: BriefingInput, mode: BriefingMode): BriefingConten
 
   const actions: Array<{ label: string; href: string }> = [];
   if (criticalStockCount > 0 || lowStockCount > 0) actions.push({ label: "Create Purchase Order", href: "/purchase-orders?action=create" });
-  if (pendingApprovals > 0) actions.push({ label: "Review Orders", href: "/purchase-orders" });
+  if (pendingApprovals > 0) actions.push({ label: "Review Orders", href: "/purchase-orders?status=ORDERED" });
   if (overdueReturns > 0) actions.push({ label: "Process Returns", href: "/returns" });
 
   const depletingThisWeek = input.depletionForecasts.filter((d) => d.daysRemaining <= 7);
@@ -184,7 +184,7 @@ Respond ONLY with a valid JSON object (no markdown, no backticks) in this exact 
 {
   "briefing": "<the briefing text per mode instructions>",
   "actions": [
-    {"label": "<short imperative action label, max 4 words>", "href": "<exactly one of: /consumables?tab=requests | /purchase-orders | /purchase-orders?action=create | /returns | /alerts/damage | /alerts/low-stock | /staff | /assets>"}
+    {"label": "<short imperative action label, max 4 words>", "href": "<exactly one of: /consumables?tab=requests | /purchase-orders?status=ORDERED | /purchase-orders?action=create | /returns | /alerts/damage | /alerts/low-stock | /staff | /assets>"}
   ],
   "weekAhead": "<1 sentence prediction for the coming week based on depletion data, or null if nothing notable>",
   "staffInsight": "<1 sentence about staff activity such as unacknowledged items, or null if not relevant>"

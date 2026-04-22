@@ -33,6 +33,7 @@ const MODES: { id: BriefingMode; label: string }[] = [
 const ACTION_ICON: Record<string, IconName> = {
   "/consumables?tab=requests": "clipboard",
   "/purchase-orders": "truck",
+  "/purchase-orders?status=ORDERED": "truck",
   "/purchase-orders?action=create": "plus",
   "/returns": "arrow-left",
   "/alerts/damage": "alert-triangle",
