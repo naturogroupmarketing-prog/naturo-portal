@@ -302,8 +302,6 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: 
       <div
         key={item.id}
         className="px-4 py-3 flex items-center justify-between gap-3 cursor-default"
-        onMouseEnter={(e) => showTooltip(item, e.currentTarget)}
-        onMouseLeave={hideTooltip}
       >
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
@@ -314,7 +312,11 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: 
           </div>
           <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>
         </div>
-        <div className="shrink-0 text-right">
+        <div
+          className="shrink-0 text-right cursor-pointer"
+          onMouseEnter={(e) => showTooltip(item, e.currentTarget)}
+          onMouseLeave={hideTooltip}
+        >
           <div className="flex items-center justify-end gap-1.5">
             <span className={`text-sm font-bold ${isOut ? "text-red-600" : "text-[#E8532E]"}`}>
               {item.quantityOnHand}
@@ -337,8 +339,6 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: 
       <tr
         key={item.id}
         className="hover:bg-shark-50/70 dark:hover:bg-shark-800/30 transition-colors cursor-default"
-        onMouseEnter={(e) => showTooltip(item, e.currentTarget)}
-        onMouseLeave={hideTooltip}
       >
         <td className="px-5 py-3">
           <div className="flex items-center gap-1.5">
@@ -351,7 +351,11 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: 
           </div>
           <p className="text-xs text-shark-400 mt-0.5">{item.category} · {item.unitType}</p>
         </td>
-        <td className="px-5 py-3 text-right">
+        <td
+          className="px-5 py-3 text-right cursor-pointer"
+          onMouseEnter={(e) => showTooltip(item, e.currentTarget)}
+          onMouseLeave={hideTooltip}
+        >
           <div className="flex items-center justify-end gap-1.5">
             <span className={`font-bold ${isOut ? "text-red-600" : "text-[#E8532E]"}`}>
               {item.quantityOnHand}
@@ -514,7 +518,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: 
                 </h1>
                 <p className="text-xs text-shark-400 mt-0.5">
                   {regionItems.length} item{regionItems.length !== 1 ? "s" : ""} at or below minimum threshold
-                  {regionItems.length > 0 && " · hover an item for details"}
+                  {regionItems.length > 0 && " · hover on-hand qty for details"}
                 </p>
               </div>
             </div>
