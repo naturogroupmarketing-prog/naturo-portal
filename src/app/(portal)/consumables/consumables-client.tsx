@@ -114,6 +114,7 @@ import { compressImage } from "@/lib/image-utils";
 
 export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId }: ConsumablesClientProps) {
   const { addToast } = useToast();
+  const [hoveredQtyId, setHoveredQtyId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [showCreate, setShowCreate] = useState(false);
   const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
@@ -667,14 +668,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800 dark:text-shark-200">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
                     {visibleColumns.qty && <td className="px-4 py-3 text-right">
-                      <div className="qty-cell relative inline-block">
+                      <div
+                        className="relative inline-block"
+                        onMouseEnter={() => setHoveredQtyId(c.id)}
+                        onMouseLeave={() => setHoveredQtyId(null)}
+                      >
                         <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
-                        {c.avgDailyUsage && c.avgDailyUsage > 0 && (() => {
+                        {hoveredQtyId === c.id && c.avgDailyUsage && c.avgDailyUsage > 0 && (() => {
                           const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
                           const label = daysLeft <= 0 ? "Depleted" : `~${daysLeft}d left`;
                           const bg = c.riskLevel === "critical" ? "#dc2626" : c.riskLevel === "warning" ? "#f59e0b" : "#35373e";
                           return (
-                            <span className="qty-tip pointer-events-none absolute right-0 bottom-full mb-1.5 whitespace-nowrap text-[11px] font-medium text-white px-2 py-1 rounded-lg shadow-lg z-10" style={{ backgroundColor: bg }}>
+                            <span className="pointer-events-none absolute right-0 bottom-full mb-1.5 whitespace-nowrap text-[11px] font-medium text-white px-2 py-1 rounded-lg shadow-lg z-10" style={{ backgroundColor: bg }}>
                               {label}
                             </span>
                           );

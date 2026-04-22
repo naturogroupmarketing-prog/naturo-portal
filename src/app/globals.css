@@ -187,14 +187,6 @@ a, button, [role="button"], input, select, textarea, label {
   z-index: 1;
 }
 
-/* Qty cell tooltip — hidden by default, visible on hover */
-.qty-tip {
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-.qty-cell:hover .qty-tip {
-  opacity: 1;
-}
 
 @keyframes slide-in {
   from { opacity: 0; transform: translateX(100%); }
