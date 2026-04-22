@@ -667,14 +667,14 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800 dark:text-shark-200">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
                     {visibleColumns.qty && <td className="px-4 py-3 text-right">
-                      <div className="relative inline-flex items-center justify-end group/qty">
+                      <div className="relative inline-block group">
                         <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
                         {c.avgDailyUsage && c.avgDailyUsage > 0 && (() => {
                           const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
                           const label = daysLeft <= 0 ? "Depleted" : `~${daysLeft}d left`;
                           const tipColor = c.riskLevel === "critical" ? "bg-red-600" : c.riskLevel === "warning" ? "bg-amber-500" : "bg-shark-800";
                           return (
-                            <span className={`pointer-events-none absolute right-0 bottom-full mb-1.5 whitespace-nowrap text-[11px] font-medium text-white px-2 py-1 rounded-lg shadow-lg opacity-0 group-hover/qty:opacity-100 transition-opacity duration-150 z-10 ${tipColor}`}>
+                            <span className={`pointer-events-none absolute right-0 bottom-full mb-1.5 whitespace-nowrap text-[11px] font-medium text-white px-2 py-1 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10 ${tipColor}`}>
                               {label}
                             </span>
                           );
