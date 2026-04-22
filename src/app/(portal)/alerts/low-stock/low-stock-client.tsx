@@ -349,17 +349,21 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
   // Clean up timer on unmount
   useEffect(() => () => { if (tooltipTimerRef.current) clearTimeout(tooltipTimerRef.current); }, []);
 
-  // ── Deep-link highlight: scroll to and flash the target item ─────────────
+  // ── Deep-link highlight: state-driven inline style on the matching row ──────
+  const [flashId, setFlashId] = useState<string | null>(null);
+
   useEffect(() => {
     if (!highlightId) return;
-    // 600ms gives the region sync useEffect + re-render time to settle
+    setFlashId(null);
+    // 600ms lets the region-sync re-render settle before we flash + scroll
     const timer = setTimeout(() => {
+      setFlashId(highlightId);
+      // Scroll to the visible element
       const all = document.querySelectorAll(`[data-ls-id="${highlightId}"]`);
       const el = Array.from(all).find((e) => (e as HTMLElement).offsetParent !== null) as HTMLElement | null;
-      if (!el) return;
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-      el.classList.add("consumable-highlight");
-      setTimeout(() => el.classList.remove("consumable-highlight"), 30000);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Clear after 30 s
+      setTimeout(() => setFlashId(null), 30000);
     }, 600);
     return () => clearTimeout(timer);
   }, [highlightId]);
@@ -458,11 +462,13 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
     const isCritical = !isOut && item.quantityOnHand <= Math.floor(item.minimumThreshold / 2);
     const hasActivePOs = item.activePOs.length > 0;
 
+    const isFlashed = flashId === item.id;
     return (
       <div
         key={item.id}
         data-ls-id={item.id}
         className="px-4 py-3 flex items-center justify-between gap-3 cursor-default"
+        style={isFlashed ? { boxShadow: "inset 0 0 0 2px #3B82F6, inset 0 0 0 9999px rgba(59,130,246,0.08)" } : undefined}
       >
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
@@ -505,12 +511,14 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
     const isOut = item.quantityOnHand === 0;
     const isCritical = !isOut && item.quantityOnHand <= Math.floor(item.minimumThreshold / 2);
     const hasActivePOs = item.activePOs.length > 0;
+    const isFlashed = flashId === item.id;
 
     return (
       <tr
         key={item.id}
         data-ls-id={item.id}
         className="hover:bg-shark-50/70 dark:hover:bg-shark-800/30 transition-colors cursor-default"
+        style={isFlashed ? { boxShadow: "inset 0 0 0 2px #3B82F6, inset 0 0 0 9999px rgba(59,130,246,0.08)" } : undefined}
       >
         <td className="px-5 py-3">
           <div className="flex items-center gap-1.5">
