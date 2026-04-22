@@ -26,9 +26,10 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
   const [collapsed, setCollapsed] = useState(!autoExpand);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // When arriving via the dashboard "Active Procurement" link, scroll + highlight
+  // When arriving via the dashboard "Active Procurement" link, expand + scroll + highlight
   useEffect(() => {
     if (!autoExpand) return;
+    setCollapsed(false); // force open even if component was already mounted collapsed
     const scrollTimer = setTimeout(() => {
       cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       // Pulse the highlight ring after the scroll starts
