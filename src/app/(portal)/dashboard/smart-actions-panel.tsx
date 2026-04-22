@@ -40,7 +40,7 @@ const TYPE_ICON: Record<SmartActionItem["type"], IconName> = {
   damage: "alert-triangle",
 };
 
-const DISMISS_KEY = "naturo-smartpanel-dismissed-at";
+const DISMISS_KEY = "naturo-smartpanel-dismissed-at-v2";
 const DISMISS_DURATION_MS = 8 * 60 * 60 * 1000; // 8 hours
 
 export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {

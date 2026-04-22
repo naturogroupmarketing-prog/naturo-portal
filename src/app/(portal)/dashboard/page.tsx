@@ -1127,12 +1127,13 @@ export default async function DashboardPage() {
     const ageDays = Math.floor(ageMs / (24 * 60 * 60 * 1000));
     const ageHours = Math.floor(ageMs / (60 * 60 * 1000));
     const createdBy = po.createdBy?.name || "Admin";
-    const priority = ageDays >= 2 ? "urgent" : "normal";
+    // Always urgent — any PO sitting pending is blocking procurement
+    const priority: "urgent" | "critical" = ageDays >= 3 ? "critical" : "urgent";
     actionItems.push({
       id: `po-${po.id}`,
       priority,
       type: "po",
-      title: "Purchase order awaiting approval",
+      title: "Purchase order created — awaiting approval",
       description: `${po.quantity} ${po.consumable.unitType} of ${po.consumable.name} · Created by ${createdBy}`,
       href: `/purchase-orders?highlight=${po.id}`,
       timeLabel: ageDays > 0 ? `${ageDays}d ago` : ageHours > 0 ? `${ageHours}h ago` : "Just now",
