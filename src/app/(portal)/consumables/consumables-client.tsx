@@ -115,6 +115,7 @@ import { compressImage } from "@/lib/image-utils";
 export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId }: ConsumablesClientProps) {
   const { addToast } = useToast();
   const [hoveredQtyId, setHoveredQtyId] = useState<string | null>(null);
+  const [qtyTooltipPos, setQtyTooltipPos] = useState<{ top: number; right: number } | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [showCreate, setShowCreate] = useState(false);
   const [showAddStock, setShowAddStock] = useState<Consumable | null>(null);
@@ -669,58 +670,68 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     {visibleColumns.location && <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden lg:table-cell">{c.region.state.name} / {c.region.name}</td>}
                     {visibleColumns.qty && <td className="px-4 py-3 text-right">
                       <div
-                        className="relative inline-block"
-                        onMouseEnter={() => setHoveredQtyId(c.id)}
-                        onMouseLeave={() => setHoveredQtyId(null)}
+                        className="inline-block"
+                        onMouseEnter={(e) => {
+                          if (!c.avgDailyUsage || c.avgDailyUsage <= 0 || c.quantityOnHand > c.reorderLevel) return;
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          setHoveredQtyId(c.id);
+                          setQtyTooltipPos({ top: rect.top, right: window.innerWidth - rect.right });
+                        }}
+                        onMouseLeave={() => { setHoveredQtyId(null); setQtyTooltipPos(null); }}
                       >
                         <span className={`font-bold cursor-default ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
-                        {hoveredQtyId === c.id && c.avgDailyUsage && c.avgDailyUsage > 0 && (() => {
-                          const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
-                          const isDepleted = daysLeft <= 0;
-                          const accentColor = c.riskLevel === "critical" ? "#dc2626" : c.riskLevel === "warning" ? "#f59e0b" : "#16a34a";
-                          const depletionDate = c.predictedDepletionDate
-                            ? new Date(c.predictedDepletionDate).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
-                            : null;
-                          return (
-                            <div
-                              className="pointer-events-none absolute right-0 bottom-full mb-2 z-50 w-52 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-xl shadow-xl overflow-hidden"
-                              style={{ borderTop: `3px solid ${accentColor}` }}
-                            >
-                              <div className="px-3 pt-2.5 pb-1">
-                                <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400 mb-1.5">Depletion Estimate</p>
-                                <div className="flex items-baseline gap-1.5 mb-1">
-                                  <span className="text-2xl font-bold" style={{ color: accentColor }}>
-                                    {isDepleted ? "0" : daysLeft}
-                                  </span>
-                                  <span className="text-sm font-medium text-shark-600 dark:text-shark-300">
-                                    {isDepleted ? "days — depleted" : "days remaining"}
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="border-t border-shark-100 dark:border-shark-800 px-3 py-2 space-y-1">
-                                <div className="flex justify-between text-[11px]">
-                                  <span className="text-shark-400">Avg daily usage</span>
-                                  <span className="font-medium text-shark-700 dark:text-shark-300">{c.avgDailyUsage.toFixed(1)} {c.unitType}/day</span>
-                                </div>
-                                <div className="flex justify-between text-[11px]">
-                                  <span className="text-shark-400">Current stock</span>
-                                  <span className="font-medium text-shark-700 dark:text-shark-300">{c.quantityOnHand} {c.unitType}</span>
-                                </div>
-                                <div className="flex justify-between text-[11px]">
-                                  <span className="text-shark-400">Min threshold</span>
-                                  <span className="font-medium text-shark-700 dark:text-shark-300">{c.minimumThreshold} {c.unitType}</span>
-                                </div>
-                                {depletionDate && (
-                                  <div className="flex justify-between text-[11px]">
-                                    <span className="text-shark-400">Est. depletion</span>
-                                    <span className="font-medium text-shark-700 dark:text-shark-300">{depletionDate}</span>
-                                  </div>
-                                )}
+                      </div>
+                      {hoveredQtyId === c.id && qtyTooltipPos && c.avgDailyUsage && c.avgDailyUsage > 0 && (() => {
+                        const daysLeft = Math.round(c.quantityOnHand / c.avgDailyUsage);
+                        const isDepleted = daysLeft <= 0;
+                        const accentColor = c.riskLevel === "critical" ? "#dc2626" : c.riskLevel === "warning" ? "#f59e0b" : "#16a34a";
+                        const depletionDate = c.predictedDepletionDate
+                          ? new Date(c.predictedDepletionDate).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
+                          : null;
+                        return (
+                          <div
+                            className="pointer-events-none fixed z-[9999] w-56 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-xl shadow-xl overflow-hidden"
+                            style={{
+                              top: qtyTooltipPos.top,
+                              right: qtyTooltipPos.right,
+                              transform: "translateY(calc(-100% - 8px))",
+                              borderTop: `3px solid ${accentColor}`,
+                            }}
+                          >
+                            <div className="px-3 pt-2.5 pb-1">
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400 mb-1.5">Depletion Estimate</p>
+                              <div className="flex items-baseline gap-1.5 mb-1">
+                                <span className="text-2xl font-bold" style={{ color: accentColor }}>
+                                  {isDepleted ? "0" : daysLeft}
+                                </span>
+                                <span className="text-sm font-medium text-shark-600 dark:text-shark-300">
+                                  {isDepleted ? "days — depleted" : "days remaining"}
+                                </span>
                               </div>
                             </div>
-                          );
-                        })()}
-                      </div>
+                            <div className="border-t border-shark-100 dark:border-shark-800 px-3 py-2 space-y-1">
+                              <div className="flex justify-between text-[11px]">
+                                <span className="text-shark-400">Avg daily usage</span>
+                                <span className="font-medium text-shark-700 dark:text-shark-300">{c.avgDailyUsage.toFixed(1)} {c.unitType}/day</span>
+                              </div>
+                              <div className="flex justify-between text-[11px]">
+                                <span className="text-shark-400">Current stock</span>
+                                <span className="font-medium text-shark-700 dark:text-shark-300">{c.quantityOnHand} {c.unitType}</span>
+                              </div>
+                              <div className="flex justify-between text-[11px]">
+                                <span className="text-shark-400">Min threshold</span>
+                                <span className="font-medium text-shark-700 dark:text-shark-300">{c.minimumThreshold} {c.unitType}</span>
+                              </div>
+                              {depletionDate && (
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-shark-400">Est. depletion</span>
+                                  <span className="font-medium text-shark-700 dark:text-shark-300">{depletionDate}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </td>}
                     {visibleColumns.assignedTo && (
                     <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
