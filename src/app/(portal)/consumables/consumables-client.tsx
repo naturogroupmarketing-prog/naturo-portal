@@ -868,9 +868,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {/* Region selector — Super Admin only */}
       {isSuperAdmin && regions.length > 0 && (
         <div className="relative border-b border-shark-100 dark:border-shark-800" ref={regionDropdownRef}>
-          <button
+          <div
+            role="button"
+            tabIndex={0}
             onClick={() => { setRegionDropdownOpen((o) => !o); setRegionSearch(""); }}
-            className="w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors text-left"
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setRegionDropdownOpen((o) => !o); setRegionSearch(""); } }}
+            className="w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors cursor-pointer"
           >
             <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
               <Icon name="map-pin" size={14} className="text-action-600" />
@@ -898,7 +901,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 Clear
               </button>
             )}
-          </button>
+          </div>
 
           {regionDropdownOpen && (
             <div className="absolute left-0 right-0 top-full z-50 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 shadow-xl rounded-b-xl overflow-hidden">
