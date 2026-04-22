@@ -40,6 +40,7 @@ interface Props {
   regions: Region[];
   focusRegionId?: string;
   isSuperAdmin: boolean;
+  highlightId?: string;
 }
 
 const ALL = "all";
@@ -159,7 +160,7 @@ function ItemTooltip({ data, onKeepOpen, onClose }: { data: TooltipState; onKeep
 
 /* ── Main component ───────────────────────────────────────────────────── */
 
-export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: Props) {
+export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, highlightId }: Props) {
   // ── Region selector ──────────────────────────────────────────────────────
   const [selectedRegionId, setSelectedRegionId] = useState<string>(
     focusRegionId ?? (isSuperAdmin ? ALL : (regions[0]?.id ?? ALL))
@@ -214,6 +215,21 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: 
 
   // Clean up timer on unmount
   useEffect(() => () => { if (tooltipTimerRef.current) clearTimeout(tooltipTimerRef.current); }, []);
+
+  // ── Deep-link highlight: scroll to and flash the target item ─────────────
+  useEffect(() => {
+    if (!highlightId) return;
+    const timer = setTimeout(() => {
+      const all = document.querySelectorAll(`[data-ls-id="${highlightId}"]`);
+      const el = Array.from(all).find((e) => (e as HTMLElement).offsetParent !== null) as HTMLElement | null;
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("consumable-highlight");
+      const cleanup = setTimeout(() => el.classList.remove("consumable-highlight"), 2800);
+      return () => clearTimeout(cleanup);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [highlightId]);
 
   // ── Region expand/collapse ───────────────────────────────────────────────
   const [expandedRegions, setExpandedRegions] = useState<Set<string>>(
@@ -312,6 +328,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: 
     return (
       <div
         key={item.id}
+        data-ls-id={item.id}
         className="px-4 py-3 flex items-center justify-between gap-3 cursor-default"
       >
         <div className="min-w-0 flex-1">
@@ -349,6 +366,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin }: 
     return (
       <tr
         key={item.id}
+        data-ls-id={item.id}
         className="hover:bg-shark-50/70 dark:hover:bg-shark-800/30 transition-colors cursor-default"
       >
         <td className="px-5 py-3">

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function LowStockPage({ searchParams }: { searchParams: Promise<{ region?: string }> }) {
+export default async function LowStockPage({ searchParams }: { searchParams: Promise<{ region?: string; highlight?: string }> }) {
   const session = await auth();
   if (!session?.user || !isAdminOrManager(session.user.role)) redirect("/dashboard");
 
@@ -76,7 +76,7 @@ export default async function LowStockPage({ searchParams }: { searchParams: Pro
     activePOs: posByConsumable.get(item.id) ?? [],
   }));
 
-  const { region: focusRegion } = await searchParams;
+  const { region: focusRegion, highlight } = await searchParams;
 
   return (
     <LowStockClient
@@ -84,6 +84,7 @@ export default async function LowStockPage({ searchParams }: { searchParams: Pro
       regions={JSON.parse(JSON.stringify(regions))}
       focusRegionId={focusRegion ?? (isBM ? session.user.regionId! : undefined)}
       isSuperAdmin={isSuperAdmin}
+      highlightId={highlight}
     />
   );
 }

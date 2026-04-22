@@ -1116,7 +1116,7 @@ export default async function DashboardPage() {
       type: "stock",
       title: isOut ? `Out of stock: ${item.name}` : `Low stock: ${item.name}`,
       description: `${item.region.name} · ${item.quantityOnHand} left (min: ${item.minimumThreshold} ${item.unitType})`,
-      href: `/alerts/low-stock?region=${item.region.id}`,
+      href: `/alerts/low-stock?region=${item.region.id}&highlight=${item.id}`,
       timeLabel: isOut ? "Out of stock" : `${item.quantityOnHand} remaining`,
     });
   }
