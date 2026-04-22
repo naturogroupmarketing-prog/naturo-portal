@@ -24,22 +24,16 @@ function fmt(n: number) {
 
 export function OrderCostSummary({ regions, autoExpand }: Props) {
   const [collapsed, setCollapsed] = useState(!autoExpand);
-  const [highlighted, setHighlighted] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // When arriving via the dashboard "Active Procurement" link, expand + scroll + highlight
+  // Scroll into view when arriving from dashboard
   useEffect(() => {
     if (!autoExpand) return;
     setCollapsed(false);
-    const scrollTimer = setTimeout(() => {
+    const timer = setTimeout(() => {
       cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      const highlightTimer = setTimeout(() => {
-        setHighlighted(true);
-        setTimeout(() => setHighlighted(false), 2000);
-      }, 250);
-      return () => clearTimeout(highlightTimer);
     }, 300);
-    return () => clearTimeout(scrollTimer);
+    return () => clearTimeout(timer);
   }, [autoExpand]);
 
   const grandTotal = regions.reduce((s, r) => s + r.total, 0);
@@ -48,7 +42,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
   const orderedTotal = regions.reduce((s, r) => s + r.ordered, 0);
 
   return (
-    <div ref={cardRef} className={highlighted ? "card-spotlight" : ""}>
+    <div ref={cardRef} className={autoExpand ? "card-spotlight" : ""}>
       <Card className="border-action-100">
       <CardContent className="py-4 space-y-3">
         {/* Header — clickable to collapse/expand */}
