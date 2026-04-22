@@ -735,23 +735,15 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     </td>}
                     {visibleColumns.assignedTo && (
                     <td className="px-4 py-3 text-shark-500 dark:text-shark-400 hidden md:table-cell" onClick={(e) => e.stopPropagation()}>
-                      <div className="w-full overflow-hidden">
-                        {activeAssignments.length > 0 ? (
-                          <select
-                            className="w-full text-xs bg-transparent border border-shark-200 dark:border-shark-700 rounded px-2 py-1 text-action-600 cursor-pointer hover:border-action-300 focus:outline-none focus:ring-1 focus:ring-action-300"
-                            value=""
-                            onChange={(e) => {
-                              if (e.target.value) setStaffModalUserId(e.target.value);
-                              e.target.value = "";
-                            }}
-                          >
-                            <option value="">{activeAssignments.length} staff ({activeAssignments.reduce((s, a) => s + a.quantity, 0)})</option>
-                            {activeAssignments.map((a) => (
-                              <option key={a.id} value={a.user.id}>{a.user.name || a.user.email} (×{a.quantity})</option>
-                            ))}
-                          </select>
-                        ) : <span className="text-shark-400">{"\u2014"}</span>}
-                      </div>
+                      {activeAssignments.length > 0 ? (
+                        <button
+                          onClick={() => setStaffModalUserId(activeAssignments[0].user.id)}
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-action-600 bg-action-50 hover:bg-action-100 dark:bg-action-500/10 dark:hover:bg-action-500/20 px-2.5 py-1 rounded-lg max-w-full truncate transition-colors"
+                        >
+                          <Icon name="users" size={11} />
+                          <span className="truncate">{activeAssignments.length} staff ({activeAssignments.reduce((s, a) => s + a.quantity, 0)})</span>
+                        </button>
+                      ) : <span className="text-shark-400">{"\u2014"}</span>}
                     </td>
                     )}
                     <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
