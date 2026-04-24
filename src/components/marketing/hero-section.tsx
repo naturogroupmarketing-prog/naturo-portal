@@ -198,10 +198,11 @@ export function HeroSection() {
               right: "-8px",
               top: "168px",
               height: "500px",
+              boxShadow: "0 2px 4px rgba(10,37,64,0.08), 0 50px 100px -20px rgba(10,37,64,0.32), 0 30px 60px -30px rgba(0,0,0,0.28)",
             }}
           >
-            {/* White base so content is visible before fade */}
-            <div className="absolute inset-0 rounded-2xl" style={{ background: "#fff", boxShadow: "0 24px 64px rgba(10,37,64,0.35), 0 2px 8px rgba(10,37,64,0.15), 0 40px 80px -10px rgba(10,37,64,0.45)" }} />
+            {/* White base so content is visible */}
+            <div className="absolute inset-0 rounded-2xl" style={{ background: "#fff" }} />
 
             {/* Browser chrome */}
             <div className="relative flex items-center gap-2 px-4 py-2.5 shrink-0" style={{ background: "#f6f9fc", borderBottom: "1px solid #e3e8ef", zIndex: 1 }}>
@@ -231,15 +232,6 @@ export function HeroSection() {
               style={{ height: "calc(500px - 38px)", objectFit: "cover", objectPosition: "top left" }}
             />
 
-            {/* Bottom drop shadow overlay */}
-            <div
-              className="absolute bottom-0 left-0 right-0 pointer-events-none"
-              style={{
-                height: "120px",
-                background: "linear-gradient(to top, rgba(8,20,45,0.55) 0%, rgba(8,20,45,0.18) 50%, transparent 100%)",
-                borderRadius: "0 0 16px 16px",
-              }}
-            />
           </div>
 
           {/* Floating badge — Low Stock */}
