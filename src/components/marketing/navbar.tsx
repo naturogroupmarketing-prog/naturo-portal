@@ -25,7 +25,7 @@ export function Navbar() {
         {/* Logo — white when over gradient, coloured when scrolled */}
         <Link href="/welcome" className="flex items-center gap-2.5">
           <img
-            src={scrolled ? "/Logotrackio.svg" : "/trackio_white.svg"}
+            src={scrolled ? "/Logotrackio.svg" : "/trackio_white_logo.svg"}
             alt="trackio"
             className="w-auto h-10 sm:h-[60px] transition-opacity duration-300"
           />
