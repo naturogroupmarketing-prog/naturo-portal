@@ -5,38 +5,38 @@ import Link from "next/link";
 /** Realistic iPhone-style frame — dynamic island, side buttons, metallic bezel */
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative" style={{ width: "210px", height: "455px" }}>
+    <div className="relative" style={{ width: "260px", height: "560px" }}>
       {/* ── Left side buttons ── */}
       {/* Mute / silent */}
-      <div className="absolute z-10" style={{ left: "-4px", top: "88px", width: "4px", height: "28px", borderRadius: "4px 0 0 4px", background: "linear-gradient(to right, #1c3354, #243e65)" }} />
+      <div className="absolute z-10" style={{ left: "-4px", top: "100px", width: "4px", height: "30px", borderRadius: "4px 0 0 4px", background: "linear-gradient(to right, #1c3354, #243e65)" }} />
       {/* Volume up */}
-      <div className="absolute z-10" style={{ left: "-4px", top: "128px", width: "4px", height: "52px", borderRadius: "4px 0 0 4px", background: "linear-gradient(to right, #1c3354, #243e65)" }} />
+      <div className="absolute z-10" style={{ left: "-4px", top: "148px", width: "4px", height: "56px", borderRadius: "4px 0 0 4px", background: "linear-gradient(to right, #1c3354, #243e65)" }} />
       {/* Volume down */}
-      <div className="absolute z-10" style={{ left: "-4px", top: "192px", width: "4px", height: "52px", borderRadius: "4px 0 0 4px", background: "linear-gradient(to right, #1c3354, #243e65)" }} />
+      <div className="absolute z-10" style={{ left: "-4px", top: "218px", width: "4px", height: "56px", borderRadius: "4px 0 0 4px", background: "linear-gradient(to right, #1c3354, #243e65)" }} />
 
       {/* ── Right side button — power ── */}
-      <div className="absolute z-10" style={{ right: "-4px", top: "148px", width: "4px", height: "68px", borderRadius: "0 4px 4px 0", background: "linear-gradient(to left, #1c3354, #243e65)" }} />
+      <div className="absolute z-10" style={{ right: "-4px", top: "168px", width: "4px", height: "72px", borderRadius: "0 4px 4px 0", background: "linear-gradient(to left, #1c3354, #243e65)" }} />
 
       {/* ── Main phone body ── */}
       <div
         className="relative w-full h-full overflow-hidden"
         style={{
-          borderRadius: "44px",
+          borderRadius: "46px",
           background: "linear-gradient(160deg, #243e65 0%, #0d2240 40%, #091a35 100%)",
-          boxShadow: "0 0 0 1px rgba(255,255,255,0.12), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.3), 0 32px 80px rgba(5,15,35,0.65), 0 8px 24px rgba(5,15,35,0.4)",
-          padding: "14px 10px 12px",
+          boxShadow: "0 0 0 1px rgba(255,255,255,0.12), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.3), 0 40px 100px rgba(5,15,35,0.45), 0 10px 30px rgba(5,15,35,0.25)",
+          padding: "15px 11px 13px",
         }}
       >
         {/* ── Screen area ── */}
-        <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: "34px", background: "#f6f9fc" }}>
+        <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: "36px", background: "#f6f9fc" }}>
           {/* Dynamic island */}
           <div
             className="absolute left-1/2 z-20 flex items-center justify-center gap-1.5"
             style={{
-              top: "8px",
+              top: "9px",
               transform: "translateX(-50%)",
-              width: "88px",
-              height: "26px",
+              width: "96px",
+              height: "28px",
               borderRadius: "20px",
               background: "#000",
             }}
@@ -180,28 +180,18 @@ export function HeroSection() {
         {/* ── RIGHT — phone + dashboard ── */}
         <div className="hidden lg:block lg:w-[54%] relative animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
 
-          {/* ── Phone — proper iPhone frame, left of right column ── */}
-          <div
-            className="absolute z-20 animate-[gentleFloat_6s_ease-in-out_infinite]"
-            style={{ left: "4%", top: "210px" }}
-          >
-            <PhoneFrame>
-              <MobileAppScreen />
-            </PhoneFrame>
-          </div>
-
-          {/* ── Dashboard browser frame — right side, transparent edges ── */}
+          {/* ── Dashboard browser frame — large, bleeds off the right ── */}
           <div
             className="absolute z-10 overflow-hidden rounded-2xl"
             style={{
-              left: "28%",
-              right: "-8px",
-              top: "168px",
-              height: "500px",
-              boxShadow: "0 2px 4px rgba(10,37,64,0.08), 0 50px 100px -20px rgba(10,37,64,0.32), 0 30px 60px -30px rgba(0,0,0,0.28)",
+              left: "30%",
+              right: "-480px",
+              top: "110px",
+              height: "620px",
+              boxShadow: "0 2px 4px rgba(10,37,64,0.04), 0 50px 100px -20px rgba(10,37,64,0.14), 0 30px 60px -30px rgba(0,0,0,0.10)",
             }}
           >
-            {/* White base so content is visible */}
+            {/* White base */}
             <div className="absolute inset-0 rounded-2xl" style={{ background: "#fff" }} />
 
             {/* Browser chrome */}
@@ -229,13 +219,22 @@ export function HeroSection() {
               alt="Trackio dashboard"
               draggable={false}
               className="relative block w-full"
-              style={{ height: "calc(500px - 38px)", objectFit: "cover", objectPosition: "top left" }}
+              style={{ height: "calc(620px - 38px)", objectFit: "cover", objectPosition: "top left" }}
             />
-
           </div>
 
-          {/* Floating badge — Low Stock */}
-          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.2s_both]" style={{ top: "176px", right: "24px" }}>
+          {/* ── Phone — foreground, overlapping left of dashboard ── */}
+          <div
+            className="absolute z-20 animate-[gentleFloat_6s_ease-in-out_infinite]"
+            style={{ left: "2%", top: "145px" }}
+          >
+            <PhoneFrame>
+              <MobileAppScreen />
+            </PhoneFrame>
+          </div>
+
+          {/* Floating badge — Low Stock — top right of visible dashboard */}
+          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.2s_both]" style={{ top: "118px", right: "24px" }}>
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl animate-[gentleFloat_4s_ease-in-out_infinite]" style={{ background: "#fff", border: "1px solid #e3e8ef", boxShadow: "0 8px 28px rgba(60,66,87,0.18)" }}>
               <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" style={{ background: "#fffbeb" }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -251,7 +250,7 @@ export function HeroSection() {
           </div>
 
           {/* Floating badge — Asset Assigned */}
-          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.5s_both]" style={{ bottom: "200px", right: "32px" }}>
+          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.5s_both]" style={{ bottom: "160px", right: "28px" }}>
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl animate-[gentleFloat_5s_ease-in-out_0.5s_infinite]" style={{ background: "#fff", border: "1px solid #e3e8ef", boxShadow: "0 8px 28px rgba(60,66,87,0.18)" }}>
               <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" style={{ background: "#f0fdf4" }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
