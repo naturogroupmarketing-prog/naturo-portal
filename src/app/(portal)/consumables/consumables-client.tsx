@@ -866,7 +866,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <Card padding="none">
 
       {/* Region selector — Super Admin only */}
-      {isSuperAdmin && regions.length > 0 && (
+      {isSuperAdmin && regions.length > 1 && (
         <div className="relative border-b border-shark-100 dark:border-shark-800" ref={regionDropdownRef}>
           <div
             role="button"
