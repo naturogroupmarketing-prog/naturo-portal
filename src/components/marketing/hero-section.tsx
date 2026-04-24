@@ -10,7 +10,7 @@ export function HeroSection() {
         className="absolute inset-0 z-0"
         style={{
           background:
-            "radial-gradient(ellipse 55% 55% at 100% 0%, rgba(251,146,60,0.72) 0%, transparent 65%), linear-gradient(135deg, #7c3aed 0%, #a855f7 15%, #ec4899 35%, #f472b6 50%, #fce7f3 65%, #ffffff 80%, #ffffff 100%)",
+            "radial-gradient(ellipse 30% 35% at 101% -1%, rgba(220,55,0,0.98) 0%, transparent 70%), radial-gradient(ellipse 60% 60% at 100% 0%, rgba(249,115,22,0.85) 0%, transparent 68%), linear-gradient(135deg, #7c3aed 0%, #a855f7 15%, #ec4899 35%, #f472b6 50%, #fce7f3 65%, #ffffff 80%, #ffffff 100%)",
         }}
       />
       {/* Bottom white fade */}
