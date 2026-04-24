@@ -102,9 +102,11 @@ interface StaffClientProps {
   initialUserId?: string;
   deletedUsers?: DeletedUser[];
   starterKits?: StarterKit[];
+  /** When true, skips the outer Card wrapper (e.g. when already embedded inside a Card) */
+  noCard?: boolean;
 }
 
-export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion, initialUserId, deletedUsers = [], starterKits = [] }: StaffClientProps) {
+export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewStaffDetails = true, initialRegion, initialUserId, deletedUsers = [], starterKits = [], noCard }: StaffClientProps) {
   const router = useRouter();
   const { addToast } = useToast();
   const [showDeleted, setShowDeleted] = useState(false);
@@ -414,8 +416,11 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
     </>
   );
 
+  const Wrapper = noCard ? "div" : Card;
+  const wrapperProps = noCard ? {} : { padding: "none" as const };
+
   return (
-    <Card padding="none">
+    <Wrapper {...wrapperProps}>
     <div className="p-4 sm:p-5 space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
@@ -1298,6 +1303,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
         </div>
       )}
     </div>
-    </Card>
+    </Wrapper>
   );
 }

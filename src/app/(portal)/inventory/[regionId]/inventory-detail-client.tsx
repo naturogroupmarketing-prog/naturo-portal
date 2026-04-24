@@ -284,6 +284,7 @@ export function InventoryDetailClient({
               isSuperAdmin={isSuperAdmin}
               canViewStaffDetails={true}
               initialRegion={region.id}
+              noCard
             />
           )}
         </div>
