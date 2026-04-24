@@ -2,125 +2,6 @@
 
 import Link from "next/link";
 
-/** Realistic iPhone-style frame — dynamic island, side buttons, metallic bezel */
-function PhoneFrame({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative" style={{ width: "260px", height: "560px" }}>
-      {/* ── Left side buttons ── */}
-      {/* Mute / silent */}
-      <div className="absolute z-10" style={{ left: "-4px", top: "100px", width: "4px", height: "30px", borderRadius: "4px 0 0 4px", background: "linear-gradient(to right, #1c3354, #243e65)" }} />
-      {/* Volume up */}
-      <div className="absolute z-10" style={{ left: "-4px", top: "148px", width: "4px", height: "56px", borderRadius: "4px 0 0 4px", background: "linear-gradient(to right, #1c3354, #243e65)" }} />
-      {/* Volume down */}
-      <div className="absolute z-10" style={{ left: "-4px", top: "218px", width: "4px", height: "56px", borderRadius: "4px 0 0 4px", background: "linear-gradient(to right, #1c3354, #243e65)" }} />
-
-      {/* ── Right side button — power ── */}
-      <div className="absolute z-10" style={{ right: "-4px", top: "168px", width: "4px", height: "72px", borderRadius: "0 4px 4px 0", background: "linear-gradient(to left, #1c3354, #243e65)" }} />
-
-      {/* ── Main phone body ── */}
-      <div
-        className="relative w-full h-full overflow-hidden"
-        style={{
-          borderRadius: "46px",
-          background: "linear-gradient(160deg, #243e65 0%, #0d2240 40%, #091a35 100%)",
-          boxShadow: "0 0 0 1px rgba(255,255,255,0.12), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.3), 0 40px 100px rgba(5,15,35,0.45), 0 10px 30px rgba(5,15,35,0.25)",
-          padding: "15px 11px 13px",
-        }}
-      >
-        {/* ── Screen area ── */}
-        <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: "36px", background: "#f6f9fc" }}>
-          {/* Dynamic island */}
-          <div
-            className="absolute left-1/2 z-20 flex items-center justify-center gap-1.5"
-            style={{
-              top: "9px",
-              transform: "translateX(-50%)",
-              width: "96px",
-              height: "28px",
-              borderRadius: "20px",
-              background: "#000",
-            }}
-          >
-            {/* Front camera dot */}
-            <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#1a1a2e", border: "1.5px solid #2a2a3e" }} />
-          </div>
-
-          {/* Screen content */}
-          <div className="flex flex-col h-full pt-10">
-            {children}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** Mobile app UI content inside the phone */
-function MobileAppScreen() {
-  return (
-    <>
-      {/* Dark nav bar */}
-      <div className="flex items-center justify-between px-3 py-2.5 shrink-0" style={{ background: "#0a2540" }}>
-        <div className="flex items-center gap-1.5">
-          <div style={{ width: "18px", height: "18px", borderRadius: "5px", background: "#635bff" }} />
-          <div style={{ width: "52px", height: "7px", borderRadius: "4px", background: "rgba(255,255,255,0.45)" }} />
-        </div>
-        <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "rgba(255,255,255,0.65)" }} />
-        </div>
-      </div>
-
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-2 px-3 pt-2.5 shrink-0">
-        {[
-          { label: "Assets", value: "247", color: "#635bff" },
-          { label: "Low Stock", value: "12", color: "#f59e0b" },
-        ].map((s) => (
-          <div key={s.label} style={{ background: "#fff", border: "1px solid #e3e8ef", borderRadius: "12px", padding: "8px 10px" }}>
-            <div style={{ fontSize: "7px", color: "#697386", marginBottom: "3px" }}>{s.label}</div>
-            <div style={{ fontSize: "17px", fontWeight: 700, color: s.color, lineHeight: 1 }}>{s.value}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Bar chart */}
-      <div className="px-3 pt-2 shrink-0">
-        <div style={{ background: "#fff", border: "1px solid #e3e8ef", borderRadius: "12px", padding: "8px 10px" }}>
-          <div style={{ fontSize: "7px", color: "#697386", marginBottom: "6px" }}>Weekly Activity</div>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "3px", height: "40px" }}>
-            {[38, 62, 45, 85, 55, 92, 68].map((h, i) => (
-              <div key={i} style={{ flex: 1, borderRadius: "3px", height: `${h}%`, background: i === 5 ? "#635bff" : i === 3 ? "#7b73ff" : "#e3e8ef" }} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Alert list */}
-      <div className="px-3 pt-2.5 space-y-1.5 flex-1">
-        <div style={{ fontSize: "7px", fontWeight: 600, color: "#697386", letterSpacing: "0.05em", paddingLeft: "2px" }}>RECENT ALERTS</div>
-        {[
-          { dot: "#f59e0b", title: "Gloves — Low Stock", sub: "South Branch · 3 left" },
-          { dot: "#22c55e", title: "Kit Assigned", sub: "Vacuum V200 → Sarah" },
-          { dot: "#635bff", title: "PO Approved", sub: "$1,240 · North Region" },
-        ].map((item, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "center", gap: "7px", padding: "7px 9px", background: "#fff", border: "1px solid #e3e8ef", borderRadius: "10px" }}>
-            <div style={{ width: "7px", height: "7px", borderRadius: "50%", flexShrink: 0, background: item.dot }} />
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: "8px", fontWeight: 600, color: "#1a1f36", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.title}</div>
-              <div style={{ fontSize: "7px", color: "#697386", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.sub}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Bottom home indicator */}
-      <div className="flex justify-center pb-2 pt-1 shrink-0">
-        <div style={{ width: "100px", height: "4px", borderRadius: "3px", background: "rgba(0,0,0,0.15)" }} />
-      </div>
-    </>
-  );
-}
-
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden" style={{ minHeight: "860px" }}>
@@ -228,9 +109,19 @@ export function HeroSection() {
             className="absolute z-20 animate-[gentleFloat_6s_ease-in-out_infinite]"
             style={{ left: "2%", top: "205px" }}
           >
-            <PhoneFrame>
-              <MobileAppScreen />
-            </PhoneFrame>
+            {/* Crop to phone area — SVG viewBox 1024.5×576, phone at ~x:239-406, y:98-446 */}
+            {/* At bg-width 1900px: scale=1.854×; phone left≈461, top≈219; bg-pos offsets there */}
+            <div
+              aria-label="Trackio mobile app"
+              style={{
+                width: "310px",
+                height: "620px",
+                backgroundImage: "url('/Mobile_phone_tracio.svg')",
+                backgroundSize: "1900px auto",
+                backgroundPosition: "-428px -175px",
+                backgroundRepeat: "no-repeat",
+              }}
+            />
           </div>
 
           {/* Floating badge — Low Stock — top right of visible dashboard */}
