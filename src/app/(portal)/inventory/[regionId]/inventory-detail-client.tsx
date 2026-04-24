@@ -272,6 +272,7 @@ export function InventoryDetailClient({
               initialStock={undefined}
               initialCategory={undefined}
               highlightId={highlightId}
+              noCard
             />
           )}
 

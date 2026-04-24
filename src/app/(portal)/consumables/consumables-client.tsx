@@ -109,12 +109,14 @@ interface ConsumablesClientProps {
   initialCategory?: string;
   /** Consumable ID to scroll to and highlight on mount (from Low Stock deep-link) */
   highlightId?: string;
+  /** When true, skips the outer Card wrapper (e.g. when already embedded inside a Card) */
+  noCard?: boolean;
 }
 
 import { compressImage } from "@/lib/image-utils";
 
 
-export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId }: ConsumablesClientProps) {
+export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId, noCard }: ConsumablesClientProps) {
   const router = useRouter();
   const { addToast } = useToast();
   const [hoveredQtyId, setHoveredQtyId] = useState<string | null>(null);
@@ -861,9 +863,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
     );
   };
 
+  const Wrapper = noCard ? "div" : Card;
+  const wrapperProps = noCard ? {} : { padding: "none" as const };
+
   return (
     <>
-      <Card padding="none">
+      <Wrapper {...wrapperProps}>
 
       {/* Region selector — Super Admin only */}
       {isSuperAdmin && regions.length > 1 && (
@@ -1292,7 +1297,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </>
         )}
       </div>
-    </Card>
+    </Wrapper>
 
       {/* Bulk Delete Confirmation Modal */}
       <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Supplies">
