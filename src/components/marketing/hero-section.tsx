@@ -136,10 +136,10 @@ export function HeroSection() {
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
 
       {/* ── Full-width layout ── */}
-      <div className="relative z-20 flex flex-col lg:flex-row" style={{ minHeight: "860px" }}>
+      <div className="relative z-20 flex flex-col lg:flex-row" style={{ minHeight: "920px" }}>
 
         {/* ── LEFT — text ── */}
-        <div className="lg:w-[46%] px-8 lg:pl-16 xl:pl-24 lg:pr-6 pt-36 lg:pt-44 pb-16 lg:pb-0 flex flex-col">
+        <div className="lg:w-[46%] px-8 lg:pl-16 xl:pl-24 lg:pr-6 pt-44 lg:pt-56 pb-16 lg:pb-0 flex flex-col">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-8 w-fit animate-[fadeInDown_0.5s_ease-out]">
             <span className="w-1.5 h-1.5 rounded-full bg-white" />
             <span className="text-xs font-medium text-white tracking-wide">Asset & Supply Tracking Platform</span>
@@ -186,7 +186,7 @@ export function HeroSection() {
             style={{
               left: "30%",
               right: "-480px",
-              top: "110px",
+              top: "170px",
               height: "620px",
               boxShadow: "0 2px 4px rgba(10,37,64,0.04), 0 50px 100px -20px rgba(10,37,64,0.14), 0 30px 60px -30px rgba(0,0,0,0.10)",
             }}
@@ -226,7 +226,7 @@ export function HeroSection() {
           {/* ── Phone — foreground, overlapping left of dashboard ── */}
           <div
             className="absolute z-20 animate-[gentleFloat_6s_ease-in-out_infinite]"
-            style={{ left: "2%", top: "145px" }}
+            style={{ left: "2%", top: "205px" }}
           >
             <PhoneFrame>
               <MobileAppScreen />
@@ -234,7 +234,7 @@ export function HeroSection() {
           </div>
 
           {/* Floating badge — Low Stock — top right of visible dashboard */}
-          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.2s_both]" style={{ top: "118px", right: "24px" }}>
+          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.2s_both]" style={{ top: "178px", right: "24px" }}>
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl animate-[gentleFloat_4s_ease-in-out_infinite]" style={{ background: "#fff", border: "1px solid #e3e8ef", boxShadow: "0 8px 28px rgba(60,66,87,0.18)" }}>
               <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" style={{ background: "#fffbeb" }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
