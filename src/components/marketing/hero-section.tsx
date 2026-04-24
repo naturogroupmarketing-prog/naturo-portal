@@ -183,7 +183,7 @@ export function HeroSection() {
           {/* ── Phone — proper iPhone frame, left of right column ── */}
           <div
             className="absolute z-20 animate-[gentleFloat_6s_ease-in-out_infinite]"
-            style={{ left: "4%", top: "140px" }}
+            style={{ left: "4%", top: "210px" }}
           >
             <PhoneFrame>
               <MobileAppScreen />
@@ -196,12 +196,12 @@ export function HeroSection() {
             style={{
               left: "28%",
               right: "-8px",
-              top: "100px",
+              top: "168px",
               height: "500px",
             }}
           >
             {/* White base so content is visible before fade */}
-            <div className="absolute inset-0 rounded-2xl" style={{ background: "#fff", boxShadow: "0 24px 64px rgba(10,37,64,0.35), 0 2px 8px rgba(10,37,64,0.15)" }} />
+            <div className="absolute inset-0 rounded-2xl" style={{ background: "#fff", boxShadow: "0 24px 64px rgba(10,37,64,0.35), 0 2px 8px rgba(10,37,64,0.15), 0 40px 80px -10px rgba(10,37,64,0.45)" }} />
 
             {/* Browser chrome */}
             <div className="relative flex items-center gap-2 px-4 py-2.5 shrink-0" style={{ background: "#f6f9fc", borderBottom: "1px solid #e3e8ef", zIndex: 1 }}>
@@ -230,10 +230,20 @@ export function HeroSection() {
               className="relative block w-full"
               style={{ height: "calc(500px - 38px)", objectFit: "cover", objectPosition: "top left" }}
             />
+
+            {/* Bottom drop shadow overlay */}
+            <div
+              className="absolute bottom-0 left-0 right-0 pointer-events-none"
+              style={{
+                height: "120px",
+                background: "linear-gradient(to top, rgba(8,20,45,0.55) 0%, rgba(8,20,45,0.18) 50%, transparent 100%)",
+                borderRadius: "0 0 16px 16px",
+              }}
+            />
           </div>
 
           {/* Floating badge — Low Stock */}
-          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.2s_both]" style={{ top: "108px", right: "24px" }}>
+          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.2s_both]" style={{ top: "176px", right: "24px" }}>
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl animate-[gentleFloat_4s_ease-in-out_infinite]" style={{ background: "#fff", border: "1px solid #e3e8ef", boxShadow: "0 8px 28px rgba(60,66,87,0.18)" }}>
               <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" style={{ background: "#fffbeb" }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
