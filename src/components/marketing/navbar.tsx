@@ -22,50 +22,55 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 sm:h-24 flex items-center justify-between">
-        {/* Logo */}
+        {/* Logo — white when over gradient, coloured when scrolled */}
         <Link href="/welcome" className="flex items-center gap-2.5">
           <img
-            src="/Logotrackio.svg"
+            src={scrolled ? "/Logotrackio.svg" : "/trackio_white.svg"}
             alt="trackio"
-            className="w-auto h-10 sm:h-[60px]"
+            className="w-auto h-10 sm:h-[60px] transition-opacity duration-300"
           />
         </Link>
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
-          <a href="#features" className="text-sm text-shark-500 dark:text-shark-400 hover:text-shark-900 transition-colors">
-            Features
-          </a>
-          <a href="#how-it-works" className="text-sm text-shark-500 dark:text-shark-400 hover:text-shark-900 transition-colors">
-            How It Works
-          </a>
-          <a href="#use-cases" className="text-sm text-shark-500 dark:text-shark-400 hover:text-shark-900 transition-colors">
-            Use Cases
-          </a>
-          <a href="#pricing" className="text-sm text-shark-500 dark:text-shark-400 hover:text-shark-900 transition-colors">
-            Pricing
-          </a>
-          <div className="w-px h-5 bg-shark-200 dark:bg-shark-700" />
+          {["#features", "#how-it-works", "#use-cases", "#pricing"].map((href, i) => (
+            <a
+              key={href}
+              href={href}
+              className={`text-sm transition-colors ${
+                scrolled
+                  ? "text-shark-500 hover:text-shark-900"
+                  : "text-white/85 hover:text-white"
+              }`}
+            >
+              {["Features", "How It Works", "Use Cases", "Pricing"][i]}
+            </a>
+          ))}
+          <div className={`w-px h-5 ${scrolled ? "bg-shark-200" : "bg-white/30"}`} />
           <Link
             href="/login"
-            className="text-sm font-medium text-shark-700 hover:text-shark-900 transition-colors"
+            className={`text-sm font-medium transition-colors ${
+              scrolled ? "text-shark-700 hover:text-shark-900" : "text-white/90 hover:text-white"
+            }`}
           >
-            Sign In
+            Sign in ›
           </Link>
-          <span className="cta-border-wrap inline-block hover:-translate-y-px active:scale-[0.97] transition-all">
-            <Link
-              href="/login"
-              className="block text-sm font-medium text-white bg-action-500 px-5 py-2 rounded-full hover:bg-action-600 transition-colors"
-            >
-              Start Free Trial
-            </Link>
-          </span>
+          <Link
+            href="/login"
+            className={`text-sm font-semibold px-5 py-2 rounded-full border transition-all hover:-translate-y-px active:scale-[0.97] ${
+              scrolled
+                ? "bg-action-500 text-white border-action-500 hover:bg-action-600"
+                : "bg-white text-[#0a2540] border-white hover:bg-white/90"
+            }`}
+          >
+            Contact sales
+          </Link>
         </div>
 
         {/* Mobile menu button */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 -mr-2 text-shark-600 dark:text-shark-400"
+          className={`md:hidden p-2 -mr-2 transition-colors ${scrolled ? "text-shark-600" : "text-white"}`}
           aria-label="Toggle menu"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
