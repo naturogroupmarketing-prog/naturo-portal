@@ -37,7 +37,7 @@ export function Navbar() {
             <a
               key={href}
               href={href}
-              className={`text-sm transition-colors ${
+              className={`text-sm font-semibold transition-colors ${
                 scrolled
                   ? "text-shark-500 hover:text-shark-900"
                   : "text-white/85 hover:text-white"
