@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { isAdminOrManager } from "@/lib/permissions";
 import { AppShell } from "@/components/layout/app-shell";
-import { ChatWidget } from "@/components/layout/chat-widget";
+import { FloatingToolsShell } from "@/components/layout/floating-tools-shell";
 import { CommandPalette } from "@/components/ui/command-palette";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { KeyboardShortcuts } from "@/components/ui/keyboard-shortcuts";
@@ -109,18 +109,19 @@ export default async function PortalLayout({
       )}
       {/* Push content down when banner is visible */}
       {activeSupportSession && <div className="h-11" aria-hidden="true" />}
-      <AppShell
-        role={session.user.role}
-        userName={session.user.name}
-        userImage={session.user.image}
-        pendingPOCount={pendingPOCount}
-        pendingReturnsCount={pendingReturnsCount}
-      >
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
-      </AppShell>
-      <ChatWidget />
+      <FloatingToolsShell>
+        <AppShell
+          role={session.user.role}
+          userName={session.user.name}
+          userImage={session.user.image}
+          pendingPOCount={pendingPOCount}
+          pendingReturnsCount={pendingReturnsCount}
+        >
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </AppShell>
+      </FloatingToolsShell>
       <CommandPalette />
       <KeyboardShortcuts />
       <ScrollToTop />

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/icon";
+import { useFloatingTools } from "@/components/layout/floating-tools-context";
 
 interface QuickAction {
   label: string;
@@ -62,6 +63,7 @@ const DEFAULT_ACTIONS: QuickAction[] = [
 
 export function QuickActionsFab() {
   const [open, setOpen] = useState(false);
+  const { revealed } = useFloatingTools();
   const pathname = usePathname();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -80,6 +82,8 @@ export function QuickActionsFab() {
   // Pick actions for current page
   const matchedKey = Object.keys(PAGE_ACTIONS).find((p) => pathname.startsWith(p));
   const actions = matchedKey ? PAGE_ACTIONS[matchedKey] : DEFAULT_ACTIONS;
+
+  if (!revealed) return null;
 
   return (
     <div ref={ref} className="fixed bottom-[80px] right-4 sm:bottom-24 sm:right-6 z-50 flex flex-col items-end gap-2.5">

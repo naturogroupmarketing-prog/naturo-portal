@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
 import { ChatMessage } from "@/components/ui/chat-message";
+import { useFloatingTools } from "@/components/layout/floating-tools-context";
 
 interface Message {
   id: string;
@@ -53,6 +54,7 @@ function generateTitle(messages: Message[]): string {
 
 export function ChatWidget() {
   const router = useRouter();
+  const { revealed } = useFloatingTools();
 
   const [isOpen, setIsOpen]       = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -387,8 +389,8 @@ export function ChatWidget() {
   // ── Render ─────────────────────────────────────────────────────────────
   return (
     <div data-no-print>
-      {/* Floating trigger button */}
-      {!isOpen && (
+      {/* Floating trigger button — only shown when tools are revealed */}
+      {!isOpen && revealed && (
         <button
           onClick={() => setIsOpen(true)}
           className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-action-400 text-white shadow-lg hover:bg-action-500 hover:shadow-xl transition-all duration-200 flex items-center justify-center"
