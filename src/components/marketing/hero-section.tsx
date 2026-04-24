@@ -116,7 +116,7 @@ export function HeroSection() {
               style={{
                 width: "310px",
                 height: "620px",
-                backgroundImage: "url('/Mobile_phone_tracio.svg')",
+                backgroundImage: "url('/mobile_trackio_transperancy.svg')",
                 backgroundSize: "1900px auto",
                 backgroundPosition: "-428px -175px",
                 backgroundRepeat: "no-repeat",
