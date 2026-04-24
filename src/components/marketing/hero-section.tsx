@@ -129,7 +129,7 @@ export function HeroSection() {
         className="absolute inset-0 z-0"
         style={{
           background:
-            "linear-gradient(135deg, #7c3aed 0%, #a855f7 15%, #ec4899 35%, #f97316 55%, #fb923c 70%, #fbbf24 85%, #f0abfc 100%)",
+            "linear-gradient(135deg, #7c3aed 0%, #a855f7 15%, #ec4899 35%, #f472b6 50%, #fce7f3 65%, #ffffff 80%, #ffffff 100%)",
         }}
       />
       {/* Bottom white fade */}
