@@ -114,11 +114,11 @@ export function HeroSection() {
             <div
               aria-label="Trackio mobile app"
               style={{
-                width: "310px",
-                height: "620px",
+                width: "280px",
+                height: "560px",
                 backgroundImage: "url('/mobile_trackio_transperancy.svg')",
-                backgroundSize: "1900px auto",
-                backgroundPosition: "-428px -175px",
+                backgroundSize: "1550px auto",
+                backgroundPosition: "-347px -140px",
                 backgroundRepeat: "no-repeat",
               }}
             />
