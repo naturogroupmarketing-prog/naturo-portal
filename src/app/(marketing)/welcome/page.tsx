@@ -71,17 +71,17 @@ export default function WelcomePage() {
         <HeroSection />
         {/* 2. Proof — Social proof, stats, testimonials, trust badges */}
         <SocialProofSection />
-        {/* 3. Pain — Identify the problem so visitors feel understood */}
-        <ValueSection />
-        {/* 4. Identity — "This is for people like me" */}
-        <UseCasesSection />
-        {/* 5. Simplicity — Interactive showcase with auto-cycling steps */}
-        <ShowcaseSection />
-        {/* 6. Desire — Product preview creates "I want this" */}
-        <ProductPreviewSection />
-        {/* 7. Capability — Bento grid showcase */}
+        {/* 3. Capability — Bento grid showcase */}
         <BentoShowcaseSection />
-        {/* 7b. Capability — Full feature breakdown */}
+        {/* 4. Pain — Identify the problem so visitors feel understood */}
+        <ValueSection />
+        {/* 5. Identity — "This is for people like me" */}
+        <UseCasesSection />
+        {/* 6. Simplicity — Interactive showcase with auto-cycling steps */}
+        <ShowcaseSection />
+        {/* 7. Desire — Product preview creates "I want this" */}
+        <ProductPreviewSection />
+        {/* 8. Capability — Full feature breakdown */}
         <FeaturesSection />
         {/* 8. Outcomes — Quantified results that matter */}
         <BenefitsSection />
