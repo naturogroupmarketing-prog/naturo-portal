@@ -39,7 +39,7 @@ export function Navbar() {
               href={href}
               className={`text-sm font-semibold transition-colors ${
                 scrolled
-                  ? "text-shark-500 hover:text-shark-900"
+                  ? "text-shark-400 hover:text-shark-700"
                   : "text-white/85 hover:text-white"
               }`}
             >
