@@ -6,6 +6,7 @@ import { UseCasesSection } from "@/components/marketing/use-cases-section";
 import { ShowcaseSection } from "@/components/marketing/showcase-section";
 import { ProductPreviewSection } from "@/components/marketing/product-preview-section";
 import { FeaturesSection } from "@/components/marketing/features-section";
+import { BentoShowcaseSection } from "@/components/marketing/bento-showcase-section";
 import { BenefitsSection } from "@/components/marketing/benefits-section";
 import { PricingSection } from "@/components/marketing/pricing-section";
 import { FAQSection } from "@/components/marketing/faq-section";
@@ -78,7 +79,9 @@ export default function WelcomePage() {
         <ShowcaseSection />
         {/* 6. Desire — Product preview creates "I want this" */}
         <ProductPreviewSection />
-        {/* 7. Capability — Full feature breakdown */}
+        {/* 7. Capability — Bento grid showcase */}
+        <BentoShowcaseSection />
+        {/* 7b. Capability — Full feature breakdown */}
         <FeaturesSection />
         {/* 8. Outcomes — Quantified results that matter */}
         <BenefitsSection />
