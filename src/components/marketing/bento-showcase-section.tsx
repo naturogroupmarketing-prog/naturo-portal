@@ -182,103 +182,103 @@ function QRMockup() {
 
 export function BentoShowcaseSection() {
   return (
-    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-6xl mx-auto">
+    <section id="features" className="py-32 sm:py-40 px-4 sm:px-8 lg:px-16 bg-white">
+      <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-action-50 border border-action-100 mb-5">
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-action-50 border border-action-100 mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-action-500" />
             <span className="text-xs font-semibold text-action-600 tracking-wide">Everything in one platform</span>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-[#0a2540] tracking-tight leading-tight">
+          <h2 className="text-5xl sm:text-6xl font-bold text-[#0a2540] tracking-tight leading-tight">
             Built for operational teams
           </h2>
-          <p className="mt-4 text-lg text-shark-500 max-w-xl mx-auto leading-relaxed">
+          <p className="mt-6 text-xl text-shark-400 max-w-2xl mx-auto leading-relaxed">
             From assets to supplies to staff — trackio gives your whole team one place to stay on top of everything.
           </p>
         </div>
 
         {/* Bento grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 auto-rows-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 auto-rows-auto">
 
           {/* Card 1 — Asset tracking (large, 3 cols) */}
-          <div className="lg:col-span-3 rounded-3xl overflow-hidden relative min-h-[380px] flex flex-col"
+          <div className="lg:col-span-3 rounded-3xl overflow-hidden relative min-h-[480px] flex flex-col"
             style={{ background: "linear-gradient(135deg, #7c3aed 0%, #a855f7 40%, #ec4899 80%, #f472b6 100%)" }}>
-            <div className="p-8 pb-0 flex flex-col flex-1">
-              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Asset Management</div>
-              <h3 className="text-2xl font-bold text-white leading-tight mb-2">
+            <div className="p-10 pb-0 flex flex-col flex-1">
+              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Asset Management</div>
+              <h3 className="text-3xl font-bold text-white leading-tight mb-3">
                 Know exactly where<br />every asset is.
               </h3>
-              <p className="text-sm text-white/70 mb-6 max-w-xs">
+              <p className="text-sm text-white/70 mb-8 max-w-xs leading-relaxed">
                 Real-time visibility across every location, every status, every team member — all from one screen.
               </p>
-              <div className="flex-1 flex items-end pb-6">
+              <div className="flex-1 flex items-end pb-8">
                 <AssetListMockup />
               </div>
             </div>
           </div>
 
           {/* Card 2 — AI assistant (2 cols) */}
-          <div className="lg:col-span-2 rounded-3xl overflow-hidden relative min-h-[380px] flex flex-col"
+          <div className="lg:col-span-2 rounded-3xl overflow-hidden relative min-h-[480px] flex flex-col"
             style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #4f46e5 100%)" }}>
-            <div className="p-8 pb-0 flex flex-col flex-1">
-              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">AI Assistant</div>
-              <h3 className="text-2xl font-bold text-white leading-tight mb-2">
+            <div className="p-10 pb-0 flex flex-col flex-1">
+              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">AI Assistant</div>
+              <h3 className="text-3xl font-bold text-white leading-tight mb-3">
                 Ask anything,<br />get answers fast.
               </h3>
-              <p className="text-sm text-white/70 mb-6">
+              <p className="text-sm text-white/70 mb-8 leading-relaxed">
                 Your built-in AI knows your inventory and flags issues before they become problems.
               </p>
-              <div className="flex-1 flex items-end pb-6">
+              <div className="flex-1 flex items-end pb-8">
                 <AIChatMockup />
               </div>
             </div>
           </div>
 
           {/* Card 3 — Multi-location (2 cols) */}
-          <div className="lg:col-span-2 rounded-3xl overflow-hidden relative min-h-[340px] flex flex-col"
+          <div className="lg:col-span-2 rounded-3xl overflow-hidden relative min-h-[420px] flex flex-col"
             style={{ background: "linear-gradient(135deg, rgba(255,50,55,1.0) 0%, rgba(255,140,45,0.90) 60%, rgba(255,200,70,0.80) 100%)" }}>
-            <div className="p-8 pb-0 flex flex-col flex-1">
-              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Multi-Location</div>
-              <h3 className="text-2xl font-bold text-white leading-tight mb-2">
+            <div className="p-10 pb-0 flex flex-col flex-1">
+              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Multi-Location</div>
+              <h3 className="text-3xl font-bold text-white leading-tight mb-3">
                 All your sites,<br />one dashboard.
               </h3>
-              <p className="text-sm text-white/70 mb-6">
+              <p className="text-sm text-white/70 mb-8 leading-relaxed">
                 Switch between locations instantly. Spot low stock and coverage gaps across your entire network.
               </p>
-              <div className="flex-1 flex items-end pb-6">
+              <div className="flex-1 flex items-end pb-8">
                 <LocationsMockup />
               </div>
             </div>
           </div>
 
           {/* Card 4 — Purchase orders (2 cols) */}
-          <div className="lg:col-span-2 rounded-3xl overflow-hidden relative min-h-[340px] flex flex-col"
+          <div className="lg:col-span-2 rounded-3xl overflow-hidden relative min-h-[420px] flex flex-col"
             style={{ background: "linear-gradient(135deg, #0f4c81 0%, #1113d4 60%, #4f46e5 100%)" }}>
-            <div className="p-8 pb-0 flex flex-col flex-1">
-              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Procurement</div>
-              <h3 className="text-2xl font-bold text-white leading-tight mb-2">
+            <div className="p-10 pb-0 flex flex-col flex-1">
+              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Procurement</div>
+              <h3 className="text-3xl font-bold text-white leading-tight mb-3">
                 Approve orders<br />on the go.
               </h3>
-              <p className="text-sm text-white/70 mb-6">
+              <p className="text-sm text-white/70 mb-8 leading-relaxed">
                 Raise, review and approve purchase orders from anywhere. Auto-trigger reorders when stock hits threshold.
               </p>
-              <div className="flex-1 flex items-end pb-6">
+              <div className="flex-1 flex items-end pb-8">
                 <POmockup />
               </div>
             </div>
           </div>
 
           {/* Card 5 — QR scanning (1 col) */}
-          <div className="lg:col-span-1 rounded-3xl overflow-hidden relative min-h-[340px] flex flex-col"
+          <div className="lg:col-span-1 rounded-3xl overflow-hidden relative min-h-[420px] flex flex-col"
             style={{ background: "linear-gradient(160deg, #0a2540 0%, #1a3a5c 60%, #0f4c81 100%)" }}>
-            <div className="p-8 flex flex-col flex-1">
-              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">QR Tracking</div>
-              <h3 className="text-xl font-bold text-white leading-tight mb-2">
+            <div className="p-10 flex flex-col flex-1">
+              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">QR Tracking</div>
+              <h3 className="text-2xl font-bold text-white leading-tight mb-3">
                 Scan &amp; go.
               </h3>
-              <p className="text-sm text-white/70 mb-6">
+              <p className="text-sm text-white/70 mb-8 leading-relaxed">
                 Every asset gets a QR code. Scan to assign, return, or report — no training needed.
               </p>
               <div className="flex-1 flex items-center justify-center">
@@ -290,7 +290,7 @@ export function BentoShowcaseSection() {
         </div>
 
         {/* CTA */}
-        <div className="mt-12 text-center">
+        <div className="mt-20 text-center">
           <Link
             href="/login"
             className="inline-flex items-center justify-center gap-2 text-sm font-semibold bg-[#0a2540] text-white px-8 py-3.5 rounded-full hover:bg-[#1a3a5c] transition-all hover:-translate-y-px hover:shadow-xl active:scale-[0.97]"
