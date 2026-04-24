@@ -21,7 +21,7 @@ export function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 sm:h-24 flex items-center justify-between">
+      <div className="px-8 lg:pl-16 xl:pl-24 pr-6 lg:pr-10 h-16 sm:h-24 flex items-center justify-between">
         {/* Logo — white when over gradient, coloured when scrolled */}
         <Link href="/welcome" className="flex items-center gap-2.5">
           <img
