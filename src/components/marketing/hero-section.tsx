@@ -198,11 +198,6 @@ export function HeroSection() {
               right: "-8px",
               top: "100px",
               height: "500px",
-              /* Transparent on right and bottom edges — blends into gradient */
-              WebkitMaskImage: "linear-gradient(to bottom, white 55%, transparent 100%), linear-gradient(to right, white 75%, transparent 100%)",
-              WebkitMaskComposite: "source-in",
-              maskImage: "linear-gradient(to bottom, white 55%, transparent 100%), linear-gradient(to right, white 75%, transparent 100%)",
-              maskComposite: "intersect",
             }}
           >
             {/* White base so content is visible before fade */}
