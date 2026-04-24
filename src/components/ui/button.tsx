@@ -40,13 +40,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-action-400/40 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-shark-900 disabled:opacity-50 disabled:pointer-events-none cursor-pointer active:scale-[0.97] hover:-translate-y-px",
+          "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-action-500/40 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-shark-900 disabled:opacity-50 disabled:pointer-events-none cursor-pointer active:scale-[0.98]",
           {
-            "bg-action-400 text-white hover:bg-action-500 shadow-sm hover:shadow": variant === "primary",
-            "bg-shark-50 dark:bg-shark-800 text-shark-700 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700 border border-shark-200 dark:border-shark-700": variant === "secondary",
-            "bg-red-500 text-white hover:bg-red-600 shadow-sm": variant === "danger",
+            "bg-action-500 text-white hover:bg-action-600 shadow-[0_1px_3px_rgba(99,91,255,0.35),0_1px_2px_rgba(99,91,255,0.2)] hover:shadow-[0_4px_12px_rgba(99,91,255,0.4)]": variant === "primary",
+            "bg-white dark:bg-shark-800 text-shark-700 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 border border-shark-200 dark:border-shark-700 shadow-[0_1px_2px_rgba(60,66,87,0.06),0_0_0_1px_rgba(60,66,87,0.08)] hover:shadow-[0_2px_5px_rgba(60,66,87,0.1)]": variant === "secondary",
+            "bg-red-500 text-white hover:bg-red-600 shadow-[0_1px_3px_rgba(239,68,68,0.3)]": variant === "danger",
             "hover:bg-shark-50 dark:hover:bg-shark-800 text-shark-600 dark:text-shark-400": variant === "ghost",
-            "border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 text-shark-700 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700": variant === "outline",
+            "border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 text-shark-700 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 shadow-[0_1px_2px_rgba(60,66,87,0.06)]": variant === "outline",
           },
           {
             "px-3 py-2 text-xs min-h-[44px] sm:min-h-[32px]": size === "sm",

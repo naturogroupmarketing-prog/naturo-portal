@@ -11,9 +11,9 @@ export function Card({ className, variant = "default", padding = "md", children,
       className={cn(
         "rounded-xl transition-colors",
         {
-          "bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 shadow-sm": variant === "default",
+          "bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 stripe-shadow": variant === "default",
           "bg-shark-50 dark:bg-shark-900 border border-shark-100 dark:border-shark-800": variant === "flat",
-          "bg-white dark:bg-shark-900 shadow-md border border-shark-100 dark:border-shark-800": variant === "elevated",
+          "bg-white dark:bg-shark-900 stripe-shadow-md border border-shark-100 dark:border-shark-800": variant === "elevated",
           "bg-transparent": variant === "ghost",
         },
         {
