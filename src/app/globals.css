@@ -29,31 +29,31 @@
   --color-gold-800: #77591e;
   --color-gold-900: #5f4514;
 
-  /* Stripe-inspired blue-grey neutrals */
-  --color-shark-50: #f6f9fc;
-  --color-shark-100: #e3e8ef;
-  --color-shark-200: #c1ccd8;
-  --color-shark-300: #8898aa;
-  --color-shark-400: #697386;
-  --color-shark-500: #4f566b;
-  --color-shark-600: #3c4257;
-  --color-shark-700: #2a2f45;
-  --color-shark-800: #1a1f36;
-  --color-shark-900: #0f1621;
-  --color-shark-950: #090d17;
+  /* ClickUp-inspired neutrals */
+  --color-shark-50: #f6f6f7;
+  --color-shark-100: #e2e3e5;
+  --color-shark-200: #c5c7cb;
+  --color-shark-300: #8b8f96;
+  --color-shark-400: #6b7080;
+  --color-shark-500: #616570;
+  --color-shark-600: #4d505a;
+  --color-shark-700: #3f424a;
+  --color-shark-800: #35373e;
+  --color-shark-900: #292d34;
+  --color-shark-950: #1a1c21;
 
-  /* Action — Stripe-inspired indigo */
-  --color-action-50: #f0efff;
-  --color-action-100: #e5e3ff;
-  --color-action-200: #cac6ff;
-  --color-action-300: #a8a2ff;
-  --color-action-400: #7b73ff;
-  --color-action-500: #635bff;
-  --color-action-600: #4f46e5;
-  --color-action-700: #3d35c7;
-  --color-action-800: #2d26a6;
-  --color-action-900: #1f1880;
-  --color-action-950: #110c4d;
+  /* Action blue — matches logo #1113d4 */
+  --color-action-50: #eeeffe;
+  --color-action-100: #d5d7fc;
+  --color-action-200: #aaabf9;
+  --color-action-300: #7f81f5;
+  --color-action-400: #5456ef;
+  --color-action-500: #1113d4;
+  --color-action-600: #0f10be;
+  --color-action-700: #0c0da7;
+  --color-action-800: #090a8f;
+  --color-action-900: #060778;
+  --color-action-950: #04054d;
 }
 
 .font-exo {
@@ -170,20 +170,6 @@ a, button, [role="button"], input, select, textarea, label {
 }
 .scrollbar-none::-webkit-scrollbar {
   display: none;
-}
-
-/* Stripe-style card shadow — precise, layered, non-opinionated */
-.stripe-shadow {
-  box-shadow: 0px 2px 5px rgba(60, 66, 87, 0.08), 0px 0px 1px rgba(60, 66, 87, 0.16);
-}
-.stripe-shadow-md {
-  box-shadow: 0px 6px 16px rgba(60, 66, 87, 0.12), 0px 0px 1px rgba(60, 66, 87, 0.2);
-}
-.dark .stripe-shadow {
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3), 0px 0px 1px rgba(0, 0, 0, 0.4);
-}
-.dark .stripe-shadow-md {
-  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.4), 0px 0px 1px rgba(0, 0, 0, 0.5);
 }
 
 /* Card spotlight — inset so it is never clipped by overflow:hidden parents */

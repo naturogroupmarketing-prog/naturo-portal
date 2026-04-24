@@ -53,7 +53,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
     <BreadcrumbProvider>
     <SidebarContext.Provider value={{ expanded: sidebarExpanded, toggle: () => setSidebarExpanded((p) => !p) }}>
     <div
-      className="flex flex-col h-dvh bg-[#f6f9fc] dark:bg-shark-950 transition-colors"
+      className="flex flex-col h-dvh bg-shark-50 dark:bg-shark-950 transition-colors"
       onTouchStart={handleMainTouchStart}
       onTouchEnd={handleMainTouchEnd}
     >
@@ -80,7 +80,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         {/* Desktop sidebar — collapsible with toggle arrow */}
         <aside className="hidden lg:flex flex-shrink-0 relative">
           <div
-            className={`flex flex-col bg-[#0a2540] border-r border-white/[0.07] transition-all duration-300 overflow-hidden ${
+            className={`flex flex-col bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 dark:border-transparent transition-all duration-300 overflow-hidden ${
               sidebarExpanded ? "w-64" : "w-[68px]"
             }`}
           >
@@ -97,10 +97,10 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
             title={sidebarExpanded ? "Collapse menu" : "Expand menu"}
           >
             {/* Vertical track bar */}
-            <div className="w-1.5 h-10 bg-shark-200 dark:bg-shark-700 group-hover:bg-action-400 rounded-full transition-colors duration-150" />
+            <div className="w-1.5 h-10 bg-shark-200 dark:bg-shark-700 group-hover:bg-shark-400 dark:group-hover:bg-shark-500 rounded-full transition-colors duration-150" />
             {/* Floating label — slides in on hover */}
             <div className="absolute left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none">
-              <div className="flex items-center gap-1 bg-[#0a2540] text-white text-[11px] font-medium px-2 py-1 rounded-md shadow-lg whitespace-nowrap">
+              <div className="flex items-center gap-1 bg-shark-800 dark:bg-shark-700 text-white text-[11px] font-medium px-2 py-1 rounded-md shadow-lg whitespace-nowrap">
                 <svg
                   width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                   className={`transition-transform duration-300 ${sidebarExpanded ? "rotate-180" : ""}`}
@@ -117,11 +117,11 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         {sidebarOpen && (
           <div className="fixed inset-0 z-40 lg:hidden">
             <div
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
               onClick={() => setSidebarOpen(false)}
             />
             <div
-              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] bg-[#0a2540] border-r border-white/[0.07] z-50 shadow-2xl"
+              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 dark:border-transparent z-50 shadow-xl transition-colors"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
@@ -193,10 +193,10 @@ function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { ro
               key={item.href}
               href={item.href}
               title={item.label}
-              className={`relative w-11 h-11 flex items-center justify-center rounded-lg transition-all ${
+              className={`relative w-11 h-11 flex items-center justify-center rounded-xl transition-all ${
                 active
-                  ? "bg-white/10 text-white"
-                  : "text-[#697386] hover:bg-white/[0.06] hover:text-white"
+                  ? "bg-action-50 text-action-600 dark:bg-transparent dark:text-action-400"
+                  : "text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 dark:bg-transparent dark:hover:bg-shark-800/40 hover:text-shark-700 dark:hover:text-white"
               }`}
             >
               <Icon name={item.icon} size={20} />

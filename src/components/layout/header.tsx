@@ -82,7 +82,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-14 items-center justify-between border-b border-shark-100 dark:border-shark-800 dark:border-transparent bg-white dark:bg-shark-900 px-3 sm:px-4 lg:px-6 safe-top transition-colors shadow-[0_1px_3px_rgba(60,66,87,0.06)]">
+    <header className="sticky top-0 z-30 flex min-h-14 items-center justify-between border-b border-shark-100 dark:border-shark-800 dark:border-transparent bg-white dark:bg-shark-900 px-3 sm:px-4 lg:px-6 safe-top transition-colors">
       {/* Left side: mobile menu + logo */}
       <div className="flex items-center gap-2">
         {/* Mobile menu toggle */}
@@ -121,7 +121,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
       <div className="hidden lg:flex items-center flex-1 max-w-xl">
         <button
           onClick={() => setSearchOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-400 bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-lg hover:border-action-400/40 dark:hover:border-shark-600 transition-colors w-48 lg:w-64 shadow-[0_1px_2px_rgba(60,66,87,0.05),0_0_0_1px_rgba(60,66,87,0.07)]"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-400 bg-shark-50 dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-lg hover:border-shark-300 dark:hover:border-shark-600 transition-colors w-48 lg:w-64"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
             <circle cx="11" cy="11" r="8" />
@@ -139,7 +139,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
         <div ref={quickAddRef} className="relative">
           <button
             onClick={() => setQuickAddOpen(!quickAddOpen)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-action-500 hover:bg-action-600 text-white rounded-lg transition-all shadow-[0_1px_3px_rgba(99,91,255,0.35)] hover:shadow-[0_3px_8px_rgba(99,91,255,0.4)]"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-action-500 hover:bg-action-600 text-white rounded-lg transition-colors"
           >
             <span className="text-base leading-none">+</span>
             <span className="hidden sm:inline">Add</span>
@@ -191,7 +191,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
           {/* Dropdown menu */}
           {dropdownOpen && (
-            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] bg-white dark:bg-shark-800 rounded-xl shadow-[0_4px_16px_rgba(60,66,87,0.12),0_0_1px_rgba(60,66,87,0.2)] border border-shark-100 dark:border-shark-700 py-1.5 z-50">
+            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] bg-white dark:bg-shark-800 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] border border-shark-100 dark:border-shark-700 py-1.5 z-50">
               {/* User info */}
               <div className="px-4 py-2.5 border-b border-shark-100 dark:border-shark-700">
                 <p className="text-sm font-semibold text-shark-800 dark:text-shark-100">{userName}</p>
@@ -268,7 +268,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                   <div className="px-3 pt-1 pb-0.5">
                     <button
                       onClick={() => { setDropdownOpen(false); router.push("/admin/billing"); }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-white bg-action-500 hover:bg-action-600 rounded-xl transition-colors shadow-[0_1px_3px_rgba(99,91,255,0.35)]"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-white bg-shark-900 hover:bg-shark-800 rounded-xl transition-colors"
                     >
                       <Icon name="award" size={14} className="text-white" />
                       Upgrade Now
