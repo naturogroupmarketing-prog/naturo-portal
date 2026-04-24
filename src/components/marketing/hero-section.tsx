@@ -124,33 +124,59 @@ export function HeroSection() {
             />
           </div>
 
-          {/* Floating badge — Low Stock — top right of visible dashboard */}
-          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.2s_both]" style={{ top: "178px", right: "24px" }}>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl animate-[gentleFloat_4s_ease-in-out_infinite]" style={{ background: "#fff", border: "1px solid #e3e8ef", boxShadow: "0 8px 28px rgba(60,66,87,0.18)" }}>
-              <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" style={{ background: "#fffbeb" }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                  <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
+          {/* ── Dark floating callouts — annotate phone features ── */}
+
+          {/* Callout 1 — Health Score (upper-left of phone) */}
+          <div className="absolute z-30 animate-[floatIn_0.5s_ease-out_0.8s_both]" style={{ top: "248px", left: "-2%" }}>
+            <div className="animate-[gentleFloat_6s_ease-in-out_infinite]">
+              <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl" style={{ background: "#0a1628", boxShadow: "0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)" }}>
+                <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(99,91,255,0.25)" }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold text-white leading-tight">Health Score</p>
+                  <p className="text-[9px] leading-tight" style={{ color: "#a5b4fc" }}>Live operational status</p>
+                </div>
               </div>
-              <div>
-                <p className="text-[10px] font-semibold" style={{ color: "#1a1f36" }}>Low Stock Alert</p>
-                <p className="text-[8px]" style={{ color: "#697386" }}>Gloves — South Branch · 3 left</p>
-              </div>
+              {/* Arrow pointing right → phone */}
+              <div className="absolute top-1/2 -right-3 -translate-y-1/2 w-3 h-px" style={{ background: "rgba(255,255,255,0.3)" }} />
             </div>
           </div>
 
-          {/* Floating badge — Asset Assigned */}
-          <div className="absolute z-30 animate-[floatIn_0.6s_ease-out_1.5s_both]" style={{ bottom: "160px", right: "28px" }}>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl animate-[gentleFloat_5s_ease-in-out_0.5s_infinite]" style={{ background: "#fff", border: "1px solid #e3e8ef", boxShadow: "0 8px 28px rgba(60,66,87,0.18)" }}>
-              <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" style={{ background: "#f0fdf4" }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
+          {/* Callout 2 — Stock Alerts (left-mid of phone) */}
+          <div className="absolute z-30 animate-[floatIn_0.5s_ease-out_1.0s_both]" style={{ top: "390px", left: "-4%" }}>
+            <div className="animate-[gentleFloat_5s_ease-in-out_0.8s_infinite]">
+              <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl" style={{ background: "#0a1628", boxShadow: "0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)" }}>
+                <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(245,158,11,0.2)" }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold text-white leading-tight">Smart Alerts</p>
+                  <p className="text-[9px] leading-tight" style={{ color: "#fbbf24" }}>Instant stock warnings</p>
+                </div>
               </div>
-              <div>
-                <p className="text-[10px] font-semibold" style={{ color: "#1a1f36" }}>Asset Assigned</p>
-                <p className="text-[8px]" style={{ color: "#697386" }}>Vacuum V200 → Sarah M.</p>
+              <div className="absolute top-1/2 -right-3 -translate-y-1/2 w-3 h-px" style={{ background: "rgba(255,255,255,0.3)" }} />
+            </div>
+          </div>
+
+          {/* Callout 3 — Finance tracking (right of phone) */}
+          <div className="absolute z-30 animate-[floatIn_0.5s_ease-out_1.2s_both]" style={{ top: "490px", left: "32%" }}>
+            <div className="animate-[gentleFloat_7s_ease-in-out_0.4s_infinite]">
+              <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl" style={{ background: "#0a1628", boxShadow: "0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)" }}>
+                <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(34,197,94,0.2)" }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold text-white leading-tight">Finance Overview</p>
+                  <p className="text-[9px] leading-tight" style={{ color: "#4ade80" }}>Assets & supply value</p>
+                </div>
               </div>
             </div>
           </div>
