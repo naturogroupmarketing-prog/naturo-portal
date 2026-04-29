@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo, useEffect } from "react";
+import { useState, useTransition, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +19,7 @@ import { AiForecastWidget, type DepletionForecastItem } from "./ai-forecast-widg
 import { RecentActivityWidget, type RecentActivityItem } from "./recent-activity-widget";
 import { SmartReorderPanel, type ReorderRecommendation } from "./smart-reorder-panel";
 import { AssetHealthWidget } from "./asset-health-widget";
+import { DashboardGreeting } from "./dashboard-greeting";
 import { SmartInsightsTicker, type SmartInsight } from "./smart-insights-ticker";
 import { SystemHealthBar } from "./system-health-bar";
 
@@ -241,13 +242,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   const [actionsOpen, setActionsOpen] = useState(false);
   // Register the dashboard settings action with the bottom-nav cog
   useRegisterPageCog(() => setSettingsOpen(true), []);
-
-  // Listen for toggle events dispatched by the attention badge inside AiBriefingClient
-  useEffect(() => {
-    const handler = () => setActionsOpen((p) => !p);
-    window.addEventListener("dashboard-toggle-actions", handler);
-    return () => window.removeEventListener("dashboard-toggle-actions", handler);
-  }, []);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
     // Auto-collapse regions with no actionable items
@@ -370,6 +364,22 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
+      {/* ── ZONE 1: COMMAND LAYER ─────────────────────────────────────── */}
+      {/* Dynamic greeting + tappable attention badge */}
+      <DashboardGreeting
+        userName={userName}
+        attentionCount={actionItems.length}
+        criticalCount={actionItems.filter((i) => i.priority === "critical").length}
+        healthScore={operationsOverview?.healthScore ?? 100}
+        onClickStatus={actionItems.length > 0 ? () => setActionsOpen((p) => !p) : undefined}
+        actionsExpanded={actionsOpen}
+      />
+
+      {/* Action panel — revealed by tapping the badge in the greeting */}
+      {actionsOpen && actionItems.length > 0 && (
+        <SmartActionsPanel items={actionItems} />
+      )}
+
       {/* Settings gear — desktop only; mobile uses the bottom-nav cog */}
       <div className="hidden lg:flex justify-end">
         <button
@@ -382,13 +392,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </button>
       </div>
 
-      {/* AI Briefing — greeting + badge live inside the card */}
+      {/* AI Briefing — rendered here so it sits below the settings cog */}
       {briefingWidget}
-
-      {/* Action panel — slides in below the AI Briefing when badge is tapped */}
-      {actionsOpen && actionItems.length > 0 && (
-        <SmartActionsPanel items={actionItems} />
-      )}
 
       {/* ── ZONE 2: CONTROL LAYER — Smart Insights Ticker ────────────── */}
       {insights.length > 0 && <SmartInsightsTicker insights={insights} />}

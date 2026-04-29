@@ -22,9 +22,6 @@ export interface AiBriefingWidgetProps {
   assignedConsumablesCount?: number;
   pendingConfirmations?: number;
   conditionChecksDue?: number;
-  // Greeting / attention badge
-  attentionCount?: number;
-  criticalCount?: number;
 }
 
 function getThirtyMinuteBucket(): string {
@@ -114,9 +111,6 @@ export async function AiBriefingWidget(props: AiBriefingWidgetProps) {
             displayDate={displayDate}
             chips={chips}
             input={input}
-            userName={props.userName}
-            attentionCount={props.attentionCount}
-            criticalCount={props.criticalCount}
           />
         </Card>
       </div>

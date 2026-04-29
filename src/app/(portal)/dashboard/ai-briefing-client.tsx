@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
@@ -22,12 +22,6 @@ interface AiBriefingClientProps {
   displayDate: string;
   chips: FocusChip[];
   input: BriefingInput;
-  /** First-name displayed in the greeting */
-  userName?: string;
-  /** Total action items needing attention (drives badge colour) */
-  attentionCount?: number;
-  /** Items rated critical (drives red badge) */
-  criticalCount?: number;
 }
 
 const MODES: { id: BriefingMode; label: string }[] = [
@@ -48,45 +42,13 @@ const ACTION_ICON: Record<string, IconName> = {
   "/assets": "package",
 };
 
-export function AiBriefingClient({
-  initialContent,
-  displayDate,
-  chips,
-  input,
-  userName,
-  attentionCount = 0,
-  criticalCount = 0,
-}: AiBriefingClientProps) {
+export function AiBriefingClient({ initialContent, displayDate, chips, input }: AiBriefingClientProps) {
   const [mode, setMode] = useState<BriefingMode>("summary");
   const [content, setContent] = useState<BriefingContent>(initialContent);
   const [copied, setCopied] = useState(false);
   const [isPending, startTransition] = useTransition();
   // Collapsed by default on mobile; always expanded on lg+
   const [collapsed, setCollapsed] = useState(true);
-
-  // ── Greeting ──────────────────────────────────────────────────────────
-  const [greeting, setGreeting] = useState("Good morning");
-  useEffect(() => {
-    const h = new Date().getHours();
-    setGreeting(h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening");
-  }, []);
-
-  const firstName = userName?.split(" ")[0] ?? "";
-  const isCritical = criticalCount > 0;
-  const isWarning = !isCritical && attentionCount > 0;
-
-  const badgeStyle = isCritical
-    ? "bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-700 dark:text-red-400"
-    : isWarning
-    ? "bg-amber-50 dark:bg-amber-500/10 border-amber-100 dark:border-amber-500/20 text-amber-700 dark:text-amber-400"
-    : "bg-green-50 dark:bg-green-500/10 border-green-100 dark:border-green-500/20 text-green-700 dark:text-green-400";
-  const dotColor = isCritical ? "bg-red-500" : isWarning ? "bg-amber-500" : "bg-green-500";
-
-  const handleToggleActions = () => {
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("dashboard-toggle-actions"));
-    }
-  };
 
   const load = (newMode: BriefingMode) => {
     startTransition(async () => {
@@ -114,90 +76,43 @@ export function AiBriefingClient({
 
   return (
     <div>
-      {/* ── Collapsed row (mobile default) ── */}
-      {/* Fixed 2-line height so content below never jumps */}
-      <div className="lg:hidden flex items-center gap-2 px-4 py-3">
-
-        {/* Expand / collapse trigger — takes up the left area */}
-        <button
-          onClick={() => setCollapsed((p) => !p)}
-          className="flex items-center gap-3 flex-1 min-w-0 text-left"
-          aria-expanded={!collapsed}
-          aria-label={collapsed ? "Expand AI Briefing" : "Collapse AI Briefing"}
-        >
-          <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0">
-            <Icon name="star" size={14} className="text-indigo-500" />
+      {/* ── Collapsed row (mobile default, same height as stat cards) ── */}
+      <button
+        onClick={() => setCollapsed((p) => !p)}
+        className="lg:hidden w-full flex items-center gap-3 px-4 py-3 text-left"
+        aria-expanded={!collapsed}
+        aria-label={collapsed ? "Expand AI Briefing" : "Collapse AI Briefing"}
+      >
+        <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
+          <Icon name="star" size={14} className="text-indigo-500" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span className="text-xs font-semibold text-shark-900 dark:text-shark-100">AI Briefing</span>
+            <span className="text-[9px] font-semibold bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
+            {isPending && <Icon name="refresh-cw" size={10} className="animate-spin text-action-500" />}
           </div>
-
-          {/* Text area — always exactly 2 visual lines */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-xs font-semibold text-shark-900 dark:text-shark-100 truncate">
-                {firstName
-                  ? <>{greeting},{" "}<span className="text-action-600 dark:text-action-400">{firstName}</span></>
-                  : "AI Briefing"}
-              </span>
-              <span className="text-[9px] font-semibold bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
-              {isPending && <Icon name="refresh-cw" size={10} className="animate-spin text-action-500 shrink-0" />}
-            </div>
-            <p className="text-[11px] text-shark-500 dark:text-shark-400 truncate leading-none">
-              {content.text}
-            </p>
-          </div>
-        </button>
-
-        {/* Attention badge — separate tap target; fires the actions panel toggle */}
-        {attentionCount > 0 && (
-          <button
-            onClick={handleToggleActions}
-            className={cn(
-              "flex items-center gap-1 px-2 py-1 rounded-lg border text-[10px] font-semibold shrink-0 transition-colors",
-              badgeStyle,
-            )}
-            aria-label={isCritical ? `${criticalCount} critical items need attention` : `${attentionCount} items need attention`}
-          >
-            <span className={cn("w-1.5 h-1.5 rounded-full shrink-0 animate-pulse", dotColor)} />
-            {isCritical ? `${criticalCount} critical` : `${attentionCount} items`}
-          </button>
-        )}
-
-        {/* Chevron */}
-        <button
-          onClick={() => setCollapsed((p) => !p)}
-          className="shrink-0 text-shark-400"
-          tabIndex={-1}
-          aria-hidden="true"
-        >
-          <Icon
-            name="chevron-down"
-            size={16}
-            className={cn("transition-transform duration-200", !collapsed && "rotate-180")}
-          />
-        </button>
-      </div>
+          <p className="text-[11px] text-shark-500 dark:text-shark-400 truncate leading-none">
+            {content.text}
+          </p>
+        </div>
+        <Icon
+          name="chevron-down"
+          size={16}
+          className={cn("text-shark-400 shrink-0 transition-transform duration-200", !collapsed && "rotate-180")}
+        />
+      </button>
 
       {/* ── Expanded content (always visible on lg+, toggled on mobile) ── */}
       <div className={cn("p-5", collapsed ? "hidden lg:block" : "block")}>
       {/* Header */}
-      <div className="flex items-start gap-2 mb-3">
-        <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0 mt-0.5">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
           <Icon name="star" size={13} className="text-indigo-500" />
         </div>
         <div className="flex-1 min-w-0">
-          {firstName ? (
-            <>
-              <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100 leading-tight">
-                {greeting},{" "}
-                <span className="text-action-600 dark:text-action-400">{firstName}</span>
-              </h3>
-              <p className="text-xs text-shark-400">{displayDate}</p>
-            </>
-          ) : (
-            <>
-              <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">AI Briefing</h3>
-              <p className="text-xs text-shark-400">{displayDate}</p>
-            </>
-          )}
+          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">AI Briefing</h3>
+          <p className="text-xs text-shark-400">{displayDate}</p>
         </div>
         {/* Actions row */}
         <div className="flex items-center gap-1 shrink-0">
