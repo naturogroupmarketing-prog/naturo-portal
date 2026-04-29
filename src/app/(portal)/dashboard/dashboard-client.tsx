@@ -206,6 +206,7 @@ interface Props {
   activePOCount?: number;
   reorderRecommendations?: ReorderRecommendation[];
   recentAnomalyCount?: number;
+  briefingWidget?: React.ReactNode;
   assetHealthSummary?: {
     averageScore: number;
     distribution: { grade: string; count: number }[];
@@ -231,7 +232,7 @@ function fmtAUD(n: number) {
   return n.toLocaleString("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, assetHealthSummary = null }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, briefingWidget, assetHealthSummary = null }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
@@ -296,7 +297,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </div>
       )}
 
-      {/* Settings gear */}
+      {/* Settings gear — sits above the AI briefing */}
       <div className="flex justify-end">
         <button
           onClick={() => setSettingsOpen(true)}
@@ -308,6 +309,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </button>
       </div>
 
+      {/* AI Briefing — rendered here so it sits below the settings cog */}
+      {briefingWidget}
 
       {preferences.sectionOrder.map((sectionId) => {
         switch (sectionId) {
