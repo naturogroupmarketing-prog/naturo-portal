@@ -106,6 +106,13 @@ export default function RootLayout({
             } catch(e) {}
           })();
         ` }} />
+        {/* Capture PWA install event as early as possible — before React hydrates */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.addEventListener('beforeinstallprompt', function(e) {
+            e.preventDefault();
+            window.__pwaPrompt = e;
+          });
+        ` }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
