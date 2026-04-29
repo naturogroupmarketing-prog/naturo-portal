@@ -1,4 +1,4 @@
-const CACHE_NAME = "trackio-v5";
+const CACHE_NAME = "trackio-v6";
 const OFFLINE_URL = "/offline";
 
 // Critical pages to cache for offline use
