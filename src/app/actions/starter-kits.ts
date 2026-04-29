@@ -245,11 +245,14 @@ export async function applyStarterKit(userId: string, starterKitId?: string, exc
       }) : [];
 
       for (const asset of availableAssets) {
-        // Don't change status yet — stays AVAILABLE until staff confirms receipt
+        // Set asset to CHECKED_OUT — shows "Awaiting Confirmation" until staff confirms receipt
         // Status changes to ASSIGNED only when staff acknowledges the item
         await db.assetAssignment.create({
           data: { assetId: asset.id, userId, assignmentType: "PERMANENT", checkoutDate: new Date(), starterKitApplicationId: application.id },
-          // acknowledgedAt is null by default — pending confirmation
+        });
+        await db.asset.update({
+          where: { id: asset.id },
+          data: { status: "CHECKED_OUT" },
         });
         results.push(`Assigned ${asset.name} (${asset.assetCode})`);
         appliedCount++;
