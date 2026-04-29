@@ -5,10 +5,11 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "trackio — Asset & Consumable Tracker",
     short_name: "trackio",
     description: "Internal asset and consumable management portal",
-    start_url: "/",
+    start_url: "/dashboard",
+    scope: "/",
     display: "standalone",
     background_color: "#ffffff",
-    theme_color: "#0f172a",
+    theme_color: "#1F3DD9",
     orientation: "any",
     icons: [
       {
