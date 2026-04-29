@@ -129,18 +129,20 @@ export function AiBriefingClient({
             <Icon name="star" size={14} className="text-indigo-500" />
           </div>
 
-          {/* Text area — always exactly 2 visual lines */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-xs font-semibold text-shark-900 dark:text-shark-100 truncate">
+          {/* Text area — locked to exactly 2 lines, no content can change its height */}
+          <div className="flex-1 min-w-0 overflow-hidden">
+            {/* Line 1 — greeting (single line, truncated) */}
+            <div className="flex items-center gap-1.5 h-[18px] overflow-hidden">
+              <span className="text-xs font-semibold text-shark-900 dark:text-shark-100 truncate leading-none">
                 {firstName
                   ? <>{greeting},{" "}<span className="text-action-600 dark:text-action-400">{firstName}</span></>
                   : "AI Briefing"}
               </span>
-              <span className="text-[9px] font-semibold bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
+              <span className="text-[9px] font-semibold bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0 leading-none">AI</span>
               {isPending && <Icon name="refresh-cw" size={10} className="animate-spin text-action-500 shrink-0" />}
             </div>
-            <p className="text-[11px] text-shark-500 dark:text-shark-400 truncate leading-none">
+            {/* Line 2 — briefing preview (single line, truncated) */}
+            <p className="text-[11px] text-shark-500 dark:text-shark-400 truncate leading-none h-[14px] overflow-hidden mt-1">
               {content.text}
             </p>
           </div>
@@ -185,13 +187,10 @@ export function AiBriefingClient({
         </div>
         <div className="flex-1 min-w-0">
           {firstName ? (
-            <>
-              <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100 leading-tight">
-                {greeting},{" "}
-                <span className="text-action-600 dark:text-action-400">{firstName}</span>
-              </h3>
-              <p className="text-xs text-shark-400">{displayDate}</p>
-            </>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100 leading-tight">
+              {greeting},{" "}
+              <span className="text-action-600 dark:text-action-400">{firstName}</span>
+            </h3>
           ) : (
             <>
               <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">AI Briefing</h3>
