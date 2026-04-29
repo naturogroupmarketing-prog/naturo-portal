@@ -30,12 +30,30 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const [searchOpen, setSearchOpen] = useState(false);
   const [quickLinksOpen, setQuickLinksOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [showInstallModal, setShowInstallModal] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const quickAddRef = useRef<HTMLDivElement>(null);
   const [isMac, setIsMac] = useState(false);
 
   useEffect(() => {
     setIsMac(navigator.userAgent.includes("Mac"));
+    // Detect if already installed as PWA
+    setIsStandalone(
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone === true
+    );
+    // Pick up any early-captured beforeinstallprompt event
+    const captured = (window as any).__pwaPrompt;
+    if (captured) setInstallPrompt(captured);
+    const handler = (e: Event) => {
+      e.preventDefault();
+      (window as any).__pwaPrompt = e;
+      setInstallPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
   // Cmd+K / Ctrl+K to open quick links
@@ -71,6 +89,17 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
     if (quickAddOpen) document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [quickAddOpen]);
+
+  const handleInstallApp = async () => {
+    setDropdownOpen(false);
+    if (installPrompt) {
+      installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+      if (outcome === "accepted") setInstallPrompt(null);
+    } else {
+      setShowInstallModal(true);
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -232,6 +261,16 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                   Help
                 </button>
 
+                {!isStandalone && (
+                  <button
+                    onClick={handleInstallApp}
+                    className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
+                  >
+                    <Icon name="download" size={15} className="text-shark-400 dark:text-shark-300" />
+                    Install App
+                  </button>
+                )}
+
                 <button
                   onClick={() => { setDropdownOpen(false); router.push("/changelog"); }}
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
@@ -293,6 +332,107 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
       </div>
       <CommandSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
       <QuickLinks open={quickLinksOpen} onClose={() => setQuickLinksOpen(false)} />
+
+      {/* Install App modal — shown when no native prompt is available */}
+      {showInstallModal && <InstallModal onClose={() => setShowInstallModal(false)} />}
     </header>
+  );
+}
+
+function InstallModal({ onClose }: { onClose: () => void }) {
+  const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+  const isIOS = /iphone|ipad|ipod/i.test(ua);
+  const isSafari = isIOS && !/CriOS|FxiOS/i.test(ua);
+
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-5 pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-action-600 flex items-center justify-center shrink-0">
+              <span className="text-white font-bold">T</span>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Install Trackio</p>
+              <p className="text-xs text-shark-400">Add to your home screen</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="text-shark-400 hover:text-shark-600 p-1">
+            <Icon name="x" size={18} />
+          </button>
+        </div>
+
+        <div className="px-5 pb-5">
+          {/* iOS — not Safari: must switch to Safari */}
+          {isIOS && !isSafari ? (
+            <div className="bg-amber-50 dark:bg-amber-500/10 rounded-xl px-4 py-3">
+              <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">Open in Safari</p>
+              <p className="text-xs text-amber-700 dark:text-amber-400 leading-snug">
+                iPhone apps can only be installed from <strong>Safari</strong>. Copy the URL, open Safari, paste it, then follow the steps below.
+              </p>
+            </div>
+          ) : isIOS ? (
+            /* iOS Safari steps */
+            <ol className="space-y-3">
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0 mt-0.5">1</span>
+                <span className="text-sm text-shark-700 dark:text-shark-300">
+                  Tap the <strong>Share</strong> button
+                  <svg className="inline mx-1 mb-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+                  </svg>
+                  at the <strong>bottom</strong> of Safari
+                </span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0 mt-0.5">2</span>
+                <span className="text-sm text-shark-700 dark:text-shark-300">Scroll down and tap <strong>&ldquo;Add to Home Screen&rdquo;</strong></span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0 mt-0.5">3</span>
+                <span className="text-sm text-shark-700 dark:text-shark-300">Tap <strong>&ldquo;Add&rdquo;</strong> in the top-right corner</span>
+              </li>
+            </ol>
+          ) : (
+            /* Android / Desktop Chrome steps */
+            <ol className="space-y-3">
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0 mt-0.5">1</span>
+                <span className="text-sm text-shark-700 dark:text-shark-300">
+                  Tap the <strong>⋮ three-dot menu</strong> in the top-right of Chrome
+                </span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0 mt-0.5">2</span>
+                <span className="text-sm text-shark-700 dark:text-shark-300">
+                  Tap <strong>&ldquo;Add to Home Screen&rdquo;</strong> or <strong>&ldquo;Install app&rdquo;</strong>
+                </span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0 mt-0.5">3</span>
+                <span className="text-sm text-shark-700 dark:text-shark-300">Tap <strong>&ldquo;Install&rdquo;</strong> to confirm</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-full bg-shark-200 dark:bg-shark-700 text-shark-500 dark:text-shark-400 flex items-center justify-center font-bold text-[11px] shrink-0 mt-0.5">?</span>
+                <span className="text-xs text-shark-400 dark:text-shark-500 leading-snug">
+                  Don&apos;t see the option? Try the <strong>Share</strong> button in Chrome instead, or switch to <strong>Samsung Internet</strong> browser.
+                </span>
+              </li>
+            </ol>
+          )}
+
+          <button
+            onClick={onClose}
+            className="mt-4 w-full py-2.5 text-sm font-medium text-white bg-action-600 hover:bg-action-700 rounded-xl transition-colors"
+          >
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
