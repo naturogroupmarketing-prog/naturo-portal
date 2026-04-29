@@ -300,8 +300,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </div>
       )}
 
-      {/* Settings gear — sits above the AI briefing */}
-      <div className="flex justify-end">
+      {/* Settings gear — desktop only; mobile uses the bottom-nav cog */}
+      <div className="hidden lg:flex justify-end">
         <button
           onClick={() => setSettingsOpen(true)}
           className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-shark-400 hover:text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 transition-colors"
