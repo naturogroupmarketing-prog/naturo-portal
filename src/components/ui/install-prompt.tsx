@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 
-const STORAGE_KEY = "naturo-install-dismissed-at";
+const STORAGE_KEY = "naturo-install-dismissed-at-v2"; // v2 forces re-prompt after nav redesign
 const DISMISS_DAYS = 14;
 
 type Platform = "android" | "ios" | "desktop" | null;
@@ -108,7 +108,7 @@ export function InstallPrompt() {
 
   return (
     <div
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-2rem)] max-w-md"
+      className="fixed bottom-[5.5rem] lg:bottom-4 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-2rem)] max-w-md"
       style={{ pointerEvents: "auto" }}
     >
       <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden">
