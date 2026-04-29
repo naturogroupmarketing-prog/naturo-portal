@@ -131,7 +131,11 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         )}
 
         {/* Main content */}
-        <main id="main-content" style={role === "STAFF" ? { paddingBottom: "calc(5rem + env(safe-area-inset-bottom, 0px))" } : undefined} className={`flex-1 overflow-y-auto overflow-x-hidden px-3 py-6 sm:px-4 sm:py-6 lg:px-6 lg:py-10 ${role === "STAFF" ? "lg:pb-12" : (role === "SUPER_ADMIN" || role === "BRANCH_MANAGER") ? "pb-36 sm:pb-24 lg:pb-16" : "pb-16 sm:pb-6 lg:pb-12"}`}>
+        <main
+          id="main-content"
+          style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom, 0px))" }}
+          className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-6 sm:px-4 sm:py-6 lg:px-6 lg:py-10 lg:pb-12"
+        >
           <div className="hidden lg:flex mb-4">
             <Breadcrumbs />
           </div>
@@ -139,11 +143,15 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         </main>
       </div>
 
-      {/* Bottom navigation for Staff on mobile/tablet */}
-      {role === "STAFF" && <BottomNav />}
+      {/* Bottom navigation — all roles, mobile only */}
+      <BottomNav role={role} pendingPOCount={pendingPOCount} pendingReturnsCount={pendingReturnsCount} />
 
-      {/* Floating Quick Actions button — admins and managers only */}
-      {(role === "SUPER_ADMIN" || role === "BRANCH_MANAGER") && <QuickActionsFab />}
+      {/* Floating Quick Actions button — admins/managers, desktop only */}
+      {(role === "SUPER_ADMIN" || role === "BRANCH_MANAGER") && (
+        <div className="hidden lg:block">
+          <QuickActionsFab />
+        </div>
+      )}
     </div>
     </SidebarContext.Provider>
     </BreadcrumbProvider>
