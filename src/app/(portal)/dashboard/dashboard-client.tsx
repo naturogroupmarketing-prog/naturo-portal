@@ -315,13 +315,22 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return visibleStats.length > 0 ? (
               <div key="stats" className="space-y-4">
               <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
-              <StaggerContainer className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+              <StaggerContainer className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group">
                     <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
-                      <CardContent className="px-3 py-3">
-                        <div className="flex items-center gap-2">
+                      <CardContent className="px-2 py-3 sm:px-3">
+                        {/* Mobile: vertical compact — fits 3 across */}
+                        <div className="flex sm:hidden flex-col items-center gap-1.5 text-center">
+                          <div className={`w-8 h-8 rounded-lg ${s.iconBg} flex items-center justify-center`}>
+                            <Icon name={s.icon} size={14} className={s.iconColor} />
+                          </div>
+                          <AnimatedCounter value={s.value} className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                          <p className="text-[10px] text-shark-500 dark:text-shark-400 leading-tight">{s.label}</p>
+                        </div>
+                        {/* sm+: horizontal layout */}
+                        <div className="hidden sm:flex items-center gap-2">
                           <div className={`w-9 h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
                             <Icon name={s.icon} size={16} className={s.iconColor} />
                           </div>
