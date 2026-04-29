@@ -6,7 +6,7 @@ interface BadgeProps {
 }
 
 const STATUS_LABELS: Record<string, string> = {
-  AWAITING_CONFIRMATION: "Awaiting Confirmation",
+  AWAITING_CONFIRMATION: "Awaiting",
   PENDING_RETURN: "Pending Return",
   CHECKED_OUT: "Checked Out",
   SUPER_ADMIN: "Super Admin",
