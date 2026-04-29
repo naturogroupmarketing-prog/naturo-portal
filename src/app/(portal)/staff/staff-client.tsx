@@ -37,6 +37,7 @@ interface StaffUser {
   isActive: boolean;
   region: { id: string; name: string } | null;
   assetAssignments: {
+    acknowledgedAt: string | Date | null;
     asset: { name: string; assetCode: string; category: string; imageUrl: string | null };
   }[];
   consumableAssignments?: {
@@ -725,7 +726,9 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                       </div>
                                     )}
                                     <span className="truncate">{a.asset.name}</span>
-                                    <span className="text-[11px] text-shark-400 shrink-0 ml-1">(1)</span>
+                                    {!a.acknowledgedAt && (
+                                      <span className="text-[10px] font-medium text-[#E8532E] bg-amber-50 ring-1 ring-[#E8532E]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
+                                    )}
                                   </div>
                                 ))}
                               </div>
@@ -893,7 +896,9 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                     </div>
                                   )}
                                   <p className="text-sm text-shark-700 dark:text-shark-300 truncate">{a.asset.name}</p>
-                                  <span className="text-[11px] text-shark-400 shrink-0 ml-1">(1)</span>
+                                  {!a.acknowledgedAt && (
+                                    <span className="text-[10px] font-medium text-[#E8532E] bg-amber-50 ring-1 ring-[#E8532E]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
+                                  )}
                                 </div>
                               ))}
                             </div>
@@ -1091,6 +1096,9 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                 </div>
                               )}
                               <span className="font-medium text-shark-800 dark:text-shark-200 truncate">{a.asset.name}</span>
+                              {!a.acknowledgedAt && (
+                                <span className="text-[10px] font-medium text-[#E8532E] bg-amber-50 ring-1 ring-[#E8532E]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
+                              )}
                             </div>
                           ))}
                         </div>

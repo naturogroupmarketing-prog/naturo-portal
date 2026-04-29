@@ -30,7 +30,7 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
         region: true,
         assetAssignments: {
           where: { isActive: true },
-          include: { asset: { select: { name: true, assetCode: true, category: true, imageUrl: true } } },
+          select: { acknowledgedAt: true, asset: { select: { name: true, assetCode: true, category: true, imageUrl: true } } },
         },
         consumableAssignments: {
           where: { isActive: true },

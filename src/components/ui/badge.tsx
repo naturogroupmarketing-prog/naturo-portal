@@ -5,7 +5,17 @@ interface BadgeProps {
   className?: string;
 }
 
+const STATUS_LABELS: Record<string, string> = {
+  AWAITING_CONFIRMATION: "Awaiting Confirmation",
+  PENDING_RETURN: "Pending Return",
+  CHECKED_OUT: "Checked Out",
+  SUPER_ADMIN: "Super Admin",
+  BRANCH_MANAGER: "Branch Manager",
+  PAST_DUE: "Past Due",
+};
+
 export function Badge({ status, className }: BadgeProps) {
+  const label = STATUS_LABELS[status] ?? status.replace(/_/g, " ");
   return (
     <span
       className={cn(
@@ -14,7 +24,7 @@ export function Badge({ status, className }: BadgeProps) {
         className
       )}
     >
-      {status.replace(/_/g, " ")}
+      {label}
     </span>
   );
 }

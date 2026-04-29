@@ -22,17 +22,16 @@ export default async function MyAssetsPage() {
     where: {
       userId: session.user.id,
       isActive: true,
-      OR: [
-        { starterKitApplicationId: null },
-        { acknowledgedAt: { not: null } },
-      ],
     },
     include: {
       asset: {
         include: { region: true },
       },
     },
-    orderBy: { checkoutDate: "desc" },
+    orderBy: [
+      { acknowledgedAt: { sort: "asc", nulls: "first" } },
+      { checkoutDate: "desc" },
+    ],
   });
 
   return (
@@ -76,7 +75,10 @@ export default async function MyAssetsPage() {
                         <h3 className="font-semibold text-shark-900 dark:text-shark-100">{a.asset.name}</h3>
                         <p className="text-xs font-mono text-shark-400 mt-0.5">{a.asset.assetCode}</p>
                       </div>
-                      <Badge status={a.assignmentType} />
+                      {a.acknowledgedAt
+                        ? <Badge status={a.assignmentType} />
+                        : <Badge status="AWAITING_CONFIRMATION" />
+                      }
                     </div>
                   </div>
                 </div>

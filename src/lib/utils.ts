@@ -36,6 +36,7 @@ export function statusColor(status: string): string {
     AVAILABLE: "bg-action-50 text-action-700 ring-1 ring-action-500/20",
     ASSIGNED: "bg-action-50 text-action-700 ring-1 ring-action-500/20",
     CHECKED_OUT: "bg-amber-50 text-[#E8532E] ring-1 ring-[#E8532E]/20",
+    AWAITING_CONFIRMATION: "bg-amber-50 text-[#E8532E] ring-1 ring-[#E8532E]/20",
     PENDING_RETURN: "bg-amber-50 text-[#E8532E] ring-1 ring-[#E8532E]/20",
     DAMAGED: "bg-red-50 text-red-700 ring-1 ring-red-600/20",
     LOST: "bg-red-50 text-red-700 ring-1 ring-red-600/20",
