@@ -180,21 +180,23 @@ export async function batchProcessReturns(
             data: { status: "AVAILABLE" },
           });
         } else if (pr.itemType === "CONSUMABLE" && pr.consumableId) {
-          await db.consumable.update({
-            where: { id: pr.consumableId },
-            data: { quantityOnHand: { increment: pr.quantity } },
+          // Atomic: increment stock + create batch layer in one transaction
+          await db.$transaction(async (tx) => {
+            await tx.consumable.update({
+              where: { id: pr.consumableId! },
+              data: { quantityOnHand: { increment: pr.quantity } },
+            });
+            await addBatch(
+              pr.consumableId!,
+              pr.organizationId,
+              pr.quantity,
+              "RETURN",
+              session.user.id,
+              tx,
+              undefined,
+              `Returned by ${pr.returnedByName}`
+            );
           });
-          // Create a new batch for the returned stock
-          await addBatch(
-            pr.consumableId,
-            pr.organizationId,
-            pr.quantity,
-            "RETURN",
-            session.user.id,
-            db,
-            undefined,
-            `Returned by ${pr.returnedByName}`
-          );
         }
       } else if (pr.returnCondition === "NOT_RETURNED") {
         // NOT_RETURNED items: acknowledge without restocking — mark asset as DAMAGED

@@ -26,36 +26,41 @@ export async function createConsumable(formData: FormData) {
 
   const organizationId = session.user.organizationId!;
 
-  const consumable = await db.consumable.create({
-    data: {
-      name,
-      category,
-      unitType,
-      quantityOnHand,
-      minimumThreshold,
-      reorderLevel,
-      regionId,
-      organizationId,
-      imageUrl: imageUrl || null,
-      supplier: supplier || null,
-      unitCost: unitCost ?? null,
-      notes: notes || null,
-    },
-  });
+  // Atomic: create consumable + opening batch in one transaction
+  const consumable = await db.$transaction(async (tx) => {
+    const created = await tx.consumable.create({
+      data: {
+        name,
+        category,
+        unitType,
+        quantityOnHand,
+        minimumThreshold,
+        reorderLevel,
+        regionId,
+        organizationId,
+        imageUrl: imageUrl || null,
+        supplier: supplier || null,
+        unitCost: unitCost ?? null,
+        notes: notes || null,
+      },
+    });
 
-  // Create initial batch if opening stock > 0
-  if (quantityOnHand > 0) {
-    await addBatch(
-      consumable.id,
-      organizationId,
-      quantityOnHand,
-      "STOCK_ADD",
-      session.user.id,
-      db,
-      unitCost ?? undefined,
-      "Opening stock on supply creation"
-    );
-  }
+    // Create initial batch if opening stock > 0
+    if (quantityOnHand > 0) {
+      await addBatch(
+        created.id,
+        organizationId,
+        quantityOnHand,
+        "STOCK_ADD",
+        session.user.id,
+        tx,
+        unitCost ?? undefined,
+        "Opening stock on supply creation"
+      );
+    }
+
+    return created;
+  });
 
   await createAuditLog({
     action: "CONSUMABLE_CREATED",
