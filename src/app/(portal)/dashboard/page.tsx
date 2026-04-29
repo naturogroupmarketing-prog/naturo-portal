@@ -1335,6 +1335,10 @@ export default async function DashboardPage() {
     ? INDUSTRY_TEMPLATES[orgRecord.industry as IndustryId]?.name
     : undefined;
 
+  // Attention counts for the greeting badge inside the AI briefing
+  const greetingAttentionCount = actionItems.length;
+  const greetingCriticalCount = actionItems.filter((i) => i.priority === "critical").length;
+
   if (isSuperAdmin) {
     return (
       <>
@@ -1355,6 +1359,9 @@ export default async function DashboardPage() {
               recentAnomalyCount={anomalyCount}
               staffUnacknowledgedCount={staffUnacknowledgedCount}
               date={new Date().toISOString()}
+              userName={session.user.name ?? undefined}
+              attentionCount={greetingAttentionCount}
+              criticalCount={greetingCriticalCount}
             />
           }
         />
@@ -1400,6 +1407,9 @@ export default async function DashboardPage() {
           recentAnomalyCount={anomalyCount}
           staffUnacknowledgedCount={staffUnacknowledgedCount}
           date={new Date().toISOString()}
+          userName={session.user.name ?? undefined}
+          attentionCount={greetingAttentionCount}
+          criticalCount={greetingCriticalCount}
         />
       }
     />
