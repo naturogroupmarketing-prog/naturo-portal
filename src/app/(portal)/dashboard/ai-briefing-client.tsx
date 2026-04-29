@@ -192,10 +192,7 @@ export function AiBriefingClient({
               <span className="text-action-600 dark:text-action-400">{firstName}</span>
             </h3>
           ) : (
-            <>
-              <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">AI Briefing</h3>
-              <p className="text-xs text-shark-400">{displayDate}</p>
-            </>
+            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">AI Briefing</h3>
           )}
         </div>
         {/* Actions row */}
