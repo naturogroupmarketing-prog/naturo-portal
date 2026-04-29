@@ -239,6 +239,7 @@ function fmtAUD(n: number) {
 
 export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, userName, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, briefingWidget, assetHealthSummary = null }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
   // Register the dashboard settings action with the bottom-nav cog
   useRegisterPageCog(() => setSettingsOpen(true), []);
   const [isPending, startTransition] = useTransition();
@@ -364,19 +365,19 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
       {/* ── ZONE 1: COMMAND LAYER ─────────────────────────────────────── */}
-      {/* Dynamic greeting + live attention status */}
+      {/* Dynamic greeting + tappable attention badge */}
       <DashboardGreeting
         userName={userName}
         attentionCount={actionItems.length}
         criticalCount={actionItems.filter((i) => i.priority === "critical").length}
         healthScore={operationsOverview?.healthScore ?? 100}
+        onClickStatus={actionItems.length > 0 ? () => setActionsOpen((p) => !p) : undefined}
+        actionsExpanded={actionsOpen}
       />
 
-      {/* Mobile action panel — shown inline on smaller screens, hidden on md+ where it sits next to Finance */}
-      {actionItems.length > 0 && (
-        <div className="md:hidden">
-          <SmartActionsPanel items={actionItems} />
-        </div>
+      {/* Action panel — revealed by tapping the badge in the greeting */}
+      {actionsOpen && actionItems.length > 0 && (
+        <SmartActionsPanel items={actionItems} />
       )}
 
       {/* Settings gear — desktop only; mobile uses the bottom-nav cog */}

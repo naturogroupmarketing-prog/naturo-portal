@@ -10,6 +10,10 @@ interface DashboardGreetingProps {
   criticalCount: number;
   /** System health 0–100 */
   healthScore: number;
+  /** If provided, the status badge becomes a button that calls this */
+  onClickStatus?: () => void;
+  /** Controls chevron direction when badge is a toggle */
+  actionsExpanded?: boolean;
 }
 
 function getTimeGreeting(): string {
@@ -31,6 +35,8 @@ export function DashboardGreeting({
   attentionCount,
   criticalCount,
   healthScore,
+  onClickStatus,
+  actionsExpanded = false,
 }: DashboardGreetingProps) {
   const [greeting, setGreeting] = useState("Good morning");
 
@@ -76,24 +82,57 @@ export function DashboardGreeting({
         </p>
       </div>
 
-      {/* Right — live status badge */}
-      <div
-        className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs sm:text-sm font-medium shrink-0 ${statusStyle}`}
-      >
-        <span
-          className={`w-2 h-2 rounded-full shrink-0 ${dotColor} ${
-            isCritical || isWarning ? "animate-pulse" : ""
-          }`}
-        />
-        <span className="hidden sm:inline">{statusText}</span>
-        <span className="sm:hidden">
-          {isGood
-            ? "All clear"
-            : isCritical
-            ? `${criticalCount} critical`
-            : `${attentionCount} items`}
-        </span>
-      </div>
+      {/* Right — live status badge (clickable when onClickStatus is provided) */}
+      {onClickStatus && attentionCount > 0 ? (
+        <button
+          onClick={onClickStatus}
+          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs sm:text-sm font-medium shrink-0 transition-all duration-200 hover:shadow-sm active:scale-95 ${statusStyle}`}
+          aria-expanded={actionsExpanded}
+          aria-label={statusText}
+        >
+          <span
+            className={`w-2 h-2 rounded-full shrink-0 ${dotColor} ${
+              isCritical || isWarning ? "animate-pulse" : ""
+            }`}
+          />
+          <span className="hidden sm:inline">{statusText}</span>
+          <span className="sm:hidden">
+            {isCritical ? `${criticalCount} critical` : `${attentionCount} items`}
+          </span>
+          {/* Chevron indicates expandable */}
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={`shrink-0 transition-transform duration-200 ${actionsExpanded ? "rotate-180" : ""}`}
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+      ) : (
+        <div
+          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs sm:text-sm font-medium shrink-0 ${statusStyle}`}
+        >
+          <span
+            className={`w-2 h-2 rounded-full shrink-0 ${dotColor} ${
+              isCritical || isWarning ? "animate-pulse" : ""
+            }`}
+          />
+          <span className="hidden sm:inline">{statusText}</span>
+          <span className="sm:hidden">
+            {isGood
+              ? "All clear"
+              : isCritical
+              ? `${criticalCount} critical`
+              : `${attentionCount} items`}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
