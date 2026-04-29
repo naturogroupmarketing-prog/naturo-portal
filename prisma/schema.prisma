@@ -119,6 +119,10 @@ enum AuditAction {
   SUPPORT_ACCESS_REVOKED
   SUPPORT_SETTINGS_UPDATED
   SUPPORT_WRITE_BLOCKED
+  // Inventory batch system
+  INVENTORY_BATCH_ADDED
+  BATCH_CONSUMED
+  INVENTORY_METHOD_UPDATED
 }
 
 // ─── ORGANIZATION (Multi-Tenancy) ──────────────────────────
@@ -165,6 +169,9 @@ model Organization {
   aiRequestsLimit    Int                @default(100)
   aiResetDate        DateTime?
   anomalySettings    Json               @default("{}")
+
+  // Inventory method: "FIFO" | "LIFO" — operational only (IFRS compliance: LIFO NOT for financial reporting)
+  defaultInventoryMethod String @default("FIFO")
 
   // Onboarding
   industry              String?
@@ -436,6 +443,11 @@ model Consumable {
   riskLevel             String?   // "critical" | "warning" | "ok"
   lastUsageCalcAt       DateTime? // When predictions were last recalculated
 
+  // ── Inventory Method Override ──
+  // null = inherit org default (defaultInventoryMethod on Organization)
+  // "FIFO" | "LIFO" — operational stock tracking only (IFRS: LIFO NOT for financial reporting)
+  inventoryMethod String?
+
   region       Region       @relation(fields: [regionId], references: [id], onDelete: Restrict)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   requests       ConsumableRequest[]
@@ -443,6 +455,7 @@ model Consumable {
   conditionChecks ConditionCheck[]
   purchaseOrders  PurchaseOrder[]
   auditLogs       AuditLog[]
+  batches         ConsumableBatch[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -658,6 +671,60 @@ model PurchaseOrder {
   @@index([consumableId])
   @@index([organizationId])
   @@index([createdById])
+}
+
+// ─── INVENTORY BATCH SYSTEM (LIFO / FIFO) ───────────────
+//
+// IMPORTANT: LIFO is used for OPERATIONAL stock tracking ONLY.
+// Australian IFRS does not permit LIFO for financial/tax reporting.
+// These models must NOT feed into financial accounting outputs.
+
+/// A single receive event (batch/layer) for a consumable item.
+/// Batches are consumed in LIFO (newest first) or FIFO (oldest first) order.
+model ConsumableBatch {
+  id                String   @id @default(cuid())
+  consumableId      String
+  organizationId    String
+  quantityAdded     Int      // original quantity when batch was created
+  quantityRemaining Int      // remaining (decrements on consumption)
+  unitCost          Float?   // cost per unit at time of receipt (optional)
+  // "STOCK_ADD" | "RETURN" | "ADJUSTMENT" | "BACKFILL" | "STARTER_KIT"
+  source            String
+  notes             String?
+  createdById       String?
+  receivedAt        DateTime @default(now()) // KEY field for LIFO/FIFO sort
+  isActive          Boolean  @default(true)
+
+  consumable   Consumable        @relation(fields: [consumableId], references: [id], onDelete: Cascade)
+  consumptions BatchConsumption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([consumableId, isActive])
+  @@index([consumableId, receivedAt])
+  @@index([organizationId])
+}
+
+/// Immutable record of stock deducted from a specific batch.
+model BatchConsumption {
+  id            String   @id @default(cuid())
+  batchId       String
+  consumableId  String
+  quantity      Int
+  // "ASSIGNMENT" | "REQUEST_ISSUE" | "DIRECT_DEDUCT" | "STARTER_KIT" | "DAMAGED"
+  actionType    String
+  referenceId   String?  // FK to assignment / request / etc.
+  performedById String
+
+  batch ConsumableBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([batchId])
+  @@index([consumableId])
+  @@index([performedById])
+  @@index([createdAt])
 }
 
 // ─── AUDIT LOG ──────────────────────────────────────────

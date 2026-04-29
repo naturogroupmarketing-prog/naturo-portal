@@ -21,7 +21,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
     ? { regionId: session.user.regionId!, organizationId }
     : { organizationId };
 
-  const [consumables, pendingRequests, regions, users, categories, canAdjustStock, canAdd] = await Promise.all([
+  const [consumables, pendingRequests, regions, users, categories, canAdjustStock, canAdd, org] = await Promise.all([
     db.consumable.findMany({
       where: { ...regionFilter, isActive: true },
       include: {
@@ -29,6 +29,19 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
         assignments: {
           where: { isActive: true },
           include: { user: { select: { id: true, name: true, email: true } } },
+        },
+        batches: {
+          where: { isActive: true, quantityRemaining: { gt: 0 } },
+          orderBy: { receivedAt: "asc" },
+          select: {
+            id: true,
+            quantityAdded: true,
+            quantityRemaining: true,
+            unitCost: true,
+            source: true,
+            receivedAt: true,
+            createdAt: true,
+          },
         },
       },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
@@ -69,6 +82,10 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
     }),
     hasPermission(session.user.id, session.user.role, "consumableStockAdjust"),
     hasPermission(session.user.id, session.user.role, "consumableAdd"),
+    db.organization.findUnique({
+      where: { id: organizationId },
+      select: { defaultInventoryMethod: true },
+    }),
   ]);
 
   return (
@@ -84,6 +101,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
       initialTab={params.tab}
       initialStock={params.stock}
       initialCategory={params.category}
+      orgInventoryMethod={(org?.defaultInventoryMethod as "FIFO" | "LIFO") ?? "FIFO"}
     />
   );
 }

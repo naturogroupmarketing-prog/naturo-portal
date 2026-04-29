@@ -6,6 +6,7 @@ import { createAuditLog } from "@/lib/audit";
 import { notifyAdminsAndManagers } from "@/lib/notifications";
 import { revalidatePath } from "next/cache";
 import { withAuth } from "@/lib/action-utils";
+import { addBatch } from "@/lib/inventory-engine";
 
 /**
  * Manager verifies a returned item and restocks it
@@ -52,6 +53,17 @@ export async function verifyReturn(returnId: string, notes?: string) {
           where: { id: pendingReturn.consumableId },
           data: { quantityOnHand: { increment: pendingReturn.quantity } },
         });
+        // Create a new batch for the returned stock (OPTION A: returns become newest batch)
+        await addBatch(
+          pendingReturn.consumableId,
+          pendingReturn.organizationId,
+          pendingReturn.quantity,
+          "RETURN",
+          session.user.id,
+          tx,
+          undefined,
+          `Returned by ${pendingReturn.returnedByName}${pendingReturn.returnCondition ? ` — Condition: ${pendingReturn.returnCondition}` : ""}`
+        );
       }
     }
   });
@@ -101,10 +113,20 @@ export async function verifyAllReturns() {
     if (assetIds.length > 0) {
       await tx.asset.updateMany({ where: { id: { in: assetIds } }, data: { status: "AVAILABLE" } });
     }
-    // Restock consumables — increment each
+    // Restock consumables — increment each + create batch layer
     for (const pr of pendingReturns) {
       if (pr.itemType === "CONSUMABLE" && pr.consumableId && pr.returnReason !== "STOCK_ALREADY_HANDLED") {
         await tx.consumable.update({ where: { id: pr.consumableId }, data: { quantityOnHand: { increment: pr.quantity } } });
+        await addBatch(
+          pr.consumableId,
+          pr.organizationId,
+          pr.quantity,
+          "RETURN",
+          session.user.id,
+          tx,
+          undefined,
+          `Returned by ${pr.returnedByName}`
+        );
       }
     }
   });
@@ -162,6 +184,17 @@ export async function batchProcessReturns(
             where: { id: pr.consumableId },
             data: { quantityOnHand: { increment: pr.quantity } },
           });
+          // Create a new batch for the returned stock
+          await addBatch(
+            pr.consumableId,
+            pr.organizationId,
+            pr.quantity,
+            "RETURN",
+            session.user.id,
+            db,
+            undefined,
+            `Returned by ${pr.returnedByName}`
+          );
         }
       } else if (pr.returnCondition === "NOT_RETURNED") {
         // NOT_RETURNED items: acknowledge without restocking — mark asset as DAMAGED

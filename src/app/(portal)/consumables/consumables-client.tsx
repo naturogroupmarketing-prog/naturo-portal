@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { useToast } from "@/components/ui/toast";
 import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 import { createConsumable, updateConsumable, addStock, deductStock, approveRequest, issueConsumable, assignConsumable, returnConsumable, bulkDeleteConsumables } from "@/app/actions/consumables";
+import { updateOrgInventoryMethod } from "@/app/actions/inventory-settings";
 import { createCategory, updateCategory, deleteCategory, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { formatDate } from "@/lib/utils";
 import { exportToCSV } from "@/lib/csv";
@@ -52,6 +53,16 @@ interface ConsumableAssignment {
   user: { id: string; name: string | null; email: string };
 }
 
+interface ConsumableBatch {
+  id: string;
+  quantityAdded: number;
+  quantityRemaining: number;
+  unitCost: number | null;
+  source: string;
+  receivedAt: string;
+  createdAt: string;
+}
+
 interface Consumable {
   id: string;
   name: string;
@@ -68,8 +79,10 @@ interface Consumable {
   avgDailyUsage: number | null;
   riskLevel: string | null;
   predictedDepletionDate: string | null;
+  inventoryMethod?: string | null;
   region: { id: string; name: string; state: { name: string } };
   assignments: ConsumableAssignment[];
+  batches?: ConsumableBatch[];
 }
 
 interface Request {
@@ -111,12 +124,14 @@ interface ConsumablesClientProps {
   highlightId?: string;
   /** When true, skips the outer Card wrapper (e.g. when already embedded inside a Card) */
   noCard?: boolean;
+  /** Organisation-wide default inventory method (FIFO | LIFO) */
+  orgInventoryMethod?: "FIFO" | "LIFO";
 }
 
 import { compressImage } from "@/lib/image-utils";
 
 
-export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId, noCard }: ConsumablesClientProps) {
+export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId, noCard, orgInventoryMethod = "FIFO" }: ConsumablesClientProps) {
   const router = useRouter();
   const { addToast } = useToast();
   const [hoveredQtyId, setHoveredQtyId] = useState<string | null>(null);
@@ -145,6 +160,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
   const [tab, setTab] = useState<"stock" | "requests">(initialTab === "requests" ? "requests" : "stock");
   const [stockFilter, setStockFilter] = useState(initialStock || "ALL");
   const [staffModalUserId, setStaffModalUserId] = useState<string | null>(null);
+
+  // Inventory batch system
+  const [showBatchPanel, setShowBatchPanel] = useState<Consumable | null>(null);
+  const [orgMethod, setOrgMethod] = useState<"FIFO" | "LIFO">(orgInventoryMethod);
+  const [savingOrgMethod, setSavingOrgMethod] = useState(false);
 
   // Region selector (Super Admin only)
   const [selectedRegionId, setSelectedRegionId] = useState<string>("ALL");
@@ -850,6 +870,19 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         }}>Stock</Button>
                         <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
                         {activeAssignments.length > 0 && <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}>Return</Button>}
+                        {isSuperAdmin && (
+                          <button
+                            onClick={() => setShowBatchPanel(c)}
+                            className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg transition-colors ${
+                              (c.inventoryMethod ?? orgMethod) === "LIFO"
+                                ? "text-amber-700 bg-amber-50 hover:bg-amber-100 ring-1 ring-amber-300/50"
+                                : "text-action-700 bg-action-50 hover:bg-action-100 ring-1 ring-action-300/50"
+                            }`}
+                            title="View batch breakdown"
+                          >
+                            {c.inventoryMethod ?? orgMethod}
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -978,6 +1011,36 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <p className="text-xs text-shark-400">{consumables.length} total items{pendingRequests.length > 0 ? ` · ${pendingRequests.length} pending` : ""}</p>
           </div>
         </div>
+        {/* Inventory method toggle — Super Admin only */}
+        {isSuperAdmin && (
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-shark-400 font-medium shrink-0">Stock method:</span>
+            <div className="flex rounded-lg bg-shark-100 dark:bg-shark-800 p-0.5">
+              {(["FIFO", "LIFO"] as const).map((m) => (
+                <button
+                  key={m}
+                  disabled={savingOrgMethod}
+                  onClick={async () => {
+                    if (m === orgMethod) return;
+                    setSavingOrgMethod(true);
+                    try {
+                      await updateOrgInventoryMethod(m);
+                      setOrgMethod(m);
+                      addToast(`Default method set to ${m}`, "success");
+                    } catch {
+                      addToast("Failed to update method", "error");
+                    } finally {
+                      setSavingOrgMethod(false);
+                    }
+                  }}
+                  className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${orgMethod === m ? (m === "LIFO" ? "bg-amber-500 text-white shadow-sm" : "bg-action-500 text-white shadow-sm") : "text-shark-500 hover:text-shark-700 dark:hover:text-shark-300"}`}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-2 flex-wrap">
           <ViewToggle value={viewMode} onChange={setViewMode} />
           <Button variant="outline" size="sm" onClick={() => setShowManageSections(true)}>
@@ -996,6 +1059,20 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </Button>
         </div>
       </div>
+
+      {/* IFRS / LIFO Compliance Notice — shown when LIFO is active (org or any item) */}
+      {(orgMethod === "LIFO" || consumables.some((c) => c.inventoryMethod === "LIFO")) && (
+        <div className="mx-4 sm:mx-5 mt-3 flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl px-4 py-3">
+          <Icon name="alert-triangle" size={15} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">LIFO — Operational Use Only</p>
+            <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5 leading-relaxed">
+              LIFO is used for operational stock handling only. Financial reporting must follow applicable accounting standards.
+              {" "}<strong>In Australia, IFRS does not permit LIFO for financial reporting.</strong>
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-800">
@@ -1845,6 +1922,26 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
               <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
+
+            {/* Inventory Method Override */}
+            <div className="border border-shark-100 dark:border-shark-700 rounded-xl p-4 bg-shark-50/50 dark:bg-shark-800/30">
+              <label className="block text-sm font-semibold text-shark-700 dark:text-shark-300 mb-1">
+                Inventory Method
+              </label>
+              <select
+                name="inventoryMethod"
+                defaultValue={editConsumable.inventoryMethod || ""}
+                className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              >
+                <option value="">Use organisation default ({orgMethod})</option>
+                <option value="FIFO">FIFO — First In, First Out (oldest stock consumed first)</option>
+                <option value="LIFO">LIFO — Last In, First Out (newest stock consumed first)</option>
+              </select>
+              <p className="text-[11px] text-shark-400 dark:text-shark-500 mt-1.5 leading-relaxed">
+                LIFO is for operational stock handling only — not for financial reporting (IFRS compliance).
+              </p>
+            </div>
+
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => { setEditConsumable(null); setEditImagePreview(null); setEditImageFile(null); setEditImageRemoved(false); }}>Cancel</Button>
               <Button type="button" disabled={editSaving} loading={editSaving} onClick={async () => {
@@ -1949,6 +2046,132 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 </div>
               ) : (
                 <p className="text-sm text-shark-400 text-center py-6">No items currently assigned.</p>
+              )}
+            </div>
+          );
+        })()}
+      </Modal>
+
+      {/* ─── Batch Breakdown Panel ─────────────────────────────────────── */}
+      <Modal
+        open={!!showBatchPanel}
+        onClose={() => setShowBatchPanel(null)}
+        title={showBatchPanel ? `Inventory Batches: ${showBatchPanel.name}` : "Batch Breakdown"}
+      >
+        {showBatchPanel && (() => {
+          const c = showBatchPanel;
+          const batches = c.batches ?? [];
+          const effectiveMethod = (c.inventoryMethod ?? orgMethod) as "FIFO" | "LIFO";
+          const sortedForDisplay = [...batches].sort(
+            (a, b) => new Date(a.receivedAt).getTime() - new Date(b.receivedAt).getTime()
+          );
+          const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+          const oldest = sortedForDisplay[0];
+          const hasStagnant =
+            batches.length > 1 &&
+            oldest &&
+            new Date(oldest.receivedAt) < thirtyDaysAgo &&
+            oldest.source !== "BACKFILL";
+
+          return (
+            <div className="space-y-4">
+              {/* Method + IFRS notice */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-shark-500 dark:text-shark-400">Active method:</span>
+                  <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${effectiveMethod === "LIFO" ? "bg-amber-100 text-amber-700" : "bg-action-50 text-action-700"}`}>
+                    {effectiveMethod}
+                    {c.inventoryMethod ? " (item override)" : " (org default)"}
+                  </span>
+                </div>
+                <span className="text-xs text-shark-400">{batches.length} batch{batches.length !== 1 ? "es" : ""}</span>
+              </div>
+
+              {/* IFRS warning if LIFO */}
+              {effectiveMethod === "LIFO" && (
+                <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl px-3 py-2.5">
+                  <Icon name="alert-triangle" size={13} className="text-amber-600 shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-amber-700 dark:text-amber-400 leading-relaxed">
+                    LIFO is operational only. In Australia, IFRS does not permit LIFO for financial reporting.
+                  </p>
+                </div>
+              )}
+
+              {/* Stagnant stock warning */}
+              {hasStagnant && effectiveMethod === "LIFO" && (
+                <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50 rounded-xl px-3 py-2.5">
+                  <Icon name="alert-triangle" size={13} className="text-red-600 shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-red-700 dark:text-red-400 leading-relaxed">
+                    <strong>Old stock not being consumed.</strong> The oldest batch is {Math.floor((Date.now() - new Date(oldest.receivedAt).getTime()) / (86400000))} days old.
+                    LIFO keeps consuming newest stock first, leaving old stock untouched. Consider switching to FIFO for this item.
+                  </p>
+                </div>
+              )}
+
+              {/* Batch list */}
+              {batches.length === 0 ? (
+                <p className="text-sm text-shark-400 text-center py-6">No batch records yet. Batches are created when stock is added.</p>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400">
+                    Active Batches — sorted {effectiveMethod === "LIFO" ? "newest first (consumed first)" : "oldest first (consumed first)"}
+                  </p>
+                  <div className="overflow-hidden rounded-xl border border-shark-100 dark:border-shark-700">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="bg-shark-50 dark:bg-shark-800 border-b border-shark-100 dark:border-shark-700">
+                          <th className="px-3 py-2 text-left text-shark-400 font-semibold">Received</th>
+                          <th className="px-3 py-2 text-left text-shark-400 font-semibold">Source</th>
+                          <th className="px-3 py-2 text-right text-shark-400 font-semibold">Added</th>
+                          <th className="px-3 py-2 text-right text-shark-400 font-semibold">Remaining</th>
+                          {batches.some(b => b.unitCost !== null) && (
+                            <th className="px-3 py-2 text-right text-shark-400 font-semibold">Unit Cost</th>
+                          )}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[...sortedForDisplay]
+                          .sort((a, b) =>
+                            effectiveMethod === "LIFO"
+                              ? new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime()
+                              : new Date(a.receivedAt).getTime() - new Date(b.receivedAt).getTime()
+                          )
+                          .map((batch, idx) => {
+                            const isNext = idx === 0; // this batch will be consumed next
+                            const ageMs = Date.now() - new Date(batch.receivedAt).getTime();
+                            const ageDays = Math.floor(ageMs / 86400000);
+                            const isOld = ageDays > 30 && effectiveMethod === "LIFO";
+                            const isBackfill = batch.source === "BACKFILL";
+                            return (
+                              <tr key={batch.id} className={`border-b last:border-b-0 border-shark-50 dark:border-shark-800 ${isNext ? "bg-action-50/30 dark:bg-action-500/5" : ""}`}>
+                                <td className="px-3 py-2 text-shark-600 dark:text-shark-400">
+                                  {isBackfill
+                                    ? <span className="text-shark-400 italic">Legacy stock</span>
+                                    : new Date(batch.receivedAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
+                                  {isNext && <span className="ml-1.5 text-[10px] font-bold text-action-600 bg-action-100 px-1.5 py-0.5 rounded-full">Next</span>}
+                                </td>
+                                <td className="px-3 py-2 text-shark-500 capitalize">{batch.source.replace(/_/g, " ").toLowerCase()}</td>
+                                <td className="px-3 py-2 text-right text-shark-700 dark:text-shark-300">{batch.quantityAdded}</td>
+                                <td className={`px-3 py-2 text-right font-semibold ${isOld ? "text-red-600" : "text-shark-800 dark:text-shark-200"}`}>
+                                  {batch.quantityRemaining}
+                                  {isOld && <span className="ml-1 text-[10px] text-red-500">⚠ {ageDays}d</span>}
+                                </td>
+                                {batches.some(b => b.unitCost !== null) && (
+                                  <td className="px-3 py-2 text-right text-shark-500">
+                                    {batch.unitCost !== null ? `$${batch.unitCost.toFixed(2)}` : "—"}
+                                  </td>
+                                )}
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="flex justify-between text-xs px-1">
+                    <span className="text-shark-400">Total remaining across all batches</span>
+                    <span className="font-semibold text-shark-800 dark:text-shark-200">{batches.reduce((s, b) => s + b.quantityRemaining, 0)} {c.unitType}</span>
+                  </div>
+                </div>
               )}
             </div>
           );

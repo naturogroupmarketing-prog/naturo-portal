@@ -10,6 +10,7 @@ import { createNotification, notifyAdminsAndManagers } from "@/lib/notifications
 import { revalidatePath } from "next/cache";
 import { withAuth, validateForm } from "@/lib/action-utils";
 import { createConsumableSchema, addStockSchema } from "@/lib/validations";
+import { addBatch, consumeFromBatches } from "@/lib/inventory-engine";
 
 export async function createConsumable(formData: FormData) {
   const session = await withAuth();
@@ -41,6 +42,20 @@ export async function createConsumable(formData: FormData) {
       notes: notes || null,
     },
   });
+
+  // Create initial batch if opening stock > 0
+  if (quantityOnHand > 0) {
+    await addBatch(
+      consumable.id,
+      organizationId,
+      quantityOnHand,
+      "STOCK_ADD",
+      session.user.id,
+      db,
+      unitCost ?? undefined,
+      "Opening stock on supply creation"
+    );
+  }
 
   await createAuditLog({
     action: "CONSUMABLE_CREATED",
@@ -80,6 +95,10 @@ export async function updateConsumable(formData: FormData) {
   const notes = (formData.get("notes") as string)?.trim();
   const imageUrl = formData.get("imageUrl") as string | null;
   const quantityRaw = formData.get("quantityOnHand") as string | null;
+  const inventoryMethodRaw = (formData.get("inventoryMethod") as string)?.trim() || null;
+  const inventoryMethod = inventoryMethodRaw === "FIFO" || inventoryMethodRaw === "LIFO"
+    ? inventoryMethodRaw
+    : null;
 
   if (!consumableId) throw new Error("Supply ID is required");
   if (!name) throw new Error("Name is required");
@@ -127,6 +146,7 @@ export async function updateConsumable(formData: FormData) {
       shopUrl: shopUrl || null,
       unitCost: parsedUnitCost !== null && !isNaN(parsedUnitCost) ? parsedUnitCost : null,
       notes: notes || null,
+      inventoryMethod, // null = inherit org default
       ...(imageUrl !== null ? { imageUrl: imageUrl || null } : {}),
       ...stockUpdate,
     },
@@ -182,9 +202,21 @@ export async function addStock(formData: FormData) {
     throw new Error("Cannot manage this region");
   }
 
-  await db.consumable.update({
-    where: { id: consumableId },
-    data: { quantityOnHand: { increment: quantity } },
+  await db.$transaction(async (tx) => {
+    await tx.consumable.update({
+      where: { id: consumableId },
+      data: { quantityOnHand: { increment: quantity } },
+    });
+    // Create a new batch layer — used for LIFO/FIFO consumption ordering
+    await addBatch(
+      consumableId,
+      organizationId,
+      quantity,
+      "STOCK_ADD",
+      session.user.id,
+      tx,
+      consumable.unitCost ?? undefined
+    );
   });
 
   await createAuditLog({
@@ -197,7 +229,6 @@ export async function addStock(formData: FormData) {
   });
 
   revalidatePath("/consumables");
-  revalidatePath("/inventory");
   revalidatePath("/inventory");
   return { success: true };
 }
@@ -229,16 +260,32 @@ export async function deductStock(formData: FormData) {
     throw new Error(`Cannot deduct ${quantity} — only ${consumable.quantityOnHand} ${consumable.unitType} in stock`);
   }
 
-  // Atomic: only deduct if sufficient stock (prevents race condition)
-  const updated = await db.consumable.updateMany({
-    where: { id: consumableId, quantityOnHand: { gte: quantity } },
-    data: { quantityOnHand: { decrement: quantity } },
+  // Atomic: deduct stock + consume from batch layers in one transaction
+  let afterUpdateQty: number = consumable.quantityOnHand - quantity;
+
+  await db.$transaction(async (tx) => {
+    const updated = await tx.consumable.updateMany({
+      where: { id: consumableId, quantityOnHand: { gte: quantity } },
+      data: { quantityOnHand: { decrement: quantity } },
+    });
+    if (updated.count === 0) {
+      throw new Error("Insufficient stock — another operation may have reduced it. Please try again.");
+    }
+    // Consume from LIFO/FIFO batch layers
+    await consumeFromBatches(
+      consumableId,
+      organizationId,
+      quantity,
+      "DIRECT_DEDUCT",
+      session.user.id,
+      tx
+    );
+    const after = await tx.consumable.findUnique({
+      where: { id: consumableId },
+      select: { quantityOnHand: true },
+    });
+    if (after) afterUpdateQty = after.quantityOnHand;
   });
-  if (updated.count === 0) {
-    throw new Error("Insufficient stock — another operation may have reduced it. Please try again.");
-  }
-  const afterUpdate = await db.consumable.findUnique({ where: { id: consumableId } });
-  if (!afterUpdate) throw new Error("Supply not found");
 
   await createAuditLog({
     action: "CONSUMABLE_STOCK_REDUCED",
@@ -246,7 +293,7 @@ export async function deductStock(formData: FormData) {
     performedById: session.user.id,
     consumableId,
     organizationId,
-    metadata: { quantity, previousQty: consumable.quantityOnHand, newQty: afterUpdate.quantityOnHand, reason },
+    metadata: { quantity, previousQty: consumable.quantityOnHand, newQty: afterUpdateQty, reason },
   });
 
   // Trigger low stock alert + auto-PO if below threshold
@@ -521,13 +568,23 @@ export async function issueConsumable(formData: FormData) {
       data: { quantityOnHand: { decrement: request.quantity } },
     });
     // Create assignment so staff sees it in their consumables
-    await tx.consumableAssignment.create({
+    const assignment = await tx.consumableAssignment.create({
       data: {
         consumableId: request.consumableId,
         userId: request.userId,
         quantity: request.quantity,
       },
     });
+    // Consume from LIFO/FIFO batch layers
+    await consumeFromBatches(
+      request.consumableId,
+      request.consumable.organizationId,
+      request.quantity,
+      "REQUEST_ISSUE",
+      session.user.id,
+      tx,
+      assignment.id
+    );
   });
 
   // Check for low stock — alerts managers/admins + creates AI purchase order
@@ -688,19 +745,34 @@ export async function assignConsumable(formData: FormData) {
     throw new Error("Staff can only be assigned items from their region");
   }
 
-  // Atomic stock deduction — WHERE prevents negative stock from race conditions
-  const updated = await db.consumable.updateMany({
-    where: { id: consumableId, quantityOnHand: { gte: quantity } },
-    data: { quantityOnHand: { decrement: quantity } },
+  // Atomic: deduct stock + create assignment + consume from batch layers
+  let assignmentId: string | null = null;
+
+  await db.$transaction(async (tx) => {
+    const updated = await tx.consumable.updateMany({
+      where: { id: consumableId, quantityOnHand: { gte: quantity } },
+      data: { quantityOnHand: { decrement: quantity } },
+    });
+    if (updated.count === 0) {
+      throw new Error("Insufficient stock — another operation may have reduced it");
+    }
+    const assignment = await tx.consumableAssignment.create({
+      data: { consumableId, userId, quantity },
+    });
+    assignmentId = assignment.id;
+    // Consume from LIFO/FIFO batch layers
+    await consumeFromBatches(
+      consumableId,
+      organizationId,
+      quantity,
+      "ASSIGNMENT",
+      session.user.id,
+      tx,
+      assignment.id
+    );
   });
 
-  if (updated.count === 0) {
-    throw new Error("Insufficient stock — another operation may have reduced it");
-  }
-
-  await db.consumableAssignment.create({
-    data: { consumableId, userId, quantity },
-  });
+  void assignmentId; // used inside tx, referenced to avoid TS warning
 
   // Auto-close any pending/approved requests from this user for this consumable
   await db.consumableRequest.updateMany({
