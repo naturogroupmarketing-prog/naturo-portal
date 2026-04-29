@@ -1292,6 +1292,7 @@ export default async function DashboardPage() {
     quickLinks,
     preferences,
     subtitle: isSuperAdmin ? "All locations overview" : "Your region overview",
+    userName: session.user.name ?? undefined,
     regionBreakdown,
     assetStatusChart,
     categoryChart,

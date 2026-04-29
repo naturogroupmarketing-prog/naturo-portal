@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +19,9 @@ import { AiForecastWidget, type DepletionForecastItem } from "./ai-forecast-widg
 import { RecentActivityWidget, type RecentActivityItem } from "./recent-activity-widget";
 import { SmartReorderPanel, type ReorderRecommendation } from "./smart-reorder-panel";
 import { AssetHealthWidget } from "./asset-health-widget";
+import { DashboardGreeting } from "./dashboard-greeting";
+import { SmartInsightsTicker, type SmartInsight } from "./smart-insights-ticker";
+import { SystemHealthBar } from "./system-health-bar";
 
 // Lazy-load recharts components
 const AreaChart = dynamic(() => import("recharts").then((m) => m.AreaChart), { ssr: false });
@@ -187,6 +190,7 @@ interface Props {
   quickLinks: QuickLink[];
   preferences: DashboardPreferences;
   subtitle: string;
+  userName?: string;
   regionBreakdown?: RegionBreakdownItem[];
   assetStatusChart?: ChartItem[];
   categoryChart?: ChartItem[];
@@ -233,7 +237,7 @@ function fmtAUD(n: number) {
   return n.toLocaleString("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
 }
 
-export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, briefingWidget, assetHealthSummary = null }: Props) {
+export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, userName, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, briefingWidget, assetHealthSummary = null }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Register the dashboard settings action with the bottom-nav cog
   useRegisterPageCog(() => setSettingsOpen(true), []);
@@ -272,6 +276,72 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   const showAiForecast = !h.includes("ai-forecast");
   const showRecentActivity = !h.includes("recent-activity");
 
+  // ── Smart insights: generated from real data, rotate in the ticker ──────────
+  const insights = useMemo<SmartInsight[]>(() => {
+    const list: SmartInsight[] = [];
+    const ops = operationsOverview;
+
+    if (ops) {
+      const { healthScore, overdueReturns, lowStockCount, unresolvedDamage, pendingRequests, totalStaff } = ops;
+
+      if (healthScore >= 90) {
+        list.push({ text: `System running at ${healthScore}% health — all operations are nominal`, type: "success" });
+      } else if (healthScore >= 70) {
+        list.push({ text: `System health at ${healthScore}% — a few items need attention to get back to full efficiency`, type: "warning" });
+      } else {
+        list.push({ text: `System health at ${healthScore}% — multiple issues are affecting operations`, type: "warning" });
+      }
+
+      if (overdueReturns > 0) {
+        list.push({ text: `${overdueReturns} asset${overdueReturns !== 1 ? "s" : ""} overdue for return — follow up with staff to close these out`, type: "warning" });
+      }
+
+      if (lowStockCount > 0) {
+        list.push({ text: `${lowStockCount} item${lowStockCount !== 1 ? "s" : ""} below minimum stock threshold — consider raising purchase orders`, type: "warning" });
+      }
+
+      if (unresolvedDamage > 0) {
+        list.push({ text: `${unresolvedDamage} unresolved damage or loss report${unresolvedDamage !== 1 ? "s" : ""} pending review`, type: "warning" });
+      }
+
+      if (pendingRequests === 0 && lowStockCount === 0 && overdueReturns === 0) {
+        list.push({ text: "No pending requests or stock issues — great day to focus on forward planning", type: "success" });
+      }
+
+      if (totalStaff > 0) {
+        list.push({ text: `${totalStaff} active staff member${totalStaff !== 1 ? "s" : ""} across your operations`, type: "info" });
+      }
+    }
+
+    if (predictedShortages.length > 0) {
+      const critical = predictedShortages.filter((s) => s.riskLevel === "critical");
+      if (critical.length > 0) {
+        const first = critical[0];
+        const days = first.daysRemaining;
+        list.push({
+          text: `${first.name} predicted to run out${days != null ? ` in ${days} day${days !== 1 ? "s" : ""}` : " soon"} at current usage rate`,
+          type: "warning",
+        });
+      }
+    }
+
+    if (recentAnomalyCount > 0) {
+      list.push({
+        text: `${recentAnomalyCount} unusual consumption pattern${recentAnomalyCount !== 1 ? "s" : ""} detected — review the AI forecast for details`,
+        type: "tip",
+      });
+    }
+
+    if (reorderRecommendations.length > 0) {
+      list.push({
+        text: `${reorderRecommendations.length} AI reorder suggestion${reorderRecommendations.length !== 1 ? "s" : ""} ready — automate restocking before stock runs low`,
+        type: "tip",
+      });
+    }
+
+    return list;
+  }, [operationsOverview, predictedShortages, recentAnomalyCount, reorderRecommendations]);
+
   const handleRemoveShortcut = (id: string) => {
     startTransition(async () => {
       await removeCustomShortcut(id);
@@ -292,6 +362,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {showOnboarding && <OnboardingOverlay onComplete={completeOnboarding} />}
 
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
+
+      {/* ── ZONE 1: COMMAND LAYER ─────────────────────────────────────── */}
+      {/* Dynamic greeting + live attention status */}
+      <DashboardGreeting
+        userName={userName}
+        attentionCount={actionItems.length}
+        criticalCount={actionItems.filter((i) => i.priority === "critical").length}
+        healthScore={operationsOverview?.healthScore ?? 100}
+      />
 
       {/* Mobile action panel — shown inline on smaller screens, hidden on md+ where it sits next to Finance */}
       {actionItems.length > 0 && (
@@ -314,6 +393,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* AI Briefing — rendered here so it sits below the settings cog */}
       {briefingWidget}
+
+      {/* ── ZONE 2: CONTROL LAYER — Smart Insights Ticker ────────────── */}
+      {insights.length > 0 && <SmartInsightsTicker insights={insights} />}
 
       {preferences.sectionOrder.map((sectionId) => {
         switch (sectionId) {
@@ -997,6 +1079,18 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             </div>
           </div>
         </Card>
+      )}
+
+      {/* ── ZONE 3: MOMENTUM LAYER — System Performance ───────────────── */}
+      {operationsOverview && (
+        <SystemHealthBar
+          healthScore={operationsOverview.healthScore}
+          lowStockCount={operationsOverview.lowStockCount}
+          overdueReturns={operationsOverview.overdueReturns}
+          pendingRequests={operationsOverview.pendingRequests}
+          totalStaff={operationsOverview.totalStaff}
+          unresolvedDamage={operationsOverview.unresolvedDamage}
+        />
       )}
 
       {/* Settings Modal */}
