@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 
-const STORAGE_KEY = "naturo-install-dismissed-at-v2";
-const DISMISS_DAYS = 14;
+// Dismissed only for this browser session — resets every time the app is opened fresh
+const SESSION_KEY = "naturo-install-dismissed-session";
 
 type Platform = "android" | "ios" | "desktop" | null;
 
@@ -26,18 +26,12 @@ function isStandalone(): boolean {
   );
 }
 
-function isDismissed(): boolean {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    return Date.now() - Number(raw) < DISMISS_DAYS * 24 * 60 * 60 * 1000;
-  } catch {
-    return false;
-  }
+function isDismissedThisSession(): boolean {
+  try { return sessionStorage.getItem(SESSION_KEY) === "1"; } catch { return false; }
 }
 
-function saveDismiss() {
-  try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch {}
+function saveDismissSession() {
+  try { sessionStorage.setItem(SESSION_KEY, "1"); } catch {}
 }
 
 export function InstallPrompt() {
@@ -50,7 +44,7 @@ export function InstallPrompt() {
   const promptRef = useRef<any>(null);
 
   useEffect(() => {
-    if (isStandalone() || isDismissed()) return;
+    if (isStandalone() || isDismissedThisSession()) return;
 
     const plt = detectPlatform();
     setPlatform(plt);
@@ -118,7 +112,7 @@ export function InstallPrompt() {
   };
 
   const handleDismiss = () => {
-    saveDismiss();
+    saveDismissSession();
     setVisible(false);
   };
 
