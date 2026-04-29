@@ -148,15 +148,15 @@ export function AiBriefingClient({
           </div>
         </button>
 
-        {/* Attention badge — separate tap target; fires the actions panel toggle */}
+        {/* Attention badge — tapping collapses/expands the action panel */}
         {attentionCount > 0 && (
           <button
             onClick={handleToggleActions}
             className={cn(
-              "flex items-center gap-1 px-2 py-1 rounded-lg border text-[10px] font-semibold shrink-0 transition-colors",
+              "flex items-center gap-1 px-2 py-1 rounded-lg border text-[10px] font-semibold shrink-0 transition-colors active:scale-95",
               badgeStyle,
             )}
-            aria-label={isCritical ? `${criticalCount} critical items need attention` : `${attentionCount} items need attention`}
+            aria-label={isCritical ? `${criticalCount} critical items — tap to dismiss` : `${attentionCount} items — tap to dismiss`}
           >
             <span className={cn("w-1.5 h-1.5 rounded-full shrink-0 animate-pulse", dotColor)} />
             {isCritical ? `${criticalCount} critical` : `${attentionCount} items`}

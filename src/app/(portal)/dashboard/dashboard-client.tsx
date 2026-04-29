@@ -238,7 +238,8 @@ function fmtAUD(n: number) {
 
 export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, userName, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, briefingWidget, assetHealthSummary = null }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [actionsOpen, setActionsOpen] = useState(false);
+  // Open immediately when there are action items so users see them without extra taps
+  const [actionsOpen, setActionsOpen] = useState(() => actionItems.length > 0);
   // Register the dashboard settings action with the bottom-nav cog
   useRegisterPageCog(() => setSettingsOpen(true), []);
 
