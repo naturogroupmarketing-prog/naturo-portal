@@ -28,9 +28,10 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/trackio_t_logo.svg", type: "image/svg+xml" },
     ],
-    apple: "/trackio_t_logo.svg",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     type: "website",
@@ -92,7 +93,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/trackio_t_logo.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/trackio_t_logo.svg" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#f5f5f5" />
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {

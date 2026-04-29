@@ -3,9 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 
-// Dismissed only for this browser session — resets every time the app is opened fresh
-const SESSION_KEY = "naturo-install-dismissed-session";
-
 type Platform = "android" | "ios" | "desktop" | null;
 
 function detectPlatform(): Platform {
@@ -13,8 +10,7 @@ function detectPlatform(): Platform {
   const ua = navigator.userAgent;
   const isIOS = /iphone|ipad|ipod/i.test(ua) && !(window as any).MSStream;
   if (isIOS) return "ios";
-  const isAndroid = /android/i.test(ua);
-  if (isAndroid) return "android";
+  if (/android/i.test(ua)) return "android";
   return "desktop";
 }
 
@@ -26,61 +22,51 @@ function isStandalone(): boolean {
   );
 }
 
-function isDismissedThisSession(): boolean {
-  try { return sessionStorage.getItem(SESSION_KEY) === "1"; } catch { return false; }
-}
-
-function saveDismissSession() {
-  try { sessionStorage.setItem(SESSION_KEY, "1"); } catch {}
-}
-
 export function InstallPrompt() {
-  const [platform, setPlatform]       = useState<Platform>(null);
+  const [platform, setPlatform]   = useState<Platform>(null);
   const [deferredPrompt, setDeferred] = useState<any>(null);
-  const [visible, setVisible]         = useState(false);
-  const [showSteps, setShowSteps]     = useState(false);
-  const [installed, setInstalled]     = useState(false);
-  // Ref so the fallback timer can see whether the event was captured
+  const [visible, setVisible]     = useState(false);
+  const [showSteps, setShowSteps] = useState(false);
+  const [installed, setInstalled] = useState(false);
+  // Ref so async callbacks can read the latest deferred prompt
   const promptRef = useRef<any>(null);
 
   useEffect(() => {
-    if (isStandalone() || isDismissedThisSession()) return;
+    // Never show when already running as installed PWA
+    if (isStandalone()) return;
 
     const plt = detectPlatform();
     setPlatform(plt);
 
-    // ── iOS: can't trigger native prompt, just show instructions ────────────
+    // ── iOS Safari: no beforeinstallprompt — show manual steps ──────────────
     if (plt === "ios") {
-      setTimeout(() => setVisible(true), 2500);
-      return;
+      const t = setTimeout(() => setVisible(true), 1500);
+      return () => clearTimeout(t);
     }
 
     // ── Android / Desktop ────────────────────────────────────────────────────
-    // The beforeinstallprompt event often fires BEFORE React hydrates.
-    // layout.tsx captures it into window.__pwaPrompt as early as possible.
-    const alreadyCaptured = (window as any).__pwaPrompt;
-    if (alreadyCaptured) {
-      promptRef.current = alreadyCaptured;
-      setDeferred(alreadyCaptured);
-      setTimeout(() => setVisible(true), 2000);
+    // layout.tsx captures the event into window.__pwaPrompt before React hydrates
+    const captured = (window as any).__pwaPrompt;
+    if (captured) {
+      promptRef.current = captured;
+      setDeferred(captured);
+      setTimeout(() => setVisible(true), 1500);
     }
 
-    // Also listen in case it fires later (e.g. after a delay on some browsers)
+    // Also listen in case the event fires after hydration
     const handler = (e: Event) => {
       e.preventDefault();
       (window as any).__pwaPrompt = e;
       promptRef.current = e;
       setDeferred(e);
-      // Only show if not already visible from the early-capture path
       setVisible(true);
     };
     window.addEventListener("beforeinstallprompt", handler);
 
-    // Fallback: if neither path fired after 7 s, show manual instructions anyway
-    // (covers browsers that support PWA install but don't fire the event reliably)
+    // Fallback: show manual instructions if no native prompt after 5 s
     const fallback = setTimeout(() => {
       if (!promptRef.current) setVisible(true);
-    }, 7000);
+    }, 5000);
 
     window.addEventListener("appinstalled", () => {
       setInstalled(true);
@@ -93,11 +79,12 @@ export function InstallPrompt() {
     };
   }, []);
 
+  // Nothing to show yet, or platform not detected
   if (!visible || !platform) return null;
 
   const handleInstall = async () => {
-    // No native prompt available (iOS, or browser that skips the event) — show steps
     if (!deferredPrompt) {
+      // iOS or browser without native prompt — show step-by-step
       setShowSteps(true);
       return;
     }
@@ -111,25 +98,21 @@ export function InstallPrompt() {
     promptRef.current = null;
   };
 
-  const handleDismiss = () => {
-    saveDismissSession();
-    setVisible(false);
-  };
+  // Dismiss = hide for this page session only (no storage — reappears on next load)
+  const handleDismiss = () => setVisible(false);
 
-  // Position above the mobile bottom nav (4 rem) + safe-area inset + gap.
-  // On desktop (no nav) this just sits ~88 px from the bottom — perfectly fine.
+  // Sits above the mobile bottom nav + safe-area notch; fine on desktop too
   const bottomStyle = "calc(4rem + env(safe-area-inset-bottom, 0px) + 1.25rem)";
-
   const isIOS = platform === "ios";
 
   return (
     <div
       className="fixed left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-2rem)] max-w-md"
-      style={{ bottom: bottomStyle, pointerEvents: "auto" }}
+      style={{ bottom: bottomStyle }}
     >
       <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden">
 
-        {/* ── Installed confirmation ── */}
+        {/* ── App installed confirmation ── */}
         {installed ? (
           <div className="px-5 py-4 flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
@@ -141,7 +124,7 @@ export function InstallPrompt() {
             </div>
           </div>
 
-        /* ── Step-by-step instructions (iOS or fallback) ── */
+        /* ── Step-by-step install instructions ── */
         ) : showSteps ? (
           <div className="px-5 py-4 space-y-3">
             <div className="flex items-center justify-between">
@@ -189,7 +172,7 @@ export function InstallPrompt() {
             </button>
           </div>
 
-        /* ── Main install prompt ── */
+        /* ── Main prompt banner ── */
         ) : (
           <div className="px-5 py-4 flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-action-600 flex items-center justify-center shrink-0">
@@ -197,7 +180,7 @@ export function InstallPrompt() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-shark-900 dark:text-shark-100 truncate">Install Trackio</p>
+              <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Install Trackio</p>
               <p className="text-xs text-shark-400 leading-snug">
                 {isIOS
                   ? "Add to your home screen for quick access"
