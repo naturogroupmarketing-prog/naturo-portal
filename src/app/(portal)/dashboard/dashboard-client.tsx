@@ -8,6 +8,7 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import dynamic from "next/dynamic";
 import { DashboardSettingsModal } from "./dashboard-settings-modal";
+import { useRegisterPageCog } from "@/components/layout/page-cog-context";
 import { OnboardingOverlay } from "@/components/ui/onboarding";
 import { PageTransition, StaggerContainer, StaggerItem } from "@/components/ui/page-transition";
 import { OperationsWidget } from "./widgets/operations-widget";
@@ -234,6 +235,8 @@ function fmtAUD(n: number) {
 
 export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, briefingWidget, assetHealthSummary = null }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Register the dashboard settings action with the bottom-nav cog
+  useRegisterPageCog(() => setSettingsOpen(true), []);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
     // Auto-collapse regions with no actionable items

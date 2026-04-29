@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import type { Role } from "@/generated/prisma/browser";
+import { usePageCog } from "./page-cog-context";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -29,44 +30,39 @@ export interface BottomNavProps {
   pendingReturnsCount?: number;
 }
 
-// ─── Nav items per role (always 4 — 2 left of FAB, 2 right) ─────────────────
+// ─── Nav items per role (3 links — 2 left of FAB, 1 right; cog takes 4th slot) ──
 
 function getNavItems(role: Role, po: number, returns: number): NavItem[] {
   switch (role) {
     case "STAFF":
       return [
-        { label: "Home",     href: "/dashboard",          icon: "dashboard" },
-        { label: "Assets",   href: "/my-assets",          icon: "package" },
-        { label: "Supplies", href: "/my-consumables",     icon: "droplet" },
-        { label: "Profile",  href: "/settings",           icon: "user" },
+        { label: "Home",     href: "/dashboard",      icon: "dashboard" },
+        { label: "Assets",   href: "/my-assets",      icon: "package" },
+        { label: "Supplies", href: "/my-consumables", icon: "droplet" },
       ];
     case "SUPER_ADMIN":
       return [
-        { label: "Home",   href: "/dashboard",         icon: "dashboard" },
-        { label: "Stock",  href: "/inventory",         icon: "droplet" },
-        { label: "Orders", href: "/purchase-orders",   icon: "truck",       badge: po },
-        { label: "Profile", href: "/settings",         icon: "user" },
+        { label: "Home",   href: "/dashboard",       icon: "dashboard" },
+        { label: "Stock",  href: "/inventory",       icon: "droplet" },
+        { label: "Orders", href: "/purchase-orders", icon: "truck", badge: po },
       ];
     case "BRANCH_MANAGER":
       return [
         { label: "Home",    href: "/dashboard",  icon: "dashboard" },
         { label: "Stock",   href: "/consumables", icon: "droplet" },
         { label: "Returns", href: "/returns",    icon: "arrow-left", badge: returns },
-        { label: "Profile", href: "/settings",   icon: "user" },
       ];
     case "AUDITOR":
       return [
         { label: "Home",     href: "/dashboard", icon: "dashboard" },
         { label: "Reports",  href: "/reports",   icon: "clipboard" },
         { label: "Activity", href: "/activity",  icon: "clock" },
-        { label: "Profile",  href: "/settings",  icon: "user" },
       ];
     default:
       return [
         { label: "Home",     href: "/dashboard",      icon: "dashboard" },
         { label: "Assets",   href: "/my-assets",      icon: "package" },
         { label: "Supplies", href: "/my-consumables", icon: "droplet" },
-        { label: "Profile",  href: "/settings",       icon: "user" },
       ];
   }
 }
@@ -125,6 +121,8 @@ const DEFAULT_QUICK_ACTIONS: QuickAction[] = [
 
 export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: BottomNavProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { cogAction } = usePageCog();
   const [fabOpen, setFabOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -144,7 +142,15 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
 
   const allItems = getNavItems(role, pendingPOCount, pendingReturnsCount);
   const leftItems  = allItems.slice(0, 2);
-  const rightItems = allItems.slice(2, 4);
+  const rightItems = allItems.slice(2, 3); // 1 link on the right; cog takes the 4th slot
+
+  const handleCogTap = () => {
+    if (cogAction) {
+      cogAction();
+    } else {
+      router.push("/settings");
+    }
+  };
 
   // Pick quick actions for the current page
   const matchedKey = Object.keys(PAGE_QUICK_ACTIONS).find((p) => pathname.startsWith(p));
@@ -230,10 +236,23 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
             )}
           </div>
 
-          {/* Right items */}
+          {/* Right link */}
           {rightItems.map((item) => (
             <NavButton key={item.href} item={item} pathname={pathname} />
           ))}
+
+          {/* Cog — context-aware page settings */}
+          <button
+            onClick={handleCogTap}
+            aria-label="Page settings"
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 flex-1 px-1 transition-colors",
+              cogAction ? "text-action-500" : "text-shark-400 dark:text-shark-500"
+            )}
+          >
+            <Icon name="settings" size={20} />
+            <span className="text-[10px] font-medium leading-none">Settings</span>
+          </button>
         </div>
       </nav>
 
