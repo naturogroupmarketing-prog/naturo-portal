@@ -95,7 +95,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
   ].filter((i) => i.value > 0);
 
   return (
-    <Card className="border-action-100">
+    <Card className="border-action-100 h-full">
       <div className="p-4 sm:p-5">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">

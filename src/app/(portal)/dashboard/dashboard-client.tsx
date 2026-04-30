@@ -397,12 +397,12 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {(operationsOverview || actionItems.length > 0) && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {operationsOverview && showOperations && (
-            <div className={actionItems.length > 0 ? "lg:col-span-2" : "lg:col-span-3"}>
+            <div className={`flex flex-col ${actionItems.length > 0 ? "lg:col-span-2" : "lg:col-span-3"}`}>
               <OperationsWidget data={operationsOverview} />
             </div>
           )}
           {actionItems.length > 0 && (
-            <div className={operationsOverview && showOperations ? "lg:col-span-1" : "lg:col-span-3"}>
+            <div className={`flex flex-col ${operationsOverview && showOperations ? "lg:col-span-1" : "lg:col-span-3"}`}>
               <SmartActionsPanel items={actionItems} />
             </div>
           )}
