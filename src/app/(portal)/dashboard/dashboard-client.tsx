@@ -364,17 +364,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* ── Hero Banner ───────────────────────────────────────────── */}
       <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: 172 }}>
-        {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#001832] via-[#003d7d] to-[#1a73e0]" />
-        {/* Subtle grid overlay */}
-        <div className="absolute inset-0" style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }} />
-        {/* Soft radial glow right side */}
-        <div className="absolute top-0 right-0 w-72 h-full pointer-events-none" style={{
-          background: "radial-gradient(ellipse at 80% 30%, rgba(96,165,250,0.22) 0%, transparent 65%)",
-        }} />
+        {/* Hero image */}
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.png')" }} />
+        {/* Dark gradient overlay so text is always readable */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#001832]/90 via-[#003d7d]/70 to-transparent" />
         {/* Content */}
         <div className="relative px-6 py-6 sm:px-8 sm:py-7">
           <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1 mb-4 w-fit">
