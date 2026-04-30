@@ -63,7 +63,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
   }
 
   return (
-    <div className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+    <div className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-2xl shadow-sm overflow-hidden flex flex-col flex-1">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-shark-100 dark:border-shark-800">
         <span className="text-sm font-bold text-shark-900 dark:text-shark-100">Priority Alerts</span>
