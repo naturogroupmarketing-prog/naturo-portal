@@ -19,16 +19,19 @@ const PRIORITY_CONFIG = {
     dot: "bg-red-500",
     badge: "bg-red-50 text-red-600 border border-red-100",
     label: "Urgent",
+    border: "border-l-[3px] border-l-red-500",
   },
   urgent: {
     dot: "bg-amber-400",
     badge: "bg-amber-50 text-amber-600 border border-amber-100",
     label: "Attention",
+    border: "border-l-[3px] border-l-amber-400",
   },
   normal: {
     dot: "bg-blue-400",
     badge: "bg-blue-50 text-blue-600 border border-blue-100",
     label: "To do",
+    border: "border-l-[3px] border-l-blue-400",
   },
 };
 
@@ -148,7 +151,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="flex items-start gap-3 px-4 py-3.5 hover:bg-shark-25 transition-colors group"
+                  className={`flex items-start gap-3 px-4 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/60 transition-colors group ${config.border}`}
                 >
                   {/* Priority dot */}
                   <span

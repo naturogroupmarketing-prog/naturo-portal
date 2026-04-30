@@ -30,7 +30,7 @@
   --color-gold-900: #5f4514;
 
   /* ClickUp-inspired neutrals */
-  --color-shark-50: #f6f6f7;
+  --color-shark-50: #f9f9fb;
   --color-shark-100: #e2e3e5;
   --color-shark-200: #c5c7cb;
   --color-shark-300: #8b8f96;
@@ -42,18 +42,18 @@
   --color-shark-900: #292d34;
   --color-shark-950: #1a1c21;
 
-  /* Action blue — matches logo #1113d4 */
-  --color-action-50: #eeeffe;
-  --color-action-100: #d5d7fc;
-  --color-action-200: #aaabf9;
-  --color-action-300: #7f81f5;
-  --color-action-400: #5456ef;
-  --color-action-500: #1113d4;
-  --color-action-600: #0f10be;
-  --color-action-700: #0c0da7;
-  --color-action-800: #090a8f;
-  --color-action-900: #060778;
-  --color-action-950: #04054d;
+  /* Action blue — corporate navy #004e9f */
+  --color-action-50: #e8f1fc;
+  --color-action-100: #c4dcf9;
+  --color-action-200: #89b9f0;
+  --color-action-300: #4d96e8;
+  --color-action-400: #1a73e0;
+  --color-action-500: #004e9f;
+  --color-action-600: #003d7d;
+  --color-action-700: #002d5c;
+  --color-action-800: #001e3c;
+  --color-action-900: #000f1e;
+  --color-action-950: #00070f;
 }
 
 .font-exo {
@@ -420,6 +420,13 @@ a, button, [role="button"], input, select, textarea, label {
   border-radius: 0.75rem;
   overflow: hidden;
   position: relative;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+:where(.dark) .ai-card-inner {
+  background: rgba(26, 28, 33, 0.80);
 }
 
 /* ── Dark mode automatic text contrast ──
