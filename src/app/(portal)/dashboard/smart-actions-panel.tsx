@@ -63,7 +63,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
   }
 
   return (
-    <div className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-2xl shadow-sm overflow-hidden flex flex-col flex-1">
+    <div className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-shark-100 dark:border-shark-800">
         <span className="text-sm font-bold text-shark-900 dark:text-shark-100">Priority Alerts</span>
@@ -93,7 +93,7 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
           <p className="text-xs text-shark-400 mt-1">No outstanding alerts right now</p>
         </div>
       ) : (
-        <div className="divide-y divide-shark-50 dark:divide-shark-800 overflow-y-auto flex-1" style={{ maxHeight: 480 }}>
+        <div className="divide-y divide-shark-50 dark:divide-shark-800 overflow-y-auto flex-1">
           {items.map((item) => {
             const borderColor =
               item.priority === "critical"

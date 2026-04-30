@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo, useEffect } from "react";
+import { useState, useTransition, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -240,6 +240,16 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Register the dashboard settings action with the bottom-nav cog
   useRegisterPageCog(() => setSettingsOpen(true), []);
+
+  // Sync Priority Alerts height to Operations height
+  const opsRef = useRef<HTMLDivElement>(null);
+  const [opsHeight, setOpsHeight] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    if (!opsRef.current) return;
+    const ro = new ResizeObserver(([entry]) => setOpsHeight(Math.round(entry.contentRect.height)));
+    ro.observe(opsRef.current);
+    return () => ro.disconnect();
+  }, []);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
     // Auto-collapse regions with no actionable items
@@ -395,14 +405,17 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* ── Operations + Priority Alerts bento ────────────────────── */}
       {(operationsOverview || actionItems.length > 0) && (
-        <div className="flex flex-col lg:flex-row gap-4 items-stretch">
+        <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
           {operationsOverview && showOperations && (
-            <div className={actionItems.length > 0 ? "lg:flex-[2]" : "w-full"}>
+            <div ref={opsRef} className={actionItems.length > 0 ? "lg:flex-[2]" : "w-full"}>
               <OperationsWidget data={operationsOverview} />
             </div>
           )}
           {actionItems.length > 0 && (
-            <div className={`flex flex-col ${operationsOverview && showOperations ? "lg:flex-1" : "w-full"}`}>
+            <div
+              className={operationsOverview && showOperations ? "lg:flex-1" : "w-full"}
+              style={opsHeight ? { height: opsHeight } : undefined}
+            >
               <SmartActionsPanel items={actionItems} />
             </div>
           )}
