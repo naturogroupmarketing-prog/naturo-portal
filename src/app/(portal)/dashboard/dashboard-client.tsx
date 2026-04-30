@@ -514,7 +514,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <div className="grid grid-cols-2 divide-x divide-shark-50">
                         <div className="px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
-                            <span className="w-2 h-2 rounded-full" style={{ background: "#004e9f" }} />
+                            <span className="w-2 h-2 rounded-full" style={{ background: "#1F3DD9" }} />
                             <span className="text-xs text-shark-500 dark:text-shark-400">Assets</span>
                           </div>
                           <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
@@ -545,8 +545,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <AreaChart data={portfolioChartData} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
                               <defs>
                                 <linearGradient id="gradAssets" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="#004e9f" stopOpacity={0.12} />
-                                  <stop offset="100%" stopColor="#004e9f" stopOpacity={0.01} />
+                                  <stop offset="0%" stopColor="#1F3DD9" stopOpacity={0.12} />
+                                  <stop offset="100%" stopColor="#1F3DD9" stopOpacity={0.01} />
                                 </linearGradient>
                                 <linearGradient id="gradConsumables" x1="0" y1="0" x2="0" y2="1">
                                   <stop offset="0%" stopColor="#E8532E" stopOpacity={0.12} />
@@ -569,7 +569,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                     <div style={{ background: "#1a1c21", borderRadius: 10, padding: "10px 14px", border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
                                       <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
                                       {payload.map((p) => {
-                                        const color = p.dataKey === "assets" ? "#004e9f" : p.dataKey === "consumables" ? "#E8532E" : "#8b8f96";
+                                        const color = p.dataKey === "assets" ? "#1F3DD9" : p.dataKey === "consumables" ? "#E8532E" : "#8b8f96";
                                         const name = p.dataKey === "assets" ? "Assets" : p.dataKey === "consumables" ? "Supplies" : "Depreciation";
                                         return (
                                           <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
@@ -585,7 +585,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   );
                                 }}
                               />
-                              <Area type="monotone" dataKey="assets" stroke="#004e9f" strokeWidth={2} fill="url(#gradAssets)" dot={false} activeDot={{ r: 4, fill: "#004e9f", stroke: "#fff", strokeWidth: 2 }} />
+                              <Area type="monotone" dataKey="assets" stroke="#1F3DD9" strokeWidth={2} fill="url(#gradAssets)" dot={false} activeDot={{ r: 4, fill: "#1F3DD9", stroke: "#fff", strokeWidth: 2 }} />
                               <Area type="monotone" dataKey="consumables" stroke="#E8532E" strokeWidth={2} fill="url(#gradConsumables)" dot={false} activeDot={{ r: 4, fill: "#E8532E", stroke: "#fff", strokeWidth: 2 }} />
                               <Area type="monotone" dataKey="depreciation" stroke="#8b8f96" strokeWidth={1.5} strokeDasharray="4 3" fill="url(#gradDepreciation)" dot={false} activeDot={{ r: 4, fill: "#8b8f96", stroke: "#fff", strokeWidth: 2 }} />
                             </AreaChart>

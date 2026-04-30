@@ -24,7 +24,7 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (animated / 100) * circumference;
-  const color = score >= 80 ? "#004e9f" : score >= 50 ? "#E8532E" : "#ef4444";
+  const color = score >= 80 ? "#1F3DD9" : score >= 50 ? "#E8532E" : "#ef4444";
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(score), 100);
