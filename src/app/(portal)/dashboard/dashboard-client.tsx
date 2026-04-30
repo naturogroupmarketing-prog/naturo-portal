@@ -395,14 +395,14 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* ── Operations + Priority Alerts bento ────────────────────── */}
       {(operationsOverview || actionItems.length > 0) && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-stretch">
           {operationsOverview && showOperations && (
-            <div className={`flex flex-col h-full ${actionItems.length > 0 ? "lg:col-span-2" : "lg:col-span-3"}`}>
+            <div className={actionItems.length > 0 ? "lg:flex-[2]" : "w-full"}>
               <OperationsWidget data={operationsOverview} />
             </div>
           )}
           {actionItems.length > 0 && (
-            <div className={`flex flex-col h-full ${operationsOverview && showOperations ? "lg:col-span-1" : "lg:col-span-3"}`}>
+            <div className={`flex flex-col ${operationsOverview && showOperations ? "lg:flex-1" : "w-full"}`}>
               <SmartActionsPanel items={actionItems} />
             </div>
           )}
