@@ -238,17 +238,8 @@ function fmtAUD(n: number) {
 
 export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, userName, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, briefingWidget, assetHealthSummary = null }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
-  // Open immediately when there are action items so users see them without extra taps
-  const [actionsOpen, setActionsOpen] = useState(() => actionItems.length > 0);
   // Register the dashboard settings action with the bottom-nav cog
   useRegisterPageCog(() => setSettingsOpen(true), []);
-
-  // Listen for toggle events dispatched by the attention badge inside AiBriefingClient
-  useEffect(() => {
-    const handler = () => setActionsOpen((p) => !p);
-    window.addEventListener("dashboard-toggle-actions", handler);
-    return () => window.removeEventListener("dashboard-toggle-actions", handler);
-  }, []);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
     // Auto-collapse regions with no actionable items
@@ -371,35 +362,58 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
-      {/* Settings gear — desktop only; mobile uses the bottom-nav cog */}
-      <div className="hidden lg:flex justify-end">
+      {/* ── Hero Banner ───────────────────────────────────────────── */}
+      <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: 172 }}>
+        {/* Base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#001832] via-[#003d7d] to-[#1a73e0]" />
+        {/* Subtle grid overlay */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: "linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }} />
+        {/* Soft radial glow right side */}
+        <div className="absolute top-0 right-0 w-72 h-full pointer-events-none" style={{
+          background: "radial-gradient(ellipse at 80% 30%, rgba(96,165,250,0.22) 0%, transparent 65%)",
+        }} />
+        {/* Content */}
+        <div className="relative px-6 py-6 sm:px-8 sm:py-7">
+          <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1 mb-4 w-fit">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+            <span className="text-[9px] font-bold text-white/80 tracking-widest uppercase">Enterprise Standard</span>
+          </div>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white uppercase tracking-tight leading-none">
+            Asset &amp; Inventory{" "}<span className="sm:hidden"><br /></span>Management
+          </h1>
+          <p className="text-xs text-white/50 mt-2 font-medium">{subtitle}</p>
+        </div>
+        {/* Settings gear in hero corner */}
         <button
           onClick={() => setSettingsOpen(true)}
-          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-shark-400 hover:text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full bg-white/10 backdrop-blur-sm text-white/60 hover:text-white hover:bg-white/20 transition-colors"
           aria-label="Dashboard settings"
           title="Dashboard settings"
         >
-          <Icon name="settings" size={18} />
+          <Icon name="settings" size={15} />
         </button>
       </div>
 
-      {/* ── TOP BENTO: AI Briefing + Operations side by side ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* AI Briefing — takes 2/3 on desktop */}
-        <div className={operationsOverview && showOperations ? "lg:col-span-2" : "lg:col-span-3"}>
-          {briefingWidget}
-        </div>
-        {/* Operations — takes 1/3 on desktop, stacks below on mobile */}
-        {operationsOverview && showOperations && (
-          <div className="lg:col-span-1">
-            <OperationsWidget data={operationsOverview} />
-          </div>
-        )}
-      </div>
+      {/* ── AI Briefing ────────────────────────────────────────────── */}
+      {briefingWidget}
 
-      {/* Action panel — slides in below the bento when badge is tapped */}
-      {actionsOpen && actionItems.length > 0 && (
-        <SmartActionsPanel items={actionItems} />
+      {/* ── Operations + Priority Alerts bento ────────────────────── */}
+      {(operationsOverview || actionItems.length > 0) && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {operationsOverview && showOperations && (
+            <div className={actionItems.length > 0 ? "lg:col-span-2" : "lg:col-span-3"}>
+              <OperationsWidget data={operationsOverview} />
+            </div>
+          )}
+          {actionItems.length > 0 && (
+            <div className={operationsOverview && showOperations ? "lg:col-span-1" : "lg:col-span-3"}>
+              <SmartActionsPanel items={actionItems} />
+            </div>
+          )}
+        </div>
       )}
 
       {/* ── ZONE 2: CONTROL LAYER — Smart Insights Ticker ────────────── */}
