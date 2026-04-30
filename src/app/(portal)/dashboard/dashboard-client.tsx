@@ -363,13 +363,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
       {/* ── Hero Banner ───────────────────────────────────────────── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: 172 }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: 256 }}>
         {/* Hero image */}
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.png')" }} />
         {/* Dark gradient overlay so text is always readable */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#001832]/90 via-[#003d7d]/70 to-transparent" />
         {/* Content */}
-        <div className="relative px-6 py-6 sm:px-8 sm:py-7">
+        <div className="relative px-8 py-10 sm:px-10 sm:py-12">
           <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1 mb-4 w-fit">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
             <span className="text-[9px] font-bold text-white/80 tracking-widest uppercase">Enterprise Standard</span>
