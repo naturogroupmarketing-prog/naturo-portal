@@ -381,8 +381,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
             <span className="text-[9px] font-bold text-white/80 tracking-widest uppercase">Enterprise Standard</span>
           </div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white uppercase tracking-tight leading-none">
-            Asset &amp; Inventory{" "}<span className="sm:hidden"><br /></span>Management
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            Asset &amp; Inventory Management
           </h1>
           <p className="text-xs text-white/50 mt-2 font-medium">{subtitle}</p>
         </div>
