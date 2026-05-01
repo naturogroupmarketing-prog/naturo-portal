@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo, useEffect, useRef } from "react";
+import { useState, useTransition, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -161,7 +161,7 @@ function QuickActionsBar({ role }: { role: string }) {
         <Link key={action.label} href={action.href} className="block group">
           <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
             <CardContent className="px-3 py-3">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 min-h-[44px]">
                 <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0 group-hover:bg-action-50 transition-colors">
                   <Icon name={action.icon} size={16} className="text-shark-500 dark:text-shark-400 group-hover:text-action-500 transition-colors" />
                 </div>
@@ -245,15 +245,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
   // Register the dashboard settings action with the bottom-nav cog
   useRegisterPageCog(() => setSettingsOpen(true), []);
 
-  // Sync Priority Alerts height to Operations height
-  const opsRef = useRef<HTMLDivElement>(null);
-  const [opsHeight, setOpsHeight] = useState<number | undefined>(undefined);
-  useEffect(() => {
-    if (!opsRef.current) return;
-    const ro = new ResizeObserver(([entry]) => setOpsHeight(Math.round(entry.contentRect.height)));
-    ro.observe(opsRef.current);
-    return () => ro.disconnect();
-  }, []);
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
     // Auto-collapse regions with no actionable items
@@ -428,45 +419,42 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* ── AI Briefing (1/3) | Stat cards stacked (1/3) | Quick Actions (1/3) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:items-start">
-        {/* Col 1 — AI Briefing */}
-        {briefingWidget && <div>{briefingWidget}</div>}
+        {/* Col 1 — AI Briefing + Operations Performance merged */}
+        {(briefingWidget || (operationsOverview && showOperations)) && (
+          <div className="flex flex-col gap-4">
+            {briefingWidget && <div>{briefingWidget}</div>}
+            {operationsOverview && showOperations && (
+              <OperationsWidget data={operationsOverview} />
+            )}
+          </div>
+        )}
 
-        {/* Col 2 — Stat cards stacked + Active Procurement below */}
+        {/* Col 2 — Stat cards (3-across on mobile, stacked on desktop) + Active Procurement */}
         {visibleStats.length > 0 && (
           <StaggerContainer className="flex flex-col gap-2">
+            <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
             {visibleStats.map((s) => (
               <StaggerItem key={s.label}>
-                <Link href={s.href} className="block group">
-                  <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
-                    <CardContent className="px-3 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-9 h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
-                          <Icon name={s.icon} size={16} className={s.iconColor} />
+                <Link href={s.href} className="block group h-full">
+                  <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
+                    <CardContent className="px-2 py-2 lg:px-3 lg:py-3 h-full">
+                      {/* Mobile: vertical compact; Desktop: horizontal */}
+                      <div className="flex flex-col items-center text-center gap-1 lg:flex-row lg:items-center lg:text-left lg:gap-2">
+                        <div className={`w-7 h-7 lg:w-9 lg:h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                          <Icon name={s.icon} size={14} className={s.iconColor} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{s.label}</p>
-                          <div className="flex items-center gap-1">
-                            <AnimatedCounter value={s.value} className="text-xl font-bold text-shark-900 dark:text-shark-100" />
-                            {s.trend && (
-                              <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
-                                s.trend.direction === "down" ? "bg-green-50 text-green-600" :
-                                s.trend.direction === "up" ? "bg-red-50 text-red-500" :
-                                "bg-shark-50 dark:bg-shark-800 text-shark-400"
-                              }`}>
-                                {s.trend.direction === "up" && "↑"}
-                                {s.trend.direction === "down" && "↓"}
-                                {s.trend.label}
-                              </span>
-                            )}
-                          </div>
+                          <p className="text-[9px] lg:text-xs text-shark-500 dark:text-shark-400 truncate leading-tight">{s.label}</p>
+                          <AnimatedCounter value={s.value} className="text-lg lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
                         </div>
-                        <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
+                        <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                       </div>
                     </CardContent>
                   </Card>
                 </Link>
               </StaggerItem>
             ))}
+            </div>
             {/* Active Procurement — same card height as stat cards */}
             {isSuperAdmin && activePOCount > 0 && (
               <StaggerItem>
@@ -493,30 +481,20 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           </StaggerContainer>
         )}
 
-        {/* Col 3 — Quick action buttons in a 2-column grid */}
-        <div className="grid grid-cols-2 gap-2 content-start">
-          <QuickActionsBar role={isSuperAdmin ? "superadmin" : "manager"} />
+        {/* Col 3 — Quick action buttons + Smart Insights Ticker below */}
+        <div className="flex flex-col gap-2 content-start">
+          <div className="grid grid-cols-2 gap-2">
+            <QuickActionsBar role={isSuperAdmin ? "superadmin" : "manager"} />
+          </div>
+          {/* ── Smart Insights Ticker — below View Returns / Quick Return */}
+          {insights.length > 0 && <SmartInsightsTicker insights={insights} />}
         </div>
       </div>
 
-      {/* ── Operations + Priority Alerts bento ────────────────────── */}
-      {(operationsOverview || actionItems.length > 0) && (
-        <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
-          {operationsOverview && showOperations && (
-            <div ref={opsRef} className={actionItems.length > 0 ? "lg:flex-[2]" : "w-full"}>
-              <OperationsWidget data={operationsOverview} />
-            </div>
-          )}
-          {actionItems.length > 0 && (
-            <div className={operationsOverview && showOperations ? "lg:flex-1" : "w-full"}>
-              <SmartActionsPanel items={actionItems} maxHeight={opsHeight} />
-            </div>
-          )}
-        </div>
+      {/* ── Priority Alerts ────────────────────── */}
+      {actionItems.length > 0 && (
+        <SmartActionsPanel items={actionItems} maxHeight={440} />
       )}
-
-      {/* ── ZONE 2: CONTROL LAYER — Smart Insights Ticker ────────────── */}
-      {insights.length > 0 && <SmartInsightsTicker insights={insights} />}
 
       {preferences.sectionOrder.map((sectionId) => {
         switch (sectionId) {

@@ -77,7 +77,7 @@ export function SmartInsightsTicker({ insights }: SmartInsightsTickerProps) {
 
   return (
     <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-colors duration-300 ${style.bg} ${style.border}`}
+      className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-colors duration-300 overflow-hidden ${style.bg} ${style.border}`}
     >
       {/* Icon */}
       <div
@@ -93,7 +93,7 @@ export function SmartInsightsTicker({ insights }: SmartInsightsTickerProps) {
 
       {/* Text — fades between items */}
       <p
-        className={`text-sm font-medium flex-1 min-w-0 transition-opacity duration-250 ${style.text} ${
+        className={`text-sm font-medium flex-1 min-w-0 truncate transition-opacity duration-250 ${style.text} ${
           fading ? "opacity-0" : "opacity-100"
         }`}
       >

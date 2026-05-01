@@ -144,7 +144,6 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
 
   const issues = [
     { label: "Overdue Returns", value: data.overdueReturns, icon: "arrow-left" as const, href: "/returns", danger: true },
-    { label: "Low Stock Items", value: data.lowStockCount, icon: "alert-triangle" as const, href: "/purchase-orders", danger: true },
     { label: "Damage / Loss", value: data.unresolvedDamage + data.lostItems, icon: "alert-triangle" as const, href: "/alerts/damage", danger: true },
     { label: "Overdue Inspections", value: data.incompleteInspections, icon: "search" as const, href: "/condition-checks", danger: true },
   ].filter((i) => i.value > 0);
@@ -203,9 +202,6 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
             <div className="absolute left-full top-0 ml-3 w-56 bg-[#1a1c21] text-white rounded-xl p-3.5 shadow-2xl opacity-0 invisible group-hover/health:opacity-100 group-hover/health:visible transition-all duration-200 z-50 text-left">
               <p className="text-xs font-semibold mb-2 text-shark-400">Health Score Breakdown</p>
               <div className="space-y-1.5 text-xs">
-                {data.lowStockCount > 0 && (
-                  <div className="flex justify-between"><span className="text-shark-400">Low stock ({data.lowStockCount})</span><span className="text-red-400">-{Math.min(30, data.lowStockCount * 5)}</span></div>
-                )}
                 {data.overdueReturns > 0 && (
                   <div className="flex justify-between"><span className="text-shark-400">Overdue returns ({data.overdueReturns})</span><span className="text-red-400">-{Math.min(20, data.overdueReturns * 4)}</span></div>
                 )}
@@ -251,7 +247,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
         </div>
 
         {/* Issues list */}
-        {issues.length > 0 ? (
+        {issues.length > 0 && (
           <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
             {issues.map((item) => (
               <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
@@ -262,13 +258,6 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
                 <span className="text-sm font-bold text-[#E8532E]">{item.value}</span>
               </Link>
             ))}
-          </div>
-        ) : (
-          <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800">
-            <div className="flex items-center gap-2 px-3 py-3">
-              <Icon name="check" size={15} className="text-action-500" />
-              <span className="text-sm text-action-600 font-medium">All clear — no outstanding issues</span>
-            </div>
           </div>
         )}
       </div>
