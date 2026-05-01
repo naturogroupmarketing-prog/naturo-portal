@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo } from "react";
+import { useState, useTransition, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +19,6 @@ import { AiForecastWidget, type DepletionForecastItem } from "./ai-forecast-widg
 import { RecentActivityWidget, type RecentActivityItem } from "./recent-activity-widget";
 import { SmartReorderPanel, type ReorderRecommendation } from "./smart-reorder-panel";
 import { AssetHealthWidget } from "./asset-health-widget";
-import { DashboardGreeting } from "./dashboard-greeting";
 import { SmartInsightsTicker, type SmartInsight } from "./smart-insights-ticker";
 import { SystemHealthBar } from "./system-health-bar";
 
@@ -157,18 +156,22 @@ function QuickActionsBar({ role }: { role: string }) {
   ];
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
+    <>
       {actions.map((action) => (
-        <Link
-          key={action.label}
-          href={action.href}
-          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 hover:shadow-md transition-all duration-200 group text-center"
-        >
-          <Icon name={action.icon} size={20} className="text-shark-500 dark:text-shark-400 group-hover:text-action-500 transition-colors duration-150" />
-          <span className="text-xs font-medium text-shark-600 dark:text-shark-400 group-hover:text-shark-800 dark:text-shark-200 dark:group-hover:text-shark-200 transition-colors">{action.label}</span>
+        <Link key={action.label} href={action.href} className="block group">
+          <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
+            <CardContent className="px-3 py-3">
+              <div className="flex items-center gap-2 min-h-[44px]">
+                <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0 group-hover:bg-action-50 transition-colors">
+                  <Icon name={action.icon} size={16} className="text-shark-500 dark:text-shark-400 group-hover:text-action-500 transition-colors" />
+                </div>
+                <span className="text-xs font-medium text-shark-600 dark:text-shark-400 group-hover:text-shark-800 dark:group-hover:text-shark-200 transition-colors leading-tight">{action.label}</span>
+              </div>
+            </CardContent>
+          </Card>
         </Link>
       ))}
-    </div>
+    </>
   );
 }
 
@@ -239,9 +242,9 @@ function fmtAUD(n: number) {
 
 export function DashboardClient({ stats, lowStockItems, quickLinks, preferences, subtitle, userName, regionBreakdown, assetStatusChart, categoryChart, consumableStatusChart, consumableCategoryChart, portfolioValue, portfolioChartData, activityChartData, operationsOverview, upcomingMaintenance, isSuperAdmin, mapLocations = [], predictedShortages = [], actionItems = [], depletionForecast = [], recentActivity = [], procurementCost, activePOCount = 0, reorderRecommendations = [], recentAnomalyCount = 0, briefingWidget, assetHealthSummary = null }: Props) {
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [actionsOpen, setActionsOpen] = useState(false);
   // Register the dashboard settings action with the bottom-nav cog
   useRegisterPageCog(() => setSettingsOpen(true), []);
+
   const [isPending, startTransition] = useTransition();
   const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(() => {
     // Auto-collapse regions with no actionable items
@@ -364,129 +367,144 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
-      {/* ── ZONE 1: COMMAND LAYER ─────────────────────────────────────── */}
-      {/* Dynamic greeting + tappable attention badge */}
-      <DashboardGreeting
-        userName={userName}
-        attentionCount={actionItems.length}
-        criticalCount={actionItems.filter((i) => i.priority === "critical").length}
-        healthScore={operationsOverview?.healthScore ?? 100}
-        onClickStatus={actionItems.length > 0 ? () => setActionsOpen((p) => !p) : undefined}
-        actionsExpanded={actionsOpen}
-      />
-
-      {/* Action panel — revealed by tapping the badge in the greeting */}
-      {actionsOpen && actionItems.length > 0 && (
-        <SmartActionsPanel items={actionItems} />
-      )}
-
-      {/* Settings gear — desktop only; mobile uses the bottom-nav cog */}
-      <div className="hidden lg:flex justify-end">
+      {/* ── Hero Banner ───────────────────────────────────────────── */}
+      <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: 256 }}>
+        {/* Hero image */}
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.png')" }} />
+        {/* Dark gradient overlay so text is always readable */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#001832]/90 via-[#003d7d]/70 to-transparent" />
+        {/* Content */}
+        <div className="relative px-8 py-10 sm:px-10 sm:py-12">
+          <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1 mb-4 w-fit">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+            <span className="text-[9px] font-bold text-white/80 tracking-widest uppercase">Enterprise Standard</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            Asset &amp; Inventory Management
+          </h1>
+          <p className="text-xs text-white/50 mt-2 font-medium">{subtitle}</p>
+        </div>
+        {/* Performance grade chip — bottom left */}
+        {operationsOverview && (() => {
+          const s = operationsOverview.healthScore;
+          const label = s >= 95 ? "S" : s >= 85 ? "A" : s >= 70 ? "B" : s >= 50 ? "C" : "D";
+          const badgeStyle =
+            label === "S" ? "bg-gradient-to-br from-yellow-300 to-amber-400 text-amber-900 border-amber-400" :
+            label === "A" ? "bg-gradient-to-br from-action-400 to-action-600 text-white border-action-400" :
+            label === "B" ? "bg-gradient-to-br from-blue-400 to-blue-600 text-white border-blue-400" :
+            label === "C" ? "bg-gradient-to-br from-amber-400 to-orange-500 text-white border-amber-400" :
+                            "bg-gradient-to-br from-red-400 to-red-600 text-white border-red-400";
+          return (
+            <div className="absolute bottom-4 left-8 sm:left-10 flex items-center gap-2.5">
+              <div className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center font-black text-lg select-none ${badgeStyle}`}>
+                {label}
+              </div>
+              <div>
+                <p className="text-[9px] text-white/50 font-semibold uppercase tracking-wider leading-none">Performance</p>
+                <p className="text-base font-black text-white leading-tight">{s}<span className="text-white/50 text-xs font-normal">/100</span></p>
+              </div>
+            </div>
+          );
+        })()}
+        {/* Settings gear in hero corner */}
         <button
           onClick={() => setSettingsOpen(true)}
-          className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-shark-400 hover:text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full bg-white/10 backdrop-blur-sm text-white/60 hover:text-white hover:bg-white/20 transition-colors"
           aria-label="Dashboard settings"
           title="Dashboard settings"
         >
-          <Icon name="settings" size={18} />
+          <Icon name="settings" size={15} />
         </button>
       </div>
 
-      {/* AI Briefing — rendered here so it sits below the settings cog */}
-      {briefingWidget}
+      {/* ── AI Briefing (1/3) | Stat cards stacked (1/3) | Quick Actions (1/3) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:items-start">
+        {/* Col 1 — AI Briefing + Operations Performance merged */}
+        {(briefingWidget || (operationsOverview && showOperations)) && (
+          <div className="flex flex-col gap-4">
+            {briefingWidget && <div>{briefingWidget}</div>}
+            {operationsOverview && showOperations && (
+              <OperationsWidget data={operationsOverview} />
+            )}
+          </div>
+        )}
 
-      {/* ── ZONE 2: CONTROL LAYER — Smart Insights Ticker ────────────── */}
-      {insights.length > 0 && <SmartInsightsTicker insights={insights} />}
+        {/* Col 2 — Stat cards (3-across on mobile, stacked on desktop) + Active Procurement */}
+        {visibleStats.length > 0 && (
+          <StaggerContainer className="flex flex-col gap-2">
+            <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
+            {visibleStats.map((s) => (
+              <StaggerItem key={s.label}>
+                <Link href={s.href} className="block group h-full">
+                  <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
+                    <CardContent className="px-2 py-2 lg:px-3 lg:py-3 h-full">
+                      {/* Mobile: vertical compact; Desktop: horizontal */}
+                      <div className="flex flex-col items-center text-center gap-1 lg:flex-row lg:items-center lg:text-left lg:gap-2">
+                        <div className={`w-7 h-7 lg:w-9 lg:h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                          <Icon name={s.icon} size={14} className={s.iconColor} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[9px] lg:text-xs text-shark-500 dark:text-shark-400 truncate leading-tight">{s.label}</p>
+                          <AnimatedCounter value={s.value} className="text-lg lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                        </div>
+                        <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </StaggerItem>
+            ))}
+            </div>
+            {/* Active Procurement — same card height as stat cards */}
+            {isSuperAdmin && activePOCount > 0 && (
+              <StaggerItem>
+                <Link href="/purchase-orders?section=pipeline" className="block group">
+                  <Card className="hover:shadow-md transition-all duration-200 cursor-pointer border-action-200">
+                    <CardContent className="px-3 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-9 h-9 rounded-lg bg-action-100 flex items-center justify-center flex-shrink-0">
+                          <Icon name="truck" size={16} className="text-action-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-action-500 truncate">Active Procurement</p>
+                          <p className="text-xl font-bold text-action-700 leading-none">
+                            {procurementCost && procurementCost > 0 ? fmtAUD(procurementCost) : `${activePOCount} PO${activePOCount !== 1 ? "s" : ""}`}
+                          </p>
+                        </div>
+                        <Icon name="arrow-right" size={14} className="text-action-300 group-hover:text-action-500 transition-colors flex-shrink-0" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </StaggerItem>
+            )}
+          </StaggerContainer>
+        )}
+
+        {/* Col 3 — Quick action buttons + Smart Insights Ticker below */}
+        <div className="flex flex-col gap-2 content-start">
+          <div className="grid grid-cols-2 gap-2">
+            <QuickActionsBar role={isSuperAdmin ? "superadmin" : "manager"} />
+          </div>
+          {/* ── Smart Insights Ticker — below View Returns / Quick Return */}
+          {insights.length > 0 && <SmartInsightsTicker insights={insights} />}
+        </div>
+      </div>
+
+      {/* ── Priority Alerts ────────────────────── */}
+      {actionItems.length > 0 && (
+        <SmartActionsPanel items={actionItems} maxHeight={440} />
+      )}
 
       {preferences.sectionOrder.map((sectionId) => {
         switch (sectionId) {
           case "stats":
-            return visibleStats.length > 0 ? (
-              <div key="stats" className="space-y-4">
-              <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
-              <StaggerContainer className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-                {visibleStats.map((s) => (
-                  <StaggerItem key={s.label}>
-                  <Link href={s.href} className="block group">
-                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
-                      <CardContent className="px-2 py-3 sm:px-3">
-                        {/* Mobile: vertical compact — fits 3 across */}
-                        <div className="flex sm:hidden flex-col items-center gap-1.5 text-center">
-                          <div className={`w-8 h-8 rounded-lg ${s.iconBg} flex items-center justify-center`}>
-                            <Icon name={s.icon} size={14} className={s.iconColor} />
-                          </div>
-                          <AnimatedCounter value={s.value} className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                          <p className="text-[10px] text-shark-500 dark:text-shark-400 leading-tight">{s.label}</p>
-                        </div>
-                        {/* sm+: horizontal layout */}
-                        <div className="hidden sm:flex items-center gap-2">
-                          <div className={`w-9 h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
-                            <Icon name={s.icon} size={16} className={s.iconColor} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{s.label}</p>
-                            <div className="flex items-center gap-1">
-                              <AnimatedCounter value={s.value} className="text-xl font-bold text-shark-900 dark:text-shark-100" />
-                              {s.trend && (
-                                <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
-                                  s.trend.direction === "down" ? "bg-green-50 text-green-600" :
-                                  s.trend.direction === "up" ? "bg-red-50 text-red-500" :
-                                  "bg-shark-50 dark:bg-shark-800 text-shark-400"
-                                }`}>
-                                  {s.trend.direction === "up" && "↑"}
-                                  {s.trend.direction === "down" && "↓"}
-                                  {s.trend.label}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-              {/* Quick Actions bar — below stat cards */}
-              <QuickActionsBar role={isSuperAdmin ? "superadmin" : "manager"} />
-              {/* Procurement cost banner — shows whenever there are active POs */}
-              {isSuperAdmin && activePOCount > 0 && (
-                <Link href="/purchase-orders?section=pipeline" className="block group">
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-action-200 bg-action-50/60 backdrop-blur-sm hover:shadow-md transition-all duration-200">
-                    <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-                      <Icon name="truck" size={15} className="text-action-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-action-600">Active Procurement</p>
-                      <p className="text-[11px] text-action-400">
-                        {activePOCount} order{activePOCount !== 1 ? "s" : ""} in pipeline across all regions
-                        {(!procurementCost || procurementCost === 0) && " · Add unit costs to see total value"}
-                      </p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      {procurementCost && procurementCost > 0 ? (
-                        <p className="text-xl font-bold text-action-700">{fmtAUD(procurementCost)}</p>
-                      ) : (
-                        <p className="text-sm font-semibold text-action-500">{activePOCount} PO{activePOCount !== 1 ? "s" : ""}</p>
-                      )}
-                    </div>
-                    <Icon name="arrow-right" size={16} className="text-action-400 group-hover:text-action-600 transition-colors shrink-0" />
-                  </div>
-                </Link>
-              )}
-              </div>
-            ) : null;
+            return null; // rendered above briefing — see explicit block after briefingWidget
 
           case "portfolio":
-            return (showPortfolio || showOperations || !isSuperAdmin) ? (
-              <div key="portfolio" className={`grid grid-cols-1 gap-4 ${actionItems.length > 0 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
-                {/* LEFT — Operations Overview */}
-                {operationsOverview && showOperations && (
-                  <OperationsWidget data={operationsOverview} />
-                )}
-
-                {/* CENTRE — Portfolio Line Chart (Assets vs Consumables value) */}
+            return (showPortfolio || !isSuperAdmin) ? (
+              <div key="portfolio" className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {/* Portfolio Line Chart (Assets vs Consumables value) */}
                 {showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
                   <Card padding="none">
                     <div className="p-4 sm:p-6">
@@ -596,12 +614,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Card>
                 )}
 
-                {/* RIGHT — Smart Action Panel (desktop only, hidden on mobile where it shows at top) */}
-                {actionItems.length > 0 && (
-                  <div className="hidden md:flex flex-col">
-                    <SmartActionsPanel items={actionItems} />
-                  </div>
-                )}
               </div>
             ) : null;
 

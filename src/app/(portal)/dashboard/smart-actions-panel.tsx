@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Icon, type IconName } from "@/components/ui/icon";
+import { Icon } from "@/components/ui/icon";
 
 export interface SmartActionItem {
   id: string;
@@ -14,38 +14,22 @@ export interface SmartActionItem {
   timeLabel: string;
 }
 
-const PRIORITY_CONFIG = {
-  critical: {
-    dot: "bg-red-500",
-    badge: "bg-red-50 text-red-600 border border-red-100",
-    label: "Urgent",
-  },
-  urgent: {
-    dot: "bg-amber-400",
-    badge: "bg-amber-50 text-amber-600 border border-amber-100",
-    label: "Attention",
-  },
-  normal: {
-    dot: "bg-blue-400",
-    badge: "bg-blue-50 text-blue-600 border border-blue-100",
-    label: "To do",
-  },
-};
+const XP_BY_PRIORITY = { critical: 50, urgent: 25, normal: 10 } as const;
 
-const TYPE_ICON: Record<SmartActionItem["type"], IconName> = {
-  request: "clipboard",
-  overdue: "clock",
-  stock: "droplet",
-  po: "truck",
-  damage: "alert-triangle",
-};
+function totalXP(items: SmartActionItem[]) {
+  return items.reduce((sum, i) => sum + XP_BY_PRIORITY[i.priority], 0);
+}
+
 
 const DISMISS_KEY = "naturo-smartpanel-dismissed-at-v2";
 const DISMISS_DURATION_MS = 8 * 60 * 60 * 1000; // 8 hours
 
-export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
+export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem[]; maxHeight?: number }) {
   const [dismissed, setDismissed] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [xpFloating, setXpFloating] = useState<string | null>(null);
+  const [celebrated, setCelebrated] = useState(false);
+  const xpTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -53,7 +37,21 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
     if (stored && Date.now() - parseInt(stored, 10) < DISMISS_DURATION_MS) {
       setDismissed(true);
     }
-  }, []);
+    // One-time confetti celebrate when panel is all-clear
+    if (items.length === 0) {
+      const key = "naturo-allclear-celebrated";
+      if (!sessionStorage.getItem(key)) {
+        setCelebrated(true);
+        sessionStorage.setItem(key, "1");
+      }
+    }
+  }, [items.length]);
+
+  const handleXpClick = (id: string, priority: SmartActionItem["priority"]) => {
+    setXpFloating(`${id}-${XP_BY_PRIORITY[priority]}`);
+    if (xpTimerRef.current) clearTimeout(xpTimerRef.current);
+    xpTimerRef.current = setTimeout(() => setXpFloating(null), 1500);
+  };
 
   const handleDismiss = () => {
     localStorage.setItem(DISMISS_KEY, Date.now().toString());
@@ -88,101 +86,98 @@ export function SmartActionsPanel({ items }: { items: SmartActionItem[] }) {
   }
 
   return (
-    <div className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-2xl shadow-sm overflow-hidden">
+    <div
+      className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-2xl shadow-sm overflow-hidden flex flex-col"
+      style={maxHeight ? { height: maxHeight } : undefined}
+    >
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-shark-100 dark:border-shark-800 bg-shark-50/40 dark:bg-shark-800/40">
-        <Icon name="bell" size={14} className="text-shark-500 dark:text-shark-400 flex-shrink-0" />
-        <span className="text-sm font-semibold text-shark-800 dark:text-shark-200 flex-1">
-          {items.length === 0 ? "All caught up" : "Action Required"}
-        </span>
-        {items.length > 0 && (
-          <span className="text-[10px] font-bold bg-[#E8532E] text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-tight">
-            {items.length}
-          </span>
-        )}
-        <button
-          onClick={handleDismiss}
-          className="text-shark-300 hover:text-shark-500 dark:text-shark-400 transition-colors ml-1 flex-shrink-0"
-          title="Dismiss for 8 hours"
-        >
-          <Icon name="x" size={13} />
-        </button>
+      <div className="flex items-center justify-between px-5 py-4 border-b border-shark-100 dark:border-shark-800">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-bold text-shark-900 dark:text-shark-100">Priority Alerts</span>
+          {items.length > 0 && (
+            <span className="text-[9px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full leading-tight">
+              +{totalXP(items)} XP
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2.5">
+          {items.length > 0 && (
+            <span className="text-[10px] font-bold bg-[#E8532E] text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-tight">
+              {items.length}
+            </span>
+          )}
+          <button
+            onClick={handleDismiss}
+            className="text-[11px] font-semibold text-action-500 hover:text-action-700 dark:hover:text-action-300 transition-colors"
+            title="Dismiss for 8 hours"
+          >
+            Dismiss
+          </button>
+        </div>
       </div>
 
       {/* All clear */}
       {items.length === 0 ? (
-        <div className="px-4 py-8 text-center">
-          <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+        <div className="px-5 py-8 text-center flex-1 flex flex-col items-center justify-center">
+          <div className={`relative w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3 ${celebrated ? "animate-grade-pop" : ""}`}>
             <Icon name="check-circle" size={20} className="text-green-600" />
+            {celebrated && (
+              <>
+                {["#E8532E","#1113d4","#c9a84c","#10b981","#e879f9","#f59e0b"].map((c, i) => (
+                  <span key={i} className="animate-confetti-pop absolute w-2 h-2 rounded-full" style={{ background: c, top: "50%", left: "50%", transformOrigin: `${12 * Math.cos((i/6)*2*Math.PI)}px ${12 * Math.sin((i/6)*2*Math.PI)}px`, animationDelay: `${i * 0.07}s` }} />
+                ))}
+              </>
+            )}
           </div>
-          <p className="text-sm font-semibold text-shark-700 dark:text-shark-300">Everything is on track</p>
-          <p className="text-xs text-shark-400 mt-1">No outstanding actions right now</p>
+          <p className="text-sm font-semibold text-shark-700 dark:text-shark-300">All clear</p>
+          <p className="text-xs text-shark-400 mt-1">No outstanding alerts right now</p>
+          {celebrated && (
+            <p className="text-[10px] font-bold text-amber-600 mt-2 animate-xp-float">🎉 Quest complete!</p>
+          )}
         </div>
       ) : (
-        <>
-          {/* Priority summary */}
-          {(criticalCount > 0 || urgentCount > 0) && (
-            <div className="flex items-center gap-2 px-4 py-2 bg-red-50/60 border-b border-red-100">
-              {criticalCount > 0 && (
-                <span className="flex items-center gap-1 text-[10px] font-semibold text-red-600">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                  {criticalCount} critical
-                </span>
-              )}
-              {criticalCount > 0 && urgentCount > 0 && <span className="text-red-200 text-xs">·</span>}
-              {urgentCount > 0 && (
-                <span className="flex items-center gap-1 text-[10px] font-semibold text-amber-600">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                  {urgentCount} need attention
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Action list */}
-          <div className="divide-y divide-shark-50 dark:divide-shark-800 max-h-[480px] overflow-y-auto">
-            {items.map((item) => {
-              const config = PRIORITY_CONFIG[item.priority];
-              const icon = TYPE_ICON[item.type];
-              return (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className="flex items-start gap-3 px-4 py-3.5 hover:bg-shark-25 transition-colors group"
-                >
-                  {/* Priority dot */}
-                  <span
-                    className={`w-2 h-2 rounded-full mt-[5px] flex-shrink-0 ${config.dot} ${
-                      item.priority === "critical" ? "animate-pulse" : ""
+        <div className="divide-y divide-shark-50 dark:divide-shark-800 overflow-y-auto flex-1">
+          {items.map((item) => {
+            const borderColor =
+              item.priority === "critical"
+                ? "border-l-red-500"
+                : item.priority === "urgent"
+                ? "border-l-amber-400"
+                : "border-l-blue-400";
+            const xp = XP_BY_PRIORITY[item.priority];
+            const floatKey = `${item.id}-${xp}`;
+            return (
+              <div key={item.id} className={`px-5 py-4 border-l-4 ${borderColor}`}>
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <p className="text-[13px] font-bold text-shark-900 dark:text-shark-100 leading-snug">{item.title}</p>
+                  <span className="text-[10px] text-shark-400 shrink-0 whitespace-nowrap mt-0.5">{item.timeLabel}</span>
+                </div>
+                <p className="text-[11px] text-shark-500 dark:text-shark-400 leading-snug mb-3">{item.description}</p>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={item.href}
+                    onClick={() => handleXpClick(item.id, item.priority)}
+                    className={`relative inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-colors ${
+                      item.priority === "critical"
+                        ? "bg-red-500 text-white hover:bg-red-600"
+                        : item.priority === "urgent"
+                        ? "border border-amber-300 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-500/10"
+                        : "border border-shark-200 dark:border-shark-700 text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800"
                     }`}
-                  />
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-shark-800 dark:text-shark-200 leading-snug">{item.title}</p>
-                    <p className="text-[11px] text-shark-400 mt-0.5 leading-snug">{item.description}</p>
-                    <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full mt-1.5 ${config.badge}`}>
-                      <Icon name={icon} size={9} />
-                      {item.timeLabel}
-                    </span>
-                  </div>
-
-                  {/* Arrow */}
-                  <Icon
-                    name="arrow-right"
-                    size={12}
-                    className="text-shark-300 group-hover:text-action-500 transition-colors mt-1 flex-shrink-0"
-                  />
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Footer */}
-          <div className="px-4 py-2.5 border-t border-shark-50 dark:border-shark-800 bg-shark-50/30 dark:bg-shark-800/30">
-            <p className="text-[10px] text-shark-400 text-center">Tap any item to go directly to it</p>
-          </div>
-        </>
+                  >
+                    {item.priority === "critical" ? "Resolve" : item.priority === "urgent" ? "Review" : "Details"}
+                    {xpFloating === floatKey && (
+                      <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-amber-500 animate-xp-float whitespace-nowrap pointer-events-none">
+                        +{xp} XP
+                      </span>
+                    )}
+                  </Link>
+                  <span className="text-[9px] font-semibold text-amber-500/70">+{xp} XP</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );

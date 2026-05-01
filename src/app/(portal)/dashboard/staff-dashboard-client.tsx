@@ -1085,7 +1085,6 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       })()}
 
       {/* Stat Cards */}
-      <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href} className="block group">
