@@ -57,7 +57,62 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   );
 }
 
+type GradeKey = "S" | "A" | "B" | "C" | "D";
+
+function getGrade(score: number): { label: GradeKey; threshold: number; next: number } {
+  if (score >= 95) return { label: "S", threshold: 95, next: 100 };
+  if (score >= 85) return { label: "A", threshold: 85, next: 95 };
+  if (score >= 70) return { label: "B", threshold: 70, next: 85 };
+  if (score >= 50) return { label: "C", threshold: 50, next: 70 };
+  return { label: "D", threshold: 0, next: 50 };
+}
+
+const GRADE_STYLES: Record<GradeKey, { badge: string; bar: string; glow: boolean }> = {
+  S: { badge: "from-yellow-300 to-amber-400 text-amber-900 border-amber-300", bar: "#c9a84c", glow: true },
+  A: { badge: "from-action-400 to-action-600 text-white border-action-300",   bar: "#1113d4", glow: false },
+  B: { badge: "from-blue-400 to-blue-600 text-white border-blue-300",         bar: "#3b82f6", glow: false },
+  C: { badge: "from-amber-400 to-orange-500 text-white border-amber-300",     bar: "#E8532E", glow: false },
+  D: { badge: "from-red-400 to-red-600 text-white border-red-300",            bar: "#ef4444", glow: false },
+};
+
+function useHealthStreak(score: number) {
+  const [streak, setStreak] = useState(0);
+  const [gradePop, setGradePop] = useState(false);
+
+  useEffect(() => {
+    try {
+      const key = "naturo-health-streak";
+      const raw = localStorage.getItem(key);
+      let data: { streak: number; lastDate: string } = raw ? JSON.parse(raw) : { streak: 0, lastDate: "" };
+      const today = new Date().toDateString();
+      if (data.lastDate !== today) {
+        data.streak = score >= 70 ? (data.streak ?? 0) + 1 : 0;
+        data.lastDate = today;
+        localStorage.setItem(key, JSON.stringify(data));
+      }
+      setStreak(data.streak);
+    } catch { /* localStorage unavailable */ }
+
+    const popKey = "naturo-grade-popped";
+    if (!sessionStorage.getItem(popKey)) {
+      const t = setTimeout(() => { setGradePop(true); sessionStorage.setItem(popKey, "1"); }, 700);
+      return () => clearTimeout(t);
+    } else {
+      setGradePop(true);
+    }
+  }, [score]);
+
+  return { streak, gradePop };
+}
+
 export function OperationsWidget({ data }: { data: OperationsOverview }) {
+  const grade = getGrade(data.healthScore);
+  const styles = GRADE_STYLES[grade.label];
+  const progressPct = Math.max(0, Math.min(100, Math.round(
+    ((data.healthScore - grade.threshold) / Math.max(1, grade.next - grade.threshold)) * 100
+  )));
+  const { streak, gradePop } = useHealthStreak(data.healthScore);
+
   const stats = [
     {
       label: "Awaiting Approval",
@@ -118,8 +173,32 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
         <div className="flex gap-4 mb-4">
           {/* Large gauge — left */}
           <div className="relative shrink-0 flex flex-col items-center group/health cursor-pointer">
-            <HealthRing score={data.healthScore} size={96} />
-            <p className="text-[9px] font-bold text-shark-400 uppercase tracking-widest mt-1.5">Efficiency</p>
+            {/* Ring + grade badge */}
+            <div className="relative">
+              <HealthRing score={data.healthScore} size={96} />
+              <div
+                className={`absolute -top-2 -right-3 w-8 h-8 rounded-lg border-2 bg-gradient-to-br flex items-center justify-center font-black text-sm select-none ${styles.badge} ${gradePop ? "animate-grade-pop" : "opacity-0"} ${styles.glow ? "animate-streak-glow" : ""}`}
+              >
+                {grade.label}
+              </div>
+            </div>
+            <p className="text-[9px] font-bold text-shark-400 uppercase tracking-widest mt-2">Efficiency</p>
+            {/* Progress bar to next grade */}
+            <div className="w-20 mt-1">
+              <div className="h-1 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-1000 ease-out"
+                  style={{ width: `${progressPct}%`, backgroundColor: styles.bar }}
+                />
+              </div>
+            </div>
+            {/* Streak */}
+            {streak > 1 && (
+              <div className={`flex items-center gap-0.5 mt-1.5 px-1.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 ${streak >= 5 ? "animate-streak-glow" : ""}`}>
+                <span className="text-[11px]">🔥</span>
+                <span className="text-[9px] font-bold text-amber-700">{streak}d</span>
+              </div>
+            )}
             {/* Tooltip */}
             <div className="absolute left-full top-0 ml-3 w-56 bg-[#1a1c21] text-white rounded-xl p-3.5 shadow-2xl opacity-0 invisible group-hover/health:opacity-100 group-hover/health:visible transition-all duration-200 z-50 text-left">
               <p className="text-xs font-semibold mb-2 text-shark-400">Health Score Breakdown</p>

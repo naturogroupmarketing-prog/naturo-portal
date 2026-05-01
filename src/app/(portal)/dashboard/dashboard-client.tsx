@@ -156,18 +156,22 @@ function QuickActionsBar({ role }: { role: string }) {
   ];
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
+    <>
       {actions.map((action) => (
-        <Link
-          key={action.label}
-          href={action.href}
-          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 hover:shadow-md transition-all duration-200 group text-center"
-        >
-          <Icon name={action.icon} size={20} className="text-shark-500 dark:text-shark-400 group-hover:text-action-500 transition-colors duration-150" />
-          <span className="text-xs font-medium text-shark-600 dark:text-shark-400 group-hover:text-shark-800 dark:text-shark-200 dark:group-hover:text-shark-200 transition-colors">{action.label}</span>
+        <Link key={action.label} href={action.href} className="block group">
+          <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
+            <CardContent className="px-3 py-3">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0 group-hover:bg-action-50 transition-colors">
+                  <Icon name={action.icon} size={16} className="text-shark-500 dark:text-shark-400 group-hover:text-action-500 transition-colors" />
+                </div>
+                <span className="text-xs font-medium text-shark-600 dark:text-shark-400 group-hover:text-shark-800 dark:group-hover:text-shark-200 transition-colors leading-tight">{action.label}</span>
+              </div>
+            </CardContent>
+          </Card>
         </Link>
       ))}
-    </div>
+    </>
   );
 }
 
@@ -389,6 +393,28 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           </h1>
           <p className="text-xs text-white/50 mt-2 font-medium">{subtitle}</p>
         </div>
+        {/* Performance grade chip — bottom left */}
+        {operationsOverview && (() => {
+          const s = operationsOverview.healthScore;
+          const label = s >= 95 ? "S" : s >= 85 ? "A" : s >= 70 ? "B" : s >= 50 ? "C" : "D";
+          const badgeStyle =
+            label === "S" ? "bg-gradient-to-br from-yellow-300 to-amber-400 text-amber-900 border-amber-400" :
+            label === "A" ? "bg-gradient-to-br from-action-400 to-action-600 text-white border-action-400" :
+            label === "B" ? "bg-gradient-to-br from-blue-400 to-blue-600 text-white border-blue-400" :
+            label === "C" ? "bg-gradient-to-br from-amber-400 to-orange-500 text-white border-amber-400" :
+                            "bg-gradient-to-br from-red-400 to-red-600 text-white border-red-400";
+          return (
+            <div className="absolute bottom-4 left-8 sm:left-10 flex items-center gap-2.5">
+              <div className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center font-black text-lg select-none ${badgeStyle}`}>
+                {label}
+              </div>
+              <div>
+                <p className="text-[9px] text-white/50 font-semibold uppercase tracking-wider leading-none">Performance</p>
+                <p className="text-base font-black text-white leading-tight">{s}<span className="text-white/50 text-xs font-normal">/100</span></p>
+              </div>
+            </div>
+          );
+        })()}
         {/* Settings gear in hero corner */}
         <button
           onClick={() => setSettingsOpen(true)}
@@ -400,8 +426,78 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </button>
       </div>
 
-      {/* ── AI Briefing ────────────────────────────────────────────── */}
-      {briefingWidget}
+      {/* ── AI Briefing (1/3) | Stat cards stacked (1/3) | Quick Actions (1/3) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:items-start">
+        {/* Col 1 — AI Briefing */}
+        {briefingWidget && <div>{briefingWidget}</div>}
+
+        {/* Col 2 — Stat cards stacked + Active Procurement below */}
+        {visibleStats.length > 0 && (
+          <StaggerContainer className="flex flex-col gap-2">
+            {visibleStats.map((s) => (
+              <StaggerItem key={s.label}>
+                <Link href={s.href} className="block group">
+                  <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
+                    <CardContent className="px-3 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-9 h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                          <Icon name={s.icon} size={16} className={s.iconColor} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{s.label}</p>
+                          <div className="flex items-center gap-1">
+                            <AnimatedCounter value={s.value} className="text-xl font-bold text-shark-900 dark:text-shark-100" />
+                            {s.trend && (
+                              <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                                s.trend.direction === "down" ? "bg-green-50 text-green-600" :
+                                s.trend.direction === "up" ? "bg-red-50 text-red-500" :
+                                "bg-shark-50 dark:bg-shark-800 text-shark-400"
+                              }`}>
+                                {s.trend.direction === "up" && "↑"}
+                                {s.trend.direction === "down" && "↓"}
+                                {s.trend.label}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </StaggerItem>
+            ))}
+            {/* Active Procurement — same card height as stat cards */}
+            {isSuperAdmin && activePOCount > 0 && (
+              <StaggerItem>
+                <Link href="/purchase-orders?section=pipeline" className="block group">
+                  <Card className="hover:shadow-md transition-all duration-200 cursor-pointer border-action-200">
+                    <CardContent className="px-3 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-9 h-9 rounded-lg bg-action-100 flex items-center justify-center flex-shrink-0">
+                          <Icon name="truck" size={16} className="text-action-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-action-500 truncate">Active Procurement</p>
+                          <p className="text-xl font-bold text-action-700 leading-none">
+                            {procurementCost && procurementCost > 0 ? fmtAUD(procurementCost) : `${activePOCount} PO${activePOCount !== 1 ? "s" : ""}`}
+                          </p>
+                        </div>
+                        <Icon name="arrow-right" size={14} className="text-action-300 group-hover:text-action-500 transition-colors flex-shrink-0" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </StaggerItem>
+            )}
+          </StaggerContainer>
+        )}
+
+        {/* Col 3 — Quick action buttons in a 2-column grid */}
+        <div className="grid grid-cols-2 gap-2 content-start">
+          <QuickActionsBar role={isSuperAdmin ? "superadmin" : "manager"} />
+        </div>
+      </div>
 
       {/* ── Operations + Priority Alerts bento ────────────────────── */}
       {(operationsOverview || actionItems.length > 0) && (
@@ -412,11 +508,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             </div>
           )}
           {actionItems.length > 0 && (
-            <div
-              className={operationsOverview && showOperations ? "lg:flex-1" : "w-full"}
-              style={opsHeight ? { height: opsHeight } : undefined}
-            >
-              <SmartActionsPanel items={actionItems} />
+            <div className={operationsOverview && showOperations ? "lg:flex-1" : "w-full"}>
+              <SmartActionsPanel items={actionItems} maxHeight={opsHeight} />
             </div>
           )}
         </div>
@@ -428,81 +521,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {preferences.sectionOrder.map((sectionId) => {
         switch (sectionId) {
           case "stats":
-            return visibleStats.length > 0 ? (
-              <div key="stats" className="space-y-4">
-              <StaggerContainer className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-                {visibleStats.map((s) => (
-                  <StaggerItem key={s.label}>
-                  <Link href={s.href} className="block group">
-                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
-                      <CardContent className="px-2 py-3 sm:px-3">
-                        {/* Mobile: vertical compact — fits 3 across */}
-                        <div className="flex sm:hidden flex-col items-center gap-1.5 text-center">
-                          <div className={`w-8 h-8 rounded-lg ${s.iconBg} flex items-center justify-center`}>
-                            <Icon name={s.icon} size={14} className={s.iconColor} />
-                          </div>
-                          <AnimatedCounter value={s.value} className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                          <p className="text-[10px] text-shark-500 dark:text-shark-400 leading-tight">{s.label}</p>
-                        </div>
-                        {/* sm+: horizontal layout */}
-                        <div className="hidden sm:flex items-center gap-2">
-                          <div className={`w-9 h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
-                            <Icon name={s.icon} size={16} className={s.iconColor} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{s.label}</p>
-                            <div className="flex items-center gap-1">
-                              <AnimatedCounter value={s.value} className="text-xl font-bold text-shark-900 dark:text-shark-100" />
-                              {s.trend && (
-                                <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
-                                  s.trend.direction === "down" ? "bg-green-50 text-green-600" :
-                                  s.trend.direction === "up" ? "bg-red-50 text-red-500" :
-                                  "bg-shark-50 dark:bg-shark-800 text-shark-400"
-                                }`}>
-                                  {s.trend.direction === "up" && "↑"}
-                                  {s.trend.direction === "down" && "↓"}
-                                  {s.trend.label}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-              {/* Quick Actions bar — below stat cards */}
-              <QuickActionsBar role={isSuperAdmin ? "superadmin" : "manager"} />
-              {/* Procurement cost banner — shows whenever there are active POs */}
-              {isSuperAdmin && activePOCount > 0 && (
-                <Link href="/purchase-orders?section=pipeline" className="block group">
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-action-200 bg-action-50/60 backdrop-blur-sm hover:shadow-md transition-all duration-200">
-                    <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-                      <Icon name="truck" size={15} className="text-action-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-action-600">Active Procurement</p>
-                      <p className="text-[11px] text-action-400">
-                        {activePOCount} order{activePOCount !== 1 ? "s" : ""} in pipeline across all regions
-                        {(!procurementCost || procurementCost === 0) && " · Add unit costs to see total value"}
-                      </p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      {procurementCost && procurementCost > 0 ? (
-                        <p className="text-xl font-bold text-action-700">{fmtAUD(procurementCost)}</p>
-                      ) : (
-                        <p className="text-sm font-semibold text-action-500">{activePOCount} PO{activePOCount !== 1 ? "s" : ""}</p>
-                      )}
-                    </div>
-                    <Icon name="arrow-right" size={16} className="text-action-400 group-hover:text-action-600 transition-colors shrink-0" />
-                  </div>
-                </Link>
-              )}
-              </div>
-            ) : null;
+            return null; // rendered above briefing — see explicit block after briefingWidget
 
           case "portfolio":
             return (showPortfolio || !isSuperAdmin) ? (
