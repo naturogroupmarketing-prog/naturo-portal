@@ -233,29 +233,36 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
           <button
             onClick={handleCogTap}
             aria-label="Settings"
-            className="flex flex-col items-center gap-1 flex-1 px-1"
+            className="flex flex-col items-center flex-1"
           >
-            <div className="relative flex items-center justify-center">
-              <Icon
-                name="settings"
-                size={22}
-                className={cn(
-                  "transition-colors duration-200",
-                  cogAction ? "text-action-500" : "text-shark-400 dark:text-shark-500"
-                )}
-              />
-              {installReady && !cogAction && (
-                <span className="absolute -top-1.5 -right-2 w-2 h-2 rounded-full bg-green-500 border-2 border-white dark:border-shark-950" />
-              )}
-            </div>
-            <span className={cn(
-              "text-[10px] leading-none transition-colors duration-200",
+            <div className={cn(
+              "flex flex-col items-center gap-1 px-3 py-1.5 rounded-2xl w-full transition-all duration-200",
               cogAction
-                ? "font-semibold text-action-500"
-                : "font-medium text-shark-400 dark:text-shark-500"
+                ? "bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-white/80 dark:border-white/20"
+                : ""
             )}>
-              Settings
-            </span>
+              <div className="relative flex items-center justify-center">
+                <Icon
+                  name="settings"
+                  size={22}
+                  className={cn(
+                    "transition-colors duration-200",
+                    cogAction ? "text-action-500" : "text-shark-400 dark:text-shark-500"
+                  )}
+                />
+                {installReady && !cogAction && (
+                  <span className="absolute -top-1.5 -right-2 w-2 h-2 rounded-full bg-green-500 border-2 border-white dark:border-shark-950" />
+                )}
+              </div>
+              <span className={cn(
+                "text-[10px] leading-none transition-colors duration-200",
+                cogAction
+                  ? "font-semibold text-action-500"
+                  : "font-medium text-shark-400 dark:text-shark-500"
+              )}>
+                Settings
+              </span>
+            </div>
           </button>
         </nav>
 
@@ -305,29 +312,36 @@ function NavButton({ item, pathname }: { item: NavItem; pathname: string }) {
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      className="flex flex-col items-center gap-1 flex-1 px-1"
+      className="flex flex-col items-center flex-1"
     >
-      <div className="relative flex items-center justify-center">
-        <Icon
-          name={item.icon}
-          size={22}
-          className={cn(
-            "transition-colors duration-200",
-            active ? "text-action-500" : "text-shark-400 dark:text-shark-500"
-          )}
-        />
-        {item.badge != null && item.badge > 0 && (
-          <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-0.5 leading-none">
-            {item.badge > 99 ? "99+" : item.badge}
-          </span>
-        )}
-      </div>
-      <span className={cn(
-        "text-[10px] leading-none transition-colors duration-200",
-        active ? "font-semibold text-action-500" : "font-medium text-shark-400 dark:text-shark-500"
+      <div className={cn(
+        "flex flex-col items-center gap-1 px-3 py-1.5 rounded-2xl w-full transition-all duration-200",
+        active
+          ? "bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-white/80 dark:border-white/20"
+          : ""
       )}>
-        {item.label}
-      </span>
+        <div className="relative flex items-center justify-center">
+          <Icon
+            name={item.icon}
+            size={22}
+            className={cn(
+              "transition-colors duration-200",
+              active ? "text-action-500" : "text-shark-400 dark:text-shark-500"
+            )}
+          />
+          {item.badge != null && item.badge > 0 && (
+            <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-0.5 leading-none">
+              {item.badge > 99 ? "99+" : item.badge}
+            </span>
+          )}
+        </div>
+        <span className={cn(
+          "text-[10px] leading-none transition-colors duration-200",
+          active ? "font-semibold text-action-500" : "font-medium text-shark-400 dark:text-shark-500"
+        )}>
+          {item.label}
+        </span>
+      </div>
     </Link>
   );
 }
