@@ -183,7 +183,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     >
       {/* Quick-actions — float above the + button */}
       {fabOpen && hasFab && (
-        <div className="absolute right-3 bottom-full mb-3 flex flex-col items-end gap-2.5">
+        <div className="absolute right-8 bottom-full mb-3 flex flex-col items-end gap-2.5">
           {[...quickActions].reverse().map((action, idx) => (
             <div
               key={action.label}
@@ -218,7 +218,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
       )}
 
       {/* Floating bar */}
-      <div className="mx-3 flex items-center gap-2.5">
+      <div className="mx-8 flex items-center gap-2.5">
 
         {/* Frosted glass nav pill */}
         <nav
