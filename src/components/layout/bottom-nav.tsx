@@ -124,7 +124,29 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
   const router = useRouter();
   const { cogAction } = usePageCog();
   const [fabOpen, setFabOpen] = useState(false);
+  const [installReady, setInstallReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Track whether native PWA install prompt is available
+  useEffect(() => {
+    // Already installed
+    if (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone === true
+    ) return;
+
+    const captured = (window as any).__pwaPrompt;
+    if (captured) setInstallReady(true);
+
+    const handler = (e: Event) => {
+      e.preventDefault();
+      (window as any).__pwaPrompt = e;
+      setInstallReady(true);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    window.addEventListener("appinstalled", () => setInstallReady(false));
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
 
   // Close on outside tap
   useEffect(() => {
@@ -250,7 +272,12 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               cogAction ? "text-action-500" : "text-shark-400 dark:text-shark-500"
             )}
           >
-            <Icon name="settings" size={20} />
+            <div className="relative">
+              <Icon name="settings" size={20} />
+              {installReady && !cogAction && (
+                <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-green-500 border border-white dark:border-shark-900" />
+              )}
+            </div>
             <span className="text-[10px] font-medium leading-none">Settings</span>
           </button>
         </div>
