@@ -51,7 +51,9 @@ export function InstallPrompt() {
       return;
     }
 
-    // Android / Desktop: try to get the native install prompt
+    // Android / Desktop: ONLY show when Chrome fires the native install prompt.
+    // Never fall back to manual instructions — those create a Chrome shortcut,
+    // not a real installed PWA.
     const captured = (window as any).__pwaPrompt;
     if (captured) {
       promptRef.current = captured;
@@ -68,11 +70,6 @@ export function InstallPrompt() {
     };
     window.addEventListener("beforeinstallprompt", handler);
 
-    // Fallback: if no native prompt after 5 s, show manual steps
-    const fallback = setTimeout(() => {
-      if (!promptRef.current) setVisible(true);
-    }, 5000);
-
     window.addEventListener("appinstalled", () => {
       setInstalled(true);
       setTimeout(() => setVisible(false), 2500);
@@ -80,7 +77,6 @@ export function InstallPrompt() {
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
-      clearTimeout(fallback);
     };
   }, []);
 
@@ -209,39 +205,6 @@ export function InstallPrompt() {
           </div>
         )}
 
-        {/* ── Android / Desktop fallback (no native prompt) ── */}
-        {!installed && (platform === "android" || platform === "desktop") && !deferredPrompt && (
-          <div className="px-5 py-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-action-600 flex items-center justify-center shrink-0">
-                  <span className="text-white font-bold text-sm">T</span>
-                </div>
-                <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Install Trackio</p>
-              </div>
-              <button onClick={handleDismiss} className="text-shark-400 hover:text-shark-600 p-1 -mr-1">
-                <Icon name="x" size={15} />
-              </button>
-            </div>
-            <ol className="space-y-2.5 mb-3">
-              <li className="flex items-center gap-3 text-xs text-shark-700 dark:text-shark-300">
-                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0">1</span>
-                <span>Tap the <strong>⋮ menu</strong> in the top-right of Chrome</span>
-              </li>
-              <li className="flex items-center gap-3 text-xs text-shark-700 dark:text-shark-300">
-                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0">2</span>
-                <span>Tap <strong>&ldquo;Add to Home Screen&rdquo;</strong> or <strong>&ldquo;Install app&rdquo;</strong></span>
-              </li>
-              <li className="flex items-center gap-3 text-xs text-shark-700 dark:text-shark-300">
-                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0">3</span>
-                <span>Tap <strong>&ldquo;Install&rdquo;</strong> to confirm</span>
-              </li>
-            </ol>
-            <button onClick={handleDismiss} className="w-full text-center text-[11px] text-shark-400 hover:text-shark-600 py-1">
-              Dismiss
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
