@@ -12,6 +12,7 @@ import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
 import { toggleEmailNotifications, changePassword, updateProfile, exportMyData, requestAccountDeletion } from "@/app/actions/user-settings";
 import { generateTOTPSecret, enableMFA, disableMFA } from "@/app/actions/mfa";
+import { InstallAppSection } from "@/components/ui/install-app-section";
 
 interface Props {
   userName: string;
@@ -295,6 +296,19 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
               </Button>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Install App */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Icon name="download" size={18} className="text-action-500" />
+            Install App
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <InstallAppSection />
         </CardContent>
       </Card>
 
