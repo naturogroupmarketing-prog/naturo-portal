@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import type { Role } from "@/generated/prisma/browser";
 import { usePageCog } from "./page-cog-context";
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────
 
 interface NavItem {
   label: string;
@@ -30,7 +30,7 @@ export interface BottomNavProps {
   pendingReturnsCount?: number;
 }
 
-// ─── Nav items per role (3 links — 2 left of FAB, 1 right; cog takes 4th slot) ──
+// ─── Nav items per role ───────────────────────────────────────────────────────
 
 function getNavItems(role: Role, po: number, returns: number): NavItem[] {
   switch (role) {
@@ -67,7 +67,7 @@ function getNavItems(role: Role, po: number, returns: number): NavItem[] {
   }
 }
 
-// ─── Quick actions (context-aware, mirrors QuickActionsFab) ─────────────────
+// ─── Quick actions ────────────────────────────────────────────────────────────
 
 const STAFF_QUICK_ACTIONS: QuickAction[] = [
   { label: "Scan QR",        href: "/scan",                   icon: "qr-code",        color: "bg-shark-700" },
@@ -77,24 +77,24 @@ const STAFF_QUICK_ACTIONS: QuickAction[] = [
 
 const PAGE_QUICK_ACTIONS: Record<string, QuickAction[]> = {
   "/dashboard": [
-    { label: "Scan QR",   href: "/scan",                          icon: "qr-code", color: "bg-shark-700" },
-    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck",   color: "bg-action-500" },
-    { label: "Add Supply",href: "/consumables?action=add",        icon: "droplet", color: "bg-action-500" },
-    { label: "Add Asset", href: "/assets?action=add",             icon: "package", color: "bg-action-500" },
+    { label: "Scan QR",    href: "/scan",                          icon: "qr-code", color: "bg-shark-700" },
+    { label: "Create PO",  href: "/purchase-orders?action=create", icon: "truck",   color: "bg-action-500" },
+    { label: "Add Supply", href: "/consumables?action=add",        icon: "droplet", color: "bg-action-500" },
+    { label: "Add Asset",  href: "/assets?action=add",             icon: "package", color: "bg-action-500" },
   ],
   "/assets": [
-    { label: "Scan QR",       href: "/scan",          icon: "qr-code",        color: "bg-shark-700" },
-    { label: "Report Damage", href: "/report-damage", icon: "alert-triangle", color: "bg-[#E8532E]" },
-    { label: "Add Asset",     href: "/assets?action=add", icon: "package",    color: "bg-action-500" },
+    { label: "Scan QR",       href: "/scan",               icon: "qr-code",        color: "bg-shark-700" },
+    { label: "Report Damage", href: "/report-damage",      icon: "alert-triangle", color: "bg-[#E8532E]" },
+    { label: "Add Asset",     href: "/assets?action=add",  icon: "package",        color: "bg-action-500" },
   ],
   "/consumables": [
-    { label: "Scan QR",   href: "/scan",                          icon: "qr-code", color: "bg-shark-700" },
-    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck",   color: "bg-action-500" },
-    { label: "Add Supply",href: "/consumables?action=add",        icon: "droplet", color: "bg-action-500" },
+    { label: "Scan QR",    href: "/scan",                          icon: "qr-code", color: "bg-shark-700" },
+    { label: "Create PO",  href: "/purchase-orders?action=create", icon: "truck",   color: "bg-action-500" },
+    { label: "Add Supply", href: "/consumables?action=add",        icon: "droplet", color: "bg-action-500" },
   ],
   "/inventory": [
-    { label: "Scan QR",   href: "/scan",                  icon: "qr-code", color: "bg-shark-700" },
-    { label: "Add Supply",href: "/consumables?action=add", icon: "droplet", color: "bg-action-500" },
+    { label: "Scan QR",    href: "/scan",                   icon: "qr-code", color: "bg-shark-700" },
+    { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-action-500" },
   ],
   "/purchase-orders": [
     { label: "Scan QR",   href: "/scan",                          icon: "qr-code", color: "bg-shark-700" },
@@ -105,19 +105,19 @@ const PAGE_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: "Add Staff", href: "/staff?action=add",        icon: "user", color: "bg-action-500" },
   ],
   "/returns": [
-    { label: "Scan QR",       href: "/scan",    icon: "qr-code",   color: "bg-shark-700" },
-    { label: "Process Return",href: "/returns", icon: "arrow-left",color: "bg-action-500" },
+    { label: "Scan QR",        href: "/scan",    icon: "qr-code",    color: "bg-shark-700" },
+    { label: "Process Return", href: "/returns", icon: "arrow-left", color: "bg-action-500" },
   ],
 };
 
 const DEFAULT_QUICK_ACTIONS: QuickAction[] = [
-  { label: "Scan QR",   href: "/scan",                          icon: "qr-code", color: "bg-shark-700" },
-  { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck",   color: "bg-action-500" },
-  { label: "Add Supply",href: "/consumables?action=add",        icon: "droplet", color: "bg-action-500" },
-  { label: "Add Asset", href: "/assets?action=add",             icon: "package", color: "bg-action-500" },
+  { label: "Scan QR",    href: "/scan",                          icon: "qr-code", color: "bg-shark-700" },
+  { label: "Create PO",  href: "/purchase-orders?action=create", icon: "truck",   color: "bg-action-500" },
+  { label: "Add Supply", href: "/consumables?action=add",        icon: "droplet", color: "bg-action-500" },
+  { label: "Add Asset",  href: "/assets?action=add",             icon: "package", color: "bg-action-500" },
 ];
 
-// ─── Component ───────────────────────────────────────────────────────────────
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: BottomNavProps) {
   const pathname = usePathname();
@@ -127,17 +127,14 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
   const [installReady, setInstallReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Track whether native PWA install prompt is available
+  // Track native PWA install prompt
   useEffect(() => {
-    // Already installed
     if (
       window.matchMedia("(display-mode: standalone)").matches ||
       (window.navigator as any).standalone === true
     ) return;
-
     const captured = (window as any).__pwaPrompt;
     if (captured) setInstallReady(true);
-
     const handler = (e: Event) => {
       e.preventDefault();
       (window as any).__pwaPrompt = e;
@@ -148,7 +145,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
-  // Close on outside tap
+  // Close FAB on outside tap
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -159,50 +156,48 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Close on navigation
+  // Close FAB on navigation
   useEffect(() => { setFabOpen(false); }, [pathname]);
 
   const allItems = getNavItems(role, pendingPOCount, pendingReturnsCount);
-  const leftItems  = allItems.slice(0, 2);
-  const rightItems = allItems.slice(2, 3); // 1 link on the right; cog takes the 4th slot
 
   const handleCogTap = () => {
-    if (cogAction) {
-      cogAction();
-    } else {
-      router.push("/settings");
-    }
+    if (cogAction) cogAction();
+    else router.push("/settings");
   };
 
-  // Pick quick actions for the current page
   const matchedKey = Object.keys(PAGE_QUICK_ACTIONS).find((p) => pathname.startsWith(p));
   const quickActions =
-    role === "STAFF"    ? STAFF_QUICK_ACTIONS :
-    role === "AUDITOR"  ? [] :
-    matchedKey          ? PAGE_QUICK_ACTIONS[matchedKey] :
+    role === "STAFF"   ? STAFF_QUICK_ACTIONS :
+    role === "AUDITOR" ? [] :
+    matchedKey         ? PAGE_QUICK_ACTIONS[matchedKey] :
     DEFAULT_QUICK_ACTIONS;
 
   const hasFab = quickActions.length > 0;
 
   return (
-    <div ref={containerRef} className="fixed bottom-0 inset-x-0 z-40 lg:hidden">
-      {/* Quick-actions radial list */}
+    <div
+      ref={containerRef}
+      className="fixed bottom-0 inset-x-0 z-40 lg:hidden"
+      style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+    >
+      {/* Quick-actions — float above the + button */}
       {fabOpen && hasFab && (
-        <div className="absolute bottom-[72px] left-1/2 -translate-x-1/2 flex flex-col items-center gap-2.5 pb-1 pointer-events-none">
+        <div className="absolute right-3 bottom-full mb-3 flex flex-col items-end gap-2.5">
           {[...quickActions].reverse().map((action, idx) => (
             <div
               key={action.label}
-              className="flex items-center gap-2 pointer-events-auto"
+              className="flex items-center gap-2"
               style={{ animation: `fabItemUp 150ms ease-out ${idx * 50}ms both` }}
             >
-              <span className="bg-shark-900 dark:bg-shark-700 text-white text-xs font-semibold px-2.5 py-1.5 rounded-full shadow-lg whitespace-nowrap">
+              <span className="bg-shark-900/90 dark:bg-shark-800 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap">
                 {action.label}
               </span>
               <Link
                 href={action.href}
                 onClick={() => setFabOpen(false)}
                 className={cn(
-                  "w-11 h-11 rounded-full text-white flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform",
+                  "w-11 h-11 rounded-full text-white flex items-center justify-center shadow-lg active:scale-95 transition-transform",
                   action.color
                 )}
               >
@@ -213,7 +208,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
         </div>
       )}
 
-      {/* Scrim — tapping outside closes the popup */}
+      {/* Scrim */}
       {fabOpen && (
         <div
           className="fixed inset-0 z-[-1]"
@@ -222,70 +217,79 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
         />
       )}
 
-      {/* Nav bar */}
-      <nav
-        aria-label="Mobile navigation"
-        className="relative bg-white/95 dark:bg-shark-900/95 backdrop-blur-md border-t border-shark-100 dark:border-shark-800 safe-bottom"
-      >
-        <div className="flex items-stretch h-16">
-          {/* Left items */}
-          {leftItems.map((item) => (
+      {/* Floating bar */}
+      <div className="mx-3 flex items-center gap-2.5">
+
+        {/* Frosted glass nav pill */}
+        <nav
+          aria-label="Mobile navigation"
+          className="flex-1 flex items-center bg-white/80 dark:bg-shark-950/80 backdrop-blur-2xl rounded-[22px] border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] px-2 py-2 gap-1"
+        >
+          {allItems.map((item) => (
             <NavButton key={item.href} item={item} pathname={pathname} />
           ))}
 
-          {/* Centre FAB slot */}
-          <div className="flex-1 flex items-center justify-center relative">
-            {hasFab ? (
-              <button
-                onClick={() => setFabOpen((p) => !p)}
-                aria-label={fabOpen ? "Close quick actions" : "Open quick actions"}
-                className={cn(
-                  "absolute -top-6 w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-200 active:scale-95",
-                  fabOpen
-                    ? "bg-shark-800 dark:bg-shark-700 scale-90"
-                    : "bg-action-500 hover:bg-action-600 hover:scale-105"
-                )}
-              >
-                <Icon
-                  name="plus"
-                  size={24}
-                  className={cn("text-white transition-transform duration-200", fabOpen && "rotate-45")}
-                />
-              </button>
-            ) : (
-              /* Auditor — inert spacer so layout stays symmetric */
-              <div className="w-14 h-14" />
-            )}
-          </div>
-
-          {/* Right link */}
-          {rightItems.map((item) => (
-            <NavButton key={item.href} item={item} pathname={pathname} />
-          ))}
-
-          {/* Cog — context-aware page settings */}
+          {/* Settings — 4th slot */}
           <button
             onClick={handleCogTap}
-            aria-label="Page settings"
-            className={cn(
-              "flex flex-col items-center justify-center gap-1 flex-1 px-1 transition-colors",
-              cogAction ? "text-action-500" : "text-shark-400 dark:text-shark-500"
-            )}
+            aria-label="Settings"
+            className="flex flex-col items-center gap-1 flex-1 px-1"
           >
-            <div className="relative">
-              <Icon name="settings" size={20} />
+            <div className={cn(
+              "w-12 h-8 rounded-xl flex items-center justify-center transition-all duration-200 relative",
+              cogAction ? "bg-shark-900 dark:bg-white" : ""
+            )}>
+              <Icon
+                name="settings"
+                size={18}
+                className={cogAction
+                  ? "text-white dark:text-shark-900"
+                  : "text-shark-400 dark:text-shark-500"}
+              />
               {installReady && !cogAction && (
-                <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-green-500 border border-white dark:border-shark-900" />
+                <span className="absolute top-0.5 right-1 w-2 h-2 rounded-full bg-green-500 border-2 border-white dark:border-shark-950" />
               )}
             </div>
-            <span className="text-[10px] font-medium leading-none">Settings</span>
+            <span className={cn(
+              "text-[10px] font-medium leading-none",
+              cogAction ? "text-shark-900 dark:text-white" : "text-shark-400 dark:text-shark-500"
+            )}>
+              Settings
+            </span>
           </button>
-        </div>
-      </nav>
+        </nav>
+
+        {/* Plus circle — separate frosted glass button */}
+        {hasFab ? (
+          <button
+            onClick={() => setFabOpen((p) => !p)}
+            aria-label={fabOpen ? "Close quick actions" : "Open quick actions"}
+            className={cn(
+              "w-[60px] h-[60px] rounded-full flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] border backdrop-blur-2xl",
+              fabOpen
+                ? "bg-shark-900/90 dark:bg-shark-800/90 border-shark-700/50"
+                : "bg-white/80 dark:bg-shark-950/80 border-white/60 dark:border-shark-700/50"
+            )}
+          >
+            <Icon
+              name="plus"
+              size={26}
+              className={cn(
+                "transition-all duration-200",
+                fabOpen
+                  ? "rotate-45 text-white"
+                  : "text-shark-700 dark:text-shark-300"
+              )}
+            />
+          </button>
+        ) : (
+          <div className="w-[60px] h-[60px] shrink-0" />
+        )}
+      </div>
 
       <style>{`
         @keyframes fabItemUp {
-          from { opacity: 0; transform: translateY(12px) scale(0.88); }
+          from { opacity: 0; transform: translateY(10px) scale(0.9); }
           to   { opacity: 1; transform: translateY(0)   scale(1); }
         }
       `}</style>
@@ -293,7 +297,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
   );
 }
 
-// ─── Shared nav-button ───────────────────────────────────────────────────────
+// ─── Nav button ───────────────────────────────────────────────────────────────
 
 function NavButton({ item, pathname }: { item: NavItem; pathname: string }) {
   const active = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -301,20 +305,31 @@ function NavButton({ item, pathname }: { item: NavItem; pathname: string }) {
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      className={cn(
-        "flex flex-col items-center justify-center gap-1 flex-1 px-1 transition-colors",
-        active ? "text-action-500" : "text-shark-400 dark:text-shark-500"
-      )}
+      className="flex flex-col items-center gap-1 flex-1 px-1"
     >
-      <div className="relative">
-        <Icon name={item.icon} size={20} />
+      <div className={cn(
+        "w-12 h-8 rounded-xl flex items-center justify-center transition-all duration-200 relative",
+        active ? "bg-shark-900 dark:bg-white" : ""
+      )}>
+        <Icon
+          name={item.icon}
+          size={18}
+          className={active
+            ? "text-white dark:text-shark-900"
+            : "text-shark-400 dark:text-shark-500"}
+        />
         {item.badge != null && item.badge > 0 && (
-          <span className="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-0.5 leading-none">
+          <span className="absolute -top-1 -right-0.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-0.5 leading-none">
             {item.badge > 99 ? "99+" : item.badge}
           </span>
         )}
       </div>
-      <span className="text-[10px] font-medium leading-none">{item.label}</span>
+      <span className={cn(
+        "text-[10px] font-medium leading-none transition-colors",
+        active ? "text-shark-900 dark:text-white" : "text-shark-400 dark:text-shark-500"
+      )}>
+        {item.label}
+      </span>
     </Link>
   );
 }
