@@ -195,10 +195,10 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     const curr = pillSlot;
     const prev = prevSlotRef.current;
     const slotPct  = 100 / numSlots;
-    const SPRING   = "cubic-bezier(0.34, 1.3, 0.64, 1)";
+    const SPRING   = "cubic-bezier(0.34, 1.56, 0.64, 1)"; // more overshoot = bouncier
     const EASE_OUT = "cubic-bezier(0.25, 1, 0.5, 1)";
-    const STRETCH_MS = 150;
-    const SNAP_MS    = 220;
+    const STRETCH_MS = 140;
+    const SNAP_MS    = 260;
 
     if (timerRef.current) clearTimeout(timerRef.current);
 
@@ -310,15 +310,15 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
         {/* Floating bar */}
         <div className="mx-8 flex items-center gap-2.5">
 
-          {/* Frosted glass nav pill */}
+          {/* Frosted glass nav pill — full capsule shape like ClickUp */}
           <nav
             aria-label="Mobile navigation"
-            className="relative flex-1 flex items-center bg-white/80 dark:bg-shark-950/80 backdrop-blur-2xl rounded-[22px] border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] py-2"
+            className="relative flex-1 flex items-center bg-white/80 dark:bg-shark-950/80 backdrop-blur-2xl rounded-full border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] py-2"
           >
-            {/* Elastic sliding pill — subtle grey, matching ClickUp */}
+            {/* Elastic sliding pill — solid grey like ClickUp */}
             <div
               aria-hidden="true"
-              className="absolute inset-y-2 rounded-[14px] bg-black/[0.07] dark:bg-white/[0.13] pointer-events-none"
+              className="absolute inset-y-1.5 rounded-full bg-[#E8E8E8] dark:bg-[#3D3D3D] pointer-events-none"
               style={{
                 left:       pillLeft,
                 width:      pillWidth,
