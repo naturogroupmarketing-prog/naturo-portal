@@ -264,17 +264,17 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
         />
       )}
 
-      {/* Sheet */}
+      {/* Sheet — bottom edge sits flush with the top of the nav bar */}
       <div
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[35] transition-transform duration-300",
+          "fixed inset-x-0 z-[35] transition-transform duration-300",
           moreOpen
             ? "translate-y-0 ease-out"
             : "translate-y-full ease-in pointer-events-none"
         )}
-        style={{ paddingBottom: "max(96px, calc(96px + env(safe-area-inset-bottom)))" }}
+        style={{ bottom: "calc(60px + max(12px, env(safe-area-inset-bottom)))" }}
       >
-        <div className="bg-white dark:bg-shark-900 rounded-t-[28px] shadow-2xl overflow-hidden">
+        <div className="bg-white dark:bg-shark-900 rounded-t-[28px] shadow-[0_-4px_24px_rgba(0,0,0,0.12)] overflow-hidden">
           {/* Drag handle */}
           <div className="flex justify-center pt-3 pb-1">
             <div className="w-9 h-1 rounded-full bg-shark-200 dark:bg-shark-700" />
@@ -315,10 +315,10 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
             aria-label="Mobile navigation"
             className="relative flex-1 flex items-center bg-white/80 dark:bg-shark-950/80 backdrop-blur-2xl rounded-[22px] border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] py-2"
           >
-            {/* Elastic sliding pill */}
+            {/* Elastic sliding pill — subtle grey, matching ClickUp */}
             <div
               aria-hidden="true"
-              className="absolute inset-y-2 rounded-[14px] bg-white/70 dark:bg-white/10 border border-white/90 dark:border-white/20 shadow-[0_1px_6px_rgba(0,0,0,0.08)] pointer-events-none"
+              className="absolute inset-y-2 rounded-[14px] bg-black/[0.07] dark:bg-white/[0.13] pointer-events-none"
               style={{
                 left:       pillLeft,
                 width:      pillWidth,
