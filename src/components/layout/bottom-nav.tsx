@@ -264,33 +264,43 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
         />
       )}
 
-      {/* Sheet — bottom edge sits flush with the top of the nav bar */}
+      {/*
+        Sheet — anchored at bottom:0 so it sits behind the nav bar (z-40).
+        The nav bar overlaps the sheet's bottom portion, creating the
+        seamless "panel grows from nav" look identical to ClickUp.
+        Bottom padding pushes the grid content above the nav bar.
+      */}
       <div
         className={cn(
-          "fixed inset-x-0 z-[35] transition-transform duration-300",
+          "fixed inset-x-0 bottom-0 z-[35] transition-transform duration-300",
           moreOpen
-            ? "translate-y-0 ease-out"
+            ? "translate-y-0 ease-[cubic-bezier(0.32,0.72,0,1)]"
             : "translate-y-full ease-in pointer-events-none"
         )}
-        style={{ bottom: "calc(60px + max(12px, env(safe-area-inset-bottom)))" }}
       >
-        <div className="bg-white dark:bg-shark-900 rounded-t-[28px] shadow-[0_-4px_24px_rgba(0,0,0,0.12)] overflow-hidden">
+        <div
+          className="bg-white dark:bg-shark-900 rounded-t-[24px] shadow-[0_-2px_20px_rgba(0,0,0,0.10)]"
+          style={{ paddingBottom: "calc(84px + env(safe-area-inset-bottom))" }}
+        >
           {/* Drag handle */}
-          <div className="flex justify-center pt-3 pb-1">
-            <div className="w-9 h-1 rounded-full bg-shark-200 dark:bg-shark-700" />
+          <div className="flex justify-center pt-3 pb-2">
+            <div className="w-8 h-1 rounded-full bg-shark-200 dark:bg-shark-700" />
           </div>
 
-          {/* Grid */}
-          <div className="grid grid-cols-3 gap-y-5 gap-x-2 px-6 pt-4 pb-6">
+          {/* 3 × 3 grid — matches ClickUp proportions */}
+          <div className="grid grid-cols-3 gap-y-6 gap-x-3 px-8 pt-2 pb-4">
             {moreItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={() => setMoreOpen(false)}
-                className="flex flex-col items-center gap-2 active:opacity-70 transition-opacity"
+                className="flex flex-col items-center gap-2 active:opacity-60 transition-opacity"
               >
-                <div className={cn("w-16 h-16 rounded-[20px] flex items-center justify-center", item.bg)}>
-                  <Icon name={item.icon} size={26} className={item.fg} />
+                <div className={cn(
+                  "w-[60px] h-[60px] rounded-[18px] flex items-center justify-center",
+                  item.bg
+                )}>
+                  <Icon name={item.icon} size={27} className={item.fg} />
                 </div>
                 <span className="text-[11px] font-medium text-shark-700 dark:text-shark-300 text-center leading-tight">
                   {item.label}
