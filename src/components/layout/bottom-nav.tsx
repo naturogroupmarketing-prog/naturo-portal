@@ -237,13 +237,15 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
           >
             <div className={cn(
               "w-12 h-8 rounded-xl flex items-center justify-center transition-all duration-200 relative",
-              cogAction ? "bg-shark-900 dark:bg-white" : ""
+              cogAction
+                ? "bg-shark-900/75 backdrop-blur-xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_2px_8px_rgba(0,0,0,0.2)] dark:bg-white/15 dark:border-white/20"
+                : ""
             )}>
               <Icon
                 name="settings"
                 size={18}
                 className={cogAction
-                  ? "text-white dark:text-shark-900"
+                  ? "text-white drop-shadow-sm"
                   : "text-shark-400 dark:text-shark-500"}
               />
               {installReady && !cogAction && (
@@ -251,8 +253,10 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               )}
             </div>
             <span className={cn(
-              "text-[10px] font-medium leading-none",
-              cogAction ? "text-shark-900 dark:text-white" : "text-shark-400 dark:text-shark-500"
+              "text-[10px] leading-none",
+              cogAction
+                ? "font-semibold text-shark-900 dark:text-white"
+                : "font-medium text-shark-400 dark:text-shark-500"
             )}>
               Settings
             </span>
@@ -309,13 +313,15 @@ function NavButton({ item, pathname }: { item: NavItem; pathname: string }) {
     >
       <div className={cn(
         "w-12 h-8 rounded-xl flex items-center justify-center transition-all duration-200 relative",
-        active ? "bg-shark-900 dark:bg-white" : ""
+        active
+          ? "bg-shark-900/75 backdrop-blur-xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_2px_8px_rgba(0,0,0,0.2)] dark:bg-white/15 dark:border-white/20"
+          : ""
       )}>
         <Icon
           name={item.icon}
           size={18}
           className={active
-            ? "text-white dark:text-shark-900"
+            ? "text-white drop-shadow-sm"
             : "text-shark-400 dark:text-shark-500"}
         />
         {item.badge != null && item.badge > 0 && (
@@ -325,8 +331,8 @@ function NavButton({ item, pathname }: { item: NavItem; pathname: string }) {
         )}
       </div>
       <span className={cn(
-        "text-[10px] font-medium leading-none transition-colors",
-        active ? "text-shark-900 dark:text-white" : "text-shark-400 dark:text-shark-500"
+        "text-[10px] font-semibold leading-none transition-colors",
+        active ? "text-shark-900 dark:text-white" : "text-shark-400 dark:text-shark-500 font-medium"
       )}>
         {item.label}
       </span>
