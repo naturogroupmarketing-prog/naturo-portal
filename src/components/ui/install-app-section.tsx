@@ -185,39 +185,29 @@ export function InstallAppSection() {
         ];
 
     return (
-      <div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-action-100 flex items-center justify-center shrink-0">
-              <Icon name="download" size={18} className="text-action-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-shark-800 dark:text-shark-200">Install App</p>
-              <p className="text-xs text-shark-400 mt-0.5">Add Trackio to your home screen</p>
-            </div>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-action-100 flex items-center justify-center shrink-0">
+            <Icon name="download" size={18} className="text-action-600" />
           </div>
-          <button
-            onClick={() => setShowGuide((p) => !p)}
-            className="text-xs font-semibold text-action-600 hover:text-action-700 px-3 py-1.5 bg-action-50 rounded-lg shrink-0"
-          >
-            {showGuide ? "Close" : "How to"}
-          </button>
+          <div>
+            <p className="text-sm font-medium text-shark-800 dark:text-shark-200">Install App</p>
+            <p className="text-xs text-shark-400 mt-0.5">Add Trackio to your home screen</p>
+          </div>
         </div>
-        {showGuide && (
-          <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-xl p-4 space-y-3">
-            <p className="text-xs font-semibold text-shark-500 uppercase tracking-wider">
-              Steps to install{isAndroid ? " (Chrome)" : ""}
-            </p>
-            <ol className="space-y-2.5">
-              {steps.map((step, i) => (
-                <li key={i} className="flex items-center gap-3 text-xs text-shark-700 dark:text-shark-300">
-                  <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0">{i + 1}</span>
-                  <span>{step}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
+        <div className="bg-shark-50 dark:bg-shark-800 rounded-xl p-4 space-y-3">
+          <p className="text-xs font-semibold text-shark-500 uppercase tracking-wider">
+            Steps to install{isAndroid ? " (Chrome)" : ""}
+          </p>
+          <ol className="space-y-2.5">
+            {steps.map((step, i) => (
+              <li key={i} className="flex items-center gap-3 text-xs text-shark-700 dark:text-shark-300">
+                <span className="w-6 h-6 rounded-full bg-action-500 text-white flex items-center justify-center font-bold text-[11px] shrink-0">{i + 1}</span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     );
   }
