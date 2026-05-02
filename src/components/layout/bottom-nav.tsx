@@ -238,7 +238,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
             <div className={cn(
               "flex flex-col items-center gap-1 px-3 py-1.5 rounded-2xl w-full transition-all duration-200",
               cogAction
-                ? "bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-white/80 dark:border-white/20"
+                ? "bg-white/70 dark:bg-white/10 shadow-[0_1px_6px_rgba(0,0,0,0.08)] border border-white/90 dark:border-white/20"
                 : ""
             )}>
               <div className="relative flex items-center justify-center">
@@ -317,7 +317,7 @@ function NavButton({ item, pathname }: { item: NavItem; pathname: string }) {
       <div className={cn(
         "flex flex-col items-center gap-1 px-3 py-1.5 rounded-2xl w-full transition-all duration-200",
         active
-          ? "bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-white/80 dark:border-white/20"
+          ? "bg-white/70 dark:bg-white/10 shadow-[0_1px_6px_rgba(0,0,0,0.08)] border border-white/90 dark:border-white/20"
           : ""
       )}>
         <div className="relative flex items-center justify-center">
