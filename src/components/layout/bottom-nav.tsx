@@ -48,9 +48,9 @@ function getNavItems(role: Role, po: number, returns: number): NavItem[] {
       ];
     case "BRANCH_MANAGER":
       return [
-        { label: "Home",    href: "/dashboard",  icon: "dashboard" },
+        { label: "Home",    href: "/dashboard",   icon: "dashboard" },
         { label: "Stock",   href: "/consumables", icon: "droplet" },
-        { label: "Returns", href: "/returns",    icon: "arrow-left", badge: returns },
+        { label: "Returns", href: "/returns",     icon: "arrow-left", badge: returns },
       ];
     case "AUDITOR":
       return [
@@ -70,9 +70,9 @@ function getNavItems(role: Role, po: number, returns: number): NavItem[] {
 // ─── Quick actions ────────────────────────────────────────────────────────────
 
 const STAFF_QUICK_ACTIONS: QuickAction[] = [
-  { label: "Scan QR",        href: "/scan",                   icon: "qr-code",        color: "bg-shark-700" },
-  { label: "Request Supply", href: "/request-consumables",    icon: "droplet",        color: "bg-action-500" },
-  { label: "Report Damage",  href: "/report-damage",          icon: "alert-triangle", color: "bg-[#E8532E]" },
+  { label: "Scan QR",        href: "/scan",                icon: "qr-code",        color: "bg-shark-700" },
+  { label: "Request Supply", href: "/request-consumables", icon: "droplet",        color: "bg-action-500" },
+  { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", color: "bg-[#E8532E]" },
 ];
 
 const PAGE_QUICK_ACTIONS: Record<string, QuickAction[]> = {
@@ -83,9 +83,9 @@ const PAGE_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: "Add Asset",  href: "/assets?action=add",             icon: "package", color: "bg-action-500" },
   ],
   "/assets": [
-    { label: "Scan QR",       href: "/scan",               icon: "qr-code",        color: "bg-shark-700" },
-    { label: "Report Damage", href: "/report-damage",      icon: "alert-triangle", color: "bg-[#E8532E]" },
-    { label: "Add Asset",     href: "/assets?action=add",  icon: "package",        color: "bg-action-500" },
+    { label: "Scan QR",       href: "/scan",              icon: "qr-code",        color: "bg-shark-700" },
+    { label: "Report Damage", href: "/report-damage",     icon: "alert-triangle", color: "bg-[#E8532E]" },
+    { label: "Add Asset",     href: "/assets?action=add", icon: "package",        color: "bg-action-500" },
   ],
   "/consumables": [
     { label: "Scan QR",    href: "/scan",                          icon: "qr-code", color: "bg-shark-700" },
@@ -161,6 +161,17 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
 
   const allItems = getNavItems(role, pendingPOCount, pendingReturnsCount);
 
+  // ── Sliding pill: figure out which slot is active ─────────────────────────
+  const numSlots = allItems.length + 1; // nav items + Settings
+
+  let activeIdx = allItems.findIndex(
+    (item) => pathname === item.href || pathname.startsWith(item.href + "/")
+  );
+  // If no nav item matches, fall back to the Settings slot (last index)
+  if (activeIdx === -1) activeIdx = allItems.length;
+
+  const settingsSlotActive = activeIdx === allItems.length;
+
   const handleCogTap = () => {
     if (cogAction) cogAction();
     else router.push("/settings");
@@ -220,49 +231,55 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
       {/* Floating bar */}
       <div className="mx-8 flex items-center gap-2.5">
 
-        {/* Frosted glass nav pill */}
+        {/* Frosted glass nav pill — relative so the sliding indicator can be absolute */}
         <nav
           aria-label="Mobile navigation"
-          className="flex-1 flex items-center bg-white/80 dark:bg-shark-950/80 backdrop-blur-2xl rounded-[22px] border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] px-2 py-2 gap-1"
+          className="relative flex-1 flex items-center bg-white/80 dark:bg-shark-950/80 backdrop-blur-2xl rounded-[22px] border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] py-2"
         >
+          {/* Sliding pill indicator — physically moves between slots */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-2 rounded-[14px] bg-white/70 dark:bg-white/10 border border-white/90 dark:border-white/20 shadow-[0_1px_6px_rgba(0,0,0,0.08)] pointer-events-none"
+            style={{
+              width: `${100 / numSlots}%`,
+              left: `${(activeIdx / numSlots) * 100}%`,
+              transition: "left 350ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+            }}
+          />
+
           {allItems.map((item) => (
             <NavButton key={item.href} item={item} pathname={pathname} />
           ))}
 
-          {/* Settings — 4th slot */}
+          {/* Settings — last slot */}
           <button
             onClick={handleCogTap}
             aria-label="Settings"
-            className="flex flex-col items-center flex-1"
+            className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-1.5 px-3"
           >
-            <div className={cn(
-              "flex flex-col items-center gap-1 px-3 py-1.5 rounded-2xl w-full transition-all duration-200",
-              cogAction
-                ? "bg-white/70 dark:bg-white/10 shadow-[0_1px_6px_rgba(0,0,0,0.08)] border border-white/90 dark:border-white/20"
-                : ""
-            )}>
-              <div className="relative flex items-center justify-center">
-                <Icon
-                  name="settings"
-                  size={22}
-                  className={cn(
-                    "transition-colors duration-200",
-                    cogAction ? "text-action-500" : "text-shark-400 dark:text-shark-500"
-                  )}
-                />
-                {installReady && !cogAction && (
-                  <span className="absolute -top-1.5 -right-2 w-2 h-2 rounded-full bg-green-500 border-2 border-white dark:border-shark-950" />
+            <div className="relative flex items-center justify-center">
+              <Icon
+                name="settings"
+                size={22}
+                className={cn(
+                  "transition-colors duration-200",
+                  settingsSlotActive || cogAction
+                    ? "text-action-500"
+                    : "text-shark-400 dark:text-shark-500"
                 )}
-              </div>
-              <span className={cn(
-                "text-[10px] leading-none transition-colors duration-200",
-                cogAction
-                  ? "font-semibold text-action-500"
-                  : "font-medium text-shark-400 dark:text-shark-500"
-              )}>
-                Settings
-              </span>
+              />
+              {installReady && (
+                <span className="absolute -top-1.5 -right-2 w-2 h-2 rounded-full bg-green-500 border-2 border-white dark:border-shark-950" />
+              )}
             </div>
+            <span className={cn(
+              "text-[10px] leading-none transition-colors duration-200",
+              settingsSlotActive || cogAction
+                ? "font-semibold text-action-500"
+                : "font-medium text-shark-400 dark:text-shark-500"
+            )}>
+              Settings
+            </span>
           </button>
         </nav>
 
@@ -312,36 +329,29 @@ function NavButton({ item, pathname }: { item: NavItem; pathname: string }) {
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      className="flex flex-col items-center flex-1"
+      className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-1.5 px-3"
     >
-      <div className={cn(
-        "flex flex-col items-center gap-1 px-3 py-1.5 rounded-2xl w-full transition-all duration-200",
-        active
-          ? "bg-white/70 dark:bg-white/10 shadow-[0_1px_6px_rgba(0,0,0,0.08)] border border-white/90 dark:border-white/20"
-          : ""
-      )}>
-        <div className="relative flex items-center justify-center">
-          <Icon
-            name={item.icon}
-            size={22}
-            className={cn(
-              "transition-colors duration-200",
-              active ? "text-action-500" : "text-shark-400 dark:text-shark-500"
-            )}
-          />
-          {item.badge != null && item.badge > 0 && (
-            <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-0.5 leading-none">
-              {item.badge > 99 ? "99+" : item.badge}
-            </span>
+      <div className="relative flex items-center justify-center">
+        <Icon
+          name={item.icon}
+          size={22}
+          className={cn(
+            "transition-colors duration-200",
+            active ? "text-action-500" : "text-shark-400 dark:text-shark-500"
           )}
-        </div>
-        <span className={cn(
-          "text-[10px] leading-none transition-colors duration-200",
-          active ? "font-semibold text-action-500" : "font-medium text-shark-400 dark:text-shark-500"
-        )}>
-          {item.label}
-        </span>
+        />
+        {item.badge != null && item.badge > 0 && (
+          <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-0.5 leading-none">
+            {item.badge > 99 ? "99+" : item.badge}
+          </span>
+        )}
       </div>
+      <span className={cn(
+        "text-[10px] leading-none transition-colors duration-200",
+        active ? "font-semibold text-action-500" : "font-medium text-shark-400 dark:text-shark-500"
+      )}>
+        {item.label}
+      </span>
     </Link>
   );
 }
