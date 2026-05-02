@@ -69,7 +69,13 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/api/cron") ||
     pathname.startsWith("/_next") ||
     pathname === "/favicon.ico" ||
-    pathname.startsWith("/support") // support console — auth handled in layout
+    pathname.startsWith("/support") || // support console — auth handled in layout
+    // PWA files must be publicly accessible — Chrome fetches these without
+    // session cookies during background SW update checks and installability
+    // evaluation. Redirecting them to /login breaks PWA install entirely.
+    pathname === "/sw.js" ||
+    pathname === "/manifest.webmanifest" ||
+    pathname === "/offline"
   ) {
     return NextResponse.next();
   }
