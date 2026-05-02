@@ -10,7 +10,8 @@ export type IconName =
   | "help-circle" | "mail" | "message-circle" | "bell" | "inbox"
   | "award" | "trash-2" | "copy" | "sun" | "moon" | "info" | "git-branch"
   | "home" | "wrench"
-  | "refresh-cw" | "calendar";
+  | "refresh-cw" | "calendar"
+  | "grid";
 
 interface IconProps {
   name: IconName;
@@ -117,6 +118,9 @@ const paths: Record<IconName, string> = {
     "M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0114.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0020.49 15",
   calendar:
     "M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z M16 2v4 M8 2v4 M3 10h18",
+  // 2×2 grid — used for the "More" nav button
+  grid:
+    "M10 3H3v7h7V3z M21 3h-7v7h7V3z M21 14h-7v7h7v-7z M10 14H3v7h7v-7z",
 };
 
 export function Icon({ name, className, size = 20 }: IconProps) {
