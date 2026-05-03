@@ -406,11 +406,11 @@ export default async function DashboardPage() {
 
   const organizationId = session.user.organizationId!;
 
-  const regionFilter = session.user.role === "BRANCH_MANAGER"
-    ? { regionId: session.user.regionId!, organizationId }
-    : { organizationId };
+  const regionFilter = { organizationId };
 
-  const isSuperAdmin = session.user.role === "SUPER_ADMIN";
+  // SUPER_ADMIN and BRANCH_MANAGER return early above — this code path is for
+  // support roles only, so isSuperAdmin is always false here.
+  const isSuperAdmin = false;
 
   const [
     totalAssets,
