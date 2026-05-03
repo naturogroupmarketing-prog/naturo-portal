@@ -172,21 +172,6 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Quick Add button */}
-        <div ref={quickAddRef} className="relative">
-          <button
-            onClick={() => setQuickAddOpen(!quickAddOpen)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-action-500 hover:bg-action-600 text-white rounded-lg transition-colors"
-          >
-            <span className="text-base leading-none">+</span>
-            <span className="hidden sm:inline">Add</span>
-          </button>
-          {quickAddOpen && (
-            <div className="absolute right-0 top-full mt-2 z-50">
-              <QuickAddMenu role={role} onClose={() => setQuickAddOpen(false)} />
-            </div>
-          )}
-        </div>
 
         {/* Apps grid — opens quick links */}
         <button
