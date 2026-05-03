@@ -77,6 +77,20 @@ export default async function PortalLayout({
     }
   }
 
+  // Fetch org name + logo for the header brand area
+  let orgName = "My Organisation";
+  let orgLogo: string | null = null;
+  if (session.user.organizationId) {
+    const orgRecord = await db.organization.findUnique({
+      where: { id: session.user.organizationId },
+      select: { name: true, logo: true },
+    });
+    if (orgRecord) {
+      orgName = orgRecord.name;
+      orgLogo = orgRecord.logo;
+    }
+  }
+
   // Count pending POs and pending returns for sidebar badges (managers/admins only)
   let pendingPOCount = 0;
   let pendingReturnsCount = 0;
@@ -116,6 +130,8 @@ export default async function PortalLayout({
           userImage={session.user.image}
           pendingPOCount={pendingPOCount}
           pendingReturnsCount={pendingReturnsCount}
+          orgName={orgName}
+          orgLogo={orgLogo}
         >
           <ErrorBoundary>
             {children}

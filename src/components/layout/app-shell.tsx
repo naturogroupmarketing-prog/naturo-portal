@@ -18,13 +18,15 @@ interface AppShellProps {
   userImage?: string | null;
   pendingPOCount?: number;
   pendingReturnsCount?: number;
+  orgName?: string;
+  orgLogo?: string | null;
 }
 
 // Context so child pages can know if sidebar is expanded
 export const SidebarContext = createContext<{ expanded: boolean; toggle: () => void }>({ expanded: false, toggle: () => {} });
 export const useSidebar = () => useContext(SidebarContext);
 
-export function AppShell({ children, role, userName, userImage, pendingPOCount = 0, pendingReturnsCount = 0 }: AppShellProps) {
+export function AppShell({ children, role, userName, userImage, pendingPOCount = 0, pendingReturnsCount = 0, orgName, orgLogo }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   // Desktop sidebar: expanded by default, collapsible
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
@@ -75,6 +77,8 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
         sidebarExpanded={sidebarExpanded}
         onSidebarToggle={() => setSidebarExpanded((p) => !p)}
+        orgName={orgName}
+        orgLogo={orgLogo}
       />
 
       {/* Below header: sidebar + content */}

@@ -19,9 +19,11 @@ interface HeaderProps {
   onMenuToggle: () => void;
   sidebarExpanded?: boolean;
   onSidebarToggle?: () => void;
+  orgName?: string;
+  orgLogo?: string | null;
 }
 
-export function Header({ userName, userImage, role, onMenuToggle, sidebarExpanded, onSidebarToggle }: HeaderProps) {
+export function Header({ userName, userImage, role, onMenuToggle, sidebarExpanded, onSidebarToggle, orgName, orgLogo }: HeaderProps) {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
@@ -123,15 +125,28 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
           <Icon name="menu" size={20} />
         </button>
 
-        {/* Logo — always visible at original size */}
-        <Link href="/dashboard" className="flex items-center hover:opacity-80 transition-opacity">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/Logotrackio.svg"
-            alt="trackio"
-            className="h-8 sm:h-[45px] w-auto"
-            draggable={false}
-          />
+        {/* Brand — org logo if set, otherwise name with initial badge */}
+        <Link href="/dashboard" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity min-w-0">
+          {orgLogo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={orgLogo}
+              alt={orgName ?? ""}
+              className="h-8 w-auto max-w-[140px] object-contain"
+              draggable={false}
+            />
+          ) : (
+            <>
+              <div className="w-7 h-7 rounded-lg bg-action-600 flex items-center justify-center shrink-0">
+                <span className="text-white font-bold text-sm leading-none select-none">
+                  {(orgName ?? "O").charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <span className="font-semibold text-shark-900 dark:text-shark-100 text-sm truncate max-w-[140px]">
+                {orgName}
+              </span>
+            </>
+          )}
         </Link>
       </div>
 
