@@ -132,20 +132,13 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
             <img
               src={orgLogo}
               alt={orgName ?? ""}
-              className="h-8 w-auto max-w-[140px] object-contain"
+              className="h-8 w-auto max-w-[160px] object-contain"
               draggable={false}
             />
           ) : (
-            <>
-              <div className="w-7 h-7 rounded-lg bg-action-600 flex items-center justify-center shrink-0">
-                <span className="text-white font-bold text-sm leading-none select-none">
-                  {(orgName ?? "O").charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <span className="font-semibold text-shark-900 dark:text-shark-100 text-sm truncate max-w-[140px]">
-                {orgName}
-              </span>
-            </>
+            <span className="font-semibold text-shark-900 dark:text-shark-100 text-base truncate max-w-[180px]">
+              {orgName}
+            </span>
           )}
         </Link>
       </div>
