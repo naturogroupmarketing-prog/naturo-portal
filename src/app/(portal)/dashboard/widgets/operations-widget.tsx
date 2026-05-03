@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
+import { cn } from "@/lib/utils";
 
 interface OperationsOverview {
   healthScore: number;
@@ -142,12 +143,6 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
     },
   ];
 
-  const issues = [
-    { label: "Overdue Returns", value: data.overdueReturns, icon: "arrow-left" as const, href: "/returns", danger: true },
-    { label: "Damage / Loss", value: data.unresolvedDamage + data.lostItems, icon: "alert-triangle" as const, href: "/alerts/damage", danger: true },
-    { label: "Overdue Inspections", value: data.incompleteInspections, icon: "search" as const, href: "/condition-checks", danger: true },
-  ].filter((i) => i.value > 0);
-
   return (
     <Card className="border-action-100 h-fit">
       <div className="p-3 sm:p-4">
@@ -240,20 +235,80 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
           </div>
         </div>
 
-        {/* Issues list */}
-        {issues.length > 0 && (
-          <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
-            {issues.map((item) => (
-              <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
-                <div className="flex items-center gap-2">
-                  <Icon name={item.icon} size={12} className="text-[#E8532E]" />
-                  <span className="text-xs text-shark-600 dark:text-shark-400">{item.label}</span>
-                </div>
-                <span className="text-xs font-bold text-[#E8532E]">{item.value}</span>
-              </Link>
-            ))}
+      </div>
+    </Card>
+  );
+}
+
+// ─── Priority Alerts Panel ────────────────────────────────────────────────────
+
+export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
+  const [open, setOpen] = useState(false);
+
+  const alerts = [
+    { label: "Overdue Returns",     value: data.overdueReturns,                        icon: "arrow-left"     as const, href: "/returns" },
+    { label: "Damage / Loss",       value: data.unresolvedDamage + data.lostItems,      icon: "alert-triangle" as const, href: "/alerts/damage" },
+    { label: "Overdue Inspections", value: data.incompleteInspections,                  icon: "search"         as const, href: "/condition-checks" },
+    { label: "Low Stock",           value: data.lowStockCount,                          icon: "droplet"        as const, href: "/consumables?stock=low" },
+    { label: "Pending Requests",    value: data.pendingRequests,                        icon: "clipboard"      as const, href: "/consumables?tab=requests" },
+  ].filter((a) => a.value > 0);
+
+  const total = alerts.reduce((sum, a) => sum + a.value, 0);
+
+  return (
+    <Card className="h-fit border-shark-100 dark:border-shark-800 overflow-hidden">
+      {/* Header row — always visible, tap to toggle */}
+      <button
+        onClick={() => setOpen((p) => !p)}
+        className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center shrink-0">
+            <Icon name="alert-triangle" size={12} className="text-red-500" />
           </div>
-        )}
+          <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">Priority Alerts</span>
+          {total > 0 && (
+            <span className="text-[10px] font-bold bg-red-500 text-white rounded-full px-1.5 py-0.5 leading-none">
+              {total}
+            </span>
+          )}
+        </div>
+        <Icon
+          name="chevron-down"
+          size={14}
+          className={cn("text-shark-400 transition-transform duration-200", open && "rotate-180")}
+        />
+      </button>
+
+      {/* Collapsible content */}
+      <div className={cn(
+        "grid transition-[grid-template-rows] duration-300",
+        open ? "grid-rows-[1fr] ease-out" : "grid-rows-[0fr] ease-in"
+      )}>
+        <div className="overflow-hidden min-h-0">
+          {alerts.length > 0 ? (
+            <div className="divide-y divide-shark-50 dark:divide-shark-800 border-t border-shark-100 dark:border-shark-800">
+              {alerts.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Icon name={item.icon} size={13} className="text-[#E8532E]" />
+                    <span className="text-xs text-shark-600 dark:text-shark-400">{item.label}</span>
+                  </div>
+                  <span className="text-xs font-bold text-[#E8532E]">{item.value}</span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="px-3 py-3 border-t border-shark-100 dark:border-shark-800 flex items-center gap-2">
+              <Icon name="check-circle" size={13} className="text-green-500" />
+              <span className="text-xs text-shark-500 dark:text-shark-400">No active alerts — all clear!</span>
+            </div>
+          )}
+        </div>
       </div>
     </Card>
   );
