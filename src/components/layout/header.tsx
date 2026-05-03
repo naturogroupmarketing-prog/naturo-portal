@@ -116,15 +116,6 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
     <header className="sticky top-0 z-30 flex min-h-14 items-center justify-between bg-white dark:bg-shark-900 px-3 sm:px-4 lg:px-6 safe-top transition-colors">
       {/* Left side: mobile menu + logo */}
       <div className="flex items-center gap-2">
-        {/* Mobile menu toggle */}
-        <button
-          onClick={onMenuToggle}
-          className="lg:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-shark-500 dark:text-shark-400 hover:text-shark-900 dark:hover:text-shark-100 rounded-full hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
-          aria-label="Toggle menu"
-        >
-          <Icon name="menu" size={20} />
-        </button>
-
         {/* Brand — org logo if set, otherwise name with initial badge */}
         <Link href="/dashboard" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity min-w-0">
           {orgLogo ? (
