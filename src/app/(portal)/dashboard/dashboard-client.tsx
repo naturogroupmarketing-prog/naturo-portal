@@ -368,44 +368,22 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
       {/* ── Hero Banner ───────────────────────────────────────────── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: 256 }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: 140 }}>
         {/* Hero image */}
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.png')" }} />
         {/* Dark gradient overlay so text is always readable */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#001832]/90 via-[#003d7d]/70 to-transparent" />
         {/* Content */}
-        <div className="relative px-8 py-10 sm:px-10 sm:py-12">
-          <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1 mb-4 w-fit">
+        <div className="relative px-8 py-6 sm:px-10 sm:py-7">
+          <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1 mb-3 w-fit">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
             <span className="text-[9px] font-bold text-white/80 tracking-widest uppercase">Enterprise Standard</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
             Asset &amp; Inventory Management
           </h1>
-          <p className="text-xs text-white/50 mt-2 font-medium">{subtitle}</p>
+          <p className="text-xs text-white/50 mt-1.5 font-medium">{subtitle}</p>
         </div>
-        {/* Performance grade chip — bottom left */}
-        {operationsOverview && (() => {
-          const s = operationsOverview.healthScore;
-          const label = s >= 95 ? "S" : s >= 85 ? "A" : s >= 70 ? "B" : s >= 50 ? "C" : "D";
-          const badgeStyle =
-            label === "S" ? "bg-gradient-to-br from-yellow-300 to-amber-400 text-amber-900 border-amber-400" :
-            label === "A" ? "bg-gradient-to-br from-action-400 to-action-600 text-white border-action-400" :
-            label === "B" ? "bg-gradient-to-br from-blue-400 to-blue-600 text-white border-blue-400" :
-            label === "C" ? "bg-gradient-to-br from-amber-400 to-orange-500 text-white border-amber-400" :
-                            "bg-gradient-to-br from-red-400 to-red-600 text-white border-red-400";
-          return (
-            <div className="absolute bottom-4 left-8 sm:left-10 flex items-center gap-2.5">
-              <div className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center font-black text-lg select-none ${badgeStyle}`}>
-                {label}
-              </div>
-              <div>
-                <p className="text-[9px] text-white/50 font-semibold uppercase tracking-wider leading-none">Performance</p>
-                <p className="text-base font-black text-white leading-tight">{s}<span className="text-white/50 text-xs font-normal">/100</span></p>
-              </div>
-            </div>
-          );
-        })()}
         {/* Settings gear in hero corner */}
         <button
           onClick={() => setSettingsOpen(true)}
