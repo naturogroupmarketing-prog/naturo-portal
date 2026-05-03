@@ -890,20 +890,20 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             {/* Expanded detail */}
                             {!isCollapsed && (
                               <div className="px-3 pb-3 pt-0 border-t border-shark-50 dark:border-shark-800">
-                                <div className="grid grid-cols-3 gap-2 mt-3">
-                                  <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-red-50 border border-red-100 py-3 hover:bg-red-100 transition-colors">
-                                    <Icon name="alert-triangle" size={12} className="text-red-400" />
-                                    <span className="text-base font-extrabold text-red-600 leading-none tabular-nums">{region.lowStockCount}</span>
+                                <div className="grid grid-cols-3 gap-2 mt-2">
+                                  <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-red-50 border border-red-100 py-1.5 hover:bg-red-100 transition-colors">
+                                    <Icon name="alert-triangle" size={11} className="text-red-400" />
+                                    <span className="text-sm font-extrabold text-red-600 leading-none tabular-nums">{region.lowStockCount}</span>
                                     <span className="text-[9px] font-semibold text-red-400 text-center leading-tight">Low Stock</span>
                                   </Link>
-                                  <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-amber-50 border border-amber-100 py-3 hover:bg-amber-100 transition-colors">
-                                    <Icon name="clipboard" size={12} className="text-amber-500" />
-                                    <span className="text-base font-extrabold text-[#E8532E] leading-none tabular-nums">{region.pendingRequests}</span>
+                                  <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-amber-50 border border-amber-100 py-1.5 hover:bg-amber-100 transition-colors">
+                                    <Icon name="clipboard" size={11} className="text-amber-500" />
+                                    <span className="text-sm font-extrabold text-[#E8532E] leading-none tabular-nums">{region.pendingRequests}</span>
                                     <span className="text-[9px] font-semibold text-amber-500 text-center leading-tight">Requests</span>
                                   </Link>
-                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-action-50 border border-action-100 py-3 hover:bg-action-100 transition-colors">
-                                    <Icon name="truck" size={12} className="text-action-400" />
-                                    <span className="text-base font-extrabold text-action-600 leading-none tabular-nums">{region.pendingPOs}</span>
+                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-action-50 border border-action-100 py-1.5 hover:bg-action-100 transition-colors">
+                                    <Icon name="truck" size={11} className="text-action-400" />
+                                    <span className="text-sm font-extrabold text-action-600 leading-none tabular-nums">{region.pendingPOs}</span>
                                     <span className="text-[9px] font-semibold text-action-400 text-center leading-tight">POs</span>
                                   </Link>
                                 </div>
