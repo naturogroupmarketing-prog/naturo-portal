@@ -19,9 +19,9 @@ interface OperationsOverview {
   lowStockCount: number;
 }
 
-function HealthRing({ score, size = 140 }: { score: number; size?: number }) {
+function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   const [animated, setAnimated] = useState(0);
-  const strokeWidth = 11;
+  const strokeWidth = 8;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (animated / 100) * circumference;
@@ -85,37 +85,37 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
 
   return (
     <Card className="h-fit bg-white/60 dark:bg-shark-900/60 backdrop-blur-xl backdrop-saturate-150 border border-white/60 dark:border-white/10">
-      <div className="p-4 sm:p-6">
+      <div className="p-3 sm:p-4">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h2 className="text-sm sm:text-lg font-bold text-shark-900 dark:text-shark-100 leading-tight">Operations Performance</h2>
-          <div className="flex items-center gap-1.5 bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 rounded-full px-2.5 py-1 shrink-0">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-bold text-shark-900 dark:text-shark-100 leading-tight">Operations Performance</h2>
+          <div className="flex items-center gap-1.5 bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 rounded-full px-2 py-0.5 shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
             <span className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-wider">Live</span>
           </div>
         </div>
 
         {/* Ring + Metrics — always side by side */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {/* Ring */}
           <div className="shrink-0">
-            <HealthRing score={data.healthScore} size={120} />
+            <HealthRing score={data.healthScore} size={96} />
           </div>
 
           {/* Metrics — stacked vertically */}
-          <div className="flex-1 grid grid-cols-1 gap-2.5">
+          <div className="flex-1 grid grid-cols-1 gap-1.5">
             {metrics.map((m) => (
               <Link
                 key={m.label}
                 href={m.href}
-                className="group block bg-white/60 dark:bg-shark-800/50 backdrop-blur-sm border border-white/70 dark:border-white/10 rounded-2xl p-3 shadow-sm hover:bg-white/80 dark:hover:bg-shark-800/70 hover:shadow-md transition-all duration-200"
+                className="group block bg-white/60 dark:bg-shark-800/50 backdrop-blur-sm border border-white/70 dark:border-white/10 rounded-xl px-2.5 py-2 shadow-sm hover:bg-white/80 dark:hover:bg-shark-800/70 transition-all duration-200"
               >
-                <p className="text-[9px] sm:text-[10px] text-shark-400 dark:text-shark-500 mb-1 leading-none font-medium truncate">{m.label}</p>
-                <p className="text-sm font-bold text-shark-900 dark:text-shark-100 leading-tight truncate group-hover:text-action-600 dark:group-hover:text-action-400 transition-colors">
+                <p className="text-[9px] text-shark-400 dark:text-shark-500 leading-none font-medium truncate">{m.label}</p>
+                <p className="text-xs font-bold text-shark-900 dark:text-shark-100 leading-tight truncate group-hover:text-action-600 dark:group-hover:text-action-400 transition-colors mt-0.5">
                   {m.display}
                 </p>
-                <div className="mt-2 h-1 bg-shark-100/80 dark:bg-shark-700/80 rounded-full overflow-hidden">
+                <div className="mt-1.5 h-0.5 bg-shark-100/80 dark:bg-shark-700/80 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-1000 ease-out"
                     style={{ width: `${m.barPct}%`, backgroundColor: m.barColor }}
