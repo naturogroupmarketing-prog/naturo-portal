@@ -45,7 +45,8 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith("/dashboard") ||
       pathname.startsWith("/setup") ||
       pathname.startsWith("/forgot-password") ||
-      pathname.startsWith("/reset-password")
+      pathname.startsWith("/reset-password") ||
+      pathname.startsWith("/set-password")
     ) {
       return NextResponse.redirect(`https://app.trackio.au${pathname}`, { status: 302 });
     }
@@ -62,6 +63,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/login") ||
     pathname.startsWith("/forgot-password") ||
     pathname.startsWith("/reset-password") ||
+    pathname.startsWith("/set-password") ||
     pathname.startsWith("/privacy-policy") ||
     pathname.startsWith("/terms-of-service") ||
     pathname.startsWith("/api/auth") ||
