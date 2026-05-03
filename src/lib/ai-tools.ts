@@ -551,6 +551,7 @@ async function searchAssets(
   const assets = await db.asset.findMany({
     where: {
       ...effectiveRegionFilter,
+      deletedAt: null, // Exclude soft-deleted assets
       ...(input.status ? { status: input.status as never } : {}),
       ...(input.category ? { category: { contains: input.category, mode: "insensitive" as const } } : {}),
       OR: [

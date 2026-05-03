@@ -141,7 +141,7 @@ export async function GET() {
 
   // Log the backup
   await createAuditLog({
-    action: "ASSET_UPDATED",
+    action: "BACKUP_DOWNLOADED",
     description: `Full backup downloaded: ${assets.length} assets, ${consumables.length} consumables, ${staff.length} staff`,
     performedById: session.user.id,
     organizationId,

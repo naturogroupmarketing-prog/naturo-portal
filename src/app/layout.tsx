@@ -40,13 +40,13 @@ export const metadata: Metadata = {
     siteName: "trackio",
     title: "trackio — Asset & Supply Tracking for Operational Teams",
     description: "Know exactly what you have, where it is, and who has it. The all-in-one tracking platform built for operational teams.",
-    images: [{ url: "/trackio_t_full_logo.svg", width: 1200, height: 630, alt: "trackio" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "trackio" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "trackio — Asset & Supply Tracking for Operational Teams",
     description: "Know exactly what you have, where it is, and who has it. The all-in-one tracking platform built for operational teams.",
-    images: ["/trackio_t_full_logo.svg"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,

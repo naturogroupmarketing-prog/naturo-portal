@@ -125,31 +125,30 @@ export function emailLowStock(itemName: string, currentQty: number, threshold: n
   `;
 }
 
-export function emailWelcome(staffName: string, email: string, password: string, companyName: string, role: string) {
+export function emailWelcome(staffName: string, email: string, inviteToken: string, companyName: string, role: string) {
   const appUrl = process.env.AUTH_URL || "https://naturo-portal.vercel.app";
+  const setupUrl = `${appUrl}/set-password?token=${inviteToken}`;
   return `
     <p style="color:#495057;">Hi ${staffName},</p>
-    <p style="color:#495057;">Welcome to <strong>${companyName}</strong>! Your trackio account has been created. You can now log in to manage your assigned equipment and consumables.</p>
+    <p style="color:#495057;">Welcome to <strong>${companyName}</strong>! Your trackio account has been created. Click the button below to set your password and access the portal.</p>
 
     <table style="width:100%;border-collapse:collapse;margin:16px 0;">
       <tr><td style="padding:10px 14px;background:#f8f9fa;border:1px solid #e9ecef;font-weight:600;color:#0f1b3d;width:100px;">Email</td>
           <td style="padding:10px 14px;border:1px solid #e9ecef;color:#495057;">${email}</td></tr>
-      <tr><td style="padding:10px 14px;background:#f8f9fa;border:1px solid #e9ecef;font-weight:600;color:#0f1b3d;">Password</td>
-          <td style="padding:10px 14px;border:1px solid #e9ecef;color:#495057;font-family:monospace;">${password}</td></tr>
       <tr><td style="padding:10px 14px;background:#f8f9fa;border:1px solid #e9ecef;font-weight:600;color:#0f1b3d;">Role</td>
           <td style="padding:10px 14px;border:1px solid #e9ecef;color:#495057;">${role.replace(/_/g, " ")}</td></tr>
     </table>
 
-    <p style="color:#868e96;font-size:13px;">For security, please change your password after your first login.</p>
+    <p style="color:#868e96;font-size:13px;">This invite link expires in 48 hours. If you did not expect this email, please contact your administrator.</p>
 
     <div style="text-align:center;margin:24px 0 8px;">
-      <a href="${appUrl}/login" style="display:inline-block;padding:12px 32px;background:#1F3DD9;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">
-        Log In to trackio
+      <a href="${setupUrl}" style="display:inline-block;padding:12px 32px;background:#1F3DD9;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">
+        Set Your Password &amp; Sign In
       </a>
     </div>
 
     <p style="color:#868e96;font-size:12px;text-align:center;margin-top:16px;">
-      Or open this link: <a href="${appUrl}/login" style="color:#1F3DD9;">${appUrl}/login</a>
+      Or copy this link: <a href="${setupUrl}" style="color:#1F3DD9;">${setupUrl}</a>
     </p>
   `;
 }

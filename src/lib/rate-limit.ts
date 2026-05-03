@@ -60,12 +60,14 @@ function memoryRateLimit(
 
 // ─── Upstash Redis Store (Production) ───────────────────
 
-let upstashLimiter: {
+// Keyed by `${maxRequests}:${windowSec}` so each unique config gets its own limiter
+const upstashLimiters = new Map<string, {
   limit: (key: string) => Promise<{ success: boolean; remaining: number; reset: number }>;
-} | null = null;
+}>();
 
 async function getUpstashLimiter(maxRequests: number, windowSec: number) {
-  if (upstashLimiter) return upstashLimiter;
+  const cacheKey = `${maxRequests}:${windowSec}`;
+  if (upstashLimiters.has(cacheKey)) return upstashLimiters.get(cacheKey)!;
 
   try {
     const { Ratelimit } = await import("@upstash/ratelimit");
@@ -76,13 +78,14 @@ async function getUpstashLimiter(maxRequests: number, windowSec: number) {
       token: process.env.UPSTASH_REDIS_REST_TOKEN!,
     });
 
-    upstashLimiter = new Ratelimit({
+    const limiter = new Ratelimit({
       redis,
       limiter: Ratelimit.slidingWindow(maxRequests, `${windowSec} s`),
       analytics: true,
     });
 
-    return upstashLimiter;
+    upstashLimiters.set(cacheKey, limiter);
+    return limiter;
   } catch {
     return null;
   }

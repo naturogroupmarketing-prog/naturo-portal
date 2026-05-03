@@ -216,8 +216,8 @@ COMMON TROUBLESHOOTING (answer these if asked):
           "get_overdue_inspections", "view_activity_log",
         ]);
 
-        // Tool-use loop (max 10 iterations)
-        for (let i = 0; i < 10; i++) {
+        // Tool-use loop (max 6 iterations — cost control)
+        for (let i = 0; i < 6; i++) {
           const response = await anthropic.messages.create({
             model: "claude-sonnet-4-20250514",
             max_tokens: 2048,

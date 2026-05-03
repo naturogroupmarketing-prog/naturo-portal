@@ -21,6 +21,7 @@ import { SmartReorderPanel, type ReorderRecommendation } from "./smart-reorder-p
 import { AssetHealthWidget } from "./asset-health-widget";
 import { type SmartInsight } from "./smart-insights-ticker";
 import { SystemHealthBar } from "./system-health-bar";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 // Lazy-load recharts components
 const AreaChart = dynamic(() => import("recharts").then((m) => m.AreaChart), { ssr: false });
@@ -399,46 +400,51 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:items-start">
         {/* Col 1 — AI Briefing + Operations Performance merged */}
         {(briefingWidget || (operationsOverview && showOperations)) && (
-          <div className="flex flex-col gap-4 self-start">
-            {briefingWidget && <div>{briefingWidget}</div>}
-            {operationsOverview && showOperations && (
-              <OperationsWidget data={operationsOverview} />
-            )}
-          </div>
+          <ErrorBoundary fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
+            <div className="flex flex-col gap-4 self-start">
+              {briefingWidget && <div>{briefingWidget}</div>}
+              {operationsOverview && showOperations && (
+                <OperationsWidget data={operationsOverview} />
+              )}
+            </div>
+          </ErrorBoundary>
         )}
 
         {/* Col 2 — Stat cards (3-across on mobile, stacked on desktop) */}
         {visibleStats.length > 0 && (
-          <StaggerContainer className="flex flex-col gap-2">
-            <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
-            {visibleStats.map((s) => (
-              <StaggerItem key={s.label}>
-                <Link href={s.href} className="block group h-full">
-                  <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-                    <CardContent className="px-2 py-2 lg:px-3 lg:py-3 h-full">
-                      {/* Mobile: vertical compact; Desktop: horizontal */}
-                      <div className="flex flex-col items-center text-center gap-1 lg:flex-row lg:items-center lg:text-left lg:gap-2">
-                        <div className={`w-7 h-7 lg:w-9 lg:h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
-                          <Icon name={s.icon} size={14} className={s.iconColor} />
+          <ErrorBoundary fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
+            <StaggerContainer className="flex flex-col gap-2">
+              <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
+              {visibleStats.map((s) => (
+                <StaggerItem key={s.label}>
+                  <Link href={s.href} className="block group h-full">
+                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
+                      <CardContent className="px-2 py-2 lg:px-3 lg:py-3 h-full">
+                        {/* Mobile: vertical compact; Desktop: horizontal */}
+                        <div className="flex flex-col items-center text-center gap-1 lg:flex-row lg:items-center lg:text-left lg:gap-2">
+                          <div className={`w-7 h-7 lg:w-9 lg:h-9 rounded-lg ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                            <Icon name={s.icon} size={14} className={s.iconColor} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[9px] lg:text-xs text-shark-500 dark:text-shark-400 truncate leading-tight">{s.label}</p>
+                            <AnimatedCounter value={s.value} className="text-lg lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                          </div>
+                          <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[9px] lg:text-xs text-shark-500 dark:text-shark-400 truncate leading-tight">{s.label}</p>
-                          <AnimatedCounter value={s.value} className="text-lg lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                        </div>
-                        <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </StaggerItem>
-            ))}
-            </div>
-          </StaggerContainer>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </StaggerItem>
+              ))}
+              </div>
+            </StaggerContainer>
+          </ErrorBoundary>
         )}
       </div>
 
-      {preferences.sectionOrder.map((sectionId) => {
-        switch (sectionId) {
+      {preferences.sectionOrder.map((sectionId) => (
+        <ErrorBoundary key={sectionId} fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-4 text-center text-sm text-shark-400">Widget unavailable</div>}>
+          {(() => { switch (sectionId) {
           case "stats":
             return null; // rendered above briefing — see explicit block after briefingWidget
 
@@ -971,11 +977,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           default:
             return null;
-        }
-      })}
+          } })()}
+        </ErrorBoundary>
+      ))}
 
       {/* Storage Locations Map */}
       {isSuperAdmin && showMap && mapLocations.length > 0 && (
+        <ErrorBoundary fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Map unavailable</div>}>
         <Card padding="none">
           <div className="p-4 sm:p-5">
             {/* Header */}
@@ -1028,10 +1036,12 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             </div>
           </div>
         </Card>
+        </ErrorBoundary>
       )}
 
       {/* ── ZONE 3: MOMENTUM LAYER — System Performance ───────────────── */}
       {operationsOverview && (
+        <ErrorBoundary fallback={null}>
         <SystemHealthBar
           healthScore={operationsOverview.healthScore}
           lowStockCount={operationsOverview.lowStockCount}
@@ -1040,6 +1050,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           totalStaff={operationsOverview.totalStaff}
           unresolvedDamage={operationsOverview.unresolvedDamage}
         />
+        </ErrorBoundary>
       )}
 
       {/* Settings Modal */}

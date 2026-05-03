@@ -123,6 +123,9 @@ enum AuditAction {
   INVENTORY_BATCH_ADDED
   BATCH_CONSUMED
   INVENTORY_METHOD_UPDATED
+  // System / admin
+  BACKUP_DOWNLOADED
+  ASSET_DELETED
 }
 
 // ─── ORGANIZATION (Multi-Tenancy) ──────────────────────────
@@ -297,6 +300,8 @@ model User {
   totpSecret            String?
   totpEnabled           Boolean  @default(false)
   onboardingComplete    Boolean  @default(false)
+  resetToken            String?
+  resetTokenExpiry      DateTime?
   deletedAt             DateTime?
 
   // ── Smart Activity Memory ──

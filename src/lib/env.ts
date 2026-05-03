@@ -36,6 +36,17 @@ const envSchema = z.object({
   // App
   NEXT_PUBLIC_APP_URL: z.string().optional(),
   UPLOAD_DIR: z.string().optional(),
+
+  // Cron security (required in production; must match the secret Vercel injects)
+  CRON_SECRET: z.string().optional(),
+
+  // Sentry (optional — silence means no error tracking)
+  NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
+  SENTRY_ORG: z.string().optional(),
+  SENTRY_PROJECT: z.string().optional(),
+
+  // Auth URL (canonical app origin)
+  AUTH_URL: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

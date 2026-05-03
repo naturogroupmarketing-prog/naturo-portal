@@ -111,6 +111,13 @@ export default async function PortalLayout({
 
   return (
     <>
+      {/* Skip-to-content link for keyboard and screen-reader users */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-action-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-semibold focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       {activeSupportSession && (
         <SupportBanner
           sessionId={activeSupportSession.sessionId}

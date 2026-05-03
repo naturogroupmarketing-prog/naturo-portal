@@ -281,7 +281,7 @@ export default async function DashboardPage() {
       db.consumable.count({ where: { organizationId, isActive: true, deletedAt: null } }),
       db.user.count({ where: { organizationId, isActive: true, role: "STAFF" } }),
       db.consumable.findMany({
-        where: { organizationId, isActive: true },
+        where: { organizationId, isActive: true, deletedAt: null },
         select: { quantityOnHand: true, minimumThreshold: true },
       }),
       db.damageReport.count({ where: { organizationId, isResolved: false } }),
@@ -449,8 +449,17 @@ export default async function DashboardPage() {
       where: {
         ...regionFilter,
         isActive: true,
+        deletedAt: null,
       },
-      include: { region: true },
+      select: {
+        id: true,
+        name: true,
+        unitType: true,
+        quantityOnHand: true,
+        minimumThreshold: true,
+        region: { select: { id: true, name: true } },
+      },
+      take: 500,
     }).then((items) =>
       items.filter((i) => i.quantityOnHand <= i.minimumThreshold).slice(0, 10)
     ),
@@ -504,8 +513,16 @@ export default async function DashboardPage() {
           }),
           db.purchaseOrder.groupBy({ by: ["regionId"], where: { status: "PENDING", organizationId }, _count: true }),
           db.consumable.findMany({
-            where: { isActive: true, organizationId },
-            include: { region: true },
+            where: { isActive: true, organizationId, deletedAt: null },
+            select: {
+              id: true,
+              name: true,
+              unitType: true,
+              quantityOnHand: true,
+              minimumThreshold: true,
+              regionId: true,
+            },
+            take: 2000,
           }).then((items) => items.filter((i) => i.quantityOnHand <= i.minimumThreshold)),
           db.pendingReturn.groupBy({ by: ["regionId"], where: { organizationId, isVerified: false }, _count: true }),
         ]
@@ -625,7 +642,7 @@ export default async function DashboardPage() {
 
   // Chart data: consumable stock status
   const allConsumables = await db.consumable.findMany({
-    where: { ...regionFilter, isActive: true },
+    where: { ...regionFilter, isActive: true, deletedAt: null },
     select: { quantityOnHand: true, minimumThreshold: true, reorderLevel: true },
     take: 10000,
   });

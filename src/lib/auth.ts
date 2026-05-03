@@ -25,13 +25,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        totp: { label: "Two-Factor Code", type: "text" },
       },
       async authorize(credentials) {
         const email = credentials?.email as string | undefined;
         const password = credentials?.password as string | undefined;
+        const totpCode = credentials?.totp as string | undefined;
         if (!email || !password) return null;
 
-        const user = await db.user.findUnique({ where: { email } });
+        const user = await db.user.findUnique({
+          where: { email },
+          select: {
+            id: true, name: true, email: true, image: true, password: true,
+            isActive: true, lockedUntil: true, failedLoginAttempts: true,
+            totpEnabled: true, totpSecret: true,
+          },
+        });
 
         if (!user || !user.isActive || !user.password) {
           logSecurityEvent("LOGIN_FAILED", email, "Invalid credentials or inactive account");
@@ -59,6 +68,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           await db.user.update({ where: { id: user.id }, data: lockData });
           logSecurityEvent("LOGIN_FAILED", email, `Incorrect password (attempt ${attempts})`);
           return null;
+        }
+
+        // ── TOTP / MFA verification ──────────────────────────────────────
+        if (user.totpEnabled && user.totpSecret) {
+          if (!totpCode) {
+            // Signal to the client that TOTP is required (null = denied)
+            logSecurityEvent("LOGIN_FAILED", email, "TOTP required but not provided");
+            return null;
+          }
+          const { TOTP, Secret } = await import("otpauth");
+          const totp = new TOTP({
+            issuer: "trackio",
+            label: user.email ?? email,
+            algorithm: "SHA1",
+            digits: 6,
+            period: 30,
+            secret: Secret.fromBase32(user.totpSecret),
+          });
+          const isValidTOTP = totp.validate({ token: totpCode, window: 1 }) !== null;
+          if (!isValidTOTP) {
+            logSecurityEvent("LOGIN_FAILED", email, "Invalid TOTP code");
+            return null;
+          }
         }
 
         // Successful login — reset failed attempts

@@ -155,8 +155,8 @@ export async function assignAsset(formData: FormData) {
 }
 
 export async function returnAsset(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "assetAssign"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "assetAssign"))) {
     throw new Error("Unauthorized");
   }
 
@@ -376,8 +376,8 @@ export async function bulkDeleteAssets(assetIds: string[]) {
 }
 
 export async function updateAsset(formData: FormData) {
-  const session = await auth();
-  if (!session?.user || !(await hasPermission(session.user.id, session.user.role, "assetEdit"))) {
+  const session = await withAuth();
+  if (!(await hasPermission(session.user.id, session.user.role, "assetEdit"))) {
     throw new Error("Unauthorized");
   }
 
@@ -567,34 +567,41 @@ export async function bulkCreateAssets(formData: FormData) {
 
   await enforceAssetLimit(organizationId);
 
-  const created: { id: string; name: string; assetCode: string }[] = [];
+  // Generate all asset codes + QR codes in parallel, then create in a single transaction
+  const assetPrep = await Promise.all(
+    Array.from({ length: quantity }, async (_, i) => {
+      const assetName = quantity > 1 ? `${name} (#${i + 1})` : name;
+      const assetCode = generateAssetCode();
+      const qrCodeData = await generateQRCodeDataURL(buildAssetQRData(assetCode));
+      return { assetName, assetCode, qrCodeData };
+    })
+  );
 
-  for (let i = 0; i < quantity; i++) {
-    const assetName = quantity > 1 ? `${name} (#${i + 1})` : name;
-    const assetCode = generateAssetCode();
-    const qrCodeData = await generateQRCodeDataURL(buildAssetQRData(assetCode));
-
-    const asset = await db.asset.create({
-      data: {
-        assetCode,
-        name: assetName,
-        category,
-        description: description || null,
-        serialNumber: serialNumber && quantity === 1 ? serialNumber : null,
-        imageUrl: imageUrl || null,
-        qrCodeData,
-        regionId,
-        organizationId,
-        isHighValue,
-        purchaseDate: purchaseDate ? new Date(purchaseDate) : null,
-        purchaseCost: purchaseCost ? parseFloat(purchaseCost) : null,
-        supplier: supplier || null,
-        notes: notes || null,
-      },
-    });
-
-    created.push({ id: asset.id, name: assetName, assetCode });
-  }
+  const created = await db.$transaction(async (tx) => {
+    const results: { id: string; name: string; assetCode: string }[] = [];
+    for (const { assetName, assetCode, qrCodeData } of assetPrep) {
+      const asset = await tx.asset.create({
+        data: {
+          assetCode,
+          name: assetName,
+          category,
+          description: description || null,
+          serialNumber: serialNumber && quantity === 1 ? serialNumber : null,
+          imageUrl: imageUrl || null,
+          qrCodeData,
+          regionId,
+          organizationId,
+          isHighValue,
+          purchaseDate: purchaseDate ? new Date(purchaseDate) : null,
+          purchaseCost: purchaseCost ? parseFloat(purchaseCost) : null,
+          supplier: supplier || null,
+          notes: notes || null,
+        },
+      });
+      results.push({ id: asset.id, name: assetName, assetCode });
+    }
+    return results;
+  });
 
   await createAuditLog({
     action: "ASSET_CREATED",
@@ -620,6 +627,7 @@ export async function getAssets(
 
   const where: Record<string, unknown> = {};
   where.organizationId = session.user.organizationId;
+  where.deletedAt = null; // Exclude soft-deleted assets
 
   if (session.user.role === "BRANCH_MANAGER") {
     where.regionId = session.user.regionId;

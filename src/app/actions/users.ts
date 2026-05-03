@@ -35,14 +35,21 @@ export async function createUser(formData: FormData) {
 
     if (!email) return { error: "Email is required" };
     if (!name) return { error: "Name is required" };
-    if (!password || password.length < 8) {
-      return { error: "Password must be at least 8 characters" };
+    // Enforce the full password policy (same rules as user self-service reset)
+    if (!password || password.length < 10) {
+      return { error: "Password must be at least 10 characters" };
     }
     if (!/[A-Z]/.test(password)) {
       return { error: "Password must contain at least one uppercase letter" };
     }
+    if (!/[a-z]/.test(password)) {
+      return { error: "Password must contain at least one lowercase letter" };
+    }
     if (!/[0-9]/.test(password)) {
       return { error: "Password must contain at least one number" };
+    }
+    if (!/[^A-Za-z0-9]/.test(password)) {
+      return { error: "Password must contain at least one special character" };
     }
 
     // Branch Managers can only create STAFF in their own region
@@ -76,15 +83,25 @@ export async function createUser(formData: FormData) {
       organizationId,
     });
 
-    // Send welcome email with login details
+    // Send welcome email with a one-time invite link (never send plaintext password)
     const sendWelcome = formData.get("sendWelcomeEmail") !== "false";
     if (sendWelcome) {
       try {
+        const crypto = await import("crypto");
+        const inviteToken = crypto.randomBytes(32).toString("hex");
+        const tokenExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 hours
+
+        // Store the token (reuse the password reset token fields)
+        await db.user.update({
+          where: { id: user.id },
+          data: { resetToken: inviteToken, resetTokenExpiry: tokenExpiry },
+        });
+
         const org = await db.organization.findUnique({ where: { id: organizationId }, select: { name: true } });
         await sendEmail({
           to: email,
-          subject: `Welcome to ${org?.name || "trackio"} — Your Account is Ready`,
-          html: emailWelcome(name, email, password, org?.name || "trackio", role),
+          subject: `Welcome to ${org?.name || "trackio"} — Set Your Password`,
+          html: emailWelcome(name, email, inviteToken, org?.name || "trackio", role),
         });
       } catch (e) {
         console.error("Welcome email failed:", e instanceof Error ? e.message : e);
@@ -365,8 +382,9 @@ export async function deleteUser(userId: string) {
   await db.notification.deleteMany({ where: { userId } });
   await db.maintenanceLog.deleteMany({ where: { performedById: userId } });
   await db.maintenanceSchedule.updateMany({ where: { assignedToId: userId }, data: { assignedToId: null } });
-  // Nullify audit log references instead of deleting (preserve history)
-  await db.auditLog.updateMany({ where: { performedById: userId }, data: { performedById: session.user.id } });
+  // Preserve audit trail — the user is soft-deleted so the FK remains valid.
+  // Do NOT re-assign performedById; keep original authorship intact.
+  // Only nullify targetUserId if needed to avoid display issues on deleted accounts.
   await db.auditLog.updateMany({ where: { targetUserId: userId }, data: { targetUserId: null } });
   // Nullify purchase order references
   await db.purchaseOrder.updateMany({ where: { createdById: userId }, data: { createdById: null } });

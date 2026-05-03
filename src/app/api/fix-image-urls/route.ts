@@ -12,6 +12,11 @@ const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL; // e.g. https://pub-xxx.r2.dev
  * Super Admin only.
  */
 export async function GET() {
+  // Only available in non-production environments or when explicitly enabled
+  if (process.env.NODE_ENV === "production" && process.env.ENABLE_MIGRATION_ROUTES !== "true") {
+    return NextResponse.json({ error: "This route is disabled in production" }, { status: 403 });
+  }
+
   const session = await auth();
   if (!session?.user || !isSuperAdmin(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized — Super Admin only" }, { status: 401 });
