@@ -102,7 +102,7 @@ export function AdminQuickNav({ userName }: AdminQuickNavProps) {
       </div>
 
       {/* 2-column grid on mobile → 4-column on desktop */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-4 gap-3">
         {ITEMS.map((item) => (
           <Link
             key={item.href}
