@@ -14,12 +14,12 @@ import { PageTransition, StaggerContainer, StaggerItem } from "@/components/ui/p
 import { OperationsWidget, PriorityAlertsPanel } from "./widgets/operations-widget";
 import { removeCustomShortcut } from "@/app/actions/dashboard";
 import type { DashboardPreferences } from "@/lib/dashboard-types";
-import { SmartActionsPanel, type SmartActionItem } from "./smart-actions-panel";
+import { type SmartActionItem } from "./smart-actions-panel";
 import { AiForecastWidget, type DepletionForecastItem } from "./ai-forecast-widget";
 import { RecentActivityWidget, type RecentActivityItem } from "./recent-activity-widget";
 import { SmartReorderPanel, type ReorderRecommendation } from "./smart-reorder-panel";
 import { AssetHealthWidget } from "./asset-health-widget";
-import { SmartInsightsTicker, type SmartInsight } from "./smart-insights-ticker";
+import { type SmartInsight } from "./smart-insights-ticker";
 import { SystemHealthBar } from "./system-health-bar";
 
 // Lazy-load recharts components
@@ -395,8 +395,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </button>
       </div>
 
-      {/* ── AI Briefing (1/3) | Stat cards stacked (1/3) | Quick Actions (1/3) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:items-start">
+      {/* ── AI Briefing (1/2) | Stat cards stacked (1/2) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:items-start">
         {/* Col 1 — AI Briefing + Operations Performance merged */}
         {(briefingWidget || (operationsOverview && showOperations)) && (
           <div className="flex flex-col gap-4 self-start">
@@ -407,7 +407,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           </div>
         )}
 
-        {/* Col 2 — Stat cards (3-across on mobile, stacked on desktop) + Active Procurement */}
+        {/* Col 2 — Stat cards (3-across on mobile, stacked on desktop) */}
         {visibleStats.length > 0 && (
           <StaggerContainer className="flex flex-col gap-2">
             <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
@@ -435,21 +435,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             </div>
           </StaggerContainer>
         )}
-
-        {/* Col 3 — Quick action buttons + Smart Insights Ticker below */}
-        <div className="flex flex-col gap-2 content-start">
-          <div className="grid grid-cols-2 gap-2">
-            <QuickActionsBar role={isSuperAdmin ? "superadmin" : "manager"} />
-          </div>
-          {/* ── Smart Insights Ticker — below View Returns / Quick Return */}
-          {insights.length > 0 && <SmartInsightsTicker insights={insights} />}
-        </div>
       </div>
-
-      {/* ── Priority Alerts ────────────────────── */}
-      {actionItems.length > 0 && (
-        <SmartActionsPanel items={actionItems} maxHeight={440} />
-      )}
 
       {preferences.sectionOrder.map((sectionId) => {
         switch (sectionId) {
@@ -735,6 +721,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "low-stock":
+            return null; // Low Stock Alerts hidden
             return (showLowStock || !isSuperAdmin) ? (
               <Card key="low-stock">
                 <div className="p-4 sm:p-5">
@@ -795,6 +782,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "predicted-shortages":
+            return null; // Predicted Shortages hidden
             return showPredictions && predictedShortages.length > 0 ? (
               <Card key="predicted-shortages" className="border-[#E8532E]/30">
                 <div className="p-4 sm:p-5">

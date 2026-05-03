@@ -24,6 +24,14 @@ interface MoreGridItem {
   fg: string;   // tailwind text class for icon
 }
 
+interface QuickAction {
+  label: string;
+  href: string;
+  icon: IconName;
+  bg: string;
+  color: string;
+}
+
 export interface BottomNavProps {
   role: Role;
   pendingPOCount?: number;
@@ -126,11 +134,37 @@ function getMoreItems(role: Role): MoreGridItem[] {
   }
 }
 
+// ─── Quick action items per role ──────────────────────────────────────────────
+
+function getQuickActions(role: Role): QuickAction[] {
+  switch (role) {
+    case "SUPER_ADMIN":
+    case "BRANCH_MANAGER":
+      return [
+        { label: "New User",    href: "/staff?action=add",              icon: "users",   bg: "bg-indigo-100 dark:bg-indigo-500/20", color: "text-indigo-600 dark:text-indigo-400" },
+        { label: "Add Stock",   href: "/consumables?action=add",        icon: "droplet", bg: "bg-blue-100 dark:bg-blue-500/20",     color: "text-blue-600 dark:text-blue-400" },
+        { label: "Starter Kit", href: "/starter-kits?action=new",      icon: "box",     bg: "bg-amber-100 dark:bg-amber-500/20",   color: "text-amber-600 dark:text-amber-400" },
+        { label: "New Order",   href: "/purchase-orders?action=create", icon: "truck",   bg: "bg-green-100 dark:bg-green-500/20",   color: "text-green-600 dark:text-green-400" },
+      ];
+    case "STAFF":
+      return [
+        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-blue-100 dark:bg-blue-500/20",  color: "text-blue-600 dark:text-blue-400" },
+        { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-100 dark:bg-red-500/20",    color: "text-red-600 dark:text-red-400" },
+        { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-shark-100 dark:bg-shark-700",   color: "text-shark-600 dark:text-shark-300" },
+      ];
+    default:
+      return [
+        { label: "Scan QR", href: "/scan", icon: "qr-code", bg: "bg-shark-100 dark:bg-shark-700", color: "text-shark-600 dark:text-shark-300" },
+      ];
+  }
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: BottomNavProps) {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
+  const [quickOpen, setQuickOpen] = useState(false);
   const [installReady, setInstallReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -171,8 +205,8 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Close More sheet on navigation
-  useEffect(() => { setMoreOpen(false); }, [pathname]);
+  // Close both sheets on navigation
+  useEffect(() => { setMoreOpen(false); setQuickOpen(false); }, [pathname]);
 
   // Cleanup animation timer on unmount
   useEffect(() => {
@@ -182,6 +216,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
   const allItems = getNavItems(role, pendingPOCount, pendingReturnsCount);
   const numSlots  = allItems.length + 1; // nav items + More
   const moreItems = getMoreItems(role);
+  const quickActions = getQuickActions(role);
 
   // Active nav item index (0…allItems.length-1), -1 if none matches
   const navActiveIdx = allItems.findIndex(
@@ -252,16 +287,13 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pillSlot]);
 
-  // Top quick-action for the + FAB (first More item)
-  const fabItem = moreItems[0];
-
   return (
     <>
-      {/* Tap outside panel to close More grid */}
-      {moreOpen && (
+      {/* Tap outside panel to close More / quick-actions */}
+      {(moreOpen || quickOpen) && (
         <div
           className="fixed inset-0 z-30 lg:hidden"
-          onClick={() => setMoreOpen(false)}
+          onClick={() => { setMoreOpen(false); setQuickOpen(false); }}
           aria-hidden="true"
         />
       )}
@@ -377,18 +409,77 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
             </nav>
           </div>
 
-          {/* FAB — stays bottom-aligned as the panel expands upward */}
-          <Link
-            href={fabItem?.href ?? "/scan"}
-            aria-label={fabItem?.label ?? "Scan QR"}
-            className="w-[60px] h-[60px] rounded-full flex items-center justify-center shrink-0 bg-white/60 dark:bg-shark-950/60 backdrop-blur-2xl backdrop-saturate-150 border border-white/50 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] active:scale-95 transition-transform duration-200"
-          >
-            <Icon
-              name="plus"
-              size={26}
-              className="text-shark-700 dark:text-shark-300"
-            />
-          </Link>
+          {/* ── FAB + Quick Actions ──────────────────────────────────────────── */}
+          <div className="relative shrink-0">
+
+            {/* Quick actions panel — floats above the FAB */}
+            <div
+              className={cn(
+                "absolute bottom-[68px] right-0 w-44 rounded-[22px] overflow-hidden",
+                "bg-white/80 dark:bg-shark-950/80 backdrop-blur-2xl backdrop-saturate-150",
+                "border border-white/60 dark:border-white/10",
+                "shadow-[0_12px_40px_rgba(0,0,0,0.18),0_2px_8px_rgba(0,0,0,0.12)]",
+                "transition-all duration-200 origin-bottom-right",
+                quickOpen
+                  ? "opacity-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 translate-y-3 pointer-events-none"
+              )}
+            >
+              {/* Panel header */}
+              <div className="px-3 pt-2.5 pb-1.5">
+                <p className="text-[9px] font-bold text-shark-400 uppercase tracking-widest text-center">
+                  Quick Actions
+                </p>
+              </div>
+
+              {/* Actions grid */}
+              <div className={cn(
+                "grid gap-1.5 p-2 pt-1",
+                quickActions.length === 4 ? "grid-cols-2" : quickActions.length === 3 ? "grid-cols-3" : "grid-cols-1"
+              )}>
+                {quickActions.map((action) => (
+                  <Link
+                    key={action.label}
+                    href={action.href}
+                    onClick={() => setQuickOpen(false)}
+                    className="flex flex-col items-center gap-1.5 p-2.5 rounded-[14px] bg-shark-50/80 dark:bg-shark-800/60 active:opacity-60 transition-opacity"
+                  >
+                    <div className={cn(
+                      "w-9 h-9 rounded-xl flex items-center justify-center",
+                      action.bg
+                    )}>
+                      <Icon name={action.icon} size={17} className={action.color} />
+                    </div>
+                    <span className="text-[10px] font-semibold text-shark-700 dark:text-shark-300 text-center leading-tight">
+                      {action.label}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Small arrow pointing down toward FAB */}
+              <div className="flex justify-end px-4 pb-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-shark-200 dark:bg-shark-700" />
+              </div>
+            </div>
+
+            {/* FAB button — toggles quick actions */}
+            <button
+              onClick={() => setQuickOpen((p) => !p)}
+              aria-label={quickOpen ? "Close quick actions" : "Quick actions"}
+              className="w-[60px] h-[60px] rounded-full flex items-center justify-center bg-white/60 dark:bg-shark-950/60 backdrop-blur-2xl backdrop-saturate-150 border border-white/50 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] active:scale-95 transition-all duration-200"
+            >
+              <Icon
+                name="plus"
+                size={26}
+                className={cn(
+                  "transition-transform duration-300 text-shark-700 dark:text-shark-300",
+                  quickOpen && "rotate-45"
+                )}
+              />
+            </button>
+          </div>
+
         </div>
       </div>
     </>
