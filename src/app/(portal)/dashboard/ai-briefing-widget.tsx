@@ -2,6 +2,7 @@ import { cache } from "react";
 import { Card } from "@/components/ui/card";
 import { generateAiBriefing, type BriefingInput, type BriefingContent } from "@/app/actions/ai-briefing";
 import { AiBriefingClient } from "./ai-briefing-client";
+import { OperationsInner } from "./widgets/operations-widget";
 
 export interface AiBriefingWidgetProps {
   orgName: string;
@@ -22,6 +23,19 @@ export interface AiBriefingWidgetProps {
   assignedConsumablesCount?: number;
   pendingConfirmations?: number;
   conditionChecksDue?: number;
+  /** When provided, Operations Performance is merged into this card below the briefing. */
+  operationsData?: {
+    healthScore: number;
+    ordersAwaitingApproval: number;
+    ordersAwaitingReceival: number;
+    overdueReturns: number;
+    incompleteInspections: number;
+    unresolvedDamage: number;
+    lostItems: number;
+    totalStaff: number;
+    pendingRequests: number;
+    lowStockCount: number;
+  };
 }
 
 function getThirtyMinuteBucket(): string {
@@ -111,8 +125,17 @@ export async function AiBriefingWidget(props: AiBriefingWidgetProps) {
             displayDate={displayDate}
             chips={chips}
             input={input}
+            userName={props.userName}
+            attentionCount={overdueReturns + pendingApprovals + unresolvedDamage}
+            criticalCount={criticalStockCount}
           />
         </Card>
+        {props.operationsData && (
+          <>
+            <div className="h-px bg-shark-100/60 dark:bg-shark-700/60" />
+            <OperationsInner data={props.operationsData} />
+          </>
+        )}
       </div>
     </div>
   );
