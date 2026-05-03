@@ -436,29 +436,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               </StaggerItem>
             ))}
             </div>
-            {/* Active Procurement — same card height as stat cards */}
-            {isSuperAdmin && activePOCount > 0 && (
-              <StaggerItem>
-                <Link href="/purchase-orders?section=pipeline" className="block group">
-                  <Card className="hover:shadow-md transition-all duration-200 cursor-pointer border-action-200">
-                    <CardContent className="px-3 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-9 h-9 rounded-lg bg-action-100 flex items-center justify-center flex-shrink-0">
-                          <Icon name="truck" size={16} className="text-action-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs text-action-500 truncate">Active Procurement</p>
-                          <p className="text-xl font-bold text-action-700 leading-none">
-                            {procurementCost && procurementCost > 0 ? fmtAUD(procurementCost) : `${activePOCount} PO${activePOCount !== 1 ? "s" : ""}`}
-                          </p>
-                        </div>
-                        <Icon name="arrow-right" size={14} className="text-action-300 group-hover:text-action-500 transition-colors flex-shrink-0" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </StaggerItem>
-            )}
           </StaggerContainer>
         )}
 
@@ -483,6 +460,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return null; // rendered above briefing — see explicit block after briefingWidget
 
           case "portfolio":
+            return null; // Finance panel hidden
+
+          case "portfolio-hidden":
             return (showPortfolio || !isSuperAdmin) ? (
               <div key="portfolio" className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {/* Portfolio Line Chart (Assets vs Consumables value) */}
@@ -862,17 +842,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "ai-forecast":
-            return showAiForecast ? (
-              <div key="ai-forecast" className="space-y-4">
-                <AiForecastWidget items={depletionForecast} />
-                {isSuperAdmin && reorderRecommendations.length > 0 && (
-                  <SmartReorderPanel recommendations={reorderRecommendations} canApprove={true} />
-                )}
-                {isSuperAdmin && assetHealthSummary && (
-                  <AssetHealthWidget summary={assetHealthSummary} />
-                )}
-              </div>
-            ) : null;
+            return null; // AI Stock Forecast hidden
 
           case "recent-activity":
             return showRecentActivity ? (
