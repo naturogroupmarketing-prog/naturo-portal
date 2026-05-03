@@ -429,8 +429,8 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                     style={{ transitionDelay: `${quickOpen ? openDelay : closeDelay}ms` }}
                   >
                     {/* Label pill */}
-                    <div className="bg-white/90 dark:bg-shark-900/90 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm border border-shark-100/60 dark:border-shark-700/50">
-                      <span className="text-[11px] font-semibold text-shark-700 dark:text-shark-200 whitespace-nowrap">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm border border-shark-200/60">
+                      <span className="text-[11px] font-semibold text-shark-700 whitespace-nowrap">
                         {action.label}
                       </span>
                     </div>
@@ -438,7 +438,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                     <Link
                       href={action.href}
                       onClick={() => setQuickOpen(false)}
-                      className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 bg-shark-800/80 dark:bg-shark-950/80 backdrop-blur-2xl backdrop-saturate-150 border border-white/20 shadow-[0_4px_16px_rgba(0,0,0,0.2)] active:scale-90 transition-transform duration-150"
+                      className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 bg-black border border-white/20 shadow-[0_4px_16px_rgba(0,0,0,0.25)] active:scale-90 transition-transform duration-150"
                     >
                       <Icon name={action.icon} size={18} className="text-white" />
                     </Link>
