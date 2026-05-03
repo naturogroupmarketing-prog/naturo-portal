@@ -150,40 +150,35 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
 
   return (
     <Card className="border-action-100">
-      <div className="p-4 sm:p-5">
+      <div className="p-3 sm:p-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-              <Icon name="settings" size={14} className="text-action-600" />
+            <div className="w-6 h-6 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+              <Icon name="settings" size={12} className="text-action-600" />
             </div>
-            <div>
-              <h2 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Operations Performance</h2>
-              <p className="text-xs text-shark-400">Business health overview</p>
-            </div>
+            <h2 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Operations Performance</h2>
           </div>
-          <div className="flex items-center gap-1.5 bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 rounded-full px-2.5 py-1">
+          <div className="flex items-center gap-1.5 bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 rounded-full px-2 py-0.5">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
             <span className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-wider">Live</span>
           </div>
         </div>
 
         {/* Gauge + Stats row */}
-        <div className="flex gap-4 mb-4">
-          {/* Large gauge — left */}
+        <div className="flex gap-3 mb-3">
+          {/* Gauge — left */}
           <div className="relative shrink-0 flex flex-col items-center group/health cursor-pointer">
-            {/* Ring + grade badge */}
             <div className="relative">
-              <HealthRing score={data.healthScore} size={96} />
+              <HealthRing score={data.healthScore} size={76} />
               <div
-                className={`absolute -top-2 -right-3 w-8 h-8 rounded-lg border-2 bg-gradient-to-br flex items-center justify-center font-black text-sm select-none ${styles.badge} ${gradePop ? "animate-grade-pop" : "opacity-0"} ${styles.glow ? "animate-streak-glow" : ""}`}
+                className={`absolute -top-1.5 -right-2.5 w-6 h-6 rounded-md border-2 bg-gradient-to-br flex items-center justify-center font-black text-xs select-none ${styles.badge} ${gradePop ? "animate-grade-pop" : "opacity-0"} ${styles.glow ? "animate-streak-glow" : ""}`}
               >
                 {grade.label}
               </div>
             </div>
-            <p className="text-[9px] font-bold text-shark-400 uppercase tracking-widest mt-2">Efficiency</p>
-            {/* Progress bar to next grade */}
-            <div className="w-20 mt-1">
+            <p className="text-[9px] font-bold text-shark-400 uppercase tracking-widest mt-1.5">Efficiency</p>
+            <div className="w-16 mt-1">
               <div className="h-1 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-1000 ease-out"
@@ -191,10 +186,9 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
                 />
               </div>
             </div>
-            {/* Streak */}
             {streak > 1 && (
-              <div className={`flex items-center gap-0.5 mt-1.5 px-1.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 ${streak >= 5 ? "animate-streak-glow" : ""}`}>
-                <span className="text-[11px]">🔥</span>
+              <div className={`flex items-center gap-0.5 mt-1 px-1.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 ${streak >= 5 ? "animate-streak-glow" : ""}`}>
+                <span className="text-[10px]">🔥</span>
                 <span className="text-[9px] font-bold text-amber-700">{streak}d</span>
               </div>
             )}
@@ -229,15 +223,15 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
           </div>
 
           {/* Stats grid — right */}
-          <div className="flex-1 grid grid-cols-2 gap-2">
+          <div className="flex-1 grid grid-cols-2 gap-1.5">
             {stats.map((s) => (
               <Link
                 key={s.label}
                 href={s.href}
-                className="bg-shark-50 dark:bg-shark-800/50 rounded-xl p-2.5 hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
+                className="bg-shark-50 dark:bg-shark-800/50 rounded-xl p-2 hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
               >
-                <p className="text-[9px] text-shark-400 uppercase tracking-wider font-semibold mb-1 leading-tight">{s.label}</p>
-                <p className={`text-xl font-black leading-none ${
+                <p className="text-[9px] text-shark-400 uppercase tracking-wider font-semibold mb-0.5 leading-tight">{s.label}</p>
+                <p className={`text-lg font-black leading-none ${
                   s.danger ? "text-[#E8532E]" : s.accent ? "text-action-600 dark:text-action-400" : "text-shark-900 dark:text-shark-100"
                 }`}>{s.value}</p>
                 <p className="text-[9px] text-shark-400 mt-0.5">{s.sub}</p>
@@ -250,12 +244,12 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
         {issues.length > 0 && (
           <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
             {issues.map((item) => (
-              <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
-                <div className="flex items-center gap-2.5">
-                  <Icon name={item.icon} size={13} className="text-[#E8532E]" />
-                  <span className="text-sm text-shark-600 dark:text-shark-400">{item.label}</span>
+              <Link key={item.label} href={item.href} className="flex items-center justify-between px-3 py-2 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
+                <div className="flex items-center gap-2">
+                  <Icon name={item.icon} size={12} className="text-[#E8532E]" />
+                  <span className="text-xs text-shark-600 dark:text-shark-400">{item.label}</span>
                 </div>
-                <span className="text-sm font-bold text-[#E8532E]">{item.value}</span>
+                <span className="text-xs font-bold text-[#E8532E]">{item.value}</span>
               </Link>
             ))}
           </div>
