@@ -281,7 +281,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
           */}
           <div
             ref={containerRef}
-            className="flex-1 overflow-hidden rounded-[28px] bg-white/85 dark:bg-shark-950/85 backdrop-blur-2xl border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)]"
+            className="flex-1 overflow-hidden rounded-[28px] bg-white/60 dark:bg-shark-950/60 backdrop-blur-2xl backdrop-saturate-150 border border-white/50 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)]"
           >
             {/*
               Grid wrapper — height animates from 0 → natural height via
@@ -381,7 +381,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
           <Link
             href={fabItem?.href ?? "/scan"}
             aria-label={fabItem?.label ?? "Scan QR"}
-            className="w-[60px] h-[60px] rounded-full flex items-center justify-center shrink-0 bg-white/85 dark:bg-shark-950/85 backdrop-blur-2xl border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] active:scale-95 transition-transform duration-200"
+            className="w-[60px] h-[60px] rounded-full flex items-center justify-center shrink-0 bg-white/60 dark:bg-shark-950/60 backdrop-blur-2xl backdrop-saturate-150 border border-white/50 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] active:scale-95 transition-transform duration-200"
           >
             <Icon
               name="plus"
