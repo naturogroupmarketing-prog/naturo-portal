@@ -419,13 +419,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* ── AI Briefing (1/3) | Stat cards stacked (1/3) | Quick Actions (1/3) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:items-start">
-        {/* Col 1 — AI Briefing + Operations Performance (merged into one card) */}
+        {/* Col 1 — AI Briefing + Operations Performance merged */}
         {(briefingWidget || (operationsOverview && showOperations)) && (
-          <div>
+          <div className="flex flex-col gap-4">
             {briefingWidget && <div>{briefingWidget}</div>}
-            {/* Only render standalone OperationsWidget when there is no briefingWidget
-                (briefingWidget already embeds OperationsInner via operationsData prop) */}
-            {!briefingWidget && operationsOverview && showOperations && (
+            {operationsOverview && showOperations && (
               <OperationsWidget data={operationsOverview} />
             )}
           </div>

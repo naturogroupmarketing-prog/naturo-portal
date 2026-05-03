@@ -105,8 +105,7 @@ function useHealthStreak(score: number) {
   return { streak, gradePop };
 }
 
-/** Inner content only — used when embedding inside another card (e.g. merged AI Briefing card). */
-export function OperationsInner({ data }: { data: OperationsOverview }) {
+export function OperationsWidget({ data }: { data: OperationsOverview }) {
   const grade = getGrade(data.healthScore);
   const styles = GRADE_STYLES[grade.label];
   const progressPct = Math.max(0, Math.min(100, Math.round(
@@ -150,7 +149,8 @@ export function OperationsInner({ data }: { data: OperationsOverview }) {
   ].filter((i) => i.value > 0);
 
   return (
-    <div className="p-4 sm:p-5">
+    <Card className="border-action-100">
+      <div className="p-4 sm:p-5">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
@@ -260,15 +260,7 @@ export function OperationsInner({ data }: { data: OperationsOverview }) {
             ))}
           </div>
         )}
-    </div>
-  );
-}
-
-/** Standalone card — used when rendered independently of the AI Briefing widget. */
-export function OperationsWidget({ data }: { data: OperationsOverview }) {
-  return (
-    <Card className="border-action-100">
-      <OperationsInner data={data} />
+      </div>
     </Card>
   );
 }

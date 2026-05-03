@@ -1355,7 +1355,6 @@ export default async function DashboardPage() {
               recentAnomalyCount={anomalyCount}
               staffUnacknowledgedCount={staffUnacknowledgedCount}
               date={new Date().toISOString()}
-              operationsData={operationsOverview}
             />
           }
         />
