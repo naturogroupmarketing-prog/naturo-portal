@@ -86,27 +86,27 @@ function getMoreItems(role: Role): MoreGridItem[] {
       ];
     case "SUPER_ADMIN":
       return [
-        { label: "Scan QR",    href: "/scan",                          icon: "qr-code",    bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Create PO",  href: "/purchase-orders?action=create", icon: "truck",      bg: TILE, fg: "text-green-500" },
-        { label: "Add Supply", href: "/consumables?action=add",        icon: "droplet",    bg: TILE, fg: "text-blue-500" },
-        { label: "Add Asset",  href: "/assets?action=add",             icon: "package",    bg: TILE, fg: "text-purple-500" },
-        { label: "Staff",      href: "/staff",                         icon: "user",       bg: TILE, fg: "text-indigo-500" },
-        { label: "Issue Kit",  href: "/starter-kits?action=new",       icon: "box",        bg: TILE, fg: "text-amber-500" },
-        { label: "Returns",    href: "/returns",                       icon: "arrow-left", bg: TILE, fg: "text-orange-500" },
-        { label: "Reports",    href: "/reports",                       icon: "clipboard",  bg: TILE, fg: "text-teal-500" },
-        { label: "Settings",   href: "/settings",                      icon: "settings",   bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
+        { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: TILE, fg: "text-blue-500" },
+        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: TILE, fg: "text-green-500" },
+        { label: "Staff",           href: "/staff",            icon: "users",          bg: TILE, fg: "text-indigo-500" },
+        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: TILE, fg: "text-amber-500" },
+        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: TILE, fg: "text-orange-500" },
+        { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
+        { label: "Reports",         href: "/reports",          icon: "clipboard",      bg: TILE, fg: "text-teal-500" },
+        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: TILE, fg: "text-violet-500" },
+        { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: TILE, fg: "text-red-500" },
       ];
     case "BRANCH_MANAGER":
       return [
-        { label: "Scan QR",        href: "/scan",                    icon: "qr-code",    bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Add Supply",     href: "/consumables?action=add",  icon: "droplet",    bg: TILE, fg: "text-blue-500" },
-        { label: "Process Return", href: "/returns",                 icon: "arrow-left", bg: TILE, fg: "text-orange-500" },
-        { label: "Staff",          href: "/staff",                   icon: "user",       bg: TILE, fg: "text-indigo-500" },
-        { label: "Issue Kit",      href: "/starter-kits?action=new", icon: "box",        bg: TILE, fg: "text-amber-500" },
-        { label: "Reports",        href: "/reports",                 icon: "clipboard",  bg: TILE, fg: "text-teal-500" },
-        { label: "Activity",       href: "/activity",                icon: "clock",      bg: TILE, fg: "text-violet-500" },
-        { label: "Dashboard",      href: "/dashboard",               icon: "dashboard",  bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Settings",       href: "/settings",                icon: "settings",   bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
+        { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: TILE, fg: "text-blue-500" },
+        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: TILE, fg: "text-green-500" },
+        { label: "Staff",           href: "/staff",            icon: "users",          bg: TILE, fg: "text-indigo-500" },
+        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: TILE, fg: "text-amber-500" },
+        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: TILE, fg: "text-orange-500" },
+        { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
+        { label: "Reports",         href: "/reports",          icon: "clipboard",      bg: TILE, fg: "text-teal-500" },
+        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: TILE, fg: "text-violet-500" },
+        { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: TILE, fg: "text-red-500" },
       ];
     case "AUDITOR":
       return [
