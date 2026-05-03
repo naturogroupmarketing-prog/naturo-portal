@@ -623,7 +623,8 @@ a, button, [role="button"], input, select, textarea, label {
   animation: slide-up 0.2s ease-out forwards;
 }
 
-/* ── Portrait-only: block landscape on phones ── */
+/* ── Portrait-only lock — phones & small tablets (<1024px) ── */
+/* CSS fallback for iOS Safari where the Orientation API is unavailable */
 @media screen and (max-width: 1024px) and (orientation: landscape) {
   #__next,
   body > div:first-child {
@@ -643,7 +644,7 @@ a, button, [role="button"], input, select, textarea, label {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   background: #ffffff;
   color: #1a1a2e;
   text-align: center;
@@ -654,13 +655,4 @@ a, button, [role="button"], input, select, textarea, label {
 .dark #rotate-notice {
   background: #111318;
   color: #f0f0f5;
-}
-
-#rotate-notice svg {
-  animation: rotate-hint 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
-}
-
-@keyframes rotate-hint {
-  from { transform: rotate(-20deg); }
-  to   { transform: rotate(20deg); }
 }
