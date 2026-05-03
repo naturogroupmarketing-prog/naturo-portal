@@ -140,25 +140,6 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} ${exo.variable} antialiased`}>
-        {/* Portrait lock — CSS fallback for iOS (Android locked via Screen Orientation API below) */}
-        <div id="rotate-notice" aria-hidden="true">
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35 }}>
-            <rect x="7" y="2" width="10" height="20" rx="2" ry="2" />
-            <line x1="12" y1="18" x2="12.01" y2="18" />
-          </svg>
-          <p style={{ fontSize: "0.9375rem", fontWeight: 600, margin: 0 }}>Portrait mode only</p>
-          <p style={{ fontSize: "0.8125rem", opacity: 0.45, margin: 0 }}>Please rotate your device back</p>
-        </div>
-        {/* Attempt orientation lock via Screen Orientation API — works on Android Chrome & Android PWA */}
-        <script dangerouslySetInnerHTML={{ __html: `
-          (function () {
-            try {
-              if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('portrait').catch(function () {});
-              }
-            } catch (e) {}
-          })();
-        ` }} />
         <ThemeProvider>
           <ToastProvider>
             <PWARegister />
