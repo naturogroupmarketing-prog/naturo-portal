@@ -8,24 +8,31 @@ interface PageTransitionProps {
   className?: string;
 }
 
+// One UI–inspired easing: fast start, smooth deceleration
+const ONE_UI_EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
+
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: 8,
+    y: 12,
+    scale: 0.98,
   },
   animate: {
     opacity: 1,
     y: 0,
+    scale: 1,
     transition: {
-      duration: 0.3,
-      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number], // ease-out-quad
+      duration: 0.22,
+      ease: ONE_UI_EASE,
     },
   },
   exit: {
     opacity: 0,
-    y: -4,
+    y: -6,
+    scale: 0.99,
     transition: {
-      duration: 0.15,
+      duration: 0.14,
+      ease: [0.36, 0, 0.66, -0.56] as [number, number, number, number],
     },
   },
 };
@@ -33,19 +40,21 @@ const pageVariants = {
 const staggerContainer = {
   animate: {
     transition: {
-      staggerChildren: 0.06,
+      staggerChildren: 0.055,
+      delayChildren: 0.03,
     },
   },
 };
 
 const staggerItem = {
-  initial: { opacity: 0, y: 12 },
+  initial: { opacity: 0, y: 14, scale: 0.97 },
   animate: {
     opacity: 1,
     y: 0,
+    scale: 1,
     transition: {
-      duration: 0.35,
-      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
+      duration: 0.22,
+      ease: ONE_UI_EASE,
     },
   },
 };
@@ -85,13 +94,12 @@ export function StaggerItem({ children, className = "" }: PageTransitionProps) {
   );
 }
 
-// Spring animation for cards on hover
+// One UI spring card tap
 export function SpringCard({ children, className = "" }: PageTransitionProps) {
   return (
     <motion.div
-      whileHover={{ scale: 1.02, y: -2 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
       className={className}
     >
       {children}

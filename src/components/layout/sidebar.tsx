@@ -138,7 +138,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
           </button>
         </div>
       )}
-      <div className="flex-1 overflow-y-auto py-3 px-3">
+      <div className="flex-1 overflow-y-auto py-3 px-2.5">
         {navSections
           .filter((section) => section.roles.includes(effectiveRole))
           .map((section, sIdx) => {
@@ -146,7 +146,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
             if (visibleItems.length === 0) return null;
 
             return (
-              <CollapsibleSection key={sIdx} heading={section.heading} className={sIdx > 0 ? "mt-4" : ""}>
+              <CollapsibleSection key={sIdx} heading={section.heading} className={sIdx > 0 ? "mt-5" : ""}>
                 <div className="space-y-0.5">
                   {visibleItems.map((item) => {
                     const active = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -157,14 +157,26 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                         onClick={onClose}
                         aria-current={active ? "page" : undefined}
                         className={cn(
-                          "flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl min-h-[44px] transition-all duration-200",
+                          "flex items-center gap-3 px-3 py-2.5 text-sm rounded-[14px] min-h-[44px] transition-all duration-200 active:scale-[0.98]",
                           active
-                            ? "bg-action-50 text-action-600 font-medium dark:bg-transparent dark:text-action-400"
-                            : "text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800 dark:bg-transparent dark:hover:bg-shark-800/40 hover:text-shark-900 dark:hover:text-white"
+                            ? "bg-action-50 text-action-700 font-semibold dark:bg-action-500/12 dark:text-action-400"
+                            : "text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800/60 hover:text-shark-900 dark:hover:text-white"
                         )}
                       >
-                        <Icon name={item.icon} size={18} className={active ? "text-action-600 dark:text-action-400" : "text-shark-400 dark:text-shark-400"} />
-                        <span className="flex-1">{item.label}</span>
+                        {/* Icon tile — colored on active */}
+                        <span className={cn(
+                          "flex items-center justify-center w-8 h-8 rounded-[10px] flex-shrink-0 transition-colors",
+                          active
+                            ? "bg-action-100 dark:bg-action-500/20"
+                            : "bg-transparent"
+                        )}>
+                          <Icon
+                            name={item.icon}
+                            size={17}
+                            className={active ? "text-action-600 dark:text-action-400" : "text-shark-400 dark:text-shark-400"}
+                          />
+                        </span>
+                        <span className="flex-1 leading-none">{item.label}</span>
                         {item.href === "/purchase-orders" && pendingPOCount > 0 && (
                           <span className="min-w-[20px] h-5 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1.5">
                             {pendingPOCount}
@@ -186,14 +198,14 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
       </div>
 
       {/* Keyboard shortcut hint */}
-      <div className="hidden lg:flex items-center gap-2 px-4 py-3 border-t border-shark-100 dark:border-shark-800 dark:border-transparent">
+      <div className="hidden lg:flex items-center gap-2 px-3 py-3 border-t border-shark-100/70 dark:border-shark-800/60 dark:border-transparent">
         <button
           onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
-          className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-shark-400 dark:text-shark-300 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-100 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-xs"
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-[12px] text-shark-400 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-100 hover:bg-shark-50 dark:hover:bg-shark-800/60 transition-colors text-xs"
         >
           <Icon name="search" size={13} />
           <span className="flex-1 text-left">Quick search</span>
-          <kbd className="text-[10px] bg-shark-100 dark:bg-shark-700 border border-shark-200 dark:border-shark-600 px-1 py-0.5 rounded font-mono">⌘K</kbd>
+          <kbd className="text-[10px] bg-shark-100 dark:bg-shark-700 border border-shark-200 dark:border-shark-600 px-1.5 py-0.5 rounded-md font-mono">⌘K</kbd>
         </button>
       </div>
       <MenuWalkthrough role={effectiveRole} />
@@ -214,14 +226,14 @@ function CollapsibleSection({ heading, children, className }: { heading?: string
     <div className={className}>
       <button
         onClick={() => setCollapsed((c) => !c)}
-        className="w-full flex items-center justify-between px-3 mb-1.5 group cursor-pointer"
+        className="w-full flex items-center justify-between px-3 mb-1 group cursor-pointer"
       >
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-shark-400 dark:text-shark-300 group-hover:text-shark-600 dark:text-shark-400 dark:group-hover:text-shark-100 transition-colors">
+        <span className="text-[10.5px] font-bold uppercase tracking-[0.08em] text-shark-400 dark:text-shark-500 group-hover:text-shark-600 dark:group-hover:text-shark-300 transition-colors">
           {heading}
         </span>
         <svg
-          width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-          className={cn("text-shark-400 transition-transform duration-200", collapsed ? "-rotate-90" : "")}
+          width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+          className={cn("text-shark-300 dark:text-shark-600 transition-transform duration-200", collapsed ? "-rotate-90" : "")}
         >
           <path d="M6 9l6 6 6-6" />
         </svg>

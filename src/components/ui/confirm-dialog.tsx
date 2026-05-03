@@ -133,12 +133,12 @@ export function ConfirmDialog({
     >
       <div
         ref={contentRef}
-        className="w-full max-w-sm rounded-xl bg-white dark:bg-shark-800 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-200 animate-fade-in"
+        className="w-full max-w-sm rounded-[24px] bg-white dark:bg-shark-800 shadow-[0_2px_4px_rgba(0,0,0,0.06),0_12px_40px_rgba(0,0,0,0.12)] transition-all duration-200 animate-fade-in"
       >
         <div className="px-6 pt-6 pb-4 text-center">
           <div
             className={cn(
-              "mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full",
+              "mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-[18px]",
               iconBg
             )}
           >

@@ -9,16 +9,17 @@ export function Card({ className, variant = "default", padding = "md", children,
   return (
     <div
       className={cn(
-        "rounded-xl transition-colors",
+        // One UI-inspired: 20px radius, layered shadow, clean white surface
+        "rounded-[20px] transition-colors",
         {
-          "bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 shadow-sm": variant === "default",
-          "bg-shark-50 dark:bg-shark-900 border border-shark-100 dark:border-shark-800": variant === "flat",
-          "bg-white dark:bg-shark-900 shadow-md border border-shark-100 dark:border-shark-800": variant === "elevated",
+          "bg-white dark:bg-shark-900 border border-shark-100/80 dark:border-shark-800/60 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.06)]": variant === "default",
+          "bg-shark-50 dark:bg-shark-900 border border-shark-100/80 dark:border-shark-800/60": variant === "flat",
+          "bg-white dark:bg-shark-900 shadow-[0_2px_4px_rgba(0,0,0,0.06),0_8px_28px_rgba(0,0,0,0.10)] border border-shark-100/60 dark:border-shark-800/60": variant === "elevated",
           "bg-transparent": variant === "ghost",
         },
         {
           "p-0": padding === "none",
-          "p-3": padding === "sm",
+          "p-3.5": padding === "sm",
           "p-4 sm:p-5": padding === "md",
           "p-5 sm:p-8": padding === "lg",
         },

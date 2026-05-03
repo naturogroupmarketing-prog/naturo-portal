@@ -57,7 +57,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
     <PageCogProvider>
     <SidebarContext.Provider value={{ expanded: sidebarExpanded, toggle: () => setSidebarExpanded((p) => !p) }}>
     <div
-      className="flex flex-col h-dvh bg-shark-50 dark:bg-shark-950 transition-colors"
+      className="flex flex-col h-dvh bg-[#F4F5F7] dark:bg-shark-950 transition-colors"
       onTouchStart={handleMainTouchStart}
       onTouchEnd={handleMainTouchEnd}
     >
@@ -139,8 +139,8 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         {/* Main content */}
         <main
           id="main-content"
-          style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom, 0px))" }}
-          className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-6 sm:px-4 sm:py-6 lg:px-6 lg:py-10 lg:pb-12"
+          style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}
+          className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 sm:px-5 sm:py-6 lg:px-6 lg:py-10 lg:pb-12"
         >
           <div className="hidden lg:flex mb-4">
             <Breadcrumbs />
