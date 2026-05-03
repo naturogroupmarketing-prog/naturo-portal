@@ -69,56 +69,59 @@ function getNavItems(role: Role, po: number, returns: number): NavItem[] {
 
 // ─── More grid items per role ─────────────────────────────────────────────────
 
+// All tiles use the same uniform grey tile (like ClickUp) — only icon colour varies
+const TILE = "bg-[#EBEBEB] dark:bg-[#3D3D3D]";
+
 function getMoreItems(role: Role): MoreGridItem[] {
   switch (role) {
     case "STAFF":
       return [
-        { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-blue-100 dark:bg-blue-900/40",     fg: "text-blue-600 dark:text-blue-400" },
-        { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-100 dark:bg-red-900/40",       fg: "text-red-600 dark:text-red-400" },
-        { label: "My Assets",      href: "/my-assets",           icon: "package",        bg: "bg-purple-100 dark:bg-purple-900/40", fg: "text-purple-600 dark:text-purple-400" },
-        { label: "My Supplies",    href: "/my-consumables",      icon: "droplet",        bg: "bg-cyan-100 dark:bg-cyan-900/40",     fg: "text-cyan-600 dark:text-cyan-400" },
-        { label: "Dashboard",      href: "/dashboard",           icon: "dashboard",      bg: "bg-indigo-100 dark:bg-indigo-900/40", fg: "text-indigo-600 dark:text-indigo-400" },
-        { label: "Settings",       href: "/settings",            icon: "settings",       bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: TILE, fg: "text-blue-500" },
+        { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: TILE, fg: "text-red-500" },
+        { label: "My Assets",      href: "/my-assets",           icon: "package",        bg: TILE, fg: "text-purple-500" },
+        { label: "My Supplies",    href: "/my-consumables",      icon: "droplet",        bg: TILE, fg: "text-cyan-500" },
+        { label: "Dashboard",      href: "/dashboard",           icon: "dashboard",      bg: TILE, fg: "text-indigo-500" },
+        { label: "Settings",       href: "/settings",            icon: "settings",       bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
       ];
     case "SUPER_ADMIN":
       return [
-        { label: "Scan QR",    href: "/scan",                          icon: "qr-code",      bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Create PO",  href: "/purchase-orders?action=create", icon: "truck",        bg: "bg-green-100 dark:bg-green-900/40",   fg: "text-green-600 dark:text-green-400" },
-        { label: "Add Supply", href: "/consumables?action=add",        icon: "droplet",      bg: "bg-blue-100 dark:bg-blue-900/40",     fg: "text-blue-600 dark:text-blue-400" },
-        { label: "Add Asset",  href: "/assets?action=add",             icon: "package",      bg: "bg-purple-100 dark:bg-purple-900/40", fg: "text-purple-600 dark:text-purple-400" },
-        { label: "Staff",      href: "/staff",                         icon: "user",         bg: "bg-indigo-100 dark:bg-indigo-900/40", fg: "text-indigo-600 dark:text-indigo-400" },
-        { label: "Issue Kit",  href: "/starter-kits?action=new",       icon: "box",          bg: "bg-amber-100 dark:bg-amber-900/40",   fg: "text-amber-600 dark:text-amber-400" },
-        { label: "Returns",    href: "/returns",                       icon: "arrow-left",   bg: "bg-orange-100 dark:bg-orange-900/40", fg: "text-orange-600 dark:text-orange-400" },
-        { label: "Reports",    href: "/reports",                       icon: "clipboard",    bg: "bg-teal-100 dark:bg-teal-900/40",     fg: "text-teal-600 dark:text-teal-400" },
-        { label: "Settings",   href: "/settings",                      icon: "settings",     bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Scan QR",    href: "/scan",                          icon: "qr-code",    bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Create PO",  href: "/purchase-orders?action=create", icon: "truck",      bg: TILE, fg: "text-green-500" },
+        { label: "Add Supply", href: "/consumables?action=add",        icon: "droplet",    bg: TILE, fg: "text-blue-500" },
+        { label: "Add Asset",  href: "/assets?action=add",             icon: "package",    bg: TILE, fg: "text-purple-500" },
+        { label: "Staff",      href: "/staff",                         icon: "user",       bg: TILE, fg: "text-indigo-500" },
+        { label: "Issue Kit",  href: "/starter-kits?action=new",       icon: "box",        bg: TILE, fg: "text-amber-500" },
+        { label: "Returns",    href: "/returns",                       icon: "arrow-left", bg: TILE, fg: "text-orange-500" },
+        { label: "Reports",    href: "/reports",                       icon: "clipboard",  bg: TILE, fg: "text-teal-500" },
+        { label: "Settings",   href: "/settings",                      icon: "settings",   bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
       ];
     case "BRANCH_MANAGER":
       return [
-        { label: "Scan QR",        href: "/scan",                    icon: "qr-code",      bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Add Supply",     href: "/consumables?action=add",  icon: "droplet",      bg: "bg-blue-100 dark:bg-blue-900/40",     fg: "text-blue-600 dark:text-blue-400" },
-        { label: "Process Return", href: "/returns",                 icon: "arrow-left",   bg: "bg-orange-100 dark:bg-orange-900/40", fg: "text-orange-600 dark:text-orange-400" },
-        { label: "Staff",          href: "/staff",                   icon: "user",         bg: "bg-indigo-100 dark:bg-indigo-900/40", fg: "text-indigo-600 dark:text-indigo-400" },
-        { label: "Issue Kit",      href: "/starter-kits?action=new", icon: "box",          bg: "bg-amber-100 dark:bg-amber-900/40",   fg: "text-amber-600 dark:text-amber-400" },
-        { label: "Reports",        href: "/reports",                 icon: "clipboard",    bg: "bg-teal-100 dark:bg-teal-900/40",     fg: "text-teal-600 dark:text-teal-400" },
-        { label: "Activity",       href: "/activity",                icon: "clock",        bg: "bg-violet-100 dark:bg-violet-900/40", fg: "text-violet-600 dark:text-violet-400" },
-        { label: "Dashboard",      href: "/dashboard",               icon: "dashboard",    bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Settings",       href: "/settings",                icon: "settings",     bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Scan QR",        href: "/scan",                    icon: "qr-code",    bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Add Supply",     href: "/consumables?action=add",  icon: "droplet",    bg: TILE, fg: "text-blue-500" },
+        { label: "Process Return", href: "/returns",                 icon: "arrow-left", bg: TILE, fg: "text-orange-500" },
+        { label: "Staff",          href: "/staff",                   icon: "user",       bg: TILE, fg: "text-indigo-500" },
+        { label: "Issue Kit",      href: "/starter-kits?action=new", icon: "box",        bg: TILE, fg: "text-amber-500" },
+        { label: "Reports",        href: "/reports",                 icon: "clipboard",  bg: TILE, fg: "text-teal-500" },
+        { label: "Activity",       href: "/activity",                icon: "clock",      bg: TILE, fg: "text-violet-500" },
+        { label: "Dashboard",      href: "/dashboard",               icon: "dashboard",  bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Settings",       href: "/settings",                icon: "settings",   bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
       ];
     case "AUDITOR":
       return [
-        { label: "Dashboard",  href: "/dashboard", icon: "dashboard",      bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Reports",    href: "/reports",   icon: "clipboard",      bg: "bg-teal-100 dark:bg-teal-900/40",     fg: "text-teal-600 dark:text-teal-400" },
-        { label: "Activity",   href: "/activity",  icon: "clock",          bg: "bg-violet-100 dark:bg-violet-900/40", fg: "text-violet-600 dark:text-violet-400" },
-        { label: "Scan QR",    href: "/scan",      icon: "qr-code",        bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Settings",   href: "/settings",  icon: "settings",       bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Dashboard", href: "/dashboard", icon: "dashboard",      bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Reports",   href: "/reports",   icon: "clipboard",      bg: TILE, fg: "text-teal-500" },
+        { label: "Activity",  href: "/activity",  icon: "clock",          bg: TILE, fg: "text-violet-500" },
+        { label: "Scan QR",   href: "/scan",      icon: "qr-code",        bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Settings",  href: "/settings",  icon: "settings",       bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
       ];
     default:
       return [
-        { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-blue-100 dark:bg-blue-900/40",     fg: "text-blue-600 dark:text-blue-400" },
-        { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-100 dark:bg-red-900/40",       fg: "text-red-600 dark:text-red-400" },
-        { label: "Settings",       href: "/settings",            icon: "settings",       bg: "bg-shark-100 dark:bg-shark-800",      fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: TILE, fg: "text-shark-600 dark:text-shark-300" },
+        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: TILE, fg: "text-blue-500" },
+        { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: TILE, fg: "text-red-500" },
+        { label: "Settings",       href: "/settings",            icon: "settings",       bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
       ];
   }
 }
@@ -265,30 +268,28 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
       )}
 
       {/*
-        Sheet — anchored at bottom:0 so it sits behind the nav bar (z-40).
-        The nav bar overlaps the sheet's bottom portion, creating the
-        seamless "panel grows from nav" look identical to ClickUp.
-        Bottom padding pushes the grid content above the nav bar.
+        Sheet — same width as the nav pill, all corners rounded, anchored
+        directly above the nav bar. Slides up from the nav pill (like ClickUp).
+        left: 32px  = mx-8 left margin
+        right: 102px = mx-8 (32) + gap-2.5 (10) + FAB (60) = right edge of nav pill
+        bottom: nav bar height = FAB (60px) + safe-area padding
       */}
       <div
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[35] transition-transform duration-300",
+          "fixed z-[35] transition-transform duration-300",
           moreOpen
             ? "translate-y-0 ease-[cubic-bezier(0.32,0.72,0,1)]"
             : "translate-y-full ease-in pointer-events-none"
         )}
+        style={{
+          left: "32px",
+          right: "102px",
+          bottom: "calc(60px + max(12px, env(safe-area-inset-bottom)))",
+        }}
       >
-        <div
-          className="bg-white dark:bg-shark-900 rounded-t-[24px] shadow-[0_-2px_20px_rgba(0,0,0,0.10)]"
-          style={{ paddingBottom: "calc(84px + env(safe-area-inset-bottom))" }}
-        >
-          {/* Drag handle */}
-          <div className="flex justify-center pt-3 pb-2">
-            <div className="w-8 h-1 rounded-full bg-shark-200 dark:bg-shark-700" />
-          </div>
-
-          {/* 3 × 3 grid — matches ClickUp proportions */}
-          <div className="grid grid-cols-3 gap-y-6 gap-x-3 px-8 pt-2 pb-4">
+        <div className="bg-white dark:bg-shark-900 rounded-[24px] shadow-[0_8px_40px_rgba(0,0,0,0.18),0_2px_12px_rgba(0,0,0,0.10)]">
+          {/* 3-col grid — matches ClickUp proportions */}
+          <div className="grid grid-cols-3 gap-y-5 gap-x-2 px-4 pt-5 pb-5">
             {moreItems.map((item) => (
               <Link
                 key={item.label}
@@ -300,7 +301,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                   "w-[60px] h-[60px] rounded-[18px] flex items-center justify-center",
                   item.bg
                 )}>
-                  <Icon name={item.icon} size={27} className={item.fg} />
+                  <Icon name={item.icon} size={26} className={item.fg} />
                 </div>
                 <span className="text-[11px] font-medium text-shark-700 dark:text-shark-300 text-center leading-tight">
                   {item.label}
@@ -353,7 +354,8 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               <div className="relative flex items-center justify-center">
                 <Icon
                   name="grid"
-                  size={22}
+                  size={20}
+                  filled
                   className={cn(
                     "transition-colors duration-200",
                     moreOpen ? "text-action-500" : "text-shark-400 dark:text-shark-500"

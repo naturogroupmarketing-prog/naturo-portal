@@ -17,6 +17,8 @@ interface IconProps {
   name: IconName;
   className?: string;
   size?: number;
+  /** Render with fill="currentColor" and no stroke (e.g. for dot-grid icons) */
+  filled?: boolean;
 }
 
 const paths: Record<IconName, string> = {
@@ -118,12 +120,12 @@ const paths: Record<IconName, string> = {
     "M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0114.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0020.49 15",
   calendar:
     "M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z M16 2v4 M8 2v4 M3 10h18",
-  // 2×2 grid — used for the "More" nav button
+  // 3×3 dot grid — used for the "More" nav button (render with filled=true)
   grid:
-    "M10 3H3v7h7V3z M21 3h-7v7h7V3z M21 14h-7v7h7v-7z M10 14H3v7h7v-7z",
+    "M5 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M12 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M19 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M5 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M19 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M5 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M12 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M19 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0",
 };
 
-export function Icon({ name, className, size = 20 }: IconProps) {
+export function Icon({ name, className, size = 20, filled = false }: IconProps) {
   const d = paths[name];
   if (!d) return null;
 
@@ -132,9 +134,9 @@ export function Icon({ name, className, size = 20 }: IconProps) {
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.75}
+      fill={filled ? "currentColor" : "none"}
+      stroke={filled ? "none" : "currentColor"}
+      strokeWidth={filled ? 0 : 1.75}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn("flex-shrink-0", className)}
