@@ -399,7 +399,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:items-start">
         {/* Col 1 — AI Briefing + Operations Performance merged */}
         {(briefingWidget || (operationsOverview && showOperations)) && (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 self-start">
             {briefingWidget && <div>{briefingWidget}</div>}
             {operationsOverview && showOperations && (
               <OperationsWidget data={operationsOverview} />
