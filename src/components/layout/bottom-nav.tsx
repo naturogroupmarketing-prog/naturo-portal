@@ -135,12 +135,12 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
   const containerRef = useRef<HTMLDivElement>(null);
 
   // ── Elastic pill animation state ─────────────────────────────────────────
-  const [pillLeft, setPillLeft]     = useState<string>("0%");
-  const [pillWidth, setPillWidth]   = useState<string>("25%");
-  const [pillLeftTx, setPillLeftTx] = useState<string>("none");
+  const [pillLeft, setPillLeft]       = useState<string>("0%");
+  const [pillWidth, setPillWidth]     = useState<string>("25%");
+  const [pillLeftTx, setPillLeftTx]   = useState<string>("none");
   const [pillWidthTx, setPillWidthTx] = useState<string>("none");
   const prevSlotRef = useRef<number>(-1); // -1 = uninitialized
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timerRef    = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Track native PWA install prompt
   useEffect(() => {
@@ -184,7 +184,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
   const moreItems = getMoreItems(role);
 
   // Active nav item index (0…allItems.length-1), -1 if none matches
-  let navActiveIdx = allItems.findIndex(
+  const navActiveIdx = allItems.findIndex(
     (item) => pathname === item.href || pathname.startsWith(item.href + "/")
   );
 
@@ -198,7 +198,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     const curr = pillSlot;
     const prev = prevSlotRef.current;
     const slotPct  = 100 / numSlots;
-    const SPRING   = "cubic-bezier(0.34, 1.56, 0.64, 1)"; // more overshoot = bouncier
+    const SPRING   = "cubic-bezier(0.34, 1.56, 0.64, 1)";
     const EASE_OUT = "cubic-bezier(0.25, 1, 0.5, 1)";
     const STRETCH_MS = 140;
     const SNAP_MS    = 260;
@@ -257,130 +257,131 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
 
   return (
     <>
-      {/* ── More bottom sheet ──────────────────────────────────────────────── */}
-      {/* Backdrop — mobile only */}
+      {/* Tap outside panel to close More grid */}
       {moreOpen && (
         <div
-          className="fixed inset-0 z-30 lg:hidden bg-black/20 dark:bg-black/40"
+          className="fixed inset-0 z-30 lg:hidden"
           onClick={() => setMoreOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      {/*
-        Sheet — same width as the nav pill, all corners rounded, anchored
-        directly above the nav bar. Slides up from the nav pill (like ClickUp).
-        left: 32px  = mx-8 left margin
-        right: 102px = mx-8 (32) + gap-2.5 (10) + FAB (60) = right edge of nav pill
-        bottom: nav bar height = FAB (60px) + safe-area padding
-      */}
+      {/* ── Unified nav bar — panel expands upward to reveal More grid ──────── */}
       <div
-        className={cn(
-          "fixed z-[35] lg:hidden transition-transform duration-300",
-          moreOpen
-            ? "translate-y-0 ease-[cubic-bezier(0.32,0.72,0,1)]"
-            : "translate-y-full ease-in pointer-events-none"
-        )}
-        style={{
-          left: "32px",
-          right: "102px",
-          bottom: "calc(60px + max(12px, env(safe-area-inset-bottom)))",
-        }}
-      >
-        <div className="bg-white dark:bg-shark-900 rounded-[24px] shadow-[0_8px_40px_rgba(0,0,0,0.18),0_2px_12px_rgba(0,0,0,0.10)]">
-          {/* 3-col grid — matches ClickUp proportions */}
-          <div className="grid grid-cols-3 gap-y-5 gap-x-2 px-4 pt-5 pb-5">
-            {moreItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={() => setMoreOpen(false)}
-                className="flex flex-col items-center gap-2 active:opacity-60 transition-opacity"
-              >
-                <div className={cn(
-                  "w-[60px] h-[60px] rounded-[18px] flex items-center justify-center",
-                  item.bg
-                )}>
-                  <Icon name={item.icon} size={26} className={item.fg} />
-                </div>
-                <span className="text-[11px] font-medium text-shark-700 dark:text-shark-300 text-center leading-tight">
-                  {item.label}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Nav bar ────────────────────────────────────────────────────────── */}
-      <div
-        ref={containerRef}
         className="fixed bottom-0 inset-x-0 z-40 lg:hidden"
         style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
       >
-        {/* Floating bar */}
-        <div className="mx-8 flex items-center gap-2.5">
+        <div className="mx-8 flex items-end gap-2.5">
 
-          {/* Frosted glass nav pill — full capsule shape like ClickUp */}
-          <nav
-            aria-label="Mobile navigation"
-            className="relative flex-1 flex items-center bg-white/80 dark:bg-shark-950/80 backdrop-blur-2xl rounded-full border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] py-2"
+          {/*
+            Single unified card — nav buttons always visible at the bottom.
+            The More grid lives above them and is revealed by expanding the card
+            upward using grid-template-rows: 0fr → 1fr animation.
+            overflow-hidden ensures nothing peeks out when collapsed.
+          */}
+          <div
+            ref={containerRef}
+            className="flex-1 overflow-hidden rounded-[28px] bg-white/85 dark:bg-shark-950/85 backdrop-blur-2xl border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)]"
           >
-            {/* Elastic sliding pill — solid grey like ClickUp */}
+            {/*
+              Grid wrapper — height animates from 0 → natural height via
+              grid-template-rows trick (no fixed pixel value needed).
+            */}
             <div
-              aria-hidden="true"
-              className="absolute inset-y-1.5 rounded-full bg-[#E8E8E8] dark:bg-[#3D3D3D] pointer-events-none"
-              style={{
-                left:       pillLeft,
-                width:      pillWidth,
-                transition: [pillLeftTx, pillWidthTx].filter(t => t !== "none").join(", ") || "none",
-              }}
-            />
-
-            {allItems.map((item, idx) => (
-              <NavButton
-                key={item.href}
-                item={item}
-                active={!moreOpen && navActiveIdx === idx}
-              />
-            ))}
-
-            {/* More — last slot */}
-            <button
-              onClick={() => setMoreOpen((p) => !p)}
-              aria-label={moreOpen ? "Close more menu" : "Open more menu"}
-              className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-1.5 px-3"
-            >
-              <div className="relative flex items-center justify-center">
-                <Icon
-                  name="grid"
-                  size={20}
-                  filled
-                  className={cn(
-                    "transition-colors duration-200",
-                    moreOpen ? "text-action-500" : "text-shark-400 dark:text-shark-500"
-                  )}
-                />
-                {installReady && !moreOpen && (
-                  <span className="absolute -top-1.5 -right-2 w-2 h-2 rounded-full bg-green-500 border-2 border-white dark:border-shark-950" />
-                )}
-              </div>
-              <span className={cn(
-                "text-[10px] leading-none transition-colors duration-200",
+              className={cn(
+                "grid transition-[grid-template-rows] duration-300",
                 moreOpen
-                  ? "font-semibold text-action-500"
-                  : "font-medium text-shark-400 dark:text-shark-500"
-              )}>
-                More
-              </span>
-            </button>
-          </nav>
+                  ? "grid-rows-[1fr] ease-[cubic-bezier(0.32,0.72,0,1)]"
+                  : "grid-rows-[0fr] ease-in"
+              )}
+            >
+              <div className="overflow-hidden min-h-0">
+                <div className="grid grid-cols-3 gap-y-5 gap-x-2 px-4 pt-5 pb-3">
+                  {moreItems.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      onClick={() => setMoreOpen(false)}
+                      className="flex flex-col items-center gap-2 active:opacity-60 transition-opacity"
+                    >
+                      <div className={cn(
+                        "w-[60px] h-[60px] rounded-[18px] flex items-center justify-center",
+                        item.bg
+                      )}>
+                        <Icon name={item.icon} size={26} className={item.fg} />
+                      </div>
+                      <span className="text-[11px] font-medium text-shark-700 dark:text-shark-300 text-center leading-tight">
+                        {item.label}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+                {/* Divider between grid and nav row */}
+                <div className="mx-3 h-px bg-shark-100 dark:bg-shark-800" />
+              </div>
+            </div>
 
-          {/* Plus circle — quick shortcut to primary action */}
+            {/* Nav row — always visible */}
+            <nav
+              aria-label="Mobile navigation"
+              className="relative flex items-center py-2"
+            >
+              {/* Elastic sliding pill */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-y-1.5 rounded-full bg-[#E8E8E8] dark:bg-[#3D3D3D] pointer-events-none"
+                style={{
+                  left:       pillLeft,
+                  width:      pillWidth,
+                  transition: [pillLeftTx, pillWidthTx].filter(t => t !== "none").join(", ") || "none",
+                }}
+              />
+
+              {allItems.map((item, idx) => (
+                <NavButton
+                  key={item.href}
+                  item={item}
+                  active={!moreOpen && navActiveIdx === idx}
+                />
+              ))}
+
+              {/* More — last slot */}
+              <button
+                onClick={() => setMoreOpen((p) => !p)}
+                aria-label={moreOpen ? "Close more menu" : "Open more menu"}
+                className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-1.5 px-3"
+              >
+                <div className="relative flex items-center justify-center">
+                  <Icon
+                    name="grid"
+                    size={20}
+                    filled
+                    className={cn(
+                      "transition-colors duration-200",
+                      moreOpen ? "text-action-500" : "text-shark-400 dark:text-shark-500"
+                    )}
+                  />
+                  {installReady && !moreOpen && (
+                    <span className="absolute -top-1.5 -right-2 w-2 h-2 rounded-full bg-green-500 border-2 border-white dark:border-shark-950" />
+                  )}
+                </div>
+                <span className={cn(
+                  "text-[10px] leading-none transition-colors duration-200",
+                  moreOpen
+                    ? "font-semibold text-action-500"
+                    : "font-medium text-shark-400 dark:text-shark-500"
+                )}>
+                  More
+                </span>
+              </button>
+            </nav>
+          </div>
+
+          {/* FAB — stays bottom-aligned as the panel expands upward */}
           <Link
             href={fabItem?.href ?? "/scan"}
             aria-label={fabItem?.label ?? "Scan QR"}
-            className="w-[60px] h-[60px] rounded-full flex items-center justify-center shrink-0 bg-white/80 dark:bg-shark-950/80 backdrop-blur-2xl border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] active:scale-95 transition-transform duration-200"
+            className="w-[60px] h-[60px] rounded-full flex items-center justify-center shrink-0 bg-white/85 dark:bg-shark-950/85 backdrop-blur-2xl border border-white/60 dark:border-shark-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)] active:scale-95 transition-transform duration-200"
           >
             <Icon
               name="plus"
