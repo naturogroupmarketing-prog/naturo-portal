@@ -399,58 +399,13 @@ export default async function DashboardPage() {
     );
   }
 
-  // Super Admin & Branch Manager — AI briefing hero + 8-button quick nav
-  if (session.user.role === "SUPER_ADMIN" || session.user.role === "BRANCH_MANAGER") {
-    const orgId = session.user.organizationId!;
-    const regionWhere = session.user.role === "BRANCH_MANAGER" && session.user.regionId
-      ? { regionId: session.user.regionId, organizationId: orgId }
-      : { organizationId: orgId };
-
-    const [orgRecord, lowStockRaw, overdueReturns, pendingApprovals, unresolvedDamageRaw] = await Promise.all([
-      db.organization.findUnique({ where: { id: orgId }, select: { name: true } }),
-      db.consumable.findMany({ where: { ...regionWhere, isActive: true, deletedAt: null }, select: { quantityOnHand: true, minimumThreshold: true } }),
-      db.pendingReturn.count({ where: { ...regionWhere, isVerified: false } }),
-      db.purchaseOrder.count({ where: { ...regionWhere, status: "PENDING" } }),
-      db.damageReport.count({ where: { ...regionWhere, isResolved: false } }),
-    ]);
-
-    const lowStockCount = lowStockRaw.filter((c) => c.quantityOnHand <= c.minimumThreshold).length;
-    let healthScore = 100;
-    healthScore -= Math.min(20, overdueReturns * 4);
-    healthScore -= Math.min(15, unresolvedDamageRaw * 5);
-    healthScore -= Math.min(10, pendingApprovals * 2);
-    healthScore -= Math.min(30, lowStockCount * 5);
-    healthScore = Math.max(0, healthScore);
-
-    return (
-      <>
-        <AiBriefingWidget
-          orgName={orgRecord?.name ?? "Your Organisation"}
-          lowStockCount={lowStockCount}
-          criticalStockCount={0}
-          overdueReturns={overdueReturns}
-          pendingApprovals={pendingApprovals}
-          unresolvedDamage={unresolvedDamageRaw}
-          healthScore={healthScore}
-          depletionForecasts={[]}
-          recentAnomalyCount={0}
-          staffUnacknowledgedCount={0}
-          date={new Date().toISOString()}
-        />
-        <div className="mt-6">
-          <AdminQuickNav userName={session.user.name} />
-        </div>
-      </>
-    );
-  }
-
   const organizationId = session.user.organizationId!;
 
-  const regionFilter = { organizationId };
+  const regionFilter = session.user.role === "BRANCH_MANAGER"
+    ? { regionId: session.user.regionId!, organizationId }
+    : { organizationId };
 
-  // SUPER_ADMIN and BRANCH_MANAGER return early above — this code path is for
-  // support roles only, so isSuperAdmin is always false here.
-  const isSuperAdmin = false;
+  const isSuperAdmin = session.user.role === "SUPER_ADMIN";
 
   const [
     totalAssets,
