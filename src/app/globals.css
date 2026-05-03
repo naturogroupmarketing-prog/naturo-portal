@@ -622,3 +622,45 @@ a, button, [role="button"], input, select, textarea, label {
 .animate-slide-up {
   animation: slide-up 0.2s ease-out forwards;
 }
+
+/* ── Portrait-only: block landscape on phones ── */
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+  #__next,
+  body > div:first-child {
+    display: none !important;
+  }
+
+  #rotate-notice {
+    display: flex !important;
+  }
+}
+
+#rotate-notice {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: #ffffff;
+  color: #1a1a2e;
+  text-align: center;
+  padding: 32px;
+  font-family: inherit;
+}
+
+.dark #rotate-notice {
+  background: #111318;
+  color: #f0f0f5;
+}
+
+#rotate-notice svg {
+  animation: rotate-hint 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
+}
+
+@keyframes rotate-hint {
+  from { transform: rotate(-20deg); }
+  to   { transform: rotate(20deg); }
+}
