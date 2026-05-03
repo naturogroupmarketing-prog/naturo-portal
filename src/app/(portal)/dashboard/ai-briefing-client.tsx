@@ -61,7 +61,7 @@ export function AiBriefingClient({
   const [content, setContent] = useState<BriefingContent>(initialContent);
   const [copied, setCopied] = useState(false);
   const [isPending, startTransition] = useTransition();
-  // Collapsed by default on mobile; always expanded on lg+
+  // Collapsed by default on all screen sizes
   const [collapsed, setCollapsed] = useState(true);
 
   // ── Greeting ──────────────────────────────────────────────────────────
@@ -114,9 +114,8 @@ export function AiBriefingClient({
 
   return (
     <div>
-      {/* ── Collapsed row (mobile default) ── */}
-      {/* Fixed 2-line height so content below never jumps */}
-      <div className="lg:hidden flex items-center gap-2 px-4 py-3">
+      {/* ── Collapsed row — always visible, tap to expand ── */}
+      <div className="flex items-center gap-2 px-4 py-3">
 
         {/* Expand / collapse trigger — takes up the left area */}
         <button
@@ -178,8 +177,8 @@ export function AiBriefingClient({
         </button>
       </div>
 
-      {/* ── Expanded content (always visible on lg+, toggled on mobile) ── */}
-      <div className={cn("p-5", collapsed ? "hidden lg:block" : "block")}>
+      {/* ── Expanded content — shown only when expanded ── */}
+      <div className={cn("p-5", collapsed ? "hidden" : "block")}>
       {/* Header */}
       <div className="flex items-start gap-2 mb-3">
         <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0 mt-0.5">
