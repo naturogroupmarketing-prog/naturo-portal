@@ -14,6 +14,7 @@ import { getAssetHealthSummary } from "@/lib/asset-health";
 import { SetupBanner } from "@/components/ui/setup-banner";
 import { INDUSTRY_TEMPLATES } from "@/lib/industry-templates";
 import type { IndustryId } from "@/lib/industry-templates";
+import { AdminQuickNav } from "./admin-quick-nav";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -396,6 +397,11 @@ export default async function DashboardPage() {
         />
       </>
     );
+  }
+
+  // Super Admin & Branch Manager — simple quick-nav dashboard
+  if (session.user.role === "SUPER_ADMIN" || session.user.role === "BRANCH_MANAGER") {
+    return <AdminQuickNav userName={session.user.name} />;
   }
 
   const organizationId = session.user.organizationId!;
