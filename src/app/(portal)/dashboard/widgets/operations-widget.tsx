@@ -92,37 +92,37 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
 
   return (
     <Card className="h-fit bg-white/60 dark:bg-shark-900/60 backdrop-blur-xl backdrop-saturate-150 border border-white/60 dark:border-white/10">
-      <div className="p-5 sm:p-6">
+      <div className="p-4 sm:p-6">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Operations Performance</h2>
-          <div className="flex items-center gap-1.5 bg-white/60 dark:bg-shark-800/60 backdrop-blur-sm border border-white/60 dark:border-white/10 rounded-full px-3 py-1 shadow-sm text-action-600 dark:text-action-400 text-xs font-semibold cursor-default select-none">
-            <span>Last 30 Days</span>
-            <Icon name="chevron-down" size={12} />
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-sm sm:text-lg font-bold text-shark-900 dark:text-shark-100 leading-tight">Operations Performance</h2>
+          <div className="flex items-center gap-1.5 bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 rounded-full px-2.5 py-1 shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-wider">Live</span>
           </div>
         </div>
 
-        {/* Ring + Metrics */}
-        <div className="flex items-center gap-6 sm:gap-8">
-          {/* Large ring */}
-          <div className="shrink-0">
-            <HealthRing score={data.healthScore} size={140} />
+        {/* Ring + Metrics — stacked on mobile, side-by-side on sm+ */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
+          {/* Ring — centred on mobile */}
+          <div className="flex justify-center shrink-0">
+            <HealthRing score={data.healthScore} size={120} />
           </div>
 
           {/* 2×2 metrics grid */}
-          <div className="flex-1 grid grid-cols-2 gap-3">
+          <div className="flex-1 grid grid-cols-2 gap-2.5 sm:gap-3">
             {metrics.map((m) => (
               <Link
                 key={m.label}
                 href={m.href}
                 className="group block bg-white/60 dark:bg-shark-800/50 backdrop-blur-sm border border-white/70 dark:border-white/10 rounded-2xl p-3 shadow-sm hover:bg-white/80 dark:hover:bg-shark-800/70 hover:shadow-md transition-all duration-200"
               >
-                <p className="text-[10px] text-shark-400 dark:text-shark-500 mb-1 leading-none font-medium">{m.label}</p>
-                <p className="text-sm font-bold text-shark-900 dark:text-shark-100 leading-tight whitespace-nowrap group-hover:text-action-600 dark:group-hover:text-action-400 transition-colors">
+                <p className="text-[9px] sm:text-[10px] text-shark-400 dark:text-shark-500 mb-1 leading-none font-medium truncate">{m.label}</p>
+                <p className="text-sm font-bold text-shark-900 dark:text-shark-100 leading-tight truncate group-hover:text-action-600 dark:group-hover:text-action-400 transition-colors">
                   {m.display}
                 </p>
-                <div className="mt-2.5 h-1 bg-shark-100/80 dark:bg-shark-700/80 rounded-full overflow-hidden">
+                <div className="mt-2 h-1 bg-shark-100/80 dark:bg-shark-700/80 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-1000 ease-out"
                     style={{ width: `${m.barPct}%`, backgroundColor: m.barColor }}
