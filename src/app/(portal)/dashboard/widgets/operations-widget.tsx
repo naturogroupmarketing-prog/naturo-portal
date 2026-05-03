@@ -50,8 +50,8 @@ function HealthRing({ score, size = 140 }: { score: number; size?: number }) {
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
-          <span className="text-3xl font-black text-shark-800 dark:text-shark-100 leading-none">{score}%</span>
-          <span className="text-xs text-shark-400 font-medium block leading-none mt-1">Efficiency</span>
+          <span className="text-2xl font-black text-shark-800 dark:text-shark-200 leading-none">{score}</span>
+          <span className="text-[10px] text-shark-400 font-normal block leading-none mt-0.5">/ 100</span>
         </div>
       </div>
     </div>
@@ -81,13 +81,6 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
       barColor: "#1F3DD9",
       href: "/purchase-orders?status=ORDERED",
     },
-    {
-      label: "Pending Requests",
-      display: `${data.pendingRequests} requests`,
-      barPct: Math.max(4, 100 - Math.min(96, data.pendingRequests * 18)),
-      barColor: data.pendingRequests > 0 ? "#f59e0b" : "#22c55e",
-      href: "/consumables?tab=requests",
-    },
   ];
 
   return (
@@ -103,15 +96,15 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
           </div>
         </div>
 
-        {/* Ring + Metrics — stacked on mobile, side-by-side on sm+ */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
-          {/* Ring — centred on mobile */}
-          <div className="flex justify-center shrink-0">
+        {/* Ring + Metrics — always side by side */}
+        <div className="flex items-center gap-4">
+          {/* Ring */}
+          <div className="shrink-0">
             <HealthRing score={data.healthScore} size={120} />
           </div>
 
-          {/* 2×2 metrics grid */}
-          <div className="flex-1 grid grid-cols-2 gap-2.5 sm:gap-3">
+          {/* Metrics — stacked vertically */}
+          <div className="flex-1 grid grid-cols-1 gap-2.5">
             {metrics.map((m) => (
               <Link
                 key={m.label}
