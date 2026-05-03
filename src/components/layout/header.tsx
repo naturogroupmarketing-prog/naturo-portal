@@ -113,7 +113,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-[56px] items-center justify-between bg-white/95 dark:bg-shark-900/95 backdrop-blur-sm px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-shark-100/60 dark:border-shark-800/60 shadow-[0_1px_0_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.04)]">
+    <header className="relative z-30 flex min-h-[56px] items-center justify-between bg-white dark:bg-shark-900 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-shark-100/60 dark:border-shark-800/60 shadow-[0_1px_0_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.04)]">
       {/* Left side: mobile menu + logo */}
       <div className="flex items-center gap-2">
         {/* Brand — org logo if set, otherwise name with initial badge */}
