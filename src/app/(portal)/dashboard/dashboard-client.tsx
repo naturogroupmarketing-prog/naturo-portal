@@ -404,9 +404,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             {operationsOverview && showOperations && (
               <OperationsWidget data={operationsOverview} />
             )}
-            {operationsOverview && showOperations && (
-              <PriorityAlertsPanel data={operationsOverview} />
-            )}
           </div>
         )}
 
