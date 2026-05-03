@@ -258,10 +258,10 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
   return (
     <>
       {/* ── More bottom sheet ──────────────────────────────────────────────── */}
-      {/* Backdrop */}
+      {/* Backdrop — mobile only */}
       {moreOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 dark:bg-black/40"
+          className="fixed inset-0 z-30 lg:hidden bg-black/20 dark:bg-black/40"
           onClick={() => setMoreOpen(false)}
           aria-hidden="true"
         />
@@ -276,7 +276,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
       */}
       <div
         className={cn(
-          "fixed z-[35] transition-transform duration-300",
+          "fixed z-[35] lg:hidden transition-transform duration-300",
           moreOpen
             ? "translate-y-0 ease-[cubic-bezier(0.32,0.72,0,1)]"
             : "translate-y-full ease-in pointer-events-none"
