@@ -89,9 +89,8 @@ function getMoreItems(role: Role): MoreGridItem[] {
         { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: TILE, fg: "text-blue-500" },
         { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: TILE, fg: "text-green-500" },
         { label: "Staff",           href: "/staff",            icon: "users",          bg: TILE, fg: "text-indigo-500" },
-        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: TILE, fg: "text-amber-500" },
         { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: TILE, fg: "text-orange-500" },
-        { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
+        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: TILE, fg: "text-amber-500" },
         { label: "Reports",         href: "/reports",          icon: "clipboard",      bg: TILE, fg: "text-teal-500" },
         { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: TILE, fg: "text-violet-500" },
         { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: TILE, fg: "text-red-500" },
@@ -101,9 +100,8 @@ function getMoreItems(role: Role): MoreGridItem[] {
         { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: TILE, fg: "text-blue-500" },
         { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: TILE, fg: "text-green-500" },
         { label: "Staff",           href: "/staff",            icon: "users",          bg: TILE, fg: "text-indigo-500" },
-        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: TILE, fg: "text-amber-500" },
         { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: TILE, fg: "text-orange-500" },
-        { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: TILE, fg: "text-shark-500 dark:text-shark-400" },
+        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: TILE, fg: "text-amber-500" },
         { label: "Reports",         href: "/reports",          icon: "clipboard",      bg: TILE, fg: "text-teal-500" },
         { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: TILE, fg: "text-violet-500" },
         { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: TILE, fg: "text-red-500" },
@@ -296,7 +294,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               )}
             >
               <div className="overflow-hidden min-h-0">
-                <div className="grid grid-cols-3 gap-y-5 gap-x-2 px-4 pt-5 pb-3">
+                <div className="grid grid-cols-4 gap-y-5 gap-x-1.5 px-3 pt-5 pb-3">
                   {moreItems.map((item) => (
                     <Link
                       key={item.label}
@@ -305,12 +303,12 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                       className="flex flex-col items-center gap-2 active:opacity-60 transition-opacity"
                     >
                       <div className={cn(
-                        "w-[60px] h-[60px] rounded-[18px] flex items-center justify-center",
+                        "w-[52px] h-[52px] rounded-[16px] flex items-center justify-center",
                         item.bg
                       )}>
-                        <Icon name={item.icon} size={26} className={item.fg} />
+                        <Icon name={item.icon} size={22} className={item.fg} />
                       </div>
-                      <span className="text-[11px] font-medium text-shark-700 dark:text-shark-300 text-center leading-tight">
+                      <span className="text-[10px] font-medium text-shark-700 dark:text-shark-300 text-center leading-tight">
                         {item.label}
                       </span>
                     </Link>
