@@ -129,7 +129,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
   const effectiveRole = role === "BRANCH_MANAGER" && bmStaffView ? "STAFF" : role;
 
   return (
-    <nav aria-label="Main navigation" className="flex flex-col h-full bg-white dark:bg-shark-900 transition-colors">
+    <nav aria-label="Main navigation" className="flex flex-col h-full bg-transparent transition-colors">
       {/* Close button for mobile */}
       {onClose && (
         <div className="flex items-center justify-end px-3 py-2 lg:hidden">

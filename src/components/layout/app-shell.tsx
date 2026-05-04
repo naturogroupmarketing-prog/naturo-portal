@@ -57,7 +57,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
     <PageCogProvider>
     <SidebarContext.Provider value={{ expanded: sidebarExpanded, toggle: () => setSidebarExpanded((p) => !p) }}>
     <div
-      className="flex flex-col h-dvh bg-[#F4F5F7] dark:bg-shark-950 transition-colors"
+      className="flex flex-col h-dvh bg-gradient-to-br from-[#eef0ff] via-[#f4f5f7] to-[#ece8ff] dark:bg-none dark:bg-shark-950 transition-colors"
       onTouchStart={handleMainTouchStart}
       onTouchEnd={handleMainTouchEnd}
     >
@@ -86,7 +86,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         {/* Desktop sidebar — collapsible with toggle arrow */}
         <aside className="hidden lg:flex flex-shrink-0 relative">
           <div
-            className={`flex flex-col bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 dark:border-transparent transition-all duration-300 overflow-hidden ${
+            className={`flex flex-col backdrop-blur-xl bg-white/80 dark:bg-shark-900/80 border-r border-white/70 dark:border-white/[0.06] transition-all duration-300 overflow-hidden ${
               sidebarExpanded ? "w-64" : "w-[68px]"
             }`}
           >
@@ -127,7 +127,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
               onClick={() => setSidebarOpen(false)}
             />
             <div
-              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] bg-white dark:bg-shark-900 border-r border-shark-100 dark:border-shark-800 dark:border-transparent z-50 shadow-xl transition-colors"
+              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-xl bg-white/85 dark:bg-shark-900/85 border-r border-white/70 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(0,0,0,0.10)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >

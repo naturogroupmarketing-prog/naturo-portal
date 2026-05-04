@@ -43,10 +43,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           "inline-flex items-center justify-center rounded-[14px] font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-action-400/40 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-shark-900 disabled:opacity-50 disabled:pointer-events-none cursor-pointer active:scale-[0.96]",
           {
             "bg-action-500 text-white hover:bg-action-600 shadow-[0_2px_8px_rgba(17,19,212,0.22),0_1px_2px_rgba(17,19,212,0.14)] hover:shadow-[0_4px_16px_rgba(17,19,212,0.28),0_2px_4px_rgba(17,19,212,0.16)]": variant === "primary",
-            "bg-shark-50 dark:bg-shark-800 text-shark-700 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-700 border border-shark-200/80 dark:border-shark-700/80": variant === "secondary",
+            "backdrop-blur-sm bg-white/60 dark:bg-shark-800/60 text-shark-700 dark:text-shark-300 hover:bg-white/80 dark:hover:bg-shark-700/70 border border-white/70 dark:border-white/[0.10]": variant === "secondary",
             "bg-red-500 text-white hover:bg-red-600 shadow-[0_2px_8px_rgba(239,68,68,0.22)] hover:shadow-[0_4px_16px_rgba(239,68,68,0.28)]": variant === "danger",
-            "hover:bg-shark-50 dark:hover:bg-shark-800 text-shark-600 dark:text-shark-400 rounded-[12px]": variant === "ghost",
-            "border border-shark-200/80 dark:border-shark-700/80 bg-white dark:bg-shark-800/60 text-shark-700 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700": variant === "outline",
+            "hover:bg-white/50 dark:hover:bg-shark-800/50 text-shark-600 dark:text-shark-400 rounded-[12px]": variant === "ghost",
+            "backdrop-blur-sm border border-white/70 dark:border-white/[0.10] bg-white/60 dark:bg-shark-800/50 text-shark-700 dark:text-shark-300 hover:bg-white/80 dark:hover:bg-shark-700/60": variant === "outline",
           },
           {
             "px-3 py-2 text-xs min-h-[44px] sm:min-h-[32px]": size === "sm",
