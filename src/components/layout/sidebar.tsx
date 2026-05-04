@@ -159,7 +159,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-[14px] min-h-[44px] transition-all duration-200 active:scale-[0.98]",
                           active
-                            ? "bg-white/70 text-[#1c1d2e] font-semibold dark:bg-action-500/12 dark:text-action-400 shadow-[0_1px_8px_rgba(100,120,200,0.14)]"
+                            ? "bg-white/70 text-[#1259C3] font-semibold dark:bg-[#1259C3]/12 dark:text-[#5b9cf8] shadow-[0_1px_8px_rgba(18,89,195,0.14)]"
                             : "text-shark-600 dark:text-shark-300 hover:bg-white/50 dark:hover:bg-shark-800/60 hover:text-shark-900 dark:hover:text-white"
                         )}
                       >
@@ -173,7 +173,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                           <Icon
                             name={item.icon}
                             size={17}
-                            className={active ? "text-action-600 dark:text-action-400" : "text-shark-500 dark:text-shark-400"}
+                            className={active ? "text-[#1259C3] dark:text-[#5b9cf8]" : "text-shark-500 dark:text-shark-400"}
                           />
                         </span>
                         <span className="flex-1 leading-none">{item.label}</span>

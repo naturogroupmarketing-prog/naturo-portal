@@ -10,7 +10,7 @@ export function Card({ className, variant = "default", padding = "md", children,
     <div
       className={cn(
         // Glassmorphism: frosted surface, white-edge border, inset highlight
-        "rounded-[20px] transition-colors",
+        "rounded-[28px] transition-colors",
         {
           "backdrop-blur-xl bg-white/52 dark:bg-shark-900/70 border border-white/65 dark:border-white/[0.07] shadow-[0_2px_24px_rgba(100,140,220,0.18),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_4px_16px_rgba(0,0,0,0.20)]": variant === "default",
           "backdrop-blur-md bg-white/38 dark:bg-shark-900/50 border border-white/55 dark:border-white/[0.06]": variant === "flat",
