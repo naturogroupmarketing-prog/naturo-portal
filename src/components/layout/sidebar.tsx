@@ -165,15 +165,15 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                       >
                         {/* Icon tile — colored on active */}
                         <span className={cn(
-                          "flex items-center justify-center w-8 h-8 rounded-[10px] flex-shrink-0 transition-colors",
+                          "flex items-center justify-center w-8 h-8 rounded-[10px] flex-shrink-0 transition-all duration-200",
                           active
-                            ? "bg-[#e8ecf8] dark:bg-action-500/20"
-                            : "bg-transparent"
+                            ? "backdrop-blur-sm bg-white/70 dark:bg-white/[0.12] border border-white/80 dark:border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_6px_rgba(100,140,220,0.14)]"
+                            : "bg-white/25 dark:bg-white/[0.04] border border-white/40 dark:border-white/[0.07]"
                         )}>
                           <Icon
                             name={item.icon}
                             size={17}
-                            className={active ? "text-action-600 dark:text-action-400" : "text-shark-400 dark:text-shark-400"}
+                            className={active ? "text-action-600 dark:text-action-400" : "text-shark-500 dark:text-shark-400"}
                           />
                         </span>
                         <span className="flex-1 leading-none">{item.label}</span>

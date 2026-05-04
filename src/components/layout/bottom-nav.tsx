@@ -73,52 +73,52 @@ function getMoreItems(role: Role): MoreGridItem[] {
   switch (role) {
     case "STAFF":
       return [
-        { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-shark-100 dark:bg-shark-700",   fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-blue-50 dark:bg-blue-500/15",   fg: "text-blue-500" },
-        { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-50 dark:bg-red-500/15",     fg: "text-red-500" },
-        { label: "My Assets",      href: "/my-assets",           icon: "package",        bg: "bg-purple-50 dark:bg-purple-500/15", fg: "text-purple-500" },
-        { label: "My Supplies",    href: "/my-consumables",      icon: "droplet",        bg: "bg-cyan-50 dark:bg-cyan-500/15",   fg: "text-cyan-500" },
-        { label: "Dashboard",      href: "/dashboard",           icon: "dashboard",      bg: "bg-indigo-50 dark:bg-indigo-500/15", fg: "text-indigo-500" },
-        { label: "Settings",       href: "/settings",            icon: "settings",       bg: "bg-shark-100 dark:bg-shark-700",   fg: "text-shark-500 dark:text-shark-400" },
+        { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-white/30",          fg: "text-shark-600" },
+        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-blue-400/15",       fg: "text-blue-600" },
+        { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-400/15",        fg: "text-red-600" },
+        { label: "My Assets",      href: "/my-assets",           icon: "package",        bg: "bg-purple-400/15",     fg: "text-purple-600" },
+        { label: "My Supplies",    href: "/my-consumables",      icon: "droplet",        bg: "bg-cyan-400/15",       fg: "text-cyan-600" },
+        { label: "Dashboard",      href: "/dashboard",           icon: "dashboard",      bg: "bg-indigo-400/15",     fg: "text-indigo-600" },
+        { label: "Settings",       href: "/settings",            icon: "settings",       bg: "bg-white/25",          fg: "text-shark-500" },
       ];
     case "SUPER_ADMIN":
       return [
-        { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: "bg-blue-50 dark:bg-blue-500/15",     fg: "text-blue-500" },
-        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-green-50 dark:bg-green-500/15",   fg: "text-green-500" },
-        { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-indigo-50 dark:bg-indigo-500/15", fg: "text-indigo-500" },
-        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-amber-50 dark:bg-amber-500/15",   fg: "text-amber-500" },
-        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: "bg-orange-50 dark:bg-orange-500/15", fg: "text-orange-500" },
-        { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: "bg-shark-100 dark:bg-shark-700",     fg: "text-shark-500 dark:text-shark-400" },
-        { label: "Reports",         href: "/reports",          icon: "clipboard",      bg: "bg-teal-50 dark:bg-teal-500/15",     fg: "text-teal-500" },
-        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: "bg-violet-50 dark:bg-violet-500/15", fg: "text-violet-500" },
-        { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: "bg-red-50 dark:bg-red-500/15",       fg: "text-red-500" },
+        { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: "bg-blue-400/15",       fg: "text-blue-600" },
+        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-green-400/15",      fg: "text-green-600" },
+        { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-indigo-400/15",     fg: "text-indigo-600" },
+        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-amber-400/15",      fg: "text-amber-600" },
+        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: "bg-orange-400/15",     fg: "text-orange-600" },
+        { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: "bg-white/25",          fg: "text-shark-500" },
+        { label: "Reports",         href: "/reports",          icon: "clipboard",      bg: "bg-teal-400/15",       fg: "text-teal-600" },
+        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: "bg-violet-400/15",     fg: "text-violet-600" },
+        { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: "bg-red-400/15",        fg: "text-red-600" },
       ];
     case "BRANCH_MANAGER":
       return [
-        { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: "bg-blue-50 dark:bg-blue-500/15",     fg: "text-blue-500" },
-        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-green-50 dark:bg-green-500/15",   fg: "text-green-500" },
-        { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-indigo-50 dark:bg-indigo-500/15", fg: "text-indigo-500" },
-        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-amber-50 dark:bg-amber-500/15",   fg: "text-amber-500" },
-        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: "bg-orange-50 dark:bg-orange-500/15", fg: "text-orange-500" },
-        { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: "bg-shark-100 dark:bg-shark-700",     fg: "text-shark-500 dark:text-shark-400" },
-        { label: "Reports",         href: "/reports",          icon: "clipboard",      bg: "bg-teal-50 dark:bg-teal-500/15",     fg: "text-teal-500" },
-        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: "bg-violet-50 dark:bg-violet-500/15", fg: "text-violet-500" },
-        { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: "bg-red-50 dark:bg-red-500/15",       fg: "text-red-500" },
+        { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: "bg-blue-400/15",       fg: "text-blue-600" },
+        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-green-400/15",      fg: "text-green-600" },
+        { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-indigo-400/15",     fg: "text-indigo-600" },
+        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-amber-400/15",      fg: "text-amber-600" },
+        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: "bg-orange-400/15",     fg: "text-orange-600" },
+        { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: "bg-white/25",          fg: "text-shark-500" },
+        { label: "Reports",         href: "/reports",          icon: "clipboard",      bg: "bg-teal-400/15",       fg: "text-teal-600" },
+        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: "bg-violet-400/15",     fg: "text-violet-600" },
+        { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: "bg-red-400/15",        fg: "text-red-600" },
       ];
     case "AUDITOR":
       return [
-        { label: "Dashboard", href: "/dashboard", icon: "dashboard",      bg: "bg-indigo-50 dark:bg-indigo-500/15", fg: "text-indigo-500" },
-        { label: "Reports",   href: "/reports",   icon: "clipboard",      bg: "bg-teal-50 dark:bg-teal-500/15",     fg: "text-teal-500" },
-        { label: "Activity",  href: "/activity",  icon: "clock",          bg: "bg-violet-50 dark:bg-violet-500/15", fg: "text-violet-500" },
-        { label: "Scan QR",   href: "/scan",      icon: "qr-code",        bg: "bg-shark-100 dark:bg-shark-700",     fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Settings",  href: "/settings",  icon: "settings",       bg: "bg-shark-100 dark:bg-shark-700",     fg: "text-shark-500 dark:text-shark-400" },
+        { label: "Dashboard", href: "/dashboard", icon: "dashboard",      bg: "bg-indigo-400/15",     fg: "text-indigo-600" },
+        { label: "Reports",   href: "/reports",   icon: "clipboard",      bg: "bg-teal-400/15",       fg: "text-teal-600" },
+        { label: "Activity",  href: "/activity",  icon: "clock",          bg: "bg-violet-400/15",     fg: "text-violet-600" },
+        { label: "Scan QR",   href: "/scan",      icon: "qr-code",        bg: "bg-white/30",          fg: "text-shark-600" },
+        { label: "Settings",  href: "/settings",  icon: "settings",       bg: "bg-white/25",          fg: "text-shark-500" },
       ];
     default:
       return [
-        { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-shark-100 dark:bg-shark-700",   fg: "text-shark-600 dark:text-shark-300" },
-        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-blue-50 dark:bg-blue-500/15",   fg: "text-blue-500" },
-        { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-50 dark:bg-red-500/15",     fg: "text-red-500" },
-        { label: "Settings",       href: "/settings",            icon: "settings",       bg: "bg-shark-100 dark:bg-shark-700",   fg: "text-shark-500 dark:text-shark-400" },
+        { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-white/30",          fg: "text-shark-600" },
+        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-blue-400/15",       fg: "text-blue-600" },
+        { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-400/15",        fg: "text-red-600" },
+        { label: "Settings",       href: "/settings",            icon: "settings",       bg: "bg-white/25",          fg: "text-shark-500" },
       ];
   }
 }
@@ -327,19 +327,19 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                       className="flex flex-col items-center gap-2 touch-manipulation select-none"
                     >
                       <div className={cn(
-                        "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center",
+                        "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center backdrop-blur-md border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_2px_8px_rgba(100,140,220,0.10)] active:scale-95 transition-transform",
                         item.bg
                       )}>
                         <Icon name={item.icon} size={27} className={item.fg} />
                       </div>
-                      <span className="text-[11px] font-medium text-shark-700 dark:text-shark-300 text-center leading-tight">
+                      <span className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 text-center leading-tight">
                         {item.label}
                       </span>
                     </Link>
                   ))}
                 </div>
                 {/* Divider */}
-                <div className="mx-4 h-px bg-shark-100 dark:bg-shark-800" />
+                <div className="mx-4 h-px bg-white/50 dark:bg-shark-800" />
               </div>
             </div>
 
@@ -434,7 +434,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                       href={action.href}
                       onClick={() => setQuickOpen(false)}
                       className={cn(
-                        "w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-[0_4px_16px_rgba(0,0,0,0.2)] touch-manipulation select-none",
+                        "w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0 border border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_4px_16px_rgba(0,0,0,0.18)] touch-manipulation select-none active:scale-95 transition-transform",
                         action.color
                       )}
                     >

@@ -208,10 +208,10 @@ function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { ro
               key={item.href}
               href={item.href}
               title={item.label}
-              className={`relative w-11 h-11 flex items-center justify-center rounded-xl transition-all ${
+              className={`relative w-11 h-11 flex items-center justify-center rounded-[14px] transition-all duration-200 ${
                 active
-                  ? "bg-action-50 text-action-600 dark:bg-transparent dark:text-action-400"
-                  : "text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800 dark:bg-transparent dark:hover:bg-shark-800/40 hover:text-shark-700 dark:hover:text-white"
+                  ? "backdrop-blur-sm bg-white/70 dark:bg-white/[0.12] border border-white/80 dark:border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(100,140,220,0.14)] text-action-600 dark:text-action-400"
+                  : "bg-white/20 dark:bg-white/[0.04] border border-white/35 dark:border-white/[0.07] text-shark-500 dark:text-shark-400 hover:bg-white/40 dark:hover:bg-white/[0.08] hover:text-shark-700 dark:hover:text-white"
               }`}
             >
               <Icon name={item.icon} size={20} />
