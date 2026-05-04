@@ -113,7 +113,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-2xl bg-white/75 dark:bg-shark-900/80 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-white/70 dark:border-white/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.9),0_2px_16px_rgba(100,120,200,0.10)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_2px_8px_rgba(0,0,0,0.20)]">
+    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-2xl bg-white/50 dark:bg-shark-900/80 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-white/55 dark:border-white/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.85),0_2px_20px_rgba(100,140,220,0.16)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_2px_8px_rgba(0,0,0,0.20)]">
       {/* Left side: mobile menu + logo */}
       <div className="flex items-center gap-2">
         {/* Brand — org logo if set, otherwise name with initial badge */}
@@ -149,7 +149,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
       <div className="hidden lg:flex items-center flex-1 max-w-xl">
         <button
           onClick={() => setSearchOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-400 bg-shark-50 dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-lg hover:border-shark-300 dark:hover:border-shark-600 transition-colors w-48 lg:w-64"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-500 bg-white/40 dark:bg-shark-800 border border-white/65 dark:border-shark-700 rounded-[12px] hover:bg-white/55 backdrop-blur-sm transition-colors w-48 lg:w-64"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
             <circle cx="11" cy="11" r="8" />
@@ -204,7 +204,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
           {/* Dropdown menu */}
           {dropdownOpen && (
-            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] backdrop-blur-2xl bg-white/90 dark:bg-shark-800/85 rounded-2xl shadow-[0_2px_32px_rgba(100,120,200,0.18),0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.40)] border border-white/80 dark:border-white/[0.08] py-1.5 z-50">
+            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] backdrop-blur-2xl bg-white/68 dark:bg-shark-800/85 rounded-2xl shadow-[0_2px_32px_rgba(100,140,220,0.22),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.40)] border border-white/65 dark:border-white/[0.08] py-1.5 z-50">
               {/* User info */}
               <div className="px-4 py-2.5 border-b border-shark-100 dark:border-shark-700">
                 <p className="text-sm font-semibold text-shark-800 dark:text-shark-100">{userName}</p>

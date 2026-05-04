@@ -128,7 +128,7 @@ export function PortalDropdown({
       ref={menuRef}
       style={getStyle()}
       className={cn(
-        "bg-white dark:bg-shark-800 rounded-xl shadow-lg border border-shark-100 dark:border-shark-700 py-1",
+        "backdrop-blur-2xl bg-white/65 dark:bg-shark-800/75 rounded-[18px] border border-white/62 dark:border-white/[0.09] shadow-[0_4px_32px_rgba(100,140,220,0.22),0_1px_0_rgba(255,255,255,0.88)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)] py-1.5",
         maxHeightClass,
         className
       )}
@@ -161,7 +161,7 @@ export function DropdownItem({
       disabled={disabled}
       className={cn(
         "w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2",
-        "hover:bg-shark-50 dark:hover:bg-shark-800",
+        "hover:bg-white/60 dark:hover:bg-white/[0.07]",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         className
       )}

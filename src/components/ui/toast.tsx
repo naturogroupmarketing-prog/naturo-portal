@@ -49,17 +49,17 @@ const ICONS: Record<ToastType, ReactNode> = {
   ),
 };
 
-const BG_COLORS: Record<ToastType, string> = {
-  success: "bg-action-50 border-action-200",
-  error: "bg-red-50 border-red-200",
-  warning: "bg-amber-50 border-amber-200",
-  info: "bg-blue-50 border-blue-200",
+const ACCENT_COLORS: Record<ToastType, string> = {
+  success: "border-l-action-400",
+  error: "border-l-red-400",
+  warning: "border-l-amber-400",
+  info: "border-l-blue-400",
 };
 
 function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: () => void }) {
   return (
     <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg ${BG_COLORS[toast.type]} animate-slide-in`}
+      className={`flex items-center gap-3 pl-3.5 pr-4 py-3 rounded-[16px] backdrop-blur-xl bg-white/68 dark:bg-shark-800/80 border border-l-[3px] border-white/62 dark:border-white/[0.08] shadow-[0_4px_24px_rgba(100,140,220,0.22),0_1px_0_rgba(255,255,255,0.90)] ${ACCENT_COLORS[toast.type]} animate-slide-in`}
       role="alert"
     >
       {ICONS[toast.type]}

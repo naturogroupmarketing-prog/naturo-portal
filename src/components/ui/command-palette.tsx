@@ -292,14 +292,14 @@ export function CommandPalette() {
     <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[12vh]">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/35 backdrop-blur-md"
         onClick={() => setOpen(false)}
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-xl bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-200 dark:border-shark-700 overflow-hidden animate-fade-in">
+      <div className="relative w-full max-w-xl backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 rounded-[24px] border border-white/65 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(100,140,220,0.26),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_16px_48px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden animate-fade-in">
         {/* Search input */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-shark-100 dark:border-shark-800">
+        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/60 dark:border-white/[0.08]">
           {searchLoading ? (
             <svg className="animate-spin w-[18px] h-[18px] shrink-0 text-action-500" viewBox="0 0 16 16" fill="none">
               <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeOpacity="0.2" strokeWidth="2.5" />
@@ -331,7 +331,7 @@ export function CommandPalette() {
 
           {/* ── AI search results ── */}
           {isSearching && (hasResults || searchLoading) && (
-            <div className="p-2 border-b border-shark-100 dark:border-shark-800">
+            <div className="p-2 border-b border-white/60 dark:border-white/[0.08]">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-action-500 px-3 py-1.5 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-action-400 animate-pulse" />
                 Live Results
@@ -346,10 +346,10 @@ export function CommandPalette() {
                 <button
                   key={`a-${asset.id}`}
                   onClick={() => navigate(`/assets?search=${encodeURIComponent(asset.name)}`)}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-left group"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
                 >
                   {/* Icon */}
-                  <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                  <div className="w-7 h-7 rounded-lg bg-white/70 border border-white/80 flex items-center justify-center shrink-0">
                     <Icon name="package" size={13} className="text-action-500" />
                   </div>
                   {/* Info */}
@@ -377,9 +377,9 @@ export function CommandPalette() {
                   <button
                     key={`c-${c.id}`}
                     onClick={() => navigate(`/consumables?search=${encodeURIComponent(c.name)}`)}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-left group"
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
                   >
-                    <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 rounded-lg bg-white/70 border border-white/80 flex items-center justify-center shrink-0">
                       <Icon name="droplet" size={13} className="text-emerald-500" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -402,9 +402,9 @@ export function CommandPalette() {
                 <button
                   key={`u-${u.id}`}
                   onClick={() => navigate(`/staff?search=${encodeURIComponent(u.name ?? u.email ?? "")}`)}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors text-left group"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
                 >
-                  <div className="w-7 h-7 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-white/70 border border-white/80 flex items-center justify-center shrink-0">
                     <span className="text-xs font-bold text-indigo-500">
                       {(u.name ?? u.email ?? "?").charAt(0).toUpperCase()}
                     </span>
@@ -450,10 +450,10 @@ export function CommandPalette() {
                         key={`${section}-${item.href}`}
                         onClick={() => navigate(item.href)}
                         onMouseEnter={() => setSelectedIndex(idx)}
-                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm transition-colors ${
                           selectedIndex === idx
-                            ? "bg-action-500 text-white"
-                            : "text-shark-700 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"
+                            ? "bg-[#1c1d2e] text-white shadow-[0_2px_8px_rgba(20,21,40,0.22)]"
+                            : "text-shark-700 dark:text-shark-300 hover:bg-white/60 dark:hover:bg-white/[0.06]"
                         }`}
                       >
                         <Icon
@@ -473,16 +473,16 @@ export function CommandPalette() {
         </div>
 
         {/* Footer */}
-        <div className="border-t border-shark-100 dark:border-shark-800 px-4 py-2 flex items-center gap-4 text-[10px] text-shark-400">
+        <div className="border-t border-white/60 dark:border-white/[0.08] px-4 py-2 flex items-center gap-4 text-[10px] text-shark-400">
           <span className="flex items-center gap-1">
-            <kbd className="bg-shark-100 dark:bg-shark-800 px-1 rounded">&uarr;</kbd>
-            <kbd className="bg-shark-100 dark:bg-shark-800 px-1 rounded">&darr;</kbd> Navigate
+            <kbd className="bg-white/70 dark:bg-white/[0.07] border border-white/80 dark:border-white/[0.10] px-1 rounded-md">&uarr;</kbd>
+            <kbd className="bg-white/70 dark:bg-white/[0.07] border border-white/80 dark:border-white/[0.10] px-1 rounded-md">&darr;</kbd> Navigate
           </span>
           <span className="flex items-center gap-1">
-            <kbd className="bg-shark-100 dark:bg-shark-800 px-1 rounded">Enter</kbd> Open
+            <kbd className="bg-white/70 dark:bg-white/[0.07] border border-white/80 dark:border-white/[0.10] px-1 rounded-md">Enter</kbd> Open
           </span>
           <span className="flex items-center gap-1">
-            <kbd className="bg-shark-100 dark:bg-shark-800 px-1 rounded">Esc</kbd> Close
+            <kbd className="bg-white/70 dark:bg-white/[0.07] border border-white/80 dark:border-white/[0.10] px-1 rounded-md">Esc</kbd> Close
           </span>
           {isSearching && (
             <span className="ml-auto text-action-400 font-medium">Powered by AI</span>

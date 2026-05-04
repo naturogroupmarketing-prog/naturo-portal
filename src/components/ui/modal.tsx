@@ -105,7 +105,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 p-4 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4 animate-fade-in"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
@@ -113,16 +113,16 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       <div
         ref={contentRef}
         className={cn(
-          "w-[calc(100vw-1rem)] sm:max-w-lg rounded-xl bg-white dark:bg-shark-900 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.08)] max-h-[85vh] sm:max-h-[90vh] overflow-y-auto safe-bottom transition-all duration-200",
+          "w-[calc(100vw-1rem)] sm:max-w-lg rounded-[24px] backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 border border-white/70 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(100,140,220,0.24),0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_12px_40px_rgba(0,0,0,0.40),inset_0_1px_0_rgba(255,255,255,0.06)] max-h-[85vh] sm:max-h-[90vh] overflow-y-auto safe-bottom transition-all duration-200",
           className
         )}
       >
-        <div className="flex items-center justify-between border-b border-shark-100 dark:border-shark-800 px-4 sm:px-6 py-4">
+        <div className="flex items-center justify-between border-b border-white/60 dark:border-white/[0.08] px-4 sm:px-6 py-4">
           <h2 id={titleId} className="text-lg font-semibold text-shark-900 dark:text-shark-100 truncate pr-2">{title}</h2>
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="text-shark-400 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-200 hover:bg-shark-50 dark:hover:bg-shark-800 rounded-lg p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors text-xl leading-none"
+            className="text-shark-400 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-200 hover:bg-white/60 dark:hover:bg-white/[0.06] rounded-[10px] p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors text-xl leading-none"
           >
             &times;
           </button>
