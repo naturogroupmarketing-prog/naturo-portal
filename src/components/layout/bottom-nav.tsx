@@ -445,22 +445,17 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               })}
             </div>
 
-            {/* Main FAB — solid action blue */}
+            {/* Main FAB — matches nav card surface */}
             <button
               onClick={() => setQuickOpen((p) => !p)}
               aria-label={quickOpen ? "Close quick actions" : "Quick actions"}
-              className={cn(
-                "w-[62px] h-[62px] rounded-full flex items-center justify-center touch-manipulation select-none transition-all duration-200",
-                quickOpen
-                  ? "bg-shark-800 dark:bg-shark-700 shadow-[0_4px_16px_rgba(0,0,0,0.25)]"
-                  : "bg-action-500 shadow-[0_4px_20px_rgba(17,19,212,0.38),0_2px_8px_rgba(17,19,212,0.2)]"
-              )}
+              className="w-[62px] h-[62px] rounded-full flex items-center justify-center touch-manipulation select-none transition-all duration-200 bg-white dark:bg-shark-900 border border-shark-100/80 dark:border-shark-800/80 shadow-[0_-2px_0_rgba(0,0,0,0.04),0_-4px_32px_rgba(0,0,0,0.10),0_8px_32px_rgba(0,0,0,0.08)]"
             >
               <Icon
                 name="plus"
                 size={27}
                 className={cn(
-                  "transition-transform duration-250 text-white",
+                  "transition-transform duration-200 text-shark-700 dark:text-shark-200",
                   quickOpen && "rotate-45"
                 )}
               />
