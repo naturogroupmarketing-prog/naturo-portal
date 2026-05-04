@@ -220,9 +220,13 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     (item) => pathname === item.href || pathname.startsWith(item.href + "/")
   );
 
-  const pillSlot = moreOpen || navActiveIdx === -1
-    ? allItems.length
-    : navActiveIdx;
+  // Pill follows the real page — never gated on moreOpen.
+  // If the current page isn't in the main nav (navActiveIdx === -1), pill sits on the More slot.
+  const pillSlot = navActiveIdx === -1 ? allItems.length : navActiveIdx;
+
+  // More button is "active" when the sheet is open OR when the current page
+  // is only reachable via More (not in the main nav bar).
+  const moreActive = moreOpen || navActiveIdx === -1;
 
   // ── Elastic pill: 2-phase rubber-band animation ───────────────────────────
   // useLayoutEffect fires synchronously before paint — no visible flash on tap
@@ -363,7 +367,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 <NavButton
                   key={item.href}
                   item={item}
-                  active={!moreOpen && navActiveIdx === idx}
+                  active={navActiveIdx === idx}
                 />
               ))}
 
@@ -380,7 +384,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                     filled
                     className={cn(
                       "transition-colors duration-200",
-                      moreOpen ? "text-action-600" : "text-shark-400 dark:text-shark-500"
+                      moreActive ? "text-action-600" : "text-shark-400 dark:text-shark-500"
                     )}
                   />
                   {installReady && !moreOpen && (
@@ -389,7 +393,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 </div>
                 <span className={cn(
                   "text-[10px] leading-none transition-colors duration-200",
-                  moreOpen
+                  moreActive
                     ? "font-bold text-action-600"
                     : "font-medium text-shark-400 dark:text-shark-500"
                 )}>
