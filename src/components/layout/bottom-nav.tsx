@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon, type IconName } from "@/components/ui/icon";
@@ -165,10 +165,12 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
   const containerRef = useRef<HTMLDivElement>(null);
 
   // ── Elastic pill animation state ─────────────────────────────────────────
+  const slotPct0 = 100 / (getNavItems(role, pendingPOCount, pendingReturnsCount).length + 1);
   const [pillLeft, setPillLeft]       = useState<string>("0%");
-  const [pillWidth, setPillWidth]     = useState<string>("25%");
+  const [pillWidth, setPillWidth]     = useState<string>(`${slotPct0}%`);
   const [pillLeftTx, setPillLeftTx]   = useState<string>("none");
   const [pillWidthTx, setPillWidthTx] = useState<string>("none");
+  const mountedRef  = useRef<boolean>(false);
   const prevSlotRef = useRef<number>(-1);
   const timerRef    = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -223,18 +225,21 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     : navActiveIdx;
 
   // ── Elastic pill: 2-phase rubber-band animation ───────────────────────────
-  useEffect(() => {
+  // useLayoutEffect fires synchronously before paint — no visible flash on tap
+  useLayoutEffect(() => {
     const curr = pillSlot;
     const prev = prevSlotRef.current;
     const slotPct  = 100 / numSlots;
     const SPRING   = "cubic-bezier(0.34, 1.56, 0.64, 1)";
     const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
-    const STRETCH_MS = 130;
-    const SNAP_MS    = 240;
+    const STRETCH_MS = 110;
+    const SNAP_MS    = 220;
 
     if (timerRef.current) clearTimeout(timerRef.current);
 
-    if (prev === -1) {
+    // Initial render — place pill instantly, no animation
+    if (!mountedRef.current) {
+      mountedRef.current = true;
       setPillLeft(`${(curr / numSlots) * 100}%`);
       setPillWidth(`${slotPct}%`);
       setPillLeftTx("none");
@@ -248,10 +253,12 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     const movingRight = curr > prev;
 
     if (movingRight) {
+      // Phase 1: stretch pill rightward instantly
       setPillLeftTx("none");
-      setPillWidthTx(`width ${STRETCH_MS}ms ${EASE_OUT}`);
+      setPillWidthTx("none");
       setPillLeft(`${(prev / numSlots) * 100}%`);
       setPillWidth(`${(curr - prev + 1) * slotPct}%`);
+      // Phase 2: snap left edge + contract width with spring
       timerRef.current = setTimeout(() => {
         setPillLeftTx(`left ${SNAP_MS}ms ${SPRING}`);
         setPillWidthTx(`width ${SNAP_MS}ms ${SPRING}`);
@@ -259,12 +266,14 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
         setPillWidth(`${slotPct}%`);
       }, STRETCH_MS);
     } else {
+      // Phase 1: move left edge instantly, extend rightward
       const prevRightPct = (prev + 1) * slotPct;
       const newLeftPct   = (curr / numSlots) * 100;
-      setPillLeftTx(`left ${STRETCH_MS}ms ${EASE_OUT}`);
+      setPillLeftTx("none");
       setPillWidthTx("none");
       setPillLeft(`${newLeftPct}%`);
       setPillWidth(`${prevRightPct - newLeftPct}%`);
+      // Phase 2: contract width with spring
       timerRef.current = setTimeout(() => {
         setPillLeftTx("none");
         setPillWidthTx(`width ${SNAP_MS}ms ${SPRING}`);
@@ -315,7 +324,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                       key={item.label}
                       href={item.href}
                       onClick={() => setMoreOpen(false)}
-                      className="flex flex-col items-center gap-2 active:scale-95 transition-transform duration-150"
+                      className="flex flex-col items-center gap-2 touch-manipulation select-none"
                     >
                       <div className={cn(
                         "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center",
@@ -362,7 +371,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               <button
                 onClick={() => setMoreOpen((p) => !p)}
                 aria-label={moreOpen ? "Close more menu" : "Open more menu"}
-                className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-2 px-3 min-h-[52px]"
+                className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-2 px-3 min-h-[52px] touch-manipulation select-none"
               >
                 <div className="relative flex items-center justify-center">
                   <Icon
@@ -424,7 +433,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                       href={action.href}
                       onClick={() => setQuickOpen(false)}
                       className={cn(
-                        "w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-[0_4px_16px_rgba(0,0,0,0.2)] active:scale-90 transition-transform duration-150",
+                        "w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-[0_4px_16px_rgba(0,0,0,0.2)] touch-manipulation select-none",
                         action.color
                       )}
                     >
@@ -440,7 +449,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               onClick={() => setQuickOpen((p) => !p)}
               aria-label={quickOpen ? "Close quick actions" : "Quick actions"}
               className={cn(
-                "w-[62px] h-[62px] rounded-full flex items-center justify-center active:scale-90 transition-all duration-200",
+                "w-[62px] h-[62px] rounded-full flex items-center justify-center touch-manipulation select-none transition-all duration-200",
                 quickOpen
                   ? "bg-shark-800 dark:bg-shark-700 shadow-[0_4px_16px_rgba(0,0,0,0.25)]"
                   : "bg-action-500 shadow-[0_4px_20px_rgba(17,19,212,0.38),0_2px_8px_rgba(17,19,212,0.2)]"
@@ -470,7 +479,7 @@ function NavButton({ item, active }: { item: NavItem; active: boolean }) {
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-2 px-3 min-h-[52px] active:scale-95 transition-transform duration-150"
+      className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-2 px-3 min-h-[52px] touch-manipulation select-none"
     >
       <div className="relative flex items-center justify-center">
         <Icon
