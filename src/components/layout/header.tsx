@@ -113,7 +113,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-2xl bg-white/50 dark:bg-shark-900/80 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-white/55 dark:border-white/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.85),0_2px_20px_rgba(100,140,220,0.16)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_2px_8px_rgba(0,0,0,0.20)]">
+    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-2xl bg-white/75 dark:bg-shark-900/80 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-white/70 dark:border-white/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.90),0_2px_20px_rgba(100,140,220,0.16),inset_0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_2px_8px_rgba(0,0,0,0.20)]">
       {/* Left side: mobile menu + logo */}
       <div className="flex items-center gap-2">
         {/* Brand — org logo if set, otherwise name with initial badge */}
