@@ -303,10 +303,10 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
       >
         <div className="mx-3 flex items-end gap-2.5">
 
-          {/* Unified nav card */}
+          {/* Unified nav card — glassmorphism */}
           <div
             ref={containerRef}
-            className="flex-1 overflow-hidden rounded-[26px] bg-white dark:bg-shark-900 shadow-[0_-2px_0_rgba(0,0,0,0.04),0_-4px_32px_rgba(0,0,0,0.10),0_8px_32px_rgba(0,0,0,0.08)] border border-shark-100/80 dark:border-shark-800/80"
+            className="flex-1 overflow-hidden rounded-[26px] backdrop-blur-2xl bg-white/75 dark:bg-shark-900/70 border border-white/60 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.40),0_2px_8px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.06)]"
           >
             {/* More grid — expands upward */}
             <div
@@ -445,11 +445,11 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               })}
             </div>
 
-            {/* Main FAB — matches nav card surface */}
+            {/* Main FAB — glassmorphism */}
             <button
               onClick={() => setQuickOpen((p) => !p)}
               aria-label={quickOpen ? "Close quick actions" : "Quick actions"}
-              className="w-[62px] h-[62px] rounded-full flex items-center justify-center touch-manipulation select-none transition-all duration-200 bg-white dark:bg-shark-900 border border-shark-100/80 dark:border-shark-800/80 shadow-[0_-2px_0_rgba(0,0,0,0.04),0_-4px_32px_rgba(0,0,0,0.10),0_8px_32px_rgba(0,0,0,0.08)]"
+              className="w-[62px] h-[62px] rounded-full flex items-center justify-center touch-manipulation select-none transition-all duration-200 backdrop-blur-2xl bg-white/75 dark:bg-shark-900/70 border border-white/60 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.9)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.40),0_2px_8px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.06)]"
             >
               <Icon
                 name="plus"
