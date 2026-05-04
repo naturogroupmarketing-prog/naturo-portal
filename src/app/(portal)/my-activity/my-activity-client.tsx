@@ -10,7 +10,7 @@ interface RecentAsset {
   checkoutDate: string;
   assignmentType: string;
   isActive: boolean;
-  asset: { name: string; assetCode: string; category: string };
+  asset: { name: string; assetCode: string; category: string; imageUrl?: string | null };
 }
 
 interface RecentConsumable {
@@ -18,7 +18,7 @@ interface RecentConsumable {
   assignedDate: string;
   quantity: number;
   isActive: boolean;
-  consumable: { name: string; unitType: string };
+  consumable: { name: string; unitType: string; imageUrl?: string | null };
 }
 
 interface RecentRequest {
@@ -26,7 +26,7 @@ interface RecentRequest {
   createdAt: string;
   quantity: number;
   status: string;
-  consumable: { name: string; unitType: string };
+  consumable: { name: string; unitType: string; imageUrl?: string | null };
 }
 
 type ActivityItem = {
@@ -35,6 +35,7 @@ type ActivityItem = {
   icon: IconName;
   iconBg: string;
   iconColor: string;
+  imageUrl?: string | null;
   title: string;
   detail: string;
   date: string;
@@ -58,6 +59,7 @@ export function MyActivityClient({
       icon: "package" as IconName,
       iconBg: "bg-action-50",
       iconColor: "text-action-500",
+      imageUrl: a.asset.imageUrl,
       title: a.asset.name,
       detail: `${a.asset.category} · ${a.assignmentType.toLowerCase()}`,
       date: a.checkoutDate,
@@ -69,6 +71,7 @@ export function MyActivityClient({
       icon: "droplet" as IconName,
       iconBg: "bg-blue-50",
       iconColor: "text-blue-500",
+      imageUrl: c.consumable.imageUrl,
       title: c.consumable.name,
       detail: `${c.quantity} ${c.consumable.unitType} assigned`,
       date: c.assignedDate,
@@ -80,6 +83,7 @@ export function MyActivityClient({
       icon: "clipboard" as IconName,
       iconBg: "bg-amber-50",
       iconColor: "text-[#E8532E]",
+      imageUrl: r.consumable.imageUrl,
       title: r.consumable.name,
       detail: `${r.quantity} ${r.consumable.unitType} requested`,
       date: r.createdAt,
@@ -115,8 +119,12 @@ export function MyActivityClient({
             <div className="divide-y divide-shark-50 dark:divide-shark-800">
               {activities.map((item) => (
                 <div key={item.id} className="flex items-center gap-3 px-4 py-3">
-                  <div className={`w-8 h-8 rounded-lg ${item.iconBg} flex items-center justify-center flex-shrink-0`}>
-                    <Icon name={item.icon} size={16} className={item.iconColor} />
+                  <div className={`w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 ${item.imageUrl ? "" : item.iconBg}`}>
+                    {item.imageUrl ? (
+                      <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <Icon name={item.icon} size={16} className={item.iconColor} />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{item.title}</p>

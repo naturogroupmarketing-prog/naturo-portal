@@ -46,6 +46,7 @@ export default async function LostItemsPage({ searchParams }: { searchParams: Pr
     name: a.name,
     assetCode: a.assetCode,
     category: a.category,
+    imageUrl: a.imageUrl,
     isHighValue: a.isHighValue,
     purchaseCost: a.purchaseCost,
     region: { id: a.region.id, name: a.region.name, stateName: a.region.state.name },

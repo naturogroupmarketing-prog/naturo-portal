@@ -19,7 +19,7 @@ interface Schedule {
   nextDueDate: string;
   lastCompletedDate: string | null;
   isActive: boolean;
-  asset: { id: string; name: string; assetCode: string; region: { name: string } };
+  asset: { id: string; name: string; assetCode: string; imageUrl: string | null; region: { name: string } };
   assignedTo: { id: string; name: string | null; email: string } | null;
   logs: { completedAt: string; notes: string | null; condition: string | null; cost: number | null }[];
 }
@@ -124,7 +124,15 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
             return (
               <Card key={schedule.id}>
                 <div className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
-                  <div className="flex-1 min-w-0">
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+                      {schedule.asset.imageUrl ? (
+                        <img src={schedule.asset.imageUrl} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <Icon name="wrench" size={16} className="text-shark-400" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-shark-900 dark:text-shark-100">{schedule.title}</h3>
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${due.color}`}>{due.label}</span>
@@ -142,6 +150,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
                     {schedule.description && (
                       <p className="text-xs text-shark-400 mt-1">{schedule.description}</p>
                     )}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <Button size="sm" onClick={() => setShowComplete(schedule)}>

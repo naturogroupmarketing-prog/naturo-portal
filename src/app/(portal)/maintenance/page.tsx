@@ -24,7 +24,7 @@ export default async function MaintenancePage() {
     db.maintenanceSchedule.findMany({
       where: { asset: regionFilter },
       include: {
-        asset: { select: { id: true, name: true, assetCode: true, region: { select: { name: true } } } },
+        asset: { select: { id: true, name: true, assetCode: true, imageUrl: true, region: { select: { name: true } } } },
         assignedTo: { select: { id: true, name: true, email: true } },
         logs: { orderBy: { completedAt: "desc" }, take: 1 },
       },

@@ -10,6 +10,7 @@ interface LostItem {
   name: string;
   assetCode: string;
   category: string;
+  imageUrl: string | null;
   isHighValue: boolean;
   purchaseCost: number | null;
   region: { id: string; name: string; stateName: string };
@@ -99,7 +100,15 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                     {group.items.map((item) => (
                       <div key={item.id} className="px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/30">
                         <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className="w-10 h-10 rounded-xl overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0 mt-0.5">
+                              {item.imageUrl ? (
+                                <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                              ) : (
+                                <Icon name="package" size={16} className="text-shark-400" />
+                              )}
+                            </div>
+                            <div className="flex-1">
                             <div className="flex items-center gap-2 flex-wrap">
                               <p className="text-sm font-semibold text-shark-800 dark:text-shark-200">{item.name}</p>
                               <span className="text-xs font-mono text-shark-400">{item.assetCode}</span>
@@ -119,6 +128,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                                   <span>{new Date(item.report.date).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}</span>
                                 </>
                               )}
+                            </div>
                             </div>
                           </div>
                           {item.purchaseCost && (

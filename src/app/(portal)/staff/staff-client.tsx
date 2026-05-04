@@ -35,6 +35,7 @@ interface StaffUser {
   phone: string | null;
   role: string;
   isActive: boolean;
+  image: string | null;
   region: { id: string; name: string } | null;
   assetAssignments: {
     acknowledgedAt: string | Date | null;
@@ -327,10 +328,19 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               className="border border-shark-100 dark:border-shark-800 rounded-xl p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
             >
               <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full shrink-0 ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
-                    <p className="text-sm font-semibold text-shark-800 dark:text-shark-200 truncate">{user.name || "—"}</p>
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-full overflow-hidden bg-action-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+                    {user.image ? (
+                      <img src={user.image} alt={user.name || ""} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-sm font-bold text-action-600">{(user.name || user.email).charAt(0).toUpperCase()}</span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${user.isActive ? "bg-action-500" : "bg-shark-300"}`} />
+                      <p className="text-sm font-semibold text-shark-800 dark:text-shark-200 truncate">{user.name || "—"}</p>
+                    </div>
                   </div>
                 </div>
                 <Badge status={user.role} />
@@ -392,7 +402,18 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                       </div>
                     )}
                   </td>
-                  <td className="px-5 py-3.5 font-medium text-shark-800 dark:text-shark-200">{user.name || "—"}</td>
+                  <td className="px-5 py-3.5 font-medium text-shark-800 dark:text-shark-200">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full overflow-hidden bg-action-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+                        {user.image ? (
+                          <img src={user.image} alt={user.name || ""} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xs font-bold text-action-600">{(user.name || user.email).charAt(0).toUpperCase()}</span>
+                        )}
+                      </div>
+                      {user.name || "—"}
+                    </div>
+                  </td>
                   <td className="px-5 py-3.5"><Badge status={user.role} /></td>
                   <td className="px-5 py-3.5 text-center">
                     <span className={`inline-flex items-center gap-1.5`} aria-label={user.isActive ? "Active" : "Inactive"} title={user.isActive ? "Active" : "Inactive"}>

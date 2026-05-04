@@ -17,7 +17,7 @@ export default async function UnresolvedDamagePage({ searchParams }: { searchPar
     where: { organizationId, isResolved: false },
     include: {
       asset: {
-        select: { name: true, assetCode: true, category: true, status: true, regionId: true, region: { select: { id: true, name: true, state: { select: { name: true } } } } },
+        select: { name: true, assetCode: true, category: true, status: true, imageUrl: true, regionId: true, region: { select: { id: true, name: true, state: { select: { name: true } } } } },
       },
       reportedBy: { select: { name: true, email: true } },
     },

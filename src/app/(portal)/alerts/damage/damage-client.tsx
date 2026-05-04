@@ -18,7 +18,7 @@ interface DamageReport {
   description: string;
   photoUrl: string | null;
   createdAt: string;
-  asset: { name: string; assetCode: string; category: string; status: string; region: { id: string; name: string; state: { name: string } } };
+  asset: { name: string; assetCode: string; category: string; status: string; imageUrl: string | null; region: { id: string; name: string; state: { name: string } } };
   reportedBy: { name: string | null; email: string };
 }
 
@@ -119,19 +119,28 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
                     {group.items.map((report) => (
                       <div key={report.id} className="px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/30">
                         <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className={`text-xs font-semibold px-2 py-0.5 rounded ${report.type === "DAMAGE" ? "bg-amber-100 text-[#E8532E]" : "bg-red-100 text-red-700"}`}>
-                                {report.type}
-                              </span>
-                              <p className="text-sm font-semibold text-shark-800 dark:text-shark-200">{report.asset.name}</p>
-                              <span className="text-xs font-mono text-shark-400">{report.asset.assetCode}</span>
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className="w-10 h-10 rounded-xl overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0 mt-0.5">
+                              {report.asset.imageUrl ? (
+                                <img src={report.asset.imageUrl} alt="" className="w-full h-full object-cover" />
+                              ) : (
+                                <Icon name="package" size={16} className="text-shark-400" />
+                              )}
                             </div>
-                            <p className="text-sm text-shark-600 dark:text-shark-400 mt-1">{report.description}</p>
-                            <div className="flex items-center gap-3 mt-2 text-xs text-shark-400">
-                              <span>Reported by {report.reportedBy.name || report.reportedBy.email}</span>
-                              <span>&middot;</span>
-                              <span>{new Date(report.createdAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}</span>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <span className={`text-xs font-semibold px-2 py-0.5 rounded ${report.type === "DAMAGE" ? "bg-amber-100 text-[#E8532E]" : "bg-red-100 text-red-700"}`}>
+                                  {report.type}
+                                </span>
+                                <p className="text-sm font-semibold text-shark-800 dark:text-shark-200">{report.asset.name}</p>
+                                <span className="text-xs font-mono text-shark-400">{report.asset.assetCode}</span>
+                              </div>
+                              <p className="text-sm text-shark-600 dark:text-shark-400 mt-1">{report.description}</p>
+                              <div className="flex items-center gap-3 mt-2 text-xs text-shark-400">
+                                <span>Reported by {report.reportedBy.name || report.reportedBy.email}</span>
+                                <span>&middot;</span>
+                                <span>{new Date(report.createdAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}</span>
+                              </div>
                             </div>
                           </div>
                           <Button size="sm" onClick={() => { setResolvingReport(report); setResolution("REPAIRED"); setResolutionNotes(""); }}>
