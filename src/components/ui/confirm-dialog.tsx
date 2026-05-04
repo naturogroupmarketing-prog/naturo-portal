@@ -133,7 +133,7 @@ export function ConfirmDialog({
     >
       <div
         ref={contentRef}
-        className="w-full max-w-sm rounded-[24px] backdrop-blur-xl bg-white/85 dark:bg-shark-800/80 border border-white/70 dark:border-white/[0.08] shadow-[0_2px_4px_rgba(0,0,0,0.06),0_12px_40px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.9)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_12px_40px_rgba(0,0,0,0.40),inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 animate-fade-in"
+        className="w-full max-w-sm rounded-[24px] backdrop-blur-2xl bg-white/92 dark:bg-shark-800/80 border border-white/85 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(100,120,200,0.22),0_1px_0_rgba(255,255,255,1)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_12px_40px_rgba(0,0,0,0.40),inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 animate-fade-in"
       >
         <div className="px-6 pt-6 pb-4 text-center">
           <div

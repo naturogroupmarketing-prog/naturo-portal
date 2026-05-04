@@ -159,15 +159,15 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-[14px] min-h-[44px] transition-all duration-200 active:scale-[0.98]",
                           active
-                            ? "bg-action-50 text-action-700 font-semibold dark:bg-action-500/12 dark:text-action-400"
-                            : "text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800/60 hover:text-shark-900 dark:hover:text-white"
+                            ? "bg-white/70 text-[#1c1d2e] font-semibold dark:bg-action-500/12 dark:text-action-400 shadow-[0_1px_8px_rgba(100,120,200,0.14)]"
+                            : "text-shark-600 dark:text-shark-300 hover:bg-white/50 dark:hover:bg-shark-800/60 hover:text-shark-900 dark:hover:text-white"
                         )}
                       >
                         {/* Icon tile — colored on active */}
                         <span className={cn(
                           "flex items-center justify-center w-8 h-8 rounded-[10px] flex-shrink-0 transition-colors",
                           active
-                            ? "bg-action-100 dark:bg-action-500/20"
+                            ? "bg-[#e8ecf8] dark:bg-action-500/20"
                             : "bg-transparent"
                         )}>
                           <Icon

@@ -121,8 +121,8 @@ export function QuickActionsFab() {
         aria-label={open ? "Close quick actions" : "Quick actions"}
         className={`w-14 h-14 rounded-[20px] flex items-center justify-center transition-all duration-200 active:scale-95 ${
           open
-            ? "bg-shark-800 scale-90 shadow-[0_4px_20px_rgba(0,0,0,0.22)]"
-            : "bg-action-500 hover:bg-action-600 hover:scale-105 shadow-[0_4px_20px_rgba(17,19,212,0.36),0_2px_8px_rgba(17,19,212,0.20)]"
+            ? "bg-[#252640] scale-90 shadow-[0_4px_20px_rgba(20,21,40,0.30)]"
+            : "bg-[#1c1d2e] hover:bg-[#282a40] hover:scale-105 shadow-[0_4px_20px_rgba(20,21,40,0.36),0_2px_8px_rgba(20,21,40,0.20)]"
         }`}
       >
         <Icon
