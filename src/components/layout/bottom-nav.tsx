@@ -220,13 +220,9 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
     (item) => pathname === item.href || pathname.startsWith(item.href + "/")
   );
 
-  // Pill follows the real page — never gated on moreOpen.
-  // If the current page isn't in the main nav (navActiveIdx === -1), pill sits on the More slot.
-  const pillSlot = navActiveIdx === -1 ? allItems.length : navActiveIdx;
-
-  // More button is "active" when the sheet is open OR when the current page
-  // is only reachable via More (not in the main nav bar).
-  const moreActive = moreOpen || navActiveIdx === -1;
+  const pillSlot = moreOpen || navActiveIdx === -1
+    ? allItems.length
+    : navActiveIdx;
 
   // ── Elastic pill: 2-phase rubber-band animation ───────────────────────────
   // useLayoutEffect fires synchronously before paint — no visible flash on tap
@@ -367,7 +363,8 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 <NavButton
                   key={item.href}
                   item={item}
-                  active={navActiveIdx === idx}
+                  active={!moreOpen && navActiveIdx === idx}
+                  onSelect={() => setMoreOpen(false)}
                 />
               ))}
 
@@ -384,7 +381,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                     filled
                     className={cn(
                       "transition-colors duration-200",
-                      moreActive ? "text-action-600" : "text-shark-400 dark:text-shark-500"
+                      moreOpen || navActiveIdx === -1 ? "text-action-600" : "text-shark-400 dark:text-shark-500"
                     )}
                   />
                   {installReady && !moreOpen && (
@@ -393,7 +390,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 </div>
                 <span className={cn(
                   "text-[10px] leading-none transition-colors duration-200",
-                  moreActive
+                  moreOpen || navActiveIdx === -1
                     ? "font-bold text-action-600"
                     : "font-medium text-shark-400 dark:text-shark-500"
                 )}>
@@ -478,11 +475,12 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
 
 // ─── Nav button ───────────────────────────────────────────────────────────────
 
-function NavButton({ item, active }: { item: NavItem; active: boolean }) {
+function NavButton({ item, active, onSelect }: { item: NavItem; active: boolean; onSelect?: () => void }) {
   return (
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
+      onClick={onSelect}
       className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-2 px-3 min-h-[52px] touch-manipulation select-none"
     >
       <div className="relative flex items-center justify-center">
