@@ -21,6 +21,7 @@ interface LowStockItem {
   name: string;
   category: string;
   unitType: string;
+  imageUrl: string | null;
   quantityOnHand: number;
   minimumThreshold: number;
   reorderLevel: number;
@@ -470,6 +471,14 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
         className="px-4 py-3 flex items-center justify-between gap-3 cursor-default"
         style={isFlashed ? { boxShadow: "inset 0 0 0 2px #3B82F6, inset 0 0 0 9999px rgba(59,130,246,0.08)" } : undefined}
       >
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="w-9 h-9 rounded-xl overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+            {item.imageUrl ? (
+              <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <Icon name="droplet" size={15} className="text-shark-400" />
+            )}
+          </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{item.name}</p>
@@ -488,6 +497,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
             )}
           </div>
           <p className="text-xs text-shark-400">{item.category} · {item.unitType}</p>
+        </div>
         </div>
         <div
           className="shrink-0 text-right cursor-pointer"
@@ -521,6 +531,14 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
         style={isFlashed ? { boxShadow: "inset 0 0 0 2px #3B82F6, inset 0 0 0 9999px rgba(59,130,246,0.08)" } : undefined}
       >
         <td className="px-5 py-3">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+              {item.imageUrl ? (
+                <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <Icon name="droplet" size={14} className="text-shark-400" />
+              )}
+            </div>
           <div className="flex items-center gap-1.5">
             <p className="font-medium text-shark-800 dark:text-shark-200">{item.name}</p>
             {hasActivePOs && (
@@ -538,6 +556,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
             )}
           </div>
           <p className="text-xs text-shark-400 mt-0.5">{item.category} · {item.unitType}</p>
+          </div>
         </td>
         <td
           className="px-5 py-3 text-right cursor-pointer"
