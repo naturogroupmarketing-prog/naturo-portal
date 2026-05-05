@@ -54,7 +54,7 @@ export function Breadcrumbs() {
         <nav aria-label="Breadcrumb" className="mb-1.5">
           <ol className="flex items-center gap-1.5 text-xs text-shark-400">
             <li>
-              <Link href="/dashboard" className="hover:text-[#1259C3] transition-colors">
+              <Link href="/dashboard" className="hover:text-[#0071e3] transition-colors">
                 Home
               </Link>
             </li>
@@ -68,7 +68,7 @@ export function Breadcrumbs() {
                 >
                   <path d="M9 18l6-6-6-6" />
                 </svg>
-                <Link href={crumb.href} className="hover:text-[#1259C3] transition-colors">
+                <Link href={crumb.href} className="hover:text-[#0071e3] transition-colors">
                   {crumb.label}
                 </Link>
               </li>
