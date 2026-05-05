@@ -306,7 +306,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
           {/* Unified nav card — glassmorphism */}
           <div
             ref={containerRef}
-            className="flex-1 overflow-hidden rounded-xl backdrop-blur-2xl bg-white/80 dark:bg-shark-900/70 border border-white/85 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.07),0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.40),0_2px_8px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.06)]"
+            className="flex-1 overflow-hidden rounded-[28px] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/70 border border-white/85 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(18,89,195,0.22),0_2px_8px_rgba(18,89,195,0.14),inset_0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.40),0_2px_8px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.06)]"
           >
             {/* More grid — expands upward */}
             <div
@@ -351,7 +351,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               {/* One UI–style active pill — soft blue tint */}
               <div
                 aria-hidden="true"
-                className="absolute inset-y-1 rounded-full bg-[#0071e3]/10 dark:bg-[#0071e3]/15 pointer-events-none"
+                className="absolute inset-y-1 rounded-full bg-[#1259C3]/10 dark:bg-[#1259C3]/15 pointer-events-none"
                 style={{
                   left:       pillLeft,
                   width:      pillWidth,
@@ -381,7 +381,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                     filled
                     className={cn(
                       "transition-colors duration-200",
-                      moreOpen || navActiveIdx === -1 ? "text-[#0071e3] dark:text-[#2997ff]" : "text-shark-400 dark:text-shark-500"
+                      moreOpen || navActiveIdx === -1 ? "text-[#1259C3] dark:text-[#5b9cf8]" : "text-shark-400 dark:text-shark-500"
                     )}
                   />
                   {installReady && !moreOpen && (
@@ -391,7 +391,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 <span className={cn(
                   "text-[10px] leading-none transition-colors duration-200",
                   moreOpen || navActiveIdx === -1
-                    ? "font-bold text-[#0071e3] dark:text-[#2997ff]"
+                    ? "font-bold text-[#1259C3] dark:text-[#5b9cf8]"
                     : "font-medium text-shark-400 dark:text-shark-500"
                 )}>
                   More
@@ -449,7 +449,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
             <button
               onClick={() => setQuickOpen((p) => !p)}
               aria-label={quickOpen ? "Close quick actions" : "Quick actions"}
-              className="w-[62px] h-[62px] rounded-full flex items-center justify-center touch-manipulation select-none transition-all duration-200 backdrop-blur-2xl bg-white/80 dark:bg-shark-900/70 border border-white/85 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.07),0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.40),0_2px_8px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.06)]"
+              className="w-[62px] h-[62px] rounded-full flex items-center justify-center touch-manipulation select-none transition-all duration-200 backdrop-blur-2xl bg-white/80 dark:bg-shark-900/70 border border-white/85 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(18,89,195,0.22),0_2px_8px_rgba(18,89,195,0.14),inset_0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.40),0_2px_8px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.06)]"
             >
               <Icon
                 name="plus"
@@ -485,7 +485,7 @@ function NavButton({ item, active, onSelect }: { item: NavItem; active: boolean;
           filled={active}
           className={cn(
             "transition-all duration-220",
-            active ? "text-[#0071e3] dark:text-[#2997ff] scale-110" : "text-shark-400 dark:text-shark-500"
+            active ? "text-[#1259C3] dark:text-[#5b9cf8] scale-110" : "text-shark-400 dark:text-shark-500"
           )}
         />
         {item.badge != null && item.badge > 0 && (
@@ -497,7 +497,7 @@ function NavButton({ item, active, onSelect }: { item: NavItem; active: boolean;
       <span className={cn(
         "text-[10px] leading-none transition-all duration-220",
         active
-          ? "font-bold text-[#0071e3] dark:text-[#2997ff]"
+          ? "font-bold text-[#1259C3] dark:text-[#5b9cf8]"
           : "font-medium text-shark-400 dark:text-shark-500"
       )}>
         {item.label}

@@ -128,7 +128,7 @@ export function PortalDropdown({
       ref={menuRef}
       style={getStyle()}
       className={cn(
-        "backdrop-blur-2xl bg-white/65 dark:bg-shark-800/75 rounded-lg border border-white/62 dark:border-white/[0.09] shadow-[0_4px_32px_rgba(0,0,0,0.07),0_1px_0_rgba(255,255,255,0.88)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)] py-1.5",
+        "backdrop-blur-2xl bg-white/65 dark:bg-shark-800/75 rounded-lg border border-white/62 dark:border-white/[0.09] shadow-[0_4px_32px_rgba(80,130,220,0.13),0_1px_0_rgba(255,255,255,0.88)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.06)] py-1.5",
         maxHeightClass,
         className
       )}

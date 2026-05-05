@@ -687,7 +687,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                         return (
                           <div
                             key={check.id}
-                            className="border border-shark-100 dark:border-shark-800 rounded-xl overflow-hidden hover:shadow-sm transition-shadow cursor-pointer"
+                            className="border border-shark-100 dark:border-shark-800 rounded-[28px] overflow-hidden hover:shadow-sm transition-shadow cursor-pointer"
                             onClick={() => setPhotoModal(check)}
                           >
                             {/* Photo */}
@@ -732,7 +732,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       <Modal open={!!photoModal} onClose={() => setPhotoModal(null)} title={photoModal?.asset?.name || photoModal?.consumable?.name || "Condition Check"}>
         {photoModal && (
           <div className="space-y-4">
-            <div className="rounded-xl overflow-hidden bg-shark-50 dark:bg-shark-800">
+            <div className="rounded-[28px] overflow-hidden bg-shark-50 dark:bg-shark-800">
               <img
                 src={photoModal.photoUrl}
                 alt="Condition check"
@@ -782,7 +782,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
               value={scheduleNotes}
               onChange={(e) => setScheduleNotes(e.target.value)}
               placeholder="Instructions for staff (optional)"
-              className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
               rows={3}
             />
           </div>

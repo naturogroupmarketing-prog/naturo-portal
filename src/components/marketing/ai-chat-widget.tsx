@@ -143,7 +143,7 @@ export function AIChatWidget() {
       {/* Chat window */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] animate-[fadeInUp_0.25s_ease-out]">
-          <div className="bg-white rounded-xl border border-shark-200 shadow-2xl shadow-shark-300/30 overflow-hidden flex flex-col" style={{ height: "520px" }}>
+          <div className="bg-white rounded-[28px] border border-shark-200 shadow-2xl shadow-shark-300/30 overflow-hidden flex flex-col" style={{ height: "520px" }}>
             {/* Header */}
             <div className="bg-action-500 px-5 py-4 flex items-center gap-3 shrink-0">
               <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
@@ -174,7 +174,7 @@ export function AIChatWidget() {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-[85%] px-3.5 py-2.5 rounded-xl text-[13px] leading-relaxed ${
+                    className={`max-w-[85%] px-3.5 py-2.5 rounded-[28px] text-[13px] leading-relaxed ${
                       msg.role === "user"
                         ? "bg-action-500 text-white rounded-br-md"
                         : "bg-white border border-shark-100 dark:border-shark-800 text-shark-700 rounded-bl-md shadow-sm"
@@ -187,7 +187,7 @@ export function AIChatWidget() {
 
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white border border-shark-100 dark:border-shark-800 rounded-xl rounded-bl-md px-4 py-3 shadow-sm">
+                  <div className="bg-white border border-shark-100 dark:border-shark-800 rounded-[28px] rounded-bl-md px-4 py-3 shadow-sm">
                     <div className="flex gap-1">
                       <span className="w-1.5 h-1.5 bg-shark-300 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                       <span className="w-1.5 h-1.5 bg-shark-300 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -207,7 +207,7 @@ export function AIChatWidget() {
                     <button
                       key={q}
                       onClick={() => handleSend(q)}
-                      className="block w-full text-left text-[12px] text-action-600 bg-white hover:bg-action-50 border border-shark-100 dark:border-shark-800 hover:border-action-200 rounded-xl px-3 py-2 transition-colors"
+                      className="block w-full text-left text-[12px] text-action-600 bg-white hover:bg-action-50 border border-shark-100 dark:border-shark-800 hover:border-action-200 rounded-[28px] px-3 py-2 transition-colors"
                     >
                       {q}
                     </button>
@@ -231,12 +231,12 @@ export function AIChatWidget() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your question..."
-                  className="flex-1 text-sm text-shark-800 placeholder:text-shark-400 bg-shark-50 border border-shark-100 dark:border-shark-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-action-300 focus:ring-2 focus:ring-action-100 transition-all"
+                  className="flex-1 text-sm text-shark-800 placeholder:text-shark-400 bg-shark-50 border border-shark-100 dark:border-shark-800 rounded-[28px] px-3.5 py-2.5 focus:outline-none focus:border-action-300 focus:ring-2 focus:ring-action-100 transition-all"
                 />
                 <button
                   type="submit"
                   disabled={!input.trim()}
-                  className="w-9 h-9 rounded-xl bg-action-500 hover:bg-action-600 disabled:bg-shark-200 dark:bg-shark-700 disabled:cursor-not-allowed flex items-center justify-center transition-colors shrink-0"
+                  className="w-9 h-9 rounded-[28px] bg-action-500 hover:bg-action-600 disabled:bg-shark-200 dark:bg-shark-700 disabled:cursor-not-allowed flex items-center justify-center transition-colors shrink-0"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13" />

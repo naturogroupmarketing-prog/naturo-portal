@@ -24,7 +24,7 @@ export default function UsersError({
       </div>
       <Card>
         <div className="px-6 py-12 text-center">
-          <div className="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 rounded-[28px] bg-red-50 dark:bg-red-500/10 flex items-center justify-center mx-auto mb-4">
             <Icon name="alert-triangle" size={24} className="text-red-500" />
           </div>
           <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mb-2">Something went wrong</h3>

@@ -192,7 +192,7 @@ export function HelpClient({ role }: { role: string }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Card className="hover:shadow-md transition-shadow">
           <div className="px-5 py-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-action-500 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-[28px] bg-action-500 flex items-center justify-center shrink-0">
               <Icon name="message-circle" size={20} className="text-white" />
             </div>
             <div>
@@ -204,7 +204,7 @@ export function HelpClient({ role }: { role: string }) {
         <a href="mailto:support@trackio.com.au">
           <Card className="hover:shadow-md transition-shadow">
             <div className="px-5 py-4 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-action-500 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-[28px] bg-action-500 flex items-center justify-center shrink-0">
                 <Icon name="mail" size={20} className="text-white" />
               </div>
               <div>
@@ -247,7 +247,7 @@ export function HelpClient({ role }: { role: string }) {
                   className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-action-500 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-[28px] bg-action-500 flex items-center justify-center">
                       <Icon name={section.icon} size={16} className="text-white" />
                     </div>
                     <div className="text-left">

@@ -57,7 +57,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
     <PageCogProvider>
     <SidebarContext.Provider value={{ expanded: sidebarExpanded, toggle: () => setSidebarExpanded((p) => !p) }}>
     <div
-      className="flex flex-col h-dvh bg-[#f5f5f7] dark:bg-shark-950 transition-colors"
+      className="flex flex-col h-dvh bg-gradient-to-br from-[#eef2ff] via-[#f2f4fb] to-[#f0f4ff] dark:bg-none dark:bg-shark-950 transition-colors"
       onTouchStart={handleMainTouchStart}
       onTouchEnd={handleMainTouchEnd}
     >
@@ -127,7 +127,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
               onClick={() => setSidebarOpen(false)}
             />
             <div
-              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/85 border-r border-white/80 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(0,0,0,0.07)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
+              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/85 border-r border-white/80 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(80,130,220,0.13)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
@@ -208,7 +208,7 @@ function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { ro
               title={item.label}
               className={`relative w-11 h-11 flex items-center justify-center rounded-lg transition-all duration-200 ${
                 active
-                  ? "backdrop-blur-sm bg-white/70 dark:bg-white/[0.12] border border-white/80 dark:border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.06)] text-action-600 dark:text-action-400"
+                  ? "backdrop-blur-sm bg-white/70 dark:bg-white/[0.12] border border-white/80 dark:border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(80,130,220,0.10)] text-action-600 dark:text-action-400"
                   : "bg-white/20 dark:bg-white/[0.04] border border-white/35 dark:border-white/[0.07] text-shark-500 dark:text-shark-400 hover:bg-white/40 dark:hover:bg-white/[0.08] hover:text-shark-700 dark:hover:text-white"
               }`}
             >

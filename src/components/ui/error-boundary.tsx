@@ -86,7 +86,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               </div>
 
               {this.state.showDetails && this.state.error && (
-                <div className="w-full mt-2 rounded-xl bg-shark-50 dark:bg-shark-800 border border-shark-200 dark:border-shark-700 p-3 text-left">
+                <div className="w-full mt-2 rounded-[28px] bg-shark-50 dark:bg-shark-800 border border-shark-200 dark:border-shark-700 p-3 text-left">
                   <p className="text-xs font-mono text-red-600 dark:text-red-400 break-words whitespace-pre-wrap">
                     {this.state.error.message}
                   </p>

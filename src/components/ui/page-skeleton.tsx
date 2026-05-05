@@ -49,10 +49,10 @@ export function PageSkeleton({
       )}
 
       {/* Main content area */}
-      <Skeleton className={`${contentHeight} w-full rounded-xl`} />
+      <Skeleton className={`${contentHeight} w-full rounded-[28px]`} />
 
       {/* Optional second content block */}
-      {twoContent && <Skeleton className="h-48 w-full rounded-xl" />}
+      {twoContent && <Skeleton className="h-48 w-full rounded-[28px]" />}
     </div>
   );
 }
@@ -65,7 +65,7 @@ export function FormPageSkeleton({ maxWidth = "max-w-2xl" }: { maxWidth?: string
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-64" />
       </div>
-      <Skeleton className="h-96 w-full rounded-xl" />
+      <Skeleton className="h-96 w-full rounded-[28px]" />
     </div>
   );
 }
@@ -78,10 +78,10 @@ export function BackupPageSkeleton() {
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-64" />
       </div>
-      <Skeleton className="h-32 w-full rounded-xl" />
+      <Skeleton className="h-32 w-full rounded-[28px]" />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-40 rounded-xl" />
+          <Skeleton key={i} className="h-40 rounded-[28px]" />
         ))}
       </div>
     </div>

@@ -33,7 +33,7 @@ function CustomSelect({ value, onChange, options, placeholder, name }: {
         ref={btnRef}
         type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
+        className={`w-full flex items-center justify-between rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
           open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300 dark:hover:border-shark-600"
         } ${value ? "text-shark-900 dark:text-shark-100" : "text-shark-400"}`}
       >
@@ -229,7 +229,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                   ref={descRef}
                   name="description"
                   required
-                  className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+                  className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
                   rows={4}
                   maxLength={2000}
                   placeholder="Describe the damage or circumstances of loss..."
@@ -246,7 +246,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                     const file = e.target.files?.[0];
                     if (file) handleUpload(file);
                   }}
-                  className="w-full text-sm text-shark-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-action-50 file:text-action-600 hover:file:bg-action-100"
+                  className="w-full text-sm text-shark-400 file:mr-4 file:py-2 file:px-4 file:rounded-[28px] file:border-0 file:text-sm file:font-medium file:bg-action-50 file:text-action-600 hover:file:bg-action-100"
                 />
                 {uploading && <p className="text-xs text-shark-400 mt-1">Uploading...</p>}
                 {uploadError && <p className="text-xs text-red-500 mt-1">{uploadError}</p>}

@@ -61,7 +61,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
       {items.length === 0 ? (
         <Card>
           <div className="py-12 text-center">
-            <div className="w-14 h-14 rounded-xl bg-action-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-[28px] bg-action-100 flex items-center justify-center mx-auto mb-4">
               <Icon name="check" size={24} className="text-action-600" />
             </div>
             <p className="text-lg font-semibold text-shark-900 dark:text-shark-100">No Lost Items</p>
@@ -80,7 +80,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                   className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-shark-700 flex items-center justify-center">
+                    <div className="w-9 h-9 rounded-[28px] bg-shark-700 flex items-center justify-center">
                       <Icon name="shield" size={16} className="text-white" />
                     </div>
                     <div className="text-left">
@@ -101,7 +101,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                       <div key={item.id} className="px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/30">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-start gap-3 flex-1">
-                            <div className="w-10 h-10 rounded-xl overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0 mt-0.5">
+                            <div className="w-10 h-10 rounded-[28px] overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0 mt-0.5">
                               {item.imageUrl ? (
                                 <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
                               ) : (

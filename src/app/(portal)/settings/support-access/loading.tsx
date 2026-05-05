@@ -6,8 +6,8 @@ export default function SupportAccessLoading() {
       <Skeleton className="h-8 w-48" />
       <Skeleton className="h-4 w-72" />
       <div className="space-y-4">
-        <Skeleton className="h-32 w-full rounded-xl" />
-        <Skeleton className="h-48 w-full rounded-xl" />
+        <Skeleton className="h-32 w-full rounded-[28px]" />
+        <Skeleton className="h-48 w-full rounded-[28px]" />
       </div>
     </div>
   );

@@ -158,7 +158,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
             const hostname = group.shopUrl ? (() => { try { return new URL(group.shopUrl).hostname.replace("www.", ""); } catch { return group.shopUrl; } })() : null;
 
             return (
-              <div key={groupKey} className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
+              <div key={groupKey} className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden">
                 {/* Shop header */}
                 <div className="flex items-center gap-2 px-3 py-2 border-b border-shark-50 dark:border-shark-800 bg-shark-50/50 dark:bg-shark-800/40">
                   <Icon name="truck" size={13} className="text-shark-400 shrink-0" />

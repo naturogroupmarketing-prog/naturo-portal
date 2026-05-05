@@ -168,7 +168,7 @@ export function PricingSection() {
             return (
               <div
                 key={plan.name}
-                className={`relative rounded-xl flex flex-col transition-all duration-300 ${
+                className={`relative rounded-[28px] flex flex-col transition-all duration-300 ${
                   plan.popular
                     ? /* Popular: slightly more opaque + action border glow */
                       "border border-action-400/50 hover:border-action-400/80"
@@ -227,7 +227,7 @@ export function PricingSection() {
                   {/* CTA button */}
                   <Link
                     href={plan.href}
-                    className={`block w-full text-center text-sm font-semibold py-3 rounded-xl transition-all duration-200 ${
+                    className={`block w-full text-center text-sm font-semibold py-3 rounded-[28px] transition-all duration-200 ${
                       plan.popular
                         ? "bg-action-500 text-white hover:bg-action-600 shadow-[0_4px_20px_rgba(31,61,217,0.4)] hover:shadow-[0_6px_28px_rgba(31,61,217,0.55)] hover:-translate-y-px"
                         : "bg-white/10 text-white border border-white/15 hover:bg-white/18 hover:border-white/25"

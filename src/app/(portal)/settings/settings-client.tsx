@@ -360,7 +360,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
       {/* Delete Account Modal */}
       <Modal open={showDeleteModal} onClose={() => { setShowDeleteModal(false); setDeletePassword(""); }} title="Delete Account">
         <div className="space-y-4">
-          <div className="bg-red-50 border border-red-100 rounded-xl p-4">
+          <div className="bg-red-50 border border-red-100 rounded-[28px] p-4">
             <p className="text-sm text-red-800 font-medium">This action cannot be undone</p>
             <p className="text-xs text-red-600 mt-1">Your account will be deactivated immediately. Your administrator will be notified to complete the deletion of your data.</p>
           </div>
@@ -385,7 +385,7 @@ export function SettingsClient({ userName, userEmail, userPhone, emailNotificati
               <div className="text-center">
                 <p className="text-sm text-shark-600 dark:text-shark-400 mb-4">Scan this QR code with your authenticator app:</p>
                 {/* QR Code rendered as a link to otpauth URI */}
-                <div className="bg-white dark:bg-shark-900 p-4 rounded-xl inline-block border border-shark-200 dark:border-shark-700 mx-auto">
+                <div className="bg-white dark:bg-shark-900 p-4 rounded-[28px] inline-block border border-shark-200 dark:border-shark-700 mx-auto">
                   <img
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(mfaQrUri)}`}
                     alt="MFA QR Code"

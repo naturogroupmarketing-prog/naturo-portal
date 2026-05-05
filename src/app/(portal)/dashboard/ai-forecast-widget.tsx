@@ -87,7 +87,7 @@ export function AiForecastWidget({ items }: Props) {
                   </div>
 
                   {/* Items */}
-                  <div className={`rounded-xl border divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden ${cfg.bg}`}>
+                  <div className={`rounded-[28px] border divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden ${cfg.bg}`}>
                     {bandItems.map((item) => (
                       <Link
                         key={item.id}

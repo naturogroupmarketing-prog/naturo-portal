@@ -89,7 +89,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
         </div>
       </div>
 
-      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800 rounded-[28px] p-1">
         {(["all", "unread"] as const).map((f) => (
           <button
             key={f}

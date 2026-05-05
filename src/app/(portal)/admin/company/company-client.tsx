@@ -145,7 +145,7 @@ export function CompanyClient({ org }: Props) {
               {logoUrl ? (
                 /* Preview */
                 <div className="flex items-center gap-4">
-                  <div className="w-24 h-24 rounded-xl border border-shark-200 dark:border-shark-700 bg-shark-50 dark:bg-shark-800 flex items-center justify-center overflow-hidden">
+                  <div className="w-24 h-24 rounded-[28px] border border-shark-200 dark:border-shark-700 bg-shark-50 dark:bg-shark-800 flex items-center justify-center overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={logoUrl} alt="Logo" className="max-w-full max-h-full object-contain p-2" />
                   </div>
@@ -175,7 +175,7 @@ export function CompanyClient({ org }: Props) {
                   onDrop={onDrop}
                   className={`
                     relative flex flex-col items-center justify-center gap-2 cursor-pointer
-                    rounded-xl border-2 border-dashed px-6 py-8 transition-colors
+                    rounded-[28px] border-2 border-dashed px-6 py-8 transition-colors
                     ${dragOver
                       ? "border-action-400 bg-action-50 dark:bg-action-500/10"
                       : "border-shark-200 dark:border-shark-700 hover:border-action-300 dark:hover:border-action-700 bg-shark-50 dark:bg-shark-800/50"

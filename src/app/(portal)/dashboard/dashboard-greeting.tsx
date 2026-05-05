@@ -86,7 +86,7 @@ export function DashboardGreeting({
       {onClickStatus && attentionCount > 0 ? (
         <button
           onClick={onClickStatus}
-          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs sm:text-sm font-medium shrink-0 transition-all duration-200 hover:shadow-sm active:scale-95 ${statusStyle}`}
+          className={`flex items-center gap-2 px-3 py-2 rounded-[28px] border text-xs sm:text-sm font-medium shrink-0 transition-all duration-200 hover:shadow-sm active:scale-95 ${statusStyle}`}
           aria-expanded={actionsExpanded}
           aria-label={statusText}
         >
@@ -116,7 +116,7 @@ export function DashboardGreeting({
         </button>
       ) : (
         <div
-          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs sm:text-sm font-medium shrink-0 ${statusStyle}`}
+          className={`flex items-center gap-2 px-3 py-2 rounded-[28px] border text-xs sm:text-sm font-medium shrink-0 ${statusStyle}`}
         >
           <span
             className={`w-2 h-2 rounded-full shrink-0 ${dotColor} ${

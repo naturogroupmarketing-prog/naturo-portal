@@ -164,7 +164,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                   <p className="text-2xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
                 </div>
-                <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
+                <div className={`w-10 h-10 rounded-[28px] ${stat.bg} flex items-center justify-center`}>
                   <Icon name={stat.icon} size={18} className={stat.color} />
                 </div>
               </div>
@@ -208,7 +208,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                 onClick={() => toggleState(state.id)}
                 className="flex items-center gap-3 px-1 pt-2 w-full text-left group"
               >
-                <div className={`w-9 h-9 rounded-xl ${sc.bg} flex items-center justify-center`}>
+                <div className={`w-9 h-9 rounded-[28px] ${sc.bg} flex items-center justify-center`}>
                   <Icon name="map-pin" size={18} className={sc.color} />
                 </div>
                 <div className="flex items-center gap-2 flex-1 flex-wrap">

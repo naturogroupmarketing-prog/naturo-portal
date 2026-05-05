@@ -65,7 +65,7 @@ export function QuickLinks({ open, onClose }: QuickLinksProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.15 }}
-              className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-xl shadow-2xl border border-shark-200 dark:border-shark-700 overflow-hidden pointer-events-auto"
+              className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-[28px] shadow-2xl border border-shark-200 dark:border-shark-700 overflow-hidden pointer-events-auto"
             >
               <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 dark:border-shark-800">
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-shark-400">
@@ -81,7 +81,7 @@ export function QuickLinks({ open, onClose }: QuickLinksProps) {
                   <button
                     key={item.href}
                     onClick={() => handleNavigate(item.href)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-800 dark:bg-transparent dark:hover:bg-shark-800/40 transition-colors text-left group"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[28px] hover:bg-shark-50 dark:hover:bg-shark-800 dark:bg-transparent dark:hover:bg-shark-800/40 transition-colors text-left group"
                   >
                     <Icon
                       name={item.icon}

@@ -87,7 +87,7 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
 
   return (
     <div
-      className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-xl shadow-sm overflow-hidden flex flex-col"
+      className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-[28px] shadow-sm overflow-hidden flex flex-col"
       style={maxHeight ? { height: maxHeight } : undefined}
     >
       {/* Header */}

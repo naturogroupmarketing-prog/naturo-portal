@@ -64,7 +64,7 @@ export function RecentActivityWidget({ items }: { items: RecentActivityItem[] })
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="flex items-start gap-3 px-3 py-2.5 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
+                  className="flex items-start gap-3 px-3 py-2.5 rounded-[28px] hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
                 >
                   {/* Icon */}
                   <div className={`w-8 h-8 rounded-lg ${cfg.iconBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>

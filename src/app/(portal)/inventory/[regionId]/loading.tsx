@@ -12,10 +12,10 @@ export default function Loading() {
           <SkeletonStatCard key={i} />
         ))}
       </div>
-      <Skeleton className="h-10 rounded-xl" />
+      <Skeleton className="h-10 rounded-[28px]" />
       <div className="space-y-2">
         {[...Array(5)].map((_, i) => (
-          <Skeleton key={i} className="h-14 rounded-xl" />
+          <Skeleton key={i} className="h-14 rounded-[28px]" />
         ))}
       </div>
     </div>

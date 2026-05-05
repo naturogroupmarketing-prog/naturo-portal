@@ -286,7 +286,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
       <Modal open={!!archiveConfirm} onClose={() => setArchiveConfirm(null)} title="Archive Location">
         {archiveConfirm && (
           <div className="space-y-4">
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <div className="bg-amber-50 border border-amber-200 rounded-[28px] p-4">
               <p className="text-sm font-medium text-amber-800">
                 Archive &quot;{archiveConfirm.name}&quot;?
               </p>
@@ -406,7 +406,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
       <Modal open={showManageModal} onClose={() => { setShowManageModal(false); setManageSearch(""); setEditingStateName(null); }} title="Manage Locations">
         <div className="space-y-4">
           {/* Tab Navigation */}
-          <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
+          <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
             {[
               { key: "locations" as const, label: "All Locations", icon: "map-pin" as const },
               { key: "add-state" as const, label: "Add State", icon: "plus" as const },

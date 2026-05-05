@@ -9,7 +9,7 @@ export default function AnomaliesLoading() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[...Array(6)].map((_, i) => (
-          <Skeleton key={i} className="h-28 w-full rounded-xl" />
+          <Skeleton key={i} className="h-28 w-full rounded-[28px]" />
         ))}
       </div>
     </div>

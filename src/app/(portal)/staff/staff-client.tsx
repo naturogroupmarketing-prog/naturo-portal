@@ -325,7 +325,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             <div
               key={user.id}
               onClick={() => (isSuperAdmin || canViewStaffDetails) && openEdit(user)}
-              className="border border-shark-100 dark:border-shark-800 rounded-xl p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
+              className="border border-shark-100 dark:border-shark-800 rounded-[28px] p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -1233,19 +1233,19 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 Performance Summary
               </h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.assetAssignments.length}</p>
                   <p className="text-[10px] text-shark-400">Assets Assigned</p>
                 </div>
-                <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.consumableAssignments?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Supplies</p>
                 </div>
-                <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.conditionChecks?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Inspections Done</p>
                 </div>
-                <div className="bg-shark-50 dark:bg-shark-800 rounded-xl px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-3 py-2.5 text-center">
                   <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-[#E8532E]" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Damage Reports</p>
                 </div>

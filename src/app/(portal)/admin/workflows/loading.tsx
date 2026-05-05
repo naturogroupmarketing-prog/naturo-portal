@@ -9,7 +9,7 @@ export default function WorkflowsLoading() {
       </div>
       <div className="space-y-3">
         {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-20 w-full rounded-xl" />
+          <Skeleton key={i} className="h-20 w-full rounded-[28px]" />
         ))}
       </div>
     </div>

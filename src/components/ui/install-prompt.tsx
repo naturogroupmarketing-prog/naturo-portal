@@ -104,12 +104,12 @@ export function InstallPrompt() {
       className="fixed left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-2rem)] max-w-sm"
       style={{ bottom: bottomStyle }}
     >
-      <div className="bg-white dark:bg-shark-900 rounded-xl shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden">
+      <div className="bg-white dark:bg-shark-900 rounded-[28px] shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden">
 
         {/* ── Installed ── */}
         {installed && (
           <div className="px-5 py-4 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-[28px] bg-green-100 flex items-center justify-center shrink-0">
               <Icon name="check" size={18} className="text-green-600" />
             </div>
             <div>
@@ -124,7 +124,7 @@ export function InstallPrompt() {
           <div className="px-5 py-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-action-600 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-[28px] bg-action-600 flex items-center justify-center shrink-0">
                   <span className="text-white font-bold text-sm">T</span>
                 </div>
                 <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Install Trackio</p>
@@ -164,7 +164,7 @@ export function InstallPrompt() {
           <div className="px-5 py-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-action-600 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-[28px] bg-action-600 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-white font-bold">T</span>
                 </div>
                 <div>
@@ -187,7 +187,7 @@ export function InstallPrompt() {
         {/* ── Android / Desktop with native prompt ── */}
         {!installed && (platform === "android" || platform === "desktop") && deferredPrompt && (
           <div className="px-5 py-4 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-action-600 flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-[28px] bg-action-600 flex items-center justify-center shrink-0">
               <span className="text-white font-bold text-lg">T</span>
             </div>
             <div className="flex-1 min-w-0">
@@ -198,7 +198,7 @@ export function InstallPrompt() {
               <button onClick={handleDismiss} className="text-shark-400 hover:text-shark-600 p-1" aria-label="Dismiss">
                 <Icon name="x" size={15} />
               </button>
-              <button onClick={handleNativeInstall} className="bg-action-600 hover:bg-action-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors">
+              <button onClick={handleNativeInstall} className="bg-action-600 hover:bg-action-700 text-white text-xs font-semibold px-4 py-2 rounded-[28px] transition-colors">
                 Install
               </button>
             </div>

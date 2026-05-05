@@ -90,7 +90,7 @@ export default async function AlertsPage() {
             <Card className="cursor-pointer h-full">
               <CardContent className="flex flex-col items-start gap-4">
                 <div
-                  className={`flex items-center justify-center h-10 w-10 rounded-xl ${
+                  className={`flex items-center justify-center h-10 w-10 rounded-[28px] ${
                     card.count > 0
                       ? "bg-[#E8532E]/10 text-[#E8532E]"
                       : "bg-emerald-50 text-emerald-500 dark:bg-emerald-900/20 dark:text-emerald-400"

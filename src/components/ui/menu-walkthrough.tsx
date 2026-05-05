@@ -98,7 +98,7 @@ export function MenuWalkthrough({ role }: { role: string }) {
         <>
           {/* Subtle highlight ring around menu item — no solid background */}
           <div
-            className="absolute rounded-xl ring-2 ring-action-500 ring-offset-2 transition-all duration-300 z-[81] pointer-events-none"
+            className="absolute rounded-[28px] ring-2 ring-action-500 ring-offset-2 transition-all duration-300 z-[81] pointer-events-none"
             style={{
               top: targetRect.top - 2,
               left: targetRect.left - 2,
@@ -115,7 +115,7 @@ export function MenuWalkthrough({ role }: { role: string }) {
               left: targetRect.right + 16,
             }}
           >
-            <div className="bg-white/95 dark:bg-shark-800/95 backdrop-blur-sm rounded-xl shadow-lg shadow-shark-900/10 border border-shark-100 dark:border-shark-700 p-4 max-w-xs w-64">
+            <div className="bg-white/95 dark:bg-shark-800/95 backdrop-blur-sm rounded-[28px] shadow-lg shadow-shark-900/10 border border-shark-100 dark:border-shark-700 p-4 max-w-xs w-64">
               {/* Arrow pointing left */}
               <div className="absolute -left-1.5 top-5 w-3 h-3 bg-white/95 dark:bg-shark-800/95 rotate-45 border-l border-b border-shark-100 dark:border-shark-700" />
 

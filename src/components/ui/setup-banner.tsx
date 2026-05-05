@@ -20,7 +20,7 @@ export function SetupBanner({ industry }: SetupBannerProps) {
   }
 
   return (
-    <div className="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-gradient-to-r from-action-500 to-action-600 text-white shadow-sm shadow-action-500/20 mb-6">
+    <div className="flex items-center gap-4 px-4 py-3.5 rounded-[28px] bg-gradient-to-r from-action-500 to-action-600 text-white shadow-sm shadow-action-500/20 mb-6">
       <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
         <Icon name="git-branch" size={15} className="text-white" />
       </div>

@@ -86,7 +86,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
       </div>
 
       {/* Read-only notice banner */}
-      <div className="flex items-start gap-3 px-4 py-3.5 rounded-xl bg-blue-50 border border-blue-100">
+      <div className="flex items-start gap-3 px-4 py-3.5 rounded-[28px] bg-blue-50 border border-blue-100">
         <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
           <Icon name="info" size={14} className="text-blue-600" />
         </div>

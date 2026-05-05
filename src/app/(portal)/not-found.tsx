@@ -15,7 +15,7 @@ export default function PortalNotFound() {
         </p>
         <Link
           href="/dashboard"
-          className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-action-400 rounded-xl hover:bg-action-500 transition-colors"
+          className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-action-400 rounded-[28px] hover:bg-action-500 transition-colors"
         >
           Go to Dashboard
         </Link>

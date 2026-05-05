@@ -77,7 +77,7 @@ export function SmartInsightsTicker({ insights }: SmartInsightsTickerProps) {
 
   return (
     <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-colors duration-300 overflow-hidden ${style.bg} ${style.border}`}
+      className={`flex items-center gap-3 px-4 py-3 rounded-[28px] border transition-colors duration-300 overflow-hidden ${style.bg} ${style.border}`}
     >
       {/* Icon */}
       <div

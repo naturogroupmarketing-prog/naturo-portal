@@ -42,18 +42,18 @@
   --color-shark-900: #292d34;
   --color-shark-950: #1a1c21;
 
-  /* Action blue — Apple Blue #0071e3 */
-  --color-action-50: #e6f2fd;
-  --color-action-100: #cce4fb;
-  --color-action-200: #99c9f7;
-  --color-action-300: #66aef3;
-  --color-action-400: #3393ee;
-  --color-action-500: #0071e3;
-  --color-action-600: #005bba;
-  --color-action-700: #004590;
-  --color-action-800: #002f66;
-  --color-action-900: #001a3c;
-  --color-action-950: #000d1e;
+  /* Action blue — Samsung One UI Blue #1259C3 */
+  --color-action-50: #eef3ff;
+  --color-action-100: #d5e3ff;
+  --color-action-200: #aabdff;
+  --color-action-300: #7b98f5;
+  --color-action-400: #4a73ea;
+  --color-action-500: #1259c3;
+  --color-action-600: #0e4aa8;
+  --color-action-700: #0b3a8c;
+  --color-action-800: #082a70;
+  --color-action-900: #051b54;
+  --color-action-950: #030d2a;
 }
 
 .font-exo {

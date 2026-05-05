@@ -143,7 +143,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name or person..."
-              className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-shark-50 dark:bg-shark-800 pl-10 pr-4 text-base text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-shark-50 dark:bg-shark-800 pl-10 pr-4 text-base text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
               style={{ height: "48px" }}
             />
           </div>
@@ -165,7 +165,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
             <p className="mt-2 text-base text-shark-400">No pending returns — great work.</p>
             <Link
               href="/returns"
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-shark-900 px-5 py-3 text-sm font-semibold text-white hover:bg-shark-800 transition-colors"
+              className="mt-6 inline-flex items-center gap-2 rounded-[28px] bg-shark-900 px-5 py-3 text-sm font-semibold text-white hover:bg-shark-800 transition-colors"
             >
               Back to Returns
             </Link>
@@ -181,7 +181,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
           return (
             <div
               key={item.id}
-              className={`rounded-xl bg-white dark:bg-shark-900 border transition-all shadow-sm overflow-hidden ${
+              className={`rounded-[28px] bg-white dark:bg-shark-900 border transition-all shadow-sm overflow-hidden ${
                 isSelected ? "border-action-400 ring-2 ring-action-400/20" : "border-shark-100 dark:border-shark-800"
               }`}
             >
@@ -226,7 +226,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
                   type="button"
                   onClick={() => handleConfirm(item.id)}
                   disabled={isProcessing}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-green-600 text-white font-semibold text-base hover:bg-green-700 active:scale-[0.97] transition-all disabled:opacity-60"
+                  className="flex items-center justify-center gap-2 rounded-[28px] bg-green-600 text-white font-semibold text-base hover:bg-green-700 active:scale-[0.97] transition-all disabled:opacity-60"
                   style={{ minHeight: "52px" }}
                 >
                   {isProcessing ? (
@@ -247,7 +247,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
                   type="button"
                   onClick={() => handleNotReturned(item.id)}
                   disabled={isProcessing}
-                  className="flex items-center justify-center gap-2 rounded-xl border-2 border-red-300 text-red-600 font-semibold text-base hover:bg-red-50 active:scale-[0.97] transition-all disabled:opacity-60"
+                  className="flex items-center justify-center gap-2 rounded-[28px] border-2 border-red-300 text-red-600 font-semibold text-base hover:bg-red-50 active:scale-[0.97] transition-all disabled:opacity-60"
                   style={{ minHeight: "52px" }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -288,7 +288,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
           <button
             type="button"
             onClick={handleConfirmAll}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-green-600 text-white font-bold text-lg hover:bg-green-700 active:scale-[0.98] transition-all shadow-sm"
+            className="w-full flex items-center justify-center gap-2 rounded-[28px] bg-green-600 text-white font-bold text-lg hover:bg-green-700 active:scale-[0.98] transition-all shadow-sm"
             style={{ minHeight: "56px" }}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

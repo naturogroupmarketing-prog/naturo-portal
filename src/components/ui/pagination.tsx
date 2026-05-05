@@ -75,7 +75,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         disabled={currentPage <= 1}
         aria-label="Go to previous page"
         className={cn(
-          "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-200",
+          "inline-flex items-center justify-center rounded-[28px] font-medium transition-all duration-200",
           "min-h-[44px] min-w-[44px] px-3 text-sm",
           "border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800",
           "text-shark-700 dark:text-shark-300",
@@ -119,7 +119,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
             aria-label={`Go to page ${pageNum}`}
             aria-current={pageNum === currentPage ? "page" : undefined}
             className={cn(
-              "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-200",
+              "inline-flex items-center justify-center rounded-[28px] font-medium transition-all duration-200",
               "min-h-[44px] min-w-[44px] text-sm",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-action-400/40 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-shark-900",
               "cursor-pointer active:scale-[0.97]",
@@ -139,7 +139,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         disabled={currentPage >= totalPages}
         aria-label="Go to next page"
         className={cn(
-          "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-200",
+          "inline-flex items-center justify-center rounded-[28px] font-medium transition-all duration-200",
           "min-h-[44px] min-w-[44px] px-3 text-sm",
           "border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800",
           "text-shark-700 dark:text-shark-300",

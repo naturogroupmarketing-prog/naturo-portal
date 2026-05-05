@@ -35,7 +35,7 @@ function ConditionSelect({ value, onChange }: { value: string; onChange: (val: s
         ref={btnRef}
         type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
+        className={`w-full flex items-center justify-between rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
           open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300 dark:hover:border-shark-600"
         }`}
       >
@@ -939,7 +939,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {/* Return Individual Item Modal */}
       {returningItemId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-shark-900 rounded-xl shadow-2xl w-full max-w-md my-auto animate-fade-in">
+          <div className="bg-white dark:bg-shark-900 rounded-[28px] shadow-2xl w-full max-w-md my-auto animate-fade-in">
             <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100 dark:border-shark-800">
               <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Return Item</h3>
               <button
@@ -1040,7 +1040,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         return (
           <>
             {overdue.length > 0 && !allDone && (
-              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-3">
+              <div className="bg-red-50 border border-red-200 rounded-[28px] px-4 py-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-red-500 flex items-center justify-center shrink-0">
                   <Icon name="alert-triangle" size={18} className="text-white" />
                 </div>
@@ -1054,7 +1054,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               </div>
             )}
             {upcoming.length > 0 && !allDone && overdue.length === 0 && (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center gap-3">
+              <div className="bg-amber-50 border border-amber-200 rounded-[28px] px-4 py-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-[#E8532E] flex items-center justify-center shrink-0">
                   <Icon name="clock" size={18} className="text-white" />
                 </div>
@@ -1068,7 +1068,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               </div>
             )}
             {allDone && upcoming.length > 0 && (
-              <div className="bg-action-50 border border-action-200 rounded-xl px-4 py-3 flex items-center gap-3">
+              <div className="bg-action-50 border border-action-200 rounded-[28px] px-4 py-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-action-500 flex items-center justify-center shrink-0">
                   <Icon name="check" size={18} className="text-white" />
                 </div>
@@ -1334,7 +1334,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           <Link href="/report-damage">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="py-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#E8532E] flex items-center justify-center group-hover:bg-[#d14a28] transition-colors">
+                <div className="w-12 h-12 rounded-[28px] bg-[#E8532E] flex items-center justify-center group-hover:bg-[#d14a28] transition-colors">
                   <Icon name="alert-triangle" size={24} className="text-white" />
                 </div>
                 <div>

@@ -100,7 +100,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
             </div>
 
             {/* Per-region breakdown */}
-            <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+            <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
               {regions.map((region) => {
                 const pct = grandTotal > 0 ? (region.total / grandTotal) * 100 : 0;
                 return (

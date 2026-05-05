@@ -50,7 +50,7 @@ export function BenefitsSection() {
           {benefits.map((benefit, i) => (
             <ScrollReveal key={benefit.metric} delay={i * 100}>
             <div
-              className="p-6 rounded-xl bg-shark-800/60 border border-shark-700/50 hover:border-shark-600 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 h-full"
+              className="p-6 rounded-[28px] bg-shark-800/60 border border-shark-700/50 hover:border-shark-600 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 h-full"
             >
               <h3 className="text-base font-semibold text-white mb-2">
                 {benefit.metric}

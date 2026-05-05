@@ -699,7 +699,7 @@ function ApplyToStaffForm({
     const user = users.find((u) => u.id === selectedUserId);
     return (
       <div className="space-y-4">
-        <div className="bg-action-50 rounded-xl p-4 text-center">
+        <div className="bg-action-50 rounded-[28px] p-4 text-center">
           <div className="w-12 h-12 rounded-full bg-action-500 flex items-center justify-center mx-auto mb-3">
             <Icon name="check" size={24} className="text-white" />
           </div>

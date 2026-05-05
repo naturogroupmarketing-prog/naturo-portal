@@ -177,7 +177,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
 
       {/* Active session alert */}
       {activeSessions.length > 0 && (
-        <div className="rounded-xl border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-4 flex items-start gap-3">
+        <div className="rounded-[28px] border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-4 flex items-start gap-3">
           <Icon name="alert-triangle" size={16} className="text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
           <div className="flex-1">
             <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
@@ -204,7 +204,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-100 dark:bg-shark-800 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-100 dark:bg-shark-800 rounded-[28px] p-1">
         {(["settings", "history", "requests"] as const).map((tab) => (
           <button
             key={tab}
@@ -276,7 +276,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
               {ACCESS_LEVEL_OPTIONS.map((o) => (
                 <div
                   key={o.value}
-                  className={`flex gap-3 p-3 rounded-xl border transition-colors ${
+                  className={`flex gap-3 p-3 rounded-[28px] border transition-colors ${
                     policy.defaultAccessLevel === o.value
                       ? "border-action-200 bg-action-50 dark:bg-action-900/20 dark:border-action-700/40"
                       : "border-shark-100 dark:border-shark-700 opacity-60"

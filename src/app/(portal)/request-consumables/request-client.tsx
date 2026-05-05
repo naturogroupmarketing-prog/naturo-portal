@@ -134,7 +134,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
         <button
           onClick={() => setTab("request")}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
@@ -217,7 +217,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                         )}
                       </div>
                       {r.notes && (
-                        <p className="mt-2 text-sm text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 rounded-xl p-3">{r.notes}</p>
+                        <p className="mt-2 text-sm text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 rounded-[28px] p-3">{r.notes}</p>
                       )}
                     </CardContent>
                   </Card>

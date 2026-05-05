@@ -304,7 +304,7 @@ function WorkflowModal({
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
       {/* Panel */}
-      <div className="relative bg-white dark:bg-shark-900 rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white dark:bg-shark-900 rounded-[28px] shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-shark-100 dark:border-shark-800">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -329,7 +329,7 @@ function WorkflowModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Weekly Low-Stock Alert"
               maxLength={100}
-              className="w-full rounded-xl border border-shark-200 dark:border-shark-700 px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
             />
           </div>
 
@@ -339,7 +339,7 @@ function WorkflowModal({
             <div className="space-y-2">
               {TRIGGER_OPTIONS.map((opt) => (
                 <label key={opt.value} className={cn(
-                  "flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
+                  "flex items-start gap-3 p-3 rounded-[28px] border cursor-pointer transition-colors",
                   trigger === opt.value
                     ? "border-action-400 bg-action-50"
                     : "border-shark-200 dark:border-shark-700 hover:border-shark-300 dark:hover:border-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800"
@@ -375,7 +375,7 @@ function WorkflowModal({
                       onChange={(e) => setConditionValues((prev) => ({ ...prev, [field.key]: e.target.value }))}
                       placeholder={field.placeholder}
                       min={field.type === "number" ? 1 : undefined}
-                      className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+                      className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
                     />
                   </div>
                 ))}
@@ -389,7 +389,7 @@ function WorkflowModal({
             <div className="space-y-2">
               {ACTION_OPTIONS.map((opt) => (
                 <label key={opt.value} className={cn(
-                  "flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
+                  "flex items-start gap-3 p-3 rounded-[28px] border cursor-pointer transition-colors",
                   action === opt.value
                     ? "border-action-400 bg-action-50"
                     : "border-shark-200 dark:border-shark-700 hover:border-shark-300 dark:hover:border-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800"
@@ -435,7 +435,7 @@ function DeleteConfirm({ ruleName, onConfirm, onCancel }: { ruleName: string; on
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-white dark:bg-shark-900 rounded-xl shadow-xl w-full max-w-sm p-6 space-y-4">
+      <div className="relative bg-white dark:bg-shark-900 rounded-[28px] shadow-xl w-full max-w-sm p-6 space-y-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
             <Icon name="trash-2" size={18} className="text-red-500" />
@@ -543,7 +543,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
           </div>
 
           {/* Info banner */}
-          <div className="flex items-start gap-3 px-4 py-3.5 rounded-xl bg-blue-50 border border-blue-100">
+          <div className="flex items-start gap-3 px-4 py-3.5 rounded-[28px] bg-blue-50 border border-blue-100">
             <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
               <Icon name="info" size={14} className="text-blue-600" />
             </div>

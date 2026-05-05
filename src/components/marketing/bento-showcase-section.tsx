@@ -13,7 +13,7 @@ function AssetListMockup() {
     { name: "Power Scrubber", loc: "Sydney South", status: "Available", color: "#22c55e" },
   ];
   return (
-    <div className="w-full rounded-xl overflow-hidden border border-white/20 bg-white/10 backdrop-blur-sm text-white text-[11px]">
+    <div className="w-full rounded-[28px] overflow-hidden border border-white/20 bg-white/10 backdrop-blur-sm text-white text-[11px]">
       <div className="flex items-center gap-2 px-3 py-2 border-b border-white/10 bg-white/10">
         <span className="font-semibold opacity-80">Assets</span>
         <span className="ml-auto opacity-50">47 total</span>
@@ -39,7 +39,7 @@ function AssetListMockup() {
 
 function AIChatMockup() {
   return (
-    <div className="w-full rounded-xl overflow-hidden border border-white/20 bg-white/10 backdrop-blur-sm text-[11px]">
+    <div className="w-full rounded-[28px] overflow-hidden border border-white/20 bg-white/10 backdrop-blur-sm text-[11px]">
       <div className="flex items-center gap-2 px-3 py-2 border-b border-white/10 bg-white/10">
         <div className="w-4 h-4 rounded-full bg-white/30 flex items-center justify-center">
           <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
@@ -48,7 +48,7 @@ function AIChatMockup() {
       </div>
       <div className="p-3 space-y-3">
         <div className="flex justify-end">
-          <div className="bg-white/20 text-white rounded-xl rounded-tr-sm px-3 py-1.5 max-w-[75%] text-[10px]">
+          <div className="bg-white/20 text-white rounded-[28px] rounded-tr-sm px-3 py-1.5 max-w-[75%] text-[10px]">
             Which supplies are running low?
           </div>
         </div>
@@ -56,7 +56,7 @@ function AIChatMockup() {
           <div className="w-5 h-5 rounded-full bg-white/20 shrink-0 flex items-center justify-center mt-0.5">
             <svg width="8" height="8" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="5"/></svg>
           </div>
-          <div className="bg-white/15 text-white rounded-xl rounded-tl-sm px-3 py-1.5 text-[10px] leading-relaxed">
+          <div className="bg-white/15 text-white rounded-[28px] rounded-tl-sm px-3 py-1.5 text-[10px] leading-relaxed">
             <p className="font-medium mb-1 opacity-90">3 items need attention:</p>
             <p className="opacity-70">• Hand sanitiser — Sydney North (2 left)</p>
             <p className="opacity-70">• Microfibre cloths — Perth (4 left)</p>
@@ -82,7 +82,7 @@ function LocationsMockup() {
     { name: "Perth Central", assets: 11, low: 0 },
   ];
   return (
-    <div className="w-full rounded-xl overflow-hidden border border-white/20 bg-white/10 backdrop-blur-sm text-white text-[11px]">
+    <div className="w-full rounded-[28px] overflow-hidden border border-white/20 bg-white/10 backdrop-blur-sm text-white text-[11px]">
       <div className="flex items-center gap-2 px-3 py-2 border-b border-white/10 bg-white/10">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
         <span className="font-semibold opacity-80">Locations</span>
@@ -110,7 +110,7 @@ function LocationsMockup() {
 
 function POmockup() {
   return (
-    <div className="w-full rounded-xl overflow-hidden border border-white/20 bg-white/10 backdrop-blur-sm text-white text-[11px]">
+    <div className="w-full rounded-[28px] overflow-hidden border border-white/20 bg-white/10 backdrop-blur-sm text-white text-[11px]">
       <div className="px-3 py-2 border-b border-white/10 bg-white/10 flex items-center gap-2">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 3h22v5H1zM1 8h22v13H1z"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
         <span className="font-semibold opacity-80">Purchase Order #1042</span>
@@ -143,7 +143,7 @@ function POmockup() {
 function QRMockup() {
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="w-24 h-24 bg-white rounded-xl p-2">
+      <div className="w-24 h-24 bg-white rounded-[28px] p-2">
         <svg viewBox="0 0 21 21" className="w-full h-full">
           <rect x="0" y="0" width="9" height="9" fill="#0a2540"/>
           <rect x="1" y="1" width="7" height="7" fill="white"/>
@@ -203,7 +203,7 @@ export function BentoShowcaseSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 auto-rows-auto">
 
           {/* Card 1 — Asset tracking (large, 3 cols) */}
-          <div className="lg:col-span-3 rounded-xl overflow-hidden relative min-h-[480px] flex flex-col"
+          <div className="lg:col-span-3 rounded-[28px] overflow-hidden relative min-h-[480px] flex flex-col"
             style={{ background: "linear-gradient(135deg, #7c3aed 0%, #a855f7 40%, #ec4899 80%, #f472b6 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Asset Management</div>
@@ -220,7 +220,7 @@ export function BentoShowcaseSection() {
           </div>
 
           {/* Card 2 — AI assistant (2 cols) */}
-          <div className="lg:col-span-2 rounded-xl overflow-hidden relative min-h-[480px] flex flex-col"
+          <div className="lg:col-span-2 rounded-[28px] overflow-hidden relative min-h-[480px] flex flex-col"
             style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #4f46e5 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">AI Assistant</div>
@@ -237,7 +237,7 @@ export function BentoShowcaseSection() {
           </div>
 
           {/* Card 3 — Multi-location (2 cols) */}
-          <div className="lg:col-span-2 rounded-xl overflow-hidden relative min-h-[420px] flex flex-col"
+          <div className="lg:col-span-2 rounded-[28px] overflow-hidden relative min-h-[420px] flex flex-col"
             style={{ background: "linear-gradient(135deg, rgba(255,50,55,1.0) 0%, rgba(255,140,45,0.90) 60%, rgba(255,200,70,0.80) 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Multi-Location</div>
@@ -254,7 +254,7 @@ export function BentoShowcaseSection() {
           </div>
 
           {/* Card 4 — Purchase orders (2 cols) */}
-          <div className="lg:col-span-2 rounded-xl overflow-hidden relative min-h-[420px] flex flex-col"
+          <div className="lg:col-span-2 rounded-[28px] overflow-hidden relative min-h-[420px] flex flex-col"
             style={{ background: "linear-gradient(135deg, #0f4c81 0%, #1113d4 60%, #4f46e5 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Procurement</div>
@@ -271,7 +271,7 @@ export function BentoShowcaseSection() {
           </div>
 
           {/* Card 5 — QR scanning (1 col) */}
-          <div className="lg:col-span-1 rounded-xl overflow-hidden relative min-h-[420px] flex flex-col"
+          <div className="lg:col-span-1 rounded-[28px] overflow-hidden relative min-h-[420px] flex flex-col"
             style={{ background: "linear-gradient(160deg, #0a2540 0%, #1a3a5c 60%, #0f4c81 100%)" }}>
             <div className="p-10 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">QR Tracking</div>

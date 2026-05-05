@@ -13,7 +13,7 @@ export default function AssetsLoading() {
       </div>
       <div className="space-y-3">
         {Array.from({ length: 8 }).map((_, i) => (
-          <Skeleton key={i} className="h-16 w-full rounded-xl" />
+          <Skeleton key={i} className="h-16 w-full rounded-[28px]" />
         ))}
       </div>
     </div>

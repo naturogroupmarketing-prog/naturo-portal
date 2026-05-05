@@ -280,7 +280,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                   <p className="text-2xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
                 </div>
-                <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
+                <div className={`w-10 h-10 rounded-[28px] ${stat.bg} flex items-center justify-center`}>
                   <Icon name={stat.icon} size={18} className={stat.color} />
                 </div>
               </div>
@@ -293,7 +293,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
       {isEmpty && (
         <Card className="border-2 border-dashed border-action-200 bg-action-50/30">
           <div className="px-6 py-8 text-center">
-            <div className="w-14 h-14 rounded-xl bg-action-500 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-[28px] bg-action-500 flex items-center justify-center mx-auto mb-4">
               <Icon name="plus" size={24} className="text-white" />
             </div>
             <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Set Up This Location</h3>

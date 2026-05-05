@@ -122,7 +122,7 @@ export function LocationMap({ locations, className = "" }: LocationMapProps) {
 
   if (locations.length === 0) {
     return (
-      <div className={`flex items-center justify-center bg-shark-50 rounded-xl text-shark-400 text-sm ${className}`} style={{ minHeight: 300 }}>
+      <div className={`flex items-center justify-center bg-shark-50 rounded-[28px] text-shark-400 text-sm ${className}`} style={{ minHeight: 300 }}>
         No locations with coordinates configured
       </div>
     );
@@ -137,10 +137,10 @@ export function LocationMap({ locations, className = "" }: LocationMapProps) {
           padding: 4px;
         }
         .custom-popup .leaflet-popup-tip {
-          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          box-shadow: 0 2px 8px rgba(80,130,220,0.16);
         }
       `}</style>
-      <div ref={mapRef} className={`rounded-xl overflow-hidden ${className}`} style={{ minHeight: 300 }} />
+      <div ref={mapRef} className={`rounded-[28px] overflow-hidden ${className}`} style={{ minHeight: 300 }} />
     </>
   );
 }

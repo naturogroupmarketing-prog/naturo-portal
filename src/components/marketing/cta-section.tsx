@@ -7,7 +7,7 @@ export function CTASection() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="relative max-w-3xl mx-auto text-center">
           {/* Subtle background accent */}
-          <div className="absolute -inset-8 bg-gradient-to-b from-action-50/40 to-transparent rounded-xl pointer-events-none" />
+          <div className="absolute -inset-8 bg-gradient-to-b from-action-50/40 to-transparent rounded-[28px] pointer-events-none" />
 
           <div className="relative">
             <ScrollReveal>

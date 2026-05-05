@@ -174,7 +174,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
           {totalItems > 0 && (
             <Link
               href="/returns/quick"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-action-600 px-3 py-2 text-sm font-semibold text-white hover:bg-action-700 transition-colors shadow-sm"
+              className="inline-flex items-center gap-1.5 rounded-[28px] bg-action-600 px-3 py-2 text-sm font-semibold text-white hover:bg-action-700 transition-colors shadow-sm"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />

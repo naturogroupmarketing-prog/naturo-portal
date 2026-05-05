@@ -94,7 +94,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
         </Button>
       </div>
 
-      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
         {(["all", "overdue", "upcoming"] as const).map((f) => (
           <button
             key={f}
@@ -125,7 +125,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
               <Card key={schedule.id}>
                 <div className="p-4 flex flex-col sm:flex-row sm:items-center gap-3">
                   <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-[28px] overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
                       {schedule.asset.imageUrl ? (
                         <img src={schedule.asset.imageUrl} alt="" className="w-full h-full object-cover" />
                       ) : (
@@ -194,7 +194,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
-            <textarea name="description" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <textarea name="description" className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -253,7 +253,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="notes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} placeholder="What was done..." />
+              <textarea name="notes" className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} placeholder="What was done..." />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowComplete(null)}>Cancel</Button>

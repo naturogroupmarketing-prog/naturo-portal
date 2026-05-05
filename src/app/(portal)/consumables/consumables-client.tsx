@@ -534,7 +534,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         key={c.id}
         data-consumable-id={c.id}
         onClick={() => setEditConsumable(c)}
-        className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-xl p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
+        className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-[28px] p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
       >
         {/* Image or icon + status badge */}
         <div className="flex items-start justify-between mb-3">
@@ -635,7 +635,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   key={c.id}
                   data-consumable-id={c.id}
                   onClick={() => setEditConsumable(c)}
-                  className="border border-shark-100 dark:border-shark-800 rounded-xl p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
+                  className="border border-shark-100 dark:border-shark-800 rounded-[28px] p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
                 >
                   <div className="flex items-start gap-3">
                     {c.imageUrl ? (
@@ -755,7 +755,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                           : null;
                         return (
                           <div
-                            className="pointer-events-none fixed z-[9999] w-56 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-xl shadow-xl overflow-hidden"
+                            className="pointer-events-none fixed z-[9999] w-56 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-[28px] shadow-xl overflow-hidden"
                             style={{
                               top: qtyTooltipPos.top,
                               right: qtyTooltipPos.right,
@@ -831,7 +831,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       ) : <span className="text-shark-400">{"\u2014"}</span>}
                       {assignedDropdownId === c.id && assignedDropdownPos && (
                         <div
-                          className="fixed z-[9999] bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-xl shadow-xl overflow-hidden"
+                          className="fixed z-[9999] bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-[28px] shadow-xl overflow-hidden"
                           style={{ top: assignedDropdownPos.top, left: assignedDropdownPos.left, minWidth: 200 }}
                           onMouseDown={(e) => e.stopPropagation()}
                         >
@@ -1062,7 +1062,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
       {/* IFRS / LIFO Compliance Notice — shown when LIFO is active (org or any item) */}
       {(orgMethod === "LIFO" || consumables.some((c) => c.inventoryMethod === "LIFO")) && (
-        <div className="mx-4 sm:mx-5 mt-3 flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl px-4 py-3">
+        <div className="mx-4 sm:mx-5 mt-3 flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-[28px] px-4 py-3">
           <Icon name="alert-triangle" size={15} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">LIFO — Operational Use Only</p>
@@ -1076,7 +1076,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
       {/* Tabs */}
       <div className="px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-800">
-        <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
+        <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
           <button
             onClick={() => setTab("stock")}
             className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
@@ -1202,7 +1202,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                                   {catItems.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
                                 </div>
                               ) : viewMode === "compact" ? (
-                                <div className="rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
+                                <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden">
                                   <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50 dark:bg-shark-800/60" style={{ height: 30 }}>
                                     <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                                     <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
@@ -1268,7 +1268,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         {section.items.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
                       </div>
                     ) : viewMode === "compact" ? (
-                      <div className="rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
+                      <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden">
                         <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50 dark:bg-shark-800/60" style={{ height: 30 }}>
                           <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                           <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
@@ -1379,13 +1379,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {/* Bulk Delete Confirmation Modal */}
       <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Supplies">
         <div className="space-y-4">
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+          <div className="bg-red-50 border border-red-200 rounded-[28px] p-4">
             <p className="text-sm text-red-800 font-medium">
               Are you sure you want to delete {selectedIds.size} supply item{selectedIds.size > 1 ? "s" : ""}?
             </p>
             <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
           </div>
-          <div className="bg-shark-50 dark:bg-shark-800 rounded-xl p-4 max-h-40 overflow-y-auto">
+          <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] p-4 max-h-40 overflow-y-auto">
             {consumables.filter((c) => selectedIds.has(c.id)).map((c) => (
                 <div key={c.id} className="flex items-center gap-2 py-1">
                   <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{c.name}</span>
@@ -1513,7 +1513,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
             <div className="flex items-start gap-4">
               {imagePreview ? (
-                <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-shark-200 dark:border-shark-700">
+                <div className="relative w-24 h-24 rounded-[28px] overflow-hidden border border-shark-200 dark:border-shark-700">
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -1527,7 +1527,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-24 h-24 rounded-xl border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
+                  className="w-24 h-24 rounded-[28px] border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
                 >
                   <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
@@ -1776,7 +1776,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="returnNotes" className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
+              <textarea name="returnNotes" className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
@@ -1790,7 +1790,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <Modal open={!!showImage} onClose={() => setShowImage(null)} title={showImage?.name || "Supply Photo"}>
         {showImage && showImage.imageUrl && (
           <div className="text-center space-y-4">
-            <img src={showImage.imageUrl} alt={showImage.name} className="mx-auto max-w-full max-h-[60vh] rounded-xl object-contain" />
+            <img src={showImage.imageUrl} alt={showImage.name} className="mx-auto max-w-full max-h-[60vh] rounded-[28px] object-contain" />
             <div>
               <p className="font-bold text-shark-900 dark:text-shark-100">{showImage.name}</p>
               <p className="text-sm text-shark-400">{showImage.category} &middot; {showImage.unitType}</p>
@@ -1920,18 +1920,18 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+              <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
 
             {/* Inventory Method Override */}
-            <div className="border border-shark-100 dark:border-shark-700 rounded-xl p-4 bg-shark-50/50 dark:bg-shark-800/30">
+            <div className="border border-shark-100 dark:border-shark-700 rounded-[28px] p-4 bg-shark-50/50 dark:bg-shark-800/30">
               <label className="block text-sm font-semibold text-shark-700 dark:text-shark-300 mb-1">
                 Inventory Method
               </label>
               <select
                 name="inventoryMethod"
                 defaultValue={editConsumable.inventoryMethod || ""}
-                className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+                className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
               >
                 <option value="">Use organisation default ({orgMethod})</option>
                 <option value="FIFO">FIFO — First In, First Out (oldest stock consumed first)</option>
@@ -2089,7 +2089,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
               {/* IFRS warning if LIFO */}
               {effectiveMethod === "LIFO" && (
-                <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl px-3 py-2.5">
+                <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-[28px] px-3 py-2.5">
                   <Icon name="alert-triangle" size={13} className="text-amber-600 shrink-0 mt-0.5" />
                   <p className="text-[11px] text-amber-700 dark:text-amber-400 leading-relaxed">
                     LIFO is operational only. In Australia, IFRS does not permit LIFO for financial reporting.
@@ -2099,7 +2099,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
               {/* Stagnant stock warning */}
               {hasStagnant && effectiveMethod === "LIFO" && (
-                <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50 rounded-xl px-3 py-2.5">
+                <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50 rounded-[28px] px-3 py-2.5">
                   <Icon name="alert-triangle" size={13} className="text-red-600 shrink-0 mt-0.5" />
                   <p className="text-[11px] text-red-700 dark:text-red-400 leading-relaxed">
                     <strong>Old stock not being consumed.</strong> The oldest batch is {Math.floor((Date.now() - new Date(oldest.receivedAt).getTime()) / (86400000))} days old.
@@ -2116,7 +2116,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400">
                     Active Batches — sorted {effectiveMethod === "LIFO" ? "newest first (consumed first)" : "oldest first (consumed first)"}
                   </p>
-                  <div className="overflow-hidden rounded-xl border border-shark-100 dark:border-shark-700">
+                  <div className="overflow-hidden rounded-[28px] border border-shark-100 dark:border-shark-700">
                     <table className="w-full text-xs">
                       <thead>
                         <tr className="bg-shark-50 dark:bg-shark-800 border-b border-shark-100 dark:border-shark-700">

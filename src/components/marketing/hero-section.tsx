@@ -63,7 +63,7 @@ export function HeroSection() {
 
           {/* ── Dashboard browser frame — large, bleeds off the right ── */}
           <div
-            className="absolute z-10 overflow-hidden rounded-xl"
+            className="absolute z-10 overflow-hidden rounded-[28px]"
             style={{
               left: "30%",
               right: "-480px",
@@ -73,7 +73,7 @@ export function HeroSection() {
             }}
           >
             {/* White base */}
-            <div className="absolute inset-0 rounded-xl" style={{ background: "#fff" }} />
+            <div className="absolute inset-0 rounded-[28px]" style={{ background: "#fff" }} />
 
             {/* Browser chrome */}
             <div className="relative flex items-center gap-2 px-4 py-2.5 shrink-0" style={{ background: "#f6f9fc", borderBottom: "1px solid #e3e8ef", zIndex: 1 }}>
@@ -129,7 +129,7 @@ export function HeroSection() {
 
       {/* ── Mobile fallback ── */}
       <div className="lg:hidden relative z-20 px-4 pb-0 -mt-4">
-        <div className="relative bg-white rounded-xl overflow-hidden border border-white/60 mx-auto max-w-sm" style={{ boxShadow: "0 20px 60px rgba(10,37,64,0.3)" }}>
+        <div className="relative bg-white rounded-[28px] overflow-hidden border border-white/60 mx-auto max-w-sm" style={{ boxShadow: "0 20px 60px rgba(10,37,64,0.3)" }}>
           <div className="flex items-center gap-1.5 px-3 py-2" style={{ background: "#f6f9fc", borderBottom: "1px solid #e3e8ef" }}>
             <div className="flex gap-1">
               <div className="w-2 h-2 rounded-full bg-red-400" />

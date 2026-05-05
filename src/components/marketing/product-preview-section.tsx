@@ -24,9 +24,9 @@ export function ProductPreviewSection() {
         {/* Stock page mockup */}
         <div className="relative max-w-4xl mx-auto">
           {/* Glow */}
-          <div className="absolute -inset-6 bg-gradient-to-b from-action-100/40 via-action-50/20 to-transparent rounded-xl blur-2xl pointer-events-none" />
+          <div className="absolute -inset-6 bg-gradient-to-b from-action-100/40 via-action-50/20 to-transparent rounded-[28px] blur-2xl pointer-events-none" />
 
-          <div className="relative bg-white rounded-xl border border-shark-200 shadow-xl shadow-shark-200/30 overflow-hidden">
+          <div className="relative bg-white rounded-[28px] border border-shark-200 shadow-xl shadow-shark-200/30 overflow-hidden">
             {/* App frame top bar */}
             <div className="flex items-center gap-2 px-4 py-2 border-b border-shark-100 dark:border-shark-800 bg-shark-50/50 dark:bg-shark-800/50">
               <div className="flex gap-1.5">
@@ -84,7 +84,7 @@ export function ProductPreviewSection() {
                     { name: "East Branch", assets: 52, supplies: 96, staff: 8, address: "88 Oxford St, Bondi Junction NSW 2022", damage: 0, lowStock: 0 },
                     { name: "South Branch", assets: 41, supplies: 78, staff: 6, address: "15 Railway Pde, Hurstville NSW 2220", damage: 0, lowStock: 1 },
                   ].map(r => (
-                    <div key={r.name} className="flex items-center justify-between px-4 py-3 rounded-xl border border-shark-100 dark:border-shark-800 hover:border-shark-200 hover:shadow-sm transition-all bg-white">
+                    <div key={r.name} className="flex items-center justify-between px-4 py-3 rounded-[28px] border border-shark-100 dark:border-shark-800 hover:border-shark-200 hover:shadow-sm transition-all bg-white">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-shark-800">{r.name}</p>
                         <p className="text-[11px] text-shark-400 mt-0.5">{r.assets} assets · {r.supplies} supplies · {r.staff} staff</p>
@@ -146,7 +146,7 @@ export function ProductPreviewSection() {
 
           {/* Right: Multi-location visibility */}
           <div className="hidden sm:block absolute -right-4 lg:-right-8 top-16 z-20 animate-[floatIn_0.6s_ease-out_0.8s_both]">
-            <div className="bg-white rounded-xl border border-shark-200 shadow-lg shadow-shark-200/40 px-3.5 py-2.5 flex items-center gap-2.5 animate-[gentleFloat_4s_ease-in-out_infinite] max-w-[200px]">
+            <div className="bg-white rounded-[28px] border border-shark-200 shadow-lg shadow-shark-200/40 px-3.5 py-2.5 flex items-center gap-2.5 animate-[gentleFloat_4s_ease-in-out_infinite] max-w-[200px]">
               <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b5bdb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
               </div>
@@ -159,7 +159,7 @@ export function ProductPreviewSection() {
 
           {/* Left: Alert badges */}
           <div className="hidden sm:block absolute -left-4 lg:-left-8 top-[55%] z-20 animate-[floatIn_0.6s_ease-out_1.1s_both]">
-            <div className="bg-white rounded-xl border border-shark-200 shadow-lg shadow-shark-200/40 px-3.5 py-2.5 flex items-center gap-2.5 animate-[gentleFloat_5s_ease-in-out_0.5s_infinite] max-w-[200px]">
+            <div className="bg-white rounded-[28px] border border-shark-200 shadow-lg shadow-shark-200/40 px-3.5 py-2.5 flex items-center gap-2.5 animate-[gentleFloat_5s_ease-in-out_0.5s_infinite] max-w-[200px]">
               <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -175,7 +175,7 @@ export function ProductPreviewSection() {
 
           {/* Right bottom: Search */}
           <div className="hidden sm:block absolute -right-2 lg:-right-6 bottom-20 z-20 animate-[floatIn_0.6s_ease-out_1.4s_both]">
-            <div className="bg-white rounded-xl border border-shark-200 shadow-lg shadow-shark-200/40 px-3.5 py-2.5 flex items-center gap-2.5 animate-[gentleFloat_4.5s_ease-in-out_1s_infinite] max-w-[190px]">
+            <div className="bg-white rounded-[28px] border border-shark-200 shadow-lg shadow-shark-200/40 px-3.5 py-2.5 flex items-center gap-2.5 animate-[gentleFloat_4.5s_ease-in-out_1s_infinite] max-w-[190px]">
               <div className="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
               </div>

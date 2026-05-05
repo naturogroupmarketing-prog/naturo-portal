@@ -73,7 +73,7 @@ export function InstallAppSection() {
   if (state === "installed") {
     return (
       <div className="flex items-center gap-3 py-1">
-        <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
+        <div className="w-9 h-9 rounded-[28px] bg-green-100 flex items-center justify-center shrink-0">
           <Icon name="check-circle" size={18} className="text-green-600" />
         </div>
         <div>
@@ -89,7 +89,7 @@ export function InstallAppSection() {
     return (
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-action-100 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-[28px] bg-action-100 flex items-center justify-center shrink-0">
             <Icon name="download" size={18} className="text-action-600" />
           </div>
           <div>
@@ -113,7 +113,7 @@ export function InstallAppSection() {
       <div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-action-100 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-[28px] bg-action-100 flex items-center justify-center shrink-0">
               <Icon name="download" size={18} className="text-action-600" />
             </div>
             <div>
@@ -129,7 +129,7 @@ export function InstallAppSection() {
           </button>
         </div>
         {showGuide && (
-          <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-xl p-4 space-y-3">
+          <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-[28px] p-4 space-y-3">
             <p className="text-xs font-semibold text-shark-500 uppercase tracking-wider">Steps to install</p>
             <ol className="space-y-2.5">
               {[
@@ -158,7 +158,7 @@ export function InstallAppSection() {
   if (platform === "ios-other") {
     return (
       <div className="flex items-center gap-3 py-1">
-        <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+        <div className="w-9 h-9 rounded-[28px] bg-amber-100 flex items-center justify-center shrink-0">
           <Icon name="alert-triangle" size={18} className="text-amber-600" />
         </div>
         <div>
@@ -187,7 +187,7 @@ export function InstallAppSection() {
     return (
       <div className="space-y-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-action-100 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-[28px] bg-action-100 flex items-center justify-center shrink-0">
             <Icon name="download" size={18} className="text-action-600" />
           </div>
           <div>
@@ -195,7 +195,7 @@ export function InstallAppSection() {
             <p className="text-xs text-shark-400 mt-0.5">Add Trackio to your home screen</p>
           </div>
         </div>
-        <div className="bg-shark-50 dark:bg-shark-800 rounded-xl p-4 space-y-3">
+        <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] p-4 space-y-3">
           <p className="text-xs font-semibold text-shark-500 uppercase tracking-wider">
             Steps to install{isAndroid ? " (Chrome)" : ""}
           </p>

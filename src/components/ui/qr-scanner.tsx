@@ -106,7 +106,7 @@ export function QRScanner({ open, onClose, onScan }: QRScannerProps) {
           style={{ minHeight: scanning ? 300 : 200 }}
         />
         {error && (
-          <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600 text-center">
+          <div className="p-3 rounded-[28px] bg-red-50 border border-red-100 text-sm text-red-600 text-center">
             {error}
           </div>
         )}

@@ -107,10 +107,10 @@ export function AdminQuickNav({ userName }: AdminQuickNavProps) {
           <Link
             key={item.href}
             href={item.href}
-            className="group flex flex-col gap-3 p-4 sm:p-5 bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 hover:border-shark-200 dark:hover:border-shark-700 hover:shadow-md transition-all duration-150 active:scale-[0.98]"
+            className="group flex flex-col gap-3 p-4 sm:p-5 bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 hover:border-shark-200 dark:hover:border-shark-700 hover:shadow-md transition-all duration-150 active:scale-[0.98]"
           >
             {/* Icon */}
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${item.bg}`}>
+            <div className={`w-10 h-10 rounded-[28px] flex items-center justify-center shrink-0 ${item.bg}`}>
               <Icon name={item.icon} size={20} className={item.color} />
             </div>
 

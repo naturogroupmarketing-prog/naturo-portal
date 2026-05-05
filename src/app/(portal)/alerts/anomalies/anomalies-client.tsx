@@ -128,7 +128,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.2, delay: index * 0.04, ease: "easeOut" }}
-      className="rounded-xl border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60"
+      className="rounded-[28px] border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60"
     >
       {/* Card body */}
       <div className="px-4 py-4">
@@ -241,7 +241,7 @@ function EmptyState({ filter }: { filter: FilterTab }) {
       transition={{ duration: 0.25 }}
       className="flex flex-col items-center justify-center py-20 text-center"
     >
-      <div className="w-16 h-16 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center mb-5">
+      <div className="w-16 h-16 rounded-[28px] bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center mb-5">
         <Icon name="check-circle" size={28} className="text-emerald-500 dark:text-emerald-400" />
       </div>
       <p className="text-base font-semibold text-shark-900 dark:text-shark-100">{label}</p>
@@ -281,7 +281,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
   }
 
   return (
-    <div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60">
+    <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -492,7 +492,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
         {FILTER_TABS.map((tab) => {
           const isActive = activeFilter === tab.id;
           const count = counts[tab.id];

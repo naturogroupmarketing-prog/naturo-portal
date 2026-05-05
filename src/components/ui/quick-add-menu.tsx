@@ -73,7 +73,7 @@ export function QuickAddMenu({ role, onClose }: QuickAddMenuProps) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -4, scale: 0.97 }}
       transition={{ duration: 0.15 }}
-      className="w-52 bg-white dark:bg-shark-800 rounded-xl shadow-xl border border-shark-200 dark:border-shark-700 py-1.5 overflow-hidden"
+      className="w-52 bg-white dark:bg-shark-800 rounded-[28px] shadow-xl border border-shark-200 dark:border-shark-700 py-1.5 overflow-hidden"
     >
       {adminActions.length > 0 && (
         <div>

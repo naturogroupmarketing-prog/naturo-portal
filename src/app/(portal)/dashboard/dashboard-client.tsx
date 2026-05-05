@@ -36,7 +36,7 @@ const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false })
 // Lazy-load map — heavy dependency, only needed when locations have coordinates
 const LocationMap = dynamic(
   () => import("@/components/ui/location-map").then((m) => m.LocationMap),
-  { ssr: false, loading: () => <div className="flex items-center justify-center bg-shark-50 dark:bg-shark-800 rounded-xl text-shark-400 text-sm" style={{ minHeight: 300 }}>Loading map...</div> }
+  { ssr: false, loading: () => <div className="flex items-center justify-center bg-shark-50 dark:bg-shark-800 rounded-[28px] text-shark-400 text-sm" style={{ minHeight: 300 }}>Loading map...</div> }
 );
 
 interface StatCard {
@@ -369,7 +369,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
       {/* ── Hero Banner ───────────────────────────────────────────── */}
-      <div className="relative rounded-xl overflow-hidden" style={{ minHeight: 90 }}>
+      <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: 90 }}>
         {/* Hero image */}
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.png')" }} />
         {/* Dark gradient overlay so text is always readable */}
@@ -400,7 +400,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:items-stretch">
         {/* Col 1 — AI Briefing + Operations Performance merged */}
         {(briefingWidget || (operationsOverview && showOperations)) && (
-          <ErrorBoundary fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
+          <ErrorBoundary fallback={<div className="rounded-[28px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
             <div className="flex flex-col gap-4 h-full">
               {briefingWidget && <div>{briefingWidget}</div>}
               {operationsOverview && showOperations && (
@@ -412,7 +412,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
         {/* Col 2 — Stat cards (3-across on mobile, stacked on desktop) */}
         {visibleStats.length > 0 && (
-          <ErrorBoundary fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
+          <ErrorBoundary fallback={<div className="rounded-[28px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
             <StaggerContainer className="flex flex-col gap-2 h-full">
               <div className="grid grid-cols-3 gap-2 lg:grid-cols-1 lg:h-full">
               {visibleStats.map((s) => (
@@ -443,7 +443,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       </div>
 
       {preferences.sectionOrder.map((sectionId) => (
-        <ErrorBoundary key={sectionId} fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-4 text-center text-sm text-shark-400">Widget unavailable</div>}>
+        <ErrorBoundary key={sectionId} fallback={<div className="rounded-[28px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-4 text-center text-sm text-shark-400">Widget unavailable</div>}>
           {(() => { switch (sectionId) {
           case "stats":
             return null; // rendered above briefing — see explicit block after briefingWidget
@@ -470,7 +470,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       </div>
 
                       {/* Summary cards */}
-                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden mb-4">
+                      <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden mb-4">
                         <div className="grid grid-cols-2 divide-x divide-shark-50">
                         <div className="px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
@@ -597,7 +597,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <p className="text-xs text-shark-400">Breakdown by status</p>
                         </div>
                       </div>
-                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {assetStatusChart.map((item) => {
                           const total = assetStatusChart.reduce((sum, i) => sum + i.value, 0);
                           const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
@@ -631,7 +631,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <p className="text-xs text-shark-400">Distribution across categories</p>
                         </div>
                       </div>
-                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {categoryChart.map((item, idx) => {
                           const maxVal = Math.max(...categoryChart.map((c) => c.value));
                           const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
@@ -669,7 +669,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <p className="text-xs text-shark-400">Breakdown by stock level</p>
                         </div>
                       </div>
-                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {consumableStatusChart.map((item) => {
                           const total = consumableStatusChart.reduce((sum, i) => sum + i.value, 0);
                           const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
@@ -703,7 +703,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <p className="text-xs text-shark-400">Distribution across categories</p>
                         </div>
                       </div>
-                      <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {consumableCategoryChart.map((item, idx) => {
                           const maxVal = Math.max(...consumableCategoryChart.map((c) => c.value));
                           const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
@@ -746,7 +746,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Link>
                   {/* Content */}
                   {lowStockItems.length === 0 ? (
-                    <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
+                    <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden">
                       <div className="flex items-center gap-3 px-4 py-3.5">
                         <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
                           <Icon name="check" size={14} className="text-action-500" />
@@ -755,7 +755,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                    <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                       {lowStockItems.map((item) => (
                         <Link key={item.id} href={isSuperAdmin ? `/alerts/low-stock${item.region?.id ? `?region=${item.region.id}` : ""}` : "/purchase-orders"} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                           <div className="flex-1 min-w-0 mr-3">
@@ -805,7 +805,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors shrink-0" />
                   </Link>
                   {/* Items */}
-                  <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                  <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                     {predictedShortages.map((item) => (
                       <Link key={item.id} href={`/purchase-orders`} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -865,11 +865,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         const hasActions = region.lowStockCount > 0 || region.pendingRequests > 0 || region.pendingPOs > 0;
                         const totalIssues = (region.damaged + region.lost) + region.pendingRequests + region.pendingPOs;
                         return (
-                          <div key={region.regionId} className={`rounded-xl ${idx > 0 ? "border-t border-shark-100 dark:border-shark-800 pt-1" : ""}`}>
+                          <div key={region.regionId} className={`rounded-[28px] ${idx > 0 ? "border-t border-shark-100 dark:border-shark-800 pt-1" : ""}`}>
                             {/* Region header row */}
                             <button
                               onClick={() => toggleRegion(region.regionId)}
-                              className="w-full flex items-center gap-2 px-1 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors rounded-xl"
+                              className="w-full flex items-center gap-2 px-1 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors rounded-[28px]"
                             >
                               <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
                                 <Icon name="map-pin" size={12} className={colors.color} />
@@ -897,17 +897,17 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             {!isCollapsed && (
                               <div className="pb-3 pt-1 px-1">
                                 <div className="grid grid-cols-3 gap-2">
-                                  <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-red-50 border border-red-100 py-1.5 hover:bg-red-100 transition-colors">
+                                  <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex flex-col items-center justify-center gap-0.5 rounded-[28px] bg-red-50 border border-red-100 py-1.5 hover:bg-red-100 transition-colors">
                                     <Icon name="alert-triangle" size={11} className="text-red-400" />
                                     <span className="text-sm font-extrabold text-red-600 leading-none tabular-nums">{region.lowStockCount}</span>
                                     <span className="text-[9px] font-semibold text-red-400 text-center leading-tight">Low Stock</span>
                                   </Link>
-                                  <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-amber-50 border border-amber-100 py-1.5 hover:bg-amber-100 transition-colors">
+                                  <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-[28px] bg-amber-50 border border-amber-100 py-1.5 hover:bg-amber-100 transition-colors">
                                     <Icon name="clipboard" size={11} className="text-amber-500" />
                                     <span className="text-sm font-extrabold text-[#E8532E] leading-none tabular-nums">{region.pendingRequests}</span>
                                     <span className="text-[9px] font-semibold text-amber-500 text-center leading-tight">Requests</span>
                                   </Link>
-                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-action-50 border border-action-100 py-1.5 hover:bg-action-100 transition-colors">
+                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-[28px] bg-action-50 border border-action-100 py-1.5 hover:bg-action-100 transition-colors">
                                     <Icon name="truck" size={11} className="text-action-400" />
                                     <span className="text-sm font-extrabold text-action-600 leading-none tabular-nums">{region.pendingPOs}</span>
                                     <span className="text-[9px] font-semibold text-action-400 text-center leading-tight">POs</span>
@@ -933,7 +933,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <Link key={link.href} href={link.href} className="block group">
                     <Card className="hover:shadow-md transition-all duration-200 cursor-pointer hover:border-shark-200">
                       <CardContent className="py-5 flex flex-col items-center gap-2.5">
-                        <div className={`w-11 h-11 rounded-xl ${link.iconBg} flex items-center justify-center transition-transform`}>
+                        <div className={`w-11 h-11 rounded-[28px] ${link.iconBg} flex items-center justify-center transition-transform`}>
                           <Icon name={link.icon} size={20} className={link.iconColor} />
                         </div>
                         <p className="text-sm font-medium text-shark-700 dark:text-shark-300">{link.label}</p>
@@ -955,7 +955,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <Link href={shortcut.href} className="block">
                         <Card className="hover:shadow-md transition-all duration-200 cursor-pointer hover:border-shark-200">
                           <CardContent className="py-6 flex flex-col items-center gap-3">
-                            <div className="w-11 h-11 rounded-xl bg-action-50 flex items-center justify-center group-hover:scale-105 transition-transform">
+                            <div className="w-11 h-11 rounded-[28px] bg-action-50 flex items-center justify-center group-hover:scale-105 transition-transform">
                               <Icon name={shortcut.icon} size={20} className="text-action-500" />
                             </div>
                             <p className="text-sm font-medium text-shark-700 dark:text-shark-300">{shortcut.label}</p>
@@ -983,7 +983,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* Storage Locations Map */}
       {isSuperAdmin && showMap && mapLocations.length > 0 && (
-        <ErrorBoundary fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Map unavailable</div>}>
+        <ErrorBoundary fallback={<div className="rounded-[28px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Map unavailable</div>}>
         <Card padding="none">
           <div className="p-4 sm:p-5">
             {/* Header */}
@@ -997,7 +997,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               </div>
             </div>
             {/* Google Maps embed — no API key needed */}
-            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-xl overflow-hidden border border-shark-100 dark:border-shark-800 mb-3">
+            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-[28px] overflow-hidden border border-shark-100 dark:border-shark-800 mb-3">
               <iframe
                 width="100%"
                 height="100%"
@@ -1008,7 +1008,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               />
             </div>
             {/* Location list */}
-            <div className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+            <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
               {mapLocations.map((loc) => (
                 <a
                   key={loc.id}

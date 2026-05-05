@@ -114,7 +114,7 @@ export default async function ChangelogPage() {
           <Card key={release.version}>
             <div className="px-6 py-5">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-action-500 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-10 h-10 rounded-[28px] bg-action-500 flex items-center justify-center shrink-0 mt-0.5">
                   <Icon name={release.icon} size={20} className="text-white" />
                 </div>
                 <div className="flex-1">

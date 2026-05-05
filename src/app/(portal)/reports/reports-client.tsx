@@ -53,7 +53,7 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
           <Card key={report.id} className="hover:border-shark-200 hover:shadow-md transition-all duration-200">
             <CardContent className="py-5">
               <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-xl ${report.iconBg} flex items-center justify-center flex-shrink-0`}>
+                <div className={`w-10 h-10 rounded-[28px] ${report.iconBg} flex items-center justify-center flex-shrink-0`}>
                   <Icon name={report.icon} size={18} className={report.iconColor} />
                 </div>
                 <div className="flex-1">

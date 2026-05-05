@@ -247,7 +247,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
 
             {!hasCritical ? (
               /* All good state */
-              <div className="flex flex-col items-center justify-center py-8 gap-2 text-center rounded-xl bg-green-50 border border-green-100">
+              <div className="flex flex-col items-center justify-center py-8 gap-2 text-center rounded-[28px] bg-green-50 border border-green-100">
                 <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
                   <Icon name="check" size={18} className="text-green-600" />
                 </div>
@@ -272,7 +272,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                     >
                       <Link
                         href={`/assets?search=${encodeURIComponent(asset.assetCode)}`}
-                        className="flex items-start gap-2.5 p-2.5 rounded-xl border border-shark-100 dark:border-shark-800 hover:border-action-200 hover:bg-action-50/30 transition-all group"
+                        className="flex items-start gap-2.5 p-2.5 rounded-[28px] border border-shark-100 dark:border-shark-800 hover:border-action-200 hover:bg-action-50/30 transition-all group"
                       >
                         {/* Score badge */}
                         <span

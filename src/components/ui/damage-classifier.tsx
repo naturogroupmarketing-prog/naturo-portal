@@ -71,7 +71,7 @@ export function DamageClassifier({
           type="button"
           onClick={handleAnalyse}
           disabled={!imageBase64 || loading}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
+          className={`inline-flex items-center gap-2 rounded-[28px] px-4 py-2.5 text-sm font-medium transition-all ${
             !imageBase64
               ? "bg-shark-100 dark:bg-shark-800 text-shark-400 cursor-not-allowed"
               : loading

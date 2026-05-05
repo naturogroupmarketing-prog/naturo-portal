@@ -20,7 +20,7 @@ const steps = [
     visual: (
       <div className="space-y-3 p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-[28px] bg-action-50 flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b5bdb" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
           <div>
@@ -33,7 +33,7 @@ const steps = [
           { state: "Victoria", count: 2, color: "bg-action-500" },
           { state: "Queensland", count: 2, color: "bg-amber-500" },
         ].map((s) => (
-          <div key={s.state} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-shark-100 dark:border-shark-800">
+          <div key={s.state} className="flex items-center gap-3 p-3 rounded-[28px] bg-white border border-shark-100 dark:border-shark-800">
             <div className={`w-2.5 h-2.5 rounded-full ${s.color}`} />
             <span className="text-sm font-medium text-shark-800 flex-1">{s.state}</span>
             <span className="text-xs text-shark-400">{s.count} locations</span>
@@ -71,7 +71,7 @@ const steps = [
           { name: "Carpet Extractor", assignee: "—", status: "Damaged", statusColor: "bg-red-500" },
           { name: "Window Kit #3", assignee: "Mia L.", status: "Checked Out", statusColor: "bg-amber-500" },
         ].map((a) => (
-          <div key={a.name} className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-shark-100 dark:border-shark-800">
+          <div key={a.name} className="flex items-center gap-3 p-2.5 rounded-[28px] bg-white border border-shark-100 dark:border-shark-800">
             <div className="w-8 h-8 rounded-lg bg-shark-50 flex items-center justify-center">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
             </div>
@@ -108,7 +108,7 @@ const steps = [
           { type: "Return Due", msg: "Floor Polisher X1 due back from James T.", time: "1 hour ago", color: "bg-blue-500", bgColor: "bg-blue-50" },
           { type: "New Request", msg: "Mia L. requested 50x bin liners", time: "2 hours ago", color: "bg-action-500", bgColor: "bg-action-50" },
         ].map((n) => (
-          <div key={n.msg} className="flex items-start gap-3 p-3 rounded-xl bg-white border border-shark-100 dark:border-shark-800">
+          <div key={n.msg} className="flex items-start gap-3 p-3 rounded-[28px] bg-white border border-shark-100 dark:border-shark-800">
             <div className={`w-8 h-8 rounded-lg ${n.bgColor} flex items-center justify-center shrink-0`}>
               <div className={`w-2 h-2 rounded-full ${n.color}`} />
             </div>
@@ -145,21 +145,21 @@ const steps = [
             { label: "Supplies", value: "524", trend: "+8%" },
             { label: "Staff", value: "42", trend: "+3" },
           ].map((s) => (
-            <div key={s.label} className="bg-white rounded-xl border border-shark-100 dark:border-shark-800 p-2.5 text-center">
+            <div key={s.label} className="bg-white rounded-[28px] border border-shark-100 dark:border-shark-800 p-2.5 text-center">
               <p className="text-lg font-bold text-shark-900">{s.value}</p>
               <p className="text-[9px] text-shark-400">{s.label}</p>
               <p className="text-[9px] text-green-500 font-medium">{s.trend}</p>
             </div>
           ))}
         </div>
-        <div className="bg-white rounded-xl border border-shark-100 dark:border-shark-800 p-3 flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center text-white text-lg font-bold">94</div>
+        <div className="bg-white rounded-[28px] border border-shark-100 dark:border-shark-800 p-3 flex items-center gap-3">
+          <div className="w-12 h-12 rounded-[28px] bg-green-500 flex items-center justify-center text-white text-lg font-bold">94</div>
           <div>
             <p className="text-[12px] font-semibold text-shark-800">Operations Health</p>
             <p className="text-[10px] text-shark-400">All branches performing well</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-shark-100 dark:border-shark-800 p-3">
+        <div className="bg-white rounded-[28px] border border-shark-100 dark:border-shark-800 p-3">
           <p className="text-[11px] font-semibold text-shark-700 mb-2">Asset Utilisation by Branch</p>
           <div className="space-y-1.5">
             {[
@@ -235,7 +235,7 @@ export function ShowcaseSection() {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* LEFT — Visual mockup */}
           <div className="relative order-2 lg:order-1">
-            <div className="absolute -inset-6 bg-gradient-to-br from-action-100/40 via-action-50/20 to-transparent rounded-xl blur-2xl pointer-events-none" />
+            <div className="absolute -inset-6 bg-gradient-to-br from-action-100/40 via-action-50/20 to-transparent rounded-[28px] blur-2xl pointer-events-none" />
 
             <div className="relative">
               {steps.map((step, i) => (
@@ -247,7 +247,7 @@ export function ShowcaseSection() {
                       : "opacity-0 absolute inset-0 pointer-events-none"
                   }`}
                 >
-                  <div className="bg-white rounded-xl border border-shark-200 shadow-xl shadow-shark-200/30 overflow-hidden">
+                  <div className="bg-white rounded-[28px] border border-shark-200 shadow-xl shadow-shark-200/30 overflow-hidden">
                     <div className="flex items-center gap-2 px-4 py-2 border-b border-shark-100 dark:border-shark-800 bg-shark-50/50 dark:bg-shark-800/50">
                       <div className="flex gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-full bg-red-300" />

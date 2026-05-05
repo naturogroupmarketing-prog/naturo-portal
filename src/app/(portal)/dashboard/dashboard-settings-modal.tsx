@@ -250,7 +250,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         ))}
 
         {showAddForm ? (
-          <div className="space-y-3 p-3 bg-shark-50 dark:bg-shark-800 rounded-xl">
+          <div className="space-y-3 p-3 bg-shark-50 dark:bg-shark-800 rounded-[28px]">
             <Input
               placeholder="Label (e.g. Import Data)"
               value={newLabel}

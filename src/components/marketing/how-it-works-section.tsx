@@ -50,7 +50,7 @@ export function HowItWorksSection() {
                 <div className="hidden sm:block absolute top-6 left-[calc(50%+40px)] w-[calc(100%-40px)] h-px border-t border-dashed border-shark-200" />
               )}
 
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-action-500 text-white text-sm font-bold mb-5 font-exo">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-[28px] bg-action-500 text-white text-sm font-bold mb-5 font-exo">
                 {step.number}
               </div>
               <h3 className="text-lg font-semibold text-shark-900 mb-2">

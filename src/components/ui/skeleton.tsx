@@ -21,7 +21,7 @@ export function Skeleton({ className }: SkeletonProps) {
 
 export function SkeletonCard() {
   return (
-    <div className="rounded-xl border border-shark-100 dark:border-shark-800 p-5 space-y-3 bg-white dark:bg-shark-900">
+    <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 p-5 space-y-3 bg-white dark:bg-shark-900">
       <div className="flex items-center gap-3">
         <Skeleton className="h-10 w-10 rounded-lg" />
         <div className="space-y-2 flex-1">
@@ -51,7 +51,7 @@ export function SkeletonRow() {
 
 export function SkeletonStatCard() {
   return (
-    <div className="rounded-xl border border-shark-100 dark:border-shark-800 p-5 bg-white dark:bg-shark-900 space-y-2">
+    <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 p-5 bg-white dark:bg-shark-900 space-y-2">
       <Skeleton className="h-3 w-20" />
       <Skeleton className="h-8 w-16" />
       <Skeleton className="h-3 w-28" />

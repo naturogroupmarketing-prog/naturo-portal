@@ -110,7 +110,7 @@ function POPopover({ data, onClose }: { data: POPopoverState; onClose: () => voi
     <div
       ref={ref}
       style={{ position: "fixed", top: pos.top, left: pos.left, width: 288, zIndex: 10000 }}
-      className="bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-xl shadow-2xl overflow-hidden pointer-events-auto"
+      className="bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-[28px] shadow-2xl overflow-hidden pointer-events-auto"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-shark-100 dark:border-shark-800 bg-shark-50/60 dark:bg-shark-800/50">
@@ -212,7 +212,7 @@ function ItemTooltip({ data, onKeepOpen, onClose }: { data: TooltipState; onKeep
       onMouseEnter={onKeepOpen}
     onMouseLeave={onClose}
       style={{ position: "fixed", top: pos.top, left: pos.left, width: 280, zIndex: 9999 }}
-      className="bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-xl shadow-2xl p-3.5 pointer-events-auto"
+      className="bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-[28px] shadow-2xl p-3.5 pointer-events-auto"
     >
       {/* Item name */}
       <p className="text-xs font-semibold text-shark-700 dark:text-shark-200 mb-2.5 leading-tight">
@@ -472,7 +472,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
         style={isFlashed ? { boxShadow: "inset 0 0 0 2px #3B82F6, inset 0 0 0 9999px rgba(59,130,246,0.08)" } : undefined}
       >
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          <div className="w-9 h-9 rounded-xl overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-[28px] overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
             {item.imageUrl ? (
               <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
             ) : (
@@ -785,7 +785,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           {/* ── Content ─────────────────────────────────────────────────────── */}
           {regionItems.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="w-14 h-14 rounded-xl bg-action-50 dark:bg-action-950/30 flex items-center justify-center mx-auto mb-4">
+              <div className="w-14 h-14 rounded-[28px] bg-action-50 dark:bg-action-950/30 flex items-center justify-center mx-auto mb-4">
                 <Icon name="check" size={24} className="text-action-500" />
               </div>
               <p className="text-base font-semibold text-shark-900 dark:text-shark-100">All stock levels OK</p>

@@ -387,7 +387,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               key={po.id}
               data-po-id={po.id}
               onClick={() => setViewOrder(po)}
-              className={`border rounded-xl p-4 bg-white dark:bg-shark-900 transition-shadow cursor-pointer ${selected.has(po.id) ? "border-action-400 bg-action-50/20 dark:bg-action-500/10" : "border-shark-100 dark:border-shark-800 hover:shadow-sm"}`}
+              className={`border rounded-[28px] p-4 bg-white dark:bg-shark-900 transition-shadow cursor-pointer ${selected.has(po.id) ? "border-action-400 bg-action-50/20 dark:bg-action-500/10" : "border-shark-100 dark:border-shark-800 hover:shadow-sm"}`}
             >
               <div className="flex items-start gap-3">
                 {canApprovePO && (
@@ -672,7 +672,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           </div>
 
           {/* Tab bar */}
-          <div className="hidden sm:flex overflow-x-auto gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-xl p-1 scrollbar-none">
+          <div className="hidden sm:flex overflow-x-auto gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1 scrollbar-none">
             {TABS.map((tab) => (
               <button
                 key={tab}
@@ -697,7 +697,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
 
           {/* Bulk Action Bar */}
           {selected.size > 0 && canApprovePO && (
-            <div className="sticky top-14 z-20 bg-action-500 text-white rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+            <div className="sticky top-14 z-20 bg-action-500 text-white rounded-[28px] px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
               <span className="text-sm font-medium">{selected.size} selected</span>
               <div className="flex items-center gap-2">
                 {selectedPending > 0 && (
@@ -915,7 +915,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-            <textarea name="notes" placeholder="Optional notes..." className="w-full rounded-xl border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <textarea name="notes" placeholder="Optional notes..." className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>

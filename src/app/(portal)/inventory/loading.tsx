@@ -7,10 +7,10 @@ export default function Loading() {
         <Skeleton className="h-8 w-48 rounded-lg" />
         <Skeleton className="h-4 w-64" />
       </div>
-      <Skeleton className="h-10 w-60 rounded-xl" />
+      <Skeleton className="h-10 w-60 rounded-[28px]" />
       <div className="space-y-3">
         {[...Array(3)].map((_, i) => (
-          <Skeleton key={i} className="h-16 rounded-xl" />
+          <Skeleton key={i} className="h-16 rounded-[28px]" />
         ))}
       </div>
     </div>

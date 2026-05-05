@@ -408,7 +408,7 @@ export function ChatWidget() {
 
       {/* Chat panel */}
       {isOpen && (
-        <div className="fixed bottom-36 right-3 sm:bottom-24 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-[26rem] h-[60vh] sm:h-[36rem] max-h-[36rem] flex flex-col rounded-xl border border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-900 shadow-2xl overflow-hidden">
+        <div className="fixed bottom-36 right-3 sm:bottom-24 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-[26rem] h-[60vh] sm:h-[36rem] max-h-[36rem] flex flex-col rounded-[28px] border border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-900 shadow-2xl overflow-hidden">
 
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-action-400 rounded-t-2xl shrink-0">
@@ -484,7 +484,7 @@ export function ChatWidget() {
                   <div className="py-5">
                     {/* Empty state header */}
                     <div className="text-center mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-action-50 flex items-center justify-center mx-auto mb-2.5">
+                      <div className="w-12 h-12 rounded-[28px] bg-action-50 flex items-center justify-center mx-auto mb-2.5">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-action-500">
                           <circle cx="11" cy="11" r="8" />
                           <path d="m21 21-4.35-4.35" />
@@ -500,7 +500,7 @@ export function ChatWidget() {
                         <button
                           key={q}
                           onClick={() => sendMessage(q)}
-                          className="text-left text-xs text-shark-700 dark:text-shark-300 bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 rounded-xl px-3 py-2.5 hover:bg-action-50 hover:border-action-200 hover:text-action-700 transition-colors leading-snug"
+                          className="text-left text-xs text-shark-700 dark:text-shark-300 bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 rounded-[28px] px-3 py-2.5 hover:bg-action-50 hover:border-action-200 hover:text-action-700 transition-colors leading-snug"
                         >
                           {q}
                         </button>
@@ -549,7 +549,7 @@ export function ChatWidget() {
                   placeholder={isListening ? "Listening…" : "Ask about assets, stock, staff…"}
                   disabled={isLoading}
                   aria-label="Type your message"
-                  className={`flex-1 min-w-0 rounded-xl border bg-white dark:bg-shark-800 px-3 py-2 text-sm text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50 ${
+                  className={`flex-1 min-w-0 rounded-[28px] border bg-white dark:bg-shark-800 px-3 py-2 text-sm text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-400 focus:border-transparent disabled:opacity-50 ${
                     isListening
                       ? "border-red-400 ring-2 ring-red-200"
                       : "border-shark-200 dark:border-shark-700"
@@ -559,7 +559,7 @@ export function ChatWidget() {
                   <button
                     type="button"
                     onClick={toggleVoiceInput}
-                    className={`shrink-0 w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${
+                    className={`shrink-0 w-9 h-9 flex items-center justify-center rounded-[28px] transition-colors ${
                       isListening
                         ? "bg-red-500 text-white animate-pulse"
                         : "text-shark-400 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-800"
@@ -575,11 +575,11 @@ export function ChatWidget() {
                   </button>
                 )}
                 {isLoading ? (
-                  <button type="button" onClick={cancelRequest} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-xl border border-red-200 dark:border-red-800 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Cancel">
+                  <button type="button" onClick={cancelRequest} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-[28px] border border-red-200 dark:border-red-800 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Cancel">
                     <Icon name="x" size={16} />
                   </button>
                 ) : (
-                  <button type="submit" disabled={!input.trim()} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-xl bg-action-400 text-white hover:bg-action-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                  <button type="submit" disabled={!input.trim()} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-[28px] bg-action-400 text-white hover:bg-action-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                     <Icon name="arrow-right" size={16} />
                   </button>
                 )}

@@ -291,7 +291,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
                     )}
                   </div>
                   {r.notes && (
-                    <p className="mt-2 text-sm text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 rounded-xl p-3">{r.notes}</p>
+                    <p className="mt-2 text-sm text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 rounded-[28px] p-3">{r.notes}</p>
                   )}
                 </CardContent>
               </Card>

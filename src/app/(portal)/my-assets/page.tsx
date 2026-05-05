@@ -62,7 +62,7 @@ export default async function MyAssetsPage() {
               <CardContent className="py-4">
                 <div className="flex items-start gap-3">
                   {/* Photo */}
-                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
+                  <div className="w-14 h-14 rounded-[28px] overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                     {a.asset.imageUrl ? (
                       <img src={a.asset.imageUrl} alt={a.asset.name} className="w-full h-full object-cover" />
                     ) : (
