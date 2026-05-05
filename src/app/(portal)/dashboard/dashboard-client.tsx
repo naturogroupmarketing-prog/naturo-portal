@@ -397,14 +397,14 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       </div>
 
       {/* ── AI Briefing (1/2) | Stat cards stacked (1/2) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:items-stretch">
         {/* Col 1 — AI Briefing + Operations Performance merged */}
         {(briefingWidget || (operationsOverview && showOperations)) && (
           <ErrorBoundary fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
-            <div className="flex flex-col gap-4 self-start">
+            <div className="flex flex-col gap-4 h-full">
               {briefingWidget && <div>{briefingWidget}</div>}
               {operationsOverview && showOperations && (
-                <OperationsWidget data={operationsOverview} />
+                <OperationsWidget data={operationsOverview} className="flex-1" />
               )}
             </div>
           </ErrorBoundary>
@@ -413,8 +413,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         {/* Col 2 — Stat cards (3-across on mobile, stacked on desktop) */}
         {visibleStats.length > 0 && (
           <ErrorBoundary fallback={<div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
-            <StaggerContainer className="flex flex-col gap-2">
-              <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
+            <StaggerContainer className="flex flex-col gap-2 h-full">
+              <div className="grid grid-cols-3 gap-2 lg:grid-cols-1 lg:h-full">
               {visibleStats.map((s) => (
                 <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group h-full">

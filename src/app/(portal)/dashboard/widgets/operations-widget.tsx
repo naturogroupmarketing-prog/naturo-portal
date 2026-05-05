@@ -58,7 +58,7 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   );
 }
 
-export function OperationsWidget({ data }: { data: OperationsOverview }) {
+export function OperationsWidget({ data, className }: { data: OperationsOverview; className?: string }) {
   const metrics = [
     {
       label: "Awaiting Approval",
@@ -84,7 +84,7 @@ export function OperationsWidget({ data }: { data: OperationsOverview }) {
   ];
 
   return (
-    <Card className="h-fit bg-white/60 dark:bg-shark-900/60 backdrop-blur-xl backdrop-saturate-150 border border-white/60 dark:border-white/10">
+    <Card className={cn("h-full bg-white/60 dark:bg-shark-900/60 backdrop-blur-xl backdrop-saturate-150 border border-white/60 dark:border-white/10", className)}>
       <div className="p-3 sm:p-4">
 
         {/* Header */}
