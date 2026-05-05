@@ -113,7 +113,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-2xl bg-white/88 dark:bg-shark-900/80 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-white/70 dark:border-white/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.95),0_4px_20px_rgba(18,89,195,0.14),inset_0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_2px_8px_rgba(0,0,0,0.20)]">
+    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-2xl bg-white/60 dark:bg-shark-900/65 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-white/70 dark:border-white/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.95),0_4px_20px_rgba(18,89,195,0.14),inset_0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_2px_8px_rgba(0,0,0,0.20)]">
       {/* Left side: mobile menu + logo */}
       <div className="flex items-center gap-2">
         {/* Brand — org logo if set, otherwise name with initial badge */}
@@ -204,7 +204,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
           {/* Dropdown menu */}
           {dropdownOpen && (
-            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] backdrop-blur-2xl bg-white/68 dark:bg-shark-800/85 rounded-[14px] shadow-[0_2px_32px_rgba(80,130,220,0.13),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.40)] border border-white/65 dark:border-white/[0.08] py-1.5 z-50">
+            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] backdrop-blur-2xl bg-white/45 dark:bg-shark-800/70 rounded-[14px] shadow-[0_2px_32px_rgba(80,130,220,0.13),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.40)] border border-white/65 dark:border-white/[0.08] py-1.5 z-50">
               {/* User info */}
               <div className="px-4 py-2.5 border-b border-shark-100 dark:border-shark-700">
                 <p className="text-sm font-semibold text-shark-800 dark:text-shark-100">{userName}</p>

@@ -105,7 +105,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md p-4 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-lg p-4 animate-fade-in"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
@@ -113,7 +113,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       <div
         ref={contentRef}
         className={cn(
-          "w-[calc(100vw-1rem)] sm:max-w-lg rounded-[32px] backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 border border-white/70 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(80,130,220,0.16),0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_12px_40px_rgba(0,0,0,0.40),inset_0_1px_0_rgba(255,255,255,0.06)] max-h-[85vh] sm:max-h-[90vh] overflow-y-auto safe-bottom transition-all duration-200",
+          "w-[calc(100vw-1rem)] sm:max-w-lg rounded-[32px] backdrop-blur-2xl backdrop-saturate-150 bg-white/48 dark:bg-shark-800/80 border border-white/75 dark:border-white/[0.08] shadow-[0_8px_48px_rgba(18,89,195,0.28),0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_12px_40px_rgba(0,0,0,0.40),inset_0_1px_0_rgba(255,255,255,0.06)] max-h-[85vh] sm:max-h-[90vh] overflow-y-auto safe-bottom transition-all duration-200",
           className
         )}
       >
