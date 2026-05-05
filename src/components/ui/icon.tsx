@@ -27,7 +27,7 @@ import {
   SignOut,
   ArrowRight,
   ArrowLeft,
-  Box,
+  Cube as Box,
   Truck,
   FileText,
   Shield,
