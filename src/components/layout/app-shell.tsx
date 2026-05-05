@@ -57,7 +57,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
     <PageCogProvider>
     <SidebarContext.Provider value={{ expanded: sidebarExpanded, toggle: () => setSidebarExpanded((p) => !p) }}>
     <div
-      className="flex flex-col h-dvh bg-gradient-to-b from-[#f4f2fc] via-[#e8eaf6] to-[#d4d8ee] dark:bg-none dark:bg-shark-950 transition-colors"
+      className="flex flex-col h-dvh bg-[#f5f5f7] dark:bg-shark-950 transition-colors"
       onTouchStart={handleMainTouchStart}
       onTouchEnd={handleMainTouchEnd}
     >
