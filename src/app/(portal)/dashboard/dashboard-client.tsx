@@ -857,19 +857,19 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <p className="text-xs text-shark-400">Status by region</p>
                       </div>
                     </div>
-                    {/* Region rows — flat list with hairline dividers */}
-                    <div className="divide-y divide-shark-50 dark:divide-shark-800">
+                    {/* Region rows — grouped with clear separator between each */}
+                    <div className="space-y-1">
                       {[...regionBreakdown].sort((a, b) => a.healthScore - b.healthScore).map((region, idx) => {
                         const colors = REGION_COLORS[idx % REGION_COLORS.length];
                         const isCollapsed = collapsedRegions.has(region.regionId);
                         const hasActions = region.lowStockCount > 0 || region.pendingRequests > 0 || region.pendingPOs > 0;
                         const totalIssues = (region.damaged + region.lost) + region.pendingRequests + region.pendingPOs;
                         return (
-                          <div key={region.regionId}>
+                          <div key={region.regionId} className={`rounded-xl ${idx > 0 ? "border-t border-shark-100 dark:border-shark-800 pt-1" : ""}`}>
                             {/* Region header row */}
                             <button
                               onClick={() => toggleRegion(region.regionId)}
-                              className="w-full flex items-center gap-2 px-1 py-3 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
+                              className="w-full flex items-center gap-2 px-1 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors rounded-xl"
                             >
                               <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
                                 <Icon name="map-pin" size={12} className={colors.color} />
@@ -893,9 +893,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                 className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
                               />
                             </button>
-                            {/* Expanded detail */}
+                            {/* Expanded detail — clearly attached to the header above */}
                             {!isCollapsed && (
-                              <div className="pb-3 pt-1">
+                              <div className="pb-3 pt-1 px-1">
                                 <div className="grid grid-cols-3 gap-2">
                                   <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-red-50 border border-red-100 py-1.5 hover:bg-red-100 transition-colors">
                                     <Icon name="alert-triangle" size={11} className="text-red-400" />
