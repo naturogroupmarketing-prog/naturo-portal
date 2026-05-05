@@ -228,7 +228,7 @@ function CollapsibleSection({ heading, children, className }: { heading?: string
         onClick={() => setCollapsed((c) => !c)}
         className="w-full flex items-center justify-between px-3 mb-1 group cursor-pointer"
       >
-        <span className="text-[10.5px] font-bold uppercase tracking-[0.08em] text-shark-400 dark:text-shark-500 group-hover:text-shark-600 dark:group-hover:text-shark-300 transition-colors">
+        <span className="text-[11px] font-bold uppercase tracking-[0.10em] text-[#1259C3]/70 dark:text-[#5b9cf8]/60 group-hover:text-[#1259C3] dark:group-hover:text-[#5b9cf8] transition-colors">
           {heading}
         </span>
         <svg

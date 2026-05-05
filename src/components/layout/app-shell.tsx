@@ -142,9 +142,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
           style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}
           className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 sm:px-5 sm:py-6 lg:px-6 lg:py-10 lg:pb-12"
         >
-          <div className="hidden lg:flex mb-4">
-            <Breadcrumbs />
-          </div>
+          <Breadcrumbs />
           {children}
         </main>
       </div>

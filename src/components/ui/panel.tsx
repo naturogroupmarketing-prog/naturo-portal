@@ -65,7 +65,10 @@ export function PanelHeader({ children, className }: PanelHeaderProps) {
   return (
     <div
       className={cn(
-        "px-4 py-3 border-b border-shark-100 dark:border-shark-800",
+        "px-5 py-4 border-b border-white/55 dark:border-white/[0.07]",
+        "[&_h2]:text-base [&_h2]:font-bold [&_h2]:tracking-tight",
+        "[&_h3]:text-base [&_h3]:font-bold [&_h3]:tracking-tight",
+        "[&_p]:text-xs [&_p]:text-shark-500",
         className
       )}
     >
@@ -93,8 +96,8 @@ export function PanelSection({
   return (
     <div
       className={cn(
-        "px-4 py-3",
-        divided && "border-t border-shark-100 dark:border-shark-800",
+        "px-5 py-4",
+        divided && "border-t border-white/55 dark:border-white/[0.07]",
         className
       )}
     >

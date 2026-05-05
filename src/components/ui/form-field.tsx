@@ -20,7 +20,7 @@ export function FormField({
 }: FormFieldProps) {
   return (
     <div className={cn("space-y-1.5", className)}>
-      <label className="block text-sm font-medium text-shark-600 dark:text-shark-300">
+      <label className="block text-sm font-semibold text-shark-700 dark:text-shark-200">
         {label}
         {required && (
           <span className="ml-0.5 text-red-400 dark:text-red-500">*</span>

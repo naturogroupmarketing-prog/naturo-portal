@@ -117,8 +117,8 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
           className
         )}
       >
-        <div className="flex items-center justify-between border-b border-white/60 dark:border-white/[0.08] px-4 sm:px-6 py-4">
-          <h2 id={titleId} className="text-lg font-semibold text-shark-900 dark:text-shark-100 truncate pr-2">{title}</h2>
+        <div className="flex items-center justify-between border-b border-white/55 dark:border-white/[0.08] px-5 sm:px-6 py-4">
+          <h2 id={titleId} className="text-lg font-bold text-shark-900 dark:text-shark-100 truncate pr-2 tracking-tight">{title}</h2>
           <button
             onClick={onClose}
             aria-label="Close dialog"
