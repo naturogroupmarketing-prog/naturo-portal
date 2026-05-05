@@ -85,7 +85,7 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
 
   return (
     <Card className={cn("h-full bg-white/60 dark:bg-shark-900/60 backdrop-blur-xl backdrop-saturate-150 border border-white/60 dark:border-white/10", className)}>
-      <div className="p-3 sm:p-4">
+      <div className="p-3 sm:p-4 h-full flex flex-col justify-center">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
