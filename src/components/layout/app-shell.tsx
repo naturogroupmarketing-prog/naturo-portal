@@ -127,7 +127,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
               onClick={() => setSidebarOpen(false)}
             />
             <div
-              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/85 border-r border-white/80 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(0,0,0,0.07)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
+              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/85 border-r border-white/80 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(120,140,220,0.18)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
@@ -208,7 +208,7 @@ function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { ro
               title={item.label}
               className={`relative w-11 h-11 flex items-center justify-center rounded-[14px] transition-all duration-200 ${
                 active
-                  ? "backdrop-blur-sm bg-white/70 dark:bg-white/[0.12] border border-white/80 dark:border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.06)] text-action-600 dark:text-action-400"
+                  ? "backdrop-blur-sm bg-white/70 dark:bg-white/[0.12] border border-white/80 dark:border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(100,140,220,0.14)] text-action-600 dark:text-action-400"
                   : "bg-white/20 dark:bg-white/[0.04] border border-white/35 dark:border-white/[0.07] text-shark-500 dark:text-shark-400 hover:bg-white/40 dark:hover:bg-white/[0.08] hover:text-shark-700 dark:hover:text-white"
               }`}
             >

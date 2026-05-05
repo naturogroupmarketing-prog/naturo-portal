@@ -297,7 +297,7 @@ export function CommandPalette() {
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-xl backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 rounded-[24px] border border-white/65 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(0,0,0,0.08),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_16px_48px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden animate-fade-in">
+      <div className="relative w-full max-w-xl backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 rounded-[24px] border border-white/65 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(100,140,220,0.26),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_16px_48px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden animate-fade-in">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/60 dark:border-white/[0.08]">
           {searchLoading ? (
