@@ -54,7 +54,7 @@ function ItemShell({
           className={cn(
             "w-11 h-11 rounded-[14px] flex items-center justify-center flex-shrink-0",
             "backdrop-blur-sm border border-white/55",
-            "shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_1px_4px_rgba(100,140,220,0.08)]",
+            "shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_1px_4px_rgba(0,0,0,0.08)]",
             iconBg ?? "bg-white/30"
           )}
         >
@@ -142,7 +142,7 @@ export function ListGroup({ title, children, className }: ListGroupProps) {
   return (
     <div className={className}>
       {title && (
-        <p className="px-4 pt-5 pb-1.5 text-[11px] font-bold uppercase tracking-[0.10em] text-[#1259C3]/70 dark:text-[#5b9cf8]/60">
+        <p className="px-4 pt-5 pb-1.5 text-[11px] font-bold uppercase tracking-[0.10em] text-[#0071e3]/70 dark:text-[#2997ff]/60">
           {title}
         </p>
       )}
