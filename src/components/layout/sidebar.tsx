@@ -157,7 +157,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                         onClick={onClose}
                         aria-current={active ? "page" : undefined}
                         className={cn(
-                          "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg min-h-[44px] transition-all duration-200 active:scale-[0.98]",
+                          "flex items-center gap-3 px-3 py-2.5 text-sm rounded-[14px] min-h-[44px] transition-all duration-200 active:scale-[0.98]",
                           active
                             ? "bg-white/70 text-[#1259C3] font-semibold dark:bg-[#1259C3]/12 dark:text-[#5b9cf8] shadow-[0_1px_8px_rgba(18,89,195,0.14)]"
                             : "text-shark-600 dark:text-shark-300 hover:bg-white/50 dark:hover:bg-shark-800/60 hover:text-shark-900 dark:hover:text-white"
@@ -165,9 +165,9 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                       >
                         {/* Icon tile — colored on active */}
                         <span className={cn(
-                          "flex items-center justify-center w-8 h-8 rounded-lg flex-shrink-0 transition-all duration-200",
+                          "flex items-center justify-center w-8 h-8 rounded-[10px] flex-shrink-0 transition-all duration-200",
                           active
-                            ? "backdrop-blur-sm bg-white/70 dark:bg-white/[0.12] border border-white/80 dark:border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(18,89,195,0.20)]"
+                            ? "backdrop-blur-sm bg-white/70 dark:bg-white/[0.12] border border-white/80 dark:border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_6px_rgba(100,140,220,0.14)]"
                             : "bg-white/25 dark:bg-white/[0.04] border border-white/40 dark:border-white/[0.07]"
                         )}>
                           <Icon
@@ -201,7 +201,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
       <div className="hidden lg:flex items-center gap-2 px-3 py-3 border-t border-shark-100/70 dark:border-shark-800/60 dark:border-transparent">
         <button
           onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-shark-400 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-100 hover:bg-shark-50 dark:hover:bg-shark-800/60 transition-colors text-xs"
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-[12px] text-shark-400 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-100 hover:bg-shark-50 dark:hover:bg-shark-800/60 transition-colors text-xs"
         >
           <Icon name="search" size={13} />
           <span className="flex-1 text-left">Quick search</span>

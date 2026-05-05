@@ -297,7 +297,7 @@ export function CommandPalette() {
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-xl backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 rounded-[32px] border border-white/65 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(80,130,220,0.16),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_16px_48px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden animate-fade-in">
+      <div className="relative w-full max-w-xl backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 rounded-[24px] border border-white/65 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(100,140,220,0.26),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_16px_48px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden animate-fade-in">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/60 dark:border-white/[0.08]">
           {searchLoading ? (
@@ -346,7 +346,7 @@ export function CommandPalette() {
                 <button
                   key={`a-${asset.id}`}
                   onClick={() => navigate(`/assets?search=${encodeURIComponent(asset.name)}`)}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
                 >
                   {/* Icon */}
                   <div className="w-7 h-7 rounded-lg bg-white/70 border border-white/80 flex items-center justify-center shrink-0">
@@ -377,7 +377,7 @@ export function CommandPalette() {
                   <button
                     key={`c-${c.id}`}
                     onClick={() => navigate(`/consumables?search=${encodeURIComponent(c.name)}`)}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
                   >
                     <div className="w-7 h-7 rounded-lg bg-white/70 border border-white/80 flex items-center justify-center shrink-0">
                       <Icon name="droplet" size={13} className="text-emerald-500" />
@@ -402,7 +402,7 @@ export function CommandPalette() {
                 <button
                   key={`u-${u.id}`}
                   onClick={() => navigate(`/staff?search=${encodeURIComponent(u.name ?? u.email ?? "")}`)}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
                 >
                   <div className="w-7 h-7 rounded-full bg-white/70 border border-white/80 flex items-center justify-center shrink-0">
                     <span className="text-xs font-bold text-indigo-500">
@@ -450,7 +450,7 @@ export function CommandPalette() {
                         key={`${section}-${item.href}`}
                         onClick={() => navigate(item.href)}
                         onMouseEnter={() => setSelectedIndex(idx)}
-                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm transition-colors ${
                           selectedIndex === idx
                             ? "bg-[#1c1d2e] text-white shadow-[0_2px_8px_rgba(20,21,40,0.22)]"
                             : "text-shark-700 dark:text-shark-300 hover:bg-white/60 dark:hover:bg-white/[0.06]"

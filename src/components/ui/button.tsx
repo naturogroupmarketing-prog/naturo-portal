@@ -43,10 +43,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           "inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1259C3]/40 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-shark-900 disabled:opacity-50 disabled:pointer-events-none cursor-pointer active:scale-[0.96]",
           {
             "bg-[#1259C3] text-white hover:bg-[#0e4aa8] shadow-[0_2px_12px_rgba(18,89,195,0.35),0_1px_2px_rgba(18,89,195,0.20)] hover:shadow-[0_4px_20px_rgba(18,89,195,0.45)]": variant === "primary",
-            "backdrop-blur-md bg-white/70 dark:bg-shark-800/60 text-shark-700 dark:text-shark-300 hover:bg-white/90 dark:hover:bg-shark-700/70 border border-white/80 dark:border-white/[0.10] shadow-[0_1px_4px_rgba(0,0,0,0.10)]": variant === "secondary",
+            "backdrop-blur-md bg-white/70 dark:bg-shark-800/60 text-shark-700 dark:text-shark-300 hover:bg-white/90 dark:hover:bg-shark-700/70 border border-white/80 dark:border-white/[0.10] shadow-[0_1px_4px_rgba(100,140,220,0.10)]": variant === "secondary",
             "bg-red-500 text-white hover:bg-red-600 shadow-[0_2px_8px_rgba(239,68,68,0.28)] hover:shadow-[0_4px_16px_rgba(239,68,68,0.36)]": variant === "danger",
             "hover:bg-white/60 dark:hover:bg-shark-800/50 text-shark-600 dark:text-shark-400": variant === "ghost",
-            "backdrop-blur-md border border-white/80 dark:border-white/[0.10] bg-white/70 dark:bg-shark-800/50 text-shark-700 dark:text-shark-300 hover:bg-white/90 dark:hover:bg-shark-700/60 shadow-[0_1px_4px_rgba(0,0,0,0.10)]": variant === "outline",
+            "backdrop-blur-md border border-white/80 dark:border-white/[0.10] bg-white/70 dark:bg-shark-800/50 text-shark-700 dark:text-shark-300 hover:bg-white/90 dark:hover:bg-shark-700/60 shadow-[0_1px_4px_rgba(100,140,220,0.10)]": variant === "outline",
           },
           {
             "px-4 py-2 text-xs min-h-[44px] sm:min-h-[34px]": size === "sm",

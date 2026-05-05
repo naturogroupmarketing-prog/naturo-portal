@@ -113,7 +113,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-2xl bg-white/88 dark:bg-shark-900/80 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-white/70 dark:border-white/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.95),0_4px_20px_rgba(18,89,195,0.14),inset_0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_2px_8px_rgba(0,0,0,0.20)]">
+    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-2xl bg-white/88 dark:bg-shark-900/80 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-white/70 dark:border-white/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.90),0_2px_20px_rgba(100,140,220,0.16),inset_0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_2px_8px_rgba(0,0,0,0.20)]">
       {/* Left side: mobile menu + logo */}
       <div className="flex items-center gap-2">
         {/* Brand — org logo if set, otherwise name with initial badge */}
@@ -149,7 +149,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
       <div className="hidden lg:flex items-center flex-1 max-w-xl">
         <button
           onClick={() => setSearchOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-500 bg-white/40 dark:bg-shark-800 border border-white/65 dark:border-shark-700 rounded-lg hover:bg-white/55 backdrop-blur-sm transition-colors w-48 lg:w-64"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-500 bg-white/40 dark:bg-shark-800 border border-white/65 dark:border-shark-700 rounded-[12px] hover:bg-white/55 backdrop-blur-sm transition-colors w-48 lg:w-64"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
             <circle cx="11" cy="11" r="8" />
@@ -204,7 +204,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
           {/* Dropdown menu */}
           {dropdownOpen && (
-            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] backdrop-blur-2xl bg-white/68 dark:bg-shark-800/85 rounded-[14px] shadow-[0_2px_32px_rgba(80,130,220,0.13),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.40)] border border-white/65 dark:border-white/[0.08] py-1.5 z-50">
+            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] backdrop-blur-2xl bg-white/68 dark:bg-shark-800/85 rounded-2xl shadow-[0_2px_32px_rgba(100,140,220,0.22),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.40)] border border-white/65 dark:border-white/[0.08] py-1.5 z-50">
               {/* User info */}
               <div className="px-4 py-2.5 border-b border-shark-100 dark:border-shark-700">
                 <p className="text-sm font-semibold text-shark-800 dark:text-shark-100">{userName}</p>
@@ -291,7 +291,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
                   <div className="px-3 pt-1 pb-0.5">
                     <button
                       onClick={() => { setDropdownOpen(false); router.push("/admin/billing"); }}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-white bg-shark-900 hover:bg-shark-800 rounded-[14px] transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-white bg-shark-900 hover:bg-shark-800 rounded-xl transition-colors"
                     >
                       <Icon name="award" size={14} className="text-white" />
                       Upgrade Now
@@ -331,13 +331,13 @@ function InstallModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-[14px] shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden"
+        className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-[14px] bg-action-600 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-action-600 flex items-center justify-center shrink-0">
               <span className="text-white font-bold">T</span>
             </div>
             <div>
@@ -353,7 +353,7 @@ function InstallModal({ onClose }: { onClose: () => void }) {
         <div className="px-5 pb-5">
           {/* iOS — not Safari: must switch to Safari */}
           {isIOS && !isSafari ? (
-            <div className="bg-amber-50 dark:bg-amber-500/10 rounded-[14px] px-4 py-3">
+            <div className="bg-amber-50 dark:bg-amber-500/10 rounded-xl px-4 py-3">
               <p className="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">Open in Safari</p>
               <p className="text-xs text-amber-700 dark:text-amber-400 leading-snug">
                 iPhone apps can only be installed from <strong>Safari</strong>. Copy the URL, open Safari, paste it, then follow the steps below.
@@ -411,7 +411,7 @@ function InstallModal({ onClose }: { onClose: () => void }) {
 
           <button
             onClick={onClose}
-            className="mt-4 w-full py-2.5 text-sm font-medium text-white bg-action-600 hover:bg-action-700 rounded-[14px] transition-colors"
+            className="mt-4 w-full py-2.5 text-sm font-medium text-white bg-action-600 hover:bg-action-700 rounded-xl transition-colors"
           >
             Got it
           </button>

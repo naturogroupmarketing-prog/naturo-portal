@@ -113,7 +113,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       <div
         ref={contentRef}
         className={cn(
-          "w-[calc(100vw-1rem)] sm:max-w-lg rounded-[32px] backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 border border-white/70 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(80,130,220,0.16),0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_12px_40px_rgba(0,0,0,0.40),inset_0_1px_0_rgba(255,255,255,0.06)] max-h-[85vh] sm:max-h-[90vh] overflow-y-auto safe-bottom transition-all duration-200",
+          "w-[calc(100vw-1rem)] sm:max-w-lg rounded-[32px] backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 border border-white/70 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(100,140,220,0.24),0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_12px_40px_rgba(0,0,0,0.40),inset_0_1px_0_rgba(255,255,255,0.06)] max-h-[85vh] sm:max-h-[90vh] overflow-y-auto safe-bottom transition-all duration-200",
           className
         )}
       >
@@ -122,7 +122,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="text-shark-400 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-200 hover:bg-white/60 dark:hover:bg-white/[0.06] rounded-lg p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors text-xl leading-none"
+            className="text-shark-400 hover:text-shark-600 dark:text-shark-400 dark:hover:text-shark-200 hover:bg-white/60 dark:hover:bg-white/[0.06] rounded-[10px] p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors text-xl leading-none"
           >
             &times;
           </button>

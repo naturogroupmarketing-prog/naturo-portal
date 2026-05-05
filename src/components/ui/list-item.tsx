@@ -53,8 +53,8 @@ function ItemShell({
         <div
           className={cn(
             "w-11 h-11 rounded-[14px] flex items-center justify-center flex-shrink-0",
-            "backdrop-blur-sm border border-white/60",
-            "shadow-[inset_0_1px_0_rgba(255,255,255,0.90),0_2px_8px_rgba(18,89,195,0.18)]",
+            "backdrop-blur-sm border border-white/55",
+            "shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_1px_4px_rgba(100,140,220,0.08)]",
             iconBg ?? "bg-white/30"
           )}
         >

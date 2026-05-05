@@ -85,7 +85,7 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
 
   return (
     <Card className={cn("h-full bg-white/60 dark:bg-shark-900/60 backdrop-blur-xl backdrop-saturate-150 border border-white/60 dark:border-white/10", className)}>
-      <div className="p-3 sm:p-4 h-full flex flex-col justify-center">
+      <div className="p-3 sm:p-4">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
@@ -109,7 +109,7 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
               <Link
                 key={m.label}
                 href={m.href}
-                className="group block bg-white/60 dark:bg-shark-800/50 backdrop-blur-sm border border-white/70 dark:border-white/10 rounded-[28px] px-2.5 py-2 shadow-sm hover:bg-white/80 dark:hover:bg-shark-800/70 transition-all duration-200"
+                className="group block bg-white/60 dark:bg-shark-800/50 backdrop-blur-sm border border-white/70 dark:border-white/10 rounded-xl px-2.5 py-2 shadow-sm hover:bg-white/80 dark:hover:bg-shark-800/70 transition-all duration-200"
               >
                 <p className="text-[9px] text-shark-400 dark:text-shark-500 leading-none font-medium truncate">{m.label}</p>
                 <p className="text-xs font-bold text-shark-900 dark:text-shark-100 leading-tight truncate group-hover:text-action-600 dark:group-hover:text-action-400 transition-colors mt-0.5">
