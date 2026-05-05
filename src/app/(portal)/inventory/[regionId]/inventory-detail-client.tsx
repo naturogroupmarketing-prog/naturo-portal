@@ -230,7 +230,7 @@ export function InventoryDetailClient({
         {/* Apply Standard Items — when empty */}
         {isEmpty && isSuperAdmin && (
           <div className="px-6 py-10 text-center border-b border-shark-100 dark:border-shark-700">
-            <div className="w-12 h-12 rounded-2xl bg-action-500 flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 rounded-xl bg-action-500 flex items-center justify-center mx-auto mb-4">
               <Icon name="plus" size={22} className="text-white" />
             </div>
             <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">Set Up This Location</h3>

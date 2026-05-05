@@ -7,7 +7,7 @@ export function SignupBanner() {
   return (
     <section className="py-16 sm:py-20">
       <div className="max-w-6xl mx-auto px-6">
-      <div className="relative overflow-hidden rounded-3xl">
+      <div className="relative overflow-hidden rounded-xl">
       {/* Gradient background — warm coral/orange to deep purple/blue */}
       <div className="absolute inset-0">
         {/* Base gradient */}

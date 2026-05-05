@@ -109,7 +109,7 @@ export function SystemHealthBar({
   ];
 
   return (
-    <div className="rounded-2xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5">
+    <div className="rounded-xl border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5">
       {/* Header */}
       <div className="flex items-center gap-2 mb-5">
         <Icon name="bar-chart" size={13} className="text-shark-400" />

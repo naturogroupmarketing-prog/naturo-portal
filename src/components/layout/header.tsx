@@ -149,7 +149,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
       <div className="hidden lg:flex items-center flex-1 max-w-xl">
         <button
           onClick={() => setSearchOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-500 bg-white/40 dark:bg-shark-800 border border-white/65 dark:border-shark-700 rounded-[12px] hover:bg-white/55 backdrop-blur-sm transition-colors w-48 lg:w-64"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-500 bg-white/40 dark:bg-shark-800 border border-white/65 dark:border-shark-700 rounded-lg hover:bg-white/55 backdrop-blur-sm transition-colors w-48 lg:w-64"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
             <circle cx="11" cy="11" r="8" />
@@ -204,7 +204,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
           {/* Dropdown menu */}
           {dropdownOpen && (
-            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] backdrop-blur-2xl bg-white/68 dark:bg-shark-800/85 rounded-2xl shadow-[0_2px_32px_rgba(0,0,0,0.07),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.40)] border border-white/65 dark:border-white/[0.08] py-1.5 z-50">
+            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] backdrop-blur-2xl bg-white/68 dark:bg-shark-800/85 rounded-xl shadow-[0_2px_32px_rgba(0,0,0,0.07),0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_1px_0_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.40)] border border-white/65 dark:border-white/[0.08] py-1.5 z-50">
               {/* User info */}
               <div className="px-4 py-2.5 border-b border-shark-100 dark:border-shark-700">
                 <p className="text-sm font-semibold text-shark-800 dark:text-shark-100">{userName}</p>
@@ -331,7 +331,7 @@ function InstallModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden"
+        className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-xl shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

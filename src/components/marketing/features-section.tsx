@@ -112,7 +112,7 @@ export function FeaturesSection() {
           {features.map((feature, i) => (
             <ScrollReveal key={feature.title} delay={i * 100}>
             <div
-              className="bg-white rounded-2xl p-6 border border-shark-100 dark:border-shark-800/80 hover:border-action-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full"
+              className="bg-white rounded-xl p-6 border border-shark-100 dark:border-shark-800/80 hover:border-action-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full"
             >
               <div className="w-10 h-10 rounded-xl bg-action-50 group-hover:bg-action-500 group-hover:text-white group-hover:scale-110 group-hover:shadow-md flex items-center justify-center text-action-500 transition-all duration-300 mb-4">
                 {feature.icon}

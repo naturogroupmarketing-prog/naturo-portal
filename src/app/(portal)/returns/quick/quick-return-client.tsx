@@ -181,7 +181,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
           return (
             <div
               key={item.id}
-              className={`rounded-2xl bg-white dark:bg-shark-900 border transition-all shadow-sm overflow-hidden ${
+              className={`rounded-xl bg-white dark:bg-shark-900 border transition-all shadow-sm overflow-hidden ${
                 isSelected ? "border-action-400 ring-2 ring-action-400/20" : "border-shark-100 dark:border-shark-800"
               }`}
             >
@@ -288,7 +288,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
           <button
             type="button"
             onClick={handleConfirmAll}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-green-600 text-white font-bold text-lg hover:bg-green-700 active:scale-[0.98] transition-all shadow-sm"
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-green-600 text-white font-bold text-lg hover:bg-green-700 active:scale-[0.98] transition-all shadow-sm"
             style={{ minHeight: "56px" }}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

@@ -104,7 +104,7 @@ export function InstallPrompt() {
       className="fixed left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-2rem)] max-w-sm"
       style={{ bottom: bottomStyle }}
     >
-      <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden">
+      <div className="bg-white dark:bg-shark-900 rounded-xl shadow-2xl border border-shark-100 dark:border-shark-800 overflow-hidden">
 
         {/* ── Installed ── */}
         {installed && (
@@ -187,7 +187,7 @@ export function InstallPrompt() {
         {/* ── Android / Desktop with native prompt ── */}
         {!installed && (platform === "android" || platform === "desktop") && deferredPrompt && (
           <div className="px-5 py-4 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-action-600 flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-action-600 flex items-center justify-center shrink-0">
               <span className="text-white font-bold text-lg">T</span>
             </div>
             <div className="flex-1 min-w-0">

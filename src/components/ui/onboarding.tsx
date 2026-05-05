@@ -128,7 +128,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
       className={`fixed inset-0 z-[70] flex items-center justify-center transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}
       style={{ backgroundColor: "rgba(0,0,0,0.32)" }}
     >
-      <div className={`bg-white dark:bg-shark-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden transition-all duration-300 ${visible ? "scale-100" : "scale-95"}`}>
+      <div className={`bg-white dark:bg-shark-900 rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden transition-all duration-300 ${visible ? "scale-100" : "scale-95"}`}>
 
         {/* Step indicator — connected dots with lines */}
         <div className="flex items-center justify-center gap-0 pt-6 pb-4 px-12">

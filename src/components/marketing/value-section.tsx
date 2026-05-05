@@ -61,7 +61,7 @@ export function ValueSection() {
           ].map((card, i) => (
             <ScrollReveal key={card.pain} delay={i * 150}>
               <div
-                className="bg-shark-50/50 dark:bg-shark-800/50 rounded-2xl p-7 border border-shark-100 dark:border-shark-800/80 hover:border-shark-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-pointer"
+                className="bg-shark-50/50 dark:bg-shark-800/50 rounded-xl p-7 border border-shark-100 dark:border-shark-800/80 hover:border-shark-200 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-pointer"
               >
                 <div className="w-10 h-10 rounded-xl bg-action-50 flex items-center justify-center text-action-500 mb-5">
                   {card.icon}

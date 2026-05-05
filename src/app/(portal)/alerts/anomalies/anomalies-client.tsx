@@ -241,7 +241,7 @@ function EmptyState({ filter }: { filter: FilterTab }) {
       transition={{ duration: 0.25 }}
       className="flex flex-col items-center justify-center py-20 text-center"
     >
-      <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center mb-5">
+      <div className="w-16 h-16 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center mb-5">
         <Icon name="check-circle" size={28} className="text-emerald-500 dark:text-emerald-400" />
       </div>
       <p className="text-base font-semibold text-shark-900 dark:text-shark-100">{label}</p>

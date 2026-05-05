@@ -785,7 +785,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           {/* ── Content ─────────────────────────────────────────────────────── */}
           {regionItems.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-action-50 dark:bg-action-950/30 flex items-center justify-center mx-auto mb-4">
+              <div className="w-14 h-14 rounded-xl bg-action-50 dark:bg-action-950/30 flex items-center justify-center mx-auto mb-4">
                 <Icon name="check" size={24} className="text-action-500" />
               </div>
               <p className="text-base font-semibold text-shark-900 dark:text-shark-100">All stock levels OK</p>

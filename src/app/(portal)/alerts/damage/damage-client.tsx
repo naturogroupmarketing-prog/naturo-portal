@@ -82,7 +82,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
       {reports.length === 0 ? (
         <Card>
           <div className="py-12 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-action-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-xl bg-action-100 flex items-center justify-center mx-auto mb-4">
               <Icon name="check" size={24} className="text-action-600" />
             </div>
             <p className="text-lg font-semibold text-shark-900 dark:text-shark-100">No Unresolved Reports</p>

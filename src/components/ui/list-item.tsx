@@ -52,7 +52,7 @@ function ItemShell({
       {icon && (
         <div
           className={cn(
-            "w-11 h-11 rounded-[14px] flex items-center justify-center flex-shrink-0",
+            "w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0",
             "backdrop-blur-sm border border-white/55",
             "shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_1px_4px_rgba(0,0,0,0.08)]",
             iconBg ?? "bg-white/30"

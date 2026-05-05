@@ -8,10 +8,10 @@ export default function HelpLoading() {
         <Skeleton className="h-4 w-80" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Skeleton className="h-64 rounded-2xl" />
-        <Skeleton className="h-64 rounded-2xl" />
+        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-64 rounded-xl" />
       </div>
-      <Skeleton className="h-80 rounded-2xl" />
+      <Skeleton className="h-80 rounded-xl" />
     </div>
   );
 }

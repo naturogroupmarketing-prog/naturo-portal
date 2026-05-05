@@ -99,14 +99,14 @@ export function QuickActionsFab() {
               }}
             >
               {/* Label pill */}
-              <span className="bg-shark-900/90 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1.5 rounded-[10px] shadow-lg whitespace-nowrap pointer-events-none">
+              <span className="bg-shark-900/90 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-lg whitespace-nowrap pointer-events-none">
                 {action.label}
               </span>
               {/* Icon button */}
               <Link
                 href={action.href}
                 onClick={() => setOpen(false)}
-                className={`w-11 h-11 rounded-[14px] ${action.color} text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.18)] hover:scale-110 active:scale-95 transition-transform`}
+                className={`w-11 h-11 rounded-lg ${action.color} text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.18)] hover:scale-110 active:scale-95 transition-transform`}
               >
                 <Icon name={action.icon} size={17} />
               </Link>
@@ -119,7 +119,7 @@ export function QuickActionsFab() {
       <button
         onClick={() => setOpen((p) => !p)}
         aria-label={open ? "Close quick actions" : "Quick actions"}
-        className={`w-14 h-14 rounded-[20px] flex items-center justify-center transition-all duration-200 active:scale-95 ${
+        className={`w-14 h-14 rounded-lg flex items-center justify-center transition-all duration-200 active:scale-95 ${
           open
             ? "bg-[#252640] scale-90 shadow-[0_4px_20px_rgba(20,21,40,0.30)]"
             : "bg-[#1c1d2e] hover:bg-[#282a40] hover:scale-105 shadow-[0_4px_20px_rgba(20,21,40,0.36),0_2px_8px_rgba(20,21,40,0.20)]"

@@ -304,7 +304,7 @@ function WorkflowModal({
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
       {/* Panel */}
-      <div className="relative bg-white dark:bg-shark-900 rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white dark:bg-shark-900 rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-shark-100 dark:border-shark-800">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
@@ -435,7 +435,7 @@ function DeleteConfirm({ ruleName, onConfirm, onCancel }: { ruleName: string; on
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-white dark:bg-shark-900 rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
+      <div className="relative bg-white dark:bg-shark-900 rounded-xl shadow-xl w-full max-w-sm p-6 space-y-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
             <Icon name="trash-2" size={18} className="text-red-500" />

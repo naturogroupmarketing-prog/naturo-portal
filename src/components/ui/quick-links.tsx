@@ -65,7 +65,7 @@ export function QuickLinks({ open, onClose }: QuickLinksProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.15 }}
-              className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-2xl shadow-2xl border border-shark-200 dark:border-shark-700 overflow-hidden pointer-events-auto"
+              className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-xl shadow-2xl border border-shark-200 dark:border-shark-700 overflow-hidden pointer-events-auto"
             >
               <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 dark:border-shark-800">
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-shark-400">

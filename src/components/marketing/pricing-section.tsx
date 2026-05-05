@@ -168,7 +168,7 @@ export function PricingSection() {
             return (
               <div
                 key={plan.name}
-                className={`relative rounded-2xl flex flex-col transition-all duration-300 ${
+                className={`relative rounded-xl flex flex-col transition-all duration-300 ${
                   plan.popular
                     ? /* Popular: slightly more opaque + action border glow */
                       "border border-action-400/50 hover:border-action-400/80"

@@ -235,7 +235,7 @@ export function ShowcaseSection() {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* LEFT — Visual mockup */}
           <div className="relative order-2 lg:order-1">
-            <div className="absolute -inset-6 bg-gradient-to-br from-action-100/40 via-action-50/20 to-transparent rounded-3xl blur-2xl pointer-events-none" />
+            <div className="absolute -inset-6 bg-gradient-to-br from-action-100/40 via-action-50/20 to-transparent rounded-xl blur-2xl pointer-events-none" />
 
             <div className="relative">
               {steps.map((step, i) => (
@@ -247,7 +247,7 @@ export function ShowcaseSection() {
                       : "opacity-0 absolute inset-0 pointer-events-none"
                   }`}
                 >
-                  <div className="bg-white rounded-2xl border border-shark-200 shadow-xl shadow-shark-200/30 overflow-hidden">
+                  <div className="bg-white rounded-xl border border-shark-200 shadow-xl shadow-shark-200/30 overflow-hidden">
                     <div className="flex items-center gap-2 px-4 py-2 border-b border-shark-100 dark:border-shark-800 bg-shark-50/50 dark:bg-shark-800/50">
                       <div className="flex gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-full bg-red-300" />

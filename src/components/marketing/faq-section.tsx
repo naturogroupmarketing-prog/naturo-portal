@@ -63,7 +63,7 @@ export function FAQSection() {
             return (
               <div
                 key={faq.question}
-                className={`bg-white rounded-2xl border transition-all ${
+                className={`bg-white rounded-xl border transition-all ${
                   isOpen
                     ? "border-action-200 shadow-sm"
                     : "border-shark-100 dark:border-shark-800 hover:border-shark-200"

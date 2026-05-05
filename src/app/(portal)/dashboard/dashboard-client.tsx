@@ -369,7 +369,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
       {/* ── Hero Banner ───────────────────────────────────────────── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: 90 }}>
+      <div className="relative rounded-xl overflow-hidden" style={{ minHeight: 90 }}>
         {/* Hero image */}
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.png')" }} />
         {/* Dark gradient overlay so text is always readable */}
@@ -801,7 +801,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Predicted Shortages</h3>
                       <p className="text-xs text-shark-400">AI-powered depletion forecasts</p>
                     </div>
-                    <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
+                    <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-md shrink-0">AI</span>
                     <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors shrink-0" />
                   </Link>
                   {/* Items */}

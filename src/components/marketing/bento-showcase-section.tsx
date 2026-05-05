@@ -203,7 +203,7 @@ export function BentoShowcaseSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 auto-rows-auto">
 
           {/* Card 1 — Asset tracking (large, 3 cols) */}
-          <div className="lg:col-span-3 rounded-3xl overflow-hidden relative min-h-[480px] flex flex-col"
+          <div className="lg:col-span-3 rounded-xl overflow-hidden relative min-h-[480px] flex flex-col"
             style={{ background: "linear-gradient(135deg, #7c3aed 0%, #a855f7 40%, #ec4899 80%, #f472b6 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Asset Management</div>
@@ -220,7 +220,7 @@ export function BentoShowcaseSection() {
           </div>
 
           {/* Card 2 — AI assistant (2 cols) */}
-          <div className="lg:col-span-2 rounded-3xl overflow-hidden relative min-h-[480px] flex flex-col"
+          <div className="lg:col-span-2 rounded-xl overflow-hidden relative min-h-[480px] flex flex-col"
             style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #4f46e5 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">AI Assistant</div>
@@ -237,7 +237,7 @@ export function BentoShowcaseSection() {
           </div>
 
           {/* Card 3 — Multi-location (2 cols) */}
-          <div className="lg:col-span-2 rounded-3xl overflow-hidden relative min-h-[420px] flex flex-col"
+          <div className="lg:col-span-2 rounded-xl overflow-hidden relative min-h-[420px] flex flex-col"
             style={{ background: "linear-gradient(135deg, rgba(255,50,55,1.0) 0%, rgba(255,140,45,0.90) 60%, rgba(255,200,70,0.80) 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Multi-Location</div>
@@ -254,7 +254,7 @@ export function BentoShowcaseSection() {
           </div>
 
           {/* Card 4 — Purchase orders (2 cols) */}
-          <div className="lg:col-span-2 rounded-3xl overflow-hidden relative min-h-[420px] flex flex-col"
+          <div className="lg:col-span-2 rounded-xl overflow-hidden relative min-h-[420px] flex flex-col"
             style={{ background: "linear-gradient(135deg, #0f4c81 0%, #1113d4 60%, #4f46e5 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Procurement</div>
@@ -271,7 +271,7 @@ export function BentoShowcaseSection() {
           </div>
 
           {/* Card 5 — QR scanning (1 col) */}
-          <div className="lg:col-span-1 rounded-3xl overflow-hidden relative min-h-[420px] flex flex-col"
+          <div className="lg:col-span-1 rounded-xl overflow-hidden relative min-h-[420px] flex flex-col"
             style={{ background: "linear-gradient(160deg, #0a2540 0%, #1a3a5c 60%, #0f4c81 100%)" }}>
             <div className="p-10 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">QR Tracking</div>

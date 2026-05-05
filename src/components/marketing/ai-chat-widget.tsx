@@ -143,7 +143,7 @@ export function AIChatWidget() {
       {/* Chat window */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] animate-[fadeInUp_0.25s_ease-out]">
-          <div className="bg-white rounded-2xl border border-shark-200 shadow-2xl shadow-shark-300/30 overflow-hidden flex flex-col" style={{ height: "520px" }}>
+          <div className="bg-white rounded-xl border border-shark-200 shadow-2xl shadow-shark-300/30 overflow-hidden flex flex-col" style={{ height: "520px" }}>
             {/* Header */}
             <div className="bg-action-500 px-5 py-4 flex items-center gap-3 shrink-0">
               <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
@@ -174,7 +174,7 @@ export function AIChatWidget() {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed ${
+                    className={`max-w-[85%] px-3.5 py-2.5 rounded-xl text-[13px] leading-relaxed ${
                       msg.role === "user"
                         ? "bg-action-500 text-white rounded-br-md"
                         : "bg-white border border-shark-100 dark:border-shark-800 text-shark-700 rounded-bl-md shadow-sm"
@@ -187,7 +187,7 @@ export function AIChatWidget() {
 
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white border border-shark-100 dark:border-shark-800 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
+                  <div className="bg-white border border-shark-100 dark:border-shark-800 rounded-xl rounded-bl-md px-4 py-3 shadow-sm">
                     <div className="flex gap-1">
                       <span className="w-1.5 h-1.5 bg-shark-300 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                       <span className="w-1.5 h-1.5 bg-shark-300 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />

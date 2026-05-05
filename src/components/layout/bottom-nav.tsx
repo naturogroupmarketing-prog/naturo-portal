@@ -306,7 +306,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
           {/* Unified nav card — glassmorphism */}
           <div
             ref={containerRef}
-            className="flex-1 overflow-hidden rounded-[26px] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/70 border border-white/85 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.07),0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.40),0_2px_8px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.06)]"
+            className="flex-1 overflow-hidden rounded-xl backdrop-blur-2xl bg-white/80 dark:bg-shark-900/70 border border-white/85 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.07),0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.40),0_2px_8px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.06)]"
           >
             {/* More grid — expands upward */}
             <div
@@ -327,7 +327,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                       className="flex flex-col items-center gap-2 touch-manipulation select-none"
                     >
                       <div className={cn(
-                        "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center backdrop-blur-md border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_2px_8px_rgba(0,0,0,0.10)] active:scale-95 transition-transform",
+                        "w-[62px] h-[62px] rounded-lg flex items-center justify-center backdrop-blur-md border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_2px_8px_rgba(0,0,0,0.10)] active:scale-95 transition-transform",
                         item.bg
                       )}>
                         <Icon name={item.icon} size={27} className={item.fg} />
@@ -434,7 +434,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                       href={action.href}
                       onClick={() => setQuickOpen(false)}
                       className={cn(
-                        "w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0 border border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_4px_16px_rgba(0,0,0,0.18)] touch-manipulation select-none active:scale-95 transition-transform",
+                        "w-12 h-12 rounded-lg flex items-center justify-center shrink-0 border border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_4px_16px_rgba(0,0,0,0.18)] touch-manipulation select-none active:scale-95 transition-transform",
                         action.color
                       )}
                     >

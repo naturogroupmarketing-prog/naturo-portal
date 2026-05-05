@@ -40,7 +40,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]/40 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-shark-900 disabled:opacity-50 disabled:pointer-events-none cursor-pointer active:scale-[0.96]",
+          "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]/40 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-shark-900 disabled:opacity-50 disabled:pointer-events-none cursor-pointer active:scale-[0.96]",
           {
             "bg-[#0071e3] text-white hover:bg-[#0068d0] shadow-[0_2px_12px_rgba(0,113,227,0.35),0_1px_2px_rgba(0,113,227,0.20)] hover:shadow-[0_4px_20px_rgba(0,113,227,0.45)]": variant === "primary",
             "backdrop-blur-md bg-white/70 dark:bg-shark-800/60 text-shark-700 dark:text-shark-300 hover:bg-white/90 dark:hover:bg-shark-700/70 border border-white/80 dark:border-white/[0.10] shadow-[0_1px_4px_rgba(0,0,0,0.10)]": variant === "secondary",
