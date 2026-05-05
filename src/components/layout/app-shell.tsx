@@ -127,7 +127,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
               onClick={() => setSidebarOpen(false)}
             />
             <div
-              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/85 border-r border-white/80 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(120,140,220,0.18)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
+              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/85 border-r border-white/80 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(0,0,0,0.07)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
