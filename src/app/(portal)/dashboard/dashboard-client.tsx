@@ -845,82 +845,78 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "regional":
             return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
               <div key="regional">
-                <Card padding="none">
-                  <div className="p-4 sm:p-5">
-                    {/* Header */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-                        <Icon name="map-pin" size={14} className="text-action-600" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Regions</h3>
-                        <p className="text-xs text-shark-400">Status by region</p>
-                      </div>
-                    </div>
-                    {/* Region cards */}
-                    <div className="space-y-2">
-                      {[...regionBreakdown].sort((a, b) => a.healthScore - b.healthScore).map((region, idx) => {
-                        const colors = REGION_COLORS[idx % REGION_COLORS.length];
-                        const isCollapsed = collapsedRegions.has(region.regionId);
-                        const hasActions = region.lowStockCount > 0 || region.pendingRequests > 0 || region.pendingPOs > 0;
-                        const totalIssues = (region.damaged + region.lost) + region.pendingRequests + region.pendingPOs;
-                        return (
-                          <div key={region.regionId} className="bg-white dark:bg-shark-900 rounded-xl border border-shark-100 dark:border-shark-800 overflow-hidden">
-                            {/* Region header row */}
-                            <button
-                              onClick={() => toggleRegion(region.regionId)}
-                              className="w-full flex items-center gap-2 px-3 py-3 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
-                            >
-                              <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
-                                <Icon name="map-pin" size={12} className={colors.color} />
-                              </div>
-                              <div className="flex-1 min-w-0 text-left overflow-hidden">
-                                <p className="text-sm font-semibold text-shark-900 dark:text-shark-100 truncate leading-tight">{region.regionName}</p>
-                                {region.stateName && <p className="text-xs text-shark-400 truncate leading-tight">{region.stateName}</p>}
-                              </div>
-                              {hasActions ? (
-                                <span className="shrink-0 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 text-red-500 rounded-full border border-red-100">
-                                  {totalIssues} {totalIssues === 1 ? "issue" : "issues"}
-                                </span>
-                              ) : (
-                                <span className="shrink-0 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-green-50 text-green-600 rounded-full border border-green-100">
-                                  All clear
-                                </span>
-                              )}
-                              <Icon
-                                name="chevron-down"
-                                size={14}
-                                className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
-                              />
-                            </button>
-                            {/* Expanded detail */}
-                            {!isCollapsed && (
-                              <div className="px-3 pb-3 pt-0 border-t border-shark-50 dark:border-shark-800">
-                                <div className="grid grid-cols-3 gap-2 mt-2">
-                                  <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-red-50 border border-red-100 py-1.5 hover:bg-red-100 transition-colors">
-                                    <Icon name="alert-triangle" size={11} className="text-red-400" />
-                                    <span className="text-sm font-extrabold text-red-600 leading-none tabular-nums">{region.lowStockCount}</span>
-                                    <span className="text-[9px] font-semibold text-red-400 text-center leading-tight">Low Stock</span>
-                                  </Link>
-                                  <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-amber-50 border border-amber-100 py-1.5 hover:bg-amber-100 transition-colors">
-                                    <Icon name="clipboard" size={11} className="text-amber-500" />
-                                    <span className="text-sm font-extrabold text-[#E8532E] leading-none tabular-nums">{region.pendingRequests}</span>
-                                    <span className="text-[9px] font-semibold text-amber-500 text-center leading-tight">Requests</span>
-                                  </Link>
-                                  <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-action-50 border border-action-100 py-1.5 hover:bg-action-100 transition-colors">
-                                    <Icon name="truck" size={11} className="text-action-400" />
-                                    <span className="text-sm font-extrabold text-action-600 leading-none tabular-nums">{region.pendingPOs}</span>
-                                    <span className="text-[9px] font-semibold text-action-400 text-center leading-tight">POs</span>
-                                  </Link>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
+                {/* Section header */}
+                <div className="flex items-center gap-2 mb-3 px-1">
+                  <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+                    <Icon name="map-pin" size={14} className="text-action-600" />
                   </div>
-                </Card>
+                  <div>
+                    <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Regions</h3>
+                    <p className="text-xs text-shark-400">Status by region</p>
+                  </div>
+                </div>
+                {/* Region rows — flat list with hairline dividers */}
+                <div className="divide-y divide-white/60 dark:divide-white/[0.06]">
+                  {[...regionBreakdown].sort((a, b) => a.healthScore - b.healthScore).map((region, idx) => {
+                    const colors = REGION_COLORS[idx % REGION_COLORS.length];
+                    const isCollapsed = collapsedRegions.has(region.regionId);
+                    const hasActions = region.lowStockCount > 0 || region.pendingRequests > 0 || region.pendingPOs > 0;
+                    const totalIssues = (region.damaged + region.lost) + region.pendingRequests + region.pendingPOs;
+                    return (
+                      <div key={region.regionId}>
+                        {/* Region header row */}
+                        <button
+                          onClick={() => toggleRegion(region.regionId)}
+                          className="w-full flex items-center gap-3 px-1 py-3 hover:bg-white/50 dark:hover:bg-white/[0.04] transition-colors rounded-xl"
+                        >
+                          <div className={`w-9 h-9 rounded-[12px] ${colors.bg} flex items-center justify-center shrink-0 border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]`}>
+                            <Icon name="map-pin" size={14} className={colors.color} />
+                          </div>
+                          <div className="flex-1 min-w-0 text-left overflow-hidden">
+                            <p className="text-sm font-semibold text-shark-900 dark:text-shark-100 truncate leading-tight">{region.regionName}</p>
+                            {region.stateName && <p className="text-xs text-shark-400 truncate leading-tight">{region.stateName}</p>}
+                          </div>
+                          {hasActions ? (
+                            <span className="shrink-0 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-red-50 text-red-500 rounded-full border border-red-100">
+                              {totalIssues} {totalIssues === 1 ? "issue" : "issues"}
+                            </span>
+                          ) : (
+                            <span className="shrink-0 inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-semibold bg-green-50 text-green-600 rounded-full border border-green-100">
+                              All clear
+                            </span>
+                          )}
+                          <Icon
+                            name="chevron-down"
+                            size={14}
+                            className={`text-shark-400 transition-transform shrink-0 ${isCollapsed ? "-rotate-90" : ""}`}
+                          />
+                        </button>
+                        {/* Expanded detail */}
+                        {!isCollapsed && (
+                          <div className="px-1 pb-3 pt-0">
+                            <div className="grid grid-cols-3 gap-2">
+                              <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/purchase-orders"} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-red-50 border border-red-100 py-1.5 hover:bg-red-100 transition-colors">
+                                <Icon name="alert-triangle" size={11} className="text-red-400" />
+                                <span className="text-sm font-extrabold text-red-600 leading-none tabular-nums">{region.lowStockCount}</span>
+                                <span className="text-[9px] font-semibold text-red-400 text-center leading-tight">Low Stock</span>
+                              </Link>
+                              <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-amber-50 border border-amber-100 py-1.5 hover:bg-amber-100 transition-colors">
+                                <Icon name="clipboard" size={11} className="text-amber-500" />
+                                <span className="text-sm font-extrabold text-[#E8532E] leading-none tabular-nums">{region.pendingRequests}</span>
+                                <span className="text-[9px] font-semibold text-amber-500 text-center leading-tight">Requests</span>
+                              </Link>
+                              <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="flex flex-col items-center justify-center gap-0.5 rounded-xl bg-action-50 border border-action-100 py-1.5 hover:bg-action-100 transition-colors">
+                                <Icon name="truck" size={11} className="text-action-400" />
+                                <span className="text-sm font-extrabold text-action-600 leading-none tabular-nums">{region.pendingPOs}</span>
+                                <span className="text-[9px] font-semibold text-action-400 text-center leading-tight">POs</span>
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ) : null;
 
