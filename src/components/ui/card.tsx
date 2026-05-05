@@ -12,9 +12,9 @@ export function Card({ className, variant = "default", padding = "md", children,
         // Glassmorphism: frosted surface, white-edge border, inset highlight
         "rounded-[28px] transition-colors",
         {
-          "backdrop-blur-2xl backdrop-saturate-150 bg-white/52 dark:bg-shark-900/55 border border-white/70 dark:border-white/[0.10] shadow-[0_4px_32px_rgba(18,89,195,0.18),inset_0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_1px_0_rgba(255,255,255,0.06),0_4px_24px_rgba(0,0,0,0.30)]": variant === "default",
-          "backdrop-blur-xl backdrop-saturate-125 bg-white/38 dark:bg-shark-900/40 border border-white/60 dark:border-white/[0.08]": variant === "flat",
-          "backdrop-blur-2xl backdrop-saturate-200 bg-white/65 dark:bg-shark-900/65 border border-white/80 dark:border-white/[0.12] shadow-[0_8px_40px_rgba(18,89,195,0.24),inset_0_1px_0_rgba(255,255,255,0.98)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_12px_40px_rgba(0,0,0,0.40),inset_0_1px_0_rgba(255,255,255,0.08)]": variant === "elevated",
+          "backdrop-blur-xl bg-white/80 dark:bg-shark-900/70 border border-white/75 dark:border-white/[0.07] shadow-[0_4px_24px_rgba(18,89,195,0.13),inset_0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_4px_16px_rgba(0,0,0,0.20)]": variant === "default",
+          "backdrop-blur-md bg-white/65 dark:bg-shark-900/50 border border-white/72 dark:border-white/[0.06]": variant === "flat",
+          "backdrop-blur-xl bg-white/90 dark:bg-shark-900/80 border border-white/85 dark:border-white/[0.08] shadow-[0_8px_32px_rgba(18,89,195,0.18),inset_0_1px_0_rgba(255,255,255,0.98)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_8px_28px_rgba(0,0,0,0.30),inset_0_1px_0_rgba(255,255,255,0.06)]": variant === "elevated",
           "bg-transparent": variant === "ghost",
         },
         {

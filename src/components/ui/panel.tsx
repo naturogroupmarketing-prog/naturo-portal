@@ -40,7 +40,7 @@ export function Panel({
   return (
     <Tag
       className={cn(
-        "backdrop-blur-2xl backdrop-saturate-150 bg-white/52 dark:bg-shark-900/55 border border-white/70 dark:border-white/[0.10]",
+        "backdrop-blur-xl bg-white/78 dark:bg-shark-900/70 border border-white/80 dark:border-white/[0.07]",
         !flush && "rounded-[28px]",
         shadow && "shadow-[0_2px_24px_rgba(80,130,220,0.10),0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_4px_16px_rgba(0,0,0,0.20)]",
         className

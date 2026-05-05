@@ -86,7 +86,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         {/* Desktop sidebar — collapsible with toggle arrow */}
         <aside className="hidden lg:flex flex-shrink-0 relative">
           <div
-            className={`flex flex-col backdrop-blur-2xl backdrop-saturate-150 bg-white/50 dark:bg-shark-900/60 border-r border-white/70 dark:border-white/[0.06] shadow-[1px_0_0_rgba(255,255,255,0.75)] transition-all duration-300 overflow-hidden ${
+            className={`flex flex-col backdrop-blur-2xl bg-white/72 dark:bg-shark-900/80 border-r border-white/75 dark:border-white/[0.06] shadow-[1px_0_0_rgba(255,255,255,0.75)] transition-all duration-300 overflow-hidden ${
               sidebarExpanded ? "w-64" : "w-[68px]"
             }`}
           >
@@ -127,7 +127,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
               onClick={() => setSidebarOpen(false)}
             />
             <div
-              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-2xl backdrop-saturate-150 bg-white/62 dark:bg-shark-900/70 border-r border-white/80 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(80,130,220,0.13)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
+              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/85 border-r border-white/80 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(80,130,220,0.13)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
