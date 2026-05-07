@@ -24,8 +24,8 @@ function OverdueBadge({ days }: { days: number }) {
     days > 7
       ? "bg-red-100 text-red-700 ring-1 ring-red-200"
       : days >= 1
-      ? "bg-amber-100 text-amber-700 ring-1 ring-amber-200"
-      : "bg-green-100 text-green-700 ring-1 ring-green-200";
+      ? "bg-action-100 text-action-700 ring-1 ring-action-200"
+      : "bg-action-100 text-action-700 ring-1 ring-action-200";
   return (
     <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${cls}`}>
       {label}
@@ -155,13 +155,13 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
         {/* Empty state — all clear */}
         {totalPending === 0 && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mb-5">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-500">
+            <div className="w-20 h-20 rounded-full bg-action-50 flex items-center justify-center mb-5">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-action-500">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                 <path d="m9 11 3 3L22 4" />
               </svg>
             </div>
-            <p className="text-2xl font-bold text-green-600">All Returns Cleared</p>
+            <p className="text-2xl font-bold text-action-600">All Returns Cleared</p>
             <p className="mt-2 text-base text-shark-400">No pending returns — great work.</p>
             <Link
               href="/returns"
@@ -226,7 +226,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
                   type="button"
                   onClick={() => handleConfirm(item.id)}
                   disabled={isProcessing}
-                  className="flex items-center justify-center gap-2 rounded-[28px] bg-green-600 text-white font-semibold text-base hover:bg-green-700 active:scale-[0.97] transition-all disabled:opacity-60"
+                  className="flex items-center justify-center gap-2 rounded-[28px] bg-action-600 text-white font-semibold text-base hover:bg-action-700 active:scale-[0.97] transition-all disabled:opacity-60"
                   style={{ minHeight: "52px" }}
                 >
                   {isProcessing ? (
@@ -288,7 +288,7 @@ export default function QuickReturnClient({ pendingReturns }: QuickReturnClientP
           <button
             type="button"
             onClick={handleConfirmAll}
-            className="w-full flex items-center justify-center gap-2 rounded-[28px] bg-green-600 text-white font-bold text-lg hover:bg-green-700 active:scale-[0.98] transition-all shadow-sm"
+            className="w-full flex items-center justify-center gap-2 rounded-[28px] bg-action-600 text-white font-bold text-lg hover:bg-action-700 active:scale-[0.98] transition-all shadow-sm"
             style={{ minHeight: "56px" }}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

@@ -48,7 +48,7 @@ const ALL = "all";
 
 /* ── PO status pill labels ────────────────────────────────────────────── */
 const PO_STATUS_LABEL: Record<string, { label: string; cls: string }> = {
-  PENDING:  { label: "Pending",  cls: "text-amber-700 bg-amber-50 border-amber-100" },
+  PENDING:  { label: "Pending",  cls: "text-action-700 bg-action-50 border-action-100" },
   APPROVED: { label: "Approved", cls: "text-action-700 bg-action-50 border-action-100" },
   ORDERED:  { label: "Ordered",  cls: "text-blue-700 bg-blue-50 border-blue-100" },
 };
@@ -505,11 +505,11 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           onMouseLeave={hideTooltip}
         >
           <div className="flex items-center justify-end gap-1.5">
-            <span className={`text-sm font-bold ${isOut ? "text-red-600" : "text-[#E8532E]"}`}>
+            <span className={`text-sm font-bold ${isOut ? "text-red-600" : "text-[#0057FF]"}`}>
               {item.quantityOnHand}
             </span>
             {isOut && <span className="text-[10px] font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">OUT</span>}
-            {isCritical && <span className="text-[10px] font-semibold text-[#E8532E] bg-orange-50 dark:bg-orange-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
+            {isCritical && <span className="text-[10px] font-semibold text-[#0057FF] bg-action-50 dark:bg-action-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
           </div>
           <p className="text-[10px] text-shark-400 mt-0.5">Min: {item.minimumThreshold}</p>
         </div>
@@ -564,11 +564,11 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           onMouseLeave={hideTooltip}
         >
           <div className="flex items-center justify-end gap-1.5">
-            <span className={`font-bold ${isOut ? "text-red-600" : "text-[#E8532E]"}`}>
+            <span className={`font-bold ${isOut ? "text-red-600" : "text-[#0057FF]"}`}>
               {item.quantityOnHand}
             </span>
             {isOut && <span className="text-[10px] font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">OUT</span>}
-            {isCritical && <span className="text-[10px] font-semibold text-[#E8532E] bg-orange-50 dark:bg-orange-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
+            {isCritical && <span className="text-[10px] font-semibold text-[#0057FF] bg-action-50 dark:bg-action-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
           </div>
         </td>
         <td className="px-5 py-3 text-right text-shark-500 dark:text-shark-400">{item.minimumThreshold}</td>
@@ -639,7 +639,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
               </div>
 
               {regionItems.length > 0 && (
-                <span className="flex items-center gap-1.5 text-xs font-semibold text-[#E8532E] bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1.5 rounded-lg shrink-0">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-[#0057FF] bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1.5 rounded-lg shrink-0">
                   <Icon name="alert-triangle" size={12} />
                   {regionItems.length} low stock
                 </span>
@@ -705,7 +705,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                                 {r.name}
                               </span>
                               {count > 0 && (
-                                <span className="text-[10px] font-semibold text-[#E8532E] bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded-full shrink-0">
+                                <span className="text-[10px] font-semibold text-[#0057FF] bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded-full shrink-0">
                                   {count}
                                 </span>
                               )}
@@ -725,7 +725,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           <div className="flex items-center justify-between gap-4 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-800">
             <div className="flex items-center gap-3 min-w-0">
               <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/30 flex items-center justify-center shrink-0">
-                <Icon name="alert-triangle" size={16} className="text-[#E8532E]" />
+                <Icon name="alert-triangle" size={16} className="text-[#0057FF]" />
               </div>
               <div className="min-w-0">
                 <h1 className="text-base font-semibold text-shark-900 dark:text-shark-100 leading-tight">
@@ -747,8 +747,8 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                   </span>
                 )}
                 {criticalCount > 0 && (
-                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-[#E8532E] bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 px-2.5 py-1 rounded-lg">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#E8532E] inline-block" />
+                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-[#0057FF] bg-action-50 dark:bg-action-950/20 border border-action-100 dark:border-action-900/30 px-2.5 py-1 rounded-lg">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#0057FF] inline-block" />
                     {criticalCount} critical
                   </span>
                 )}
@@ -814,15 +814,15 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                         className="w-full flex items-center justify-between px-4 sm:px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/40 transition-colors text-left"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/30 flex items-center justify-center shrink-0">
-                            <Icon name="map-pin" size={14} className="text-amber-600 dark:text-amber-400" />
+                          <div className="w-8 h-8 rounded-lg bg-action-50 dark:bg-action-950/30 flex items-center justify-center shrink-0">
+                            <Icon name="map-pin" size={14} className="text-action-600 dark:text-action-400" />
                           </div>
                           <div>
                             <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{group.name}</span>
                             <span className="ml-2 text-xs text-shark-400">{group.stateName}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-semibold text-[#E8532E] bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded-full">
+                            <span className="text-xs font-semibold text-[#0057FF] bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded-full">
                               {group.items.length} item{group.items.length !== 1 ? "s" : ""}
                             </span>
                             {groupOutCount > 0 && (

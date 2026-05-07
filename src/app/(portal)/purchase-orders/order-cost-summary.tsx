@@ -80,8 +80,8 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
             {/* Status pills */}
             <div className="flex flex-wrap gap-2">
               {pendingTotal > 0 && (
-                <span className="flex items-center gap-1 text-[11px] font-semibold bg-amber-50 text-amber-600 border border-amber-100 px-2.5 py-1 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                <span className="flex items-center gap-1 text-[11px] font-semibold bg-action-50 text-action-600 border border-action-100 px-2.5 py-1 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-action-400" />
                   Pending approval: {fmt(pendingTotal)}
                 </span>
               )}
@@ -92,8 +92,8 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
                 </span>
               )}
               {orderedTotal > 0 && (
-                <span className="flex items-center gap-1 text-[11px] font-semibold bg-green-50 text-green-600 border border-green-100 px-2.5 py-1 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                <span className="flex items-center gap-1 text-[11px] font-semibold bg-action-50 text-action-600 border border-action-100 px-2.5 py-1 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-action-400" />
                   On order: {fmt(orderedTotal)}
                 </span>
               )}
@@ -121,13 +121,13 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
                         {/* Status breakdown */}
                         <div className="flex gap-3 mt-1.5 flex-wrap">
                           {region.pending > 0 && (
-                            <span className="text-[10px] text-amber-500 font-medium">Pending {fmt(region.pending)}</span>
+                            <span className="text-[10px] text-action-500 font-medium">Pending {fmt(region.pending)}</span>
                           )}
                           {region.approved > 0 && (
                             <span className="text-[10px] text-blue-500 font-medium">Approved {fmt(region.approved)}</span>
                           )}
                           {region.ordered > 0 && (
-                            <span className="text-[10px] text-green-500 font-medium">Ordered {fmt(region.ordered)}</span>
+                            <span className="text-[10px] text-action-500 font-medium">Ordered {fmt(region.ordered)}</span>
                           )}
                         </div>
                       </div>

@@ -18,64 +18,64 @@ const ITEMS: QuickNavItem[] = [
     description: "Stock levels & inventory",
     href: "/consumables",
     icon: "droplet",
-    color: "text-blue-600 dark:text-blue-400",
-    bg: "bg-blue-50 dark:bg-blue-500/10",
+    color: "text-blue-600",
+    bg: "bg-blue-100",
   },
   {
     label: "Purchase Orders",
     description: "Approvals & procurement",
     href: "/purchase-orders",
     icon: "truck",
-    color: "text-green-600 dark:text-green-400",
-    bg: "bg-green-50 dark:bg-green-500/10",
+    color: "text-violet-600",
+    bg: "bg-violet-100",
   },
   {
     label: "Staff",
     description: "Team members & roles",
     href: "/staff",
     icon: "users",
-    color: "text-indigo-600 dark:text-indigo-400",
-    bg: "bg-indigo-50 dark:bg-indigo-500/10",
+    color: "text-teal-600",
+    bg: "bg-teal-100",
   },
   {
     label: "Returns",
     description: "Pending & overdue returns",
     href: "/returns",
     icon: "arrow-left",
-    color: "text-orange-600 dark:text-orange-400",
-    bg: "bg-orange-50 dark:bg-orange-500/10",
+    color: "text-rose-600",
+    bg: "bg-rose-100",
   },
   {
     label: "Starter Kits",
     description: "Kit templates & issuing",
     href: "/starter-kits",
     icon: "box",
-    color: "text-amber-600 dark:text-amber-400",
-    bg: "bg-amber-50 dark:bg-amber-500/10",
+    color: "text-amber-600",
+    bg: "bg-amber-100",
   },
   {
     label: "Reports",
     description: "Analytics & exports",
     href: "/reports",
-    icon: "clipboard",
-    color: "text-teal-600 dark:text-teal-400",
-    bg: "bg-teal-50 dark:bg-teal-500/10",
+    icon: "bar-chart",
+    color: "text-emerald-600",
+    bg: "bg-emerald-100",
   },
   {
     label: "Inspections",
     description: "Condition checks due",
     href: "/condition-checks",
     icon: "search",
-    color: "text-violet-600 dark:text-violet-400",
-    bg: "bg-violet-50 dark:bg-violet-500/10",
+    color: "text-cyan-600",
+    bg: "bg-cyan-100",
   },
   {
     label: "Anomalies",
     description: "Alerts & unusual activity",
     href: "/alerts/anomalies",
     icon: "alert-triangle",
-    color: "text-red-600 dark:text-red-400",
-    bg: "bg-red-50 dark:bg-red-500/10",
+    color: "text-red-600",
+    bg: "bg-red-100",
   },
 ];
 
@@ -107,7 +107,7 @@ export function AdminQuickNav({ userName }: AdminQuickNavProps) {
           <Link
             key={item.href}
             href={item.href}
-            className="group flex flex-col gap-3 p-4 sm:p-5 bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 hover:border-shark-200 dark:hover:border-shark-700 hover:shadow-md transition-all duration-150 active:scale-[0.98]"
+            className="group flex flex-col gap-3 p-4 sm:p-5 bg-shark-50 dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 hover:bg-shark-100 dark:hover:border-shark-700 hover:shadow-md transition-all duration-150 active:scale-[0.98]"
           >
             {/* Icon */}
             <div className={`w-10 h-10 rounded-[28px] flex items-center justify-center shrink-0 ${item.bg}`}>

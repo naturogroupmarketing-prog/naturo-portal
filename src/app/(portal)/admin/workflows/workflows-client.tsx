@@ -25,10 +25,10 @@ interface WorkflowsClientProps {
 const TRIGGER_CONFIG: Record<WorkflowTrigger, { label: string; bg: string; text: string; dot: string }> = {
   stock_below_threshold: { label: "Stock", bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
   stock_critical:        { label: "Stock", bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
-  asset_overdue_return:  { label: "Asset", bg: "bg-purple-50", text: "text-purple-700", dot: "bg-purple-500" },
+  asset_overdue_return:  { label: "Asset", bg: "bg-action-50", text: "text-action-700", dot: "bg-action-500" },
   damage_report_unresolved: { label: "Damage", bg: "bg-red-50", text: "text-red-700", dot: "bg-red-500" },
-  po_pending_approval:   { label: "Procurement", bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
-  low_health_score:      { label: "Health", bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-400" },
+  po_pending_approval:   { label: "Procurement", bg: "bg-action-50", text: "text-action-700", dot: "bg-action-500" },
+  low_health_score:      { label: "Health", bg: "bg-action-50", text: "text-action-700", dot: "bg-action-400" },
 };
 
 const TRIGGER_OPTIONS: { value: WorkflowTrigger; label: string; description: string }[] = [

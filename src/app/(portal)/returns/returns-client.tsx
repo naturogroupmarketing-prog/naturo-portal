@@ -262,7 +262,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                               checked={isVerified}
                               onChange={() => toggleItem(item.id, "verified")}
                               className={`w-5 h-5 rounded border-shark-300 cursor-pointer shrink-0 ${
-                                isNotReturned ? "text-[#E8532E] focus:ring-amber-400" : "text-action-500 focus:ring-action-400"
+                                isNotReturned ? "text-[#0057FF] focus:ring-action-200" : "text-action-500 focus:ring-action-400"
                               }`}
                             />
                             <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
@@ -278,7 +278,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                                   {name}
                                 </p>
                                 {isNotReturned && (
-                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-[#E8532E] uppercase shrink-0">Not Returned</span>
+                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-action-100 text-[#0057FF] uppercase shrink-0">Not Returned</span>
                                 )}
                               </div>
                               {item.returnCondition && item.returnCondition !== "NOT_RETURNED" && (
@@ -290,7 +290,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                             </div>
 
                             {isVerified && (
-                              <span className={`text-xs font-medium shrink-0 ${isNotReturned ? "text-[#E8532E]" : "text-action-500"}`}>
+                              <span className={`text-xs font-medium shrink-0 ${isNotReturned ? "text-[#0057FF]" : "text-action-500"}`}>
                                 {isNotReturned ? "Acknowledged" : "Restocked"}
                               </span>
                             )}

@@ -28,7 +28,7 @@ const ACTION_CONFIG: Record<string, { icon: "package" | "droplet" | "users" | "c
   ASSET_DELETED: { icon: "package", label: "Deleted", color: "text-red-500", bg: "bg-red-50" },
   CONSUMABLE_CREATED: { icon: "plus", label: "Created", color: "text-action-500", bg: "bg-action-50" },
   CONSUMABLE_STOCK_ADDED: { icon: "droplet", label: "Restocked", color: "text-action-500", bg: "bg-action-50" },
-  CONSUMABLE_REQUEST_CREATED: { icon: "clipboard", label: "Requested", color: "text-[#E8532E]", bg: "bg-amber-50" },
+  CONSUMABLE_REQUEST_CREATED: { icon: "clipboard", label: "Requested", color: "text-[#0057FF]", bg: "bg-action-50" },
   CONSUMABLE_REQUEST_APPROVED: { icon: "check", label: "Approved", color: "text-action-500", bg: "bg-action-50" },
   CONSUMABLE_REQUEST_REJECTED: { icon: "alert-triangle", label: "Rejected", color: "text-red-500", bg: "bg-red-50" },
   CONSUMABLE_REQUEST_ISSUED: { icon: "check", label: "Issued", color: "text-blue-500", bg: "bg-blue-50" },

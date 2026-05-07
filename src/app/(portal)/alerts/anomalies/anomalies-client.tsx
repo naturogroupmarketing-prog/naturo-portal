@@ -27,9 +27,9 @@ const SEVERITY_CONFIG: Record<
   },
   warning: {
     label: "Warning",
-    bar: "bg-amber-400",
-    badge: "bg-amber-50 text-amber-700 ring-1 ring-amber-200 dark:bg-amber-950/50 dark:text-amber-400 dark:ring-amber-800",
-    count: "text-amber-600 dark:text-amber-400",
+    bar: "bg-action-400",
+    badge: "bg-action-50 text-action-700 ring-1 ring-action-200 dark:bg-action-950/50 dark:text-action-400 dark:ring-action-200",
+    count: "text-action-600 dark:text-action-400",
     icon: "alert-triangle",
   },
   info: {
@@ -54,8 +54,8 @@ const CATEGORY_CONFIG: Record<
   asset: {
     label: "Asset",
     icon: "box",
-    bg: "bg-[#E8532E]/10",
-    text: "text-[#E8532E]",
+    bg: "bg-[#0057FF]/10",
+    text: "text-[#0057FF]",
   },
   staff: {
     label: "Staff",
@@ -66,8 +66,8 @@ const CATEGORY_CONFIG: Record<
   damage: {
     label: "Damage",
     icon: "alert-triangle",
-    bg: "bg-[#E8532E]/10",
-    text: "text-[#E8532E]",
+    bg: "bg-[#0057FF]/10",
+    text: "text-[#0057FF]",
   },
   procurement: {
     label: "Procurement",
@@ -178,7 +178,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
               anomaly.severity === "critical"
                 ? "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300"
                 : anomaly.severity === "warning"
-                  ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300"
+                  ? "bg-action-50 text-action-700 dark:bg-action-950/40 dark:text-action-300"
                   : "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
             )}
           >
@@ -188,7 +188,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
                 anomaly.severity === "critical"
                   ? "bg-red-500 animate-pulse"
                   : anomaly.severity === "warning"
-                    ? "bg-amber-400"
+                    ? "bg-action-400"
                     : "bg-blue-400"
               )}
             />
@@ -241,8 +241,8 @@ function EmptyState({ filter }: { filter: FilterTab }) {
       transition={{ duration: 0.25 }}
       className="flex flex-col items-center justify-center py-20 text-center"
     >
-      <div className="w-16 h-16 rounded-[28px] bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center mb-5">
-        <Icon name="check-circle" size={28} className="text-emerald-500 dark:text-emerald-400" />
+      <div className="w-16 h-16 rounded-[28px] bg-action-50 dark:bg-action-950/40 flex items-center justify-center mb-5">
+        <Icon name="check-circle" size={28} className="text-action-500 dark:text-action-400" />
       </div>
       <p className="text-base font-semibold text-shark-900 dark:text-shark-100">{label}</p>
       <p className="mt-1.5 text-sm text-shark-400 dark:text-shark-500 dark:text-shark-400 max-w-xs">{sub}</p>
@@ -377,7 +377,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 {saving ? "Saving..." : "Save Settings"}
               </button>
               {saveMsg && (
-                <p className={cn("text-xs", saveMsg.includes("saved") ? "text-green-600" : "text-red-500")}>
+                <p className={cn("text-xs", saveMsg.includes("saved") ? "text-action-600" : "text-red-500")}>
                   {saveMsg}
                 </p>
               )}
@@ -509,7 +509,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
               {tab.label}
               {count > 0 && (
                 <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
-                  isActive ? "text-white bg-[#E8532E]" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
+                  isActive ? "text-white bg-[#0057FF]" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
                 }`}>
                   {count}
                 </span>

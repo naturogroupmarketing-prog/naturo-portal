@@ -5,55 +5,138 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden" style={{ minHeight: "860px" }}>
-      {/* ── Gradient background ── */}
+
+      {/* ── Deep purple background ── */}
       <div
         className="absolute inset-0 z-0"
         style={{
-          background:
-            "radial-gradient(ellipse 55% 65% at 100% 0%, rgba(255,50,55,1.0) 0%, rgba(255,80,40,1.0) 20%, rgba(255,140,45,0.88) 45%, transparent 68%), radial-gradient(ellipse 80% 85% at 102% 12%, rgba(255,150,45,0.88) 0%, rgba(255,200,70,0.70) 45%, transparent 68%), linear-gradient(135deg, #7c3aed 0%, #a855f7 15%, #ec4899 35%, #f472b6 50%, #fce7f3 65%, #ffffff 80%, #ffffff 100%)",
+          background: "linear-gradient(135deg, #0f0830 0%, #1a0f5e 30%, #2d1580 60%, #1a0f5e 100%)",
         }}
       />
-      {/* Bottom white fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
 
-      {/* ── Full-width layout ── */}
+      {/* ── Blob 1 — large pink/magenta top-right ── */}
+      <div
+        className="absolute z-0 rounded-full"
+        style={{
+          width: "680px",
+          height: "680px",
+          top: "-180px",
+          right: "-120px",
+          background: "radial-gradient(circle, rgba(220,60,160,0.75) 0%, rgba(160,40,200,0.55) 45%, transparent 72%)",
+          filter: "blur(2px)",
+        }}
+      />
+
+      {/* ── Blob 2 — pink/coral mid-right ── */}
+      <div
+        className="absolute z-0 rounded-full"
+        style={{
+          width: "420px",
+          height: "420px",
+          bottom: "60px",
+          right: "20%",
+          background: "radial-gradient(circle, rgba(255,100,140,0.55) 0%, rgba(200,60,120,0.35) 50%, transparent 72%)",
+          filter: "blur(4px)",
+        }}
+      />
+
+      {/* ── Blob 3 — blue/indigo left ── */}
+      <div
+        className="absolute z-0 rounded-full"
+        style={{
+          width: "320px",
+          height: "320px",
+          top: "40%",
+          left: "-60px",
+          background: "radial-gradient(circle, rgba(80,100,255,0.35) 0%, transparent 70%)",
+          filter: "blur(6px)",
+        }}
+      />
+
+      {/* ── Floating dots ── */}
+      {[
+        { size: 10, top: "22%", left: "42%", color: "rgba(220,120,255,0.8)" },
+        { size: 7,  top: "55%", left: "18%", color: "rgba(255,100,180,0.8)" },
+        { size: 12, top: "70%", left: "52%", color: "rgba(120,100,255,0.7)" },
+        { size: 6,  top: "15%", right: "38%", color: "rgba(255,140,200,0.9)" },
+        { size: 8,  top: "80%", right: "28%", color: "rgba(180,80,255,0.7)" },
+      ].map((dot, i) => (
+        <div
+          key={i}
+          className="absolute z-0 rounded-full"
+          style={{ width: dot.size, height: dot.size, top: dot.top, left: (dot as any).left, right: (dot as any).right, background: dot.color }}
+        />
+      ))}
+
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to top, rgba(15,8,48,1) 0%, transparent 100%)" }} />
+
+      {/* ── Layout ── */}
       <div className="relative z-20 flex flex-col lg:flex-row" style={{ minHeight: "920px" }}>
 
         {/* ── LEFT — text ── */}
         <div className="lg:w-[46%] px-8 lg:pl-16 xl:pl-24 lg:pr-6 pt-44 lg:pt-56 pb-16 lg:pb-0 flex flex-col">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-8 w-fit animate-[fadeInDown_0.5s_ease-out]">
-            <span className="w-1.5 h-1.5 rounded-full bg-white" />
-            <span className="text-xs font-medium text-white tracking-wide">Asset & Supply Tracking Platform</span>
+
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full w-fit mb-8 animate-[fadeInDown_0.5s_ease-out]"
+            style={{
+              background: "rgba(255,255,255,0.10)",
+              backdropFilter: "blur(12px)",
+              border: "1px solid rgba(255,255,255,0.20)",
+            }}>
+            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-xs font-semibold text-white/90 tracking-wide uppercase">Asset & Supply Tracking Platform</span>
           </div>
 
+          {/* Headline */}
           <h1
-            className="text-[2.5rem] sm:text-5xl lg:text-[3.3rem] font-bold leading-[1.08] tracking-tight text-[#0a2540] animate-[fadeInUp_0.6s_ease-out]"
-            style={{ fontFamily: "var(--font-exo, sans-serif)" }}
+            className="text-[2.6rem] sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.06] tracking-tight text-white animate-[fadeInUp_0.6s_ease-out]"
+            style={{ fontFamily: "var(--font-exo, sans-serif)", textShadow: "0 2px 40px rgba(0,0,0,0.3)" }}
           >
             Know exactly what<br />
             you have,{" "}
-            <span className="text-white" style={{ textShadow: "0 2px 20px rgba(0,0,0,0.15)" }}>
+            <span style={{ background: "linear-gradient(90deg, #f472b6, #c084fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               where it is,
             </span>
             <br />
             and who has it.
           </h1>
 
-          <p className="mt-6 text-lg text-[#1a3a5c]/80 leading-relaxed max-w-md animate-[fadeInUp_0.6s_ease-out_0.1s_both]">
+          {/* Subheading */}
+          <p className="mt-6 text-lg text-white/65 leading-relaxed max-w-md animate-[fadeInUp_0.6s_ease-out_0.1s_both]">
             Finally feel in control of every location, every asset, and every supply — with one system your whole team will actually use.
           </p>
 
+          {/* CTAs */}
           <div className="mt-10 flex flex-col sm:flex-row items-start gap-3 animate-[fadeInUp_0.6s_ease-out_0.2s_both]">
-            <Link href="/login" className="inline-flex items-center justify-center text-sm font-semibold bg-[#0a2540] text-white px-7 py-3.5 rounded-full hover:bg-[#1a3a5c] transition-all hover:-translate-y-px hover:shadow-xl active:scale-[0.97]">
-              Start free trial
-              <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center text-sm font-bold text-white px-7 py-3.5 rounded-full transition-all hover:-translate-y-px active:scale-[0.97]"
+              style={{
+                background: "linear-gradient(135deg, #5b5ef4 0%, #7c3aed 100%)",
+                boxShadow: "0 4px 24px rgba(100,80,240,0.55), 0 1px 0 rgba(255,255,255,0.15) inset",
+              }}
+            >
+              Get started
+              <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </Link>
-            <a href="#features" className="inline-flex items-center justify-center text-sm font-medium text-[#0a2540] bg-white/80 backdrop-blur-sm border border-white/60 px-7 py-3.5 rounded-full hover:bg-white transition-all">
+            <a
+              href="#features"
+              className="inline-flex items-center justify-center text-sm font-semibold text-white px-7 py-3.5 rounded-full transition-all hover:bg-white/15"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                backdropFilter: "blur(12px)",
+                border: "1px solid rgba(255,255,255,0.20)",
+              }}
+            >
               See how it works
             </a>
           </div>
 
-          <p className="mt-5 text-xs text-[#1a3a5c]/50 animate-[fadeInUp_0.6s_ease-out_0.3s_both]">
+          <p className="mt-5 text-xs text-white/35 animate-[fadeInUp_0.6s_ease-out_0.3s_both]">
             Trusted by 500+ operational teams across Australia · No credit card required
           </p>
         </div>
@@ -61,29 +144,36 @@ export function HeroSection() {
         {/* ── RIGHT — phone + dashboard ── */}
         <div className="hidden lg:block lg:w-[54%] relative animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
 
-          {/* ── Dashboard browser frame — large, bleeds off the right ── */}
+          {/* ── Dashboard browser frame ── */}
           <div
-            className="absolute z-10 overflow-hidden rounded-[28px]"
+            className="absolute z-10 overflow-hidden"
             style={{
               left: "30%",
               right: "-480px",
               top: "170px",
               height: "620px",
-              boxShadow: "0 2px 4px rgba(10,37,64,0.04), 0 50px 100px -20px rgba(10,37,64,0.14), 0 30px 60px -30px rgba(0,0,0,0.10)",
+              borderRadius: "28px",
+              background: "rgba(255,255,255,0.08)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.20), 0 40px 80px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.20)",
             }}
           >
-            {/* White base */}
-            <div className="absolute inset-0 rounded-[28px]" style={{ background: "#fff" }} />
-
             {/* Browser chrome */}
-            <div className="relative flex items-center gap-2 px-4 py-2.5 shrink-0" style={{ background: "#f6f9fc", borderBottom: "1px solid #e3e8ef", zIndex: 1 }}>
+            <div
+              className="relative flex items-center gap-2 px-4 py-2.5 shrink-0"
+              style={{ background: "rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.10)", zIndex: 1 }}
+            >
               <div className="flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+                <div className="w-2.5 h-2.5 rounded-full bg-green-400/80" />
               </div>
               <div className="flex-1 flex justify-center">
-                <div className="flex items-center gap-1.5 rounded-md px-4 py-1 text-[11px]" style={{ background: "#fff", border: "1px solid #e3e8ef", color: "#697386", minWidth: "180px", justifyContent: "center" }}>
+                <div
+                  className="flex items-center gap-1.5 rounded-md px-4 py-1 text-[11px]"
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.50)", minWidth: "180px", justifyContent: "center" }}
+                >
                   <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
                   </svg>
@@ -104,13 +194,11 @@ export function HeroSection() {
             />
           </div>
 
-          {/* ── Phone — foreground, overlapping left of dashboard ── */}
+          {/* ── Phone ── */}
           <div
             className="absolute z-20 animate-[gentleFloat_6s_ease-in-out_infinite]"
             style={{ left: "2%", top: "205px" }}
           >
-            {/* Crop to phone area — SVG viewBox 1024.5×576, phone at ~x:239-406, y:98-446 */}
-            {/* At bg-width 1900px: scale=1.854×; phone left≈461, top≈219; bg-pos offsets there */}
             <div
               aria-label="Trackio mobile app"
               style={{
@@ -124,19 +212,108 @@ export function HeroSection() {
             />
           </div>
 
+          {/* ── Floating glass stat cards ── */}
+          <div
+            className="absolute z-30 animate-[gentleFloat_5s_ease-in-out_1s_infinite]"
+            style={{
+              left: "8%",
+              top: "165px",
+              background: "rgba(255,255,255,0.12)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.22)",
+              borderRadius: "16px",
+              padding: "12px 16px",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.30)",
+              minWidth: "150px",
+            }}
+          >
+            <p className="text-[10px] font-semibold text-white/50 uppercase tracking-wider">Assets tracked</p>
+            <p className="text-2xl font-bold text-white mt-0.5">2,847</p>
+            <p className="text-[10px] text-green-400 font-semibold mt-0.5">↑ 12% this month</p>
+          </div>
+
+          <div
+            className="absolute z-30 animate-[gentleFloat_7s_ease-in-out_2s_infinite]"
+            style={{
+              left: "18%",
+              bottom: "240px",
+              background: "rgba(255,255,255,0.10)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              borderRadius: "16px",
+              padding: "12px 16px",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25)",
+              minWidth: "140px",
+            }}
+          >
+            <p className="text-[10px] font-semibold text-white/50 uppercase tracking-wider">Locations</p>
+            <p className="text-2xl font-bold text-white mt-0.5">34</p>
+            <p className="text-[10px] text-purple-300 font-semibold mt-0.5">All synced live</p>
+          </div>
+
         </div>
       </div>
 
       {/* ── Mobile fallback ── */}
-      <div className="lg:hidden relative z-20 px-4 pb-0 -mt-4">
-        <div className="relative bg-white rounded-[28px] overflow-hidden border border-white/60 mx-auto max-w-sm" style={{ boxShadow: "0 20px 60px rgba(10,37,64,0.3)" }}>
-          <div className="flex items-center gap-1.5 px-3 py-2" style={{ background: "#f6f9fc", borderBottom: "1px solid #e3e8ef" }}>
-            <div className="flex gap-1">
-              <div className="w-2 h-2 rounded-full bg-red-400" />
-              <div className="w-2 h-2 rounded-full bg-amber-400" />
-              <div className="w-2 h-2 rounded-full bg-green-400" />
+      <div className="lg:hidden relative z-20 px-4 pb-6 -mt-4">
+
+        {/* Glass stat cards */}
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          {[
+            { label: "Assets", value: "2,847", sub: "↑ 12% this month", subColor: "#4ade80" },
+            { label: "Locations", value: "34", sub: "All synced live", subColor: "#d8b4fe" },
+            { label: "Users", value: "412", sub: "Online now", subColor: "#93c5fd" },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              style={{
+                background: "rgba(255,255,255,0.10)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                borderRadius: "16px",
+                padding: "10px 12px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.22)",
+              }}
+            >
+              <p className="text-[9px] font-semibold text-white/50 uppercase tracking-wider">{stat.label}</p>
+              <p className="text-lg font-bold text-white mt-0.5">{stat.value}</p>
+              <p className="text-[9px] font-semibold mt-0.5" style={{ color: stat.subColor }}>{stat.sub}</p>
             </div>
-            <div className="flex-1 text-center text-[10px]" style={{ color: "#697386" }}>app.trackio.au</div>
+          ))}
+        </div>
+
+        {/* Browser frame */}
+        <div
+          className="relative overflow-hidden mx-auto"
+          style={{
+            borderRadius: "24px",
+            background: "rgba(255,255,255,0.08)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.18)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.20)",
+          }}
+        >
+          <div
+            className="flex items-center gap-1.5 px-3 py-2.5"
+            style={{ background: "rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.10)" }}
+          >
+            <div className="flex gap-1">
+              <div className="w-2 h-2 rounded-full bg-red-400/80" />
+              <div className="w-2 h-2 rounded-full bg-amber-400/80" />
+              <div className="w-2 h-2 rounded-full bg-green-400/80" />
+            </div>
+            <div className="flex-1 flex justify-center">
+              <div
+                className="flex items-center gap-1 rounded px-3 py-0.5 text-[10px]"
+                style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.45)" }}
+              >
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
+                </svg>
+                app.trackio.au
+              </div>
+            </div>
+            <div className="w-8" />
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/dashboard-hero.jpg" alt="Trackio dashboard" draggable={false} className="w-full block" />

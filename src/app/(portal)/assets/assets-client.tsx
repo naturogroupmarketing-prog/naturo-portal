@@ -29,19 +29,19 @@ const QRScanner = dynamic(
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50", border: "border-amber-200" },
-  { color: "text-cyan-600", bg: "bg-cyan-50", border: "border-cyan-200" },
+  { color: "text-[#0057FF]", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800", border: "border-shark-200" },
-  { color: "text-pink-600", bg: "bg-pink-50", border: "border-pink-200" },
-  { color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200" },
-  { color: "text-lime-600", bg: "bg-lime-50", border: "border-lime-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-pink-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-gray-600", bg: "bg-gray-100", border: "border-gray-200" },
-  { color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200" },
-  { color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-200" },
-  { color: "text-teal-600", bg: "bg-teal-50", border: "border-teal-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-rose-600", bg: "bg-rose-50", border: "border-rose-200" },
-  { color: "text-sky-600", bg: "bg-sky-50", border: "border-sky-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
 ];
 
 interface CategoryDef {
@@ -83,22 +83,22 @@ interface Asset {
 const REGION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50" },
-  { color: "text-cyan-600", bg: "bg-cyan-50" },
+  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
-  { color: "text-pink-600", bg: "bg-pink-50" },
-  { color: "text-orange-600", bg: "bg-orange-50" },
-  { color: "text-lime-600", bg: "bg-lime-50" },
-  { color: "text-teal-600", bg: "bg-teal-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
 ];
 
 // Badge colors for each status
 const STATUS_BADGE: Record<string, { label: string; bg: string; text: string }> = {
-  AVAILABLE: { label: "Available", bg: "bg-green-100", text: "text-green-700" },
+  AVAILABLE: { label: "Available", bg: "bg-action-100", text: "text-action-700" },
   ASSIGNED: { label: "Assigned", bg: "bg-blue-100", text: "text-blue-700" },
-  CHECKED_OUT: { label: "Awaiting", bg: "bg-amber-100", text: "text-amber-700" },
-  PENDING_RETURN: { label: "Pending Return", bg: "bg-amber-100", text: "text-amber-700" },
+  CHECKED_OUT: { label: "Awaiting", bg: "bg-action-100", text: "text-action-700" },
+  PENDING_RETURN: { label: "Pending Return", bg: "bg-action-100", text: "text-action-700" },
   DAMAGED: { label: "Damaged", bg: "bg-red-100", text: "text-red-700" },
   LOST: { label: "Lost", bg: "bg-shark-100 dark:bg-shark-800", text: "text-shark-700 dark:text-shark-300" },
   UNAVAILABLE: { label: "Unavailable", bg: "bg-shark-100 dark:bg-shark-800", text: "text-shark-500 dark:text-shark-400" },
@@ -195,7 +195,7 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
           const isDestructive = action.value === "DAMAGED" || action.value === "LOST";
           return (
             <button key={action.value} onClick={() => { onStatusChange(asset.id, action.value); setOpen(false); }}
-              className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${isDestructive ? "text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10" : "text-green-600 hover:bg-green-50 dark:hover:bg-green-500/10"}`}>
+              className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2 ${isDestructive ? "text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10" : "text-action-600 hover:bg-action-50 dark:hover:bg-action-500/10"}`}>
               <Icon name={isDestructive ? "alert-triangle" : "check"} size={12} /> {action.label}
             </button>
           );
@@ -1497,7 +1497,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   ))}
               </Select>
               {showAssign?.region?.id && users.filter((u) => u.regionId === showAssign.region.id).length === 0 && (
-                <p className="text-xs text-[#E8532E]">No staff assigned to this region</p>
+                <p className="text-xs text-[#0057FF]">No staff assigned to this region</p>
               )}
             </div>
             <div>

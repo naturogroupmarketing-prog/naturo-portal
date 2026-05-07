@@ -109,8 +109,8 @@ export function InstallPrompt() {
         {/* ── Installed ── */}
         {installed && (
           <div className="px-5 py-4 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-[28px] bg-green-100 flex items-center justify-center shrink-0">
-              <Icon name="check" size={18} className="text-green-600" />
+            <div className="w-9 h-9 rounded-[28px] bg-action-100 flex items-center justify-center shrink-0">
+              <Icon name="check" size={18} className="text-action-600" />
             </div>
             <div>
               <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">App installed!</p>

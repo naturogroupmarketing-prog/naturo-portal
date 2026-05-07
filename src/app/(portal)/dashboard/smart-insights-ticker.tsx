@@ -14,18 +14,18 @@ interface SmartInsightsTickerProps {
 
 const TYPE_STYLES: Record<SmartInsight["type"], { bg: string; border: string; iconBg: string; text: string; dot: string }> = {
   success: {
-    bg: "bg-green-50 dark:bg-green-500/10",
-    border: "border-green-100 dark:border-green-500/20",
-    iconBg: "bg-green-500",
-    text: "text-green-800 dark:text-green-300",
-    dot: "bg-green-500",
+    bg: "bg-action-50 dark:bg-action-500/10",
+    border: "border-action-100 dark:border-action-500/20",
+    iconBg: "bg-action-500",
+    text: "text-action-800 dark:text-action-300",
+    dot: "bg-action-500",
   },
   warning: {
-    bg: "bg-amber-50 dark:bg-amber-500/10",
-    border: "border-amber-100 dark:border-amber-500/20",
-    iconBg: "bg-amber-500",
-    text: "text-amber-800 dark:text-amber-300",
-    dot: "bg-amber-500",
+    bg: "bg-action-50 dark:bg-action-500/10",
+    border: "border-action-100 dark:border-action-500/20",
+    iconBg: "bg-action-500",
+    text: "text-action-800 dark:text-action-300",
+    dot: "bg-action-500",
   },
   info: {
     bg: "bg-action-50 dark:bg-action-500/10",
@@ -35,11 +35,11 @@ const TYPE_STYLES: Record<SmartInsight["type"], { bg: string; border: string; ic
     dot: "bg-action-500",
   },
   tip: {
-    bg: "bg-indigo-50 dark:bg-indigo-500/10",
-    border: "border-indigo-100 dark:border-indigo-500/20",
-    iconBg: "bg-indigo-500",
-    text: "text-indigo-800 dark:text-indigo-300",
-    dot: "bg-indigo-500",
+    bg: "bg-action-50 dark:bg-action-500/10",
+    border: "border-action-100 dark:border-action-500/20",
+    iconBg: "bg-action-500",
+    text: "text-action-800 dark:text-action-300",
+    dot: "bg-action-500",
   },
 };
 

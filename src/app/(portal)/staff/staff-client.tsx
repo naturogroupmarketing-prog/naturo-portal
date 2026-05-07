@@ -18,13 +18,13 @@ import { applyStarterKit } from "@/app/actions/starter-kits";
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50" },
-  { color: "text-cyan-600", bg: "bg-cyan-50" },
+  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
-  { color: "text-pink-600", bg: "bg-pink-50" },
-  { color: "text-orange-600", bg: "bg-orange-50" },
-  { color: "text-lime-600", bg: "bg-lime-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-gray-600", bg: "bg-gray-100" },
 ];
 
@@ -748,7 +748,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                     )}
                                     <span className="truncate">{a.asset.name}</span>
                                     {!a.acknowledgedAt && (
-                                      <span className="text-[10px] font-medium text-[#E8532E] bg-amber-50 ring-1 ring-[#E8532E]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
+                                      <span className="text-[10px] font-medium text-[#0057FF] bg-action-50 ring-1 ring-[#0057FF]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
                                     )}
                                   </div>
                                 ))}
@@ -795,7 +795,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                         <div className="space-y-0.5">
                           {editUser.consumableRequests!.map((r) => (
                             <div key={r.id} className="flex items-center gap-2 text-sm text-shark-700 dark:text-shark-300">
-                              <Icon name="clipboard" size={12} className="text-amber-400 shrink-0" />
+                              <Icon name="clipboard" size={12} className="text-action-400 shrink-0" />
                               <span>{r.quantity}x {r.consumable.name}</span>
                               <Badge status={r.status} />
                             </div>
@@ -918,7 +918,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                   )}
                                   <p className="text-sm text-shark-700 dark:text-shark-300 truncate">{a.asset.name}</p>
                                   {!a.acknowledgedAt && (
-                                    <span className="text-[10px] font-medium text-[#E8532E] bg-amber-50 ring-1 ring-[#E8532E]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
+                                    <span className="text-[10px] font-medium text-[#0057FF] bg-action-50 ring-1 ring-[#0057FF]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
                                   )}
                                 </div>
                               ))}
@@ -965,7 +965,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                       <div className="space-y-1">
                         {editUser.consumableRequests!.map((r) => (
                           <div key={r.id} className="flex items-center gap-2 py-1">
-                            <Icon name="clipboard" size={14} className="text-amber-400 shrink-0" />
+                            <Icon name="clipboard" size={14} className="text-action-400 shrink-0" />
                             <p className="text-sm text-shark-700 dark:text-shark-300">
                               {r.quantity}x {r.consumable.name}
                             </p>
@@ -1048,7 +1048,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </p>
                 <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
                 {editUser.assetAssignments.length > 0 && (
-                  <p className="text-sm text-[#E8532E] font-medium">
+                  <p className="text-sm text-[#0057FF] font-medium">
                     This user has {editUser.assetAssignments.length} active asset assignment(s). Please return all assets before deleting.
                   </p>
                 )}
@@ -1118,7 +1118,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                               )}
                               <span className="font-medium text-shark-800 dark:text-shark-200 truncate">{a.asset.name}</span>
                               {!a.acknowledgedAt && (
-                                <span className="text-[10px] font-medium text-[#E8532E] bg-amber-50 ring-1 ring-[#E8532E]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
+                                <span className="text-[10px] font-medium text-[#0057FF] bg-action-50 ring-1 ring-[#0057FF]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
                               )}
                             </div>
                           ))}
@@ -1199,7 +1199,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             {/* Damage / Loss reports */}
             <div>
               <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-2 flex items-center gap-2">
-                <Icon name="alert-triangle" size={14} className="text-[#E8532E]" />
+                <Icon name="alert-triangle" size={14} className="text-[#0057FF]" />
                 Damage & Loss ({detailUser.damageReports?.length || 0})
               </h3>
               {!detailUser.damageReports?.length ? (
@@ -1210,7 +1210,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     <div key={d.id} className="text-sm py-2 border-b border-shark-50 dark:border-shark-800 last:border-0">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${d.type === "DAMAGE" ? "bg-amber-100 text-[#E8532E]" : "bg-red-100 text-red-700"}`}>
+                          <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${d.type === "DAMAGE" ? "bg-action-100 text-[#0057FF]" : "bg-red-100 text-red-700"}`}>
                             {d.type}
                           </span>
                           <span className="font-medium text-shark-800 dark:text-shark-200">{d.asset?.name || "Unknown"}</span>
@@ -1246,7 +1246,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   <p className="text-[10px] text-shark-400">Inspections Done</p>
                 </div>
                 <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-3 py-2.5 text-center">
-                  <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-[#E8532E]" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
+                  <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-[#0057FF]" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Damage Reports</p>
                 </div>
               </div>

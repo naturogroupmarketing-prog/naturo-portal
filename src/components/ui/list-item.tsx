@@ -142,7 +142,7 @@ export function ListGroup({ title, children, className }: ListGroupProps) {
   return (
     <div className={className}>
       {title && (
-        <p className="px-4 pt-5 pb-1.5 text-[11px] font-bold uppercase tracking-[0.10em] text-[#1259C3]/70 dark:text-[#5b9cf8]/60">
+        <p className="px-4 pt-5 pb-1.5 text-[11px] font-bold uppercase tracking-[0.10em] text-[#1259C3]/70 dark:text-[#4da3ff]/60">
           {title}
         </p>
       )}

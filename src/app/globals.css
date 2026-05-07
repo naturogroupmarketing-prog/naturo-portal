@@ -4,6 +4,7 @@
 
 @theme inline {
   --font-exo: var(--font-exo);
+  --font-manrope: var(--font-manrope);
 
   /* Brand colors (preserved) */
   --color-navy-50: #e8eaf0;
@@ -42,22 +43,35 @@
   --color-shark-900: #292d34;
   --color-shark-950: #1a1c21;
 
-  /* Action blue — matches logo #1113d4 */
-  --color-action-50: #eeeffe;
-  --color-action-100: #d5d7fc;
-  --color-action-200: #aaabf9;
-  --color-action-300: #7f81f5;
-  --color-action-400: #5456ef;
-  --color-action-500: #1113d4;
-  --color-action-600: #0f10be;
-  --color-action-700: #0c0da7;
-  --color-action-800: #090a8f;
-  --color-action-900: #060778;
-  --color-action-950: #04054d;
+  /* Action — Vivid Blue #0057FF */
+  --color-action-50:  #eef2ff;
+  --color-action-100: #dde6ff;
+  --color-action-200: #b3c9ff;
+  --color-action-300: #80a8ff;
+  --color-action-400: #4d83ff;
+  --color-action-500: #0057FF;
+  --color-action-600: #004de0;
+  --color-action-700: #003fba;
+  --color-action-800: #003294;
+  --color-action-900: #00246e;
+  --color-action-950: #00163d;
 }
 
 .font-exo {
   font-family: var(--font-exo), sans-serif;
+}
+
+.font-manrope {
+  font-family: var(--font-manrope), sans-serif;
+}
+
+/* Glass panel — frosted white */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.90);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.90);
 }
 
 html {

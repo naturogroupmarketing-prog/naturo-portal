@@ -22,7 +22,7 @@ interface Props {
 
 const BAND_CONFIG = {
   today: { label: "Runs out today / tomorrow", dot: "bg-red-500 animate-pulse", text: "text-red-600", bg: "bg-red-50 border-red-100" },
-  week: { label: "This week (2–7 days)", dot: "bg-amber-400", text: "text-amber-600", bg: "bg-amber-50 border-amber-100" },
+  week: { label: "This week (2–7 days)", dot: "bg-action-400", text: "text-action-600", bg: "bg-action-50 border-action-100" },
   upcoming: { label: "Next 2 weeks (8–14 days)", dot: "bg-blue-400", text: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
 };
 
@@ -64,8 +64,8 @@ export function AiForecastWidget({ items }: Props) {
         {/* All clear */}
         {!hasAny && (
           <div className="py-6 text-center">
-            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-2">
-              <Icon name="check-circle" size={20} className="text-green-600" />
+            <div className="w-10 h-10 rounded-full bg-action-100 flex items-center justify-center mx-auto mb-2">
+              <Icon name="check-circle" size={20} className="text-action-600" />
             </div>
             <p className="text-sm font-semibold text-shark-700 dark:text-shark-300">All stocked for 2 weeks</p>
             <p className="text-xs text-shark-400 mt-1">No predicted shortfalls — keep it up!</p>
@@ -98,7 +98,7 @@ export function AiForecastWidget({ items }: Props) {
                           <div className="flex items-center gap-1.5">
                             <p className="text-[13px] font-semibold text-shark-800 dark:text-shark-200 truncate">{item.name}</p>
                             {item.spiking && (
-                              <span className="text-[9px] font-bold bg-[#E8532E]/10 text-[#E8532E] px-1 py-0.5 rounded shrink-0 uppercase tracking-wide">
+                              <span className="text-[9px] font-bold bg-[#0057FF]/10 text-[#0057FF] px-1 py-0.5 rounded shrink-0 uppercase tracking-wide">
                                 ↑ spike
                               </span>
                             )}

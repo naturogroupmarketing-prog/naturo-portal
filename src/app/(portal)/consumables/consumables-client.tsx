@@ -22,20 +22,20 @@ import { exportToCSV } from "@/lib/csv";
 // Color palette auto-assigned by category index
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50" },
-  { color: "text-cyan-600", bg: "bg-cyan-50" },
+  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
   { color: "text-gray-600", bg: "bg-gray-100" },
-  { color: "text-orange-600", bg: "bg-orange-50" },
-  { color: "text-pink-600", bg: "bg-pink-50" },
-  { color: "text-lime-600", bg: "bg-lime-50" },
-  { color: "text-yellow-600", bg: "bg-yellow-50" },
-  { color: "text-indigo-600", bg: "bg-indigo-50" },
-  { color: "text-teal-600", bg: "bg-teal-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-rose-600", bg: "bg-rose-50" },
-  { color: "text-sky-600", bg: "bg-sky-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
 ];
 
 interface CategoryDef {
@@ -98,14 +98,14 @@ interface Request {
 const REGION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50" },
-  { color: "text-cyan-600", bg: "bg-cyan-50" },
+  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
-  { color: "text-pink-600", bg: "bg-pink-50" },
-  { color: "text-orange-600", bg: "bg-orange-50" },
-  { color: "text-lime-600", bg: "bg-lime-50" },
-  { color: "text-teal-600", bg: "bg-teal-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
 ];
 
 interface ConsumablesClientProps {
@@ -547,8 +547,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
             isCritical ? "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400" :
-            isLow ? "bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400" :
-            "bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400"
+            isLow ? "bg-action-50 text-action-600 dark:bg-action-900/30 dark:text-action-400" :
+            "bg-action-50 text-action-600 dark:bg-action-900/30 dark:text-action-400"
           }`}>
             {isCritical ? "Out of Stock" : isLow ? "Low Stock" : "In Stock"}
           </span>
@@ -566,7 +566,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <div className="h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all ${isCritical ? "bg-red-500" : isLow ? "bg-amber-400" : "bg-green-500"}`}
+              className={`h-full rounded-full transition-all ${isCritical ? "bg-red-500" : isLow ? "bg-action-400" : "bg-action-500"}`}
               style={{ width: `${stockPercent}%` }}
             />
           </div>
@@ -607,7 +607,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       >
         <span className="flex-1 min-w-0 text-[12px] font-medium text-shark-800 dark:text-shark-200 truncate">{c.name}</span>
         <span className={`shrink-0 text-[11px] font-bold px-1.5 py-0.5 rounded ${
-          isCritical ? "bg-red-50 text-red-600" : isLow ? "bg-amber-50 text-amber-600" : "bg-green-50 text-green-600"
+          isCritical ? "bg-red-50 text-red-600" : isLow ? "bg-action-50 text-action-600" : "bg-action-50 text-action-600"
         }`}>{c.quantityOnHand} {c.unitType}</span>
         <span className="shrink-0 text-[11px] text-shark-400 hidden md:block w-24 truncate">{c.category}</span>
         <span className="shrink-0 text-[11px] text-shark-400 hidden lg:block w-28 truncate">{c.region.name}</span>
@@ -664,7 +664,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         <div className="flex items-center gap-1.5 mt-1">
                           <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
                             c.riskLevel === "critical" ? "bg-red-50 text-red-600" :
-                            c.riskLevel === "warning" ? "bg-amber-50 text-amber-600" :
+                            c.riskLevel === "warning" ? "bg-action-50 text-action-600" :
                             "bg-shark-50 dark:bg-shark-800 text-shark-500 dark:text-shark-400"
                           }`}>
                             {(() => {
@@ -747,7 +747,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       {hoveredQtyId === c.id && qtyTooltipPos && (() => {
                         const isCritical = c.quantityOnHand === 0 || c.riskLevel === "critical";
                         const isWarning = !isCritical && (c.quantityOnHand <= c.minimumThreshold || c.riskLevel === "warning");
-                        const accentColor = isCritical ? "#dc2626" : isWarning ? "#f59e0b" : "#16a34a";
+                        const accentColor = isCritical ? "#dc2626" : isWarning ? "#ef4444" : "#0057FF";
                         const statusLabel = isCritical ? "Out of Stock" : isWarning ? "Low Stock" : "In Stock";
                         const daysLeft = c.avgDailyUsage && c.avgDailyUsage > 0 ? Math.round(c.quantityOnHand / c.avgDailyUsage) : null;
                         const depletionDate = c.predictedDepletionDate
@@ -875,7 +875,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                             onClick={() => setShowBatchPanel(c)}
                             className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg transition-colors ${
                               (c.inventoryMethod ?? orgMethod) === "LIFO"
-                                ? "text-amber-700 bg-amber-50 hover:bg-amber-100 ring-1 ring-amber-300/50"
+                                ? "text-action-700 bg-action-50 hover:bg-action-100 ring-1 ring-action-200/50"
                                 : "text-action-700 bg-action-50 hover:bg-action-100 ring-1 ring-action-300/50"
                             }`}
                             title="View batch breakdown"
@@ -1033,7 +1033,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       setSavingOrgMethod(false);
                     }
                   }}
-                  className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${orgMethod === m ? (m === "LIFO" ? "bg-amber-500 text-white shadow-sm" : "bg-action-500 text-white shadow-sm") : "text-shark-500 hover:text-shark-700 dark:hover:text-shark-300"}`}
+                  className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${orgMethod === m ? (m === "LIFO" ? "bg-action-500 text-white shadow-sm" : "bg-action-500 text-white shadow-sm") : "text-shark-500 hover:text-shark-700 dark:hover:text-shark-300"}`}
                 >
                   {m}
                 </button>
@@ -1062,11 +1062,11 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
       {/* IFRS / LIFO Compliance Notice — shown when LIFO is active (org or any item) */}
       {(orgMethod === "LIFO" || consumables.some((c) => c.inventoryMethod === "LIFO")) && (
-        <div className="mx-4 sm:mx-5 mt-3 flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-[28px] px-4 py-3">
-          <Icon name="alert-triangle" size={15} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+        <div className="mx-4 sm:mx-5 mt-3 flex items-start gap-3 bg-action-50 dark:bg-action-900/20 border border-action-200 dark:border-action-700/50 rounded-[28px] px-4 py-3">
+          <Icon name="alert-triangle" size={15} className="text-action-600 dark:text-action-400 shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">LIFO — Operational Use Only</p>
-            <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5 leading-relaxed">
+            <p className="text-xs font-semibold text-action-800 dark:text-action-300">LIFO — Operational Use Only</p>
+            <p className="text-xs text-action-700 dark:text-action-400 mt-0.5 leading-relaxed">
               LIFO is used for operational stock handling only. Financial reporting must follow applicable accounting standards.
               {" "}<strong>In Australia, IFRS does not permit LIFO for financial reporting.</strong>
             </p>
@@ -1304,7 +1304,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       <p className="text-xs text-shark-400">{r.user.name || r.user.email} · {r.quantity} {r.consumable.unitType}</p>
                       <p className="text-xs text-shark-400 mt-0.5">{formatDate(r.createdAt)}</p>
                     </div>
-                    <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${r.consumable.quantityOnHand >= r.quantity ? "bg-amber-50 text-amber-600" : "bg-red-50 text-red-600"}`}>
+                    <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${r.consumable.quantityOnHand >= r.quantity ? "bg-action-50 text-action-600" : "bg-red-50 text-red-600"}`}>
                       {r.consumable.quantityOnHand >= r.quantity ? "Pending" : "Low Stock"}
                     </span>
                   </div>
@@ -1724,7 +1724,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   ))}
               </Select>
               {showAssign?.region?.id && users.filter((u) => u.regionId === showAssign.region.id).length === 0 && (
-                <p className="text-xs text-[#E8532E]">No staff assigned to this region</p>
+                <p className="text-xs text-[#0057FF]">No staff assigned to this region</p>
               )}
             </div>
             <div>
@@ -2079,7 +2079,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-shark-500 dark:text-shark-400">Active method:</span>
-                  <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${effectiveMethod === "LIFO" ? "bg-amber-100 text-amber-700" : "bg-action-50 text-action-700"}`}>
+                  <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${effectiveMethod === "LIFO" ? "bg-action-100 text-action-700" : "bg-action-50 text-action-700"}`}>
                     {effectiveMethod}
                     {c.inventoryMethod ? " (item override)" : " (org default)"}
                   </span>
@@ -2089,9 +2089,9 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
               {/* IFRS warning if LIFO */}
               {effectiveMethod === "LIFO" && (
-                <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-[28px] px-3 py-2.5">
-                  <Icon name="alert-triangle" size={13} className="text-amber-600 shrink-0 mt-0.5" />
-                  <p className="text-[11px] text-amber-700 dark:text-amber-400 leading-relaxed">
+                <div className="flex items-start gap-2 bg-action-50 dark:bg-action-900/20 border border-action-200 dark:border-action-700/50 rounded-[28px] px-3 py-2.5">
+                  <Icon name="alert-triangle" size={13} className="text-action-600 shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-action-700 dark:text-action-400 leading-relaxed">
                     LIFO is operational only. In Australia, IFRS does not permit LIFO for financial reporting.
                   </p>
                 </div>

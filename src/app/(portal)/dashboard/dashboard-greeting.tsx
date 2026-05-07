@@ -54,14 +54,14 @@ export function DashboardGreeting({
   const statusStyle = isCritical
     ? "bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-700 dark:text-red-400"
     : isWarning
-    ? "bg-amber-50 dark:bg-amber-500/10 border-amber-100 dark:border-amber-500/20 text-amber-700 dark:text-amber-400"
-    : "bg-green-50 dark:bg-green-500/10 border-green-100 dark:border-green-500/20 text-green-700 dark:text-green-400";
+    ? "bg-action-50 dark:bg-action-500/10 border-action-100 dark:border-action-500/20 text-action-700 dark:text-action-400"
+    : "bg-action-50 dark:bg-action-500/10 border-action-100 dark:border-action-500/20 text-action-700 dark:text-action-400";
 
   const dotColor = isCritical
     ? "bg-red-500"
     : isWarning
-    ? "bg-amber-500"
-    : "bg-green-500";
+    ? "bg-action-500"
+    : "bg-action-500";
 
   const todayLabel = new Date().toLocaleDateString("en-AU", {
     weekday: "long",

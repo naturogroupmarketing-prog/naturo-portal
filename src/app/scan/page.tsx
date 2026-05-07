@@ -265,8 +265,8 @@ export default function ScanPage() {
                       )}
                       {result.status && (
                         <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                          result.status === "AVAILABLE" ? "bg-green-500/20 text-green-400" :
-                          result.status === "CHECKED_OUT" || result.status === "ASSIGNED" ? "bg-amber-500/20 text-amber-400" :
+                          result.status === "AVAILABLE" ? "bg-action-500/20 text-action-400" :
+                          result.status === "CHECKED_OUT" || result.status === "ASSIGNED" ? "bg-action-500/20 text-action-400" :
                           "bg-red-500/20 text-red-400"
                         }`}>
                           {result.status.replace("_", " ")}

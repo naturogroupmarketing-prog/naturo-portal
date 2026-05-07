@@ -18,10 +18,10 @@ function getPasswordStrength(pw: string): { score: number; label: string; color:
   if (/[^A-Za-z0-9]/.test(pw)) score++;
 
   if (score <= 1) return { score: 1, label: "Weak", color: "bg-red-500" };
-  if (score <= 2) return { score: 2, label: "Fair", color: "bg-orange-500" };
-  if (score <= 3) return { score: 3, label: "Good", color: "bg-yellow-500" };
-  if (score <= 4) return { score: 4, label: "Strong", color: "bg-green-500" };
-  return { score: 5, label: "Very strong", color: "bg-green-600" };
+  if (score <= 2) return { score: 2, label: "Fair", color: "bg-action-500" };
+  if (score <= 3) return { score: 3, label: "Good", color: "bg-action-500" };
+  if (score <= 4) return { score: 4, label: "Strong", color: "bg-action-500" };
+  return { score: 5, label: "Very strong", color: "bg-action-600" };
 }
 
 function SetPasswordForm() {
@@ -39,7 +39,7 @@ function SetPasswordForm() {
 
   if (!token) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-shark-50 dark:bg-shark-950 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#f2f2f2] dark:bg-shark-950 px-4">
         <div className="text-center space-y-4">
           <p className="text-shark-600 dark:text-shark-300 text-sm">
             This invite link is invalid. Please contact your administrator.
@@ -90,14 +90,14 @@ function SetPasswordForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-shark-50 dark:bg-shark-950 px-4 transition-colors">
+    <div className="min-h-screen flex items-center justify-center bg-[#f2f2f2] dark:bg-shark-950 px-4 transition-colors">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Logo size={64} className="mx-auto mb-2" />
           <p className="text-sm text-shark-400 dark:text-shark-200 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] border border-shark-100 dark:border-shark-700 overflow-hidden transition-colors">
+        <div className="glass-card dark:bg-shark-900 rounded-[32px] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] dark:border-shark-700 overflow-hidden transition-colors">
           <div className="p-8">
             {success ? (
               <div className="text-center space-y-4">
@@ -232,7 +232,7 @@ function SetPasswordForm() {
 
 export default function SetPasswordPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-shark-50 dark:bg-shark-950">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#f2f2f2] dark:bg-shark-950">Loading...</div>}>
       <SetPasswordForm />
     </Suspense>
   );

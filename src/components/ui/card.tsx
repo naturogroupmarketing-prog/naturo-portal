@@ -9,12 +9,12 @@ export function Card({ className, variant = "default", padding = "md", children,
   return (
     <div
       className={cn(
-        // Glassmorphism: frosted surface, white-edge border, inset highlight
-        "rounded-[28px] transition-colors",
+        // Warm glass: cream-tinted frosted surface (Designer Maryam MD3 system)
+        "rounded-[32px] transition-colors",
         {
-          "backdrop-blur-xl bg-white/78 dark:bg-shark-900/70 border border-white/80 dark:border-white/[0.07] shadow-[0_2px_24px_rgba(100,140,220,0.14),0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_4px_16px_rgba(0,0,0,0.20)]": variant === "default",
-          "backdrop-blur-md bg-white/65 dark:bg-shark-900/50 border border-white/72 dark:border-white/[0.06]": variant === "flat",
-          "backdrop-blur-xl bg-white/88 dark:bg-shark-900/80 border border-white/88 dark:border-white/[0.08] shadow-[0_2px_32px_rgba(100,140,220,0.16),0_1px_0_rgba(255,255,255,1)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_8px_28px_rgba(0,0,0,0.30),inset_0_1px_0_rgba(255,255,255,0.06)]": variant === "elevated",
+          "glass-card dark:bg-shark-900/70 dark:border-white/[0.07] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_4px_16px_rgba(0,0,0,0.20)]": variant === "default",
+          "backdrop-blur-[20px] bg-white/40 dark:bg-shark-900/50 border border-white/50 dark:border-white/[0.08]": variant === "flat",
+          "glass-card dark:bg-shark-900/80 dark:border-white/[0.08] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_8px_28px_rgba(0,0,0,0.30),inset_0_1px_0_rgba(255,255,255,0.06)] shadow-[0_4px_40px_rgba(0,113,227,0.10),0_1px_0_rgba(255,255,255,0.90)]": variant === "elevated",
           "bg-transparent": variant === "ghost",
         },
         {

@@ -24,7 +24,7 @@ const LEVEL_CONFIG = {
     label: "Read-Only Support Session",
     bg: "bg-[#1e3a5f]",
     text: "text-white",
-    badge: "bg-amber-500",
+    badge: "bg-action-500",
     description: "Read-only access · No changes possible",
   },
   IMPERSONATION: {
@@ -118,7 +118,7 @@ export function SupportBanner({
           isAlmostGone
             ? "bg-red-900 text-red-200 animate-pulse"
             : isExpiringSoon
-            ? "bg-amber-600/80 text-amber-100"
+            ? "bg-action-600/80 text-action-100"
             : "bg-white/10"
         }`}
         title="Session expires in"

@@ -129,7 +129,7 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <span className={`text-xs font-semibold px-2 py-0.5 rounded ${report.type === "DAMAGE" ? "bg-amber-100 text-[#E8532E]" : "bg-red-100 text-red-700"}`}>
+                                <span className={`text-xs font-semibold px-2 py-0.5 rounded ${report.type === "DAMAGE" ? "bg-action-100 text-[#0057FF]" : "bg-red-100 text-red-700"}`}>
                                   {report.type}
                                 </span>
                                 <p className="text-sm font-semibold text-shark-800 dark:text-shark-200">{report.asset.name}</p>

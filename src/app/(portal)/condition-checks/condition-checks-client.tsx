@@ -92,7 +92,7 @@ interface Props {
 const CONDITION_COLORS: Record<string, string> = {
   GOOD: "bg-action-100 text-action-700",
   FAIR: "bg-blue-100 text-blue-700",
-  POOR: "bg-amber-100 text-[#E8532E]",
+  POOR: "bg-action-100 text-[#0057FF]",
   DAMAGED: "bg-red-100 text-red-700",
 };
 
@@ -253,7 +253,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                           {isOverdue ? (
                             <span className="text-red-500 font-medium ml-1.5">Overdue</span>
                           ) : daysUntil <= 7 ? (
-                            <span className="text-[#E8532E] font-medium ml-1.5">{daysUntil} day{daysUntil !== 1 ? "s" : ""} left</span>
+                            <span className="text-[#0057FF] font-medium ml-1.5">{daysUntil} day{daysUntil !== 1 ? "s" : ""} left</span>
                           ) : null}
                         </p>
                         {s.notes && <p className="text-xs text-shark-400 mt-1">{s.notes}</p>}
@@ -463,7 +463,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <span className="text-xs font-medium text-action-600 bg-action-50 px-2 py-0.5 rounded-full">{freqLabel}</span>
-                    <span className={`text-xs ${isOverdue ? "text-red-600 font-medium" : daysUntil <= 7 ? "text-[#E8532E]" : "text-shark-500 dark:text-shark-400"}`}>
+                    <span className={`text-xs ${isOverdue ? "text-red-600 font-medium" : daysUntil <= 7 ? "text-[#0057FF]" : "text-shark-500 dark:text-shark-400"}`}>
                       Due: {due.toLocaleDateString("en-AU", { day: "numeric", month: "short" })}
                       {isOverdue && " (overdue)"}
                     </span>
@@ -586,7 +586,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
         {[
           { label: "Staff with Items", value: staffStatus.length, icon: "users" as const, iconBg: "bg-action-500", iconColor: "text-white" },
           { label: "Completed", value: totalChecked, icon: "check" as const, iconBg: "bg-action-500", iconColor: "text-white" },
-          { label: "Incomplete", value: staffStatus.length - totalChecked, icon: "clock" as const, iconBg: "bg-[#E8532E]", iconColor: "text-white" },
+          { label: "Incomplete", value: staffStatus.length - totalChecked, icon: "clock" as const, iconBg: "bg-[#0057FF]", iconColor: "text-white" },
           { label: "Photos Submitted", value: checks.length, icon: "search" as const, iconBg: "bg-action-500", iconColor: "text-white" },
         ].map((stat) => (
           <Card key={stat.label} className="hover:shadow-md transition-all duration-200">
@@ -657,14 +657,14 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                   </div>
                   <div className="flex items-center gap-3">
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                      isComplete ? "bg-action-100 text-action-700" : "bg-amber-100 text-[#E8532E]"
+                      isComplete ? "bg-action-100 text-action-700" : "bg-action-100 text-[#0057FF]"
                     }`}>
                       {staff.checkedItems}/{staff.totalItems} items
                     </span>
                     {/* Progress bar */}
                     <div className="w-20 h-1.5 bg-shark-100 dark:bg-shark-800 rounded-full hidden sm:block overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all ${isComplete ? "bg-action-400" : "bg-[#E8532E]"}`}
+                        className={`h-full rounded-full transition-all ${isComplete ? "bg-action-400" : "bg-[#0057FF]"}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>

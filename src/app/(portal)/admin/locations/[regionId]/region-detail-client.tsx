@@ -16,14 +16,14 @@ import { getItemTemplates, applyItemsToRegion } from "@/app/actions/locations";
 const SECTION_COLORS = [
   { bg: "bg-blue-50", color: "text-blue-600" },
   { bg: "bg-action-50", color: "text-action-600" },
-  { bg: "bg-amber-50", color: "text-[#E8532E]" },
-  { bg: "bg-cyan-50", color: "text-cyan-600" },
+  { bg: "bg-action-50", color: "text-[#0057FF]" },
+  { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-red-50", color: "text-red-600" },
   { bg: "bg-shark-50 dark:bg-shark-800", color: "text-shark-600 dark:text-shark-400" },
-  { bg: "bg-pink-50", color: "text-pink-600" },
-  { bg: "bg-orange-50", color: "text-orange-600" },
-  { bg: "bg-teal-50", color: "text-teal-600" },
-  { bg: "bg-indigo-50", color: "text-indigo-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
 ];
 
 interface Asset {
@@ -247,7 +247,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
     { label: "Total Assets", value: assets.length, icon: "package" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
     { label: "Supplies", value: consumables.length, icon: "droplet" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
     { label: "Staff", value: staff.length, icon: "users" as const, color: "text-white", bg: "bg-action-500", border: "border-action-500" },
-    { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, color: "text-white", bg: "bg-[#E8532E]", border: "border-[#E8532E]" },
+    { label: "Low Stock", value: lowStockCount, icon: "alert-triangle" as const, color: "text-white", bg: "bg-[#0057FF]", border: "border-[#0057FF]" },
   ];
 
   const tabs = [
@@ -426,7 +426,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                 <td className="px-4 py-2.5 text-xs font-mono text-shark-500 dark:text-shark-400">{asset.assetCode}</td>
                                 <td className="px-4 py-2.5 text-sm font-medium text-shark-800 dark:text-shark-200">
                                   {asset.name}
-                                  {asset.isHighValue && <span className="text-[#E8532E] ml-1">★</span>}
+                                  {asset.isHighValue && <span className="text-[#0057FF] ml-1">★</span>}
                                 </td>
                                 <td className="px-4 py-2.5 hidden md:table-cell"><Badge status={asset.status} /></td>
                                 <td className="px-4 py-2.5 text-sm text-shark-500 dark:text-shark-400 hidden lg:table-cell">
@@ -514,11 +514,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                                     <p className="text-xs text-shark-400">{item.unitType}</p>
                                   </td>
                                   <td className="px-4 py-2.5">
-                                    <span className={`text-sm font-semibold ${isOut ? "text-red-600" : isLow ? "text-[#E8532E]" : "text-shark-700 dark:text-shark-300"}`}>
+                                    <span className={`text-sm font-semibold ${isOut ? "text-red-600" : isLow ? "text-[#0057FF]" : "text-shark-700 dark:text-shark-300"}`}>
                                       {item.quantityOnHand}
                                     </span>
                                     {isOut && <span className="ml-1.5 text-xs text-red-500 font-medium">OUT</span>}
-                                    {isLow && !isOut && <span className="ml-1.5 text-xs text-[#E8532E] font-medium">LOW</span>}
+                                    {isLow && !isOut && <span className="ml-1.5 text-xs text-[#0057FF] font-medium">LOW</span>}
                                   </td>
                                   <td className="px-4 py-2.5 text-sm text-shark-400 hidden md:table-cell">{item.minimumThreshold}</td>
                                   <td className="px-4 py-2.5 text-sm text-shark-400 hidden lg:table-cell">{item.supplier || "—"}</td>
@@ -614,7 +614,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                           <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{a.name}</p>
                           <p className="text-xs text-shark-400">{a.category}{a.supplier ? ` · ${a.supplier}` : ""}{a.purchaseCost ? ` · $${a.purchaseCost}` : ""}</p>
                         </div>
-                        {a.isHighValue && <span className="text-xs text-[#E8532E] font-medium">HV</span>}
+                        {a.isHighValue && <span className="text-xs text-[#0057FF] font-medium">HV</span>}
                       </div>
                     );
                   })}

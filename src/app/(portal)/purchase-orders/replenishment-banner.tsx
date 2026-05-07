@@ -56,15 +56,15 @@ export function ReplenishmentBanner({ suggestions }: Props) {
   // "All clear" state
   if (visible.length === 0) {
     return (
-      <Card className="border-green-100 bg-green-50/50">
+      <Card className="border-action-100 bg-action-50/50">
         <CardContent className="py-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center">
-              <Icon name="check" size={14} className="text-green-600" />
+            <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center">
+              <Icon name="check" size={14} className="text-action-600" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-green-800">Stock levels look good</p>
-              <p className="text-xs text-green-600">No items need reordering right now</p>
+              <p className="text-sm font-semibold text-action-800">Stock levels look good</p>
+              <p className="text-xs text-action-600">No items need reordering right now</p>
             </div>
             <span className="ml-auto text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
           </div>
@@ -119,15 +119,15 @@ export function ReplenishmentBanner({ suggestions }: Props) {
           onClick={() => setCollapsed((c) => !c)}
           className="w-full flex items-center gap-2 text-left"
         >
-          <div className="w-7 h-7 rounded-lg bg-[#E8532E]/10 flex items-center justify-center shrink-0">
-            <Icon name="bar-chart" size={14} className="text-[#E8532E]" />
+          <div className="w-7 h-7 rounded-lg bg-[#0057FF]/10 flex items-center justify-center shrink-0">
+            <Icon name="bar-chart" size={14} className="text-[#0057FF]" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Smart Replenishment</h3>
             <p className="text-xs text-shark-400">
               {criticalCount > 0 && <span className="text-red-500 font-medium">{criticalCount} critical</span>}
               {criticalCount > 0 && warningCount > 0 && " · "}
-              {warningCount > 0 && <span className="text-amber-500 font-medium">{warningCount} warning</span>}
+              {warningCount > 0 && <span className="text-action-500 font-medium">{warningCount} warning</span>}
               {criticalCount === 0 && warningCount === 0 && <span>{visible.length} items</span>}
               {" "}— grouped by supplier to save on postage
             </p>
@@ -165,7 +165,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                   <span className="text-xs font-semibold text-shark-700 dark:text-shark-300 flex-1 truncate">
                     {hostname || "No shop link set"}
                   </span>
-                  <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full shrink-0 ${groupCritical > 0 ? "bg-red-50 text-red-500" : "bg-amber-50 text-amber-600"}`}>
+                  <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full shrink-0 ${groupCritical > 0 ? "bg-red-50 text-red-500" : "bg-action-50 text-action-600"}`}>
                     {groupVisible.length} item{groupVisible.length !== 1 ? "s" : ""}
                   </span>
                   {groupCost > 0 && (
@@ -202,13 +202,13 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                 <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {groupVisible.map((s) => (
                     <div key={s.consumableId} className="flex items-center gap-2 px-3 py-2">
-                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${s.riskLevel === "critical" ? "bg-red-500" : "bg-amber-400"}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${s.riskLevel === "critical" ? "bg-red-500" : "bg-action-400"}`} />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{s.consumableName}</p>
                         <p className="text-xs text-shark-400">
                           {s.regionName} · {s.currentStock} in stock
                           {s.daysRemaining !== null && (
-                            <span className={`ml-1 font-medium ${s.riskLevel === "critical" ? "text-red-500" : "text-amber-500"}`}>
+                            <span className={`ml-1 font-medium ${s.riskLevel === "critical" ? "text-red-500" : "text-action-500"}`}>
                               · {s.daysRemaining === 0 ? "Depleted" : `~${s.daysRemaining}d left`}
                             </span>
                           )}

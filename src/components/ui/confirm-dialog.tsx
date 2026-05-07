@@ -104,20 +104,20 @@ export function ConfirmDialog({
 
   const iconColor = {
     danger: "text-red-500",
-    warning: "text-amber-500",
+    warning: "text-action-500",
     default: "text-action-400",
   }[variant];
 
   const iconBg = {
     danger: "bg-red-50 dark:bg-red-500/10",
-    warning: "bg-amber-50 dark:bg-amber-500/10",
+    warning: "bg-action-50 dark:bg-action-500/10",
     default: "bg-action-50 dark:bg-action-400/10",
   }[variant];
 
   const confirmButtonVariant = variant === "danger" ? "danger" : "primary";
   const confirmButtonClass =
     variant === "warning"
-      ? "bg-amber-500 text-white hover:bg-amber-600 shadow-sm"
+      ? "bg-action-500 text-white hover:bg-action-600 shadow-sm"
       : undefined;
 
   return (

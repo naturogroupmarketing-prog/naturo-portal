@@ -92,8 +92,8 @@ export default async function AlertsPage() {
                 <div
                   className={`flex items-center justify-center h-10 w-10 rounded-[28px] ${
                     card.count > 0
-                      ? "bg-[#E8532E]/10 text-[#E8532E]"
-                      : "bg-emerald-50 text-emerald-500 dark:bg-emerald-900/20 dark:text-emerald-400"
+                      ? "bg-[#0057FF]/10 text-[#0057FF]"
+                      : "bg-action-50 text-action-500 dark:bg-action-900/20 dark:text-action-400"
                   }`}
                 >
                   <Icon name="alert-triangle" size={20} />
@@ -112,8 +112,8 @@ export default async function AlertsPage() {
                   <span
                     className={`text-3xl font-bold ${
                       card.count > 0
-                        ? "text-[#E8532E]"
-                        : "text-emerald-500 dark:text-emerald-400"
+                        ? "text-[#0057FF]"
+                        : "text-action-500 dark:text-action-400"
                     }`}
                   >
                     {card.count}

@@ -112,7 +112,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                             <div className="flex items-center gap-2 flex-wrap">
                               <p className="text-sm font-semibold text-shark-800 dark:text-shark-200">{item.name}</p>
                               <span className="text-xs font-mono text-shark-400">{item.assetCode}</span>
-                              {item.isHighValue && <span className="text-xs text-[#E8532E] font-medium">High Value</span>}
+                              {item.isHighValue && <span className="text-xs text-[#0057FF] font-medium">High Value</span>}
                             </div>
                             <p className="text-xs text-shark-400 mt-0.5">{item.category}</p>
                             {item.report && (

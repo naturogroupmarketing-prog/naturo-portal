@@ -58,23 +58,23 @@ export function SessionTimeoutWarning() {
 
   return (
     <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-sm w-full mx-4 animate-fade-in">
-      <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-[28px] px-4 py-3 shadow-lg flex items-start gap-3">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500 shrink-0 mt-0.5">
+      <div className="bg-action-50 dark:bg-action-900/30 border border-action-200 dark:border-action-800 rounded-[28px] px-4 py-3 shadow-lg flex items-start gap-3">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-action-500 shrink-0 mt-0.5">
           <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
           <line x1="12" y1="9" x2="12" y2="13" />
           <line x1="12" y1="17" x2="12.01" y2="17" />
         </svg>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+          <p className="text-sm font-medium text-action-800 dark:text-action-200">
             Session expiring in {minutesLeft} min
           </p>
-          <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
+          <p className="text-xs text-action-600 dark:text-action-400 mt-0.5">
             Save your work or extend your session.
           </p>
         </div>
         <button
           onClick={refreshSession}
-          className="shrink-0 text-xs font-medium bg-amber-500 text-white px-3 py-1.5 rounded-lg hover:bg-amber-600 transition-colors"
+          className="shrink-0 text-xs font-medium bg-action-500 text-white px-3 py-1.5 rounded-lg hover:bg-action-600 transition-colors"
         >
           Extend
         </button>

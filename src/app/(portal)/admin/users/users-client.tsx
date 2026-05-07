@@ -14,19 +14,19 @@ import { useToast } from "@/components/ui/toast";
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50", border: "border-amber-200" },
-  { color: "text-cyan-600", bg: "bg-cyan-50", border: "border-cyan-200" },
+  { color: "text-[#0057FF]", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800", border: "border-shark-200" },
-  { color: "text-pink-600", bg: "bg-pink-50", border: "border-pink-200" },
-  { color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200" },
-  { color: "text-lime-600", bg: "bg-lime-50", border: "border-lime-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-pink-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-gray-600", bg: "bg-gray-100", border: "border-gray-200" },
-  { color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200" },
-  { color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-200" },
-  { color: "text-teal-600", bg: "bg-teal-50", border: "border-teal-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-rose-600", bg: "bg-rose-50", border: "border-rose-200" },
-  { color: "text-sky-600", bg: "bg-sky-50", border: "border-sky-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
 ];
 
 interface User {

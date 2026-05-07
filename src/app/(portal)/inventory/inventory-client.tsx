@@ -26,12 +26,12 @@ import {
 const STATE_COLORS = [
   { bg: "bg-blue-50", color: "text-blue-600" },
   { bg: "bg-action-50", color: "text-action-600" },
-  { bg: "bg-amber-50", color: "text-[#E8532E]" },
-  { bg: "bg-cyan-50", color: "text-cyan-600" },
+  { bg: "bg-action-50", color: "text-[#0057FF]" },
+  { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-shark-50 dark:bg-shark-800", color: "text-shark-600 dark:text-shark-400" },
   { bg: "bg-rose-50", color: "text-rose-600" },
-  { bg: "bg-teal-50", color: "text-teal-600" },
-  { bg: "bg-orange-50", color: "text-orange-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
 ];
 
 interface Location {
@@ -207,7 +207,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                       {damageLost > 0 && (
                                         <span
                                           onClick={(e) => { e.preventDefault(); window.location.href = `/alerts/damage?region=${region.id}`; }}
-                                          className="flex items-center gap-1 text-[#E8532E] bg-red-50 border border-red-100 hover:bg-red-100 px-2 py-0.5 rounded-full font-semibold text-xs transition-colors"
+                                          className="flex items-center gap-1 text-[#0057FF] bg-red-50 border border-red-100 hover:bg-red-100 px-2 py-0.5 rounded-full font-semibold text-xs transition-colors"
                                           title={`${damageLost} damaged/lost`}
                                         >
                                           <Icon name="alert-triangle" size={11} />
@@ -217,7 +217,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                       {alerts.lowStock > 0 && (
                                         <span
                                           onClick={(e) => { e.preventDefault(); window.location.href = `/alerts/low-stock?region=${region.id}`; }}
-                                          className="flex items-center gap-1 text-amber-600 bg-amber-50 border border-amber-100 hover:bg-amber-100 px-2 py-0.5 rounded-full font-semibold text-xs transition-colors"
+                                          className="flex items-center gap-1 text-action-600 bg-action-50 border border-action-100 hover:bg-action-100 px-2 py-0.5 rounded-full font-semibold text-xs transition-colors"
                                           title={`${alerts.lowStock} low stock`}
                                         >
                                           <Icon name="alert-triangle" size={11} />
@@ -286,11 +286,11 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
       <Modal open={!!archiveConfirm} onClose={() => setArchiveConfirm(null)} title="Archive Location">
         {archiveConfirm && (
           <div className="space-y-4">
-            <div className="bg-amber-50 border border-amber-200 rounded-[28px] p-4">
-              <p className="text-sm font-medium text-amber-800">
+            <div className="bg-action-50 border border-action-200 rounded-[28px] p-4">
+              <p className="text-sm font-medium text-action-800">
                 Archive &quot;{archiveConfirm.name}&quot;?
               </p>
-              <p className="text-sm text-amber-700 mt-1">
+              <p className="text-sm text-action-700 mt-1">
                 All assets, supplies, and staff will be preserved but hidden from active views. You can restore this location anytime.
               </p>
             </div>

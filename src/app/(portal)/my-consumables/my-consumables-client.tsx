@@ -12,15 +12,15 @@ import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50" },
-  { color: "text-cyan-600", bg: "bg-cyan-50" },
+  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
   { color: "text-gray-600", bg: "bg-gray-100" },
-  { color: "text-orange-600", bg: "bg-orange-50" },
-  { color: "text-pink-600", bg: "bg-pink-50" },
-  { color: "text-lime-600", bg: "bg-lime-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
 ];
 
 interface Assignment {
@@ -150,11 +150,11 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
 
       {/* Pending Assignments — need confirmation */}
       {pendingAssignments.length > 0 && (
-        <Card className="border-amber-200 bg-amber-50/30">
+        <Card className="border-action-200 bg-action-50/30">
           <CardContent className="pt-5">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center">
-                <Icon name="clipboard" size={14} className="text-[#E8532E]" />
+              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center">
+                <Icon name="clipboard" size={14} className="text-[#0057FF]" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Confirm Receipt</p>
@@ -427,7 +427,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
               </span>
             </div>
             {useQty >= ca.quantity && (
-              <p className="text-xs text-[#E8532E]">All used — this will close the assignment.</p>
+              <p className="text-xs text-[#0057FF]">All used — this will close the assignment.</p>
             )}
             <div className="flex items-center gap-2 pt-1">
               <Button size="sm" onClick={handleMarkUsed} disabled={loading || useQty === 0} loading={loading} className="text-xs">

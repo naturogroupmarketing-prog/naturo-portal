@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Exo } from "next/font/google";
+import { Manrope, Exo } from "next/font/google";
 import { PWARegister } from "@/components/pwa-register";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -9,7 +9,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
 const exo = Exo({ subsets: ["latin"], variable: "--font-exo", weight: ["300", "400", "500", "600", "700", "800"] });
 
 const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://app.trackio.au";
@@ -94,7 +94,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/trackio_t_logo.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="theme-color" content="#f5f5f5" />
+        <meta name="theme-color" content="#f2f2f2" />
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             try {
@@ -139,7 +139,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} ${exo.variable} antialiased`}>
+      <body className={`${manrope.variable} ${manrope.className} ${exo.variable} antialiased`}>
         <ThemeProvider>
           <ToastProvider>
             <PWARegister />

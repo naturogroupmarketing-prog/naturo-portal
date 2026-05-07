@@ -73,8 +73,8 @@ export function InstallAppSection() {
   if (state === "installed") {
     return (
       <div className="flex items-center gap-3 py-1">
-        <div className="w-9 h-9 rounded-[28px] bg-green-100 flex items-center justify-center shrink-0">
-          <Icon name="check-circle" size={18} className="text-green-600" />
+        <div className="w-9 h-9 rounded-[28px] bg-action-100 flex items-center justify-center shrink-0">
+          <Icon name="check-circle" size={18} className="text-action-600" />
         </div>
         <div>
           <p className="text-sm font-medium text-shark-800 dark:text-shark-200">App installed</p>
@@ -158,8 +158,8 @@ export function InstallAppSection() {
   if (platform === "ios-other") {
     return (
       <div className="flex items-center gap-3 py-1">
-        <div className="w-9 h-9 rounded-[28px] bg-amber-100 flex items-center justify-center shrink-0">
-          <Icon name="alert-triangle" size={18} className="text-amber-600" />
+        <div className="w-9 h-9 rounded-[28px] bg-action-100 flex items-center justify-center shrink-0">
+          <Icon name="alert-triangle" size={18} className="text-action-600" />
         </div>
         <div>
           <p className="text-sm font-medium text-shark-800 dark:text-shark-200">Open in Safari to install</p>

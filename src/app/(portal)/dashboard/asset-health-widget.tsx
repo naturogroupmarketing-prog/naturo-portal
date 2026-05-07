@@ -37,28 +37,28 @@ const GRADE_CONFIG: Record<
   { bar: string; text: string; bg: string; border: string }
 > = {
   A: {
-    bar: "bg-green-500",
-    text: "text-green-700",
-    bg: "bg-green-50",
-    border: "border-green-200",
+    bar: "bg-action-500",
+    text: "text-action-700",
+    bg: "bg-action-50",
+    border: "border-action-200",
   },
   B: {
-    bar: "bg-teal-500",
-    text: "text-teal-700",
-    bg: "bg-teal-50",
-    border: "border-teal-200",
+    bar: "bg-action-500",
+    text: "text-action-700",
+    bg: "bg-action-50",
+    border: "border-action-200",
   },
   C: {
-    bar: "bg-amber-400",
-    text: "text-amber-700",
-    bg: "bg-amber-50",
-    border: "border-amber-200",
+    bar: "bg-action-400",
+    text: "text-action-700",
+    bg: "bg-action-50",
+    border: "border-action-200",
   },
   D: {
-    bar: "bg-orange-500",
-    text: "text-orange-700",
-    bg: "bg-orange-50",
-    border: "border-orange-200",
+    bar: "bg-action-500",
+    text: "text-action-700",
+    bg: "bg-action-50",
+    border: "border-action-200",
   },
   F: {
     bar: "bg-red-500",
@@ -79,24 +79,24 @@ const RECOMMENDATION_CONFIG: Record<
   },
   service: {
     label: "Service",
-    color: "text-orange-700",
-    bg: "bg-orange-100",
+    color: "text-action-700",
+    bg: "bg-action-100",
   },
   monitor: {
     label: "Monitor",
-    color: "text-amber-700",
-    bg: "bg-amber-100",
+    color: "text-action-700",
+    bg: "bg-action-100",
   },
   maintain: {
     label: "Maintain",
-    color: "text-green-700",
-    bg: "bg-green-100",
+    color: "text-action-700",
+    bg: "bg-action-100",
   },
 };
 
 function scoreBadgeColor(score: number): string {
-  if (score >= 80) return "bg-green-100 text-green-700 border-green-200";
-  if (score >= 60) return "bg-amber-100 text-amber-700 border-amber-200";
+  if (score >= 80) return "bg-action-100 text-action-700 border-action-200";
+  if (score >= 60) return "bg-action-100 text-action-700 border-action-200";
   return "bg-red-100 text-red-700 border-red-200";
 }
 
@@ -106,12 +106,12 @@ function avgScoreBadgeColor(score: number): {
   ring: string;
 } {
   if (score >= 80)
-    return { bg: "bg-green-50", text: "text-green-700", ring: "ring-green-200" };
+    return { bg: "bg-action-50", text: "text-action-700", ring: "ring-action-200" };
   if (score >= 60)
     return {
-      bg: "bg-amber-50",
-      text: "text-amber-700",
-      ring: "ring-amber-200",
+      bg: "bg-action-50",
+      text: "text-action-700",
+      ring: "ring-action-200",
     };
   return { bg: "bg-red-50", text: "text-red-700", ring: "ring-red-200" };
 }
@@ -223,7 +223,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                       href={`/assets?search=${encodeURIComponent(asset.assetCode)}`}
                       className="flex items-center gap-2 py-1 px-1.5 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
                     >
-                      <span className="w-5 h-5 rounded-md bg-green-50 flex items-center justify-center text-[10px] font-bold text-green-700 shrink-0">
+                      <span className="w-5 h-5 rounded-md bg-action-50 flex items-center justify-center text-[10px] font-bold text-action-700 shrink-0">
                         A
                       </span>
                       <span className="text-xs font-medium text-shark-700 dark:text-shark-300 truncate flex-1 group-hover:text-action-600 transition-colors">
@@ -247,14 +247,14 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
 
             {!hasCritical ? (
               /* All good state */
-              <div className="flex flex-col items-center justify-center py-8 gap-2 text-center rounded-[28px] bg-green-50 border border-green-100">
-                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <Icon name="check" size={18} className="text-green-600" />
+              <div className="flex flex-col items-center justify-center py-8 gap-2 text-center rounded-[28px] bg-action-50 border border-action-100">
+                <div className="w-10 h-10 rounded-full bg-action-100 flex items-center justify-center">
+                  <Icon name="check" size={18} className="text-action-600" />
                 </div>
-                <p className="text-sm font-semibold text-green-700">
+                <p className="text-sm font-semibold text-action-700">
                   All assets in good health
                 </p>
-                <p className="text-xs text-green-500">No critical assets found</p>
+                <p className="text-xs text-action-500">No critical assets found</p>
               </div>
             ) : (
               <div className="space-y-2">

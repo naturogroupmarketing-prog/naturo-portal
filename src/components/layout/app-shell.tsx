@@ -57,7 +57,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
     <PageCogProvider>
     <SidebarContext.Provider value={{ expanded: sidebarExpanded, toggle: () => setSidebarExpanded((p) => !p) }}>
     <div
-      className="flex flex-col h-dvh bg-[#f5f5f7] dark:bg-shark-950 transition-colors"
+      className="flex flex-col h-dvh transition-colors bg-[#F5F5F7]"
       onTouchStart={handleMainTouchStart}
       onTouchEnd={handleMainTouchEnd}
     >
@@ -86,7 +86,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
         {/* Desktop sidebar — collapsible with toggle arrow */}
         <aside className="hidden lg:flex flex-shrink-0 relative">
           <div
-            className={`flex flex-col backdrop-blur-2xl bg-white/72 dark:bg-shark-900/80 border-r border-white/75 dark:border-white/[0.06] shadow-[1px_0_0_rgba(255,255,255,0.75)] transition-all duration-300 overflow-hidden ${
+            className={`flex flex-col backdrop-blur-[20px] bg-white/80 border-r border-black/[0.06] transition-all duration-300 overflow-hidden ${
               sidebarExpanded ? "w-64" : "w-[68px]"
             }`}
           >
@@ -127,7 +127,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
               onClick={() => setSidebarOpen(false)}
             />
             <div
-              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-2xl bg-white/80 dark:bg-shark-900/85 border-r border-white/80 dark:border-white/[0.06] z-50 shadow-[4px_0_32px_rgba(120,140,220,0.18)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.40)] transition-colors"
+              className="fixed inset-y-0 left-0 w-[min(16rem,85vw)] backdrop-blur-[20px] bg-white/90 border-r border-black/[0.06] z-50 shadow-[4px_0_24px_rgba(0,0,0,0.10)] transition-colors"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
@@ -174,24 +174,24 @@ function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { ro
 
   const items: RailItem[] = role === "STAFF"
     ? [
-        { icon: "dashboard", href: "/dashboard", label: "Home" },
+        { icon: "home", href: "/dashboard", label: "Home" },
         { icon: "package", href: "/my-assets", label: "Assets" },
         { icon: "droplet", href: "/my-consumables", label: "Supplies" },
         { icon: "plus", href: "/request-consumables", label: "Request" },
       ]
     : role === "AUDITOR"
     ? [
-        { icon: "dashboard", href: "/dashboard", label: "Home" },
-        { icon: "clipboard", href: "/reports", label: "Reports" },
+        { icon: "home", href: "/dashboard", label: "Home" },
+        { icon: "bar-chart", href: "/reports", label: "Reports" },
         { icon: "clock", href: "/activity", label: "Activity" },
       ]
     : [
-        { icon: "dashboard", href: "/dashboard", label: "Home" },
-        { icon: "package", href: "/inventory", label: "Stock" },
+        { icon: "home", href: "/dashboard", label: "Home" },
+        { icon: "droplet", href: "/inventory", label: "Stock" },
         { icon: "truck", href: "/purchase-orders", label: "Orders", badge: pendingPOCount },
         { icon: "users", href: "/staff", label: "Staff" },
         { icon: "arrow-left", href: "/returns", label: "Returns", badge: pendingReturnsCount },
-        { icon: "clipboard", href: "/reports", label: "Reports" },
+        { icon: "bar-chart", href: "/reports", label: "Reports" },
         { icon: "settings", href: "/settings", label: "Settings" },
       ];
 
@@ -208,8 +208,8 @@ function SidebarRail({ role, pendingPOCount = 0, pendingReturnsCount = 0 }: { ro
               title={item.label}
               className={`relative w-11 h-11 flex items-center justify-center rounded-[14px] transition-all duration-200 ${
                 active
-                  ? "backdrop-blur-sm bg-white/70 dark:bg-white/[0.12] border border-white/80 dark:border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(100,140,220,0.14)] text-action-600 dark:text-action-400"
-                  : "bg-white/20 dark:bg-white/[0.04] border border-white/35 dark:border-white/[0.07] text-shark-500 dark:text-shark-400 hover:bg-white/40 dark:hover:bg-white/[0.08] hover:text-shark-700 dark:hover:text-white"
+                  ? "bg-[#0057FF]/[0.10] dark:bg-[#0057FF]/20 text-[#0057FF] dark:text-action-400"
+                  : "text-shark-500 dark:text-shark-400 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] hover:text-shark-700 dark:hover:text-white"
               }`}
             >
               <Icon name={item.icon} size={20} />

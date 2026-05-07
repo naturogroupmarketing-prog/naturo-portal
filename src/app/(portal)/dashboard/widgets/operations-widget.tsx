@@ -25,7 +25,7 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (animated / 100) * circumference;
-  const color = score >= 80 ? "#1F3DD9" : score >= 50 ? "#E8532E" : "#ef4444";
+  const color = score >= 80 ? "#0057FF" : score >= 50 ? "#ef4444" : "#dc2626";
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(score), 100);
@@ -64,35 +64,35 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
       label: "Awaiting Approval",
       display: `${data.ordersAwaitingApproval} orders`,
       barPct: Math.max(4, 100 - Math.min(96, data.ordersAwaitingApproval * 18)),
-      barColor: data.ordersAwaitingApproval > 0 ? "#E8532E" : "#1F3DD9",
+      barColor: data.ordersAwaitingApproval > 0 ? "#ef4444" : "#0057FF",
       href: "/purchase-orders",
     },
     {
       label: "Fleet Uptime",
       display: `${data.totalStaff} staff`,
       barPct: Math.min(100, Math.max(10, data.totalStaff * 5)),
-      barColor: "#22c55e",
+      barColor: "#0057FF",
       href: "/staff",
     },
     {
       label: "Awaiting Receival",
       display: `${data.ordersAwaitingReceival} orders`,
       barPct: Math.max(4, 100 - Math.min(96, data.ordersAwaitingReceival * 12)),
-      barColor: "#1F3DD9",
+      barColor: data.ordersAwaitingReceival > 0 ? "#ef4444" : "#0057FF",
       href: "/purchase-orders?status=ORDERED",
     },
   ];
 
   return (
-    <Card className={cn("h-full bg-white/60 dark:bg-shark-900/60 backdrop-blur-xl backdrop-saturate-150 border border-white/60 dark:border-white/10", className)}>
+    <Card className={cn("h-full backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 dark:bg-shark-900/30 border border-white/50 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)]", className)}>
       <div className="p-3 sm:p-4">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-bold text-shark-900 dark:text-shark-100 leading-tight">Operations Performance</h2>
-          <div className="flex items-center gap-1.5 bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 rounded-full px-2 py-0.5 shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-wider">Live</span>
+          <div className="flex items-center gap-1.5 bg-action-50 dark:bg-action-500/10 border border-action-100 dark:border-action-500/20 rounded-full px-2 py-0.5 shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-action-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-action-600 dark:text-action-400 uppercase tracking-wider">Live</span>
           </div>
         </div>
 
@@ -186,16 +186,16 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
                   className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
-                    <Icon name={item.icon} size={13} className="text-[#E8532E]" />
+                    <Icon name={item.icon} size={13} className="text-action-600" />
                     <span className="text-xs text-shark-600 dark:text-shark-400">{item.label}</span>
                   </div>
-                  <span className="text-xs font-bold text-[#E8532E]">{item.value}</span>
+                  <span className="text-xs font-bold text-[#0057FF]">{item.value}</span>
                 </Link>
               ))}
             </div>
           ) : (
             <div className="px-3 py-3 border-t border-shark-100 dark:border-shark-800 flex items-center gap-2">
-              <Icon name="check-circle" size={13} className="text-green-500" />
+              <Icon name="check-circle" size={13} className="text-action-500" />
               <span className="text-xs text-shark-500 dark:text-shark-400">No active alerts — all clear!</span>
             </div>
           )}

@@ -78,9 +78,9 @@ export function AiBriefingClient({
   const badgeStyle = isCritical
     ? "bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-700 dark:text-red-400"
     : isWarning
-    ? "bg-amber-50 dark:bg-amber-500/10 border-amber-100 dark:border-amber-500/20 text-amber-700 dark:text-amber-400"
-    : "bg-green-50 dark:bg-green-500/10 border-green-100 dark:border-green-500/20 text-green-700 dark:text-green-400";
-  const dotColor = isCritical ? "bg-red-500" : isWarning ? "bg-amber-500" : "bg-green-500";
+    ? "bg-action-50 dark:bg-action-500/10 border-action-100 dark:border-action-500/20 text-action-700 dark:text-action-400"
+    : "bg-action-50 dark:bg-action-500/10 border-action-100 dark:border-action-500/20 text-action-700 dark:text-action-400";
+  const dotColor = isCritical ? "bg-red-500" : isWarning ? "bg-action-500" : "bg-action-500";
 
   const handleToggleActions = () => {
     if (typeof window !== "undefined") {
@@ -124,8 +124,8 @@ export function AiBriefingClient({
           aria-expanded={!collapsed}
           aria-label={collapsed ? "Expand AI Briefing" : "Collapse AI Briefing"}
         >
-          <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0">
-            <Icon name="star" size={14} className="text-indigo-500" />
+          <div className="w-8 h-8 rounded-lg bg-action-50 dark:bg-action-500/10 flex items-center justify-center shrink-0">
+            <Icon name="star" size={14} className="text-action-500" />
           </div>
 
           {/* Text area — locked to exactly 2 lines, no content can change its height */}
@@ -181,8 +181,8 @@ export function AiBriefingClient({
       <div className={cn("p-5", collapsed ? "hidden" : "block")}>
       {/* Header */}
       <div className="flex items-start gap-2 mb-3">
-        <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0 mt-0.5">
-          <Icon name="star" size={13} className="text-indigo-500" />
+        <div className="w-7 h-7 rounded-lg bg-action-50 dark:bg-action-500/10 flex items-center justify-center shrink-0 mt-0.5">
+          <Icon name="star" size={13} className="text-action-500" />
         </div>
         <div className="flex-1 min-w-0">
           {firstName ? (
@@ -201,7 +201,7 @@ export function AiBriefingClient({
             title={copied ? "Copied!" : "Copy briefing"}
             className="w-7 h-7 flex items-center justify-center rounded-lg text-shark-400 hover:text-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
           >
-            <Icon name={copied ? "check" : "copy"} size={13} className={copied ? "text-green-500" : ""} />
+            <Icon name={copied ? "check" : "copy"} size={13} className={copied ? "text-action-500" : ""} />
           </button>
           <button
             onClick={handleRefresh}
@@ -249,9 +249,9 @@ export function AiBriefingClient({
 
         {/* Week ahead */}
         {content.weekAhead && (
-          <div className="flex gap-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg px-3 py-2 mb-3">
-            <Icon name="calendar" size={13} className="text-indigo-400 shrink-0 mt-0.5" />
-            <p className="text-[12px] text-indigo-700 dark:text-indigo-300 leading-snug">
+          <div className="flex gap-2 bg-action-50 dark:bg-action-500/10 rounded-lg px-3 py-2 mb-3">
+            <Icon name="calendar" size={13} className="text-action-400 shrink-0 mt-0.5" />
+            <p className="text-[12px] text-action-700 dark:text-action-300 leading-snug">
               {content.weekAhead}
             </p>
           </div>

@@ -34,14 +34,14 @@ const RISK_CONFIG = {
     dot: "bg-red-500 animate-pulse",
   },
   warning: {
-    badge: "bg-amber-50 text-amber-600 ring-1 ring-amber-200",
+    badge: "bg-action-50 text-action-600 ring-1 ring-action-200",
     label: "Low",
-    dot: "bg-amber-400",
+    dot: "bg-action-400",
   },
   ok: {
-    badge: "bg-green-50 text-green-600 ring-1 ring-green-200",
+    badge: "bg-action-50 text-action-600 ring-1 ring-action-200",
     label: "OK",
-    dot: "bg-green-400",
+    dot: "bg-action-400",
   },
 };
 
@@ -63,7 +63,7 @@ function RecommendationCard({ item, index }: RecommendationCardProps) {
   const daysColor =
     item.daysRemaining !== undefined && item.daysRemaining <= 3
       ? "text-red-600"
-      : "text-orange-600";
+      : "text-action-600";
 
   return (
     <motion.div
@@ -175,8 +175,8 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
         {/* Empty state */}
         {!hasItems && (
           <div className="py-8 text-center">
-            <div className="w-11 h-11 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
-              <Icon name="check" size={20} className="text-green-600" />
+            <div className="w-11 h-11 rounded-full bg-action-100 flex items-center justify-center mx-auto mb-3">
+              <Icon name="check" size={20} className="text-action-600" />
             </div>
             <p className="text-sm font-semibold text-shark-700 dark:text-shark-300">
               All inventory levels are healthy

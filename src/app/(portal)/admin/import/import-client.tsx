@@ -723,9 +723,9 @@ export function ImportClient({ regions }: Props) {
                 <p className="text-2xl font-bold text-action-700">{result.success}</p>
                 <p className="text-xs text-action-600">Imported</p>
               </div>
-              <div className="bg-amber-50 rounded-[28px] p-4 text-center">
-                <p className="text-2xl font-bold text-[#E8532E]">{result.skipped}</p>
-                <p className="text-xs text-[#E8532E]">Skipped (duplicates)</p>
+              <div className="bg-action-50 rounded-[28px] p-4 text-center">
+                <p className="text-2xl font-bold text-[#0057FF]">{result.skipped}</p>
+                <p className="text-xs text-[#0057FF]">Skipped (duplicates)</p>
               </div>
               <div className="bg-red-50 rounded-[28px] p-4 text-center">
                 <p className="text-2xl font-bold text-red-700">{result.errors.length}</p>

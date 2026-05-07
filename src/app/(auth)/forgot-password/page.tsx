@@ -39,14 +39,14 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-shark-50 dark:bg-shark-950 px-4 transition-colors">
+    <div className="min-h-screen flex items-center justify-center bg-[#f2f2f2] dark:bg-shark-950 px-4 transition-colors">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Logo size={64} className="mx-auto mb-2" />
           <p className="text-sm text-shark-400 dark:text-shark-200 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="bg-white dark:bg-shark-900 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] border border-shark-100 dark:border-shark-700 overflow-hidden transition-colors">
+        <div className="glass-card dark:bg-shark-900 rounded-[32px] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] dark:border-shark-700 overflow-hidden transition-colors">
           <div className="p-8">
             <h2 className="text-lg font-semibold text-shark-900 dark:text-white text-center mb-1">
               Forgot Password

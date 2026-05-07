@@ -13,15 +13,15 @@ import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
   { color: "text-blue-600", bg: "bg-blue-50" },
-  { color: "text-[#E8532E]", bg: "bg-amber-50" },
-  { color: "text-cyan-600", bg: "bg-cyan-50" },
+  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
   { color: "text-gray-600", bg: "bg-gray-100" },
-  { color: "text-orange-600", bg: "bg-orange-50" },
-  { color: "text-pink-600", bg: "bg-pink-50" },
-  { color: "text-lime-600", bg: "bg-lime-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
 ];
 
 interface Consumable {
@@ -144,7 +144,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
           Request
           {recentRequests.length > 0 && (
             <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
-              recentRequests.some((r) => r.status === "PENDING") ? "text-white bg-[#E8532E]" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
+              recentRequests.some((r) => r.status === "PENDING") ? "text-white bg-[#0057FF]" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
             }`}>
               {recentRequests.length}
             </span>
@@ -158,7 +158,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         >
           Confirm Receipt
           {pendingAssignments.length > 0 && (
-            <span className="ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full text-white bg-[#E8532E]">
+            <span className="ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full text-white bg-[#0057FF]">
               {pendingAssignments.length}
             </span>
           )}

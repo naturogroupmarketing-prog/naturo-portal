@@ -48,7 +48,7 @@ function PlanBadge({ plan }: { plan: string }) {
     FREE: "bg-shark-700 text-shark-300",
     ADMIN: "bg-blue-900/50 text-blue-300",
     PRO: "bg-action-900/50 text-action-300",
-    ENTERPRISE: "bg-purple-900/50 text-purple-300",
+    ENTERPRISE: "bg-action-900/50 text-action-300",
   };
   return (
     <span className={`text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded ${colors[plan] ?? "bg-shark-700 text-shark-400"}`}>
@@ -60,7 +60,7 @@ function PlanBadge({ plan }: { plan: string }) {
 function AccessBadge({ level }: { level: string }) {
   const colors: Record<string, string> = {
     DIAGNOSTICS: "bg-blue-900/40 text-blue-300",
-    READONLY: "bg-amber-900/40 text-amber-300",
+    READONLY: "bg-action-900/40 text-action-300",
     IMPERSONATION: "bg-red-900/40 text-red-300",
   };
   return (
@@ -227,7 +227,7 @@ export function SupportConsoleClient({ agentRole, agentId }: Props) {
                       <span className="text-[10px] font-bold text-red-400 bg-red-900/30 px-1.5 py-0.5 rounded">ACCESS DISABLED</span>
                     )}
                     {tenant.activeSessionCount > 0 && (
-                      <span className="text-[10px] font-bold text-amber-400 bg-amber-900/30 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-bold text-action-400 bg-action-900/30 px-1.5 py-0.5 rounded">
                         {tenant.activeSessionCount} ACTIVE SESSION{tenant.activeSessionCount > 1 ? "S" : ""}
                       </span>
                     )}
@@ -236,7 +236,7 @@ export function SupportConsoleClient({ agentRole, agentId }: Props) {
                     <span>{tenant.email ?? "—"}</span>
                     <span>{tenant._count.users} users</span>
                     <span>{tenant._count.assets} assets</span>
-                    {tenant.supportPolicy.requireApproval && <span className="text-amber-400">⚠ Requires approval</span>}
+                    {tenant.supportPolicy.requireApproval && <span className="text-action-400">⚠ Requires approval</span>}
                   </div>
                 </div>
                 <svg className="w-4 h-4 text-white/20 group-hover:text-white/40 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -270,7 +270,7 @@ export function SupportConsoleClient({ agentRole, agentId }: Props) {
 
           {/* Success/error */}
           {successMsg && (
-            <div className="p-3.5 rounded-xl bg-emerald-900/30 border border-emerald-700/50 text-sm text-emerald-300 flex gap-2">
+            <div className="p-3.5 rounded-xl bg-action-900/30 border border-action-700/50 text-sm text-action-300 flex gap-2">
               <span className="shrink-0">✓</span> {successMsg}
             </div>
           )}
@@ -338,7 +338,7 @@ export function SupportConsoleClient({ agentRole, agentId }: Props) {
                 {/* Policy warnings */}
                 <div className="text-[10px] text-white/30 space-y-0.5">
                   {selected.supportPolicy.requireApproval && (
-                    <p className="text-amber-400/70">⚠ This tenant requires admin approval</p>
+                    <p className="text-action-400/70">⚠ This tenant requires admin approval</p>
                   )}
                   {!selected.supportPolicy.supportAccessEnabled && (
                     <p className="text-red-400/70">✗ Support access disabled by tenant</p>
@@ -359,8 +359,8 @@ export function SupportConsoleClient({ agentRole, agentId }: Props) {
 
               {/* Active sessions for this tenant */}
               {diagnostics?.sessions.active.length ? (
-                <div className="p-4 bg-amber-900/20 border border-amber-700/30 rounded-xl">
-                  <p className="text-xs font-bold text-amber-400 mb-2 uppercase tracking-wide">Active Sessions</p>
+                <div className="p-4 bg-action-900/20 border border-action-700/30 rounded-xl">
+                  <p className="text-xs font-bold text-action-400 mb-2 uppercase tracking-wide">Active Sessions</p>
                   {diagnostics.sessions.active.map((s) => (
                     <div key={s.id} className="text-xs text-white/60">
                       {s.agentName} · <AccessBadge level={s.accessLevel} /> · expires {new Date(s.expiresAt).toLocaleTimeString("en-AU")}
@@ -447,7 +447,7 @@ export function SupportConsoleClient({ agentRole, agentId }: Props) {
                             </div>
                             <div className="flex items-center gap-2 text-white/40">
                               {u.failedLoginAttempts > 0 && (
-                                <span className="text-amber-400">{u.failedLoginAttempts} failed logins</span>
+                                <span className="text-action-400">{u.failedLoginAttempts} failed logins</span>
                               )}
                               {u.lockedUntil && new Date(u.lockedUntil) > new Date() && (
                                 <span className="text-red-400">Locked</span>
@@ -468,7 +468,7 @@ export function SupportConsoleClient({ agentRole, agentId }: Props) {
                             <div className="flex items-center gap-2">
                               <span className="text-white/70">{s.agentName}</span>
                               <AccessBadge level={s.accessLevel} />
-                              <span className={`text-[10px] font-semibold ${s.status === "ACTIVE" ? "text-emerald-400" : s.status === "REVOKED" ? "text-red-400" : "text-white/30"}`}>
+                              <span className={`text-[10px] font-semibold ${s.status === "ACTIVE" ? "text-action-400" : s.status === "REVOKED" ? "text-red-400" : "text-white/30"}`}>
                                 {s.status}
                               </span>
                             </div>
@@ -526,8 +526,8 @@ export function SupportConsoleClient({ agentRole, agentId }: Props) {
                                 {sessionEvents.map((ev) => {
                                   const typeColors: Record<string, string> = {
                                     error: "text-red-400",
-                                    rejection: "text-orange-400",
-                                    console_error: "text-amber-400",
+                                    rejection: "text-action-400",
+                                    console_error: "text-action-400",
                                     navigation: "text-blue-400",
                                   };
                                   return (

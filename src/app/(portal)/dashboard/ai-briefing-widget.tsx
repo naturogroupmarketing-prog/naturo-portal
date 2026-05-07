@@ -91,15 +91,15 @@ export async function AiBriefingWidget(props: AiBriefingWidgetProps) {
     const conditionChecksDue = props.conditionChecksDue ?? 0;
     const assignedAssets = props.assignedAssetsCount ?? 0;
     const assignedConsumables = props.assignedConsumablesCount ?? 0;
-    if (pendingConfirmations > 0) chips.push({ label: "Confirm Kit", colorClass: "bg-orange-50 text-orange-600 ring-1 ring-orange-200", href: "/my-assets" });
+    if (pendingConfirmations > 0) chips.push({ label: "Confirm Kit", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/my-assets" });
     if (pendingApprovals > 0) chips.push({ label: "Request Pending", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/request-consumables" });
-    if (conditionChecksDue > 0) chips.push({ label: "Checks Due", colorClass: "bg-amber-50 text-amber-600 ring-1 ring-amber-200", href: "/my-assets" });
+    if (conditionChecksDue > 0) chips.push({ label: "Checks Due", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/my-assets" });
     if (assignedAssets > 0 || assignedConsumables > 0) chips.push({ label: "My Equipment", colorClass: "bg-blue-50 text-blue-600 ring-1 ring-blue-200", href: "/my-assets" });
   } else {
     if (criticalStockCount > 0) chips.push({ label: "Stock Critical", colorClass: "bg-red-50 text-red-600 ring-1 ring-red-200", href: "/consumables?stock=critical" });
-    if (overdueReturns > 0) chips.push({ label: "Overdue Returns", colorClass: "bg-orange-50 text-orange-600 ring-1 ring-orange-200", href: "/returns" });
+    if (overdueReturns > 0) chips.push({ label: "Overdue Returns", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/returns" });
     if (pendingApprovals > 0) chips.push({ label: "Needs Approval", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/purchase-orders?status=PENDING" });
-    if (unresolvedDamage > 0) chips.push({ label: "Damage Open", colorClass: "bg-amber-50 text-amber-600 ring-1 ring-amber-200", href: "/reports" });
+    if (unresolvedDamage > 0) chips.push({ label: "Damage Open", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/reports" });
   }
 
   return (

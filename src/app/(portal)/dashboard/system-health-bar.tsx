@@ -39,8 +39,8 @@ function AnimatedBar({
 }
 
 function scoreColor(val: number): string {
-  if (val >= 80) return "bg-green-500";
-  if (val >= 60) return "bg-amber-500";
+  if (val >= 80) return "bg-action-500";
+  if (val >= 60) return "bg-action-500";
   return "bg-red-500";
 }
 
@@ -53,8 +53,8 @@ function scoreLabel(val: number): string {
 }
 
 function scoreTextColor(val: number): string {
-  if (val >= 80) return "text-green-600 dark:text-green-400";
-  if (val >= 60) return "text-amber-600 dark:text-amber-400";
+  if (val >= 80) return "text-action-600 dark:text-action-400";
+  if (val >= 60) return "text-action-600 dark:text-action-400";
   return "text-red-600 dark:text-red-400";
 }
 

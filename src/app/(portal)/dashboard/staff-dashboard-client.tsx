@@ -22,9 +22,9 @@ function ConditionSelect({ value, onChange }: { value: string; onChange: (val: s
   const btnRef = useRef<HTMLButtonElement>(null);
 
   const options = [
-    { value: "GOOD", label: "Good", color: "text-green-600" },
+    { value: "GOOD", label: "Good", color: "text-action-600" },
     { value: "FAIR", label: "Fair", color: "text-blue-600" },
-    { value: "POOR", label: "Poor", color: "text-amber-600" },
+    { value: "POOR", label: "Poor", color: "text-action-600" },
     { value: "DAMAGED", label: "Damaged", color: "text-red-600" },
   ];
   const selected = options.find((o) => o.value === value) || options[0];
@@ -457,8 +457,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         <Card className="">
           <CardHeader>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                <Icon name="clipboard" size={16} className="text-[#E8532E]" />
+              <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center">
+                <Icon name="clipboard" size={16} className="text-[#0057FF]" />
               </div>
               <div>
                 <CardTitle>Equipment Checklist</CardTitle>
@@ -950,8 +950,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               </button>
             </div>
             <div className="px-6 py-4 space-y-4">
-              <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
-                <p className="text-sm text-amber-800">
+              <div className="bg-action-50 border border-action-200 rounded-lg px-4 py-3">
+                <p className="text-sm text-action-800">
                   This return will be sent to your manager for verification before restocking.
                 </p>
               </div>
@@ -1054,13 +1054,13 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               </div>
             )}
             {upcoming.length > 0 && !allDone && overdue.length === 0 && (
-              <div className="bg-amber-50 border border-amber-200 rounded-[28px] px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#E8532E] flex items-center justify-center shrink-0">
+              <div className="bg-action-50 border border-action-200 rounded-[28px] px-4 py-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-[#0057FF] flex items-center justify-center shrink-0">
                   <Icon name="clock" size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-amber-800">Inspection Due Soon</p>
-                  <p className="text-xs text-[#E8532E] mt-0.5">
+                  <p className="text-sm font-semibold text-action-800">Inspection Due Soon</p>
+                  <p className="text-xs text-[#0057FF] mt-0.5">
                     {upcoming[0].title} — due by {new Date(upcoming[0].dueDate).toLocaleDateString("en-AU", { day: "numeric", month: "long" })}.
                     {upcoming[0].notes && ` ${upcoming[0].notes}`}
                   </p>
@@ -1159,7 +1159,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         const dueDate = conditionCheckDueDate ? new Date(conditionCheckDueDate) : null;
         const now = new Date();
         const daysUntilDue = dueDate ? Math.ceil((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : null;
-        const dueDateColor = daysUntilDue === null ? "" : daysUntilDue < 0 ? "text-red-600" : daysUntilDue <= 7 ? "text-[#E8532E]" : "text-action-600";
+        const dueDateColor = daysUntilDue === null ? "" : daysUntilDue < 0 ? "text-red-600" : daysUntilDue <= 7 ? "text-[#0057FF]" : "text-action-600";
         const dueDateLabel = dueDate ? `Due ${daysUntilDue !== null && daysUntilDue < 0 ? "overdue" : `by ${dueDate.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}`}` : null;
 
         return (
@@ -1240,7 +1240,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                             <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${
                               item.condition === "GOOD" ? "bg-action-100 text-action-700" :
                               item.condition === "FAIR" ? "bg-blue-100 text-blue-700" :
-                              item.condition === "POOR" ? "bg-amber-100 text-[#E8532E]" :
+                              item.condition === "POOR" ? "bg-action-100 text-[#0057FF]" :
                               "bg-red-100 text-red-700"
                             }`}>
                               {item.condition}
@@ -1334,7 +1334,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           <Link href="/report-damage">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="py-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-[28px] bg-[#E8532E] flex items-center justify-center group-hover:bg-[#d14a28] transition-colors">
+                <div className="w-12 h-12 rounded-[28px] bg-[#0057FF] flex items-center justify-center group-hover:bg-[#d14a28] transition-colors">
                   <Icon name="alert-triangle" size={24} className="text-white" />
                 </div>
                 <div>

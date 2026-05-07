@@ -118,12 +118,12 @@ function SettingRow({
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
-    ACTIVE: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+    ACTIVE: "bg-action-100 text-action-700 dark:bg-action-900/30 dark:text-action-400",
     ENDED: "bg-shark-100 text-shark-500 dark:bg-shark-700 dark:text-shark-400",
     EXPIRED: "bg-shark-100 text-shark-400",
     REVOKED: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
-    PENDING: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-    APPROVED: "bg-emerald-100 text-emerald-700",
+    PENDING: "bg-action-100 text-action-700 dark:bg-action-900/30 dark:text-action-400",
+    APPROVED: "bg-action-100 text-action-700",
     DENIED: "bg-red-100 text-red-600",
     CANCELLED: "bg-shark-100 text-shark-400",
   };
@@ -177,16 +177,16 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
 
       {/* Active session alert */}
       {activeSessions.length > 0 && (
-        <div className="rounded-[28px] border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-4 flex items-start gap-3">
-          <Icon name="alert-triangle" size={16} className="text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+        <div className="rounded-[28px] border border-action-200 dark:border-action-700 bg-action-50 dark:bg-action-900/20 p-4 flex items-start gap-3">
+          <Icon name="alert-triangle" size={16} className="text-action-600 dark:text-action-400 mt-0.5 shrink-0" />
           <div className="flex-1">
-            <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+            <p className="text-sm font-semibold text-action-800 dark:text-action-300">
               {activeSessions.length} active support session{activeSessions.length > 1 ? "s" : ""}
             </p>
             <div className="mt-1 space-y-1">
               {activeSessions.map((s) => (
                 <div key={s.id} className="flex items-center justify-between gap-2">
-                  <p className="text-xs text-amber-700 dark:text-amber-400">
+                  <p className="text-xs text-action-700 dark:text-action-400">
                     {s.agentName} ({s.accessLevel}) — expires {new Date(s.expiresAt).toLocaleTimeString("en-AU")}
                   </p>
                   <button
@@ -228,7 +228,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
               <h2 className="text-base font-semibold text-shark-900 dark:text-shark-100">Support Access Settings</h2>
               <p className="text-xs text-shark-500 dark:text-shark-400 mt-0.5">Configure when and how Trackio support can access your account</p>
             </div>
-            <div className={`text-xs font-semibold px-2.5 py-1 rounded-full ${policy.supportAccessEnabled ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"}`}>
+            <div className={`text-xs font-semibold px-2.5 py-1 rounded-full ${policy.supportAccessEnabled ? "bg-action-100 text-action-700 dark:bg-action-900/30 dark:text-action-400" : "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"}`}>
               {policy.supportAccessEnabled ? "Access enabled" : "Access disabled"}
             </div>
           </div>
@@ -399,12 +399,12 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
                           </p>
                         )}
                         {s.writeAttempts > 0 && (
-                          <p className="text-xs text-amber-600">
+                          <p className="text-xs text-action-600">
                             {s.writeAttempts} blocked write attempt{s.writeAttempts !== 1 ? "s" : ""}
                           </p>
                         )}
                         {s.approvedByAdmin && (
-                          <p className="text-xs text-emerald-600">Approved by admin</p>
+                          <p className="text-xs text-action-600">Approved by admin</p>
                         )}
                       </div>
                     </div>
@@ -477,12 +477,12 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
         </div>
         <div className="px-6 py-4 grid sm:grid-cols-2 gap-4">
           <div>
-            <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-1.5">
+            <p className="text-xs font-semibold text-action-700 dark:text-action-400 mb-2 flex items-center gap-1.5">
               <Icon name="check-circle" size={13} /> Can do (Read-only mode)
             </p>
             <ul className="space-y-1 text-xs text-shark-600 dark:text-shark-400">
               {["View your dashboard and health metrics","Browse asset and consumable records","Read staff assignments and activity logs","Check inventory levels and purchase orders","Review settings and permission configuration","Diagnose technical errors and failed requests"].map((item) => (
-                <li key={item} className="flex gap-1.5"><span className="text-emerald-500 mt-px">✓</span>{item}</li>
+                <li key={item} className="flex gap-1.5"><span className="text-action-500 mt-px">✓</span>{item}</li>
               ))}
             </ul>
           </div>
@@ -527,7 +527,7 @@ function ApproveRequestButton({ requestId, action }: { requestId: string; action
       disabled={isPending}
       className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 ${
         action === "APPROVE"
-          ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400"
+          ? "bg-action-100 text-action-700 hover:bg-action-200 dark:bg-action-900/30 dark:text-action-400"
           : "bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400"
       }`}
     >

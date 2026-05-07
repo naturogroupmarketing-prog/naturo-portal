@@ -98,10 +98,10 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  AVAILABLE:     "bg-green-100 text-green-700",
+  AVAILABLE:     "bg-action-100 text-action-700",
   ASSIGNED:      "bg-blue-100 text-blue-700",
-  CHECKED_OUT:   "bg-orange-100 text-orange-700",
-  PENDING_RETURN:"bg-yellow-100 text-yellow-700",
+  CHECKED_OUT:   "bg-action-100 text-action-700",
+  PENDING_RETURN:"bg-action-100 text-action-700",
   DAMAGED:       "bg-red-100 text-red-700",
   LOST:          "bg-red-100 text-red-700",
   UNAVAILABLE:   "bg-shark-100 text-shark-500",
@@ -118,8 +118,8 @@ function stockBadge(c: SearchConsumable) {
   if (c.quantityOnHand === 0)
     return { label: "Out of stock", cls: "bg-red-100 text-red-700" };
   if (c.quantityOnHand <= c.minimumThreshold)
-    return { label: "Low stock",    cls: "bg-amber-100 text-amber-700" };
-  return { label: `${c.quantityOnHand} ${c.unitType}`, cls: "bg-green-100 text-green-700" };
+    return { label: "Low stock",    cls: "bg-action-100 text-action-700" };
+  return { label: `${c.quantityOnHand} ${c.unitType}`, cls: "bg-action-100 text-action-700" };
 }
 
 // ── Recent-page helpers ───────────────────────────────────────────────────
@@ -380,7 +380,7 @@ export function CommandPalette() {
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
                   >
                     <div className="w-7 h-7 rounded-lg bg-white/70 border border-white/80 flex items-center justify-center shrink-0">
-                      <Icon name="droplet" size={13} className="text-emerald-500" />
+                      <Icon name="droplet" size={13} className="text-action-500" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">{c.name}</p>
@@ -405,7 +405,7 @@ export function CommandPalette() {
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-[10px] hover:bg-white/60 dark:hover:bg-white/[0.06] transition-colors text-left group"
                 >
                   <div className="w-7 h-7 rounded-full bg-white/70 border border-white/80 flex items-center justify-center shrink-0">
-                    <span className="text-xs font-bold text-indigo-500">
+                    <span className="text-xs font-bold text-action-500">
                       {(u.name ?? u.email ?? "?").charAt(0).toUpperCase()}
                     </span>
                   </div>
@@ -416,7 +416,7 @@ export function CommandPalette() {
                       {u.region?.name && ` · ${u.region.name}`}
                     </p>
                   </div>
-                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full shrink-0 bg-indigo-50 text-indigo-600">
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full shrink-0 bg-action-50 text-action-600">
                     {ROLE_LABELS[u.role] ?? u.role}
                   </span>
                   <Icon name="arrow-right" size={12} className="text-shark-300 group-hover:text-action-500 transition-colors shrink-0" />

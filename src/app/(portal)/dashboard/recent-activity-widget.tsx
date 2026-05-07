@@ -18,9 +18,9 @@ export interface RecentActivityItem {
 const TYPE_CONFIG: Record<RecentActivityItem["type"], { icon: IconName; iconBg: string; iconColor: string; verb: string }> = {
   request:    { icon: "clipboard",   iconBg: "bg-blue-50",    iconColor: "text-blue-500",   verb: "requested" },
   checkout:   { icon: "arrow-right", iconBg: "bg-action-50",  iconColor: "text-action-500", verb: "checked out" },
-  po:         { icon: "truck",       iconBg: "bg-amber-50",   iconColor: "text-amber-500",  verb: "created PO" },
-  return:     { icon: "arrow-left",  iconBg: "bg-green-50",   iconColor: "text-green-500",  verb: "returned" },
-  assignment: { icon: "package",     iconBg: "bg-purple-50",  iconColor: "text-purple-500", verb: "assigned" },
+  po:         { icon: "truck",       iconBg: "bg-action-50",   iconColor: "text-action-500",  verb: "created PO" },
+  return:     { icon: "arrow-left",  iconBg: "bg-action-50",   iconColor: "text-action-500",  verb: "returned" },
+  assignment: { icon: "package",     iconBg: "bg-action-50",  iconColor: "text-action-500", verb: "assigned" },
 };
 
 function timeAgoLabel(isoDate: string): string {

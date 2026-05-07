@@ -11,16 +11,16 @@ interface DamageClassifierProps {
 }
 
 const SEVERITY_STYLES: Record<DamageClassification["severity"], { badge: string; label: string }> = {
-  minor: { badge: "bg-green-100 text-green-700 ring-1 ring-green-200", label: "Minor" },
-  moderate: { badge: "bg-amber-100 text-amber-700 ring-1 ring-amber-200", label: "Moderate" },
-  severe: { badge: "bg-orange-100 text-orange-700 ring-1 ring-orange-200", label: "Severe" },
+  minor: { badge: "bg-action-100 text-action-700 ring-1 ring-action-200", label: "Minor" },
+  moderate: { badge: "bg-action-100 text-action-700 ring-1 ring-action-200", label: "Moderate" },
+  severe: { badge: "bg-action-100 text-action-700 ring-1 ring-action-200", label: "Severe" },
   totalled: { badge: "bg-red-100 text-red-700 ring-1 ring-red-200", label: "Totalled" },
 };
 
 const RECOMMENDATION_STYLES: Record<DamageClassification["repairRecommendation"], string> = {
   repair: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
   replace: "bg-red-50 text-red-700 ring-1 ring-red-200",
-  monitor: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
+  monitor: "bg-action-50 text-action-700 ring-1 ring-action-200",
   decommission: "bg-shark-100 dark:bg-shark-800 text-shark-600 dark:text-shark-400 ring-1 ring-shark-200",
 };
 
@@ -154,9 +154,9 @@ export function DamageClassifier({
                 <div
                   className={`h-full rounded-full transition-all ${
                     confidencePct >= 80
-                      ? "bg-green-500"
+                      ? "bg-action-500"
                       : confidencePct >= 60
-                      ? "bg-amber-400"
+                      ? "bg-action-400"
                       : "bg-red-400"
                   }`}
                   style={{ width: `${confidencePct}%` }}
@@ -181,9 +181,9 @@ export function DamageClassifier({
               Repair complexity:{" "}
               <span className={`font-semibold ${
                 result.estimatedRepairComplexity === "low"
-                  ? "text-green-600"
+                  ? "text-action-600"
                   : result.estimatedRepairComplexity === "medium"
-                  ? "text-amber-600"
+                  ? "text-action-600"
                   : "text-red-600"
               } capitalize`}>
                 {result.estimatedRepairComplexity}

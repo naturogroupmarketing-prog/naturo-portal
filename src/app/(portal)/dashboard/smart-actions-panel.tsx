@@ -95,14 +95,14 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-shark-900 dark:text-shark-100">Priority Alerts</span>
           {items.length > 0 && (
-            <span className="text-[9px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full leading-tight">
+            <span className="text-[9px] font-bold text-action-600 bg-action-50 border border-action-200 px-1.5 py-0.5 rounded-full leading-tight">
               +{totalXP(items)} XP
             </span>
           )}
         </div>
         <div className="flex items-center gap-2.5">
           {items.length > 0 && (
-            <span className="text-[10px] font-bold bg-[#E8532E] text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-tight">
+            <span className="text-[10px] font-bold bg-[#0057FF] text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-tight">
               {items.length}
             </span>
           )}
@@ -119,11 +119,11 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
       {/* All clear */}
       {items.length === 0 ? (
         <div className="px-5 py-8 text-center flex-1 flex flex-col items-center justify-center">
-          <div className={`relative w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3 ${celebrated ? "animate-grade-pop" : ""}`}>
-            <Icon name="check-circle" size={20} className="text-green-600" />
+          <div className={`relative w-10 h-10 rounded-full bg-action-100 flex items-center justify-center mx-auto mb-3 ${celebrated ? "animate-grade-pop" : ""}`}>
+            <Icon name="check-circle" size={20} className="text-action-600" />
             {celebrated && (
               <>
-                {["#E8532E","#1113d4","#c9a84c","#10b981","#e879f9","#f59e0b"].map((c, i) => (
+                {["#0057FF","#4d83ff","#80a8ff","#b3c9ff","#003fba","#1A6BFF"].map((c, i) => (
                   <span key={i} className="animate-confetti-pop absolute w-2 h-2 rounded-full" style={{ background: c, top: "50%", left: "50%", transformOrigin: `${12 * Math.cos((i/6)*2*Math.PI)}px ${12 * Math.sin((i/6)*2*Math.PI)}px`, animationDelay: `${i * 0.07}s` }} />
                 ))}
               </>
@@ -132,7 +132,7 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
           <p className="text-sm font-semibold text-shark-700 dark:text-shark-300">All clear</p>
           <p className="text-xs text-shark-400 mt-1">No outstanding alerts right now</p>
           {celebrated && (
-            <p className="text-[10px] font-bold text-amber-600 mt-2 animate-xp-float">🎉 Quest complete!</p>
+            <p className="text-[10px] font-bold text-action-600 mt-2 animate-xp-float">🎉 Quest complete!</p>
           )}
         </div>
       ) : (
@@ -142,7 +142,7 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
               item.priority === "critical"
                 ? "border-l-red-500"
                 : item.priority === "urgent"
-                ? "border-l-amber-400"
+                ? "border-l-action-400"
                 : "border-l-blue-400";
             const xp = XP_BY_PRIORITY[item.priority];
             const floatKey = `${item.id}-${xp}`;
@@ -161,18 +161,18 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
                       item.priority === "critical"
                         ? "bg-red-500 text-white hover:bg-red-600"
                         : item.priority === "urgent"
-                        ? "border border-amber-300 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-500/10"
+                        ? "border border-action-300 text-action-600 hover:bg-action-50 dark:hover:bg-action-500/10"
                         : "border border-shark-200 dark:border-shark-700 text-shark-600 dark:text-shark-400 hover:bg-shark-50 dark:hover:bg-shark-800"
                     }`}
                   >
                     {item.priority === "critical" ? "Resolve" : item.priority === "urgent" ? "Review" : "Details"}
                     {xpFloating === floatKey && (
-                      <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-amber-500 animate-xp-float whitespace-nowrap pointer-events-none">
+                      <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-action-500 animate-xp-float whitespace-nowrap pointer-events-none">
                         +{xp} XP
                       </span>
                     )}
                   </Link>
-                  <span className="text-[9px] font-semibold text-amber-500/70">+{xp} XP</span>
+                  <span className="text-[9px] font-semibold text-action-500/70">+{xp} XP</span>
                 </div>
               </div>
             );

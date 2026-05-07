@@ -28,16 +28,16 @@ function timeAgo(dateStr: string) {
 }
 
 const TYPE_CONFIG: Record<string, { icon: string; color: string; bg: string }> = {
-  LOW_STOCK: { icon: "alert-triangle", color: "text-[#E8532E]", bg: "bg-amber-50" },
+  LOW_STOCK: { icon: "alert-triangle", color: "text-[#0057FF]", bg: "bg-action-50" },
   OVERDUE_RETURN: { icon: "clock", color: "text-red-500", bg: "bg-red-50" },
   PENDING_REQUEST: { icon: "inbox", color: "text-blue-500", bg: "bg-blue-50" },
   DAMAGE_REPORT: { icon: "alert-triangle", color: "text-red-500", bg: "bg-red-50" },
   ASSET_ASSIGNED: { icon: "package", color: "text-action-500", bg: "bg-action-50" },
-  ASSET_RETURNED: { icon: "arrow-left", color: "text-cyan-500", bg: "bg-cyan-50" },
+  ASSET_RETURNED: { icon: "arrow-left", color: "text-action-500", bg: "bg-action-50" },
   REQUEST_APPROVED: { icon: "check", color: "text-action-500", bg: "bg-action-50" },
   REQUEST_REJECTED: { icon: "x", color: "text-red-500", bg: "bg-red-50" },
-  MAINTENANCE_DUE: { icon: "settings", color: "text-[#E8532E]", bg: "bg-amber-50" },
-  WARRANTY_EXPIRING: { icon: "shield", color: "text-[#E8532E]", bg: "bg-amber-50" },
+  MAINTENANCE_DUE: { icon: "settings", color: "text-[#0057FF]", bg: "bg-action-50" },
+  WARRANTY_EXPIRING: { icon: "shield", color: "text-[#0057FF]", bg: "bg-action-50" },
   GENERAL: { icon: "bell", color: "text-shark-500 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
 };
 

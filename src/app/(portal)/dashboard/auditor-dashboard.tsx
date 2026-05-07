@@ -45,15 +45,15 @@ function KpiCard({ label, value, suffix, icon }: { label: string; value: number;
 function AlertCard({ label, value, description, icon }: { label: string; value: number; description: string; icon: "alert-triangle" | "truck" | "clock" | "x" }) {
   const isWarning = value > 0;
   return (
-    <Card className={`hover:shadow-md transition-all duration-200 ${isWarning ? "border-amber-200" : ""}`}>
+    <Card className={`hover:shadow-md transition-all duration-200 ${isWarning ? "border-action-200" : ""}`}>
       <CardContent className="px-3 py-3">
         <div className="flex items-center gap-2">
-          <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isWarning ? "bg-[#E8532E]" : "bg-action-500"}`}>
+          <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isWarning ? "bg-[#0057FF]" : "bg-action-500"}`}>
             <Icon name={icon} size={16} className="text-white" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{label}</p>
-            <p className={`text-xl font-bold ${isWarning ? "text-[#E8532E]" : "text-shark-900 dark:text-shark-100"}`}>{value}</p>
+            <p className={`text-xl font-bold ${isWarning ? "text-[#0057FF]" : "text-shark-900 dark:text-shark-100"}`}>{value}</p>
             <p className="text-[10px] text-shark-400 leading-tight mt-0.5">{description}</p>
           </div>
         </div>
