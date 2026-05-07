@@ -59,26 +59,30 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
 }
 
 export function OperationsWidget({ data, className }: { data: OperationsOverview; className?: string }) {
+  const pct0 = Math.max(4, 100 - Math.min(96, data.ordersAwaitingApproval * 18));
+  const pct1 = Math.min(100, Math.max(10, data.totalStaff * 5));
+  const pct2 = Math.max(4, 100 - Math.min(96, data.ordersAwaitingReceival * 12));
+
   const metrics = [
     {
       label: "Awaiting Approval",
       display: `${data.ordersAwaitingApproval} orders`,
-      barPct: Math.max(4, 100 - Math.min(96, data.ordersAwaitingApproval * 18)),
-      barColor: data.ordersAwaitingApproval > 0 ? "#ef4444" : "#0057FF",
+      barPct: pct0,
+      barColor: pct0 < 50 ? "#ef4444" : "#0057FF",
       href: "/purchase-orders",
     },
     {
       label: "Fleet Uptime",
       display: `${data.totalStaff} staff`,
-      barPct: Math.min(100, Math.max(10, data.totalStaff * 5)),
-      barColor: "#0057FF",
+      barPct: pct1,
+      barColor: pct1 < 50 ? "#ef4444" : "#0057FF",
       href: "/staff",
     },
     {
       label: "Awaiting Receival",
       display: `${data.ordersAwaitingReceival} orders`,
-      barPct: Math.max(4, 100 - Math.min(96, data.ordersAwaitingReceival * 12)),
-      barColor: data.ordersAwaitingReceival > 0 ? "#ef4444" : "#0057FF",
+      barPct: pct2,
+      barColor: pct2 < 50 ? "#ef4444" : "#0057FF",
       href: "/purchase-orders?status=ORDERED",
     },
   ];

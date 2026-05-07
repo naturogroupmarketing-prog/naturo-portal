@@ -39,9 +39,7 @@ function AnimatedBar({
 }
 
 function scoreColor(val: number): string {
-  if (val >= 80) return "bg-action-500";
-  if (val >= 60) return "bg-action-500";
-  return "bg-red-500";
+  return val >= 50 ? "bg-[#0057FF]" : "bg-red-500";
 }
 
 function scoreLabel(val: number): string {
@@ -53,9 +51,7 @@ function scoreLabel(val: number): string {
 }
 
 function scoreTextColor(val: number): string {
-  if (val >= 80) return "text-action-600 dark:text-action-400";
-  if (val >= 60) return "text-action-600 dark:text-action-400";
-  return "text-red-600 dark:text-red-400";
+  return val >= 50 ? "text-[#0057FF]" : "text-red-600 dark:text-red-400";
 }
 
 export function SystemHealthBar({

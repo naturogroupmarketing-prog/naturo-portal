@@ -194,7 +194,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
             {userImage ? (
               <img src={userImage} alt="" className="w-9 h-9 rounded-full" />
             ) : (
-              <div className="w-9 h-9 rounded-full bg-action-500 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-full bg-shark-700 flex items-center justify-center">
                 <span className="text-sm font-semibold text-white">
                   {userName?.charAt(0)?.toUpperCase() || "U"}
                 </span>

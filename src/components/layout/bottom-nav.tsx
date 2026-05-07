@@ -301,12 +301,12 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
         className="fixed bottom-0 inset-x-0 z-40 lg:hidden"
         style={{ paddingBottom: "max(10px, env(safe-area-inset-bottom))" }}
       >
-        <div className="mx-10 flex items-end gap-2.5">
+        <div className="mx-4 flex items-end gap-2.5">
 
           {/* Unified nav card — glassmorphism */}
           <div
             ref={containerRef}
-            className="flex-1 overflow-hidden rounded-[44px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 border border-white/50 shadow-[0_4px_24px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.90)]"
+            className="flex-1 overflow-hidden rounded-[44px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 border border-white/50 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]"
           >
             {/* More grid — expands upward */}
             <div
@@ -358,7 +358,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                   transition: [pillLeftTx, pillWidthTx].filter(t => t !== "none").join(", ") || "none",
                 }}
               >
-                <div className="absolute inset-y-0 inset-x-[10px] rounded-full bg-black/[0.07] dark:bg-white/[0.08]" />
+                <div className="absolute inset-y-0 inset-x-[4px] rounded-full bg-black/[0.07] dark:bg-white/[0.08]" />
               </div>
 
               {allItems.map((item, idx) => (
@@ -453,7 +453,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               aria-label={quickOpen ? "Close quick actions" : "Quick actions"}
               className={cn(
                 "w-[72px] h-[72px] rounded-full flex items-center justify-center touch-manipulation select-none transition-all duration-200",
-                "backdrop-blur-[40px] backdrop-saturate-[180%] border border-white/50 shadow-[0_4px_20px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.90)]",
+                "backdrop-blur-[40px] backdrop-saturate-[180%] border border-white/50 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]",
                 quickOpen
                   ? "bg-white/20 scale-95"
                   : "bg-white/30 hover:bg-white/40 hover:scale-105"

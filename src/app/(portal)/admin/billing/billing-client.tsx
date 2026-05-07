@@ -103,7 +103,7 @@ export function BillingClient({ org }: Props) {
               <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{org._count.users} <span className="text-sm font-normal text-shark-400">/ {currentPlan.users === Infinity ? "Unlimited" : currentPlan.users}</span></p>
               {currentPlan.users !== Infinity && (
                 <div className="w-full h-1.5 bg-shark-200 dark:bg-shark-700 rounded-full mt-2 overflow-hidden">
-                  <div className="h-full bg-action-500 rounded-full" style={{ width: `${Math.min(100, (org._count.users / currentPlan.users) * 100)}%` }} />
+                  <div className={`h-full rounded-full ${Math.min(100, (org._count.users / currentPlan.users) * 100) >= 50 ? "bg-[#0057FF]" : "bg-red-500"}`} style={{ width: `${Math.min(100, (org._count.users / currentPlan.users) * 100)}%` }} />
                 </div>
               )}
             </div>
@@ -112,7 +112,7 @@ export function BillingClient({ org }: Props) {
               <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{org._count.assets} <span className="text-sm font-normal text-shark-400">/ {currentPlan.assets === Infinity ? "Unlimited" : currentPlan.assets}</span></p>
               {currentPlan.assets !== Infinity && (
                 <div className="w-full h-1.5 bg-shark-200 dark:bg-shark-700 rounded-full mt-2 overflow-hidden">
-                  <div className="h-full bg-action-500 rounded-full" style={{ width: `${Math.min(100, (org._count.assets / currentPlan.assets) * 100)}%` }} />
+                  <div className={`h-full rounded-full ${Math.min(100, (org._count.assets / currentPlan.assets) * 100) >= 50 ? "bg-[#0057FF]" : "bg-red-500"}`} style={{ width: `${Math.min(100, (org._count.assets / currentPlan.assets) * 100)}%` }} />
                 </div>
               )}
             </div>

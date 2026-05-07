@@ -566,7 +566,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <div className="h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all ${isCritical ? "bg-red-500" : isLow ? "bg-action-400" : "bg-action-500"}`}
+              className={`h-full rounded-full transition-all ${stockPercent >= 50 ? "bg-[#0057FF]" : "bg-red-500"}`}
               style={{ width: `${stockPercent}%` }}
             />
           </div>
