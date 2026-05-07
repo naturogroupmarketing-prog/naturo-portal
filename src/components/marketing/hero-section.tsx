@@ -22,7 +22,7 @@ export function HeroSection() {
           height: "680px",
           top: "-180px",
           right: "-120px",
-          background: "radial-gradient(circle, rgba(220,60,160,0.75) 0%, rgba(160,40,200,0.55) 45%, transparent 72%)",
+          background: "radial-gradient(circle, rgba(220,60,160,0.85) 0%, rgba(160,40,200,0.65) 45%, transparent 72%)",
           filter: "blur(2px)",
         }}
       />
@@ -35,7 +35,7 @@ export function HeroSection() {
           height: "420px",
           bottom: "60px",
           right: "20%",
-          background: "radial-gradient(circle, rgba(255,100,140,0.55) 0%, rgba(200,60,120,0.35) 50%, transparent 72%)",
+          background: "radial-gradient(circle, rgba(255,100,140,0.70) 0%, rgba(200,60,120,0.45) 50%, transparent 72%)",
           filter: "blur(4px)",
         }}
       />
@@ -44,12 +44,54 @@ export function HeroSection() {
       <div
         className="absolute z-0 rounded-full"
         style={{
-          width: "320px",
-          height: "320px",
-          top: "40%",
-          left: "-60px",
-          background: "radial-gradient(circle, rgba(80,100,255,0.35) 0%, transparent 70%)",
+          width: "380px",
+          height: "380px",
+          top: "35%",
+          left: "-80px",
+          background: "radial-gradient(circle, rgba(80,100,255,0.55) 0%, rgba(60,60,200,0.30) 55%, transparent 70%)",
           filter: "blur(6px)",
+        }}
+      />
+
+      {/* ── Orb 1 — glassy pink sphere top-right ── */}
+      <div
+        className="absolute z-1 rounded-full"
+        style={{
+          width: "200px",
+          height: "200px",
+          top: "5%",
+          right: "2%",
+          background: "radial-gradient(circle at 35% 35%, rgba(255,160,220,0.90) 0%, rgba(220,60,160,0.80) 40%, rgba(140,20,120,0.60) 70%, transparent 100%)",
+          boxShadow: "inset -8px -8px 20px rgba(0,0,0,0.25), inset 4px 4px 12px rgba(255,255,255,0.35), 0 8px 40px rgba(220,60,160,0.45)",
+          backdropFilter: "blur(2px)",
+        }}
+      />
+
+      {/* ── Orb 2 — glassy blue sphere bottom-right ── */}
+      <div
+        className="absolute z-1 rounded-full"
+        style={{
+          width: "140px",
+          height: "140px",
+          bottom: "12%",
+          right: "5%",
+          background: "radial-gradient(circle at 35% 35%, rgba(140,180,255,0.90) 0%, rgba(80,120,255,0.80) 40%, rgba(40,60,200,0.60) 70%, transparent 100%)",
+          boxShadow: "inset -6px -6px 16px rgba(0,0,0,0.25), inset 3px 3px 8px rgba(255,255,255,0.35), 0 6px 32px rgba(80,120,255,0.45)",
+          backdropFilter: "blur(2px)",
+        }}
+      />
+
+      {/* ── Orb 3 — glassy purple sphere mid-left ── */}
+      <div
+        className="absolute z-1 rounded-full"
+        style={{
+          width: "110px",
+          height: "110px",
+          top: "52%",
+          left: "3%",
+          background: "radial-gradient(circle at 35% 35%, rgba(200,160,255,0.90) 0%, rgba(150,80,255,0.80) 40%, rgba(100,40,200,0.60) 70%, transparent 100%)",
+          boxShadow: "inset -5px -5px 14px rgba(0,0,0,0.25), inset 3px 3px 8px rgba(255,255,255,0.35), 0 6px 28px rgba(150,80,255,0.45)",
+          backdropFilter: "blur(2px)",
         }}
       />
 
@@ -78,67 +120,82 @@ export function HeroSection() {
         {/* ── LEFT — text ── */}
         <div className="lg:w-[46%] px-8 lg:pl-16 xl:pl-24 lg:pr-6 pt-44 lg:pt-56 pb-16 lg:pb-0 flex flex-col">
 
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full w-fit mb-8 animate-[fadeInDown_0.5s_ease-out]"
+          {/* ── Glass content panel ── */}
+          <div
+            className="rounded-[32px] p-7 sm:p-8 animate-[fadeInUp_0.6s_ease-out]"
             style={{
-              background: "rgba(255,255,255,0.10)",
-              backdropFilter: "blur(12px)",
-              border: "1px solid rgba(255,255,255,0.20)",
-            }}>
-            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs font-semibold text-white/90 tracking-wide uppercase">Asset & Supply Tracking Platform</span>
-          </div>
-
-          {/* Headline */}
-          <h1
-            className="text-[2.6rem] sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.06] tracking-tight text-white animate-[fadeInUp_0.6s_ease-out]"
-            style={{ fontFamily: "var(--font-exo, sans-serif)", textShadow: "0 2px 40px rgba(0,0,0,0.3)" }}
+              background: "rgba(255,255,255,0.07)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              boxShadow: "0 8px 48px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.22)",
+            }}
           >
-            Know exactly what<br />
-            you have,{" "}
-            <span style={{ background: "linear-gradient(90deg, #f472b6, #c084fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              where it is,
-            </span>
-            <br />
-            and who has it.
-          </h1>
-
-          {/* Subheading */}
-          <p className="mt-6 text-lg text-white/65 leading-relaxed max-w-md animate-[fadeInUp_0.6s_ease-out_0.1s_both]">
-            Finally feel in control of every location, every asset, and every supply — with one system your whole team will actually use.
-          </p>
-
-          {/* CTAs */}
-          <div className="mt-10 flex flex-col sm:flex-row items-start gap-3 animate-[fadeInUp_0.6s_ease-out_0.2s_both]">
-            <Link
-              href="/login"
-              className="inline-flex items-center justify-center text-sm font-bold text-white px-7 py-3.5 rounded-full transition-all hover:-translate-y-px active:scale-[0.97]"
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full w-fit mb-6"
               style={{
-                background: "linear-gradient(135deg, #5b5ef4 0%, #7c3aed 100%)",
-                boxShadow: "0 4px 24px rgba(100,80,240,0.55), 0 1px 0 rgba(255,255,255,0.15) inset",
-              }}
-            >
-              Get started
-              <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
-            <a
-              href="#features"
-              className="inline-flex items-center justify-center text-sm font-semibold text-white px-7 py-3.5 rounded-full transition-all hover:bg-white/15"
-              style={{
-                background: "rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.12)",
                 backdropFilter: "blur(12px)",
-                border: "1px solid rgba(255,255,255,0.20)",
-              }}
-            >
-              See how it works
-            </a>
-          </div>
+                border: "1px solid rgba(255,255,255,0.22)",
+              }}>
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-xs font-semibold text-white/90 tracking-wide uppercase">Asset & Supply Tracking Platform</span>
+            </div>
 
-          <p className="mt-5 text-xs text-white/35 animate-[fadeInUp_0.6s_ease-out_0.3s_both]">
-            Trusted by 500+ operational teams across Australia · No credit card required
-          </p>
+            {/* Headline */}
+            <h1
+              className="text-[2.6rem] sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.06] tracking-tight text-white"
+              style={{ fontFamily: "var(--font-exo, sans-serif)", textShadow: "0 2px 40px rgba(0,0,0,0.3)" }}
+            >
+              Know exactly what<br />
+              you have,{" "}
+              <span style={{ background: "linear-gradient(90deg, #f472b6, #c084fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                where it is,
+              </span>
+              <br />
+              and who has it.
+            </h1>
+
+            {/* Divider line — matches reference */}
+            <div className="mt-5 mb-5 h-px w-full" style={{ background: "rgba(255,255,255,0.15)" }} />
+
+            {/* Subheading */}
+            <p className="text-base text-white/65 leading-relaxed max-w-md">
+              Finally feel in control of every location, every asset, and every supply — with one system your whole team will actually use.
+            </p>
+
+            {/* CTAs */}
+            <div className="mt-8 flex flex-col sm:flex-row items-start gap-3">
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center text-sm font-bold text-white px-7 py-3.5 rounded-full transition-all hover:-translate-y-px active:scale-[0.97]"
+                style={{
+                  background: "linear-gradient(135deg, #5b5ef4 0%, #7c3aed 100%)",
+                  boxShadow: "0 4px 24px rgba(100,80,240,0.55), 0 1px 0 rgba(255,255,255,0.15) inset",
+                }}
+              >
+                Get started
+                <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+              <a
+                href="#features"
+                className="inline-flex items-center justify-center text-sm font-semibold text-white px-7 py-3.5 rounded-full transition-all hover:bg-white/15"
+                style={{
+                  background: "rgba(255,255,255,0.10)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255,255,255,0.22)",
+                }}
+              >
+                See how it works
+              </a>
+            </div>
+
+            <p className="mt-5 text-xs text-white/35">
+              Trusted by 500+ operational teams across Australia · No credit card required
+            </p>
+          </div>
         </div>
 
         {/* ── RIGHT — phone + dashboard ── */}
