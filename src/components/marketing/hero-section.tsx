@@ -339,38 +339,38 @@ export function HeroSection() {
     <div className="relative -mt-14 z-20 px-6 pb-12">
       <div className="max-w-6xl mx-auto">
         <div
-          className="bg-white rounded-2xl px-6 py-5 sm:px-8 sm:py-6"
-          style={{ boxShadow: "0 8px 40px rgba(0,16,100,0.18), 0 2px 8px rgba(0,0,0,0.08)" }}
+          className="bg-white rounded-2xl px-8 py-6 sm:px-10 sm:py-7"
+          style={{ border: "1.5px solid #001b94", boxShadow: "0 8px 40px rgba(0,16,100,0.14), 0 2px 8px rgba(0,0,0,0.06)" }}
         >
-          <p className="text-sm font-semibold text-gray-800 mb-4">
+          <p className="text-lg font-bold text-[#191c1f] mb-5">
             Start tracking your assets — get set up in minutes
           </p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-full px-4 py-2.5">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <div className="flex flex-col sm:flex-row gap-3 items-center">
+            <div className="flex-1 flex items-center gap-3 border border-gray-300 rounded-lg px-4 py-3 focus-within:border-[#001b94] transition-colors">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                 <polyline points="22,6 12,13 2,6" />
               </svg>
               <input
                 type="email"
-                placeholder="Enter your work email"
+                placeholder="e.g. you@yourcompany.com.au"
                 className="flex-1 text-sm bg-transparent outline-none text-gray-700 placeholder-gray-400 min-w-0"
               />
             </div>
             <Link
               href="/login"
-              className="text-sm font-bold text-white px-6 py-2.5 rounded-full text-center transition-opacity hover:opacity-90 whitespace-nowrap"
-              style={{ background: "#002FA0" }}
+              className="text-sm font-bold text-white px-7 py-3 rounded-full text-center transition-opacity hover:opacity-90 whitespace-nowrap"
+              style={{ background: "#001b94" }}
             >
               Get started free
             </Link>
-          </div>
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-            <Link href="#pricing" className="text-xs font-medium hover:underline" style={{ color: "#002FA0" }}>
+            <Link
+              href="#pricing"
+              className="text-sm font-bold whitespace-nowrap hover:underline"
+              style={{ color: "#001b94" }}
+            >
               View pricing plans
             </Link>
-            <span className="text-gray-200">·</span>
-            <span className="text-xs text-gray-400">14-day free trial · No credit card required</span>
           </div>
         </div>
       </div>
