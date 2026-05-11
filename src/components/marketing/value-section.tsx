@@ -1,5 +1,8 @@
 import { ScrollReveal } from "./scroll-reveal";
 
+const BLUE = "#001b94";
+const YELLOW = "#ffe344";
+
 const stats = [
   {
     number: "$18,000+",
@@ -26,55 +29,62 @@ const stats = [
 
 export function ValueSection() {
   return (
-    <section style={{ background: "#00175A" }} className="py-20 sm:py-28">
-      <div className="max-w-6xl mx-auto px-6">
+    <section
+      className="py-24 px-6 border-b border-gray-200 text-[#191c1f]"
+      style={{ background: "#f4f5f8" }}
+    >
+      <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
         <ScrollReveal>
-          <div className="max-w-2xl mb-16">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-blue-400 mb-4">
-              Sound familiar?
+          <div className="mb-16">
+            <p className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: BLUE }}>
+              Sound Familiar?
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
+            <h2 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
               The cost of doing nothing.
             </h2>
-            <p className="mt-4 text-white/40 text-lg leading-relaxed">
+            <p className="text-gray-700 max-w-3xl text-xl leading-relaxed font-light">
               Untracked assets and manual stock management cost Australian service businesses more than most realise.
             </p>
           </div>
         </ScrollReveal>
 
-        {/* Stats — horizontal columns with dividers, no cards */}
-        <div className="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
           {stats.map((stat, i) => (
-            <ScrollReveal key={stat.title} delay={i * 120}>
-              <div className={`py-10 sm:py-0 ${i === 0 ? "sm:pr-12" : i === 1 ? "sm:px-12" : "sm:pl-12"}`}>
-                <p className="text-5xl sm:text-6xl font-extrabold text-white leading-none tracking-tight mb-1">
+            <ScrollReveal key={stat.title} delay={i * 100}>
+              <div
+                className="bg-white p-10 rounded-lg border border-gray-100 hover:shadow-lg transition-shadow"
+                style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
+              >
+                <div className="text-5xl font-bold mb-3" style={{ color: BLUE }}>
                   {stat.number}
-                </p>
-                <p className="text-sm font-medium text-blue-300 mb-6">{stat.unit}</p>
-                <p className="text-base font-semibold text-white mb-2">{stat.title}</p>
-                <p className="text-sm text-white/35 leading-relaxed">{stat.detail}</p>
+                </div>
+                <div className="text-xs font-bold text-gray-500 mb-6 uppercase tracking-widest">
+                  {stat.unit}
+                </div>
+                <h4 className="font-bold text-2xl mb-4 leading-snug">{stat.title}</h4>
+                <p className="text-gray-600 leading-relaxed text-lg font-light">{stat.detail}</p>
               </div>
             </ScrollReveal>
           ))}
         </div>
 
-        {/* Bottom rule + callout */}
-        <ScrollReveal delay={400}>
-          <div className="mt-16 pt-10 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-            <p className="text-sm text-white/35 max-w-lg leading-relaxed">
-              The average service business loses over <strong className="text-white/60 font-semibold">$18,000 a year</strong> to untracked equipment and emergency restocking. trackio pays for itself in weeks.
+        <ScrollReveal delay={350}>
+          <div
+            className="bg-white p-10 rounded-lg border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-10"
+            style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
+          >
+            <p className="text-xl text-gray-700 max-w-3xl font-light leading-relaxed">
+              The average service business loses over{" "}
+              <strong className="text-[#191c1f] font-bold">$18,000 a year</strong> to untracked equipment and
+              emergency restocking. trackio pays for itself in weeks.
             </p>
             <a
               href="#pricing"
-              className="shrink-0 inline-flex items-center gap-2 text-sm font-bold px-6 py-3 rounded-full whitespace-nowrap"
-              style={{ background: "#FFD700", color: "#001A6B" }}
+              className="shrink-0 inline-flex items-center gap-2 font-bold px-10 py-4 whitespace-nowrap text-lg hover:bg-yellow-400 transition-colors shadow-sm"
+              style={{ background: YELLOW, color: BLUE, borderRadius: "24px" }}
             >
-              See pricing
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              See pricing →
             </a>
           </div>
         </ScrollReveal>

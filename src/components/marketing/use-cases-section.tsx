@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { ScrollReveal } from "./scroll-reveal";
 
-const NAVY = "#002FA0";
+const BLUE = "#001b94";
+const YELLOW = "#ffe344";
 
 const industries = [
   {
@@ -68,94 +69,107 @@ export function UseCasesSection() {
   const ind = industries[active];
 
   return (
-    <section id="use-cases" className="py-16 sm:py-24 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="use-cases" className="py-24 px-6 bg-white border-b border-gray-200">
+      <div className="max-w-7xl mx-auto">
+
         <ScrollReveal>
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: NAVY }}>
-              Who it&apos;s for
+          <div className="text-center md:text-left mb-16">
+            <p className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: BLUE }}>
+              Who It&apos;s For
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-gray-900">
-              Built for your{" "}
-              <span style={{ color: "#FFD700" }}>industry.</span>
+            <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-[#191c1f] leading-tight">
+              Built for your industry.
             </h2>
-            <p className="mt-4 text-gray-500 text-lg">
+            <p className="text-gray-700 mb-0 text-xl font-light">
               Select your sector to see exactly how trackio fits your operation.
             </p>
           </div>
         </ScrollReveal>
 
-        {/* Industry tabs */}
-        <ScrollReveal delay={100}>
-          <div className="flex flex-wrap gap-2 justify-center mb-10">
-            {industries.map((ind, i) => (
-              <button
-                key={ind.label}
-                onClick={() => setActive(i)}
-                className="text-sm font-semibold px-5 py-2.5 rounded-full transition-all duration-200"
-                style={
-                  active === i
-                    ? { background: NAVY, color: "#fff", boxShadow: "0 2px 12px rgba(0,47,160,0.25)" }
-                    : { background: "#fff", color: "#6b7280", border: "1px solid #e5e7eb" }
-                }
-              >
-                {ind.label}
-              </button>
-            ))}
-          </div>
-        </ScrollReveal>
+        {/* Industry Tabs */}
+        <div className="flex flex-wrap gap-4 mb-12 md:justify-start justify-center">
+          {industries.map((industry, i) => (
+            <button
+              key={industry.label}
+              onClick={() => setActive(i)}
+              className="px-8 py-3 font-bold text-base transition-all"
+              style={{
+                borderRadius: "24px",
+                border: "2px solid",
+                ...(active === i
+                  ? { background: BLUE, color: "#fff", borderColor: BLUE }
+                  : { background: "#fff", color: BLUE, borderColor: "#e5e7eb" }),
+              }}
+            >
+              {industry.label}
+            </button>
+          ))}
+        </div>
 
-        {/* Content */}
-        <div className="grid lg:grid-cols-2 gap-6 items-start">
+        {/* Content Card */}
+        <div className="bg-[#f4f5f8] rounded-lg p-10 sm:p-12 grid md:grid-cols-2 gap-12 md:gap-16 items-start">
 
           {/* Left — What they track */}
-          <div className="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-widest mb-5" style={{ color: NAVY }}>
-              What {ind.label} teams track
-            </p>
-            <ul className="space-y-4">
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-widest text-gray-500 mb-8">
+              What {ind.label} Teams Track
+            </h4>
+            <ul className="space-y-6">
               {ind.tracks.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                    stroke="#FFD700" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span className="text-sm text-gray-700 leading-relaxed">{item}</span>
+                <li key={item} className="flex items-start gap-4">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center shrink-0 mt-1">
+                    <svg
+                      className="w-4 h-4 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+                    </svg>
+                  </div>
+                  <span className="text-gray-800 font-medium text-xl leading-snug">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Right — Quote + Outcome */}
-          <div className="space-y-5">
-            {/* Quote */}
-            <div className="bg-white rounded-[24px] border border-gray-100 p-8 shadow-sm">
-              <svg className="mb-4" width="24" height="18" viewBox="0 0 24 18" fill={NAVY} opacity="0.12">
-                <path d="M0 18V11.143C0 4.286 4.571 1.143 13.714 0l1.143 2.286C10.572 3.429 8.286 5.143 7.714 8H11V18H0zm13 0V11.143C13 4.286 17.571 1.143 26.714 0l1.143 2.286C23.572 3.429 21.286 5.143 20.714 8H24V18H13z"/>
-              </svg>
-              <p className="text-gray-700 italic leading-relaxed text-[15px]">{ind.quote}</p>
-            </div>
+          {/* Right — Quote + Outcome + CTA */}
+          <div className="space-y-8">
+            <blockquote
+              className="bg-white p-8 rounded-lg italic text-gray-800 text-xl font-light border-l-4"
+              style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)", borderLeftColor: BLUE }}
+            >
+              {ind.quote}
+            </blockquote>
 
-            {/* Outcome stat */}
-            <div className="rounded-[24px] p-7 flex items-center gap-5" style={{ background: NAVY }}>
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: "rgba(255,215,0,0.15)" }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-                  <polyline points="16 7 22 7 22 13" />
+            <div
+              className="text-white p-8 rounded-lg flex items-center gap-6 shadow-md"
+              style={{ background: BLUE }}
+            >
+              <div className="p-5 rounded-lg shrink-0" style={{ background: "rgba(255,255,255,0.1)" }}>
+                <svg
+                  className="w-10 h-10 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
                 </svg>
               </div>
-              <p className="text-white font-bold text-base leading-snug">{ind.outcome}</p>
+              <div className="font-bold text-2xl leading-tight">{ind.outcome}</div>
             </div>
 
-            {/* CTA nudge */}
             <a
-              href="#cta"
-              className="flex items-center justify-between bg-white rounded-[24px] border border-gray-100 px-7 py-5 hover:border-gray-300 hover:shadow-md transition-all duration-200 group shadow-sm"
+              href="/login"
+              className="block text-center border-2 py-4 font-bold hover:bg-gray-50 transition-colors text-lg"
+              style={{ borderColor: BLUE, color: BLUE, borderRadius: "24px" }}
             >
-              <span className="text-sm font-semibold text-gray-900">Start your free 14-day trial</span>
-              <svg className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              Start your free 14-day trial →
             </a>
           </div>
 
