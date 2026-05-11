@@ -38,7 +38,7 @@ export function HeroSection() {
 
             {/* Headline — pain-first */}
             <h1
-              className="text-[2.6rem] sm:text-5xl lg:text-[3.4rem] font-semibold leading-[1.10] tracking-tight text-white"
+              className="text-[2.6rem] sm:text-5xl lg:text-[3.4rem] font-semibold leading-[1.25] tracking-tight text-white"
               style={{ fontFamily: "var(--font-exo, sans-serif)" }}
             >
               Tired of chasing<br />
