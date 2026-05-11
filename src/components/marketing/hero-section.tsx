@@ -49,7 +49,7 @@ export function HeroSection() {
             </h1>
 
             {/* Subheading */}
-            <p className="mt-12 text-lg text-white/70 leading-relaxed max-w-md">
+            <p className="mt-6 text-lg text-white/70 leading-relaxed max-w-md">
               trackio replaces spreadsheets and clunky apps with one simple system — so your team always knows what&apos;s available, where it is, and who has it. Set up in 15 minutes.
             </p>
 
