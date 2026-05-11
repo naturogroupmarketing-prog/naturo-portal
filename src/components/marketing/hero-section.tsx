@@ -77,7 +77,7 @@ export function HeroSection() {
             style={{
               left: "30%",
               right: "-480px",
-              top: "80px",
+              top: "55px",
               height: "660px",
               bottom: "auto",
               borderRadius: "29px",
@@ -134,7 +134,7 @@ export function HeroSection() {
           {/* ── Phone ── */}
           <div
             className="absolute z-20 animate-[gentleFloat_6s_ease-in-out_infinite]"
-            style={{ left: "2%", top: "130px" }}
+            style={{ left: "2%", top: "105px" }}
           >
             {/* Phone shell */}
             <div style={{
@@ -171,7 +171,7 @@ export function HeroSection() {
           <div
             className="absolute z-30 animate-[gentleFloat_5s_ease-in-out_1s_infinite] p-px"
             style={{
-              left: "6%", top: "110px",
+              left: "6%", top: "85px",
               background: "linear-gradient(135deg, rgba(255,255,255,0.40) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.28) 100%)",
               borderRadius: "17px",
               boxShadow: "0 8px 32px rgba(0,0,0,0.30)",
@@ -188,7 +188,7 @@ export function HeroSection() {
           <div
             className="absolute z-30 animate-[gentleFloat_7s_ease-in-out_2s_infinite] p-px"
             style={{
-              left: "16%", top: "470px",
+              left: "16%", top: "445px",
               background: "linear-gradient(135deg, rgba(255,255,255,0.40) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.28) 100%)",
               borderRadius: "17px",
               boxShadow: "0 8px 32px rgba(0,0,0,0.30)",
