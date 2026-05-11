@@ -38,6 +38,7 @@ export function Breadcrumbs() {
   const segments = pathname.split("/").filter(Boolean);
 
   if (segments.length === 0) return null;
+  if (pathname === "/dashboard") return null;
 
   const crumbs = segments.map((seg, i) => ({
     label: toLabel(seg, dynamicOverrides),

@@ -187,11 +187,12 @@ export function BentoShowcaseSection() {
 
         {/* Header */}
         <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-action-50 border border-action-100 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-action-500" />
-            <span className="text-xs font-semibold text-action-600 tracking-wide">Everything in one platform</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
+            style={{ background: "rgba(0,47,160,0.08)", border: "1px solid rgba(0,47,160,0.15)" }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#002FA0" }} />
+            <span className="text-xs font-semibold tracking-wide" style={{ color: "#002FA0" }}>Everything in one platform</span>
           </div>
-          <h2 className="text-5xl sm:text-6xl font-bold text-[#0a2540] tracking-tight leading-tight">
+          <h2 className="text-5xl sm:text-6xl font-bold tracking-tight leading-tight" style={{ color: "#111827" }}>
             Built for operational teams
           </h2>
           <p className="mt-6 text-xl text-shark-400 max-w-2xl mx-auto leading-relaxed">
@@ -204,7 +205,7 @@ export function BentoShowcaseSection() {
 
           {/* Card 1 — Asset tracking (large, 3 cols) */}
           <div className="lg:col-span-3 rounded-[28px] overflow-hidden relative min-h-[480px] flex flex-col"
-            style={{ background: "linear-gradient(135deg, #7c3aed 0%, #a855f7 40%, #ec4899 80%, #f472b6 100%)" }}>
+            style={{ background: "linear-gradient(135deg, #002FA0 0%, #0050CC 55%, #0070F0 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Asset Management</div>
               <h3 className="text-3xl font-bold text-white leading-tight mb-3">
@@ -221,7 +222,7 @@ export function BentoShowcaseSection() {
 
           {/* Card 2 — AI assistant (2 cols) */}
           <div className="lg:col-span-2 rounded-[28px] overflow-hidden relative min-h-[480px] flex flex-col"
-            style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #4f46e5 100%)" }}>
+            style={{ background: "linear-gradient(135deg, #001A70 0%, #002FA0 50%, #0050CC 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">AI Assistant</div>
               <h3 className="text-3xl font-bold text-white leading-tight mb-3">
@@ -238,7 +239,7 @@ export function BentoShowcaseSection() {
 
           {/* Card 3 — Multi-location (2 cols) */}
           <div className="lg:col-span-2 rounded-[28px] overflow-hidden relative min-h-[420px] flex flex-col"
-            style={{ background: "linear-gradient(135deg, rgba(255,50,55,1.0) 0%, rgba(255,140,45,0.90) 60%, rgba(255,200,70,0.80) 100%)" }}>
+            style={{ background: "linear-gradient(135deg, #0050CC 0%, #0070F0 60%, #1A90FF 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Multi-Location</div>
               <h3 className="text-3xl font-bold text-white leading-tight mb-3">
@@ -255,7 +256,7 @@ export function BentoShowcaseSection() {
 
           {/* Card 4 — Purchase orders (2 cols) */}
           <div className="lg:col-span-2 rounded-[28px] overflow-hidden relative min-h-[420px] flex flex-col"
-            style={{ background: "linear-gradient(135deg, #0f4c81 0%, #1113d4 60%, #4f46e5 100%)" }}>
+            style={{ background: "linear-gradient(135deg, #002FA0 0%, #003EC0 60%, #0055DD 100%)" }}>
             <div className="p-10 pb-0 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">Procurement</div>
               <h3 className="text-3xl font-bold text-white leading-tight mb-3">
@@ -272,7 +273,7 @@ export function BentoShowcaseSection() {
 
           {/* Card 5 — QR scanning (1 col) */}
           <div className="lg:col-span-1 rounded-[28px] overflow-hidden relative min-h-[420px] flex flex-col"
-            style={{ background: "linear-gradient(160deg, #0a2540 0%, #1a3a5c 60%, #0f4c81 100%)" }}>
+            style={{ background: "linear-gradient(160deg, #00145A 0%, #001A70 60%, #002FA0 100%)" }}>
             <div className="p-10 flex flex-col flex-1">
               <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-3">QR Tracking</div>
               <h3 className="text-2xl font-bold text-white leading-tight mb-3">
@@ -293,7 +294,8 @@ export function BentoShowcaseSection() {
         <div className="mt-20 text-center">
           <Link
             href="/login"
-            className="inline-flex items-center justify-center gap-2 text-sm font-semibold bg-[#0a2540] text-white px-8 py-3.5 rounded-full hover:bg-[#1a3a5c] transition-all hover:-translate-y-px hover:shadow-xl active:scale-[0.97]"
+            className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-white px-8 py-3.5 rounded-full transition-all hover:-translate-y-px hover:shadow-xl active:scale-[0.97]"
+            style={{ background: "#1432CC", boxShadow: "0 4px 20px rgba(20,50,204,0.35)" }}
           >
             Start your free trial
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>

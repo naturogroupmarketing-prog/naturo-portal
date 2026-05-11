@@ -1,0 +1,124 @@
+<!--
+  LocalBusiness + AggregateRating schema for /house-cleaning-geelong/
+
+  WHERE TO PASTE: Inside the <head> of the Geelong page, OR inside <body>
+  before the closing </body>. Both are valid for JSON-LD.
+
+  WHAT TO EDIT BEFORE PUBLISHING:
+    - "telephone" : replace with your new Geelong-area 03 number once provisioned.
+      Until then, keep 1300 876 472.
+    - "address.streetAddress" : if you have a Geelong service address, put it.
+      If you operate from cleaners' homes (no fixed Geelong address), use a
+      registered service-area business address (e.g. your HQ) and rely on
+      "areaServed" to define Geelong.
+    - "geo.latitude/longitude" : -38.1499 / 144.3617 are central Geelong CBD.
+      Replace with your actual office geo if you have one.
+    - "aggregateRating.ratingValue" and "reviewCount" : use REAL numbers from
+      Google Business Profile. Do not fabricate. If you have <5 reviews, do not
+      include AggregateRating yet — Google may flag as spam.
+    - "sameAs" : add real social profile and Google Business Profile URLs.
+-->
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HouseCleaningService",
+  "@id": "https://naturogroup.com.au/house-cleaning-geelong/#business",
+  "name": "Naturo Group — House Cleaning Geelong",
+  "alternateName": "Naturo Group Geelong",
+  "description": "Eco-friendly house cleaning in Geelong, the Bellarine Peninsula and the Surf Coast. Police-checked, fully insured cleaners. NDIS, aged care, DVA and insurance cleaning available.",
+  "url": "https://naturogroup.com.au/house-cleaning-geelong/",
+  "image": "https://naturogroup.com.au/images/naturo-group-geelong-cleaners.jpg",
+  "logo": "https://naturogroup.com.au/images/logo.png",
+  "telephone": "+61-3-XXXX-XXXX",
+  "email": "admin@naturogroup.com.au",
+  "priceRange": "$$",
+  "currenciesAccepted": "AUD",
+  "paymentAccepted": "Credit Card, Debit Card, Bank Transfer",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Geelong",
+    "addressRegion": "VIC",
+    "postalCode": "3220",
+    "addressCountry": "AU"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -38.1499,
+    "longitude": 144.3617
+  },
+  "areaServed": [
+    { "@type": "City", "name": "Geelong" },
+    { "@type": "Place", "name": "Bellarine Peninsula" },
+    { "@type": "Place", "name": "Surf Coast" },
+    { "@type": "AdministrativeArea", "name": "Greater Geelong" }
+  ],
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "08:30",
+      "closes": "17:00"
+    }
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Cleaning Services in Geelong",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "Service", "name": "Regular House Cleaning Geelong" },
+        "price": "153.00",
+        "priceCurrency": "AUD",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "price": "153.00",
+          "priceCurrency": "AUD",
+          "valueAddedTaxIncluded": true
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "Service", "name": "Deep Clean Geelong" },
+        "price": "371.00",
+        "priceCurrency": "AUD"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "Service", "name": "End of Lease Cleaning Geelong" },
+        "price": "478.00",
+        "priceCurrency": "AUD"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "Service", "name": "NDIS Cleaning Geelong" }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "Service", "name": "Aged Care Cleaning Geelong" }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "Service", "name": "DVA / Veterans Cleaning Geelong" }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "Service", "name": "Insurance Cleaning Geelong" }
+      }
+    ]
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.7",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "REPLACE_WITH_REAL_GBP_REVIEW_COUNT",
+    "reviewCount": "REPLACE_WITH_REAL_GBP_REVIEW_COUNT"
+  },
+  "sameAs": [
+    "https://www.facebook.com/REPLACE",
+    "https://www.instagram.com/REPLACE",
+    "https://g.page/REPLACE_WITH_GOOGLE_BUSINESS_PROFILE"
+  ]
+}
+</script>
