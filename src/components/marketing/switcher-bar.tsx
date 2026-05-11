@@ -67,8 +67,8 @@ const items = [
 
 export function SwitcherBar() {
   return (
-    <div className="bg-white py-8 relative z-20">
-      <div className="max-w-5xl mx-auto px-6">
+    <div className="bg-white py-8 relative z-20 px-6">
+      <div className="max-w-6xl mx-auto">
 
         {/* Floating white panel — AGL card style */}
         <div
