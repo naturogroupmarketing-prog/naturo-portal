@@ -36,11 +36,6 @@ export function HeroSection() {
           {/* ── Content ── */}
           <div className="animate-[fadeInUp_0.6s_ease-out] py-2">
 
-            {/* Switcher pill */}
-            <div className="inline-flex items-center gap-2 mb-5">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs font-semibold text-white/90 tracking-wide">Replacing spreadsheets &amp; outdated apps · 500+ Australian businesses</span>
-            </div>
 
             {/* Headline — pain-first */}
             <h1
@@ -54,8 +49,6 @@ export function HeroSection() {
               </span>
             </h1>
 
-            {/* Divider */}
-            <div className="mt-5 mb-5 h-px w-full" style={{ background: "rgba(255,255,255,0.15)" }} />
 
             {/* Subheading */}
             <p className="text-base text-white/70 leading-relaxed max-w-md">
