@@ -23,6 +23,22 @@ export function AnimatedCounter({
   const ref = useRef<HTMLSpanElement>(null);
   const hasAnimated = useRef(false);
 
+  function animateValue(start: number, end: number, dur: number) {
+    const startTime = performance.now();
+    const diff = end - start;
+
+    function step(currentTime: number) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / dur, 1);
+      // Ease-out cubic for smooth deceleration
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(start + diff * eased));
+      if (progress < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+  }
+
   useEffect(() => {
     if (hasAnimated.current) {
       setDisplay(value);
@@ -46,23 +62,7 @@ export function AnimatedCounter({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [value, duration]);
-
-  function animateValue(start: number, end: number, dur: number) {
-    const startTime = performance.now();
-    const diff = end - start;
-
-    function step(currentTime: number) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / dur, 1);
-      // Ease-out cubic for smooth deceleration
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(Math.round(start + diff * eased));
-      if (progress < 1) requestAnimationFrame(step);
-    }
-
-    requestAnimationFrame(step);
-  }
+  }, [value, duration]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatted = formatFn ? formatFn(display) : display.toLocaleString();
 

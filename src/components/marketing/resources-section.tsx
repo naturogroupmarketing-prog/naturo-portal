@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 const idleIllustrations = [
   // Getting Started Guide - idle
   (
-    <svg viewBox="0 0 280 280" fill="none" className="w-full h-full">
+    <svg key="idle-0" viewBox="0 0 280 280" fill="none" className="w-full h-full">
       {/* Back clipboard */}
       <rect x="48" y="48" width="160" height="190" rx="14" fill="#1537E8" transform="rotate(-5 128 143)" />
       {/* Main clipboard */}
@@ -52,7 +52,7 @@ const idleIllustrations = [
   ),
   // Video Tutorials - idle (scaled up to match clipboard size)
   (
-    <svg viewBox="0 0 280 280" fill="none" className="w-full h-full">
+    <svg key="idle-1" viewBox="0 0 280 280" fill="none" className="w-full h-full">
       {/* Monitor body */}
       <rect x="22" y="28" width="230" height="155" rx="16" fill="#1537E8" />
       {/* Screen */}
@@ -76,7 +76,7 @@ const idleIllustrations = [
   ),
   // Help Centre - idle (scaled up to match clipboard size)
   (
-    <svg viewBox="0 0 280 280" fill="none" className="w-full h-full">
+    <svg key="idle-2" viewBox="0 0 280 280" fill="none" className="w-full h-full">
       {/* Open book pages */}
       <path d="M30 210 Q140 182 140 70 Q140 182 250 210 Z" fill="#8BC5F0" />
       <path d="M30 210 Q140 182 140 70" stroke="#1537E8" strokeWidth="3.5" fill="none" />
@@ -113,7 +113,7 @@ const idleIllustrations = [
 const hoverIllustrations = [
   // Getting Started Guide - hover
   (
-    <svg viewBox="0 0 280 280" fill="none" className="w-full h-full">
+    <svg key="hover-0" viewBox="0 0 280 280" fill="none" className="w-full h-full">
       {/* Back clipboard */}
       <rect x="48" y="48" width="160" height="190" rx="14" fill="#3B5BDB" transform="rotate(-5 128 143)" />
       {/* Main clipboard */}
@@ -144,7 +144,7 @@ const hoverIllustrations = [
   ),
   // Video Tutorials - hover
   (
-    <svg viewBox="0 0 280 280" fill="none" className="w-full h-full">
+    <svg key="hover-1" viewBox="0 0 280 280" fill="none" className="w-full h-full">
       {/* Monitor body */}
       <rect x="22" y="28" width="230" height="155" rx="16" fill="#6B8FFF" />
       {/* Screen */}
@@ -168,7 +168,7 @@ const hoverIllustrations = [
   ),
   // Help Centre - hover
   (
-    <svg viewBox="0 0 280 280" fill="none" className="w-full h-full">
+    <svg key="hover-2" viewBox="0 0 280 280" fill="none" className="w-full h-full">
       {/* Open book pages */}
       <path d="M30 210 Q140 182 140 70 Q140 182 250 210 Z" fill="#6B8FFF" />
       <path d="M30 210 Q140 182 140 70" stroke="#A8D4F5" strokeWidth="3.5" fill="none" />
