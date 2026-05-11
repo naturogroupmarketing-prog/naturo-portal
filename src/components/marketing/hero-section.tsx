@@ -54,7 +54,7 @@ export function HeroSection() {
             </p>
 
             {/* Trust micro-copy */}
-            <div className="mt-14 flex flex-wrap gap-x-6 gap-y-2">
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
               {["14-day free trial", "No credit card required", "Set up in 15 mins"].map((t) => (
                 <span key={t} className="flex items-center gap-1.5 text-sm text-white/50">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
