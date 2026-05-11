@@ -336,7 +336,7 @@ export function HeroSection() {
     </section>
 
     {/* ── Overlapping form card — AGL style ── */}
-    <div className="relative -mt-14 z-20 px-6 pb-4">
+    <div className="relative -mt-14 z-20 px-6 pb-12">
       <div className="max-w-6xl mx-auto">
         <div
           className="bg-white rounded-2xl px-6 py-5 sm:px-8 sm:py-6"
