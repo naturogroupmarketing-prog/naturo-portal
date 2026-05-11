@@ -77,8 +77,8 @@ export function HeroSection() {
             style={{
               left: "30%",
               right: "-480px",
-              top: "130px",
-              height: "620px",
+              top: "60px",
+              height: "500px",
               bottom: "auto",
               borderRadius: "29px",
               background: "linear-gradient(135deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.10) 45%, rgba(255,255,255,0.28) 100%)",
@@ -126,7 +126,7 @@ export function HeroSection() {
               alt="Trackio dashboard"
               draggable={false}
               className="relative block w-full"
-              style={{ height: "calc(620px - 38px)", objectFit: "cover", objectPosition: "top left" }}
+              style={{ height: "calc(500px - 38px)", objectFit: "cover", objectPosition: "top left" }}
             />
           </div>
           </div>
@@ -134,7 +134,7 @@ export function HeroSection() {
           {/* ── Phone ── */}
           <div
             className="absolute z-20 animate-[gentleFloat_6s_ease-in-out_infinite]"
-            style={{ left: "2%", top: "160px" }}
+            style={{ left: "2%", top: "80px" }}
           >
             {/* Phone shell */}
             <div style={{
@@ -171,7 +171,7 @@ export function HeroSection() {
           <div
             className="absolute z-30 animate-[gentleFloat_5s_ease-in-out_1s_infinite] p-px"
             style={{
-              left: "6%", top: "140px",
+              left: "6%", top: "60px",
               background: "linear-gradient(135deg, rgba(255,255,255,0.40) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.28) 100%)",
               borderRadius: "17px",
               boxShadow: "0 8px 32px rgba(0,0,0,0.30)",
@@ -188,7 +188,7 @@ export function HeroSection() {
           <div
             className="absolute z-30 animate-[gentleFloat_7s_ease-in-out_2s_infinite] p-px"
             style={{
-              left: "16%", bottom: "80px",
+              left: "16%", top: "420px",
               background: "linear-gradient(135deg, rgba(255,255,255,0.40) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.28) 100%)",
               borderRadius: "17px",
               boxShadow: "0 8px 32px rgba(0,0,0,0.30)",
