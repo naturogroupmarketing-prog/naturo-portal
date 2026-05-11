@@ -5,7 +5,7 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <>
-    <section className="relative overflow-hidden pt-[136px] pb-16" style={{ minHeight: "800px" }}>
+    <section className="relative overflow-hidden pt-[136px] pb-16" style={{ minHeight: "880px" }}>
 
       {/* ── AGL-style linear blue gradient base ── */}
       <div
@@ -77,8 +77,8 @@ export function HeroSection() {
             style={{
               left: "30%",
               right: "-480px",
-              top: "60px",
-              height: "500px",
+              top: "30px",
+              height: "660px",
               bottom: "auto",
               borderRadius: "29px",
               background: "linear-gradient(135deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.10) 45%, rgba(255,255,255,0.28) 100%)",
@@ -126,7 +126,7 @@ export function HeroSection() {
               alt="Trackio dashboard"
               draggable={false}
               className="relative block w-full"
-              style={{ height: "calc(500px - 38px)", objectFit: "cover", objectPosition: "top left" }}
+              style={{ height: "calc(660px - 38px)", objectFit: "cover", objectPosition: "top left" }}
             />
           </div>
           </div>
