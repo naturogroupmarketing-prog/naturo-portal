@@ -67,42 +67,8 @@ export function HeroSection() {
               trackio replaces spreadsheets and clunky apps with one simple system — so your team always knows what&apos;s available, where it is, and who has it. Set up in 15 minutes.
             </p>
 
-            {/* Email capture form */}
-            <form
-              className="mt-8 flex flex-col sm:flex-row gap-2.5 max-w-md"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.target as HTMLFormElement;
-                const email = (form.elements.namedItem("email") as HTMLInputElement).value;
-                window.location.href = `/login?email=${encodeURIComponent(email)}`;
-              }}
-            >
-              <input
-                type="email"
-                name="email"
-                required
-                placeholder="Enter your work email"
-                className="flex-1 px-4 py-3.5 rounded-full text-sm font-medium text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/40"
-                style={{ background: "rgba(255,255,255,0.95)" }}
-              />
-              <button
-                type="submit"
-                className="shrink-0 inline-flex items-center justify-center text-sm font-bold px-6 py-3.5 rounded-full transition-all hover:-translate-y-px active:scale-[0.97]"
-                style={{
-                  background: "#FFD700",
-                  color: "#001A6B",
-                  boxShadow: "0 4px 20px rgba(255,215,0,0.35)",
-                }}
-              >
-                Start Free Trial
-                <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
-            </form>
-
             {/* Trust micro-copy */}
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5">
+            <div className="mt-8 flex flex-wrap gap-x-5 gap-y-1.5">
               {["14-day free trial", "No credit card required", "Set up in 15 mins"].map((t) => (
                 <span key={t} className="flex items-center gap-1.5 text-xs text-white/50">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
