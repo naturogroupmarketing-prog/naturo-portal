@@ -49,12 +49,12 @@ export function HeroSection() {
             </h1>
 
             {/* Subheading */}
-            <p className="mt-8 text-lg text-white/70 leading-relaxed max-w-md">
+            <p className="mt-12 text-lg text-white/70 leading-relaxed max-w-md">
               trackio replaces spreadsheets and clunky apps with one simple system — so your team always knows what&apos;s available, where it is, and who has it. Set up in 15 minutes.
             </p>
 
             {/* Trust micro-copy */}
-            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2">
+            <div className="mt-14 flex flex-wrap gap-x-6 gap-y-2">
               {["14-day free trial", "No credit card required", "Set up in 15 mins"].map((t) => (
                 <span key={t} className="flex items-center gap-1.5 text-sm text-white/50">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
