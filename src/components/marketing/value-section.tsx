@@ -82,7 +82,7 @@ function IllustrationPhoneChain() {
 export function ValueSection() {
   return (
     <section className="py-24 px-6 border-b border-gray-200 bg-white text-[#191c1f]">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
           <div className="text-center mb-16">

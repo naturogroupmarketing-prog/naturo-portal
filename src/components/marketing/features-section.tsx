@@ -71,7 +71,7 @@ function renderCell(type: CellType) {
 export function FeaturesSection() {
   return (
     <section id="features" className="py-24 px-6 bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
           <div className="md:text-left text-center mb-16">

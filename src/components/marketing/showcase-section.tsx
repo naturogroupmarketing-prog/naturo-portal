@@ -59,7 +59,7 @@ export function ShowcaseSection() {
       className="py-24 px-6 border-b border-gray-200"
       style={{ background: "#f4f5f8" }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
           <div className="text-center md:text-left mb-16 max-w-4xl">

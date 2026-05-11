@@ -70,7 +70,7 @@ export function UseCasesSection() {
 
   return (
     <section id="use-cases" className="py-24 px-6 bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
           <div className="text-center md:text-left mb-16">
