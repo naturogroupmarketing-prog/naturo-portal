@@ -5,7 +5,7 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <>
-    <section className="relative overflow-hidden pt-[136px] pb-16" style={{ minHeight: "880px" }}>
+    <section className="relative overflow-hidden pt-[68px] pb-16" style={{ minHeight: "880px" }}>
 
       {/* ── AGL-style linear blue gradient base ── */}
       <div
@@ -34,12 +34,11 @@ export function HeroSection() {
         <div className="lg:w-[55%] px-8 lg:pl-16 xl:pl-24 lg:pr-6 py-16 lg:py-0 flex flex-col justify-center">
 
           {/* ── Content ── */}
-          <div className="animate-[fadeInUp_0.6s_ease-out] py-2">
-
+          <div className="animate-[fadeInUp_0.6s_ease-out]">
 
             {/* Headline — pain-first */}
             <h1
-              className="text-[2.6rem] sm:text-5xl lg:text-[3.4rem] font-semibold leading-[1.06] tracking-tight text-white"
+              className="text-[2.6rem] sm:text-5xl lg:text-[3.4rem] font-semibold leading-[1.10] tracking-tight text-white"
               style={{ fontFamily: "var(--font-exo, sans-serif)" }}
             >
               Tired of chasing<br />
@@ -49,16 +48,15 @@ export function HeroSection() {
               </span>
             </h1>
 
-
             {/* Subheading */}
-            <p className="text-base text-white/70 leading-relaxed max-w-md">
+            <p className="mt-8 text-lg text-white/70 leading-relaxed max-w-md">
               trackio replaces spreadsheets and clunky apps with one simple system — so your team always knows what&apos;s available, where it is, and who has it. Set up in 15 minutes.
             </p>
 
             {/* Trust micro-copy */}
-            <div className="mt-8 flex flex-wrap gap-x-5 gap-y-1.5">
+            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2">
               {["14-day free trial", "No credit card required", "Set up in 15 mins"].map((t) => (
-                <span key={t} className="flex items-center gap-1.5 text-xs text-white/50">
+                <span key={t} className="flex items-center gap-1.5 text-sm text-white/50">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                   {t}
                 </span>
