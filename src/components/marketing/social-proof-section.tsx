@@ -78,7 +78,7 @@ export function SocialProofSection() {
         {/* Stats — white card */}
         <ScrollReveal>
           <div
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mb-24 bg-white p-12 rounded-lg border border-gray-100"
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mb-24 bg-white p-12 rounded-2xl border border-gray-100"
             style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
           >
             {stats.map((stat, i) => (
@@ -100,7 +100,7 @@ export function SocialProofSection() {
           {testimonials.map((t, i) => (
             <ScrollReveal key={t.name} delay={i * 150}>
               <div
-                className="bg-white p-12 rounded-lg border border-gray-100 relative flex flex-col"
+                className="bg-white p-12 rounded-2xl border border-gray-100 relative flex flex-col"
                 style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
               >
                 {/* Large decorative quote mark */}

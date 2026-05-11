@@ -80,7 +80,7 @@ export function ShowcaseSection() {
             <ScrollReveal key={step.title} delay={i * 150}>
               {/* mt-8 gives space for the floating circle that hangs above */}
               <div
-                className="bg-white p-10 rounded-lg border border-gray-100 flex flex-col items-center text-center relative mt-8"
+                className="bg-white p-10 rounded-2xl border border-gray-100 flex flex-col items-center text-center relative mt-8"
                 style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
               >
                 {/* Floating numbered circle */}
@@ -108,7 +108,7 @@ export function ShowcaseSection() {
 
         <ScrollReveal delay={500}>
           <div
-            className="mt-16 bg-white p-10 rounded-lg border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-8"
+            className="mt-16 bg-white p-10 rounded-2xl border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-8"
             style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
           >
             <p className="text-gray-700 text-xl font-light">

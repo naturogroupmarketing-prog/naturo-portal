@@ -89,7 +89,7 @@ export function FeaturesSection() {
 
         <ScrollReveal delay={100}>
           <div
-            className="bg-white rounded-lg border border-gray-200 overflow-hidden"
+            className="bg-white rounded-2xl border border-gray-200 overflow-hidden"
             style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
           >
             <div className="overflow-x-auto">

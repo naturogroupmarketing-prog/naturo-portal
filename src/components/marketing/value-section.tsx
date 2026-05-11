@@ -53,7 +53,7 @@ export function ValueSection() {
           {stats.map((stat, i) => (
             <ScrollReveal key={stat.title} delay={i * 100}>
               <div
-                className="bg-white p-10 rounded-lg border border-gray-100 hover:shadow-lg transition-shadow"
+                className="bg-white p-10 rounded-2xl border border-gray-100 hover:shadow-lg transition-shadow"
                 style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
               >
                 <div className="text-5xl font-bold mb-3" style={{ color: BLUE }}>
@@ -71,7 +71,7 @@ export function ValueSection() {
 
         <ScrollReveal delay={350}>
           <div
-            className="bg-white p-10 rounded-lg border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-10"
+            className="bg-white p-10 rounded-2xl border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-10"
             style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
           >
             <p className="text-xl text-gray-700 max-w-3xl font-light leading-relaxed">

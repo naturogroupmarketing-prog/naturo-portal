@@ -107,7 +107,7 @@ export function UseCasesSection() {
         </div>
 
         {/* Content Card */}
-        <div className="bg-[#f4f5f8] rounded-lg p-10 sm:p-12 grid md:grid-cols-2 gap-12 md:gap-16 items-start">
+        <div className="bg-[#f4f5f8] rounded-2xl p-10 sm:p-12 grid md:grid-cols-2 gap-12 md:gap-16 items-start">
 
           {/* Left — What they track */}
           <div>
@@ -136,14 +136,14 @@ export function UseCasesSection() {
           {/* Right — Quote + Outcome + CTA */}
           <div className="space-y-8">
             <blockquote
-              className="bg-white p-8 rounded-lg italic text-gray-800 text-xl font-light border-l-4"
+              className="bg-white p-8 rounded-2xl italic text-gray-800 text-xl font-light border-l-4"
               style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)", borderLeftColor: BLUE }}
             >
               {ind.quote}
             </blockquote>
 
             <div
-              className="text-white p-8 rounded-lg flex items-center gap-6 shadow-md"
+              className="text-white p-8 rounded-2xl flex items-center gap-6 shadow-md"
               style={{ background: BLUE }}
             >
               <div className="p-5 rounded-lg shrink-0" style={{ background: "rgba(255,255,255,0.1)" }}>
