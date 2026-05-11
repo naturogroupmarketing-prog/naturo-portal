@@ -108,19 +108,8 @@ export function SwitcherBar() {
 
           </div>
 
-          {/* AGL three-colour wave */}
-          <div className="h-14 relative overflow-hidden">
-            <svg
-              viewBox="0 0 1440 56"
-              preserveAspectRatio="none"
-              className="absolute inset-0 w-full h-full"
-              aria-hidden="true"
-            >
-              <path d="M0,28 C360,8 1080,48 1440,22 L1440,56 L0,56 Z" fill="#FFE344" />
-              <path d="M0,36 C360,16 1080,56 1440,30 L1440,56 L0,56 Z" fill="#00B9C4" />
-              <path d="M0,44 C360,24 1080,64 1440,38 L1440,56 L0,56 Z" fill={BLUE} />
-            </svg>
-          </div>
+          {/* Solid yellow bar */}
+          <div className="h-3" style={{ background: "#FFE344" }} />
 
         </div>
       </div>
