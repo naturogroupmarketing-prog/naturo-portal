@@ -30,8 +30,7 @@ const stats = [
 export function ValueSection() {
   return (
     <section
-      className="py-24 px-6 border-b border-gray-200 text-[#191c1f]"
-      style={{ background: "#f4f5f8" }}
+      className="py-24 px-6 border-b border-gray-200 text-[#191c1f] bg-white"
     >
       <div className="max-w-7xl mx-auto">
 
