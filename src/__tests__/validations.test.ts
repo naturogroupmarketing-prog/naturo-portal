@@ -147,7 +147,7 @@ describe("User Validations", () => {
       email: "test@example.com",
       name: "Test User",
       role: "STAFF",
-      password: "Password123",
+      password: "Password123!",
     });
     expect(result.success).toBe(true);
   });
