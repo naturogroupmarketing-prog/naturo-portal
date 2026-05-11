@@ -1,47 +1,74 @@
-import Link from "next/link";
+"use client";
+
 import { ScrollReveal } from "./scroll-reveal";
 
 export function CTASection() {
   return (
-    <section className="py-14 sm:py-20 lg:py-28" style={{ background: "linear-gradient(135deg, #002FA0 0%, #0050CC 55%, #0070F0 100%)" }}>
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <ScrollReveal>
+    <section className="py-16 sm:py-24" style={{ background: "linear-gradient(135deg, #001A80 0%, #002FA0 50%, #0050CC 100%)" }}>
+      <div className="max-w-4xl mx-auto px-6">
+        <ScrollReveal>
+          <div className="text-center mb-10">
+            <p className="text-xs font-bold uppercase tracking-widest text-blue-300 mb-4">
+              Start today — free for 14 days
+            </p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-white">
-              Ready to take control of{" "}
-              <span style={{ color: "#FFD700" }}>your operations?</span>
+              Stop losing equipment.<br />
+              <span style={{ color: "#FFD700" }}>Start tracking smarter.</span>
             </h2>
-            <p className="mt-5 text-white/70 text-lg max-w-xl mx-auto">
-              Stop losing track of equipment and supplies. Start managing every location, every item, and every team member in one place.
+            <p className="mt-5 text-white/60 text-lg max-w-xl mx-auto">
+              Join 500+ Australian service businesses that switched from spreadsheets and clunky apps to trackio. Setup takes 15 minutes.
             </p>
-          </ScrollReveal>
+          </div>
+        </ScrollReveal>
 
-          <ScrollReveal delay={200}>
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link
-                href="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center text-sm font-semibold px-8 py-3.5 rounded-full transition-all hover:-translate-y-px hover:shadow-lg active:scale-[0.97]"
-                style={{ background: "#ffffff", color: "#002FA0", boxShadow: "0 4px 20px rgba(0,0,0,0.20)" }}
-              >
-                Start Your Free Trial
-                <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </Link>
-              <Link
-                href="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center text-sm font-semibold text-white px-8 py-3.5 rounded-full transition-all hover:bg-white/15"
-                style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)" }}
-              >
-                Sign In
-              </Link>
-            </div>
-            <p className="mt-6 text-xs text-white/40">
-              Free 14-day trial · No credit card required · Cancel anytime
-            </p>
-            <p className="mt-2 text-xs text-white/60 font-medium">
-              Join 500+ teams already tracking smarter with trackio.
-            </p>
-          </ScrollReveal>
-        </div>
+        <ScrollReveal delay={150}>
+          {/* Email capture */}
+          <form
+            className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+              window.location.href = `/login?email=${encodeURIComponent(email)}`;
+            }}
+          >
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="Enter your work email"
+              className="flex-1 px-5 py-4 rounded-full text-sm font-medium text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/30"
+              style={{ background: "rgba(255,255,255,0.97)" }}
+            />
+            <button
+              type="submit"
+              className="shrink-0 inline-flex items-center justify-center text-sm font-bold px-7 py-4 rounded-full transition-all hover:-translate-y-px active:scale-[0.97]"
+              style={{ background: "#FFD700", color: "#001A6B", boxShadow: "0 4px 20px rgba(255,215,0,0.30)" }}
+            >
+              Start Free Trial →
+            </button>
+          </form>
+
+          {/* Trust row */}
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            {[
+              "No credit card required",
+              "14-day free trial",
+              "Cancel anytime",
+              "Australian-built & supported",
+            ].map((t) => (
+              <span key={t} className="flex items-center gap-1.5 text-xs text-white/40">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {t}
+              </span>
+            ))}
+          </div>
+
+          {/* Risk reversal */}
+          <p className="mt-6 text-center text-xs text-white/30">
+            Not happy after your trial? We&apos;ll help you export your data — no questions asked.
+          </p>
+        </ScrollReveal>
       </div>
     </section>
   );

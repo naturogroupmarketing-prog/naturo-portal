@@ -35,71 +35,90 @@ export function HeroSection() {
 
           {/* ── Content ── */}
           <div className="animate-[fadeInUp_0.6s_ease-out] py-2">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full w-fit mb-6"
+
+            {/* Switcher pill */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full w-fit mb-5"
               style={{
                 background: "rgba(255,255,255,0.10)",
                 backdropFilter: "blur(12px)",
                 border: "1px solid rgba(255,255,255,0.22)",
               }}>
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs font-semibold text-white/90 tracking-wide uppercase">Asset & Supply Tracking Platform</span>
+              <span className="text-xs font-semibold text-white/90 tracking-wide">Replacing spreadsheets &amp; outdated apps · 500+ Australian businesses</span>
             </div>
 
-            {/* Headline */}
+            {/* Headline — pain-first */}
             <h1
               className="text-[2.6rem] sm:text-5xl lg:text-[3.4rem] font-semibold leading-[1.06] tracking-tight text-white"
               style={{ fontFamily: "var(--font-exo, sans-serif)" }}
             >
-              Know exactly what<br />
-              you have,{" "}
+              Tired of chasing<br />
+              equipment and{" "}
               <span style={{ color: "#FFD700" }}>
-                where it is,
+                emergency restocks?
               </span>
-              <br />
-              and who has it.
             </h1>
 
             {/* Divider */}
             <div className="mt-5 mb-5 h-px w-full" style={{ background: "rgba(255,255,255,0.15)" }} />
 
             {/* Subheading */}
-            <p className="text-base text-white/60 leading-relaxed max-w-md">
-              Finally feel in control of every location, every asset, and every supply — with one system your whole team will actually use.
+            <p className="text-base text-white/70 leading-relaxed max-w-md">
+              trackio replaces spreadsheets and clunky apps with one simple system — so your team always knows what&apos;s available, where it is, and who has it. Set up in 15 minutes.
             </p>
 
-            {/* CTAs */}
-            <div className="mt-8 flex flex-col sm:flex-row items-start gap-3">
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center text-sm font-bold px-7 py-3.5 rounded-full transition-all hover:-translate-y-px active:scale-[0.97]"
+            {/* Email capture form */}
+            <form
+              className="mt-8 flex flex-col sm:flex-row gap-2.5 max-w-md"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+                window.location.href = `/login?email=${encodeURIComponent(email)}`;
+              }}
+            >
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="Enter your work email"
+                className="flex-1 px-4 py-3.5 rounded-full text-sm font-medium text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/40"
+                style={{ background: "rgba(255,255,255,0.95)" }}
+              />
+              <button
+                type="submit"
+                className="shrink-0 inline-flex items-center justify-center text-sm font-bold px-6 py-3.5 rounded-full transition-all hover:-translate-y-px active:scale-[0.97]"
                 style={{
-                  background: "linear-gradient(135deg, #ffffff 0%, #e8f4ff 100%)",
-                  color: "#003AB0",
-                  boxShadow: "0 4px 24px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.80) inset",
+                  background: "#FFD700",
+                  color: "#001A6B",
+                  boxShadow: "0 4px 20px rgba(255,215,0,0.35)",
                 }}
               >
-                Get started
+                Start Free Trial
                 <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
-              </Link>
-              <a
-                href="#features"
-                className="inline-flex items-center justify-center text-sm font-semibold text-white px-7 py-3.5 rounded-full transition-all hover:bg-white/15"
-                style={{
-                  background: "rgba(255,255,255,0.10)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255,255,255,0.22)",
-                }}
-              >
-                See how it works
-              </a>
+              </button>
+            </form>
+
+            {/* Trust micro-copy */}
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5">
+              {["14-day free trial", "No credit card required", "Set up in 15 mins"].map((t) => (
+                <span key={t} className="flex items-center gap-1.5 text-xs text-white/50">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                  {t}
+                </span>
+              ))}
             </div>
 
-            <p className="mt-5 text-xs text-white/35">
-              Trusted by 500+ operational teams across Australia · No credit card required
-            </p>
+            {/* Demo link */}
+            <a
+              href="#how-it-works"
+              className="mt-5 inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white/80 transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              Watch a 2-min demo
+            </a>
           </div>
         </div>
 

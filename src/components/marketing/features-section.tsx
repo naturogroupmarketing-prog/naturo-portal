@@ -1,83 +1,136 @@
 import { ScrollReveal } from "./scroll-reveal";
 
+const NAVY = "#002FA0";
+
+type Mark = "yes" | "no" | "partial";
+
+const rows: { feature: string; sheet: Mark; other: Mark; trackio: Mark }[] = [
+  { feature: "Real-time low-stock alerts",     sheet: "no",      other: "no",      trackio: "yes" },
+  { feature: "Multi-location dashboard",       sheet: "no",      other: "partial", trackio: "yes" },
+  { feature: "Asset check-out with owner log", sheet: "no",      other: "partial", trackio: "yes" },
+  { feature: "Damage reporting & photos",      sheet: "no",      other: "no",      trackio: "yes" },
+  { feature: "Mobile app for field staff",     sheet: "no",      other: "yes",     trackio: "yes" },
+  { feature: "Request & approval workflow",    sheet: "no",      other: "no",      trackio: "yes" },
+  { feature: "Australian-based support",       sheet: "no",      other: "no",      trackio: "yes" },
+  { feature: "Setup in under 15 minutes",      sheet: "partial", other: "no",      trackio: "yes" },
+  { feature: "Starts at $0 — no lock-in",      sheet: "yes",     other: "no",      trackio: "yes" },
+];
+
+function MarkIcon({ type, gold = false }: { type: Mark; gold?: boolean }) {
+  if (type === "yes") {
+    return (
+      <span className="flex items-center justify-center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke={gold ? "#FFD700" : "#86efac"} strokeWidth="2.5"
+          strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </span>
+    );
+  }
+  if (type === "partial") {
+    return (
+      <span className="flex items-center justify-center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+      </span>
+    );
+  }
+  return (
+    <span className="flex items-center justify-center">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+        stroke="#e5e7eb" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </span>
+  );
+}
+
 export function FeaturesSection() {
-  const features = [
-    {
-      title: "Asset Tracking",
-      description: "Track every piece of equipment from issue to return. Know what's available, assigned, damaged, or missing at a glance.",
-      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>),
-    },
-    {
-      title: "Supply Management",
-      description: "Monitor consumable stock levels across every location. Get alerts before items run out.",
-      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>),
-    },
-    {
-      title: "Multi-Location Visibility",
-      description: "See stock levels, assignments, and activity across all your branches in one centralised view.",
-      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>),
-    },
-    {
-      title: "Staff Accountability",
-      description: "Every item issued is linked to a person. Returns, damage reports, and requests are all tracked by user.",
-      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>),
-    },
-    {
-      title: "Request & Approve",
-      description: "Staff can request supplies. Managers review and approve. Everything stays organised and auditable.",
-      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg>),
-    },
-    {
-      title: "Damage Reporting",
-      description: "Staff report damaged items instantly. Managers can review, replace, or action items directly from the app.",
-      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>),
-    },
-    {
-      title: "Role-Based Access",
-      description: "Admins, branch managers, and staff each see what they need. Permissions keep everything secure and simple.",
-      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>),
-    },
-    {
-      title: "Returns & Handovers",
-      description: "Track item returns with condition checks. Know when equipment comes back and in what state.",
-      icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>),
-    },
-  ];
+  const colWidth = "w-[110px] sm:w-[130px]";
 
   return (
-    <section id="features" className="py-14 sm:py-20 lg:py-28 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="features" className="py-16 sm:py-24 bg-white">
+      <div className="max-w-4xl mx-auto px-6">
         <ScrollReveal>
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#002FA0" }}>
-              Features
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: NAVY }}>
+              How we compare
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight" style={{ color: "#111827" }}>
-              Everything you need to{" "}
-              <span style={{ color: "#FFD700" }}>stay in control.</span>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-gray-900">
+              See how we{" "}
+              <span style={{ color: "#FFD700" }}>stack up.</span>
             </h2>
             <p className="mt-4 text-gray-500 text-lg">
-              Built for the way operations teams actually work.
+              Most teams are still tracking with tools that weren&apos;t built for this work.
             </p>
           </div>
         </ScrollReveal>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {features.map((feature, i) => (
-            <ScrollReveal key={feature.title} delay={i * 100}>
-              <div className="bg-white rounded-[28px] p-6 border border-gray-200 hover:border-blue-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full">
-                <div
-                  className="w-10 h-10 rounded-[28px] flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
-                  style={{ background: "rgba(0,47,160,0.08)", color: "#002FA0" }}
-                >
-                  {feature.icon}
+        <ScrollReveal delay={100}>
+          <div className="overflow-x-auto -mx-2">
+            <div className="min-w-[500px] px-2">
+
+              {/* Header */}
+              <div className="flex items-end gap-0 mb-0">
+                <div className="flex-1 pr-4" />
+                <div className={`${colWidth} text-center pb-3 px-2`}>
+                  <p className="text-xs font-semibold text-gray-500">Spreadsheets</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">Excel / Sheets</p>
                 </div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-1.5">{feature.title}</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">{feature.description}</p>
+                <div className={`${colWidth} text-center pb-3 px-2`}>
+                  <p className="text-xs font-semibold text-gray-500">Other apps</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">ServiceM8 · Simpro</p>
+                </div>
+                <div className={`${colWidth} px-2`}>
+                  <div className="rounded-t-2xl px-3 pt-4 pb-3 text-center" style={{ background: NAVY }}>
+                    <p className="text-sm font-bold text-white">trackio</p>
+                    <p className="text-[10px] text-blue-300 mt-0.5">Built for service teams</p>
+                  </div>
+                </div>
               </div>
-            </ScrollReveal>
-          ))}
-        </div>
+
+              {/* Rows */}
+              {rows.map((row, i) => (
+                <div key={row.feature} className={`flex items-center gap-0 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+                  <div className="flex-1 pr-4 py-3.5 pl-3 text-sm text-gray-700 font-medium">{row.feature}</div>
+                  <div className={`${colWidth} py-3.5 px-2`}>
+                    <MarkIcon type={row.sheet} />
+                  </div>
+                  <div className={`${colWidth} py-3.5 px-2`}>
+                    <MarkIcon type={row.other} />
+                  </div>
+                  <div className={`${colWidth} py-3.5 px-2`} style={{ background: "rgba(0,47,160,0.06)" }}>
+                    <MarkIcon type={row.trackio} gold />
+                  </div>
+                </div>
+              ))}
+
+              {/* Footer CTA */}
+              <div className="flex items-center gap-0">
+                <div className="flex-1 pr-4 py-4 pl-3 text-xs text-gray-400 italic">
+                  14-day free trial · no credit card required
+                </div>
+                <div className={`${colWidth} px-2`} />
+                <div className={`${colWidth} px-2`} />
+                <div className={`${colWidth} px-2`}>
+                  <div className="rounded-b-2xl px-3 pb-4 pt-3" style={{ background: NAVY }}>
+                    <a
+                      href="#cta"
+                      className="block text-center text-[11px] font-bold py-2 rounded-full"
+                      style={{ background: "#FFD700", color: "#001A6B" }}
+                    >
+                      Start Free Trial →
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

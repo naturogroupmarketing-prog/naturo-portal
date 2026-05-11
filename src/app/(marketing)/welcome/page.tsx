@@ -1,30 +1,26 @@
 import { Navbar } from "@/components/marketing/navbar";
 import { HeroSection } from "@/components/marketing/hero-section";
-import { SocialProofSection } from "@/components/marketing/social-proof-section";
+import { SwitcherBar } from "@/components/marketing/switcher-bar";
 import { ValueSection } from "@/components/marketing/value-section";
 import { UseCasesSection } from "@/components/marketing/use-cases-section";
 import { ShowcaseSection } from "@/components/marketing/showcase-section";
-import { ProductPreviewSection } from "@/components/marketing/product-preview-section";
 import { FeaturesSection } from "@/components/marketing/features-section";
-import { BentoShowcaseSection } from "@/components/marketing/bento-showcase-section";
-import { BenefitsSection } from "@/components/marketing/benefits-section";
+import { SocialProofSection } from "@/components/marketing/social-proof-section";
 import { PricingSection } from "@/components/marketing/pricing-section";
 import { FAQSection } from "@/components/marketing/faq-section";
-import { ResourcesSection } from "@/components/marketing/resources-section";
-import { SignupBanner } from "@/components/marketing/signup-banner";
 import { CTASection } from "@/components/marketing/cta-section";
 import { Footer } from "@/components/marketing/footer";
 import { AIChatWidget } from "@/components/marketing/ai-chat-widget";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Asset & Supply Tracking Software for Operational Teams",
+  title: "Asset & Supply Tracking Software for Service Businesses | trackio",
   description:
-    "Track equipment, manage supplies, and keep every location accountable. trackio is the all-in-one asset and consumable tracking platform trusted by 500+ teams across Australia.",
+    "Replace spreadsheets and clunky apps with trackio — the asset and supply tracking platform built for Australian service businesses. Know what you have, where it is, and who has it. Free 14-day trial.",
   alternates: { canonical: "https://trackio.au/" },
   openGraph: {
-    title: "trackio — Asset & Supply Tracking Software",
-    description: "Track equipment, manage supplies, and keep every location accountable. Trusted by 500+ operational teams.",
+    title: "trackio — Stop Losing Equipment. Start Tracking Smarter.",
+    description: "Replace spreadsheets and clunky apps with trackio. Built for Australian service businesses managing equipment and supplies across multiple locations.",
     url: "https://trackio.au/",
   },
 };
@@ -35,7 +31,7 @@ const jsonLd = {
   name: "trackio",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
-  description: "All-in-one asset and consumable tracking platform for operational teams. Track equipment, manage supplies, and keep every location accountable.",
+  description: "Asset and supply tracking platform for Australian service businesses. Replace spreadsheets and clunky apps with one simple system.",
   url: "https://trackio.au/",
   offers: {
     "@type": "AggregateOffer",
@@ -67,33 +63,25 @@ export default function WelcomePage() {
       />
       <Navbar />
       <main>
-        {/* 1. Attention — Hook with headline + dashboard showcase */}
+        {/* 1. Hook — pain-first hero with email capture */}
         <HeroSection />
-        {/* 2. Proof — Social proof, stats, testimonials, trust badges */}
-        <SocialProofSection />
-        {/* 3. Capability — Bento grid showcase */}
-        <BentoShowcaseSection />
-        {/* 4. Pain — Identify the problem so visitors feel understood */}
+        {/* 2. Credibility — show what we replace */}
+        <SwitcherBar />
+        {/* 3. Pain agitation — cost of doing nothing */}
         <ValueSection />
-        {/* 5. Identity — "This is for people like me" */}
+        {/* 4. Identity — is this for me? */}
         <UseCasesSection />
-        {/* 6. Simplicity — Interactive showcase with auto-cycling steps */}
+        {/* 5. Solution — how it works */}
         <ShowcaseSection />
-        {/* 7. Desire — Product preview creates "I want this" */}
-        <ProductPreviewSection />
-        {/* 8. Capability — Full feature breakdown */}
+        {/* 6. Comparison — how we stack up */}
         <FeaturesSection />
-        {/* 8. Outcomes — Quantified results that matter */}
-        <BenefitsSection />
-        {/* 8.5. Conversion — Vibrant gradient signup banner */}
-        <SignupBanner />
-        {/* 9. Decision — Pricing with annual/monthly toggle */}
+        {/* 7. Trust — testimonials + stats */}
+        <SocialProofSection />
+        {/* 9. Decision — pricing */}
         <PricingSection />
-        {/* 10. Objections — FAQ handles remaining doubts */}
+        {/* 10. Objections — FAQ */}
         <FAQSection />
-        {/* 11. Resources — Swyftx-style illustrated cards */}
-        <ResourcesSection />
-        {/* 12. Action — Final CTA with urgency */}
+        {/* 11. Final conversion — email capture */}
         <CTASection />
       </main>
       <Footer />
