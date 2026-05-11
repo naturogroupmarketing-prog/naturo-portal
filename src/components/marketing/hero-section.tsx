@@ -37,12 +37,7 @@ export function HeroSection() {
           <div className="animate-[fadeInUp_0.6s_ease-out] py-2">
 
             {/* Switcher pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full w-fit mb-5"
-              style={{
-                background: "rgba(255,255,255,0.10)",
-                backdropFilter: "blur(12px)",
-                border: "1px solid rgba(255,255,255,0.22)",
-              }}>
+            <div className="inline-flex items-center gap-2 mb-5">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               <span className="text-xs font-semibold text-white/90 tracking-wide">Replacing spreadsheets &amp; outdated apps · 500+ Australian businesses</span>
             </div>
@@ -77,14 +72,6 @@ export function HeroSection() {
               ))}
             </div>
 
-            {/* Demo link */}
-            <a
-              href="#how-it-works"
-              className="mt-5 inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white/80 transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-              Watch a 2-min demo
-            </a>
           </div>
         </div>
 
