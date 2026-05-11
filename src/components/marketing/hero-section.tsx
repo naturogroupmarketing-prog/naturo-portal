@@ -340,7 +340,7 @@ export function HeroSection() {
       <div className="max-w-6xl mx-auto">
         <div
           className="bg-white rounded-2xl px-8 py-6 sm:px-10 sm:py-7"
-          style={{ border: "1.5px solid #001b94", boxShadow: "0 8px 40px rgba(0,16,100,0.14), 0 2px 8px rgba(0,0,0,0.06)" }}
+          style={{ boxShadow: "0 8px 40px rgba(0,16,100,0.14), 0 2px 8px rgba(0,0,0,0.06)" }}
         >
           <p className="text-lg font-bold text-[#191c1f] mb-5">
             Start tracking your assets — get set up in minutes
