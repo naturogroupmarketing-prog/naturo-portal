@@ -1,6 +1,6 @@
 import { ScrollReveal } from "./scroll-reveal";
 
-const BLUE = "#001b94";
+const BLUE = "#003DB8";
 const YELLOW = "#ffe344";
 
 function IllustrationLostEquipment() {

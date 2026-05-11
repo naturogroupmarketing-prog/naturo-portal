@@ -7,25 +7,11 @@ export function HeroSection() {
     <>
     <section className="relative overflow-hidden pt-[68px] pb-16" style={{ minHeight: "880px" }}>
 
-      {/* ── AGL-style linear blue gradient base ── */}
+      {/* ── Clean AGL-style solid blue ── */}
       <div
         className="absolute inset-0 z-0"
-        style={{ background: "linear-gradient(135deg, #00118A 0%, #0030C0 45%, #1040D8 100%)" }}
+        style={{ background: "#003DB8" }}
       />
-
-      {/* ── Subtle radial highlight for depth ── */}
-      <div className="absolute inset-0 z-0" style={{
-        background: "radial-gradient(ellipse 65% 70% at 62% 38%, rgba(40,80,240,0.45) 0%, transparent 65%)",
-      }} />
-
-      {/* ── Edge darkening ── */}
-      <div className="absolute inset-0 z-0" style={{
-        background: "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 55%, rgba(0,8,50,0.30) 100%)",
-      }} />
-
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none"
-        style={{ zIndex: 3, background: "linear-gradient(to top, rgba(0,24,120,0.6) 0%, transparent 100%)" }} />
 
       {/* ── Layout ── */}
       <div className="relative flex flex-col lg:flex-row" style={{ zIndex: 10, minHeight: "736px" }}>
