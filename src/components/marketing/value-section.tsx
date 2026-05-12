@@ -97,9 +97,24 @@ export function ValueSection() {
           {/* Card 1 — Navy highlight */}
           <ScrollReveal>
             <div
-              className="rounded-2xl overflow-hidden flex flex-col h-full"
-              style={{ background: BLUE, minHeight: "460px" }}
+              className="relative rounded-2xl overflow-hidden flex flex-col h-full"
+              style={{
+                background: BLUE,
+                minHeight: "460px",
+              }}
             >
+              {/* Bottom-right corner glow */}
+              <div
+                className="absolute pointer-events-none"
+                style={{
+                  bottom: 0,
+                  right: 0,
+                  width: "260px",
+                  height: "260px",
+                  background: "radial-gradient(circle at 100% 100%, #4DAAFF 0%, #2580E8 35%, transparent 72%)",
+                  opacity: 0.72,
+                }}
+              />
               <div className="p-10 flex-1 flex flex-col">
                 <h3 className="text-2xl font-bold text-white leading-snug mb-5">
                   $18,000+ lost to equipment you can&apos;t account for
