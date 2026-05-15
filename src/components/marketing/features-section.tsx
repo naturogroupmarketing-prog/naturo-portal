@@ -70,15 +70,15 @@ function renderCell(type: CellType) {
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-24 px-6 bg-white border-b border-gray-200">
+    <section id="features" className="py-16 sm:py-24 px-6 bg-white border-b border-gray-200">
       <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
-          <div className="md:text-left text-center mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-16">
             <p className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: BLUE }}>
               How We Compare
             </p>
-            <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-[#191c1f] leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-[#191c1f] leading-tight tracking-tight">
               See how we stack up.
             </h2>
             <p className="text-gray-700 text-xl font-light">

@@ -266,16 +266,16 @@ export function HeroSection() {
     </section>
 
     {/* ── Overlapping form card — AGL style ── */}
-    <div className="relative -mt-14 z-20 px-6 pb-12">
+    <div className="relative -mt-14 z-20 px-4 sm:px-6 pb-12">
       <div className="max-w-6xl mx-auto">
         <div
-          className="bg-white rounded-2xl px-8 py-6 sm:px-10 sm:py-7"
+          className="bg-white rounded-2xl px-6 py-6 sm:px-10 sm:py-7"
           style={{ boxShadow: "0 8px 40px rgba(0,16,100,0.14), 0 2px 8px rgba(0,0,0,0.06)" }}
         >
-          <p className="text-lg font-bold text-[#191c1f] mb-5">
+          <p className="text-base sm:text-lg font-bold text-[#191c1f] mb-5">
             Start tracking your assets — get set up in minutes
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 items-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
             <div className="flex-1 flex items-center gap-3 border border-gray-300 rounded-lg px-4 py-3 focus-within:border-[#001b94] transition-colors">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -283,7 +283,7 @@ export function HeroSection() {
               </svg>
               <input
                 type="email"
-                placeholder="e.g. you@yourcompany.com.au"
+                placeholder="you@yourcompany.com.au"
                 className="flex-1 text-sm bg-transparent outline-none text-gray-700 placeholder-gray-400 min-w-0"
               />
             </div>
@@ -296,7 +296,7 @@ export function HeroSection() {
             </Link>
             <Link
               href="#pricing"
-              className="text-sm font-bold whitespace-nowrap hover:underline"
+              className="text-sm font-bold whitespace-nowrap hover:underline text-center sm:text-left"
               style={{ color: "#001b94" }}
             >
               View pricing plans

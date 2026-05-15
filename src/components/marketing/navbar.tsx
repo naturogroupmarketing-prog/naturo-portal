@@ -47,7 +47,7 @@ export function Navbar() {
         </Link>
 
         {/* Nav links — desktop */}
-        <div className="hidden md:flex items-center gap-1 flex-1">
+        <div className="hidden lg:flex items-center gap-1 flex-1">
           {NAV_LINKS.map(([href, label]) => (
             <a
               key={href}
@@ -60,7 +60,7 @@ export function Navbar() {
         </div>
 
         {/* Right actions — desktop */}
-        <div className="hidden md:flex items-center gap-2 shrink-0">
+        <div className="hidden lg:flex items-center gap-2 shrink-0">
           <Link
             href="/login"
             className="text-[14px] font-medium text-gray-600 hover:text-gray-900 px-4 py-2 transition-colors whitespace-nowrap"
@@ -77,10 +77,10 @@ export function Navbar() {
         </div>
 
         {/* Mobile hamburger */}
-        <div className="flex-1 md:hidden" />
+        <div className="flex-1 lg:hidden" />
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 -mr-1 text-gray-600"
+          className="lg:hidden p-2 -mr-1 text-gray-600"
           aria-label="Toggle menu"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
@@ -95,7 +95,7 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 shadow-lg">
+        <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
           <div className="px-6 py-4 space-y-1">
             {NAV_LINKS.map(([href, label]) => (
               <a

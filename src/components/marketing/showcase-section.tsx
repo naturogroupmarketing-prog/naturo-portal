@@ -56,17 +56,17 @@ export function ShowcaseSection() {
   return (
     <section
       id="how-it-works"
-      className="py-24 px-6 border-b border-gray-200"
+      className="py-16 sm:py-24 px-6 border-b border-gray-200"
       style={{ background: "#f4f5f8" }}
     >
       <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
-          <div className="text-center md:text-left mb-16 max-w-4xl">
+          <div className="text-center max-w-2xl mx-auto mb-16">
             <p className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: BLUE }}>
               How It Works
             </p>
-            <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-[#191c1f] leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-[#191c1f] leading-tight tracking-tight">
               Up and running in an afternoon.
             </h2>
             <p className="text-gray-700 text-xl font-light">
@@ -75,12 +75,12 @@ export function ShowcaseSection() {
           </div>
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-3 gap-10">
+        <div className="grid lg:grid-cols-3 gap-6 md:gap-10 max-w-md mx-auto lg:max-w-none">
           {steps.map((step, i) => (
             <ScrollReveal key={step.title} delay={i * 150}>
               {/* mt-8 gives space for the floating circle that hangs above */}
               <div
-                className="bg-white p-10 rounded-2xl border border-gray-100 flex flex-col items-center text-center relative mt-8"
+                className="bg-white p-8 sm:p-10 rounded-2xl border border-gray-100 flex flex-col items-center text-center relative mt-8 h-full"
                 style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
               >
                 {/* Floating numbered circle */}

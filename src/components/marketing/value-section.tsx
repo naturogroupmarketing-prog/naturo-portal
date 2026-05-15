@@ -81,18 +81,18 @@ function IllustrationPhoneChain() {
 
 export function ValueSection() {
   return (
-    <section className="py-24 px-6 border-b border-gray-200 bg-white text-[#191c1f]">
+    <section className="py-16 sm:py-24 px-6 border-b border-gray-200 bg-white text-[#191c1f]">
       <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight">
               The cost of doing nothing.
             </h2>
           </div>
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
+        <div className="grid lg:grid-cols-3 gap-6 mb-10">
 
           {/* Card 1 — Navy highlight */}
           <ScrollReveal>
@@ -115,7 +115,7 @@ export function ValueSection() {
                   opacity: 0.72,
                 }}
               />
-              <div className="p-10 flex-1 flex flex-col">
+              <div className="p-8 sm:p-10 flex-1 flex flex-col">
                 <h3 className="text-2xl font-bold text-white leading-snug mb-5">
                   $18,000+ lost to equipment you can&apos;t account for
                 </h3>
@@ -141,7 +141,7 @@ export function ValueSection() {
               className="rounded-2xl border border-gray-200 overflow-hidden flex flex-col h-full bg-white"
               style={{ minHeight: "460px" }}
             >
-              <div className="p-10 flex-1 flex flex-col">
+              <div className="p-8 sm:p-10 flex-1 flex flex-col">
                 <h3 className="text-2xl font-bold text-[#191c1f] leading-snug mb-5">
                   Stock runs out with no warning
                 </h3>
@@ -168,7 +168,7 @@ export function ValueSection() {
               className="rounded-2xl border border-gray-200 overflow-hidden flex flex-col h-full bg-white"
               style={{ minHeight: "460px" }}
             >
-              <div className="p-10 flex-1 flex flex-col">
+              <div className="p-8 sm:p-10 flex-1 flex flex-col">
                 <h3 className="text-2xl font-bold text-[#191c1f] leading-snug mb-5">
                   Your team is on the phone, not the job
                 </h3>
@@ -193,7 +193,7 @@ export function ValueSection() {
 
         <ScrollReveal delay={300}>
           <div
-            className="bg-white p-10 rounded-2xl border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-10"
+            className="bg-white p-6 sm:p-8 md:p-10 rounded-2xl border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-10"
             style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}
           >
             <p className="text-xl text-gray-700 max-w-3xl font-light leading-relaxed">
@@ -203,7 +203,7 @@ export function ValueSection() {
             </p>
             <a
               href="#pricing"
-              className="shrink-0 inline-flex items-center gap-2 font-bold px-10 py-4 whitespace-nowrap text-lg hover:bg-yellow-400 transition-colors shadow-sm"
+              className="shrink-0 inline-flex items-center gap-2 font-bold px-8 sm:px-10 py-3.5 sm:py-4 whitespace-nowrap text-base sm:text-lg hover:bg-yellow-400 transition-colors shadow-sm"
               style={{ background: YELLOW, color: BLUE, borderRadius: "24px" }}
             >
               See pricing →

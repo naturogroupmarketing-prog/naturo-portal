@@ -75,10 +75,10 @@ export function SwitcherBar() {
           className="bg-white rounded-2xl overflow-hidden border border-gray-100"
           style={{ boxShadow: "0 8px 40px rgba(0,27,148,0.10)" }}
         >
-          <div className="px-10 sm:px-14 pt-10 pb-10">
+          <div className="px-6 sm:px-10 md:px-14 pt-8 pb-8 sm:pt-10 sm:pb-10">
 
             {/* Label row */}
-            <div className="flex items-center justify-between mb-10">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8 sm:mb-10">
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
                 Switching from
               </p>
@@ -92,7 +92,7 @@ export function SwitcherBar() {
             </div>
 
             {/* 3×2 grid — no icon circles, AGL style */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-12 gap-y-10">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 sm:gap-x-12 gap-y-8 sm:gap-y-10">
               {items.map((item) => (
                 <div key={item.name} className="flex items-start gap-5">
                   <div className="shrink-0 mt-0.5" style={{ color: BLUE }}>

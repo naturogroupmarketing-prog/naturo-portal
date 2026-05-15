@@ -69,15 +69,15 @@ export function UseCasesSection() {
   const ind = industries[active];
 
   return (
-    <section id="use-cases" className="py-24 px-6 bg-white border-b border-gray-200">
+    <section id="use-cases" className="py-16 sm:py-24 px-6 bg-white border-b border-gray-200">
       <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
-          <div className="text-center md:text-left mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-16">
             <p className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: BLUE }}>
               Who It&apos;s For
             </p>
-            <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-[#191c1f] leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-[#191c1f] leading-tight tracking-tight">
               Built for your industry.
             </h2>
             <p className="text-gray-700 mb-0 text-xl font-light">
@@ -107,7 +107,7 @@ export function UseCasesSection() {
         </div>
 
         {/* Content Card */}
-        <div className="bg-[#f4f5f8] rounded-2xl p-10 sm:p-12 grid md:grid-cols-2 gap-12 md:gap-16 items-start">
+        <div className="bg-[#f4f5f8] rounded-2xl p-6 sm:p-10 md:p-12 grid md:grid-cols-2 gap-10 md:gap-16 items-start">
 
           {/* Left — What they track */}
           <div>

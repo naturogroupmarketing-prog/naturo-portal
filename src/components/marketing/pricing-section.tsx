@@ -83,8 +83,7 @@ export function PricingSection() {
         </div>
 
         {/* Toggle — AGL pill style */}
-        <div className="flex items-center justify-center gap-3 mb-12">
-          <span className="text-sm font-medium text-gray-700 mr-1">View pricing</span>
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
           <div
             className="inline-flex rounded-full overflow-hidden"
             style={{ border: `1.5px solid ${NAVY}` }}

@@ -72,13 +72,13 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
 
 export function SocialProofSection() {
   return (
-    <section className="py-24 px-6" style={{ background: "#f4f5f8" }}>
+    <section className="py-16 sm:py-24 px-6" style={{ background: "#f4f5f8" }}>
       <div className="max-w-6xl mx-auto">
 
         {/* Stats — white card */}
         <ScrollReveal>
           <div
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mb-24 bg-white p-12 rounded-2xl border border-gray-100"
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mb-12 sm:mb-16 md:mb-20 bg-white p-8 sm:p-10 md:p-12 rounded-2xl border border-gray-100"
             style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
           >
             {stats.map((stat, i) => (
@@ -96,16 +96,16 @@ export function SocialProofSection() {
         </ScrollReveal>
 
         {/* Testimonials */}
-        <div className="grid md:grid-cols-3 gap-10">
+        <div className="grid lg:grid-cols-3 gap-6 md:gap-8">
           {testimonials.map((t, i) => (
             <ScrollReveal key={t.name} delay={i * 150}>
               <div
-                className="bg-white p-12 rounded-2xl border border-gray-100 relative flex flex-col"
+                className="bg-white p-8 sm:p-10 rounded-2xl border border-gray-100 relative flex flex-col h-full"
                 style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
               >
                 {/* Large decorative quote mark */}
                 <svg
-                  className="w-12 h-12 text-gray-100 absolute top-10 right-10"
+                  className="w-10 h-10 text-gray-100 absolute top-6 right-6 sm:top-8 sm:right-8"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
