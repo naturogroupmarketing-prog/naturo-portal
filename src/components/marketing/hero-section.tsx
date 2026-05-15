@@ -5,7 +5,7 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <>
-    <section className="relative overflow-hidden pt-[68px] pb-16" style={{ minHeight: "880px" }}>
+    <section className="relative overflow-hidden pt-[68px] pb-16 lg:min-h-[880px]">
 
       {/* ── Clean AGL-style solid blue ── */}
       <div
@@ -14,10 +14,10 @@ export function HeroSection() {
       />
 
       {/* ── Layout ── */}
-      <div className="relative flex flex-col lg:flex-row" style={{ zIndex: 10, minHeight: "736px" }}>
+      <div className="relative flex flex-col lg:flex-row lg:min-h-[736px]" style={{ zIndex: 10 }}>
 
         {/* ── LEFT — text ── */}
-        <div className="lg:w-[55%] px-8 lg:pl-16 xl:pl-24 lg:pr-6 py-16 lg:py-0 flex flex-col justify-center">
+        <div className="lg:w-[55%] px-6 sm:px-8 lg:pl-16 xl:pl-24 lg:pr-6 pt-10 pb-8 lg:py-0 flex flex-col lg:justify-center">
 
           {/* ── Content ── */}
           <div className="animate-[fadeInUp_0.6s_ease-out]">
@@ -190,7 +190,7 @@ export function HeroSection() {
       </div>
 
       {/* ── Mobile fallback ── */}
-      <div className="lg:hidden relative px-4 pb-6 -mt-4" style={{ zIndex: 10 }}>
+      <div className="lg:hidden relative px-4 pb-6" style={{ zIndex: 10 }}>
 
         {/* Glass stat cards */}
         <div className="grid grid-cols-3 gap-3 mb-4">
