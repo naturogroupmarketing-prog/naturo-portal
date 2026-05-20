@@ -418,8 +418,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               {(["stat-low-stock", "stat-pending-requests", "stat-pending-returns", "stat-pending-pos"] as const).map(id => stats.find(s => s.widgetId === id)).filter((s): s is NonNullable<typeof s> => !!s).map((s) => (
                 <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-full">
-                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
-                      <CardContent className="p-2 lg:px-3 lg:py-3 h-full">
+                    <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                      <div className="p-2 lg:px-3 lg:py-3 h-full">
                         {/* Mobile: square compact; Desktop: horizontal */}
                         <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:text-left lg:gap-2">
                           <div className={`w-7 h-7 lg:w-9 lg:h-9 rounded-[14px] ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
@@ -431,8 +431,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </div>
                           <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   </Link>
                 </StaggerItem>
               ))}
@@ -866,8 +866,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <div className="grid grid-cols-4 gap-2">
                           {/* Low Stock */}
                           <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/alerts/low-stock"} className="block group aspect-square">
-                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
-                              <CardContent className="p-2 h-full">
+                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                              <div className="p-2 h-full">
                                 <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
                                   <div className="w-7 h-7 rounded-[14px] bg-red-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="alert-triangle" size={14} className="text-white" />
@@ -877,13 +877,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                     <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Low Stock</p>
                                   </div>
                                 </div>
-                              </CardContent>
-                            </Card>
+                              </div>
+                            </div>
                           </Link>
                           {/* Requests */}
                           <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="block group aspect-square">
-                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
-                              <CardContent className="p-2 h-full">
+                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                              <div className="p-2 h-full">
                                 <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
                                   <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="clipboard" size={14} className="text-white" />
@@ -893,13 +893,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                     <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Requests</p>
                                   </div>
                                 </div>
-                              </CardContent>
-                            </Card>
+                              </div>
+                            </div>
                           </Link>
                           {/* Returns */}
                           <Link href={`/returns?region=${region.regionId}`} className="block group aspect-square">
-                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
-                              <CardContent className="p-2 h-full">
+                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                              <div className="p-2 h-full">
                                 <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
                                   <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="arrow-left" size={14} className="text-white" />
@@ -909,13 +909,13 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                     <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Returns</p>
                                   </div>
                                 </div>
-                              </CardContent>
-                            </Card>
+                              </div>
+                            </div>
                           </Link>
                           {/* POs */}
                           <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="block group aspect-square">
-                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
-                              <CardContent className="p-2 h-full">
+                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                              <div className="p-2 h-full">
                                 <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
                                   <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="truck" size={14} className="text-white" />
@@ -925,8 +925,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                     <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">POs</p>
                                   </div>
                                 </div>
-                              </CardContent>
-                            </Card>
+                              </div>
+                            </div>
                           </Link>
                         </div>
                       )}
