@@ -1049,6 +1049,11 @@ export default async function DashboardPage() {
     ? regionBreakdown.reduce((sum, r) => sum + r.lowStockCount, 0)
     : (lowStockItems as unknown[]).length;
 
+  // Same fix for POs: org-wide query includes POs with null regionId; use regional sum instead.
+  const statPendingPOs = isSuperAdmin && regionBreakdown
+    ? regionBreakdown.reduce((sum, r) => sum + r.pendingPOs, 0)
+    : pendingPOs;
+
   const stats: { widgetId: string; label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; buttonBg: string; href: string; trend?: { direction: "up" | "down" | "neutral"; label: string } }[] = isSuperAdmin ? [
     { widgetId: "stat-low-stock", label: "Low Stock", value: lowStockCount, icon: "alert-triangle", borderColor: "border-t-red-500", iconBg: "bg-red-500", iconColor: "text-red-500", buttonBg: "bg-red-400/15", href: "/alerts/low-stock", trend: cardTrend(lowStockCount, "Action") },
     { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-action-600", buttonBg: "bg-action-400/15", href: "/consumables?tab=requests", trend: cardTrend(pendingRequests, "Assign") },
@@ -1057,13 +1062,13 @@ export default async function DashboardPage() {
     { widgetId: "stat-checked-out", label: "Checked Out", value: checkedOut, icon: "arrow-right", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-action-600", buttonBg: "bg-action-400/15", href: "/assets" },
     { widgetId: "stat-overdue", label: "Overdue", value: overdue, icon: "clock", borderColor: "border-t-red-500", iconBg: "bg-red-500", iconColor: "text-red-500", buttonBg: "bg-red-400/15", href: "/assets", trend: cardTrend(overdue, "Action") },
     { widgetId: "stat-damaged", label: "Damage", value: unresolvedDamageReports + unresolvedLossReports, icon: "alert-triangle", borderColor: "border-t-red-500", iconBg: "bg-red-500", iconColor: "text-red-500", buttonBg: "bg-red-400/15", href: "/alerts/damage", trend: cardTrend(unresolvedDamageReports + unresolvedLossReports, "Action") },
-    { widgetId: "stat-pending-pos", label: "POs", value: pendingPOs, icon: "truck", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-action-600", buttonBg: "bg-action-400/15", href: "/purchase-orders", trend: cardTrend(pendingPOs, "Action") },
+    { widgetId: "stat-pending-pos", label: "POs", value: statPendingPOs, icon: "truck", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-action-600", buttonBg: "bg-action-400/15", href: "/purchase-orders", trend: cardTrend(statPendingPOs, "Action") },
   ] : [
     // Branch Manager — focused on actionable items
     { widgetId: "stat-low-stock", label: "Low Stock", value: lowStockCount, icon: "alert-triangle", borderColor: "border-t-red-500", iconBg: "bg-red-500", iconColor: "text-red-500", buttonBg: "bg-red-400/15", href: "/alerts/low-stock", trend: cardTrend(lowStockCount, "Action") },
     { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-action-600", buttonBg: "bg-action-400/15", href: "/consumables?tab=requests", trend: cardTrend(pendingRequests, "Assign") },
     { widgetId: "stat-pending-returns", label: "Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-action-600", buttonBg: "bg-action-400/15", href: "/returns", trend: cardTrend(pendingReturns as number, "Confirm returns") },
-    { widgetId: "stat-pending-pos", label: "POs", value: pendingPOs, icon: "truck", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-action-600", buttonBg: "bg-action-400/15", href: "/purchase-orders", trend: cardTrend(pendingPOs, "Action") },
+    { widgetId: "stat-pending-pos", label: "POs", value: statPendingPOs, icon: "truck", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-action-600", buttonBg: "bg-action-400/15", href: "/purchase-orders", trend: cardTrend(statPendingPOs, "Action") },
     { widgetId: "stat-damaged", label: "Damage", value: unresolvedDamageReports + unresolvedLossReports, icon: "alert-triangle", borderColor: "border-t-red-500", iconBg: "bg-red-500", iconColor: "text-red-500", buttonBg: "bg-red-400/15", href: "/alerts/damage", trend: cardTrend(unresolvedDamageReports + unresolvedLossReports, "Action") },
   ];
 
