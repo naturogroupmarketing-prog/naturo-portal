@@ -346,7 +346,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
             {/* Nav row — always visible */}
             <nav
               aria-label="Mobile navigation"
-              className="relative flex items-center py-2.5"
+              className="relative flex items-center py-1"
             >
               {/* One UI–style active pill */}
               <div
@@ -374,7 +374,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               <button
                 onClick={() => setMoreOpen((p) => !p)}
                 aria-label={moreOpen ? "Close more menu" : "Open more menu"}
-                className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-2 px-3 min-h-[52px] touch-manipulation select-none"
+                className="relative z-10 flex flex-col items-center justify-center flex-1 gap-0.5 py-1 px-3 min-h-[32px] touch-manipulation select-none"
               >
                 <div className="relative flex items-center justify-center">
                   <Icon
@@ -483,7 +483,7 @@ function NavButton({ item, active, onSelect }: { item: NavItem; active: boolean;
       href={item.href}
       aria-current={active ? "page" : undefined}
       onClick={onSelect}
-      className="relative z-10 flex flex-col items-center justify-center flex-1 gap-1 py-2 px-3 min-h-[52px] touch-manipulation select-none"
+      className="relative z-10 flex flex-col items-center justify-center flex-1 gap-0.5 py-1 px-3 min-h-[32px] touch-manipulation select-none"
     >
       <div className="relative flex items-center justify-center">
         <Icon
