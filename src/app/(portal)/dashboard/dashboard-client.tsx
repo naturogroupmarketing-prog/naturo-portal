@@ -47,6 +47,7 @@ interface StatCard {
   borderColor: string;
   iconBg: string;
   iconColor: string;
+  buttonBg: string;
   href: string;
   trend?: { direction: "up" | "down" | "neutral"; label: string };
 }
@@ -418,13 +419,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               {(["stat-low-stock", "stat-pending-requests", "stat-pending-returns", "stat-pending-pos"] as const).map(id => stats.find(s => s.widgetId === id)).filter((s): s is NonNullable<typeof s> => !!s).map((s) => (
                 <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-full">
-                    <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                    <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${s.buttonBg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
                       <div className="p-2 lg:px-3 lg:py-3 h-full">
                         {/* Mobile: square compact; Desktop: horizontal */}
                         <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:text-left lg:gap-2">
-                          <div className={`w-7 h-7 lg:w-9 lg:h-9 rounded-[14px] ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
-                            <Icon name={s.icon} size={14} className={s.iconColor} />
-                          </div>
+                          <Icon name={s.icon} size={20} className={`${s.iconColor} flex-shrink-0`} />
                           <div className="min-w-0">
                             <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
                             <p className="text-[9px] lg:text-xs font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
@@ -866,12 +865,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <div className="grid grid-cols-4 gap-2">
                           {/* Low Stock */}
                           <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/alerts/low-stock"} className="block group aspect-square">
-                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-red-400/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
                               <div className="p-2 h-full">
                                 <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
-                                  <div className="w-7 h-7 rounded-[14px] bg-red-500 flex items-center justify-center flex-shrink-0">
-                                    <Icon name="alert-triangle" size={14} className="text-white" />
-                                  </div>
+                                  <Icon name="alert-triangle" size={20} className="text-red-500 flex-shrink-0" />
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.lowStockCount} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
                                     <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Low Stock</p>
@@ -882,12 +879,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </Link>
                           {/* Requests */}
                           <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="block group aspect-square">
-                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-action-400/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
                               <div className="p-2 h-full">
                                 <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
-                                  <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
-                                    <Icon name="clipboard" size={14} className="text-white" />
-                                  </div>
+                                  <Icon name="clipboard" size={20} className="text-action-600 flex-shrink-0" />
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.pendingRequests} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
                                     <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Requests</p>
@@ -898,12 +893,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </Link>
                           {/* Returns */}
                           <Link href={`/returns?region=${region.regionId}`} className="block group aspect-square">
-                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-action-400/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
                               <div className="p-2 h-full">
                                 <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
-                                  <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
-                                    <Icon name="arrow-left" size={14} className="text-white" />
-                                  </div>
+                                  <Icon name="arrow-left" size={20} className="text-action-600 flex-shrink-0" />
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.overdueReturns} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
                                     <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Returns</p>
@@ -914,12 +907,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </Link>
                           {/* POs */}
                           <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="block group aspect-square">
-                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-white/60 dark:bg-shark-800/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
+                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-action-400/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
                               <div className="p-2 h-full">
                                 <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
-                                  <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
-                                    <Icon name="truck" size={14} className="text-white" />
-                                  </div>
+                                  <Icon name="truck" size={20} className="text-action-600 flex-shrink-0" />
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.pendingPOs} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
                                     <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">POs</p>
