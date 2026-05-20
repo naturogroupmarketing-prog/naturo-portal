@@ -414,8 +414,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         {visibleStats.length > 0 && (
           <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
             <StaggerContainer className="flex flex-col gap-2 h-full">
-              <div className="grid grid-cols-3 gap-2 lg:grid-cols-1 lg:h-full">
-              {visibleStats.map((s) => (
+              <div className="grid grid-cols-4 gap-2 lg:grid-cols-1 lg:h-full">
+              {(["stat-low-stock", "stat-pending-requests", "stat-pending-returns", "stat-pending-pos"] as const).map(id => stats.find(s => s.widgetId === id)).filter((s): s is NonNullable<typeof s> => !!s).map((s) => (
                 <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group h-full">
                     <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
@@ -863,11 +863,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         />
                       </button>
                       {!isCollapsed && (
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-4 gap-2">
                           {/* Low Stock */}
                           <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/alerts/low-stock"} className="block group h-full">
                             <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-                              <CardContent className="px-2 py-2 h-full">
+                              <CardContent className="px-1 py-2 h-full">
                                 <div className="flex flex-col items-center text-center gap-1">
                                   <div className="w-7 h-7 rounded-[14px] bg-red-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="alert-triangle" size={14} className="text-white" />
@@ -883,7 +883,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           {/* Requests */}
                           <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="block group h-full">
                             <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-                              <CardContent className="px-2 py-2 h-full">
+                              <CardContent className="px-1 py-2 h-full">
                                 <div className="flex flex-col items-center text-center gap-1">
                                   <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="clipboard" size={14} className="text-white" />
@@ -896,10 +896,26 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               </CardContent>
                             </Card>
                           </Link>
+                          {/* Returns */}
+                          <Link href={`/returns?region=${region.regionId}`} className="block group h-full">
+                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
+                              <CardContent className="px-1 py-2 h-full">
+                                <div className="flex flex-col items-center text-center gap-1">
+                                  <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
+                                    <Icon name="arrow-left" size={14} className="text-white" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <AnimatedCounter value={region.overdueReturns} className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                                    <p className="text-[9px] text-shark-500 dark:text-shark-400 truncate leading-tight">Returns</p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </Link>
                           {/* POs */}
                           <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="block group h-full">
                             <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-                              <CardContent className="px-2 py-2 h-full">
+                              <CardContent className="px-1 py-2 h-full">
                                 <div className="flex flex-col items-center text-center gap-1">
                                   <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="truck" size={14} className="text-white" />

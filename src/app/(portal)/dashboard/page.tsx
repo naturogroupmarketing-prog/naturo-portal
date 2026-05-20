@@ -1063,6 +1063,7 @@ export default async function DashboardPage() {
     { widgetId: "stat-low-stock", label: "Low Stock", value: lowStockCount, icon: "alert-triangle", borderColor: "border-t-red-500", iconBg: "bg-red-500", iconColor: "text-white", href: "/alerts/low-stock", trend: cardTrend(lowStockCount, "Action") },
     { widgetId: "stat-pending-requests", label: "Requests", value: pendingRequests, icon: "clipboard", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/consumables?tab=requests", trend: cardTrend(pendingRequests, "Assign") },
     { widgetId: "stat-pending-returns", label: "Returns", value: pendingReturns as number, icon: "arrow-left", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/returns", trend: cardTrend(pendingReturns as number, "Confirm returns") },
+    { widgetId: "stat-pending-pos", label: "POs", value: pendingPOs, icon: "truck", borderColor: "border-t-action-500", iconBg: "bg-action-500", iconColor: "text-white", href: "/purchase-orders", trend: cardTrend(pendingPOs, "Action") },
     { widgetId: "stat-damaged", label: "Damage", value: unresolvedDamageReports + unresolvedLossReports, icon: "alert-triangle", borderColor: "border-t-red-500", iconBg: "bg-red-500", iconColor: "text-white", href: "/alerts/damage", trend: cardTrend(unresolvedDamageReports + unresolvedLossReports, "Action") },
   ];
 
