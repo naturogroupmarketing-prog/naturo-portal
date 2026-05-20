@@ -427,7 +427,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </div>
                           <div className="min-w-0">
                             <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                            <p className="text-[9px] lg:text-xs text-shark-500 dark:text-shark-400 truncate leading-tight">{s.label}</p>
+                            <p className="text-[9px] lg:text-xs font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
                           </div>
                           <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                         </div>
@@ -874,7 +874,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   </div>
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.lowStockCount} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[9px] text-shark-500 dark:text-shark-400 truncate leading-tight">Low Stock</p>
+                                    <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Low Stock</p>
                                   </div>
                                 </div>
                               </CardContent>
@@ -890,7 +890,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   </div>
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.pendingRequests} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[9px] text-shark-500 dark:text-shark-400 truncate leading-tight">Requests</p>
+                                    <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Requests</p>
                                   </div>
                                 </div>
                               </CardContent>
@@ -906,7 +906,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   </div>
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.overdueReturns} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[9px] text-shark-500 dark:text-shark-400 truncate leading-tight">Returns</p>
+                                    <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Returns</p>
                                   </div>
                                 </div>
                               </CardContent>
@@ -922,7 +922,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   </div>
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.pendingPOs} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[9px] text-shark-500 dark:text-shark-400 truncate leading-tight">POs</p>
+                                    <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">POs</p>
                                   </div>
                                 </div>
                               </CardContent>
