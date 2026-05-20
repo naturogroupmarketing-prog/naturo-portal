@@ -417,16 +417,16 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               <div className="grid grid-cols-4 gap-2 lg:grid-cols-1 lg:h-full">
               {(["stat-low-stock", "stat-pending-requests", "stat-pending-returns", "stat-pending-pos"] as const).map(id => stats.find(s => s.widgetId === id)).filter((s): s is NonNullable<typeof s> => !!s).map((s) => (
                 <StaggerItem key={s.label}>
-                  <Link href={s.href} className="block group h-full">
-                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-                      <CardContent className="px-2 py-2 lg:px-3 lg:py-3 h-full">
-                        {/* Mobile: vertical compact; Desktop: horizontal */}
-                        <div className="flex flex-col items-center text-center gap-1 lg:flex-row lg:items-center lg:text-left lg:gap-2">
+                  <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-full">
+                    <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
+                      <CardContent className="p-2 lg:px-3 lg:py-3 h-full">
+                        {/* Mobile: square compact; Desktop: horizontal */}
+                        <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:text-left lg:gap-2">
                           <div className={`w-7 h-7 lg:w-9 lg:h-9 rounded-[14px] ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
                             <Icon name={s.icon} size={14} className={s.iconColor} />
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <AnimatedCounter value={s.value} className="text-lg lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                          <div className="min-w-0">
+                            <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
                             <p className="text-[9px] lg:text-xs text-shark-500 dark:text-shark-400 truncate leading-tight">{s.label}</p>
                           </div>
                           <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
@@ -865,15 +865,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       {!isCollapsed && (
                         <div className="grid grid-cols-4 gap-2">
                           {/* Low Stock */}
-                          <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/alerts/low-stock"} className="block group h-full">
-                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-                              <CardContent className="px-1 py-2 h-full">
-                                <div className="flex flex-col items-center text-center gap-1">
+                          <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/alerts/low-stock"} className="block group aspect-square">
+                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
+                              <CardContent className="p-2 h-full">
+                                <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
                                   <div className="w-7 h-7 rounded-[14px] bg-red-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="alert-triangle" size={14} className="text-white" />
                                   </div>
-                                  <div className="flex-1 min-w-0">
-                                    <AnimatedCounter value={region.lowStockCount} className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                                  <div className="min-w-0">
+                                    <AnimatedCounter value={region.lowStockCount} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
                                     <p className="text-[9px] text-shark-500 dark:text-shark-400 truncate leading-tight">Low Stock</p>
                                   </div>
                                 </div>
@@ -881,15 +881,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             </Card>
                           </Link>
                           {/* Requests */}
-                          <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="block group h-full">
-                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-                              <CardContent className="px-1 py-2 h-full">
-                                <div className="flex flex-col items-center text-center gap-1">
+                          <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="block group aspect-square">
+                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
+                              <CardContent className="p-2 h-full">
+                                <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
                                   <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="clipboard" size={14} className="text-white" />
                                   </div>
-                                  <div className="flex-1 min-w-0">
-                                    <AnimatedCounter value={region.pendingRequests} className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                                  <div className="min-w-0">
+                                    <AnimatedCounter value={region.pendingRequests} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
                                     <p className="text-[9px] text-shark-500 dark:text-shark-400 truncate leading-tight">Requests</p>
                                   </div>
                                 </div>
@@ -897,15 +897,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             </Card>
                           </Link>
                           {/* Returns */}
-                          <Link href={`/returns?region=${region.regionId}`} className="block group h-full">
-                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-                              <CardContent className="px-1 py-2 h-full">
-                                <div className="flex flex-col items-center text-center gap-1">
+                          <Link href={`/returns?region=${region.regionId}`} className="block group aspect-square">
+                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
+                              <CardContent className="p-2 h-full">
+                                <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
                                   <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="arrow-left" size={14} className="text-white" />
                                   </div>
-                                  <div className="flex-1 min-w-0">
-                                    <AnimatedCounter value={region.overdueReturns} className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                                  <div className="min-w-0">
+                                    <AnimatedCounter value={region.overdueReturns} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
                                     <p className="text-[9px] text-shark-500 dark:text-shark-400 truncate leading-tight">Returns</p>
                                   </div>
                                 </div>
@@ -913,15 +913,15 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             </Card>
                           </Link>
                           {/* POs */}
-                          <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="block group h-full">
-                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-                              <CardContent className="px-1 py-2 h-full">
-                                <div className="flex flex-col items-center text-center gap-1">
+                          <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="block group aspect-square">
+                            <Card className="hover:shadow-md transition-all duration-200 cursor-pointer h-full" padding="none">
+                              <CardContent className="p-2 h-full">
+                                <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
                                   <div className="w-7 h-7 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
                                     <Icon name="truck" size={14} className="text-white" />
                                   </div>
-                                  <div className="flex-1 min-w-0">
-                                    <AnimatedCounter value={region.pendingPOs} className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                                  <div className="min-w-0">
+                                    <AnimatedCounter value={region.pendingPOs} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
                                     <p className="text-[9px] text-shark-500 dark:text-shark-400 truncate leading-tight">POs</p>
                                   </div>
                                 </div>
