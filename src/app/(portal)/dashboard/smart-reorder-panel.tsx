@@ -71,7 +71,7 @@ function RecommendationCard({ item, index }: RecommendationCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -4 }}
       transition={{ duration: 0.2, delay: index * 0.05 }}
-      className="border border-shark-100 dark:border-shark-800 rounded-[28px] p-3.5 bg-white dark:bg-shark-900 space-y-2"
+      className="border border-shark-100 dark:border-shark-800 rounded-[20px] p-3.5 bg-white dark:bg-shark-900 space-y-2"
     >
       {/* Top row: name + badges */}
       <div className="flex items-start justify-between gap-2">
@@ -148,7 +148,7 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
       {/* Header */}
       <div className="border-b border-shark-100 dark:border-shark-800 px-5 py-4">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
             <Icon name="truck" size={14} className="text-action-600" />
           </div>
           <div className="flex-1 min-w-0">
@@ -213,13 +213,13 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
           <div className="flex items-center gap-2 pt-1 border-t border-shark-50 dark:border-shark-800">
             <button
               onClick={handleDraftAll}
-              className="flex-1 text-[12px] font-semibold border border-shark-200 dark:border-shark-700 text-shark-700 dark:text-shark-300 rounded-[28px] py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
+              className="flex-1 text-[12px] font-semibold border border-shark-200 dark:border-shark-700 text-shark-700 dark:text-shark-300 rounded-[20px] py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
             >
               Draft All Orders
             </button>
             <Link
               href="/purchase-orders"
-              className="flex-1 text-center text-[12px] font-semibold bg-action-500 hover:bg-action-600 text-white rounded-[28px] py-2.5 transition-colors"
+              className="flex-1 text-center text-[12px] font-semibold bg-action-500 hover:bg-action-600 text-white rounded-[20px] py-2.5 transition-colors"
             >
               Review in Purchase Orders
             </Link>
@@ -234,7 +234,7 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 4, scale: 0.97 }}
               transition={{ duration: 0.18 }}
-              className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-shark-900 text-white text-[12px] font-medium px-4 py-2.5 rounded-[28px] shadow-lg flex items-center gap-2 z-50"
+              className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-shark-900 text-white text-[12px] font-medium px-4 py-2.5 rounded-[20px] shadow-lg flex items-center gap-2 z-50"
             >
               <Icon name="truck" size={13} className="text-action-400" />
               Creating purchase orders...

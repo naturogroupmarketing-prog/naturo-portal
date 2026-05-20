@@ -16,7 +16,7 @@ export interface RecentActivityItem {
 }
 
 const TYPE_CONFIG: Record<RecentActivityItem["type"], { icon: IconName; iconBg: string; iconColor: string; verb: string }> = {
-  request:    { icon: "clipboard",   iconBg: "bg-blue-50",    iconColor: "text-blue-500",   verb: "requested" },
+  request:    { icon: "clipboard",   iconBg: "bg-action-50",    iconColor: "text-action-500",   verb: "requested" },
   checkout:   { icon: "arrow-right", iconBg: "bg-action-50",  iconColor: "text-action-500", verb: "checked out" },
   po:         { icon: "truck",       iconBg: "bg-action-50",   iconColor: "text-action-500",  verb: "created PO" },
   return:     { icon: "arrow-left",  iconBg: "bg-action-50",   iconColor: "text-action-500",  verb: "returned" },
@@ -40,7 +40,7 @@ export function RecentActivityWidget({ items }: { items: RecentActivityItem[] })
       <div className="p-4 sm:p-5">
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">
-          <div className="w-7 h-7 rounded-lg bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-[14px] bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
             <Icon name="clock" size={14} className="text-shark-500 dark:text-shark-400" />
           </div>
           <div className="flex-1">
@@ -64,10 +64,10 @@ export function RecentActivityWidget({ items }: { items: RecentActivityItem[] })
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="flex items-start gap-3 px-3 py-2.5 rounded-[28px] hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
+                  className="flex items-start gap-3 px-3 py-2.5 rounded-[20px] hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
                 >
                   {/* Icon */}
-                  <div className={`w-8 h-8 rounded-lg ${cfg.iconBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                  <div className={`w-8 h-8 rounded-[14px] ${cfg.iconBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
                     <Icon name={cfg.icon} size={14} className={cfg.iconColor} />
                   </div>
 

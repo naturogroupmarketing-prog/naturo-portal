@@ -5,77 +5,85 @@ import { Icon, type IconName } from "@/components/ui/icon";
 
 interface QuickNavItem {
   label: string;
-  description: string;
+  description?: string;
   href: string;
   icon: IconName;
   color: string;       // icon colour
-  bg: string;          // card accent / icon bg
+  bg: string;          // icon tile bg
 }
 
 const ITEMS: QuickNavItem[] = [
   {
     label: "Supplies",
     description: "Stock levels & inventory",
-    href: "/consumables",
+    href: "/inventory",
     icon: "droplet",
-    color: "text-blue-600",
-    bg: "bg-blue-100",
+    color: "text-action-600",
+    bg: "bg-action-100 dark:bg-action-900/30",
   },
   {
     label: "Purchase Orders",
     description: "Approvals & procurement",
     href: "/purchase-orders",
     icon: "truck",
-    color: "text-violet-600",
-    bg: "bg-violet-100",
+    color: "text-action-600",
+    bg: "bg-action-100 dark:bg-action-900/30",
   },
   {
     label: "Staff",
     description: "Team members & roles",
     href: "/staff",
     icon: "users",
-    color: "text-teal-600",
-    bg: "bg-teal-100",
-  },
-  {
-    label: "Returns",
-    description: "Pending & overdue returns",
-    href: "/returns",
-    icon: "arrow-left",
-    color: "text-rose-600",
-    bg: "bg-rose-100",
+    color: "text-action-600",
+    bg: "bg-action-100 dark:bg-action-900/30",
   },
   {
     label: "Starter Kits",
     description: "Kit templates & issuing",
     href: "/starter-kits",
     icon: "box",
-    color: "text-amber-600",
-    bg: "bg-amber-100",
+    color: "text-action-600",
+    bg: "bg-action-100 dark:bg-action-900/30",
+  },
+  {
+    label: "Returns",
+    description: "Pending & overdue returns",
+    href: "/returns",
+    icon: "arrow-left",
+    color: "text-action-600",
+    bg: "bg-action-100 dark:bg-action-900/30",
+  },
+  {
+    label: "Maintenance",
+    description: "Repairs & servicing",
+    href: "/maintenance",
+    icon: "wrench",
+    color: "text-shark-500 dark:text-shark-400",
+    bg: "bg-shark-100 dark:bg-shark-800",
   },
   {
     label: "Reports",
     description: "Analytics & exports",
     href: "/reports",
     icon: "bar-chart",
-    color: "text-emerald-600",
-    bg: "bg-emerald-100",
+    color: "text-action-600",
+    bg: "bg-action-100 dark:bg-action-900/30",
   },
   {
     label: "Inspections",
     description: "Condition checks due",
     href: "/condition-checks",
     icon: "search",
-    color: "text-cyan-600",
-    bg: "bg-cyan-100",
+    color: "text-action-600",
+    bg: "bg-action-100 dark:bg-action-900/30",
   },
   {
     label: "Anomalies",
     description: "Alerts & unusual activity",
     href: "/alerts/anomalies",
     icon: "alert-triangle",
-    color: "text-red-600",
-    bg: "bg-red-100",
+    color: "text-red-500",
+    bg: "bg-red-50 dark:bg-red-500/10",
   },
 ];
 
@@ -101,28 +109,23 @@ export function AdminQuickNav({ userName }: AdminQuickNavProps) {
         </p>
       </div>
 
-      {/* 2-column grid on mobile → 4-column on desktop */}
-      <div className="grid grid-cols-4 gap-3">
+      {/* 3-column app-icon grid */}
+      <div className="grid grid-cols-3 gap-x-4 gap-y-6">
         {ITEMS.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className="group flex flex-col gap-3 p-4 sm:p-5 bg-shark-50 dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 hover:bg-shark-100 dark:hover:border-shark-700 hover:shadow-md transition-all duration-150 active:scale-[0.98]"
+            className="group flex flex-col items-center gap-2.5 active:scale-[0.94] transition-transform duration-150"
           >
-            {/* Icon */}
-            <div className={`w-10 h-10 rounded-[28px] flex items-center justify-center shrink-0 ${item.bg}`}>
-              <Icon name={item.icon} size={20} className={item.color} />
+            {/* Icon tile */}
+            <div className={`w-full aspect-square rounded-[22px] flex items-center justify-center ${item.bg} transition-opacity group-hover:opacity-80`}>
+              <Icon name={item.icon} size={36} className={item.color} />
             </div>
 
-            {/* Text */}
-            <div>
-              <p className="text-sm font-semibold text-shark-900 dark:text-shark-100 group-hover:text-action-600 dark:group-hover:text-action-400 transition-colors leading-tight">
-                {item.label}
-              </p>
-              <p className="text-[11px] text-shark-400 mt-0.5 leading-snug hidden sm:block">
-                {item.description}
-              </p>
-            </div>
+            {/* Label */}
+            <span className="text-[13px] font-semibold text-shark-800 dark:text-shark-200 text-center leading-tight">
+              {item.label}
+            </span>
           </Link>
         ))}
       </div>

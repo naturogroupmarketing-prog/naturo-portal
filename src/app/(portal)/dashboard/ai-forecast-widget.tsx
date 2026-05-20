@@ -23,7 +23,7 @@ interface Props {
 const BAND_CONFIG = {
   today: { label: "Runs out today / tomorrow", dot: "bg-red-500 animate-pulse", text: "text-red-600", bg: "bg-red-50 border-red-100" },
   week: { label: "This week (2–7 days)", dot: "bg-action-400", text: "text-action-600", bg: "bg-action-50 border-action-100" },
-  upcoming: { label: "Next 2 weeks (8–14 days)", dot: "bg-blue-400", text: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
+  upcoming: { label: "Next 2 weeks (8–14 days)", dot: "bg-action-400", text: "text-action-600", bg: "bg-action-50 border-action-100" },
 };
 
 function daysLabel(d: number) {
@@ -51,7 +51,7 @@ export function AiForecastWidget({ items }: Props) {
       <div className="p-5">
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">
-          <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
             <Icon name="bar-chart" size={14} className="text-action-600" />
           </div>
           <div className="flex-1 min-w-0">
@@ -87,7 +87,7 @@ export function AiForecastWidget({ items }: Props) {
                   </div>
 
                   {/* Items */}
-                  <div className={`rounded-[28px] border divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden ${cfg.bg}`}>
+                  <div className={`rounded-[20px] border divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden ${cfg.bg}`}>
                     {bandItems.map((item) => (
                       <Link
                         key={item.id}

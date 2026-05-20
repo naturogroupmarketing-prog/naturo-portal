@@ -124,7 +124,7 @@ export function AiBriefingClient({
           aria-expanded={!collapsed}
           aria-label={collapsed ? "Expand AI Briefing" : "Collapse AI Briefing"}
         >
-          <div className="w-8 h-8 rounded-lg bg-action-50 dark:bg-action-500/10 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-[14px] bg-action-50 dark:bg-action-500/10 flex items-center justify-center shrink-0">
             <Icon name="star" size={14} className="text-action-500" />
           </div>
 
@@ -152,7 +152,7 @@ export function AiBriefingClient({
           <button
             onClick={handleToggleActions}
             className={cn(
-              "flex items-center gap-1 px-2 py-1 rounded-lg border text-[10px] font-semibold shrink-0 transition-colors active:scale-95",
+              "flex items-center gap-1 px-2 py-1 rounded-[10px] border text-[10px] font-semibold shrink-0 transition-colors active:scale-95",
               badgeStyle,
             )}
             aria-label={isCritical ? `${criticalCount} critical items — tap to dismiss` : `${attentionCount} items — tap to dismiss`}
@@ -181,7 +181,7 @@ export function AiBriefingClient({
       <div className={cn("p-5", collapsed ? "hidden" : "block")}>
       {/* Header */}
       <div className="flex items-start gap-2 mb-3">
-        <div className="w-7 h-7 rounded-lg bg-action-50 dark:bg-action-500/10 flex items-center justify-center shrink-0 mt-0.5">
+        <div className="w-7 h-7 rounded-[14px] bg-action-50 dark:bg-action-500/10 flex items-center justify-center shrink-0 mt-0.5">
           <Icon name="star" size={13} className="text-action-500" />
         </div>
         <div className="flex-1 min-w-0">
@@ -199,7 +199,7 @@ export function AiBriefingClient({
           <button
             onClick={handleCopy}
             title={copied ? "Copied!" : "Copy briefing"}
-            className="w-7 h-7 flex items-center justify-center rounded-lg text-shark-400 hover:text-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded-[10px] text-shark-400 hover:text-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
           >
             <Icon name={copied ? "check" : "copy"} size={13} className={copied ? "text-action-500" : ""} />
           </button>
@@ -207,7 +207,7 @@ export function AiBriefingClient({
             onClick={handleRefresh}
             disabled={isPending}
             title="Regenerate briefing"
-            className="w-7 h-7 flex items-center justify-center rounded-lg text-shark-400 hover:text-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors disabled:opacity-40"
+            className="w-7 h-7 flex items-center justify-center rounded-[10px] text-shark-400 hover:text-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors disabled:opacity-40"
           >
             <Icon
               name="refresh-cw"
@@ -222,7 +222,7 @@ export function AiBriefingClient({
       </div>
 
       {/* Mode toggle */}
-      <div className="flex gap-0.5 mb-3 bg-shark-50 dark:bg-shark-800/60 rounded-lg p-0.5 w-fit">
+      <div className="flex gap-0.5 mb-3 bg-shark-50 dark:bg-shark-800/60 rounded-[14px] p-0.5 w-fit">
         {MODES.map(({ id, label }) => (
           <button
             key={id}
@@ -249,7 +249,7 @@ export function AiBriefingClient({
 
         {/* Week ahead */}
         {content.weekAhead && (
-          <div className="flex gap-2 bg-action-50 dark:bg-action-500/10 rounded-lg px-3 py-2 mb-3">
+          <div className="flex gap-2 bg-action-50 dark:bg-action-500/10 rounded-[14px] px-3 py-2 mb-3">
             <Icon name="calendar" size={13} className="text-action-400 shrink-0 mt-0.5" />
             <p className="text-[12px] text-action-700 dark:text-action-300 leading-snug">
               {content.weekAhead}
@@ -259,7 +259,7 @@ export function AiBriefingClient({
 
         {/* Staff insight */}
         {content.staffInsight && (
-          <div className="flex gap-2 bg-shark-50 dark:bg-shark-800/50 rounded-lg px-3 py-2 mb-3">
+          <div className="flex gap-2 bg-shark-50 dark:bg-shark-800/50 rounded-[14px] px-3 py-2 mb-3">
             <Icon name="users" size={13} className="text-shark-400 shrink-0 mt-0.5" />
             <p className="text-[12px] text-shark-600 dark:text-shark-400 leading-snug">
               {content.staffInsight}
@@ -274,7 +274,7 @@ export function AiBriefingClient({
               <Link
                 key={action.href + action.label}
                 href={action.href}
-                className="inline-flex items-center gap-1.5 text-[11px] font-semibold bg-shark-800 dark:bg-shark-700 text-white px-2.5 py-1.5 rounded-lg hover:bg-shark-700 dark:hover:bg-shark-600 transition-colors"
+                className="inline-flex items-center gap-1.5 text-[11px] font-semibold bg-shark-800 dark:bg-shark-700 text-white px-2.5 py-1.5 rounded-[10px] hover:bg-shark-700 dark:hover:bg-shark-600 transition-colors"
               >
                 <Icon name={ACTION_ICON[action.href] ?? "arrow-right"} size={11} />
                 {action.label}

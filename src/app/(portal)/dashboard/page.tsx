@@ -459,9 +459,9 @@ export default async function DashboardPage() {
         minimumThreshold: true,
         region: { select: { id: true, name: true } },
       },
-      take: 500,
+      take: 2000,
     }).then((items) =>
-      items.filter((i) => i.quantityOnHand <= i.minimumThreshold).slice(0, 10)
+      items.filter((i) => i.quantityOnHand <= i.minimumThreshold)
     ),
     db.pendingReturn.count({
       where: {
@@ -498,7 +498,7 @@ export default async function DashboardPage() {
     // Regional breakdown data (Super Admin only)
     ...(isSuperAdmin
       ? [
-          db.region.findMany({ where: { organizationId }, include: { state: true, _count: { select: { assets: true, consumables: true, users: true } } }, orderBy: { name: "asc" } }),
+          db.region.findMany({ where: { organizationId, archivedAt: null }, include: { state: true, _count: { select: { assets: true, consumables: true, users: true } } }, orderBy: { name: "asc" } }),
           db.damageReport.findMany({
             where: { organizationId, isResolved: false, type: "DAMAGE" },
             select: { asset: { select: { regionId: true } } },
@@ -986,7 +986,9 @@ export default async function DashboardPage() {
     lostItems: unresolvedLossReports,
     totalStaff: totalStaffCount,
     pendingRequests: pendingRequests as number,
-    lowStockCount: (lowStockItems as unknown[]).length,
+    lowStockCount: isSuperAdmin && regionBreakdown
+      ? regionBreakdown.reduce((sum, r) => sum + r.lowStockCount, 0)
+      : (lowStockItems as unknown[]).length,
   };
 
   // Active procurement: count + cost for PENDING + APPROVED + ORDERED POs (SuperAdmin only)
@@ -1041,7 +1043,11 @@ export default async function DashboardPage() {
 
   const cardTrend = (val: number, actionLabel: string) => val === 0 ? { direction: "neutral" as const, label: "Clear" } : { direction: "up" as const, label: actionLabel };
 
-  const lowStockCount = (lowStockItems as unknown[]).length;
+  // For Super Admin: sum regional tiles so the top stat matches exactly what the tiles add up to.
+  // Items with no regionId are org-wide but can't be attributed to a region, so we exclude them here.
+  const lowStockCount = isSuperAdmin && regionBreakdown
+    ? regionBreakdown.reduce((sum, r) => sum + r.lowStockCount, 0)
+    : (lowStockItems as unknown[]).length;
 
   const stats: { widgetId: string; label: string; value: number; icon: IconName; borderColor: string; iconBg: string; iconColor: string; href: string; trend?: { direction: "up" | "down" | "neutral"; label: string } }[] = isSuperAdmin ? [
     { widgetId: "stat-low-stock", label: "Low Stock", value: lowStockCount, icon: "alert-triangle", borderColor: "border-t-red-500", iconBg: "bg-red-500", iconColor: "text-white", href: "/alerts/low-stock", trend: cardTrend(lowStockCount, "Action") },
@@ -1061,10 +1067,15 @@ export default async function DashboardPage() {
   ];
 
   const quickLinks: { label: string; href: string; icon: IconName; iconBg: string; iconColor: string }[] = [
-    { label: "Manage Assets", href: "/assets", icon: "package", iconBg: "bg-action-500", iconColor: "text-white" },
-    { label: "Supplies", href: "/consumables", icon: "droplet", iconBg: "bg-action-500", iconColor: "text-white" },
-    { label: "Staff Overview", href: "/staff", icon: "users", iconBg: "bg-action-500", iconColor: "text-white" },
-    { label: "Reports", href: "/reports", icon: "clipboard", iconBg: "bg-action-500", iconColor: "text-white" },
+    { label: "Supplies",        href: "/inventory",         icon: "droplet",        iconBg: "bg-action-100 dark:bg-action-900/30", iconColor: "text-action-600 dark:text-action-400" },
+    { label: "Purchase Orders", href: "/purchase-orders",   icon: "truck",          iconBg: "bg-action-100 dark:bg-action-900/30", iconColor: "text-action-600 dark:text-action-400" },
+    { label: "Staff",           href: "/staff",             icon: "users",          iconBg: "bg-action-100 dark:bg-action-900/30", iconColor: "text-action-600 dark:text-action-400" },
+    { label: "Starter Kits",    href: "/starter-kits",      icon: "box",            iconBg: "bg-action-100 dark:bg-action-900/30", iconColor: "text-action-600 dark:text-action-400" },
+    { label: "Returns",         href: "/returns",           icon: "arrow-left",     iconBg: "bg-action-100 dark:bg-action-900/30", iconColor: "text-action-600 dark:text-action-400" },
+    { label: "Maintenance",     href: "/maintenance",       icon: "wrench",         iconBg: "bg-shark-100 dark:bg-shark-800",       iconColor: "text-shark-500 dark:text-shark-400" },
+    { label: "Reports",         href: "/reports",           icon: "bar-chart",      iconBg: "bg-action-100 dark:bg-action-900/30", iconColor: "text-action-600 dark:text-action-400" },
+    { label: "Inspections",     href: "/condition-checks",  icon: "search",         iconBg: "bg-action-100 dark:bg-action-900/30", iconColor: "text-action-600 dark:text-action-400" },
+    { label: "Anomalies",       href: "/alerts/anomalies",  icon: "alert-triangle", iconBg: "bg-red-50 dark:bg-red-500/10",         iconColor: "text-red-500" },
   ];
 
   // Transform predicted shortages for client

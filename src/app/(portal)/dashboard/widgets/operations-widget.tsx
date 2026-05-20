@@ -104,7 +104,7 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
         <div className="flex items-center gap-3">
           {/* Ring */}
           <div className="shrink-0">
-            <HealthRing score={data.healthScore} size={96} />
+            <HealthRing score={data.healthScore} size={128} />
           </div>
 
           {/* Metrics — stacked vertically */}
@@ -158,7 +158,7 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
         className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center shrink-0">
+          <div className="w-6 h-6 rounded-[14px] bg-red-50 dark:bg-red-500/10 flex items-center justify-center shrink-0">
             <Icon name="alert-triangle" size={12} className="text-red-500" />
           </div>
           <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">Priority Alerts</span>

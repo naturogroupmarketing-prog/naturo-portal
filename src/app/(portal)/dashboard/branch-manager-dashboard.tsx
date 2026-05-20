@@ -30,10 +30,10 @@ export function BranchManagerDashboard({ managerProps, staffProps, briefingWidge
     <div>
       {/* View toggle — sits above everything */}
       <div className="flex justify-end mb-4">
-        <div className="inline-flex items-center gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
+        <div className="inline-flex items-center gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1">
           <button
             onClick={() => setView("manager")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
               view === "manager"
                 ? "bg-white dark:bg-shark-800 text-shark-900 dark:text-shark-100 shadow-sm"
                 : "text-shark-500 dark:text-shark-400 hover:text-shark-700"
@@ -44,7 +44,7 @@ export function BranchManagerDashboard({ managerProps, staffProps, briefingWidge
           </button>
           <button
             onClick={() => setView("staff")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
               view === "staff"
                 ? "bg-white dark:bg-shark-800 text-shark-900 dark:text-shark-100 shadow-sm"
                 : "text-shark-500 dark:text-shark-400 hover:text-shark-700"

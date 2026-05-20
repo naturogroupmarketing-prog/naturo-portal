@@ -87,7 +87,7 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
 
   return (
     <div
-      className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-[28px] shadow-sm overflow-hidden flex flex-col"
+      className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-[20px] shadow-sm overflow-hidden flex flex-col"
       style={maxHeight ? { height: maxHeight } : undefined}
     >
       {/* Header */}
@@ -157,7 +157,7 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
                   <Link
                     href={item.href}
                     onClick={() => handleXpClick(item.id, item.priority)}
-                    className={`relative inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-colors ${
+                    className={`relative inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-semibold transition-colors ${
                       item.priority === "critical"
                         ? "bg-red-500 text-white hover:bg-red-600"
                         : item.priority === "urgent"

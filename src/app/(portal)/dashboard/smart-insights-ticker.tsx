@@ -77,11 +77,11 @@ export function SmartInsightsTicker({ insights }: SmartInsightsTickerProps) {
 
   return (
     <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-[28px] border transition-colors duration-300 overflow-hidden ${style.bg} ${style.border}`}
+      className={`flex items-center gap-3 px-4 py-3 rounded-[20px] border transition-colors duration-300 overflow-hidden ${style.bg} ${style.border}`}
     >
       {/* Icon */}
       <div
-        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${style.iconBg}`}
+        className={`w-7 h-7 rounded-[14px] flex items-center justify-center shrink-0 ${style.iconBg}`}
       >
         <Icon name={icon} size={13} className="text-white" />
       </div>

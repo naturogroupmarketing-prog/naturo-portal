@@ -133,7 +133,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
       <div className="p-4 sm:p-5">
         {/* ── Header ── */}
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
             <Icon name="bar-chart" size={14} className="text-action-600" />
           </div>
           <div className="flex-1 min-w-0">
@@ -221,7 +221,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                     <Link
                       key={asset.assetId}
                       href={`/assets?search=${encodeURIComponent(asset.assetCode)}`}
-                      className="flex items-center gap-2 py-1 px-1.5 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
+                      className="flex items-center gap-2 py-1 px-1.5 rounded-[14px] hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
                     >
                       <span className="w-5 h-5 rounded-md bg-action-50 flex items-center justify-center text-[10px] font-bold text-action-700 shrink-0">
                         A
@@ -247,7 +247,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
 
             {!hasCritical ? (
               /* All good state */
-              <div className="flex flex-col items-center justify-center py-8 gap-2 text-center rounded-[28px] bg-action-50 border border-action-100">
+              <div className="flex flex-col items-center justify-center py-8 gap-2 text-center rounded-[20px] bg-action-50 border border-action-100">
                 <div className="w-10 h-10 rounded-full bg-action-100 flex items-center justify-center">
                   <Icon name="check" size={18} className="text-action-600" />
                 </div>
@@ -272,7 +272,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                     >
                       <Link
                         href={`/assets?search=${encodeURIComponent(asset.assetCode)}`}
-                        className="flex items-start gap-2.5 p-2.5 rounded-[28px] border border-shark-100 dark:border-shark-800 hover:border-action-200 hover:bg-action-50/30 transition-all group"
+                        className="flex items-start gap-2.5 p-2.5 rounded-[20px] border border-shark-100 dark:border-shark-800 hover:border-action-200 hover:bg-action-50/30 transition-all group"
                       >
                         {/* Score badge */}
                         <span

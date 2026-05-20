@@ -27,7 +27,7 @@ function KpiCard({ label, value, suffix, icon }: { label: string; value: number;
     <Card className="hover:shadow-md transition-all duration-200">
       <CardContent className="px-3 py-3">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-action-500 flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-[14px] bg-action-500 flex items-center justify-center flex-shrink-0">
             <Icon name={icon} size={16} className="text-white" />
           </div>
           <div className="flex-1 min-w-0">
@@ -48,7 +48,7 @@ function AlertCard({ label, value, description, icon }: { label: string; value: 
     <Card className={`hover:shadow-md transition-all duration-200 ${isWarning ? "border-action-200" : ""}`}>
       <CardContent className="px-3 py-3">
         <div className="flex items-center gap-2">
-          <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isWarning ? "bg-[#0057FF]" : "bg-action-500"}`}>
+          <div className={`w-9 h-9 rounded-[14px] flex items-center justify-center flex-shrink-0 ${isWarning ? "bg-[#0057FF]" : "bg-action-500"}`}>
             <Icon name={icon} size={16} className="text-white" />
           </div>
           <div className="flex-1 min-w-0">
@@ -68,7 +68,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
             <Icon name="bar-chart" size={14} className="text-action-600" />
           </div>
           <div>
@@ -86,11 +86,11 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
       </div>
 
       {/* Read-only notice banner */}
-      <div className="flex items-start gap-3 px-4 py-3.5 rounded-[28px] bg-blue-50 border border-blue-100">
-        <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-          <Icon name="info" size={14} className="text-blue-600" />
+      <div className="flex items-start gap-3 px-4 py-3.5 rounded-[20px] bg-action-50 border border-action-100">
+        <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0 mt-0.5">
+          <Icon name="info" size={14} className="text-action-600" />
         </div>
-        <p className="text-sm text-blue-700 leading-relaxed">
+        <p className="text-sm text-action-700 leading-relaxed">
           You have read-only access. Contact your administrator to make changes.
         </p>
       </div>
@@ -132,7 +132,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
             ) : (
               recentActivity.map((entry, idx) => (
                 <div key={idx} className="flex items-center gap-3 px-4 py-3">
-                  <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-[14px] bg-action-50 flex items-center justify-center flex-shrink-0">
                     <Icon name="clock" size={14} className="text-action-500" />
                   </div>
                   <div className="flex-1 min-w-0">

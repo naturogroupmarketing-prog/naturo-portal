@@ -49,7 +49,7 @@ function getNavItems(role: Role, po: number, returns: number): NavItem[] {
     case "BRANCH_MANAGER":
       return [
         { label: "Home",    href: "/dashboard",   icon: "home" },
-        { label: "Stock",   href: "/consumables", icon: "droplet" },
+        { label: "Stock",   href: "/inventory", icon: "droplet" },
         { label: "Returns", href: "/returns",     icon: "arrow-left", badge: returns },
       ];
     case "AUDITOR":
@@ -74,7 +74,7 @@ function getMoreItems(role: Role): MoreGridItem[] {
     case "STAFF":
       return [
         { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-[#f2f2f2]",          fg: "text-shark-600" },
-        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-blue-400/15",       fg: "text-blue-600" },
+        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-action-400/15",     fg: "text-action-600" },
         { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-400/15",        fg: "text-red-600" },
         { label: "My Assets",      href: "/my-assets",           icon: "package",        bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
         { label: "My Supplies",    href: "/my-consumables",      icon: "droplet",        bg: "bg-[#0057FF]/10",       fg: "text-[#0057FF]" },
@@ -83,7 +83,7 @@ function getMoreItems(role: Role): MoreGridItem[] {
       ];
     case "SUPER_ADMIN":
       return [
-        { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: "bg-blue-400/15",       fg: "text-blue-600" },
+        { label: "Supplies",        href: "/inventory",        icon: "droplet",        bg: "bg-action-400/15",     fg: "text-action-600" },
         { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-[#0057FF]/10",      fg: "text-[#0057FF]" },
         { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
         { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-[#0057FF]/10",      fg: "text-[#0057FF]" },
@@ -95,7 +95,7 @@ function getMoreItems(role: Role): MoreGridItem[] {
       ];
     case "BRANCH_MANAGER":
       return [
-        { label: "Supplies",        href: "/consumables",      icon: "droplet",        bg: "bg-blue-400/15",       fg: "text-blue-600" },
+        { label: "Supplies",        href: "/inventory",        icon: "droplet",        bg: "bg-action-400/15",     fg: "text-action-600" },
         { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-[#0057FF]/10",      fg: "text-[#0057FF]" },
         { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
         { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-[#0057FF]/10",      fg: "text-[#0057FF]" },
@@ -116,7 +116,7 @@ function getMoreItems(role: Role): MoreGridItem[] {
     default:
       return [
         { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-[#f2f2f2]",          fg: "text-shark-600" },
-        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-blue-400/15",       fg: "text-blue-600" },
+        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-action-400/15",     fg: "text-action-600" },
         { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-400/15",        fg: "text-red-600" },
         { label: "Settings",       href: "/settings",            icon: "settings",       bg: "bg-[#f2f2f2]",          fg: "text-shark-500" },
       ];
@@ -378,9 +378,8 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               >
                 <div className="relative flex items-center justify-center">
                   <Icon
-                    name="grid"
-                    size={23}
-                    filled
+                    name="dots-nine"
+                    size={38}
                     className={cn(
                       "transition-colors duration-200",
                       moreOpen || navActiveIdx === -1 ? "text-[#0057FF]" : "text-shark-400"

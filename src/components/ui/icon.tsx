@@ -130,6 +130,7 @@ import {
   Sun as SunIcon,
   Moon as MoonIcon,
   Subtract,
+  DotsNine,
 } from "@phosphor-icons/react";
 
 export type IconName =
@@ -143,7 +144,8 @@ export type IconName =
   | "award" | "trash-2" | "copy" | "sun" | "moon" | "info" | "git-branch"
   | "home" | "wrench"
   | "refresh-cw" | "calendar"
-  | "grid";
+  | "grid"
+  | "dots-nine";
 
 // Map icon names → Phosphor components
 const iconMap: Record<IconName, React.ComponentType<{ size?: number; weight?: "thin" | "light" | "regular" | "bold" | "fill" | "duotone"; className?: string }>> = {
@@ -197,6 +199,7 @@ const iconMap: Record<IconName, React.ComponentType<{ size?: number; weight?: "t
   "refresh-cw": ArrowsClockwise,
   calendar:     Calendar,
   grid:         SquaresFour,
+  "dots-nine":  DotsNine,
 };
 
 interface IconProps {

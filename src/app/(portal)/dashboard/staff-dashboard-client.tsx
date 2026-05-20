@@ -23,7 +23,7 @@ function ConditionSelect({ value, onChange }: { value: string; onChange: (val: s
 
   const options = [
     { value: "GOOD", label: "Good", color: "text-action-600" },
-    { value: "FAIR", label: "Fair", color: "text-blue-600" },
+    { value: "FAIR", label: "Fair", color: "text-action-600" },
     { value: "POOR", label: "Poor", color: "text-action-600" },
     { value: "DAMAGED", label: "Damaged", color: "text-red-600" },
   ];
@@ -35,7 +35,7 @@ function ConditionSelect({ value, onChange }: { value: string; onChange: (val: s
         ref={btnRef}
         type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
+        className={`w-full flex items-center justify-between rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
           open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300 dark:hover:border-shark-600"
         }`}
       >
@@ -443,7 +443,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
     <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+        <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
           <Icon name="home" size={14} className="text-action-600" />
         </div>
         <div>
@@ -457,7 +457,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         <Card className="">
           <CardHeader>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-[14px] bg-action-100 flex items-center justify-center">
                 <Icon name="clipboard" size={16} className="text-[#0057FF]" />
               </div>
               <div>
@@ -503,7 +503,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         return (
                           <div key={key} className={`flex items-center gap-3 px-3 py-2.5 transition-all ${isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""}`}>
                             <input type="checkbox" checked={isReceived} onChange={() => toggleItem(key, "received")} className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0" />
-                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                               {item.asset.imageUrl ? <img src={item.asset.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -511,7 +511,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                               <p className="text-xs text-shark-400">{item.asset.category}</p>
                               {isNotReceived && state.reason && <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>}
                             </div>
-                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { const reason = prompt("Why was this item not received?"); if (reason) toggleItem(key, "not_received", reason); } }} className={`p-1.5 rounded-lg transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
+                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { const reason = prompt("Why was this item not received?"); if (reason) toggleItem(key, "not_received", reason); } }} className={`p-1.5 rounded-[10px] transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
                               <Icon name="x" size={16} />
                             </button>
                           </div>
@@ -542,7 +542,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         return (
                           <div key={key} className={`flex items-center gap-3 px-3 py-2.5 transition-all ${isReceived ? "bg-action-50/50" : isNotReceived ? "bg-red-50/50" : ""}`}>
                             <input type="checkbox" checked={isReceived} onChange={() => toggleItem(key, "received")} className="w-5 h-5 rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer shrink-0" />
-                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                               {item.consumable.imageUrl ? <img src={item.consumable.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -550,7 +550,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                               <p className="text-xs text-shark-400">{item.consumable.unitType}</p>
                               {isNotReceived && state.reason && <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>}
                             </div>
-                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { const reason = prompt("Why was this item not received?"); if (reason) toggleItem(key, "not_received", reason); } }} className={`p-1.5 rounded-lg transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
+                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { const reason = prompt("Why was this item not received?"); if (reason) toggleItem(key, "not_received", reason); } }} className={`p-1.5 rounded-[10px] transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
                               <Icon name="x" size={16} />
                             </button>
                           </div>
@@ -610,7 +610,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             onClick={() => setEquipmentExpanded((prev) => !prev)}
           >
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-[14px] bg-action-50 flex items-center justify-center">
                 <Icon name="package" size={16} className="text-action-600" />
               </div>
               <div className="flex-1">
@@ -638,7 +638,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           {equipmentExpanded && <CardContent className="space-y-4">
             {/* Kit-based assignments */}
             {visibleKitApplications.map((app) => (
-              <div key={app.id} className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
+              <div key={app.id} className="border border-shark-100 dark:border-shark-800 rounded-[14px] overflow-hidden">
                 {/* Kit header */}
                 <div className="flex items-center justify-between px-4 py-3 bg-shark-50/50 dark:bg-shark-800/50">
                   <div>
@@ -667,7 +667,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {app.assets.map((asset) => (
                     <div key={asset.id} className="flex items-center gap-3 px-4 py-2.5">
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                         {asset.imageUrl ? <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -678,7 +678,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   ))}
                   {app.consumables.map((consumable) => (
                     <div key={consumable.id} className={`flex items-center gap-3 px-4 py-2.5 ${consumable.quantity === 0 ? "opacity-40" : ""}`}>
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                         {consumable.imageUrl ? <img src={consumable.imageUrl} alt={consumable.name} className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -693,7 +693,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
             {/* Individual (non-kit) assignments */}
             {(visibleIndividualAssets.length > 0 || visibleIndividualConsumables.length > 0) && (
-              <div className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
+              <div className="border border-shark-100 dark:border-shark-800 rounded-[14px] overflow-hidden">
                 <div className="px-4 py-3 bg-shark-50/50 dark:bg-shark-800/50">
                   <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Individually Assigned Items</p>
                   <p className="text-xs text-shark-400">These items are not part of a starter kit</p>
@@ -701,7 +701,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <div className="divide-y divide-shark-50 dark:divide-shark-800">
                   {visibleIndividualAssets.map((asset) => (
                     <div key={asset.id} className="flex items-center gap-3 px-4 py-2.5">
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                         {asset.imageUrl ? <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -723,7 +723,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   ))}
                   {visibleIndividualConsumables.map((consumable) => (
                     <div key={consumable.id} className={`flex items-center gap-3 px-4 py-2.5 ${consumable.quantity === 0 ? "opacity-40" : ""}`}>
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                         {consumable.imageUrl ? <img src={consumable.imageUrl} alt={consumable.name} className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-action-500" />}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -792,9 +792,9 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           const isExcluded = kitItemExclusions[key]?.excluded || false;
                           return (
                             <div key={a.id}>
-                              <label className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50 dark:bg-shark-800"}`}>
+                              <label className={`flex items-center gap-3 px-3 py-2.5 rounded-[14px] cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50 dark:bg-shark-800"}`}>
                                 <input type="checkbox" checked={!isExcluded} onChange={() => setKitItemExclusions((prev) => ({ ...prev, [key]: { excluded: !isExcluded, note: prev[key]?.note || "" } }))} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
-                                <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-[14px] overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                                   {a.imageUrl ? <img src={a.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -819,9 +819,9 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           const isExcluded = kitItemExclusions[key]?.excluded || false;
                           return (
                             <div key={c.id}>
-                              <label className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50 dark:bg-shark-800"}`}>
+                              <label className={`flex items-center gap-3 px-3 py-2.5 rounded-[14px] cursor-pointer transition-colors ${isExcluded ? "opacity-50" : "bg-shark-50 dark:bg-shark-800"}`}>
                                 <input type="checkbox" checked={!isExcluded} onChange={() => setKitItemExclusions((prev) => ({ ...prev, [key]: { excluded: !isExcluded, note: prev[key]?.note || "" } }))} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
-                                <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-[14px] overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                                   {c.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -887,7 +887,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             {/* Items list */}
             <div className="max-h-72 overflow-y-auto space-y-1 -mx-1 px-1">
               {allReturnableItems.map((item) => (
-                <label key={item.key} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${returnAllSelected.has(item.key) ? "bg-action-50/50" : "bg-shark-50/50 dark:bg-shark-800/50 opacity-60"}`}>
+                <label key={item.key} className={`flex items-center gap-3 px-3 py-2.5 rounded-[14px] cursor-pointer transition-colors ${returnAllSelected.has(item.key) ? "bg-action-50/50" : "bg-shark-50/50 dark:bg-shark-800/50 opacity-60"}`}>
                   <input
                     type="checkbox"
                     checked={returnAllSelected.has(item.key)}
@@ -898,7 +898,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     })}
                     className="rounded border-shark-300 text-action-500 focus:ring-action-400"
                   />
-                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                     {item.imageUrl ? <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" /> : <Icon name={item.type === "asset" ? "package" : "droplet"} size={14} className="text-shark-400" />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -939,18 +939,18 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
       {/* Return Individual Item Modal */}
       {returningItemId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-shark-900 rounded-[28px] shadow-2xl w-full max-w-md my-auto animate-fade-in">
+          <div className="bg-white dark:bg-shark-900 rounded-[20px] shadow-2xl w-full max-w-md my-auto animate-fade-in">
             <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100 dark:border-shark-800">
               <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Return Item</h3>
               <button
                 onClick={() => setReturningItemId(null)}
-                className="p-1.5 rounded-lg hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-shark-400"
+                className="p-1.5 rounded-[10px] hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-shark-400"
               >
                 <Icon name="x" size={18} />
               </button>
             </div>
             <div className="px-6 py-4 space-y-4">
-              <div className="bg-action-50 border border-action-200 rounded-lg px-4 py-3">
+              <div className="bg-action-50 border border-action-200 rounded-[14px] px-4 py-3">
                 <p className="text-sm text-action-800">
                   This return will be sent to your manager for verification before restocking.
                 </p>
@@ -962,7 +962,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                 <select
                   value={returnCondition}
                   onChange={(e) => setReturnCondition(e.target.value)}
-                  className="w-full border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500"
+                  className="w-full border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 rounded-[14px] px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500"
                 >
                   <option value="GOOD">Good</option>
                   <option value="FAIR">Fair</option>
@@ -979,12 +979,12 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   onChange={(e) => setReturnNotes(e.target.value)}
                   placeholder="Any additional details about the return..."
                   rows={3}
-                  className="w-full border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 rounded-lg px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500 resize-none"
+                  className="w-full border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 rounded-[14px] px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500 resize-none"
                 />
               </div>
             </div>
             {returnError && (
-              <div className="mx-6 mb-2 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+              <div className="mx-6 mb-2 bg-red-50 border border-red-200 rounded-[14px] px-4 py-3">
                 <p className="text-sm text-red-700">{returnError}</p>
               </div>
             )}
@@ -1040,8 +1040,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         return (
           <>
             {overdue.length > 0 && !allDone && (
-              <div className="bg-red-50 border border-red-200 rounded-[28px] px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-red-500 flex items-center justify-center shrink-0">
+              <div className="bg-red-50 border border-red-200 rounded-[20px] px-4 py-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-[14px] bg-red-500 flex items-center justify-center shrink-0">
                   <Icon name="alert-triangle" size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
@@ -1054,8 +1054,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               </div>
             )}
             {upcoming.length > 0 && !allDone && overdue.length === 0 && (
-              <div className="bg-action-50 border border-action-200 rounded-[28px] px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#0057FF] flex items-center justify-center shrink-0">
+              <div className="bg-action-50 border border-action-200 rounded-[20px] px-4 py-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-[14px] bg-[#0057FF] flex items-center justify-center shrink-0">
                   <Icon name="clock" size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
@@ -1068,8 +1068,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
               </div>
             )}
             {allDone && upcoming.length > 0 && (
-              <div className="bg-action-50 border border-action-200 rounded-[28px] px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-action-500 flex items-center justify-center shrink-0">
+              <div className="bg-action-50 border border-action-200 rounded-[20px] px-4 py-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-[14px] bg-action-500 flex items-center justify-center shrink-0">
                   <Icon name="check" size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
@@ -1091,7 +1091,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
               <CardContent className="px-3 py-3">
                 <div className="flex items-center gap-2">
-                  <div className={`w-9 h-9 rounded-lg ${stat.iconBg} flex items-center justify-center flex-shrink-0`}>
+                  <div className={`w-9 h-9 rounded-[14px] ${stat.iconBg} flex items-center justify-center flex-shrink-0`}>
                     <Icon name={stat.icon} size={16} className={stat.iconColor} />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -1114,7 +1114,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             onClick={() => setShowUsageHistory(!showUsageHistory)}
           >
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+              <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
                 <Icon name="droplet" size={14} className="text-action-600" />
               </div>
               <div>
@@ -1169,7 +1169,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             onClick={() => setShowConditionChecks(!showConditionChecks)}
           >
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+              <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
                 <Icon name="search" size={14} className="text-action-600" />
               </div>
               <div>
@@ -1217,7 +1217,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
                         {/* Item photo or status indicator */}
-                        <div className={`w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center shrink-0 ${
+                        <div className={`w-10 h-10 rounded-[14px] overflow-hidden flex items-center justify-center shrink-0 ${
                           isChecked ? "ring-2 ring-action-400" : "bg-shark-50 dark:bg-shark-800"
                         }`}>
                           {item.imageUrl ? (
@@ -1233,13 +1233,13 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-shark-800 dark:text-shark-200 truncate">
                             {item.name}
-                            {item.photoLabel && <span className="text-xs text-blue-500 ml-1.5 font-normal">— {item.photoLabel}</span>}
+                            {item.photoLabel && <span className="text-xs text-action-500 ml-1.5 font-normal">— {item.photoLabel}</span>}
                           </p>
                           {item.code && <p className="text-xs font-mono text-shark-400">{item.code}</p>}
                           {isChecked && item.condition && (
                             <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${
                               item.condition === "GOOD" ? "bg-action-100 text-action-700" :
-                              item.condition === "FAIR" ? "bg-blue-100 text-blue-700" :
+                              item.condition === "FAIR" ? "bg-action-100 text-action-700" :
                               item.condition === "POOR" ? "bg-action-100 text-[#0057FF]" :
                               "bg-red-100 text-red-700"
                             }`}>
@@ -1254,14 +1254,14 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                         <div className="flex items-center gap-2 shrink-0">
                           {/* Photo preview */}
                           {hasPhoto && (
-                            <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-200 dark:border-shark-700">
+                            <div className="w-10 h-10 rounded-[14px] overflow-hidden border border-shark-200 dark:border-shark-700">
                               <img src={state.photoUrl} alt={`${item.name} condition photo`} className="w-full h-full object-cover" />
                             </div>
                           )}
 
                           {/* Take photo button */}
-                          <label className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                            hasPhoto ? "bg-shark-100 dark:bg-shark-700 text-shark-600 dark:text-shark-400 hover:bg-shark-200 dark:hover:bg-shark-700 dark:bg-shark-700" : "bg-blue-500 text-white hover:bg-blue-600"
+                          <label className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-medium transition-colors ${
+                            hasPhoto ? "bg-shark-100 dark:bg-shark-700 text-shark-600 dark:text-shark-400 hover:bg-shark-200 dark:hover:bg-shark-700 dark:bg-shark-700" : "bg-action-500 text-white hover:bg-action-600"
                           } ${isUploading ? "opacity-50 pointer-events-none" : ""}`}>
                             {isUploading ? (
                               <span className="animate-pulse">Uploading...</span>
@@ -1283,6 +1283,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                               }}
                             />
                           </label>
+
                         </div>
                       )}
                     </div>
@@ -1305,7 +1306,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                           placeholder="Notes (optional)"
                           value={state?.notes || ""}
                           onChange={(e) => setCheckStates((prev) => ({ ...prev, [key]: { ...prev[key], notes: e.target.value } }))}
-                          className="flex-1 text-xs border border-shark-200 dark:border-shark-700 rounded-lg px-2.5 py-1.5 focus:border-action-400 focus:outline-none focus:ring-1 focus:ring-action-400/20"
+                          className="flex-1 text-xs border border-shark-200 dark:border-shark-700 rounded-[14px] px-2.5 py-1.5 focus:border-action-400 focus:outline-none focus:ring-1 focus:ring-action-400/20"
                         />
                         <Button
                           size="sm"
@@ -1334,7 +1335,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           <Link href="/report-damage">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="py-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-[28px] bg-[#0057FF] flex items-center justify-center group-hover:bg-[#d14a28] transition-colors">
+                <div className="w-12 h-12 rounded-[20px] bg-[#0057FF] flex items-center justify-center group-hover:bg-[#d14a28] transition-colors">
                   <Icon name="alert-triangle" size={24} className="text-white" />
                 </div>
                 <div>

@@ -148,7 +148,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
               onDragEnter={() => handleDragEnter(idx)}
               onDragEnd={handleDragEnd}
               onDragOver={(e) => e.preventDefault()}
-              className={`flex items-center gap-2 py-2 px-3 rounded-lg border transition-all cursor-grab active:cursor-grabbing ${
+              className={`flex items-center gap-2 py-2 px-3 rounded-[14px] border transition-all cursor-grab active:cursor-grabbing ${
                 dragIndex === idx
                   ? "border-action-400 bg-action-50 opacity-60"
                   : "border-shark-100 dark:border-shark-700 bg-white dark:bg-shark-800 hover:border-shark-200 dark:hover:border-shark-600 hover:bg-shark-25 dark:hover:bg-shark-700"
@@ -231,7 +231,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         {preferences.customShortcuts.map((s) => (
           <div key={s.id} className="flex items-center justify-between py-1.5">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-[14px] bg-shark-50 dark:bg-shark-800 flex items-center justify-center">
                 <Icon name={s.icon} size={14} className="text-shark-500 dark:text-shark-400" />
               </div>
               <div>
@@ -250,7 +250,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         ))}
 
         {showAddForm ? (
-          <div className="space-y-3 p-3 bg-shark-50 dark:bg-shark-800 rounded-[28px]">
+          <div className="space-y-3 p-3 bg-shark-50 dark:bg-shark-800 rounded-[20px]">
             <Input
               placeholder="Label (e.g. Import Data)"
               value={newLabel}

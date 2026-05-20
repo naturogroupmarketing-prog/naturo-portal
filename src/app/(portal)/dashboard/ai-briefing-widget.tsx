@@ -94,7 +94,7 @@ export async function AiBriefingWidget(props: AiBriefingWidgetProps) {
     if (pendingConfirmations > 0) chips.push({ label: "Confirm Kit", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/my-assets" });
     if (pendingApprovals > 0) chips.push({ label: "Request Pending", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/request-consumables" });
     if (conditionChecksDue > 0) chips.push({ label: "Checks Due", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/my-assets" });
-    if (assignedAssets > 0 || assignedConsumables > 0) chips.push({ label: "My Equipment", colorClass: "bg-blue-50 text-blue-600 ring-1 ring-blue-200", href: "/my-assets" });
+    if (assignedAssets > 0 || assignedConsumables > 0) chips.push({ label: "My Equipment", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/my-assets" });
   } else {
     if (criticalStockCount > 0) chips.push({ label: "Stock Critical", colorClass: "bg-red-50 text-red-600 ring-1 ring-red-200", href: "/consumables?stock=critical" });
     if (overdueReturns > 0) chips.push({ label: "Overdue Returns", colorClass: "bg-action-50 text-action-600 ring-1 ring-action-200", href: "/returns" });
