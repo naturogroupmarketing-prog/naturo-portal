@@ -379,7 +379,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 <div className="relative flex items-center justify-center">
                   <Icon
                     name="dots-nine"
-                    size={38}
+                    size={23}
                     className={cn(
                       "transition-colors duration-200",
                       moreOpen || navActiveIdx === -1 ? "text-[#0057FF]" : "text-shark-400"
