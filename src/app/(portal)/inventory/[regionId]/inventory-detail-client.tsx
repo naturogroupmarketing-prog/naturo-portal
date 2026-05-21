@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -40,11 +41,26 @@ type Tab = typeof TABS[number];
 
 export function InventoryDetailClient({
   region, assets, consumables, staff, users, assetCategories, consumableCategories,
-  pendingRequests, permissions, isSuperAdmin, allRegions = [], initialTab, initialAction, highlightId,
+  pendingRequests, lowStockCount, permissions, isSuperAdmin, allRegions = [], initialTab, initialAction, highlightId,
 }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
   const [applying, setApplying] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationSearch, setLocationSearch] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setLocationDropdownOpen(false);
+        setLocationSearch("");
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const defaultTab: Tab = highlightId ? "Supplies" : initialTab === "consumables" ? "Supplies" : initialTab === "staff" ? "Staff" : "Assets";
   const [activeTab, setActiveTab] = useState<Tab>(defaultTab);
@@ -78,13 +94,98 @@ export function InventoryDetailClient({
     <div className="space-y-6">
       <BreadcrumbSetter segment={region.id} label={region.name} />
 
-      {/* Page title — rendered here so it's always available from server data, never a raw ID */}
-      <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-white leading-tight tracking-tight -mb-2">
-        {region.name}
-      </h1>
-
       {/* Unified card: header + tab pills + content */}
       <Card padding="none">
+        {/* Region name header — click to switch location */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => { setLocationDropdownOpen((o) => !o); setLocationSearch(""); }}
+            className="w-full flex items-center px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors group text-left"
+          >
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5">
+                <h1 className="text-base font-semibold text-shark-900 dark:text-shark-100">{region.name}</h1>
+                <Icon
+                  name="chevron-down"
+                  size={14}
+                  className={`text-shark-400 transition-transform shrink-0 ${locationDropdownOpen ? "rotate-180" : ""}`}
+                />
+              </div>
+              <p className="text-xs text-shark-400">{region.state.name} · tap to switch location</p>
+            </div>
+            {lowStockCount > 0 && (
+              <Link
+                href={`/purchase-orders?region=${region.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-1.5 text-xs font-semibold text-red-500 bg-red-50 border border-red-100 px-2.5 py-1.5 rounded-[10px] hover:bg-red-100 transition-colors shrink-0"
+              >
+                <Icon name="alert-triangle" size={12} />
+                {lowStockCount} low stock
+              </Link>
+            )}
+          </button>
+
+          {/* Location dropdown */}
+          {locationDropdownOpen && allRegions.length > 0 && (
+            <div className="absolute left-0 right-0 top-full z-50 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 shadow-xl rounded-b-xl overflow-hidden">
+              <div className="px-3 py-2.5 border-b border-shark-100 dark:border-shark-700">
+                <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-1.5">
+                  <Icon name="search" size={13} className="text-shark-400 shrink-0" />
+                  <input
+                    autoFocus
+                    value={locationSearch}
+                    onChange={(e) => setLocationSearch(e.target.value)}
+                    placeholder="Search locations..."
+                    className="flex-1 bg-transparent text-sm text-shark-800 dark:text-shark-100 placeholder-shark-400 outline-none"
+                  />
+                </div>
+              </div>
+              <div className="max-h-72 overflow-y-auto">
+                {(() => {
+                  const q = locationSearch.toLowerCase();
+                  const filtered = allRegions.filter(
+                    (r) => r.name.toLowerCase().includes(q) || r.state.name.toLowerCase().includes(q)
+                  );
+                  if (filtered.length === 0) {
+                    return <p className="text-sm text-shark-400 text-center py-6">No locations found</p>;
+                  }
+                  const byState = filtered.reduce<Record<string, typeof allRegions>>((acc, r) => {
+                    const s = r.state.name;
+                    if (!acc[s]) acc[s] = [];
+                    acc[s].push(r);
+                    return acc;
+                  }, {});
+                  return Object.entries(byState).map(([stateName, regions]) => (
+                    <div key={stateName}>
+                      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
+                        {stateName}
+                      </p>
+                      {regions.map((r) => (
+                        <Link
+                          key={r.id}
+                          href={`/inventory/${r.id}`}
+                          onClick={() => { setLocationDropdownOpen(false); setLocationSearch(""); }}
+                          className={`flex items-center gap-3 px-4 py-2.5 hover:bg-action-50 dark:hover:bg-action-500/10 transition-colors ${
+                            r.id === region.id ? "bg-action-50 dark:bg-action-500/10" : ""
+                          }`}
+                        >
+                          <Icon name="map-pin" size={13} className={r.id === region.id ? "text-action-500" : "text-shark-300"} />
+                          <span className={`text-sm ${r.id === region.id ? "font-semibold text-action-600 dark:text-action-400" : "text-shark-700 dark:text-shark-200"}`}>
+                            {r.name}
+                          </span>
+                          {r.id === region.id && (
+                            <Icon name="check" size={12} className="text-action-500 ml-auto" />
+                          )}
+                        </Link>
+                      ))}
+                    </div>
+                  ));
+                })()}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Tab bar — scrollable so it never squeezes at narrow widths */}
         <div className="px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-700 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
           <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1 min-w-max">
