@@ -426,7 +426,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name={s.icon} size={20} className={`${s.iconColor} flex-shrink-0`} />
                           <div className="min-w-0">
                             <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                            <p className="text-[9px] lg:text-xs font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
+                            <p className="text-[11px] lg:text-xs font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
                           </div>
                           <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                         </div>
@@ -871,7 +871,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   <Icon name="alert-triangle" size={20} className="text-red-500 flex-shrink-0" />
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.lowStockCount} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Low Stock</p>
+                                    <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Low Stock</p>
                                   </div>
                                 </div>
                               </div>
@@ -885,7 +885,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   <Icon name="clipboard" size={20} className="text-action-600 flex-shrink-0" />
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.pendingRequests} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Requests</p>
+                                    <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Requests</p>
                                   </div>
                                 </div>
                               </div>
@@ -899,7 +899,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   <Icon name="arrow-left" size={20} className="text-action-600 flex-shrink-0" />
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.overdueReturns} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Returns</p>
+                                    <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Returns</p>
                                   </div>
                                 </div>
                               </div>
@@ -913,7 +913,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   <Icon name="truck" size={20} className="text-action-600 flex-shrink-0" />
                                   <div className="min-w-0">
                                     <AnimatedCounter value={region.pendingPOs} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[9px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">POs</p>
+                                    <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">POs</p>
                                   </div>
                                 </div>
                               </div>
