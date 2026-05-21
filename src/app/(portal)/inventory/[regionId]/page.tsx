@@ -152,7 +152,7 @@ export default async function InventoryDetailPage({ params, searchParams }: { pa
 
   // All regions for staff management (reassign dropdown)
   const allRegions = isAdmin
-    ? await db.region.findMany({ where: { organizationId }, include: { state: true }, orderBy: { name: "asc" } })
+    ? await db.region.findMany({ where: { organizationId, archivedAt: null }, include: { state: true }, orderBy: { name: "asc" } })
     : [region];
 
   return (

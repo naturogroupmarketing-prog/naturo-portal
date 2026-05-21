@@ -17,7 +17,7 @@ export default async function AdminUsersPage() {
       orderBy: { createdAt: "desc" },
     }),
     db.region.findMany({
-      where: { organizationId },
+      where: { organizationId, archivedAt: null },
       include: { state: true },
       orderBy: { name: "asc" },
     }),

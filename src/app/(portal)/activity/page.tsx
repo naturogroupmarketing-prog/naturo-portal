@@ -19,8 +19,8 @@ const PAGE_SIZE = 50;
 
 const ACTION_CONFIG: Record<string, { icon: "package" | "droplet" | "users" | "check" | "alert-triangle" | "clipboard" | "clock" | "plus" | "arrow-left" | "star"; label: string; color: string; bg: string }> = {
   ASSET_CREATED: { icon: "plus", label: "Created", color: "text-action-500", bg: "bg-action-50" },
-  ASSET_ASSIGNED: { icon: "package", label: "Assigned", color: "text-blue-500", bg: "bg-blue-50" },
-  ASSET_CHECKED_OUT: { icon: "package", label: "Checked Out", color: "text-blue-500", bg: "bg-blue-50" },
+  ASSET_ASSIGNED: { icon: "package", label: "Assigned", color: "text-action-500", bg: "bg-action-50" },
+  ASSET_CHECKED_OUT: { icon: "package", label: "Checked Out", color: "text-action-500", bg: "bg-action-50" },
   ASSET_RETURNED: { icon: "arrow-left", label: "Returned", color: "text-action-500", bg: "bg-action-50" },
   ASSET_DAMAGED: { icon: "alert-triangle", label: "Damaged", color: "text-red-500", bg: "bg-red-50" },
   ASSET_LOST: { icon: "alert-triangle", label: "Lost", color: "text-red-500", bg: "bg-red-50" },
@@ -31,11 +31,11 @@ const ACTION_CONFIG: Record<string, { icon: "package" | "droplet" | "users" | "c
   CONSUMABLE_REQUEST_CREATED: { icon: "clipboard", label: "Requested", color: "text-[#0057FF]", bg: "bg-action-50" },
   CONSUMABLE_REQUEST_APPROVED: { icon: "check", label: "Approved", color: "text-action-500", bg: "bg-action-50" },
   CONSUMABLE_REQUEST_REJECTED: { icon: "alert-triangle", label: "Rejected", color: "text-red-500", bg: "bg-red-50" },
-  CONSUMABLE_REQUEST_ISSUED: { icon: "check", label: "Issued", color: "text-blue-500", bg: "bg-blue-50" },
-  CONSUMABLE_ASSIGNED: { icon: "droplet", label: "Assigned", color: "text-blue-500", bg: "bg-blue-50" },
+  CONSUMABLE_REQUEST_ISSUED: { icon: "check", label: "Issued", color: "text-action-500", bg: "bg-action-50" },
+  CONSUMABLE_ASSIGNED: { icon: "droplet", label: "Assigned", color: "text-action-500", bg: "bg-action-50" },
   CONSUMABLE_RETURNED: { icon: "arrow-left", label: "Returned", color: "text-action-500", bg: "bg-action-50" },
   USER_CREATED: { icon: "users", label: "User Added", color: "text-action-500", bg: "bg-action-50" },
-  USER_UPDATED: { icon: "users", label: "User Updated", color: "text-blue-500", bg: "bg-blue-50" },
+  USER_UPDATED: { icon: "users", label: "User Updated", color: "text-action-500", bg: "bg-action-50" },
   USER_DEACTIVATED: { icon: "users", label: "Deactivated", color: "text-red-500", bg: "bg-red-50" },
   STARTER_KIT_APPLIED: { icon: "star", label: "Kit Applied", color: "text-action-500", bg: "bg-action-50" },
   BULK_ITEMS_APPLIED: { icon: "star", label: "Items Applied", color: "text-action-500", bg: "bg-action-50" },
@@ -146,7 +146,7 @@ export default async function ActivityPage({
                     return (
                       <div key={log.id} className="flex items-center gap-3 px-4 sm:px-5 py-3">
                         {/* Icon */}
-                        <div className={`w-8 h-8 rounded-lg ${config.bg} flex items-center justify-center shrink-0`}>
+                        <div className={`w-8 h-8 rounded-[14px] ${config.bg} flex items-center justify-center shrink-0`}>
                           <Icon name={config.icon} size={15} className={config.color} />
                         </div>
 

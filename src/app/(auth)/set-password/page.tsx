@@ -97,7 +97,7 @@ function SetPasswordForm() {
           <p className="text-sm text-shark-400 dark:text-shark-200 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="glass-card dark:bg-shark-900 rounded-[32px] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] dark:border-shark-700 overflow-hidden transition-colors">
+        <div className="glass-card dark:bg-shark-900 rounded-[20px] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] dark:border-shark-700 overflow-hidden transition-colors">
           <div className="p-8">
             {success ? (
               <div className="text-center space-y-4">

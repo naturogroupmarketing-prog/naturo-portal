@@ -33,7 +33,7 @@ const QUICK_ACTIONS: CommandItem[] = [
 const COMMANDS: CommandItem[] = [
   { label: "Dashboard",       href: "/dashboard",         icon: "dashboard", section: "Navigation", keywords: "home overview" },
   { label: "Inventory",       href: "/inventory",         icon: "package",   section: "Navigation", keywords: "assets supplies equipment items stock inventory locations regions" },
-  { label: "Supplies",        href: "/consumables",       icon: "droplet",   section: "Navigation", keywords: "supplies consumables stock PPE items manage" },
+  { label: "Supplies",        href: "/inventory",         icon: "droplet",   section: "Navigation", keywords: "supplies consumables stock PPE items manage locations" },
   { label: "Staff",           href: "/staff",             icon: "users",     section: "Navigation", keywords: "employees team" },
   { label: "Purchase Orders", href: "/purchase-orders",   icon: "truck",     section: "Navigation", keywords: "PO buy order" },
   { label: "Returns",         href: "/returns",           icon: "arrow-left",section: "Navigation", keywords: "return verify" },
@@ -99,7 +99,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, string> = {
   AVAILABLE:     "bg-action-100 text-action-700",
-  ASSIGNED:      "bg-blue-100 text-blue-700",
+  ASSIGNED:      "bg-action-100 text-action-700",
   CHECKED_OUT:   "bg-action-100 text-action-700",
   PENDING_RETURN:"bg-action-100 text-action-700",
   DAMAGED:       "bg-red-100 text-red-700",

@@ -12,7 +12,7 @@ export default function Loading() {
         <CardContent className="py-4">
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex items-start gap-3 p-3 bg-shark-50 dark:bg-shark-800 rounded-lg">
+              <div key={i} className="flex items-start gap-3 p-3 bg-shark-50 dark:bg-shark-800 rounded-[14px]">
                 <Skeleton className="w-8 h-8 rounded-full shrink-0" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-2/3" />

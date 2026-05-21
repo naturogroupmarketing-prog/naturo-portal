@@ -165,7 +165,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                   <p className="text-2xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
                 </div>
-                <div className={`w-10 h-10 rounded-[28px] ${stat.bg} flex items-center justify-center`}>
+                <div className={`w-10 h-10 rounded-[20px] ${stat.bg} flex items-center justify-center`}>
                   <Icon name={stat.icon} size={18} className={stat.color} />
                 </div>
               </div>
@@ -203,7 +203,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
           const stateStaffTotal = state.regions.reduce((sum, r) => sum + r._count.users, 0);
 
           return (
-            <div key={state.id} className="backdrop-blur-[20px] bg-white/70 border border-white/90 rounded-[32px] shadow-[0_2px_20px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.90)] overflow-hidden">
+            <div key={state.id} className="backdrop-blur-[20px] bg-white/70 border border-white/90 rounded-[20px] shadow-[0_2px_20px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.90)] overflow-hidden">
               {/* State Header */}
               <button
                 onClick={() => toggleState(state.id)}

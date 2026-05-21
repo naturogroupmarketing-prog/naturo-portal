@@ -212,7 +212,7 @@ export async function addStock(formData: FormData) {
       where: { id: consumableId },
       data: { quantityOnHand: { increment: quantity } },
     });
-    // Create a new batch layer — used for LIFO/FIFO consumption ordering
+    // Create a new batch layer for consumption ordering
     await addBatch(
       consumableId,
       organizationId,
@@ -276,7 +276,7 @@ export async function deductStock(formData: FormData) {
     if (updated.count === 0) {
       throw new Error("Insufficient stock — another operation may have reduced it. Please try again.");
     }
-    // Consume from LIFO/FIFO batch layers
+    // Consume from batch layers (FIFO — oldest first)
     await consumeFromBatches(
       consumableId,
       organizationId,
@@ -580,7 +580,7 @@ export async function issueConsumable(formData: FormData) {
         quantity: request.quantity,
       },
     });
-    // Consume from LIFO/FIFO batch layers
+    // Consume from batch layers (FIFO — oldest first)
     await consumeFromBatches(
       request.consumableId,
       request.consumable.organizationId,
@@ -765,7 +765,7 @@ export async function assignConsumable(formData: FormData) {
       data: { consumableId, userId, quantity },
     });
     assignmentId = assignment.id;
-    // Consume from LIFO/FIFO batch layers
+    // Consume from batch layers (FIFO — oldest first)
     await consumeFromBatches(
       consumableId,
       organizationId,

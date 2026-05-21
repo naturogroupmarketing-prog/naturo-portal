@@ -42,8 +42,8 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
     db.asset.count({ where: { ...regionFilter, deletedAt: null } }),
     db.region.findMany({
       where: session.user.role === "BRANCH_MANAGER"
-        ? { id: session.user.regionId!, organizationId }
-        : { organizationId },
+        ? { id: session.user.regionId!, organizationId, archivedAt: null }
+        : { organizationId, archivedAt: null },
       include: { state: true },
       orderBy: { name: "asc" },
     }),

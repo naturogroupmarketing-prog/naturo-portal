@@ -21,7 +21,7 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
     ? { regionId: session.user.regionId!, organizationId }
     : { organizationId };
 
-  const [consumables, pendingRequests, regions, users, categories, canAdjustStock, canAdd, org] = await Promise.all([
+  const [consumables, pendingRequests, regions, users, categories, canAdjustStock, canAdd] = await Promise.all([
     db.consumable.findMany({
       where: { ...regionFilter, isActive: true },
       include: {
@@ -60,8 +60,8 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
     }),
     db.region.findMany({
       where: session.user.role === "BRANCH_MANAGER"
-        ? { id: session.user.regionId!, organizationId }
-        : { organizationId },
+        ? { id: session.user.regionId!, organizationId, archivedAt: null }
+        : { organizationId, archivedAt: null },
       include: { state: true },
       orderBy: { name: "asc" },
     }),
@@ -82,10 +82,6 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
     }),
     hasPermission(session.user.id, session.user.role, "consumableStockAdjust"),
     hasPermission(session.user.id, session.user.role, "consumableAdd"),
-    db.organization.findUnique({
-      where: { id: organizationId },
-      select: { defaultInventoryMethod: true },
-    }),
   ]);
 
   return (
@@ -101,7 +97,6 @@ export default async function ConsumablesPage({ searchParams }: { searchParams: 
       initialTab={params.tab}
       initialStock={params.stock}
       initialCategory={params.category}
-      orgInventoryMethod={(org?.defaultInventoryMethod as "FIFO" | "LIFO") ?? "FIFO"}
     />
   );
 }

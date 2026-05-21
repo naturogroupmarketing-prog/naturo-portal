@@ -7,7 +7,7 @@ import { InventoryListClient } from "./inventory-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Inventory",
+  title: "Choose location",
   description: "Browse and manage inventory across all locations",
 };
 

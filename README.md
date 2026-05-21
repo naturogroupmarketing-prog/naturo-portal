@@ -1,3 +1,7 @@
+# trackio Portal
+
+> **For AI agents:** Before making any UI change, read [`docs/DESIGN_SKILL.md`](./docs/DESIGN_SKILL.md). It defines the authoritative design system — colours, typography, spacing, components, animation, accessibility, and dark mode. UI work that ignores it will be reverted.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

@@ -10,7 +10,7 @@ export function Card({ className, variant = "default", padding = "md", children,
     <div
       className={cn(
         // Warm glass: cream-tinted frosted surface (Designer Maryam MD3 system)
-        "rounded-[32px] transition-colors",
+        "rounded-[20px] transition-colors",
         {
           "glass-card dark:bg-shark-900/70 dark:border-white/[0.07] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_4px_16px_rgba(0,0,0,0.20)]": variant === "default",
           "backdrop-blur-[20px] bg-white/40 dark:bg-shark-900/50 border border-white/50 dark:border-white/[0.08]": variant === "flat",

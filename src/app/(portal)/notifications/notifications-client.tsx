@@ -30,7 +30,7 @@ function timeAgo(dateStr: string) {
 const TYPE_CONFIG: Record<string, { icon: string; color: string; bg: string }> = {
   LOW_STOCK: { icon: "alert-triangle", color: "text-[#0057FF]", bg: "bg-action-50" },
   OVERDUE_RETURN: { icon: "clock", color: "text-red-500", bg: "bg-red-50" },
-  PENDING_REQUEST: { icon: "inbox", color: "text-blue-500", bg: "bg-blue-50" },
+  PENDING_REQUEST: { icon: "inbox", color: "text-action-500", bg: "bg-action-50" },
   DAMAGE_REPORT: { icon: "alert-triangle", color: "text-red-500", bg: "bg-red-50" },
   ASSET_ASSIGNED: { icon: "package", color: "text-action-500", bg: "bg-action-50" },
   ASSET_RETURNED: { icon: "arrow-left", color: "text-action-500", bg: "bg-action-50" },
@@ -89,12 +89,12 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
         </div>
       </div>
 
-      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800 rounded-[28px] p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800 rounded-[20px] p-1">
         {(["all", "unread"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               filter === f
                 ? "bg-action-500 text-white shadow-sm"
                 : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700 dark:text-shark-300"
@@ -138,7 +138,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
                   />
 
                   {/* Icon */}
-                  <div className={`w-8 h-8 rounded-lg ${config.bg} flex items-center justify-center shrink-0`}>
+                  <div className={`w-8 h-8 rounded-[14px] ${config.bg} flex items-center justify-center shrink-0`}>
                     <Icon name={config.icon as "bell"} size={16} className={config.color} />
                   </div>
 

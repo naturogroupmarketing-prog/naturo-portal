@@ -27,7 +27,7 @@ export default async function ConditionChecksPage() {
   const [regions, inspectionConfig, schedules, staffScheduleData] = await Promise.all([
     isAdmin
       ? db.region.findMany({
-          where: { state: { organizationId } },
+          where: { state: { organizationId }, archivedAt: null },
           include: { state: true },
           orderBy: { name: "asc" },
         })

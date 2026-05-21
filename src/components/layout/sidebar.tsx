@@ -39,7 +39,7 @@ const navSections: NavSection[] = [
     heading: "Management",
     roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
     items: [
-      { label: "Supplies", href: "/consumables", icon: "droplet", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
+      { label: "Supplies", href: "/inventory", icon: "droplet", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Purchase Orders", href: "/purchase-orders", icon: "truck", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Staff", href: "/staff", icon: "users", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
       { label: "Starter Kits", href: "/starter-kits", icon: "box", roles: ["SUPER_ADMIN", "BRANCH_MANAGER"] },
@@ -160,7 +160,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                           "flex items-center gap-3 px-3 py-2.5 text-sm rounded-[14px] min-h-[44px] transition-all duration-200 active:scale-[0.98]",
                           active
                             ? "bg-[#0057FF]/[0.08] text-shark-900 font-semibold"
-                            : "text-shark-500 hover:bg-black/[0.04] hover:text-shark-800"
+                            : "text-shark-700 hover:bg-black/[0.04] hover:text-shark-900"
                         )}
                       >
                         {/* Icon tile — colored on active */}
@@ -168,7 +168,7 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
                           <Icon
                             name={item.icon}
                             size={17}
-                            className={active ? "text-[#0057FF]" : "text-shark-400"}
+                            className={active ? "text-[#0057FF]" : "text-shark-500"}
                           />
                         </span>
                         <span className="flex-1 leading-none">{item.label}</span>
@@ -192,17 +192,6 @@ export function Sidebar({ role, onClose, pendingPOCount = 0, pendingReturnsCount
 
       </div>
 
-      {/* Keyboard shortcut hint */}
-      <div className="hidden lg:flex items-center gap-2 px-3 py-3 border-t border-shark-100/70 dark:border-shark-800/60 dark:border-transparent">
-        <button
-          onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-[12px] text-shark-400 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-100 hover:bg-shark-50 dark:hover:bg-shark-800/60 transition-colors text-xs"
-        >
-          <Icon name="search" size={13} />
-          <span className="flex-1 text-left">Quick search</span>
-          <kbd className="text-[10px] bg-shark-100 dark:bg-shark-700 border border-shark-200 dark:border-shark-600 px-1.5 py-0.5 rounded-md font-mono">⌘K</kbd>
-        </button>
-      </div>
       <MenuWalkthrough role={effectiveRole} />
     </nav>
   );

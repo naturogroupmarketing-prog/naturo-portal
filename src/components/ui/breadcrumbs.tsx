@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useBreadcrumbOverrides } from "@/components/ui/breadcrumb-context";
 
 const staticOverrides: Record<string, string> = {
-  "inventory":        "Inventory",
+  "inventory":        "Choose location",
   "consumables":      "Supplies",
   "purchase-orders":  "Purchase Orders",
   "my-assets":        "My Assets",
@@ -23,6 +23,16 @@ const staticOverrides: Record<string, string> = {
   "activity":         "Activity Log",
   "scan":             "Scan QR",
 };
+
+/** Returns true for raw database IDs (cuid/uuid/nanoid) — these are never human-readable labels */
+function isRawId(segment: string): boolean {
+  // cuid: starts with 'c' + 24 chars alphanum | uuid: hyphens pattern | nanoid/other: 20+ alphanum no spaces
+  return (
+    /^c[a-z0-9]{20,}$/.test(segment) ||           // cuid
+    /^[0-9a-f-]{32,}$/i.test(segment) ||          // uuid
+    /^[A-Za-z0-9_-]{20,}$/.test(segment)          // nanoid / other opaque ID
+  );
+}
 
 function toLabel(segment: string, dynamicOverrides: Record<string, string>): string {
   if (dynamicOverrides[segment]) return dynamicOverrides[segment];
@@ -45,8 +55,12 @@ export function Breadcrumbs() {
     href:  "/" + segments.slice(0, i + 1).join("/"),
   }));
 
-  const pageTitle    = crumbs[crumbs.length - 1].label;
-  const parentCrumbs = crumbs.slice(0, -1);
+  const lastSegment   = segments[segments.length - 1];
+  const parentCrumbs  = crumbs.slice(0, -1);
+
+  // If the last segment is a raw DB ID, always skip the h1 —
+  // the page component renders its own title directly from server data.
+  const pageTitle     = isRawId(lastSegment) ? null : crumbs[crumbs.length - 1].label;
 
   return (
     <div className="mb-6 lg:mb-8">
@@ -78,10 +92,12 @@ export function Breadcrumbs() {
         </nav>
       )}
 
-      {/* Samsung One UI — large bold page title */}
-      <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-white leading-tight tracking-tight">
-        {pageTitle}
-      </h1>
+      {/* Page title — omitted when a dynamic ID page renders its own h1 */}
+      {pageTitle && (
+        <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-white leading-tight tracking-tight">
+          {pageTitle}
+        </h1>
+      )}
     </div>
   );
 }

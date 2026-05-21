@@ -12,9 +12,9 @@ export default function AlertsLoading() {
         {Array.from({ length: 3 }, (_, i) => (
           <div
             key={i}
-            className="rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-900 p-5 space-y-4"
+            className="rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-900 p-5 space-y-4"
           >
-            <Skeleton className="h-10 w-10 rounded-[28px]" />
+            <Skeleton className="h-10 w-10 rounded-[20px]" />
             <div className="space-y-2">
               <Skeleton className="h-4 w-32" />
               <Skeleton className="h-3 w-48" />

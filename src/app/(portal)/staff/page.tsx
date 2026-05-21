@@ -57,8 +57,8 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
     }),
     db.region.findMany({
       where: session.user.role === "BRANCH_MANAGER"
-        ? { id: session.user.regionId!, organizationId }
-        : { organizationId },
+        ? { id: session.user.regionId!, organizationId, archivedAt: null }
+        : { organizationId, archivedAt: null },
       include: { state: true },
       orderBy: { name: "asc" },
     }),
@@ -66,7 +66,7 @@ export default async function StaffPage({ searchParams }: { searchParams: Promis
 
   const allRegions = session.user.role === "SUPER_ADMIN"
     ? await db.region.findMany({
-        where: { organizationId },
+        where: { organizationId, archivedAt: null },
         include: { state: true },
         orderBy: { name: "asc" },
       })

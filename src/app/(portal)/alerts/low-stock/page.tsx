@@ -35,8 +35,8 @@ export default async function LowStockPage({ searchParams }: { searchParams: Pro
     // Fetch all regions so the dropdown shows every location, not just ones with alerts
     db.region.findMany({
       where: isBM
-        ? { id: session.user.regionId!, organizationId }
-        : { organizationId },
+        ? { id: session.user.regionId!, organizationId, archivedAt: null }
+        : { organizationId, archivedAt: null },
       select: { id: true, name: true, state: { select: { name: true } } },
       orderBy: { name: "asc" },
     }),

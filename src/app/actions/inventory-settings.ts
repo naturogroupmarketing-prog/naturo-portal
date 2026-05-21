@@ -1,72 +1,10 @@
 "use server";
 
-/**
- * Inventory Method Settings Actions
- *
- * Manages LIFO/FIFO method selection at the organisation and item level.
- *
- * IMPORTANT: LIFO is for OPERATIONAL stock tracking only.
- * In Australia, IFRS does not permit LIFO for financial/tax reporting.
- */
-
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import { getBatchSummary, getConsumptionHistory } from "@/lib/inventory-engine";
-
-// ─── Organisation-Level Setting ────────────────────────────────────────────
-
-/**
- * Update the organisation-wide default inventory method.
- * Super Admin only.
- */
-export async function updateOrgInventoryMethod(method: "FIFO" | "LIFO") {
-  const session = await auth();
-  if (!session?.user || session.user.role !== "SUPER_ADMIN") {
-    throw new Error("Unauthorized — Super Admin only");
-  }
-
-  const organizationId = session.user.organizationId;
-  if (!organizationId) throw new Error("No organization found");
-
-  if (method !== "FIFO" && method !== "LIFO") {
-    throw new Error("Invalid method. Must be FIFO or LIFO");
-  }
-
-  await db.organization.update({
-    where: { id: organizationId },
-    data: { defaultInventoryMethod: method },
-  });
-
-  await createAuditLog({
-    action: "INVENTORY_METHOD_UPDATED",
-    description: `Organisation default inventory method changed to ${method}`,
-    performedById: session.user.id,
-    organizationId,
-  });
-
-  revalidatePath("/consumables");
-  revalidatePath("/settings");
-  return { success: true };
-}
-
-/**
- * Get the organisation-wide default inventory method.
- */
-export async function getOrgInventoryMethod(): Promise<"FIFO" | "LIFO"> {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-
-  const org = await db.organization.findUnique({
-    where: { id: session.user.organizationId! },
-    select: { defaultInventoryMethod: true },
-  });
-
-  const method = org?.defaultInventoryMethod;
-  if (method === "FIFO" || method === "LIFO") return method;
-  return "FIFO";
-}
 
 // ─── Item-Level Override ────────────────────────────────────────────────────
 
@@ -135,33 +73,20 @@ export async function getBatchBreakdown(consumableId: string) {
 
   const consumable = await db.consumable.findUnique({
     where: { id: consumableId },
-    select: { organizationId: true, inventoryMethod: true, name: true, unitType: true },
+    select: { organizationId: true, name: true, unitType: true },
   });
   if (!consumable || consumable.organizationId !== organizationId) {
     throw new Error("Supply not found");
   }
 
-  const org = await db.organization.findUnique({
-    where: { id: organizationId },
-    select: { defaultInventoryMethod: true },
-  });
-
   const summary = await getBatchSummary(consumableId);
   const history = await getConsumptionHistory(consumableId, 30);
-
-  const effectiveMethod =
-    (consumable.inventoryMethod as "FIFO" | "LIFO" | null) ??
-    (org?.defaultInventoryMethod as "FIFO" | "LIFO" | null) ??
-    "FIFO";
 
   return {
     consumable: {
       id: consumableId,
       name: consumable.name,
       unitType: consumable.unitType,
-      itemMethod: consumable.inventoryMethod,
-      orgMethod: org?.defaultInventoryMethod ?? "FIFO",
-      effectiveMethod,
     },
     summary,
     history,

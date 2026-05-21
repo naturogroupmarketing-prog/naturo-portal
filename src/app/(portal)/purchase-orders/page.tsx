@@ -30,8 +30,8 @@ export default async function PurchaseOrdersPage({ searchParams }: { searchParam
       : { organizationId };
 
     const regionWhere = isBM
-      ? { id: session.user.regionId!, organizationId }
-      : { organizationId };
+      ? { id: session.user.regionId!, organizationId, archivedAt: null }
+      : { organizationId, archivedAt: null };
 
     // Hide received POs older than 7 days (unless Super Admin toggled "Show All History")
     const showAllHistory = isSuperAdmin && params.showAll === "true";

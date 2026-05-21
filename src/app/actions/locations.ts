@@ -141,6 +141,69 @@ export async function deleteRegion(formData: FormData) {
 }
 
 /**
+ * Force-delete an archived region as Super Admin.
+ * Cascades: unassigns staff, deletes all assets, consumables, and purchase orders
+ * belonging to the region, then permanently removes the region itself.
+ * Only works on regions that are already archived.
+ */
+export async function forceDeleteArchivedRegion(regionId: string) {
+  const session = await withAuth();
+  if (!isSuperAdmin(session.user.role)) throw new Error("Unauthorized");
+
+  const organizationId = session.user.organizationId!;
+
+  const region = await db.region.findUnique({ where: { id: regionId } });
+  if (!region) throw new Error("Region not found");
+  if (region.organizationId !== organizationId) throw new Error("Region not found");
+  if (!region.archivedAt) throw new Error("Only archived regions can be force-deleted. Archive it first.");
+
+  await db.$transaction(async (tx) => {
+    // 1. Unassign staff from this region
+    await tx.user.updateMany({ where: { regionId }, data: { regionId: null } });
+
+    // 2. Delete consumable batches first (FK dependency on consumables)
+    const consumableIds = (await tx.consumable.findMany({ where: { regionId }, select: { id: true } })).map((c) => c.id);
+    if (consumableIds.length > 0) {
+      await tx.consumableBatch.deleteMany({ where: { consumableId: { in: consumableIds } } });
+    }
+
+    // 3. Delete consumables
+    await tx.consumable.deleteMany({ where: { regionId } });
+
+    // 4. Delete asset-related records (assignments, damage reports, condition checks, maintenance)
+    const assetIds = (await tx.asset.findMany({ where: { regionId }, select: { id: true } })).map((a) => a.id);
+    if (assetIds.length > 0) {
+      // Clear assignment history and damage reports (no cascade on Asset delete)
+      await tx.assetAssignment.deleteMany({ where: { assetId: { in: assetIds } } });
+      await tx.damageReport.deleteMany({ where: { assetId: { in: assetIds } } });
+      await tx.conditionCheck.deleteMany({ where: { assetId: { in: assetIds } } });
+      // MaintenanceSchedule/MaintenanceLog cascade automatically from Asset
+    }
+
+    // 5. Delete assets
+    await tx.asset.deleteMany({ where: { regionId } });
+
+    // 6. Delete purchase orders for this region
+    await tx.purchaseOrder.deleteMany({ where: { regionId } });
+
+    // 7. Delete the region itself
+    await tx.region.delete({ where: { id: regionId } });
+  });
+
+  await createAuditLog({
+    action: "REGION_ARCHIVED",
+    description: `Region "${region.name}" permanently deleted by Super Admin (force delete — all data removed)`,
+    performedById: session.user.id,
+    organizationId,
+  });
+
+  revalidatePath("/inventory");
+  revalidatePath("/admin/locations");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+/**
  * Archive a region — soft-delete that preserves all assets, consumables, and staff.
  * Can be restored later.
  */

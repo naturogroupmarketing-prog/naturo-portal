@@ -5,11 +5,11 @@ export default function WorkflowsLoading() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Skeleton className="h-8 w-36" />
-        <Skeleton className="h-9 w-32 rounded-lg" />
+        <Skeleton className="h-9 w-32 rounded-full" />
       </div>
       <div className="space-y-3">
         {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-20 w-full rounded-[28px]" />
+          <Skeleton key={i} className="h-20 w-full rounded-[20px]" />
         ))}
       </div>
     </div>

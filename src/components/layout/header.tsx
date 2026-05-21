@@ -8,7 +8,6 @@ import { Icon } from "@/components/ui/icon";
 import { NotificationBell } from "./notification-bell";
 import { useTheme } from "@/components/theme-provider";
 import { CommandSearch } from "@/components/ui/command-search";
-import { QuickLinks } from "@/components/ui/quick-links";
 import { QuickAddMenu } from "@/components/ui/quick-add-menu";
 import type { Role } from "@/generated/prisma/browser";
 
@@ -30,7 +29,6 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const [searchFocused, setSearchFocused] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [quickLinksOpen, setQuickLinksOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [isStandalone, setIsStandalone] = useState(false);
@@ -58,12 +56,12 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
-  // Cmd+K / Ctrl+K to open quick links
+  // Cmd+K / Ctrl+K to open search
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        setQuickLinksOpen(true);
+        setSearchOpen(true);
       }
     };
     window.addEventListener("keydown", handler);
@@ -163,25 +161,6 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
       </div>
 
       <div className="flex items-center gap-2">
-
-        {/* Apps grid — opens quick links */}
-        <button
-          onClick={() => setQuickLinksOpen(true)}
-          className="hidden lg:flex p-2 min-w-[40px] min-h-[40px] items-center justify-center text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 rounded-full hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
-          title="Quick Links"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <rect x="3" y="3" width="4" height="4" rx="1" />
-            <rect x="10" y="3" width="4" height="4" rx="1" />
-            <rect x="17" y="3" width="4" height="4" rx="1" />
-            <rect x="3" y="10" width="4" height="4" rx="1" />
-            <rect x="10" y="10" width="4" height="4" rx="1" />
-            <rect x="17" y="10" width="4" height="4" rx="1" />
-            <rect x="3" y="17" width="4" height="4" rx="1" />
-            <rect x="10" y="17" width="4" height="4" rx="1" />
-            <rect x="17" y="17" width="4" height="4" rx="1" />
-          </svg>
-        </button>
 
         <NotificationBell />
 
@@ -315,7 +294,6 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
         </div>
       </div>
       <CommandSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
-      <QuickLinks open={quickLinksOpen} onClose={() => setQuickLinksOpen(false)} />
 
       {/* Install App modal — shown when no native prompt is available */}
       {showInstallModal && <InstallModal onClose={() => setShowInstallModal(false)} />}

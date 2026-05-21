@@ -13,7 +13,7 @@ export default function Loading() {
           <Skeleton className="h-5 w-32 mb-4" />
           <div className="space-y-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 p-3 bg-shark-50 dark:bg-shark-800 rounded-lg">
+              <div key={i} className="flex items-center gap-4 p-3 bg-shark-50 dark:bg-shark-800 rounded-[14px]">
                 <Skeleton className="w-12 h-12 rounded shrink-0" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-2/3" />

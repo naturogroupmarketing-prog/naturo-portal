@@ -65,7 +65,7 @@ export default function LoginPage() {
           <p className="text-sm text-shark-400 dark:text-shark-200 mt-1">Asset & Consumable Tracker</p>
         </div>
 
-        <div className="glass-card dark:bg-shark-900 rounded-[32px] dark:shadow-[0_1px_3px_rgba(0,0,0,0.2),0_8px_24px_rgba(0,0,0,0.3)] dark:border-shark-700 overflow-hidden transition-colors">
+        <div className="glass-card dark:bg-shark-900 rounded-[20px] dark:shadow-[0_1px_3px_rgba(0,0,0,0.2),0_8px_24px_rgba(0,0,0,0.3)] dark:border-shark-700 overflow-hidden transition-colors">
           <div className="p-8">
             <h2 className="text-lg font-semibold text-shark-900 dark:text-white text-center mb-1">
               Sign In

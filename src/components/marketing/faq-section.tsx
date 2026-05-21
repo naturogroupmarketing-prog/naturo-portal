@@ -24,8 +24,7 @@ export function FAQSection() {
               FAQ
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight" style={{ color: "#111827" }}>
-              Common questions,{" "}
-              <span style={{ color: "#FFD700" }}>clear answers.</span>
+              Common questions, clear answers.
             </h2>
             <p className="mt-4 text-gray-500 text-lg">
               Everything you need to know before getting started.
@@ -39,7 +38,7 @@ export function FAQSection() {
             return (
               <div
                 key={faq.question}
-                className="bg-white rounded-[28px] border transition-all"
+                className="bg-white rounded-[20px] border transition-all"
                 style={{ borderColor: isOpen ? "rgba(0,47,160,0.25)" : "#e5e7eb", boxShadow: isOpen ? "0 1px 8px rgba(0,47,160,0.08)" : "none" }}
               >
                 <button

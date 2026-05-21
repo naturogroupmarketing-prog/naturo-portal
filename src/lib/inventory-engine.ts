@@ -1,10 +1,7 @@
 /**
- * LIFO / FIFO Inventory Engine for Trackio
+ * Inventory Engine for Trackio
  *
- * IMPORTANT — IFRS COMPLIANCE NOTICE:
- * LIFO is used for OPERATIONAL stock tracking only (which units to consume first).
- * In Australia, IFRS does not permit LIFO for financial/tax reporting.
- * This engine MUST NOT be used to generate financial accounting outputs.
+ * Uses FIFO (First In, First Out) — oldest batch consumed first.
  */
 
 import { db } from "@/lib/db";
@@ -14,8 +11,6 @@ type PrismaTx = Omit<
   typeof db,
   "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
 >;
-
-export type InventoryMethod = "FIFO" | "LIFO";
 
 export interface BatchBreakdown {
   batchId: string;
@@ -31,41 +26,6 @@ export interface BatchSummary {
   source: string;
   receivedAt: Date;
   createdAt: Date;
-}
-
-// ─── Method Resolution ──────────────────────────────────────────────────────
-
-/**
- * Get the effective inventory method for a consumable.
- * Hierarchy: item-level override → org default → "FIFO"
- */
-export async function getEffectiveMethod(
-  consumableId: string,
-  organizationId: string,
-  tx?: PrismaTx
-): Promise<InventoryMethod> {
-  const client = tx ?? db;
-
-  const consumable = await (client as typeof db).consumable.findUnique({
-    where: { id: consumableId },
-    select: { inventoryMethod: true },
-  });
-
-  if (consumable?.inventoryMethod === "FIFO" || consumable?.inventoryMethod === "LIFO") {
-    return consumable.inventoryMethod as InventoryMethod;
-  }
-
-  const org = await (client as typeof db).organization.findUnique({
-    where: { id: organizationId },
-    select: { defaultInventoryMethod: true },
-  });
-
-  const orgMethod = org?.defaultInventoryMethod;
-  if (orgMethod === "FIFO" || orgMethod === "LIFO") {
-    return orgMethod as InventoryMethod;
-  }
-
-  return "FIFO";
 }
 
 // ─── Backfill ───────────────────────────────────────────────────────────────
@@ -107,24 +67,14 @@ async function ensureBackfillBatch(
 // ─── Core Consumption Algorithm ─────────────────────────────────────────────
 
 /**
- * LIFO / FIFO consumption algorithm.
+ * FIFO consumption algorithm (oldest batch consumed first).
  *
- * Deducts `quantity` from batches for `consumableId` using the effective method:
- *   LIFO → newest batch first (sort receivedAt DESC)
- *   FIFO → oldest batch first (sort receivedAt ASC)
+ * Deducts `quantity` from batches for `consumableId`.
  *
  * Returns a breakdown of which batches were consumed and how much.
  *
  * MUST be called inside a Prisma $transaction.
  * The caller is responsible for also decrementing quantityOnHand on the Consumable record.
- *
- * Test case (from spec):
- *   Batch A: 10 units (created first)
- *   Batch B: 20 units (created second)
- *   Remove 15 using LIFO →
- *     Consumed from B: 15  → B remaining: 5
- *     Consumed from A: 0   → A remaining: 10
- *   Total remaining: 15 ✓
  */
 export async function consumeFromBatches(
   consumableId: string,
@@ -135,8 +85,6 @@ export async function consumeFromBatches(
   tx: PrismaTx,
   referenceId?: string
 ): Promise<BatchBreakdown[]> {
-  const method = await getEffectiveMethod(consumableId, organizationId, tx);
-
   // Check for backfill need (legacy items with no batches)
   const consumable = await (tx as typeof db).consumable.findUnique({
     where: { id: consumableId },
@@ -146,10 +94,10 @@ export async function consumeFromBatches(
     await ensureBackfillBatch(consumableId, organizationId, consumable.quantityOnHand, tx);
   }
 
-  // Fetch active batches sorted by method
+  // Fetch active batches sorted FIFO (oldest first)
   const batches = await (tx as typeof db).consumableBatch.findMany({
     where: { consumableId, isActive: true, quantityRemaining: { gt: 0 } },
-    orderBy: { receivedAt: method === "LIFO" ? "desc" : "asc" },
+    orderBy: { receivedAt: "asc" },
   });
 
   const totalAvailable = batches.reduce((sum, b) => sum + b.quantityRemaining, 0);
@@ -269,7 +217,6 @@ export async function getBatchSummary(consumableId: string): Promise<{
   const newest = batches[batches.length - 1] ?? null;
 
   // Stagnant: oldest batch > 30 days old AND there are multiple batches
-  // (in LIFO mode, old batches sit at the bottom and are never consumed)
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const hasStagnantStock =
     batches.length > 1 &&

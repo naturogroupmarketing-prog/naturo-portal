@@ -18,7 +18,7 @@ const SEVERITY_STYLES: Record<DamageClassification["severity"], { badge: string;
 };
 
 const RECOMMENDATION_STYLES: Record<DamageClassification["repairRecommendation"], string> = {
-  repair: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
+  repair: "bg-action-50 text-action-700 ring-1 ring-action-200",
   replace: "bg-red-50 text-red-700 ring-1 ring-red-200",
   monitor: "bg-action-50 text-action-700 ring-1 ring-action-200",
   decommission: "bg-shark-100 dark:bg-shark-800 text-shark-600 dark:text-shark-400 ring-1 ring-shark-200",
@@ -71,7 +71,7 @@ export function DamageClassifier({
           type="button"
           onClick={handleAnalyse}
           disabled={!imageBase64 || loading}
-          className={`inline-flex items-center gap-2 rounded-[28px] px-4 py-2.5 text-sm font-medium transition-all ${
+          className={`inline-flex items-center gap-2 rounded-[20px] px-4 py-2.5 text-sm font-medium transition-all ${
             !imageBase64
               ? "bg-shark-100 dark:bg-shark-800 text-shark-400 cursor-not-allowed"
               : loading
@@ -133,7 +133,7 @@ export function DamageClassifier({
               <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${sev.badge}`}>
                 {sev.label} Damage
               </span>
-              <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold bg-blue-50 text-blue-700 ring-1 ring-blue-200 capitalize">
+              <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold bg-action-50 text-action-700 ring-1 ring-action-200 capitalize">
                 {result.category}
               </span>
               <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${RECOMMENDATION_STYLES[result.repairRecommendation]}`}>

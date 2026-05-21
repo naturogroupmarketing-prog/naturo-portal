@@ -18,7 +18,7 @@ export default function Loading() {
             <div className="divide-y divide-shark-50 dark:divide-shark-800">
               {[...Array(groupIdx === 0 ? 4 : 3)].map((_, i) => (
                 <div key={i} className="flex items-start gap-3 px-5 py-4">
-                  <Skeleton className="w-8 h-8 rounded-lg shrink-0 mt-0.5" />
+                  <Skeleton className="w-8 h-8 rounded-full shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0 space-y-2">
                     <Skeleton className="h-4 w-3/4" />
                     <div className="flex items-center gap-3">

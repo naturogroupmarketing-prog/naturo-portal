@@ -17,7 +17,7 @@ export default function Loading() {
           </div>
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <Skeleton key={i} className="h-12 rounded-lg" />
+              <Skeleton key={i} className="h-12 rounded-[14px]" />
             ))}
           </div>
         </CardContent>

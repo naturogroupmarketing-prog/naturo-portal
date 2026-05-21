@@ -46,7 +46,7 @@ export function HowItWorksSection() {
                   <div className="hidden sm:block absolute top-6 left-[calc(50%+40px)] w-[calc(100%-40px)] h-px border-t border-dashed border-gray-200" />
                 )}
                 <div
-                  className="inline-flex items-center justify-center w-12 h-12 rounded-[28px] text-white text-sm font-bold mb-5"
+                  className="inline-flex items-center justify-center w-12 h-12 rounded-[20px] text-white text-sm font-bold mb-5"
                   style={{ background: "linear-gradient(135deg, #002FA0 0%, #0055DD 100%)" }}
                 >
                   {step.number}

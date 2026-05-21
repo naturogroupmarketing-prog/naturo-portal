@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { createContext, useContext, useState, useCallback, useLayoutEffect } from "react";
 
 type Overrides = Record<string, string>;
 
@@ -29,7 +29,7 @@ export function useBreadcrumbOverrides() {
 /** Drop this anywhere in a page to override how a URL segment appears in the breadcrumb */
 export function BreadcrumbSetter({ segment, label }: { segment: string; label: string }) {
   const { setOverride } = useContext(BreadcrumbCtx);
-  useEffect(() => {
+  useLayoutEffect(() => {
     setOverride(segment, label);
   }, [segment, label, setOverride]);
   return null;
