@@ -456,17 +456,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {/* Portfolio Line Chart (Assets vs Consumables value) */}
                 {showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
                   <Card padding="none">
-                    <div className="p-4 sm:p-6">
-                      {/* Header */}
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-                          <Icon name="bar-chart" size={14} className="text-action-600" />
-                        </div>
-                        <div>
-                          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Finance</h2>
-                          <p className="text-xs text-shark-400">Asset &amp; Supply Value</p>
-                        </div>
-                      </div>
+                    <div className="px-5 py-4">
+                      <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Finance</h2>
 
                       {/* Summary cards */}
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 overflow-hidden mb-4">
@@ -586,16 +577,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               <div key="asset-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
                 {assetStatusChart && assetStatusChart.length > 0 && (
                   <Card padding="none">
-                    <div className="p-4 sm:p-5">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-                          <Icon name="package" size={14} className="text-action-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Asset Status</h3>
-                          <p className="text-xs text-shark-400">Breakdown by status</p>
-                        </div>
-                      </div>
+                    <div className="px-5 py-4">
+                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Asset Status</h3>
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {assetStatusChart.map((item) => {
                           const total = assetStatusChart.reduce((sum, i) => sum + i.value, 0);
@@ -620,16 +603,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 )}
                 {categoryChart && categoryChart.length > 0 && (
                   <Card padding="none">
-                    <div className="p-4 sm:p-5">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-                          <Icon name="box" size={14} className="text-action-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Assets by Category</h3>
-                          <p className="text-xs text-shark-400">Distribution across categories</p>
-                        </div>
-                      </div>
+                    <div className="px-5 py-4">
+                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Assets by Category</h3>
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {categoryChart.map((item, idx) => {
                           const maxVal = Math.max(...categoryChart.map((c) => c.value));
@@ -658,16 +633,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
               <div key="consumable-charts" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {consumableStatusChart && consumableStatusChart.length > 0 && (
                   <Card padding="none">
-                    <div className="p-4 sm:p-5">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-                          <Icon name="droplet" size={14} className="text-action-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Supply Status</h3>
-                          <p className="text-xs text-shark-400">Breakdown by stock level</p>
-                        </div>
-                      </div>
+                    <div className="px-5 py-4">
+                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Supply Status</h3>
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {consumableStatusChart.map((item) => {
                           const total = consumableStatusChart.reduce((sum, i) => sum + i.value, 0);
@@ -692,16 +659,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 )}
                 {consumableCategoryChart && consumableCategoryChart.length > 0 && (
                   <Card padding="none">
-                    <div className="p-4 sm:p-5">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-                          <Icon name="clipboard" size={14} className="text-action-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Supplies by Category</h3>
-                          <p className="text-xs text-shark-400">Distribution across categories</p>
-                        </div>
-                      </div>
+                    <div className="px-5 py-4">
+                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Supplies by Category</h3>
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {consumableCategoryChart.map((item, idx) => {
                           const maxVal = Math.max(...consumableCategoryChart.map((c) => c.value));
@@ -790,17 +749,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             return null; // Predicted Shortages hidden
             return showPredictions && predictedShortages.length > 0 ? (
               <Card key="predicted-shortages" className="border-action-100">
-                <div className="p-4 sm:p-5">
+                <div className="px-5 py-4">
                   {/* Header */}
-                  <Link href="/purchase-orders" className="flex items-center gap-2 mb-4 group cursor-pointer">
-                    <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
-                      <Icon name="bar-chart" size={14} className="text-action-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Predicted Shortages</h3>
-                      <p className="text-xs text-shark-400">AI-powered depletion forecasts</p>
-                    </div>
-                    <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-md shrink-0">AI</span>
+                  <Link href="/purchase-orders" className="flex items-center justify-between mb-4 group cursor-pointer">
+                    <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Predicted Shortages</h3>
                     <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors shrink-0" />
                   </Link>
                   {/* Items */}
@@ -991,17 +943,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {isSuperAdmin && showMap && mapLocations.length > 0 && (
         <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Map unavailable</div>}>
         <Card padding="none">
-          <div className="p-4 sm:p-5">
+          <div className="px-5 py-4">
             {/* Header */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-                <Icon name="map-pin" size={14} className="text-action-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Storage Locations</h3>
-                <p className="text-xs text-shark-400">Map and location overview</p>
-              </div>
-            </div>
+            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Storage Locations</h3>
             {/* Google Maps embed — no API key needed */}
             <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-[20px] overflow-hidden border border-shark-100 dark:border-shark-800 mb-3">
               <iframe
