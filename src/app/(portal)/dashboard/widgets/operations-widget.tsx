@@ -88,8 +88,8 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
   ];
 
   return (
-    <Card className={cn("h-full backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 dark:bg-shark-900/30 border border-white/50 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)]", className)}>
-      <div className="p-3 sm:p-4">
+    <Card padding="none" className={cn("h-full backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 dark:bg-shark-900/30 border border-white/50 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)]", className)}>
+      <div className="px-5 py-4 sm:px-5 sm:py-4">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
