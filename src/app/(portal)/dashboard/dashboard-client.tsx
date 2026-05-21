@@ -818,7 +818,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         />
                       </button>
                       {!isCollapsed && (
-                        <div className="grid grid-cols-4 gap-2 lg:grid-cols-2">
+                        <div className="grid grid-cols-4 gap-2">
                           {([
                             { href: isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/alerts/low-stock", icon: "alert-triangle" as const, iconColor: "text-red-500",    bg: "bg-red-400/15",    value: region.lowStockCount,   label: "Low Stock" },
                             { href: `/consumables?tab=requests&region=${region.regionId}`,                                                                   icon: "clipboard"      as const, iconColor: "text-action-600", bg: "bg-action-400/15", value: region.pendingRequests, label: "Requests"  },
