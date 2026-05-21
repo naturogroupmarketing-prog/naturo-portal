@@ -1173,7 +1173,6 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
                   </p>
                 )}
               </div>
-            </div>
             <div className="flex items-center gap-3">
               {checkedCount < conditionCheckItems.length && (
                 <span className="text-xs font-medium text-white bg-action-500 px-2.5 py-1 rounded-full">
