@@ -1095,7 +1095,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       )}
 
       {/* Content */}
-      <div className="p-4 sm:p-5 space-y-6">
+      <div className="px-4 sm:px-5 py-3 space-y-4">
         {tab === "stock" && (
           <>
           {consumables.length === 0 ? (

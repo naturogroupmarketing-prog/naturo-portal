@@ -99,12 +99,6 @@ export function InventoryDetailClient({
         {region.name}
       </h1>
 
-      {/* Back button */}
-      <Link href="/inventory" className="inline-flex items-center gap-1.5 text-sm text-shark-400 hover:text-action-500 transition-colors">
-        <Icon name="arrow-left" size={16} />
-        <span>Back</span>
-      </Link>
-
       {/* Unified card: header + tab pills + content */}
       <Card padding="none">
         {/* Region name header — click to switch location */}

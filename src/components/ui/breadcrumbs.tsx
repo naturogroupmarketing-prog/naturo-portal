@@ -58,9 +58,10 @@ export function Breadcrumbs() {
   const lastSegment   = segments[segments.length - 1];
   const parentCrumbs  = crumbs.slice(0, -1);
 
-  // If the last segment is a raw DB ID, always skip the h1 —
-  // the page component renders its own title directly from server data.
-  const pageTitle     = isRawId(lastSegment) ? null : crumbs[crumbs.length - 1].label;
+  // Raw-ID detail pages render their own h1 and contextual nav — skip breadcrumbs entirely.
+  if (isRawId(lastSegment)) return null;
+
+  const pageTitle     = crumbs[crumbs.length - 1].label;
 
   return (
     <div className="mb-6 lg:mb-8">
