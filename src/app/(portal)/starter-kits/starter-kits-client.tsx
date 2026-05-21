@@ -98,8 +98,7 @@ export function StarterKitsClient({
     <div className="px-5 py-4 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Starter Kits</h2>
-          <p className="text-xs text-shark-400 mt-0.5">Pre-defined sets of assets and supplies assigned to new staff automatically.</p>
+          <p className="text-xs text-shark-400">Pre-defined sets of assets and supplies assigned to new staff automatically.</p>
         </div>
         <Button size="sm" onClick={() => setShowCreate(true)}>
           <Icon name="plus" size={14} className="mr-1.5" />

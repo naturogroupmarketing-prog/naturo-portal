@@ -139,8 +139,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
     <Card padding="none">
     <div className="px-5 py-4 space-y-8">
       <div>
-        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">My Supplies</h2>
-        <p className="text-xs text-shark-400 mt-0.5">Your supply assignments and requests</p>
+        <p className="text-xs text-shark-400">Your supply assignments and requests</p>
       </div>
 
       {/* Pending Assignments — need confirmation */}

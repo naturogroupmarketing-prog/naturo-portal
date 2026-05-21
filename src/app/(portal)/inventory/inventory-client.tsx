@@ -108,8 +108,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
           {/* Title row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Choose location</h3>
-              <p className="text-xs text-shark-400 mt-0.5">
+              <p className="text-xs text-shark-400">
                 {totalRegions} locations · {totalAssets} assets · {totalConsumables} supplies
               </p>
             </div>

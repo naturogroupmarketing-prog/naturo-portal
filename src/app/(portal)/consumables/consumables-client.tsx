@@ -994,8 +994,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {/* Header: title + count + actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4 border-b border-shark-100 dark:border-shark-800">
         <div>
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Supplies</h2>
-          <p className="text-xs text-shark-400 mt-0.5">{consumables.length} total items{pendingRequests.length > 0 ? ` · ${pendingRequests.length} pending` : ""}</p>
+          <p className="text-xs text-shark-400">{consumables.length} total items{pendingRequests.length > 0 ? ` · ${pendingRequests.length} pending` : ""}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <ViewToggle value={viewMode} onChange={setViewMode} />

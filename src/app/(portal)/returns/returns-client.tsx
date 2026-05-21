@@ -131,8 +131,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
     return (
       <div className="space-y-10">
         <div>
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Returns</h2>
-          <p className="text-xs text-shark-400 mt-0.5">All returns processed</p>
+          <p className="text-xs text-shark-400">All returns processed</p>
         </div>
         <Card>
           <div className="py-12 text-center">
@@ -152,8 +151,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
     <div className="px-5 py-4 space-y-8">
       <div className="flex items-center gap-2">
         <div className="flex-1">
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Returns</h2>
-          <p className="text-xs text-shark-400 mt-0.5">
+          <p className="text-xs text-shark-400">
             {totalItems} item{totalItems !== 1 ? "s" : ""} pending verification
             {processedCount > 0 && <span> · {processedCount} marked</span>}
           </p>

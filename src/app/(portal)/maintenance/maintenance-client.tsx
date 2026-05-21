@@ -77,8 +77,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
     <div className="px-5 py-4 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Maintenance</h2>
-          <p className="text-xs text-shark-400 mt-0.5">
+          <p className="text-xs text-shark-400">
             {schedules.filter((s) => s.isActive).length} scheduled tasks
             {overdueCount > 0 && <span className="text-red-500 font-medium"> · {overdueCount} overdue</span>}
           </p>

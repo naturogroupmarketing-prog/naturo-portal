@@ -889,8 +889,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Assets</h2>
-          <p className="text-xs text-shark-400 mt-0.5">{assets.length} total assets</p>
+          <p className="text-xs text-shark-400">{assets.length} total assets</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowScanner(true)}>
