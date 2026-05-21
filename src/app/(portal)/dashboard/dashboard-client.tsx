@@ -818,63 +818,30 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         />
                       </button>
                       {!isCollapsed && (
-                        <div className="grid grid-cols-4 gap-2">
-                          {/* Low Stock */}
-                          <Link href={isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/alerts/low-stock"} className="block group aspect-square">
-                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-red-400/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
-                              <div className="p-2 h-full">
-                                <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
-                                  <Icon name="alert-triangle" size={20} className="text-red-500 flex-shrink-0" />
-                                  <div className="min-w-0">
-                                    <AnimatedCounter value={region.lowStockCount} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Low Stock</p>
+                        <div className="grid grid-cols-4 gap-2 lg:grid-cols-1">
+                          {([
+                            { href: isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/alerts/low-stock", icon: "alert-triangle" as const, iconColor: "text-red-500",    bg: "bg-red-400/15",    value: region.lowStockCount,   label: "Low Stock" },
+                            { href: `/consumables?tab=requests&region=${region.regionId}`,                                                                   icon: "clipboard"      as const, iconColor: "text-action-600", bg: "bg-action-400/15", value: region.pendingRequests, label: "Requests"  },
+                            { href: `/returns?region=${region.regionId}`,                                                                                    icon: "arrow-left"     as const, iconColor: "text-action-600", bg: "bg-action-400/15", value: region.overdueReturns,  label: "Returns"   },
+                            { href: `/purchase-orders?status=PENDING&region=${region.regionId}`,                                                             icon: "truck"          as const, iconColor: "text-action-600", bg: "bg-action-400/15", value: region.pendingPOs,      label: "POs"       },
+                          ] as const).map((tile) => (
+                            <Link key={tile.label} href={tile.href} className="block group aspect-square lg:aspect-auto lg:h-[72px]">
+                              <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${tile.bg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
+                                <div className="p-2 lg:px-4 lg:py-0 h-full">
+                                  <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:justify-start lg:gap-3">
+                                    <div className="flex items-center justify-center flex-shrink-0">
+                                      <Icon name={tile.icon} size={20} className={tile.iconColor} />
+                                    </div>
+                                    <div className="min-w-0 lg:flex-1 lg:text-center">
+                                      <AnimatedCounter value={tile.value} className="text-base lg:text-2xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                                      <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{tile.label}</p>
+                                    </div>
+                                    <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </Link>
-                          {/* Requests */}
-                          <Link href={`/consumables?tab=requests&region=${region.regionId}`} className="block group aspect-square">
-                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-action-400/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
-                              <div className="p-2 h-full">
-                                <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
-                                  <Icon name="clipboard" size={20} className="text-action-600 flex-shrink-0" />
-                                  <div className="min-w-0">
-                                    <AnimatedCounter value={region.pendingRequests} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Requests</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </Link>
-                          {/* Returns */}
-                          <Link href={`/returns?region=${region.regionId}`} className="block group aspect-square">
-                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-action-400/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
-                              <div className="p-2 h-full">
-                                <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
-                                  <Icon name="arrow-left" size={20} className="text-action-600 flex-shrink-0" />
-                                  <div className="min-w-0">
-                                    <AnimatedCounter value={region.overdueReturns} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">Returns</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </Link>
-                          {/* POs */}
-                          <Link href={`/purchase-orders?status=PENDING&region=${region.regionId}`} className="block group aspect-square">
-                            <div className="h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 bg-action-400/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer">
-                              <div className="p-2 h-full">
-                                <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
-                                  <Icon name="truck" size={20} className="text-action-600 flex-shrink-0" />
-                                  <div className="min-w-0">
-                                    <AnimatedCounter value={region.pendingPOs} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                    <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">POs</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </Link>
+                            </Link>
+                          ))}
                         </div>
                       )}
                     </div>
