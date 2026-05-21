@@ -796,7 +796,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "regional":
             return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
               <div key="regional" className="space-y-4 mt-10">
-                <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Locations</h3>
+                <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 pl-5">Locations</h3>
                 {[...regionBreakdown].sort((a, b) => a.regionName.localeCompare(b.regionName)).map((region) => {
                   const isCollapsed = collapsedRegions.has(region.regionId);
                   return (
@@ -804,7 +804,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       {/* Tappable region label row */}
                       <button
                         onClick={() => toggleRegion(region.regionId)}
-                        className="flex items-center gap-1.5 mb-2 group"
+                        className="flex items-center gap-1.5 mb-2 pl-5 group"
                       >
                         <p className="text-xs font-semibold text-shark-500 dark:text-shark-400 group-hover:text-shark-700 dark:group-hover:text-shark-200 transition-colors">{region.regionName}</p>
                         <Icon
