@@ -22,12 +22,12 @@ import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 // Lazy-load QR scanner (~100KB html5-qrcode) — only needed when modal opens
 const QRScanner = dynamic(
   () => import("@/components/ui/qr-scanner").then((m) => m.QRScanner),
-  { ssr: false, loading: () => <div className="flex items-center justify-center py-12"><div className="animate-pulse text-sm text-shark-400">Loading scanner...</div></div> }
+  { ssr: false, loading: () => <div className="flex items-center justify-center py-12 gap-2"><svg className="animate-spinner w-4 h-4 text-shark-400 shrink-0" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2.5" /><path d="M8 1.5a6.5 6.5 0 016.5 6.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" /></svg><span className="text-sm text-shark-400">Loading scanner...</span></div> }
 );
 
 // Color palette auto-assigned by category index
 const SECTION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-[#0057FF]", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
@@ -81,7 +81,7 @@ interface Asset {
 }
 
 const REGION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-[#0057FF]", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
@@ -96,7 +96,7 @@ const REGION_COLORS = [
 // Badge colors for each status
 const STATUS_BADGE: Record<string, { label: string; bg: string; text: string }> = {
   AVAILABLE: { label: "Available", bg: "bg-action-100", text: "text-action-700" },
-  ASSIGNED: { label: "Assigned", bg: "bg-blue-100", text: "text-blue-700" },
+  ASSIGNED: { label: "Assigned", bg: "bg-action-100 dark:bg-action-900/40", text: "text-action-700 dark:text-action-300" },
   CHECKED_OUT: { label: "Awaiting", bg: "bg-action-100", text: "text-action-700" },
   PENDING_RETURN: { label: "Pending Return", bg: "bg-action-100", text: "text-action-700" },
   DAMAGED: { label: "Damaged", bg: "bg-red-100", text: "text-red-700" },
@@ -177,7 +177,7 @@ function StatusDropdown({ asset, canAssign, canEdit, canDelete, activeAssignment
             if (!canAssign || asset.status !== "AVAILABLE") return null;
             return (
               <button key={action.value} onClick={() => { onAssign(); setOpen(false); }}
-                className="w-full text-left px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors flex items-center gap-2">
+                className="w-full text-left px-3 py-2 text-xs font-medium text-action-600 hover:bg-action-50 dark:hover:bg-action-500/10 transition-colors flex items-center gap-2">
                 <Icon name="user" size={12} /> {action.label}
               </button>
             );
@@ -647,12 +647,12 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       <div
         key={asset.id}
         onClick={() => permissions.canEdit && setEditAsset(asset)}
-        className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-[28px] p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
+        className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-[20px] p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-shadow duration-200 group cursor-pointer"
       >
         <div className="flex items-start justify-between mb-3">
-          <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
+          <div className="w-10 h-10 rounded-[14px] bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
             {asset.imageUrl ? (
-              <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover rounded-lg" />
+              <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover rounded-[14px]" />
             ) : (
               <Icon name="package" size={18} className="text-shark-300" />
             )}
@@ -673,13 +673,13 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
         )}
         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150" onClick={(e) => e.stopPropagation()}>
           <button
-            className="flex-1 text-xs py-1.5 rounded-lg bg-action-50 text-action-600 hover:bg-action-100 font-medium transition-colors"
+            className="flex-1 text-xs py-1.5 rounded-[10px] bg-action-50 text-action-600 hover:bg-action-100 font-medium transition-colors"
             onClick={() => { if (asset.status === "AVAILABLE" && permissions.canAssign) setShowAssign(asset); }}
           >
             {asset.status === "AVAILABLE" ? "Assign" : "View"}
           </button>
           <button
-            className="text-xs py-1.5 px-3 rounded-lg bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 font-medium transition-colors"
+            className="text-xs py-1.5 px-3 rounded-[10px] bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 font-medium transition-colors"
             onClick={() => setShowQR(asset)}
           >
             QR
@@ -730,15 +730,15 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                 <div
                   key={asset.id}
                   onClick={() => permissions.canEdit && setEditAsset(asset)}
-                  className="border border-shark-100 dark:border-shark-800 rounded-[28px] p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
+                  className="border border-shark-100 dark:border-shark-800 rounded-[20px] p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
                 >
                   <div className="flex items-start gap-3">
                     {asset.imageUrl ? (
-                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-800 shrink-0">
+                      <div className="w-11 h-11 rounded-[14px] overflow-hidden border border-shark-100 dark:border-shark-800 shrink-0">
                         <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" />
                       </div>
                     ) : (
-                      <div className="w-11 h-11 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                      <div className="w-11 h-11 rounded-[14px] bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                         <Icon name="package" size={18} className="text-shark-300" />
                       </div>
                     )}
@@ -835,9 +835,9 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     {visibleColumns.photo && (
                     <td className="px-3 py-2">
                       {asset.imageUrl ? (
-                        <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-800"><img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /></div>
+                        <div className="w-10 h-10 rounded-[14px] overflow-hidden border border-shark-100 dark:border-shark-800"><img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" /></div>
                       ) : (
-                        <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center"><Icon name="package" size={18} className="text-shark-300" /></div>
+                        <div className="w-10 h-10 rounded-[14px] bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center"><Icon name="package" size={18} className="text-shark-300" /></div>
                       )}
                     </td>
                     )}
@@ -888,14 +888,9 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="package" size={14} className="text-action-600" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Assets</h3>
-            <p className="text-xs text-shark-400">{assets.length} total assets</p>
-          </div>
+        <div>
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Assets</h2>
+          <p className="text-xs text-shark-400 mt-0.5">{assets.length} total assets</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowScanner(true)}>
@@ -970,7 +965,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             Columns
           </Button>
           {showColumnMenu && (
-            <div className="absolute right-0 top-full mt-1 bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-lg shadow-lg z-50 py-2 min-w-[160px]">
+            <div className="absolute right-0 top-full mt-1 bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-[14px] shadow-lg z-50 py-2 min-w-[160px]">
               {([
                 ["photo", "Photo"],
                 ["code", "Code"],
@@ -1005,7 +1000,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
       {/* Advanced Filters */}
       {showAdvancedFilters && (
-        <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 p-4 shadow-sm">
+        <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 p-4 shadow-sm">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
               <label className="block text-xs font-medium text-shark-500 dark:text-shark-400 mb-1">Category</label>
@@ -1066,7 +1061,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                             <Icon name="package" size={12} className={colors.color} />
                           </div>
                           <div className="flex items-center gap-2 flex-1">
-                            <h3 className="text-sm font-semibold text-shark-800 dark:text-shark-100">{cat.name}</h3>
+                            <h3 className="text-lg font-bold text-shark-800 dark:text-shark-100">{cat.name}</h3>
                             <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded-full ${colors.color} ${colors.bg}`}>
                               {catAssets.length}
                             </span>
@@ -1083,7 +1078,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                               {catAssets.map(renderAssetCard)}
                             </div>
                           ) : viewMode === "compact" ? (
-                            <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden">
+                            <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 overflow-hidden">
                               <div className="flex items-center gap-3 px-3 py-1.5 bg-shark-50 dark:bg-shark-800/40 border-b border-shark-100 dark:border-shark-800 text-[11px] font-semibold text-shark-400 uppercase tracking-wide">
                                 <span className="flex-1">Name</span>
                                 <span className="w-20 shrink-0">Status</span>
@@ -1133,7 +1128,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     <Icon name="package" size={12} className={section.color} />
                   </div>
                   <div className="flex items-center gap-2 flex-1">
-                    <h2 className="text-sm font-semibold text-shark-800 dark:text-shark-100">{section.name}</h2>
+                    <h2 className="text-lg font-bold text-shark-800 dark:text-shark-100">{section.name}</h2>
                     <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded-full ${section.color} ${section.bg}`}>
                       {section.assets.length}
                     </span>
@@ -1151,7 +1146,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                     {section.assets.map(renderAssetCard)}
                   </div>
                 ) : viewMode === "compact" ? (
-                  <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden">
+                  <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 overflow-hidden">
                     <div className="flex items-center gap-3 px-3 py-1.5 bg-shark-50 dark:bg-shark-800/40 border-b border-shark-100 dark:border-shark-800 text-[11px] font-semibold text-shark-400 uppercase tracking-wide">
                       <span className="flex-1">Name</span>
                       <span className="w-20 shrink-0">Status</span>
@@ -1172,13 +1167,13 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
       {/* Bulk Delete Confirmation Modal */}
       <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Assets">
         <div className="space-y-4">
-          <div className="bg-red-50 border border-red-200 rounded-[28px] p-4">
+          <div className="bg-red-50 border border-red-200 rounded-[20px] p-4">
             <p className="text-sm text-red-800 font-medium">
               Are you sure you want to delete {selectedIds.size} asset{selectedIds.size > 1 ? "s" : ""}?
             </p>
             <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
           </div>
-          <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] p-4 max-h-40 overflow-y-auto">
+          <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] p-4 max-h-40 overflow-y-auto">
             {assets.filter((a) => selectedIds.has(a.id)).map((a) => (
                 <div key={a.id} className="flex items-center gap-2 py-1">
                   <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{a.name}</span>
@@ -1206,14 +1201,14 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             const assetToDelete = assets.find((a) => a.id === showSingleDelete);
             return (
               <>
-                <div className="bg-red-50 border border-red-200 rounded-[28px] p-4">
+                <div className="bg-red-50 border border-red-200 rounded-[20px] p-4">
                   <p className="text-sm text-red-800 font-medium">
                     Are you sure you want to delete this asset?
                   </p>
                   <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
                 </div>
                 {assetToDelete && (
-                  <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] p-4">
+                  <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] p-4">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{assetToDelete.name}</span>
                       <span className="text-xs text-shark-400 font-mono">{assetToDelete.assetCode}</span>
@@ -1257,7 +1252,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   onDragEnd={handleSectionDragEnd}
                   className={`${dragSectionIdx === idx ? "opacity-40" : ""} ${dragOverSectionIdx === idx ? "border-t-2 border-t-action-500" : ""}`}
                 >
-                  <div className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800">
+                  <div className="flex items-center justify-between py-2 px-3 rounded-[14px] hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800">
                     {isEditing ? (
                       <div className="flex items-center gap-2 flex-1 mr-2">
                         <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center shrink-0`}>
@@ -1357,7 +1352,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
             <div className="flex items-start gap-4">
               {imagePreview ? (
-                <div className="relative w-24 h-24 rounded-[28px] overflow-hidden border border-shark-200 dark:border-shark-700">
+                <div className="relative w-24 h-24 rounded-[20px] overflow-hidden border border-shark-200 dark:border-shark-700">
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -1371,7 +1366,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-24 h-24 rounded-[28px] border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
+                  className="w-24 h-24 rounded-[20px] border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
                 >
                   <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
@@ -1425,7 +1420,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
-            <textarea name="description" className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <textarea name="description" className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -1454,7 +1449,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-            <textarea name="notes" className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <textarea name="notes" className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => { setShowCreate(false); setImagePreview(null); setImageFile(null); }}>Cancel</Button>
@@ -1555,7 +1550,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="returnNotes" className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
+              <textarea name="returnNotes" className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
@@ -1596,7 +1591,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <img
               src={showImage.imageUrl}
               alt={showImage.name}
-              className="mx-auto max-w-full max-h-[60vh] rounded-[28px] object-contain"
+              className="mx-auto max-w-full max-h-[60vh] rounded-[20px] object-contain"
             />
             <div>
               <p className="font-bold text-shark-900 dark:text-shark-100">{showImage.name}</p>
@@ -1638,7 +1633,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
               <div className="flex items-start gap-4">
                 {(editImagePreview || (!editImageRemoved && editAsset.imageUrl)) ? (
-                  <div className="relative w-24 h-24 rounded-[28px] overflow-hidden border border-shark-200 dark:border-shark-700">
+                  <div className="relative w-24 h-24 rounded-[20px] overflow-hidden border border-shark-200 dark:border-shark-700">
                     <img src={editImagePreview || editAsset.imageUrl!} alt="Preview" className="w-full h-full object-cover" />
                     <button
                       type="button"
@@ -1652,7 +1647,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   <button
                     type="button"
                     onClick={() => editFileInputRef.current?.click()}
-                    className="w-24 h-24 rounded-[28px] border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
+                    className="w-24 h-24 rounded-[20px] border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
                   >
                     <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
@@ -1725,7 +1720,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Description</label>
-              <textarea name="description" defaultValue={editAsset.description || ""} className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+              <textarea name="description" defaultValue={editAsset.description || ""} className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -1751,7 +1746,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="notes" defaultValue={editAsset.notes || ""} className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+              <textarea name="notes" defaultValue={editAsset.notes || ""} className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
 
             {/* Equipment Checklist for this category */}

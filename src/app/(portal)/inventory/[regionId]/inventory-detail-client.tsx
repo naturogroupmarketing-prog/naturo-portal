@@ -94,6 +94,11 @@ export function InventoryDetailClient({
     <div className="space-y-6">
       <BreadcrumbSetter segment={region.id} label={region.name} />
 
+      {/* Page title — rendered here so it's always available from server data, never a raw ID */}
+      <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-white leading-tight tracking-tight -mb-2">
+        {region.name}
+      </h1>
+
       {/* Back button */}
       <Link href="/inventory" className="inline-flex items-center gap-1.5 text-sm text-shark-400 hover:text-action-500 transition-colors">
         <Icon name="arrow-left" size={16} />
@@ -108,7 +113,7 @@ export function InventoryDetailClient({
             onClick={() => { setLocationDropdownOpen((o) => !o); setLocationSearch(""); }}
             className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors group text-left"
           >
-            <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
               <Icon name="map-pin" size={15} className="text-action-600" />
             </div>
             <div className="flex-1 min-w-0">
@@ -126,7 +131,7 @@ export function InventoryDetailClient({
               <Link
                 href={`/purchase-orders?region=${region.id}`}
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-1.5 text-xs font-semibold text-red-500 bg-red-50 border border-red-100 px-2.5 py-1.5 rounded-lg hover:bg-red-100 transition-colors shrink-0"
+                className="flex items-center gap-1.5 text-xs font-semibold text-red-500 bg-red-50 border border-red-100 px-2.5 py-1.5 rounded-[10px] hover:bg-red-100 transition-colors shrink-0"
               >
                 <Icon name="alert-triangle" size={12} />
                 {lowStockCount} low stock
@@ -139,7 +144,7 @@ export function InventoryDetailClient({
             <div className="absolute left-0 right-0 top-full z-50 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 shadow-xl rounded-b-xl overflow-hidden">
               {/* Search */}
               <div className="px-3 py-2.5 border-b border-shark-100 dark:border-shark-700">
-                <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-1.5">
+                <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-1.5">
                   <Icon name="search" size={13} className="text-shark-400 shrink-0" />
                   <input
                     autoFocus
@@ -205,12 +210,12 @@ export function InventoryDetailClient({
 
         {/* Tab bar — scrollable so it never squeezes at narrow widths */}
         <div className="px-3 sm:px-4 py-3 border-b border-shark-100 dark:border-shark-700 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-          <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1 min-w-max">
+          <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1 min-w-max">
             {TABS.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${
                   activeTab === tab
                     ? "bg-action-500 text-white shadow-sm"
                     : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700 dark:text-shark-300"
@@ -230,10 +235,10 @@ export function InventoryDetailClient({
         {/* Apply Standard Items — when empty */}
         {isEmpty && isSuperAdmin && (
           <div className="px-6 py-10 text-center border-b border-shark-100 dark:border-shark-700">
-            <div className="w-12 h-12 rounded-[28px] bg-action-500 flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 rounded-[20px] bg-action-500 flex items-center justify-center mx-auto mb-4">
               <Icon name="plus" size={22} className="text-white" />
             </div>
-            <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">Set Up This Location</h3>
+            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Set Up This Location</h3>
             <p className="text-sm text-shark-500 dark:text-shark-400 mt-1 max-w-md mx-auto">Apply standard items from your existing locations to get started quickly.</p>
             <Button className="mt-4" onClick={handleApplyStandard} loading={applying} disabled={applying}>
               <Icon name="package" size={16} className="mr-2" />
@@ -243,7 +248,7 @@ export function InventoryDetailClient({
         )}
 
         {/* Tab content */}
-        <div className="p-4 sm:p-5">
+        <div className="px-5 py-4">
           {activeTab === "Assets" && (
             <AssetsClient
               assets={assets as never}

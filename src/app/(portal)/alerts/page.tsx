@@ -90,7 +90,7 @@ export default async function AlertsPage() {
             <Card className="cursor-pointer h-full">
               <CardContent className="flex flex-col items-start gap-4">
                 <div
-                  className={`flex items-center justify-center h-10 w-10 rounded-[28px] ${
+                  className={`flex items-center justify-center h-10 w-10 rounded-[20px] ${
                     card.count > 0
                       ? "bg-[#0057FF]/10 text-[#0057FF]"
                       : "bg-action-50 text-action-500 dark:bg-action-900/20 dark:text-action-400"
@@ -100,7 +100,7 @@ export default async function AlertsPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <h2 className="text-base font-semibold text-shark-900 dark:text-shark-100">
+                  <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">
                     {card.title}
                   </h2>
                   <p className="text-sm text-shark-500 dark:text-shark-400">

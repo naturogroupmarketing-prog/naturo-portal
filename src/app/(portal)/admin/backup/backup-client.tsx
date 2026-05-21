@@ -70,7 +70,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
         <CardContent className="py-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Full Backup</h3>
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Full Backup</h3>
               <p className="text-sm text-shark-400 mt-0.5">
                 Downloads all 4 files at once — assets, supplies, staff, and regions
               </p>
@@ -98,7 +98,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
             <CardContent className="py-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-[28px] bg-action-50 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-10 h-10 rounded-[20px] bg-action-50 flex items-center justify-center shrink-0 mt-0.5">
                     <Icon name={item.icon} size={18} className="text-action-500" />
                   </div>
                   <div>
@@ -130,7 +130,7 @@ export function BackupClient({ assetCount, consumableCount, staffCount, regionCo
           <div className="flex items-start gap-3">
             <Icon name="help-circle" size={18} className="text-shark-400 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-semibold text-shark-700 dark:text-shark-300">How to restore from backup</h4>
+              <h4 className="text-lg font-bold text-shark-900 dark:text-shark-100">How to restore from backup</h4>
               <p className="text-sm text-shark-500 dark:text-shark-400 mt-1">
                 Go to <Link href="/admin/import" className="text-action-500 hover:text-action-600 font-medium">Import Data</Link> and
                 upload any of the downloaded CSV files. The column headers will be matched automatically. Assets and supplies will be

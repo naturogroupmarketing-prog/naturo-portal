@@ -14,6 +14,7 @@ import { approvePurchaseOrder, markPurchaseOrderOrdered, updatePurchaseOrder, cr
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { formatDate, statusColor } from "@/lib/utils";
+import { ActionBanner } from "@/components/ui/action-banner";
 
 type PurchaseOrder = {
   id: string;
@@ -387,18 +388,18 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               key={po.id}
               data-po-id={po.id}
               onClick={() => setViewOrder(po)}
-              className={`border rounded-[28px] p-4 bg-white dark:bg-shark-900 transition-shadow cursor-pointer ${selected.has(po.id) ? "border-action-400 bg-action-50/20 dark:bg-action-500/10" : "border-shark-100 dark:border-shark-800 hover:shadow-sm"}`}
+              className={`border rounded-[20px] p-4 bg-white dark:bg-shark-900 transition-shadow cursor-pointer ${selected.has(po.id) ? "border-action-400 bg-action-50/20 dark:bg-action-500/10" : "border-shark-100 dark:border-shark-800 hover:shadow-sm"}`}
             >
               <div className="flex items-start gap-3">
                 {canApprovePO && (
                   <input type="checkbox" checked={selected.has(po.id)} onChange={(e) => { e.stopPropagation(); toggleSelect(po.id); }} className="w-4 h-4 mt-1 rounded border-shark-300 text-action-500 focus:ring-action-400 shrink-0" />
                 )}
                 {po.consumable.imageUrl ? (
-                  <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-700 shrink-0">
+                  <div className="w-10 h-10 rounded-[14px] overflow-hidden border border-shark-100 dark:border-shark-700 shrink-0">
                     <img src={po.consumable.imageUrl} alt={po.consumable.name} className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-[14px] bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                     <Icon name="droplet" size={16} className="text-shark-300" />
                   </div>
                 )}
@@ -452,11 +453,11 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
                       {po.consumable.imageUrl ? (
-                        <div className="w-8 h-8 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-700 shrink-0">
+                        <div className="w-8 h-8 rounded-[14px] overflow-hidden border border-shark-100 dark:border-shark-700 shrink-0">
                           <img src={po.consumable.imageUrl} alt={po.consumable.name} className="w-full h-full object-cover" />
                         </div>
                       ) : (
-                        <div className="w-8 h-8 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-[14px] bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                           <Icon name="droplet" size={14} className="text-shark-300" />
                         </div>
                       )}
@@ -511,7 +512,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               onClick={() => { setRegionDropdownOpen((o) => !o); setRegionSearch(""); }}
               className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors text-left"
             >
-              <div className="w-8 h-8 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
                 <Icon name="map-pin" size={15} className="text-action-600" />
               </div>
               <div className="flex-1 min-w-0">
@@ -528,7 +529,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 <p className="text-xs text-shark-400">{selectedRegion.state.name} · tap to switch region</p>
               </div>
               {pendingCount > 0 && (
-                <span className="flex items-center gap-1.5 text-xs font-semibold text-red-500 bg-red-50 border border-red-100 px-2.5 py-1.5 rounded-lg shrink-0">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-red-500 bg-red-50 border border-red-100 px-2.5 py-1.5 rounded-[14px] shrink-0">
                   <Icon name="alert-triangle" size={12} />
                   {pendingCount} pending
                 </span>
@@ -540,7 +541,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               <div className="absolute left-0 right-0 top-full z-50 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 shadow-xl rounded-b-xl overflow-hidden">
                 {/* Search */}
                 <div className="px-3 py-2.5 border-b border-shark-100 dark:border-shark-700">
-                  <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-1.5">
+                  <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-full px-3 py-1.5">
                     <Icon name="search" size={13} className="text-shark-400 shrink-0" />
                     <input
                       autoFocus
@@ -608,19 +609,14 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           </div>
         )}
 
-        <div className="p-4 sm:p-5 space-y-4">
+        <div className="px-5 py-4 space-y-4">
           {/* Title row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-                <Icon name="truck" size={14} className="text-action-600" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Purchase Orders</h3>
-                <p className="text-xs text-shark-400">
-                  {regionPOs.length} total · {pendingCount} pending
-                </p>
-              </div>
+            <div>
+              <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Purchase Orders</h2>
+              <p className="text-xs text-shark-400 mt-0.5">
+                {regionPOs.length} total · {pendingCount} pending
+              </p>
             </div>
             <div className="flex items-center gap-2">
               {isSuperAdmin && (
@@ -672,12 +668,12 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           </div>
 
           {/* Tab bar */}
-          <div className="hidden sm:flex overflow-x-auto gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1 scrollbar-none">
+          <div className="hidden sm:flex overflow-x-auto gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1 scrollbar-none">
             {TABS.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
                   activeTab === tab
                     ? "bg-action-500 text-white shadow-sm"
                     : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-700 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
@@ -697,7 +693,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
 
           {/* Bulk Action Bar */}
           {selected.size > 0 && canApprovePO && (
-            <div className="sticky top-14 z-20 bg-action-500 text-white rounded-[28px] px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+            <div className="sticky top-14 z-20 bg-action-500 text-white rounded-[20px] px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
               <span className="text-sm font-medium">{selected.size} selected</span>
               <div className="flex items-center gap-2">
                 {selectedPending > 0 && (
@@ -718,12 +714,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           )}
 
           {error && (
-            <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg flex items-center justify-between">
-              <span>{error}</span>
-              <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600">
-                <Icon name="x" size={14} />
-              </button>
-            </div>
+            <ActionBanner variant="error" message={error} onDismiss={() => setError(null)} />
           )}
         </div>
 
@@ -764,7 +755,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               className="space-y-5"
             >
               {/* Read-only item info */}
-              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg p-4">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] p-4">
                 <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{viewOrder.consumable.name}</h3>
                 <div className="flex gap-4 mt-1 text-xs text-shark-400">
                   <span>{viewOrder.consumable.category}</span>
@@ -820,7 +811,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                   defaultValue={viewOrder.notes || ""}
                   placeholder="Order notes..."
                   rows={3}
-                  className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3 py-2 text-sm text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-500 focus:border-transparent"
+                  className="w-full rounded-[14px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3 py-2 text-sm text-shark-900 dark:text-shark-100 placeholder:text-shark-400 focus:outline-none focus:ring-2 focus:ring-action-500 focus:border-transparent"
                 />
               </div>
 
@@ -833,7 +824,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           ) : (
             /* Read-only view for Branch Manager */
             <div className="space-y-5">
-              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg p-4">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] p-4">
                 <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{viewOrder.consumable.name}</h3>
                 <div className="flex gap-4 mt-1 text-xs text-shark-400">
                   <span>{viewOrder.consumable.category}</span>
@@ -878,7 +869,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               {viewOrder.notes && (
                 <div>
                   <p className="text-xs font-medium text-shark-400 uppercase mb-1">Notes</p>
-                  <p className="text-sm text-shark-600 dark:text-shark-300 whitespace-pre-wrap bg-shark-50 dark:bg-shark-800 rounded-lg p-3">{viewOrder.notes}</p>
+                  <p className="text-sm text-shark-600 dark:text-shark-300 whitespace-pre-wrap bg-shark-50 dark:bg-shark-800 rounded-[14px] p-3">{viewOrder.notes}</p>
                 </div>
               )}
 
@@ -915,7 +906,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-            <textarea name="notes" placeholder="Optional notes..." className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
+            <textarea name="notes" placeholder="Optional notes..." className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>

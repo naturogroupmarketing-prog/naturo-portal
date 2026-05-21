@@ -148,12 +148,9 @@ export function SmartReorderPanel({ recommendations, canApprove }: SmartReorderP
       {/* Header */}
       <div className="border-b border-shark-100 dark:border-shark-800 px-5 py-4">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
-            <Icon name="truck" size={14} className="text-action-600" />
-          </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Smart Reorder</h3>
-            <p className="text-xs text-shark-400">Powered by AI predictions</p>
+            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Smart Reorder</h3>
+            <p className="text-xs text-shark-400 mt-0.5">Powered by AI predictions</p>
           </div>
           <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
           {hasItems && (

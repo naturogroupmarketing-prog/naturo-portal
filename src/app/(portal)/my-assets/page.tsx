@@ -36,17 +36,12 @@ export default async function MyAssetsPage() {
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="package" size={14} className="text-action-600" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">My Assets</h3>
-          <p className="text-xs text-shark-400">
-            {assignments.length} item{assignments.length !== 1 ? "s" : ""} currently assigned to you
-          </p>
-        </div>
+    <div className="px-5 py-4 space-y-8">
+      <div>
+        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">My Assets</h2>
+        <p className="text-xs text-shark-400 mt-0.5">
+          {assignments.length} item{assignments.length !== 1 ? "s" : ""} currently assigned to you
+        </p>
       </div>
 
       {assignments.length === 0 ? (
@@ -62,7 +57,7 @@ export default async function MyAssetsPage() {
               <CardContent className="py-4">
                 <div className="flex items-start gap-3">
                   {/* Photo */}
-                  <div className="w-14 h-14 rounded-[28px] overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
+                  <div className="w-14 h-14 rounded-[20px] overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center shrink-0">
                     {a.asset.imageUrl ? (
                       <img src={a.asset.imageUrl} alt={a.asset.name} className="w-full h-full object-cover" />
                     ) : (
@@ -88,7 +83,7 @@ export default async function MyAssetsPage() {
                   <p>Assigned: {formatDate(a.checkoutDate)}</p>
                 </div>
                 {a.asset.notes && (
-                  <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-lg p-2.5">
+                  <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-[14px] p-2.5">
                     <p className="text-xs font-medium text-shark-400 mb-0.5">Notes</p>
                     <p className="text-sm text-shark-600 dark:text-shark-400 whitespace-pre-wrap">{a.asset.notes}</p>
                   </div>

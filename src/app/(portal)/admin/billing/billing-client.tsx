@@ -83,7 +83,7 @@ export function BillingClient({ org }: Props) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Current Plan: {currentPlan.name}</h3>
+                <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Current Plan: {currentPlan.name}</h3>
                 <Badge status={org.subscriptionStatus} />
               </div>
               {isTrialing && trialDaysLeft > 0 && (
@@ -98,7 +98,7 @@ export function BillingClient({ org }: Props) {
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-5">
-            <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-4 py-3">
+            <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-4 py-3">
               <p className="text-xs text-shark-400">Users</p>
               <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{org._count.users} <span className="text-sm font-normal text-shark-400">/ {currentPlan.users === Infinity ? "Unlimited" : currentPlan.users}</span></p>
               {currentPlan.users !== Infinity && (
@@ -107,7 +107,7 @@ export function BillingClient({ org }: Props) {
                 </div>
               )}
             </div>
-            <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-4 py-3">
+            <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-4 py-3">
               <p className="text-xs text-shark-400">Assets</p>
               <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{org._count.assets} <span className="text-sm font-normal text-shark-400">/ {currentPlan.assets === Infinity ? "Unlimited" : currentPlan.assets}</span></p>
               {currentPlan.assets !== Infinity && (
@@ -122,7 +122,7 @@ export function BillingClient({ org }: Props) {
 
       {/* Plans */}
       <div>
-        <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100 mb-4">Available Plans</h3>
+        <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Available Plans</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {PLANS.map((plan, idx) => {
             const isCurrent = plan.key === org.plan;
@@ -174,7 +174,7 @@ export function BillingClient({ org }: Props) {
                       } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
                       setChanging(null);
                     }}
-                    className={`w-full mt-5 py-2.5 rounded-[28px] text-sm font-semibold transition-colors ${
+                    className={`w-full mt-5 py-2.5 rounded-[20px] text-sm font-semibold transition-colors ${
                       isCurrent
                         ? "bg-action-50 text-action-600 cursor-default"
                         : isUpgrade

@@ -59,7 +59,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
       <Card className="border-action-100 bg-action-50/50">
         <CardContent className="py-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center">
               <Icon name="check" size={14} className="text-action-600" />
             </div>
             <div>
@@ -119,11 +119,11 @@ export function ReplenishmentBanner({ suggestions }: Props) {
           onClick={() => setCollapsed((c) => !c)}
           className="w-full flex items-center gap-2 text-left"
         >
-          <div className="w-7 h-7 rounded-lg bg-[#0057FF]/10 flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-[14px] bg-[#0057FF]/10 flex items-center justify-center shrink-0">
             <Icon name="bar-chart" size={14} className="text-[#0057FF]" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Smart Replenishment</h3>
+            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Smart Replenishment</h3>
             <p className="text-xs text-shark-400">
               {criticalCount > 0 && <span className="text-red-500 font-medium">{criticalCount} critical</span>}
               {criticalCount > 0 && warningCount > 0 && " · "}
@@ -158,7 +158,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
             const hostname = group.shopUrl ? (() => { try { return new URL(group.shopUrl).hostname.replace("www.", ""); } catch { return group.shopUrl; } })() : null;
 
             return (
-              <div key={groupKey} className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden">
+              <div key={groupKey} className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 overflow-hidden">
                 {/* Shop header */}
                 <div className="flex items-center gap-2 px-3 py-2 border-b border-shark-50 dark:border-shark-800 bg-shark-50/50 dark:bg-shark-800/40">
                   <Icon name="truck" size={13} className="text-shark-400 shrink-0" />
@@ -177,7 +177,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={() => handleCopyList(groupVisible, groupKey)}
-                      className="inline-flex items-center gap-1 text-[10px] font-medium text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 bg-shark-100 dark:bg-shark-800 hover:bg-shark-200 dark:hover:bg-shark-700 dark:bg-shark-700 px-1.5 py-1.5 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-1 text-[10px] font-medium text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 bg-shark-100 dark:bg-shark-800 hover:bg-shark-200 dark:hover:bg-shark-700 dark:bg-shark-700 px-1.5 py-1.5 rounded-[10px] transition-colors"
                       title="Copy shopping list to clipboard"
                     >
                       <Icon name={copiedKey === groupKey ? "check" : "copy"} size={10} />
@@ -188,7 +188,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                         href={group.shopUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[10px] font-medium text-action-600 bg-action-50 hover:bg-action-100 px-1.5 py-1.5 rounded-lg transition-colors"
+                        className="inline-flex items-center gap-1 text-[10px] font-medium text-action-600 bg-action-50 hover:bg-action-100 px-1.5 py-1.5 rounded-[10px] transition-colors"
                         title="Open shop in new tab"
                       >
                         <Icon name="arrow-right" size={10} />
@@ -240,7 +240,7 @@ export function ReplenishmentBanner({ suggestions }: Props) {
                         </Button>
                         <button
                           onClick={() => setDismissed((prev) => new Set(prev).add(s.consumableId))}
-                          className="h-8 w-8 flex items-center justify-center rounded-lg text-shark-300 hover:text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
+                          className="h-8 w-8 flex items-center justify-center rounded-[10px] text-shark-300 hover:text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 transition-colors"
                           title="Dismiss"
                         >
                           <Icon name="x" size={11} />

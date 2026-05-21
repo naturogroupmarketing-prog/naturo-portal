@@ -21,10 +21,11 @@ import {
   deleteRegion,
   archiveRegion,
   restoreRegion,
+  forceDeleteArchivedRegion,
 } from "@/app/actions/locations";
 
 const STATE_COLORS = [
-  { bg: "bg-blue-50", color: "text-blue-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-action-50", color: "text-[#0057FF]" },
   { bg: "bg-action-50", color: "text-action-600" },
@@ -71,6 +72,10 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
   const [manageTab, setManageTab] = useState<"locations" | "add-state" | "add-location">("locations");
   const [editingStateName, setEditingStateName] = useState<{ id: string; name: string } | null>(null);
   const [manageSearch, setManageSearch] = useState("");
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string; assets: number; consumables: number; users: number } | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [forceDeleteConfirm, setForceDeleteConfirm] = useState<{ id: string; name: string; assets: number; consumables: number; users: number } | null>(null);
+  const [forceDeleting, setForceDeleting] = useState(false);
 
   const toggleState = (id: string) => {
     setCollapsedStates((prev) => {
@@ -102,16 +107,11 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
         <div className="p-4 sm:p-5 space-y-4">
           {/* Title row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-                <Icon name="package" size={14} className="text-action-600" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Choose your location</h3>
-                <p className="text-xs text-shark-400">
-                  {totalRegions} locations · {totalAssets} assets · {totalConsumables} supplies
-                </p>
-              </div>
+            <div>
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Choose location</h3>
+              <p className="text-xs text-shark-400 mt-0.5">
+                {totalRegions} locations · {totalAssets} assets · {totalConsumables} supplies
+              </p>
             </div>
             {isSuperAdmin && (
               <Button size="sm" onClick={() => { setShowManageModal(true); setManageTab("locations"); }}>
@@ -228,16 +228,28 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                   );
                                 })()}
                                 {isSuperAdmin && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault(); e.stopPropagation();
-                                      setArchiveConfirm({ id: region.id, name: region.name, assets: region._count.assets, consumables: region._count.consumables, users: region._count.users });
-                                    }}
-                                    className="p-1.5 rounded-lg text-shark-300 hover:text-red-500 hover:bg-red-50 transition-colors"
-                                    title="Archive Location"
-                                  >
-                                    <Icon name="download" size={14} />
-                                  </button>
+                                  <>
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault(); e.stopPropagation();
+                                        setArchiveConfirm({ id: region.id, name: region.name, assets: region._count.assets, consumables: region._count.consumables, users: region._count.users });
+                                      }}
+                                      className="p-1.5 rounded-[10px] text-shark-300 hover:text-amber-500 hover:bg-amber-50 transition-colors opacity-0 group-hover:opacity-100"
+                                      title="Archive Location"
+                                    >
+                                      <Icon name="download" size={14} />
+                                    </button>
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault(); e.stopPropagation();
+                                        setDeleteConfirm({ id: region.id, name: region.name, assets: region._count.assets, consumables: region._count.consumables, users: region._count.users });
+                                      }}
+                                      className="p-1.5 rounded-[10px] text-shark-300 hover:text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+                                      title="Delete Location"
+                                    >
+                                      <Icon name="trash-2" size={14} />
+                                    </button>
+                                  </>
                                 )}
                                 <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors" />
                               </div>
@@ -286,7 +298,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
       <Modal open={!!archiveConfirm} onClose={() => setArchiveConfirm(null)} title="Archive Location">
         {archiveConfirm && (
           <div className="space-y-4">
-            <div className="bg-action-50 border border-action-200 rounded-[28px] p-4">
+            <div className="bg-action-50 border border-action-200 rounded-[20px] p-4">
               <p className="text-sm font-medium text-action-800">
                 Archive &quot;{archiveConfirm.name}&quot;?
               </p>
@@ -295,15 +307,15 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               </p>
             </div>
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2 text-center">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2 text-center">
                 <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{archiveConfirm.assets}</p>
                 <p className="text-xs text-shark-400">Assets</p>
               </div>
-              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2 text-center">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2 text-center">
                 <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{archiveConfirm.consumables}</p>
                 <p className="text-xs text-shark-400">Supplies</p>
               </div>
-              <div className="bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2 text-center">
+              <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2 text-center">
                 <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{archiveConfirm.users}</p>
                 <p className="text-xs text-shark-400">Staff</p>
               </div>
@@ -330,6 +342,93 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Delete Location Confirmation Modal */}
+      <Modal open={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} title="Delete Location">
+        {deleteConfirm && (() => {
+          const hasData = deleteConfirm.assets > 0 || deleteConfirm.consumables > 0 || deleteConfirm.users > 0;
+          return (
+            <div className="space-y-4">
+              {hasData ? (
+                <>
+                  <div className="bg-red-50 border border-red-200 rounded-[20px] p-4">
+                    <p className="text-sm font-semibold text-red-800 mb-1">
+                      &quot;{deleteConfirm.name}&quot; still has data assigned to it
+                    </p>
+                    <p className="text-sm text-red-700">
+                      You must reassign or remove all assets, supplies, and staff before this location can be permanently deleted.
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2 text-center">
+                      <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{deleteConfirm.assets}</p>
+                      <p className="text-xs text-shark-400">Assets</p>
+                    </div>
+                    <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2 text-center">
+                      <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{deleteConfirm.consumables}</p>
+                      <p className="text-xs text-shark-400">Supplies</p>
+                    </div>
+                    <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2 text-center">
+                      <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{deleteConfirm.users}</p>
+                      <p className="text-xs text-shark-400">Staff</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-shark-500">
+                    Alternatively, you can <strong>archive</strong> this location — it will be hidden from active views but all data will be preserved and can be restored later.
+                  </p>
+                  <div className="flex justify-end gap-3">
+                    <Button variant="secondary" onClick={() => setDeleteConfirm(null)}>Cancel</Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => {
+                        setDeleteConfirm(null);
+                        setArchiveConfirm({ id: deleteConfirm.id, name: deleteConfirm.name, assets: deleteConfirm.assets, consumables: deleteConfirm.consumables, users: deleteConfirm.users });
+                      }}
+                    >
+                      Archive Instead
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="bg-red-50 border border-red-200 rounded-[20px] p-4">
+                    <p className="text-sm font-semibold text-red-800 mb-1">
+                      Permanently delete &quot;{deleteConfirm.name}&quot;?
+                    </p>
+                    <p className="text-sm text-red-700">
+                      This action cannot be undone. The location will be removed from the system entirely.
+                    </p>
+                  </div>
+                  <div className="flex justify-end gap-3">
+                    <Button variant="secondary" onClick={() => setDeleteConfirm(null)}>Cancel</Button>
+                    <Button
+                      variant="danger"
+                      loading={deleting}
+                      disabled={deleting}
+                      onClick={async () => {
+                        setDeleting(true);
+                        try {
+                          const fd = new FormData();
+                          fd.set("id", deleteConfirm.id);
+                          await deleteRegion(fd);
+                          addToast(`"${deleteConfirm.name}" permanently deleted`, "success");
+                          setDeleteConfirm(null);
+                          router.refresh();
+                        } catch (e) {
+                          addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error");
+                        }
+                        setDeleting(false);
+                      }}
+                    >
+                      Delete Location
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })()}
       </Modal>
 
       {/* Archived Locations */}
@@ -375,24 +474,13 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                       >
                         Restore
                       </Button>
-                      {region._count.assets === 0 && region._count.consumables === 0 && region._count.users === 0 && (
-                        <Button
-                          size="sm"
-                          variant="danger"
-                          onClick={async () => {
-                            if (!confirm(`Permanently delete "${region.name}"? This cannot be undone.`)) return;
-                            try {
-                              const fd = new FormData();
-                              fd.set("id", region.id);
-                              await deleteRegion(fd);
-                              addToast("Location permanently deleted", "success");
-                              router.refresh();
-                            } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      )}
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={() => setForceDeleteConfirm({ id: region.id, name: region.name, assets: region._count.assets, consumables: region._count.consumables, users: region._count.users })}
+                      >
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 </Card>
@@ -402,11 +490,67 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
         </div>
       )}
 
+      {/* Force Delete Archived Location Modal */}
+      <Modal open={!!forceDeleteConfirm} onClose={() => !forceDeleting && setForceDeleteConfirm(null)} title="Permanently Delete Location">
+        {forceDeleteConfirm && (
+          <div className="space-y-4">
+            <div className="bg-red-50 border border-red-200 rounded-[20px] p-4">
+              <p className="text-sm font-bold text-red-800 mb-1">
+                This will permanently delete &quot;{forceDeleteConfirm.name}&quot; and all of its data.
+              </p>
+              <p className="text-sm text-red-700">
+                All assets, supplies, and purchase orders will be erased. Staff will be unassigned from this location. This cannot be undone.
+              </p>
+            </div>
+            {(forceDeleteConfirm.assets > 0 || forceDeleteConfirm.consumables > 0 || forceDeleteConfirm.users > 0) && (
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2 text-center">
+                  <p className="text-lg font-bold text-red-600">{forceDeleteConfirm.assets}</p>
+                  <p className="text-xs text-shark-400">Assets deleted</p>
+                </div>
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2 text-center">
+                  <p className="text-lg font-bold text-red-600">{forceDeleteConfirm.consumables}</p>
+                  <p className="text-xs text-shark-400">Supplies deleted</p>
+                </div>
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2 text-center">
+                  <p className="text-lg font-bold text-amber-600">{forceDeleteConfirm.users}</p>
+                  <p className="text-xs text-shark-400">Staff unassigned</p>
+                </div>
+              </div>
+            )}
+            <div className="flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => setForceDeleteConfirm(null)} disabled={forceDeleting}>
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                loading={forceDeleting}
+                disabled={forceDeleting}
+                onClick={async () => {
+                  setForceDeleting(true);
+                  try {
+                    await forceDeleteArchivedRegion(forceDeleteConfirm.id);
+                    addToast(`"${forceDeleteConfirm.name}" permanently deleted`, "success");
+                    setForceDeleteConfirm(null);
+                    router.refresh();
+                  } catch (e) {
+                    addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error");
+                  }
+                  setForceDeleting(false);
+                }}
+              >
+                Yes, Delete Everything
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
       {/* Manage Locations Modal */}
       <Modal open={showManageModal} onClose={() => { setShowManageModal(false); setManageSearch(""); setEditingStateName(null); }} title="Manage Locations">
         <div className="space-y-4">
           {/* Tab Navigation */}
-          <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
+          <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1">
             {[
               { key: "locations" as const, label: "All Locations", icon: "map-pin" as const },
               { key: "add-state" as const, label: "Add State", icon: "plus" as const },
@@ -415,7 +559,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
               <button
                 key={tab.key}
                 onClick={() => setManageTab(tab.key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex-1 justify-center ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors flex-1 justify-center ${
                   manageTab === tab.key
                     ? "bg-action-500 text-white shadow-sm"
                     : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700 dark:text-shark-300"
@@ -456,7 +600,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                       <div key={state.id} className="space-y-1.5">
                         {/* State row */}
                         <div className="flex items-center gap-2 group">
-                          <div className={`w-7 h-7 rounded-lg ${sc.bg} flex items-center justify-center shrink-0`}>
+                          <div className={`w-7 h-7 rounded-[14px] ${sc.bg} flex items-center justify-center shrink-0`}>
                             <Icon name="map-pin" size={14} className={sc.color} />
                           </div>
                           {editingStateName?.id === state.id ? (
@@ -520,7 +664,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                         {filteredRegions.map((region) => {
                           const total = region._count.assets + region._count.consumables + region._count.users;
                           return (
-                            <div key={region.id} className="flex items-center gap-2 ml-9 group py-1 px-2 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
+                            <div key={region.id} className="flex items-center gap-2 ml-9 group py-1 px-2 rounded-[14px] hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors">
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm text-shark-700 dark:text-shark-300">{region.name}</p>
                                 {region.address && (
@@ -537,19 +681,15 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                               >
                                 <Icon name="edit" size={13} />
                               </button>
-                              {total === 0 && (
-                                <button
-                                  onClick={async () => {
-                                    if (!confirm(`Delete "${region.name}"? This cannot be undone.`)) return;
-                                    const fd = new FormData(); fd.set("id", region.id);
-                                    try { await deleteRegion(fd); addToast("Location deleted", "success"); router.refresh(); } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
-                                  }}
-                                  className="p-1 text-shark-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
-                                  title="Delete location"
-                                >
-                                  <Icon name="x" size={13} />
-                                </button>
-                              )}
+                              <button
+                                onClick={() => {
+                                  setDeleteConfirm({ id: region.id, name: region.name, assets: region._count.assets, consumables: region._count.consumables, users: region._count.users });
+                                }}
+                                className="p-1 text-shark-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                                title="Delete location"
+                              >
+                                <Icon name="trash-2" size={13} />
+                              </button>
                             </div>
                           );
                         })}

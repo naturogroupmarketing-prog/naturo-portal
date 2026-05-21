@@ -69,8 +69,8 @@ export function MyActivityClient({
       id: `consumable-${c.id}`,
       type: "consumable" as const,
       icon: "droplet" as IconName,
-      iconBg: "bg-blue-50",
-      iconColor: "text-blue-500",
+      iconBg: "bg-action-50",
+      iconColor: "text-action-500",
       imageUrl: c.consumable.imageUrl,
       title: c.consumable.name,
       detail: `${c.quantity} ${c.consumable.unitType} assigned`,
@@ -95,15 +95,10 @@ export function MyActivityClient({
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="clock" size={14} className="text-action-600" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Recent Activity</h3>
-          <p className="text-xs text-shark-400">Your assignment and request history</p>
-        </div>
+    <div className="px-5 py-4 space-y-8">
+      <div>
+        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Recent Activity</h2>
+        <p className="text-xs text-shark-400 mt-0.5">Your assignment and request history</p>
       </div>
 
       {activities.length === 0 ? (
@@ -119,7 +114,7 @@ export function MyActivityClient({
             <div className="divide-y divide-shark-50 dark:divide-shark-800">
               {activities.map((item) => (
                 <div key={item.id} className="flex items-center gap-3 px-4 py-3">
-                  <div className={`w-9 h-9 rounded-[28px] overflow-hidden flex items-center justify-center flex-shrink-0 ${item.imageUrl ? "" : item.iconBg}`}>
+                  <div className={`w-9 h-9 rounded-[20px] overflow-hidden flex items-center justify-center flex-shrink-0 ${item.imageUrl ? "" : item.iconBg}`}>
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
                     ) : (

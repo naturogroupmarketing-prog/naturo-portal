@@ -181,17 +181,14 @@ export function AiBriefingClient({
       <div className={cn("p-5", collapsed ? "hidden" : "block")}>
       {/* Header */}
       <div className="flex items-start gap-2 mb-3">
-        <div className="w-7 h-7 rounded-[14px] bg-action-50 dark:bg-action-500/10 flex items-center justify-center shrink-0 mt-0.5">
-          <Icon name="star" size={13} className="text-action-500" />
-        </div>
         <div className="flex-1 min-w-0">
           {firstName ? (
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100 leading-tight">
+            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-tight">
               {greeting},{" "}
               <span className="text-action-600 dark:text-action-400">{firstName}</span>
             </h3>
           ) : (
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">AI Briefing</h3>
+            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">AI Briefing</h3>
           )}
         </div>
         {/* Actions row */}

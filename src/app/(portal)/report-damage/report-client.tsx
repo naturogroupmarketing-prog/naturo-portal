@@ -33,7 +33,7 @@ function CustomSelect({ value, onChange, options, placeholder, name }: {
         ref={btnRef}
         type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
+        className={`w-full flex items-center justify-between rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2.5 text-sm min-h-[44px] transition-all ${
           open ? "border-action-400 ring-2 ring-action-400/20" : "hover:border-shark-300 dark:hover:border-shark-600"
         } ${value ? "text-shark-900 dark:text-shark-100" : "text-shark-400"}`}
       >
@@ -59,12 +59,12 @@ function CustomSelect({ value, onChange, options, placeholder, name }: {
             }`}
           >
             {opt.imageUrl && (
-              <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 shrink-0">
+              <div className="w-8 h-8 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 shrink-0">
                 <img src={opt.imageUrl} alt="" className="w-full h-full object-cover" />
               </div>
             )}
             {!opt.imageUrl && opt.sublabel && (
-              <div className="w-8 h-8 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-[14px] bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                 <Icon name="package" size={14} className="text-shark-400" />
               </div>
             )}
@@ -127,15 +127,8 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
   if (submitted) {
     return (
       <Card padding="none">
-      <div className="p-4 sm:p-5 space-y-8">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="alert-triangle" size={14} className="text-action-600" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Report Damage / Loss</h3>
-          </div>
-        </div>
+      <div className="px-5 py-4 space-y-8">
+        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Report Damage / Loss</h2>
         <Card>
           <CardContent className="py-12 text-center animate-fade-in">
             <div className="w-14 h-14 rounded-full bg-action-50 flex items-center justify-center mx-auto mb-4 animate-check-pop">
@@ -157,15 +150,8 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="alert-triangle" size={14} className="text-action-600" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Report Damage / Loss</h3>
-        </div>
-      </div>
+    <div className="px-5 py-4 space-y-8">
+      <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Report Damage / Loss</h2>
 
       {assignments.length === 0 ? (
         <Card>
@@ -229,7 +215,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                   ref={descRef}
                   name="description"
                   required
-                  className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+                  className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
                   rows={4}
                   maxLength={2000}
                   placeholder="Describe the damage or circumstances of loss..."
@@ -246,7 +232,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
                     const file = e.target.files?.[0];
                     if (file) handleUpload(file);
                   }}
-                  className="w-full text-sm text-shark-400 file:mr-4 file:py-2 file:px-4 file:rounded-[28px] file:border-0 file:text-sm file:font-medium file:bg-action-50 file:text-action-600 hover:file:bg-action-100"
+                  className="w-full text-sm text-shark-400 file:mr-4 file:py-2 file:px-4 file:rounded-[20px] file:border-0 file:text-sm file:font-medium file:bg-action-50 file:text-action-600 hover:file:bg-action-100"
                 />
                 {uploading && <p className="text-xs text-shark-400 mt-1">Uploading...</p>}
                 {uploadError && <p className="text-xs text-red-500 mt-1">{uploadError}</p>}
@@ -260,7 +246,7 @@ export function ReportDamageClient({ assignments }: { assignments: Assignment[] 
               </div>
               <input type="hidden" name="photoUrl" value={photoUrl} />
               {error && (
-                <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+                <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-[14px]">{error}</p>
               )}
               {submitting ? (
                 <div className="flex flex-col items-center py-4 animate-fade-in">

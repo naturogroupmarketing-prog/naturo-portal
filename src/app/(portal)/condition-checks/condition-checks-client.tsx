@@ -91,7 +91,7 @@ interface Props {
 
 const CONDITION_COLORS: Record<string, string> = {
   GOOD: "bg-action-100 text-action-700",
-  FAIR: "bg-blue-100 text-blue-700",
+  FAIR: "bg-action-100 text-action-700 dark:bg-action-900/40 dark:text-action-300",
   POOR: "bg-action-100 text-[#0057FF]",
   DAMAGED: "bg-red-100 text-red-700",
 };
@@ -202,17 +202,12 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
+    <div className="px-5 py-4 space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="clipboard" size={14} className="text-action-600" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Condition Checks</h3>
-            <p className="text-xs text-shark-400">{monthLabel} · {totalChecked}/{staffStatus.length} staff completed</p>
-          </div>
+        <div>
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Condition Checks</h2>
+          <p className="text-xs text-shark-400 mt-0.5">{monthLabel} · {totalChecked}/{staffStatus.length} staff completed</p>
         </div>
         {isSuperAdmin && (
           <div className="flex items-center gap-2 flex-wrap">
@@ -235,7 +230,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       {/* Scheduled Inspections — Super Admin Only */}
       {isSuperAdmin && schedules.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Scheduled Inspections</h3>
+          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Scheduled Inspections</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {schedules.map((s) => {
               const due = new Date(s.dueDate);
@@ -274,7 +269,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       {isSuperAdmin && showConfig && (
         <Card>
           <div className="px-5 py-4 border-b border-shark-100 dark:border-shark-700">
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Inspection Configuration</h3>
+            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Inspection Configuration</h3>
             <p className="text-xs text-shark-400 mt-0.5">Choose which categories require monthly photos and define what photos staff need to submit.</p>
           </div>
           <div className="divide-y divide-shark-50 dark:divide-shark-800">
@@ -305,7 +300,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                           disabled={isSaving}
                           className="sr-only peer"
                         />
-                        <div className="w-9 h-5 bg-shark-200 dark:bg-shark-700 peer-focus:ring-2 peer-focus:ring-action-400/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-action-500" />
+                        <div className="w-9 h-5 bg-shark-200 dark:bg-shark-700 peer-focus:ring-2 peer-focus:ring-action-400/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:bg-action-500" />
                       </label>
                       <div>
                         <span className="text-sm font-medium text-shark-800 dark:text-shark-200">{cat.name}</span>
@@ -325,7 +320,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                     <div className="mt-2.5 ml-12 space-y-1.5">
                       {cat.inspectionPhotos.map((label, idx) => (
                         <div key={idx} className="flex items-center gap-2">
-                          <span className="text-xs text-shark-600 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 px-2.5 py-1 rounded-lg flex-1">{label}</span>
+                          <span className="text-xs text-shark-600 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 px-2.5 py-1 rounded-[10px] flex-1">{label}</span>
                           <button
                             onClick={async () => {
                               const updated = cat.inspectionPhotos.filter((_, i) => i !== idx);
@@ -398,7 +393,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
         <Card>
           <div className="px-5 py-4 border-b border-shark-100 dark:border-shark-700 flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Staff Condition Check Schedules</h3>
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Staff Condition Check Schedules</h3>
               <p className="text-xs text-shark-400 mt-0.5">Set how often each staff member must submit condition checks.</p>
             </div>
             {!bulkMode ? (
@@ -589,10 +584,10 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
           { label: "Incomplete", value: staffStatus.length - totalChecked, icon: "clock" as const, iconBg: "bg-[#0057FF]", iconColor: "text-white" },
           { label: "Photos Submitted", value: checks.length, icon: "search" as const, iconBg: "bg-action-500", iconColor: "text-white" },
         ].map((stat) => (
-          <Card key={stat.label} className="hover:shadow-md transition-all duration-200">
+          <Card key={stat.label} className="hover:shadow-md transition-shadow duration-200">
             <CardContent className="px-3 py-3">
               <div className="flex items-center gap-2">
-                <div className={`w-9 h-9 rounded-lg ${stat.iconBg} flex items-center justify-center flex-shrink-0`}>
+                <div className={`w-9 h-9 rounded-[14px] ${stat.iconBg} flex items-center justify-center flex-shrink-0`}>
                   <Icon name={stat.icon} size={16} className={stat.iconColor} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -664,7 +659,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                     {/* Progress bar */}
                     <div className="w-20 h-1.5 bg-shark-100 dark:bg-shark-800 rounded-full hidden sm:block overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all ${pct >= 50 ? "bg-[#0057FF]" : "bg-red-500"}`}
+                        className={`h-full rounded-full transition-colors ${pct >= 50 ? "bg-[#0057FF]" : "bg-red-500"}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -687,7 +682,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
                         return (
                           <div
                             key={check.id}
-                            className="border border-shark-100 dark:border-shark-800 rounded-[28px] overflow-hidden hover:shadow-sm transition-shadow cursor-pointer"
+                            className="border border-shark-100 dark:border-shark-800 rounded-[20px] overflow-hidden hover:shadow-sm transition-shadow cursor-pointer"
                             onClick={() => setPhotoModal(check)}
                           >
                             {/* Photo */}
@@ -732,7 +727,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       <Modal open={!!photoModal} onClose={() => setPhotoModal(null)} title={photoModal?.asset?.name || photoModal?.consumable?.name || "Condition Check"}>
         {photoModal && (
           <div className="space-y-4">
-            <div className="rounded-[28px] overflow-hidden bg-shark-50 dark:bg-shark-800">
+            <div className="rounded-[20px] overflow-hidden bg-shark-50 dark:bg-shark-800">
               <img
                 src={photoModal.photoUrl}
                 alt="Condition check"
@@ -753,7 +748,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
               </span>
             </div>
             {photoModal.notes && (
-              <p className="text-sm text-shark-600 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 px-3 py-2 rounded-lg">{photoModal.notes}</p>
+              <p className="text-sm text-shark-600 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 px-3 py-2 rounded-[14px]">{photoModal.notes}</p>
             )}
             <div className="flex items-center gap-2 text-xs text-shark-400">
               <Icon name="user" size={12} />
@@ -782,7 +777,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
               value={scheduleNotes}
               onChange={(e) => setScheduleNotes(e.target.value)}
               placeholder="Instructions for staff (optional)"
-              className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
               rows={3}
             />
           </div>

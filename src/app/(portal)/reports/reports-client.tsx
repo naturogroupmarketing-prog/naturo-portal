@@ -37,23 +37,18 @@ export function ReportsClient({ isSuperAdmin }: { isSuperAdmin: boolean }) {
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="bar-chart" size={14} className="text-action-600" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Reports</h3>
-          <p className="text-xs text-shark-400">Export data as CSV or printable reports</p>
-        </div>
+    <div className="px-5 py-4 space-y-8">
+      <div>
+        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Reports</h2>
+        <p className="text-xs text-shark-400 mt-0.5">Export data as CSV or printable reports</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {visibleReports.map((report) => (
-          <Card key={report.id} className="hover:border-shark-200 hover:shadow-md transition-all duration-200">
+          <Card key={report.id} className="hover:border-shark-200 hover:shadow-md transition-shadow duration-200">
             <CardContent className="py-5">
               <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-[28px] ${report.iconBg} flex items-center justify-center flex-shrink-0`}>
+                <div className={`w-10 h-10 rounded-[20px] ${report.iconBg} flex items-center justify-center flex-shrink-0`}>
                   <Icon name={report.icon} size={18} className={report.iconColor} />
                 </div>
                 <div className="flex-1">

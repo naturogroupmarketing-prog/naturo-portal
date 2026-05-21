@@ -16,7 +16,7 @@ import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive, re
 import { applyStarterKit } from "@/app/actions/starter-kits";
 
 const SECTION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-[#0057FF]", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
@@ -325,7 +325,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             <div
               key={user.id}
               onClick={() => (isSuperAdmin || canViewStaffDetails) && openEdit(user)}
-              className="border border-shark-100 dark:border-shark-800 rounded-[28px] p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
+              className="border border-shark-100 dark:border-shark-800 rounded-[20px] p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -348,7 +348,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               <div className="flex items-center justify-end mt-2.5 pt-2.5 border-t border-shark-50 dark:border-shark-800">
                 <button
                   onClick={(e) => { e.stopPropagation(); setDetailUser(user); }}
-                  className="text-xs text-action-500 font-medium px-2 py-1 rounded-lg hover:bg-action-50 transition-colors"
+                  className="text-xs text-action-500 font-medium px-2 py-1 rounded-[10px] hover:bg-action-50 transition-colors"
                 >
                   View
                 </button>
@@ -424,7 +424,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   <td className="px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => setDetailUser(user)}
-                      className="text-xs text-action-500 hover:text-action-600 font-medium px-2 py-1 rounded-lg hover:bg-action-50 transition-colors"
+                      className="text-xs text-action-500 hover:text-action-600 font-medium px-2 py-1 rounded-[10px] hover:bg-action-50 transition-colors"
                     >
                       View
                     </button>
@@ -443,16 +443,11 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
   return (
     <Wrapper {...wrapperProps}>
-    <div className="p-4 sm:p-5 space-y-10">
+    <div className="px-5 py-4 space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="users" size={14} className="text-action-600" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Staff Overview</h3>
-            <p className="text-xs text-shark-400">{filtered.length} staff members</p>
-          </div>
+        <div>
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Staff Overview</h2>
+          <p className="text-xs text-shark-400 mt-0.5">{filtered.length} staff members</p>
         </div>
         <div className="flex items-center gap-2">
           {starterKits.length > 0 && (
@@ -510,7 +505,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           return (
             <div key={section.id} className="space-y-4">
               <div className="flex items-center gap-3 px-1">
-                <div className={`w-8 h-8 rounded-lg ${section.bg} flex items-center justify-center`}>
+                <div className={`w-8 h-8 rounded-[14px] ${section.bg} flex items-center justify-center`}>
                   <Icon name="map-pin" size={16} className={section.color} />
                 </div>
                 <div className="flex items-center gap-2 flex-1">
@@ -530,7 +525,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
       {headOfficeUsers.length > 0 && (locationFilter === "all" || locationFilter === "head-office") && (
         <div className="space-y-4">
           <div className="flex items-center gap-3 px-1">
-            <div className={`w-8 h-8 rounded-lg ${headOfficeColors.bg} flex items-center justify-center`}>
+            <div className={`w-8 h-8 rounded-[14px] ${headOfficeColors.bg} flex items-center justify-center`}>
               <Icon name="dashboard" size={16} className={headOfficeColors.color} />
             </div>
             <div className="flex items-center gap-2 flex-1">
@@ -711,7 +706,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </div>
 
                 {/* Status */}
-                <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-shark-50 dark:bg-shark-800">
+                <div className="flex items-center justify-between py-2 px-3 rounded-[14px] bg-shark-50 dark:bg-shark-800">
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${editUser.isActive ? "bg-action-500" : "bg-shark-300"}`} />
                     <span className="text-sm text-shark-700 dark:text-shark-300">{editUser.isActive ? "Active" : "Disabled"}</span>
@@ -723,7 +718,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
                 {/* Inventory Summary */}
                 {(editUser.assetAssignments.length > 0 || (editUser.consumableAssignments?.length ?? 0) > 0 || (editUser.consumableRequests?.length ?? 0) > 0) && (
-                  <div className="border border-shark-100 dark:border-shark-800 rounded-lg p-3 space-y-3">
+                  <div className="border border-shark-100 dark:border-shark-800 rounded-[14px] p-3 space-y-3">
                     <p className="text-xs font-semibold uppercase tracking-wider text-shark-400">On Hand</p>
                     {editUser.assetAssignments.length > 0 && (() => {
                       const grouped = editUser.assetAssignments.reduce((acc, a) => {
@@ -740,9 +735,9 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                 {items.map((a, idx) => (
                                   <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 dark:text-shark-300 py-0.5">
                                     {a.asset.imageUrl ? (
-                                      <img src={a.asset.imageUrl} alt={a.asset.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
+                                      <img src={a.asset.imageUrl} alt={a.asset.name} className="w-7 h-7 rounded-[14px] object-cover shrink-0" />
                                     ) : (
-                                      <div className="w-7 h-7 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                                      <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
                                         <Icon name="package" size={12} className="text-action-400" />
                                       </div>
                                     )}
@@ -773,10 +768,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                 {items!.map((c, idx) => (
                                   <div key={idx} className="flex items-center gap-2.5 text-sm text-shark-700 dark:text-shark-300 py-0.5">
                                     {c.consumable.imageUrl ? (
-                                      <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-7 h-7 rounded-lg object-cover shrink-0" />
+                                      <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-7 h-7 rounded-[14px] object-cover shrink-0" />
                                     ) : (
-                                      <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                        <Icon name="droplet" size={12} className="text-blue-400" />
+                                      <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
+                                        <Icon name="droplet" size={12} className="text-action-400" />
                                       </div>
                                     )}
                                     <span className="truncate">{c.consumable.name}</span>
@@ -808,7 +803,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
                 {/* Consumable Usage History */}
                 {editUser.consumableUsageHistory && editUser.consumableUsageHistory.some((m) => m.totalUsed > 0) && (
-                  <div className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
+                  <div className="border border-shark-100 dark:border-shark-800 rounded-[14px] overflow-hidden">
                     <button
                       type="button"
                       onClick={() => setUsageExpanded(!usageExpanded)}
@@ -910,9 +905,9 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                               {items.map((a, idx) => (
                                 <div key={idx} className="flex items-center gap-2.5 py-1">
                                   {a.asset.imageUrl ? (
-                                    <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                                    <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-[14px] object-cover shrink-0" />
                                   ) : (
-                                    <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                                    <div className="w-8 h-8 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
                                       <Icon name="package" size={14} className="text-action-400" />
                                     </div>
                                   )}
@@ -943,10 +938,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                               {items!.map((c, idx) => (
                                 <div key={idx} className="flex items-center gap-2.5 py-1">
                                   {c.consumable.imageUrl ? (
-                                    <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                                    <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-[14px] object-cover shrink-0" />
                                   ) : (
-                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                      <Icon name="droplet" size={14} className="text-blue-400" />
+                                    <div className="w-8 h-8 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
+                                      <Icon name="droplet" size={14} className="text-action-400" />
                                     </div>
                                   )}
                                   <p className="text-sm text-shark-700 dark:text-shark-300 truncate">{c.consumable.name}</p>
@@ -977,7 +972,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   )}
                   {/* Consumable Usage History (Branch Manager view) */}
                   {editUser.consumableUsageHistory && editUser.consumableUsageHistory.some((m) => m.totalUsed > 0) && (
-                    <div className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
+                    <div className="border border-shark-100 dark:border-shark-800 rounded-[14px] overflow-hidden">
                       <button
                         type="button"
                         onClick={() => setUsageExpanded(!usageExpanded)}
@@ -1090,8 +1085,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
             {/* Assets assigned */}
             <div>
-              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-2 flex items-center gap-2">
-                <Icon name="package" size={14} className="text-action-500" />
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-2">
                 Assets ({detailUser.assetAssignments.length})
               </h3>
               {detailUser.assetAssignments.length === 0 ? (
@@ -1110,9 +1104,9 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                           {items.map((a, i) => (
                             <div key={i} className="flex items-center gap-2.5 text-sm py-1">
                               {a.asset.imageUrl ? (
-                                <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                                <img src={a.asset.imageUrl} alt={a.asset.name} className="w-8 h-8 rounded-[14px] object-cover shrink-0" />
                               ) : (
-                                <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
                                   <Icon name="package" size={14} className="text-action-400" />
                                 </div>
                               )}
@@ -1132,8 +1126,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
             {/* Consumables assigned */}
             <div>
-              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-2 flex items-center gap-2">
-                <Icon name="droplet" size={14} className="text-action-500" />
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-2">
                 Supplies ({detailUser.consumableAssignments?.length || 0})
               </h3>
               {!detailUser.consumableAssignments?.length ? (
@@ -1152,10 +1145,10 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                           {items!.map((c, i) => (
                             <div key={i} className="flex items-center gap-2.5 text-sm py-1">
                               {c.consumable.imageUrl ? (
-                                <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                                <img src={c.consumable.imageUrl} alt={c.consumable.name} className="w-8 h-8 rounded-[14px] object-cover shrink-0" />
                               ) : (
-                                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                  <Icon name="droplet" size={14} className="text-blue-400" />
+                                <div className="w-8 h-8 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
+                                  <Icon name="droplet" size={14} className="text-action-400" />
                                 </div>
                               )}
                               <span className="font-medium text-shark-800 dark:text-shark-200 truncate">{c.consumable.name}</span>
@@ -1172,8 +1165,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
             {/* Consumable usage (requests history) */}
             <div>
-              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-2 flex items-center gap-2">
-                <Icon name="clipboard" size={14} className="text-action-500" />
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-2">
                 Supply Usage ({detailUser.consumableRequests?.length || 0})
               </h3>
               {!detailUser.consumableRequests?.length ? (
@@ -1198,8 +1190,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
 
             {/* Damage / Loss reports */}
             <div>
-              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-2 flex items-center gap-2">
-                <Icon name="alert-triangle" size={14} className="text-[#0057FF]" />
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-2">
                 Damage & Loss ({detailUser.damageReports?.length || 0})
               </h3>
               {!detailUser.damageReports?.length ? (
@@ -1228,24 +1219,23 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             </div>
             {/* Performance Summary */}
             <div className="border-t border-shark-100 dark:border-shark-700 pt-4">
-              <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300 mb-3 flex items-center gap-2">
-                <Icon name="bar-chart" size={14} className="text-action-500" />
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-3">
                 Performance Summary
               </h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.assetAssignments.length}</p>
                   <p className="text-[10px] text-shark-400">Assets Assigned</p>
                 </div>
-                <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.consumableAssignments?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Supplies</p>
                 </div>
-                <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-3 py-2.5 text-center">
                   <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.conditionChecks?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Inspections Done</p>
                 </div>
-                <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] px-3 py-2.5 text-center">
+                <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-3 py-2.5 text-center">
                   <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-[#0057FF]" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Damage Reports</p>
                 </div>

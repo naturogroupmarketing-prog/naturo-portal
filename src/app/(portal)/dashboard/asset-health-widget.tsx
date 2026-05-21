@@ -130,15 +130,12 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
 
   return (
     <Card className="border-action-200">
-      <div className="p-4 sm:p-5">
+      <div className="px-5 py-4">
         {/* ── Header ── */}
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
-            <Icon name="bar-chart" size={14} className="text-action-600" />
-          </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Asset Health</h2>
-            <p className="text-xs text-shark-400">
+            <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Asset Health</h2>
+            <p className="text-xs text-shark-400 mt-0.5">
               {totalAssets} asset{totalAssets !== 1 ? "s" : ""} scored
             </p>
           </div>

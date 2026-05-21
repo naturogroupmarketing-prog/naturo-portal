@@ -23,8 +23,8 @@ interface WorkflowsClientProps {
 // ─── Trigger config ───────────────────────────────────────────────────────────
 
 const TRIGGER_CONFIG: Record<WorkflowTrigger, { label: string; bg: string; text: string; dot: string }> = {
-  stock_below_threshold: { label: "Stock", bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
-  stock_critical:        { label: "Stock", bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
+  stock_below_threshold: { label: "Stock", bg: "bg-action-50", text: "text-action-700", dot: "bg-action-500" },
+  stock_critical:        { label: "Stock", bg: "bg-action-50", text: "text-action-700", dot: "bg-action-500" },
   asset_overdue_return:  { label: "Asset", bg: "bg-action-50", text: "text-action-700", dot: "bg-action-500" },
   damage_report_unresolved: { label: "Damage", bg: "bg-red-50", text: "text-red-700", dot: "bg-red-500" },
   po_pending_approval:   { label: "Procurement", bg: "bg-action-50", text: "text-action-700", dot: "bg-action-500" },
@@ -177,7 +177,7 @@ function RuleCard({
                   <button
                     type="button"
                     onClick={() => onEdit(rule)}
-                    className="p-1.5 text-shark-400 hover:text-action-600 hover:bg-action-50 rounded-lg transition-colors"
+                    className="p-1.5 text-shark-400 hover:text-action-600 hover:bg-action-50 rounded-[10px] transition-colors"
                     title="Edit rule"
                   >
                     <Icon name="edit" size={14} />
@@ -185,7 +185,7 @@ function RuleCard({
                   <button
                     type="button"
                     onClick={() => onDelete(rule.id)}
-                    className="p-1.5 text-shark-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-1.5 text-shark-400 hover:text-red-600 hover:bg-red-50 rounded-[10px] transition-colors"
                     title="Delete rule"
                   >
                     <Icon name="trash-2" size={14} />
@@ -304,17 +304,14 @@ function WorkflowModal({
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
       {/* Panel */}
-      <div className="relative bg-white dark:bg-shark-900 rounded-[28px] shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white dark:bg-shark-900 rounded-[20px] shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-shark-100 dark:border-shark-800">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-              <Icon name="git-branch" size={14} className="text-action-600" />
-            </div>
-            <h2 className="text-sm font-semibold text-shark-900 dark:text-shark-100">
+          <div>
+            <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">
               {editRule ? "Edit Rule" : "Create Automation Rule"}
             </h2>
           </div>
-          <button type="button" onClick={onClose} className="p-1.5 text-shark-400 hover:text-shark-700 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 rounded-lg transition-colors">
+          <button type="button" onClick={onClose} className="p-1.5 text-shark-400 hover:text-shark-700 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 rounded-[10px] transition-colors">
             <Icon name="x" size={16} />
           </button>
         </div>
@@ -329,7 +326,7 @@ function WorkflowModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Weekly Low-Stock Alert"
               maxLength={100}
-              className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+              className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
             />
           </div>
 
@@ -339,7 +336,7 @@ function WorkflowModal({
             <div className="space-y-2">
               {TRIGGER_OPTIONS.map((opt) => (
                 <label key={opt.value} className={cn(
-                  "flex items-start gap-3 p-3 rounded-[28px] border cursor-pointer transition-colors",
+                  "flex items-start gap-3 p-3 rounded-[20px] border cursor-pointer transition-colors",
                   trigger === opt.value
                     ? "border-action-400 bg-action-50"
                     : "border-shark-200 dark:border-shark-700 hover:border-shark-300 dark:hover:border-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800"
@@ -375,7 +372,7 @@ function WorkflowModal({
                       onChange={(e) => setConditionValues((prev) => ({ ...prev, [field.key]: e.target.value }))}
                       placeholder={field.placeholder}
                       min={field.type === "number" ? 1 : undefined}
-                      className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
+                      className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
                     />
                   </div>
                 ))}
@@ -389,7 +386,7 @@ function WorkflowModal({
             <div className="space-y-2">
               {ACTION_OPTIONS.map((opt) => (
                 <label key={opt.value} className={cn(
-                  "flex items-start gap-3 p-3 rounded-[28px] border cursor-pointer transition-colors",
+                  "flex items-start gap-3 p-3 rounded-[20px] border cursor-pointer transition-colors",
                   action === opt.value
                     ? "border-action-400 bg-action-50"
                     : "border-shark-200 dark:border-shark-700 hover:border-shark-300 dark:hover:border-shark-600 hover:bg-shark-50 dark:hover:bg-shark-800"
@@ -412,7 +409,7 @@ function WorkflowModal({
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+            <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-[14px]">{error}</p>
           )}
 
           <div className="flex gap-3 pt-2">
@@ -435,13 +432,13 @@ function DeleteConfirm({ ruleName, onConfirm, onCancel }: { ruleName: string; on
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-white dark:bg-shark-900 rounded-[28px] shadow-xl w-full max-w-sm p-6 space-y-4">
+      <div className="relative bg-white dark:bg-shark-900 rounded-[20px] shadow-xl w-full max-w-sm p-6 space-y-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
             <Icon name="trash-2" size={18} className="text-red-500" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Delete Rule</h3>
+            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Delete Rule</h3>
             <p className="text-xs text-shark-400 mt-0.5">This action cannot be undone.</p>
           </div>
         </div>
@@ -524,17 +521,12 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
   return (
     <>
       <Card padding="none">
-        <div className="p-4 sm:p-5 space-y-8">
+        <div className="px-5 py-4 space-y-8">
           {/* Page header */}
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-                <Icon name="git-branch" size={14} className="text-action-600" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Workflow Automation</h3>
-                <p className="text-xs text-shark-400">Rules run every 6 hours automatically</p>
-              </div>
+            <div>
+              <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Workflow Automation</h2>
+              <p className="text-xs text-shark-400 mt-0.5">Rules run every 6 hours automatically</p>
             </div>
             <Button size="sm" onClick={openCreate} className="flex items-center gap-1.5 shrink-0">
               <Icon name="plus" size={14} />
@@ -543,11 +535,11 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
           </div>
 
           {/* Info banner */}
-          <div className="flex items-start gap-3 px-4 py-3.5 rounded-[28px] bg-blue-50 border border-blue-100">
-            <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-              <Icon name="info" size={14} className="text-blue-600" />
+          <div className="flex items-start gap-3 px-4 py-3.5 rounded-[20px] bg-action-50 border border-action-100">
+            <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0 mt-0.5">
+              <Icon name="info" size={14} className="text-action-600" />
             </div>
-            <p className="text-sm text-blue-700 leading-relaxed">
+            <p className="text-sm text-action-700 leading-relaxed">
               These automations run in the background to keep your operations on track. System rules run for all organisations and cannot be deleted. Custom rules apply only to your organisation.
             </p>
           </div>

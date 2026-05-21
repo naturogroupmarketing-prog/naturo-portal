@@ -67,17 +67,12 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="bar-chart" size={14} className="text-action-600" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">
-              Executive Overview
-              <span className="text-shark-400 font-normal"> · {orgName}</span>
-            </h3>
-            <p className="text-xs text-shark-400">Organisation-wide summary</p>
-          </div>
+        <div>
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">
+            Executive Overview
+            <span className="text-shark-400 font-normal"> · {orgName}</span>
+          </h2>
+          <p className="text-xs text-shark-400 mt-0.5">Organisation-wide summary</p>
         </div>
         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-shark-100 dark:bg-shark-700 text-shark-500 dark:text-shark-400 border border-shark-200 dark:border-shark-700 self-start sm:self-auto">
           <Icon name="lock" size={12} />

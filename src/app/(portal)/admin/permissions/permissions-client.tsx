@@ -154,15 +154,10 @@ export function PermissionsClient({ managers }: { managers: Manager[] }) {
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="lock" size={14} className="text-action-600" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Permission Management</h3>
-          <p className="text-xs text-shark-400">Manage granular permissions for Branch Managers.</p>
-        </div>
+    <div className="px-5 py-4 space-y-8">
+      <div>
+        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Permission Management</h2>
+        <p className="text-xs text-shark-400 mt-0.5">Manage granular permissions for Branch Managers.</p>
       </div>
 
       <Input

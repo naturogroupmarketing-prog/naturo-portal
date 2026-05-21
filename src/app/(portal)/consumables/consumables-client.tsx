@@ -14,14 +14,13 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { useToast } from "@/components/ui/toast";
 import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 import { createConsumable, updateConsumable, addStock, deductStock, approveRequest, issueConsumable, assignConsumable, returnConsumable, bulkDeleteConsumables } from "@/app/actions/consumables";
-import { updateOrgInventoryMethod } from "@/app/actions/inventory-settings";
 import { createCategory, updateCategory, deleteCategory, reorderCategories, reorderItems } from "@/app/actions/categories";
 import { formatDate } from "@/lib/utils";
 import { exportToCSV } from "@/lib/csv";
 
 // Color palette auto-assigned by category index
 const SECTION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-[#0057FF]", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
@@ -96,7 +95,7 @@ interface Request {
 }
 
 const REGION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-[#0057FF]", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
@@ -124,14 +123,12 @@ interface ConsumablesClientProps {
   highlightId?: string;
   /** When true, skips the outer Card wrapper (e.g. when already embedded inside a Card) */
   noCard?: boolean;
-  /** Organisation-wide default inventory method (FIFO | LIFO) */
-  orgInventoryMethod?: "FIFO" | "LIFO";
 }
 
 import { compressImage } from "@/lib/image-utils";
 
 
-export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId, noCard, orgInventoryMethod = "FIFO" }: ConsumablesClientProps) {
+export function ConsumablesClient({ consumables, pendingRequests, regions, users, categories, isSuperAdmin, canAdd, canAdjustStock, initialTab, initialStock, initialCategory, highlightId, noCard }: ConsumablesClientProps) {
   const router = useRouter();
   const { addToast } = useToast();
   const [hoveredQtyId, setHoveredQtyId] = useState<string | null>(null);
@@ -163,8 +160,6 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
   // Inventory batch system
   const [showBatchPanel, setShowBatchPanel] = useState<Consumable | null>(null);
-  const [orgMethod, setOrgMethod] = useState<"FIFO" | "LIFO">(orgInventoryMethod);
-  const [savingOrgMethod, setSavingOrgMethod] = useState(false);
 
   // Region selector (Super Admin only)
   const [selectedRegionId, setSelectedRegionId] = useState<string>("ALL");
@@ -534,13 +529,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         key={c.id}
         data-consumable-id={c.id}
         onClick={() => setEditConsumable(c)}
-        className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-[28px] p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
+        className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-[20px] p-4 hover:shadow-md hover:border-shark-200 dark:hover:border-shark-700 transition-all duration-150 group cursor-pointer"
       >
         {/* Image or icon + status badge */}
         <div className="flex items-start justify-between mb-3">
-          <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
+          <div className="w-10 h-10 rounded-[14px] bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-800 dark:bg-shark-800 dark:border-shark-700 flex items-center justify-center overflow-hidden shrink-0">
             {c.imageUrl ? (
-              <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover rounded-lg" />
+              <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover rounded-[14px]" />
             ) : (
               <Icon name="droplet" size={18} className="text-shark-300" />
             )}
@@ -575,7 +570,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         {/* Quick actions - show on hover */}
         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150" onClick={(e) => e.stopPropagation()}>
           <button
-            className="flex-1 text-xs py-1.5 rounded-lg bg-action-50 text-action-600 hover:bg-action-100 font-medium transition-colors"
+            className="flex-1 text-xs py-1.5 rounded-[10px] bg-action-50 text-action-600 hover:bg-action-100 font-medium transition-colors"
             onClick={() => {
               if (!canAdjustStock) { addToast("You don't have permission to adjust stock. To update stock, confirm receival in Purchase Orders.", "error"); return; }
               setStockMode("add"); setShowAddStock(c);
@@ -584,7 +579,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             Add Stock
           </button>
           <button
-            className="flex-1 text-xs py-1.5 rounded-lg bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 font-medium transition-colors"
+            className="flex-1 text-xs py-1.5 rounded-[10px] bg-shark-50 text-shark-600 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 font-medium transition-colors"
             onClick={() => setShowAssign(c)}
           >
             Assign
@@ -635,15 +630,15 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   key={c.id}
                   data-consumable-id={c.id}
                   onClick={() => setEditConsumable(c)}
-                  className="border border-shark-100 dark:border-shark-800 rounded-[28px] p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
+                  className="border border-shark-100 dark:border-shark-800 rounded-[20px] p-4 bg-white dark:bg-shark-900 hover:shadow-sm transition-shadow cursor-pointer"
                 >
                   <div className="flex items-start gap-3">
                     {c.imageUrl ? (
-                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-800 shrink-0">
+                      <div className="w-11 h-11 rounded-[14px] overflow-hidden border border-shark-100 dark:border-shark-800 shrink-0">
                         <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" />
                       </div>
                     ) : (
-                      <div className="w-11 h-11 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                      <div className="w-11 h-11 rounded-[14px] bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                         <Icon name="droplet" size={18} className="text-shark-300" />
                       </div>
                     )}
@@ -726,8 +721,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     </td>
                     {visibleColumns.photo && (
                     <td className="px-3 py-2">
-                      {c.imageUrl ? <div className="w-10 h-10 rounded-lg overflow-hidden border border-shark-100 dark:border-shark-800"><img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" /></div>
-                      : <div className="w-10 h-10 rounded-lg bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center"><Icon name="droplet" size={18} className="text-shark-300" /></div>}
+                      {c.imageUrl ? <div className="w-10 h-10 rounded-[14px] overflow-hidden border border-shark-100 dark:border-shark-800"><img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" /></div>
+                      : <div className="w-10 h-10 rounded-[14px] bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center"><Icon name="droplet" size={18} className="text-shark-300" /></div>}
                     </td>
                     )}
                     {visibleColumns.item && <td className="px-4 py-3"><span className="font-medium text-shark-800 dark:text-shark-200">{c.name}</span><span className="text-shark-400 ml-1 text-xs">({c.unitType})</span></td>}
@@ -755,7 +750,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                           : null;
                         return (
                           <div
-                            className="pointer-events-none fixed z-[9999] w-56 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-[28px] shadow-xl overflow-hidden"
+                            className="pointer-events-none fixed z-[9999] w-56 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-[20px] shadow-xl overflow-hidden"
                             style={{
                               top: qtyTooltipPos.top,
                               right: qtyTooltipPos.right,
@@ -822,7 +817,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                               setAssignedDropdownPos({ top: rect.bottom + 4, left: rect.left });
                             }
                           }}
-                          className="inline-flex items-center gap-1.5 text-xs font-medium text-action-600 bg-action-50 hover:bg-action-100 dark:bg-action-500/10 dark:hover:bg-action-500/20 px-2.5 py-1 rounded-lg max-w-full transition-colors"
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-action-600 bg-action-50 hover:bg-action-100 dark:bg-action-500/10 dark:hover:bg-action-500/20 px-2.5 py-1 rounded-[10px] max-w-full transition-colors"
                         >
                           <Icon name="users" size={11} />
                           <span className="truncate">{activeAssignments.length} staff ({activeAssignments.reduce((s, a) => s + a.quantity, 0)})</span>
@@ -831,7 +826,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       ) : <span className="text-shark-400">{"\u2014"}</span>}
                       {assignedDropdownId === c.id && assignedDropdownPos && (
                         <div
-                          className="fixed z-[9999] bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-[28px] shadow-xl overflow-hidden"
+                          className="fixed z-[9999] bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 rounded-[20px] shadow-xl overflow-hidden"
                           style={{ top: assignedDropdownPos.top, left: assignedDropdownPos.left, minWidth: 200 }}
                           onMouseDown={(e) => e.stopPropagation()}
                         >
@@ -873,14 +868,10 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         {isSuperAdmin && (
                           <button
                             onClick={() => setShowBatchPanel(c)}
-                            className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg transition-colors ${
-                              (c.inventoryMethod ?? orgMethod) === "LIFO"
-                                ? "text-action-700 bg-action-50 hover:bg-action-100 ring-1 ring-action-200/50"
-                                : "text-action-700 bg-action-50 hover:bg-action-100 ring-1 ring-action-300/50"
-                            }`}
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-[10px] transition-colors text-action-700 bg-action-50 hover:bg-action-100 ring-1 ring-action-300/50"
                             title="View batch breakdown"
                           >
-                            {c.inventoryMethod ?? orgMethod}
+                            Batches
                           </button>
                         )}
                       </div>
@@ -913,7 +904,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setRegionDropdownOpen((o) => !o); setRegionSearch(""); } }}
             className="w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors cursor-pointer"
           >
-            <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
               <Icon name="map-pin" size={14} className="text-action-600" />
             </div>
             <div className="flex-1 min-w-0">
@@ -934,7 +925,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             {selectedRegionId !== "ALL" && (
               <button
                 onClick={(e) => { e.stopPropagation(); setSelectedRegionId("ALL"); }}
-                className="text-[11px] font-semibold text-shark-400 hover:text-shark-700 px-2 py-1 rounded-lg hover:bg-shark-100 dark:hover:bg-shark-700 transition-colors shrink-0"
+                className="text-[11px] font-semibold text-shark-400 hover:text-shark-700 px-2 py-1 rounded-[10px] hover:bg-shark-100 dark:hover:bg-shark-700 transition-colors shrink-0"
               >
                 Clear
               </button>
@@ -944,7 +935,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           {regionDropdownOpen && (
             <div className="absolute left-0 right-0 top-full z-50 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 shadow-xl rounded-b-xl overflow-hidden">
               <div className="px-3 py-2.5 border-b border-shark-100 dark:border-shark-700">
-                <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-1.5">
+                <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-1.5">
                   <Icon name="search" size={13} className="text-shark-400 shrink-0" />
                   <input
                     autoFocus
@@ -1000,47 +991,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         </div>
       )}
 
-      {/* Header: icon + title + count + actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-800">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="droplet" size={14} className="text-action-600" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Supplies</h3>
-            <p className="text-xs text-shark-400">{consumables.length} total items{pendingRequests.length > 0 ? ` · ${pendingRequests.length} pending` : ""}</p>
-          </div>
+      {/* Header: title + count + actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4 border-b border-shark-100 dark:border-shark-800">
+        <div>
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Supplies</h2>
+          <p className="text-xs text-shark-400 mt-0.5">{consumables.length} total items{pendingRequests.length > 0 ? ` · ${pendingRequests.length} pending` : ""}</p>
         </div>
-        {/* Inventory method toggle — Super Admin only */}
-        {isSuperAdmin && (
-          <div className="flex items-center gap-2 text-xs">
-            <span className="text-shark-400 font-medium shrink-0">Stock method:</span>
-            <div className="flex rounded-lg bg-shark-100 dark:bg-shark-800 p-0.5">
-              {(["FIFO", "LIFO"] as const).map((m) => (
-                <button
-                  key={m}
-                  disabled={savingOrgMethod}
-                  onClick={async () => {
-                    if (m === orgMethod) return;
-                    setSavingOrgMethod(true);
-                    try {
-                      await updateOrgInventoryMethod(m);
-                      setOrgMethod(m);
-                      addToast(`Default method set to ${m}`, "success");
-                    } catch {
-                      addToast("Failed to update method", "error");
-                    } finally {
-                      setSavingOrgMethod(false);
-                    }
-                  }}
-                  className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${orgMethod === m ? (m === "LIFO" ? "bg-action-500 text-white shadow-sm" : "bg-action-500 text-white shadow-sm") : "text-shark-500 hover:text-shark-700 dark:hover:text-shark-300"}`}
-                >
-                  {m}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
         <div className="flex items-center gap-2 flex-wrap">
           <ViewToggle value={viewMode} onChange={setViewMode} />
           <Button variant="outline" size="sm" onClick={() => setShowManageSections(true)}>
@@ -1060,26 +1016,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         </div>
       </div>
 
-      {/* IFRS / LIFO Compliance Notice — shown when LIFO is active (org or any item) */}
-      {(orgMethod === "LIFO" || consumables.some((c) => c.inventoryMethod === "LIFO")) && (
-        <div className="mx-4 sm:mx-5 mt-3 flex items-start gap-3 bg-action-50 dark:bg-action-900/20 border border-action-200 dark:border-action-700/50 rounded-[28px] px-4 py-3">
-          <Icon name="alert-triangle" size={15} className="text-action-600 dark:text-action-400 shrink-0 mt-0.5" />
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-action-800 dark:text-action-300">LIFO — Operational Use Only</p>
-            <p className="text-xs text-action-700 dark:text-action-400 mt-0.5 leading-relaxed">
-              LIFO is used for operational stock handling only. Financial reporting must follow applicable accounting standards.
-              {" "}<strong>In Australia, IFRS does not permit LIFO for financial reporting.</strong>
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Tabs */}
       <div className="px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-800">
-        <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
+        <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1">
           <button
             onClick={() => setTab("stock")}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               tab === "stock" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
             }`}
           >
@@ -1087,7 +1029,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </button>
           <button
             onClick={() => setTab("requests")}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               tab === "requests" ? "bg-white dark:bg-shark-700 text-shark-900 dark:text-shark-100 shadow-sm" : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:text-shark-300 dark:hover:text-shark-200"
             }`}
           >
@@ -1184,7 +1126,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                               className="flex items-center gap-3 px-1 w-full text-left group"
                             >
                               <div className="flex items-center gap-2 flex-1">
-                                <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{cat.name}</h3>
+                                <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">{cat.name}</h3>
                                 <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">
                                   {catItems.length}
                                 </span>
@@ -1202,7 +1144,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                                   {catItems.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
                                 </div>
                               ) : viewMode === "compact" ? (
-                                <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden">
+                                <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 overflow-hidden">
                                   <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50 dark:bg-shark-800/60" style={{ height: 30 }}>
                                     <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                                     <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
@@ -1268,7 +1210,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         {section.items.length === 0 && <p className="col-span-full text-center text-shark-400 py-6 text-sm">No items in this section.</p>}
                       </div>
                     ) : viewMode === "compact" ? (
-                      <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 overflow-hidden">
+                      <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 overflow-hidden">
                         <div className="flex items-center gap-3 px-3 border-b border-shark-100 dark:border-shark-700 bg-shark-50 dark:bg-shark-800/60" style={{ height: 30 }}>
                           <span className="flex-1 text-[10px] font-semibold uppercase tracking-wider text-shark-400">Item</span>
                           <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-shark-400 w-16">Qty</span>
@@ -1379,13 +1321,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       {/* Bulk Delete Confirmation Modal */}
       <Modal open={showBulkDelete} onClose={() => setShowBulkDelete(false)} title="Delete Selected Supplies">
         <div className="space-y-4">
-          <div className="bg-red-50 border border-red-200 rounded-[28px] p-4">
+          <div className="bg-red-50 border border-red-200 rounded-[20px] p-4">
             <p className="text-sm text-red-800 font-medium">
               Are you sure you want to delete {selectedIds.size} supply item{selectedIds.size > 1 ? "s" : ""}?
             </p>
             <p className="text-sm text-red-600 mt-1">This action cannot be undone.</p>
           </div>
-          <div className="bg-shark-50 dark:bg-shark-800 rounded-[28px] p-4 max-h-40 overflow-y-auto">
+          <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] p-4 max-h-40 overflow-y-auto">
             {consumables.filter((c) => selectedIds.has(c.id)).map((c) => (
                 <div key={c.id} className="flex items-center gap-2 py-1">
                   <span className="font-medium text-shark-800 dark:text-shark-200 text-sm">{c.name}</span>
@@ -1418,7 +1360,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               const itemCount = consumables.filter((c) => c.category === cat.name).length;
               const isEditing = editingSectionId === cat.id;
               return (
-                <div key={cat.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800">
+                <div key={cat.id} className="flex items-center justify-between py-2 px-3 rounded-[14px] hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800">
                   {isEditing ? (
                     <div className="flex items-center gap-2 flex-1 mr-2">
                       <div className={`w-6 h-6 rounded ${colors.bg} flex items-center justify-center shrink-0`}>
@@ -1513,7 +1455,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
             <div className="flex items-start gap-4">
               {imagePreview ? (
-                <div className="relative w-24 h-24 rounded-[28px] overflow-hidden border border-shark-200 dark:border-shark-700">
+                <div className="relative w-24 h-24 rounded-[20px] overflow-hidden border border-shark-200 dark:border-shark-700">
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -1527,7 +1469,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-24 h-24 rounded-[28px] border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
+                  className="w-24 h-24 rounded-[20px] border-2 border-dashed border-shark-200 hover:border-action-300 flex flex-col items-center justify-center text-shark-400 hover:text-action-500 transition-colors"
                 >
                   <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
@@ -1636,7 +1578,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
             {/* Add / Deduct toggle — users with stockAdjust permission */}
             {canAdjustStock && (
-              <div className="flex rounded-lg bg-shark-50 dark:bg-shark-800 p-1 gap-1">
+              <div className="flex rounded-[14px] bg-shark-50 dark:bg-shark-800 p-1 gap-1">
                 <button
                   type="button"
                   onClick={() => setStockMode("add")}
@@ -1776,7 +1718,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="returnNotes" className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
+              <textarea name="returnNotes" className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={3} />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowReturn(null)}>Cancel</Button>
@@ -1790,7 +1732,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
       <Modal open={!!showImage} onClose={() => setShowImage(null)} title={showImage?.name || "Supply Photo"}>
         {showImage && showImage.imageUrl && (
           <div className="text-center space-y-4">
-            <img src={showImage.imageUrl} alt={showImage.name} className="mx-auto max-w-full max-h-[60vh] rounded-[28px] object-contain" />
+            <img src={showImage.imageUrl} alt={showImage.name} className="mx-auto max-w-full max-h-[60vh] rounded-[20px] object-contain" />
             <div>
               <p className="font-bold text-shark-900 dark:text-shark-100">{showImage.name}</p>
               <p className="text-sm text-shark-400">{showImage.category} &middot; {showImage.unitType}</p>
@@ -1812,7 +1754,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Photo</label>
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-lg border border-shark-200 dark:border-shark-700 overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-[14px] border border-shark-200 dark:border-shark-700 overflow-hidden bg-shark-50 dark:bg-shark-800 flex items-center justify-center">
                   {(editImagePreview || (!editImageRemoved && editConsumable.imageUrl)) ? (
                     <img src={editImagePreview || editConsumable.imageUrl!} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
@@ -1910,7 +1852,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               <div className="flex gap-2 items-center">
                 <Input name="shopUrl" type="url" placeholder="https://shop.example.com/product/..." defaultValue={editConsumable.shopUrl || ""} className="flex-1" />
                 {editConsumable.shopUrl && (
-                  <a href={editConsumable.shopUrl} target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center gap-1 text-xs text-action-600 hover:text-action-700 bg-action-50 hover:bg-action-100 px-2.5 py-1.5 rounded-lg transition-colors" onClick={(e) => e.stopPropagation()}>
+                  <a href={editConsumable.shopUrl} target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center gap-1 text-xs text-action-600 hover:text-action-700 bg-action-50 hover:bg-action-100 px-2.5 py-1.5 rounded-[10px] transition-colors" onClick={(e) => e.stopPropagation()}>
                     <Icon name="arrow-right" size={12} />
                     Open
                   </a>
@@ -1920,26 +1862,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
-              <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
-            </div>
-
-            {/* Inventory Method Override */}
-            <div className="border border-shark-100 dark:border-shark-700 rounded-[28px] p-4 bg-shark-50/50 dark:bg-shark-800/30">
-              <label className="block text-sm font-semibold text-shark-700 dark:text-shark-300 mb-1">
-                Inventory Method
-              </label>
-              <select
-                name="inventoryMethod"
-                defaultValue={editConsumable.inventoryMethod || ""}
-                className="w-full rounded-[28px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors"
-              >
-                <option value="">Use organisation default ({orgMethod})</option>
-                <option value="FIFO">FIFO — First In, First Out (oldest stock consumed first)</option>
-                <option value="LIFO">LIFO — Last In, First Out (newest stock consumed first)</option>
-              </select>
-              <p className="text-[11px] text-shark-400 dark:text-shark-500 mt-1.5 leading-relaxed">
-                LIFO is for operational stock handling only — not for financial reporting (IFRS compliance).
-              </p>
+              <textarea name="notes" defaultValue={editConsumable.notes || ""} className="w-full rounded-[20px] border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 px-3.5 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 transition-colors" rows={2} />
             </div>
 
             <div className="flex justify-end gap-3 pt-2">
@@ -2006,7 +1929,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
               {/* Items list */}
               {staffAssignments.length > 0 ? (
-                <div className="border border-shark-100 dark:border-shark-800 rounded-lg overflow-hidden">
+                <div className="border border-shark-100 dark:border-shark-800 rounded-[14px] overflow-hidden">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-shark-50 dark:bg-shark-800/60 dark:bg-shark-800/40 border-b border-shark-100 dark:border-shark-700">
@@ -2061,52 +1984,16 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         {showBatchPanel && (() => {
           const c = showBatchPanel;
           const batches = c.batches ?? [];
-          const effectiveMethod = (c.inventoryMethod ?? orgMethod) as "FIFO" | "LIFO";
           const sortedForDisplay = [...batches].sort(
             (a, b) => new Date(a.receivedAt).getTime() - new Date(b.receivedAt).getTime()
           );
-          const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-          const oldest = sortedForDisplay[0];
-          const hasStagnant =
-            batches.length > 1 &&
-            oldest &&
-            new Date(oldest.receivedAt) < thirtyDaysAgo &&
-            oldest.source !== "BACKFILL";
 
           return (
             <div className="space-y-4">
-              {/* Method + IFRS notice */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-shark-500 dark:text-shark-400">Active method:</span>
-                  <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${effectiveMethod === "LIFO" ? "bg-action-100 text-action-700" : "bg-action-50 text-action-700"}`}>
-                    {effectiveMethod}
-                    {c.inventoryMethod ? " (item override)" : " (org default)"}
-                  </span>
-                </div>
+              {/* Batch count */}
+              <div className="flex items-center justify-end">
                 <span className="text-xs text-shark-400">{batches.length} batch{batches.length !== 1 ? "es" : ""}</span>
               </div>
-
-              {/* IFRS warning if LIFO */}
-              {effectiveMethod === "LIFO" && (
-                <div className="flex items-start gap-2 bg-action-50 dark:bg-action-900/20 border border-action-200 dark:border-action-700/50 rounded-[28px] px-3 py-2.5">
-                  <Icon name="alert-triangle" size={13} className="text-action-600 shrink-0 mt-0.5" />
-                  <p className="text-[11px] text-action-700 dark:text-action-400 leading-relaxed">
-                    LIFO is operational only. In Australia, IFRS does not permit LIFO for financial reporting.
-                  </p>
-                </div>
-              )}
-
-              {/* Stagnant stock warning */}
-              {hasStagnant && effectiveMethod === "LIFO" && (
-                <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50 rounded-[28px] px-3 py-2.5">
-                  <Icon name="alert-triangle" size={13} className="text-red-600 shrink-0 mt-0.5" />
-                  <p className="text-[11px] text-red-700 dark:text-red-400 leading-relaxed">
-                    <strong>Old stock not being consumed.</strong> The oldest batch is {Math.floor((Date.now() - new Date(oldest.receivedAt).getTime()) / (86400000))} days old.
-                    LIFO keeps consuming newest stock first, leaving old stock untouched. Consider switching to FIFO for this item.
-                  </p>
-                </div>
-              )}
 
               {/* Batch list */}
               {batches.length === 0 ? (
@@ -2114,9 +2001,9 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
               ) : (
                 <div className="space-y-2">
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400">
-                    Active Batches — sorted {effectiveMethod === "LIFO" ? "newest first (consumed first)" : "oldest first (consumed first)"}
+                    Active Batches — oldest first (consumed first)
                   </p>
-                  <div className="overflow-hidden rounded-[28px] border border-shark-100 dark:border-shark-700">
+                  <div className="overflow-hidden rounded-[20px] border border-shark-100 dark:border-shark-700">
                     <table className="w-full text-xs">
                       <thead>
                         <tr className="bg-shark-50 dark:bg-shark-800 border-b border-shark-100 dark:border-shark-700">
@@ -2130,17 +2017,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         </tr>
                       </thead>
                       <tbody>
-                        {[...sortedForDisplay]
-                          .sort((a, b) =>
-                            effectiveMethod === "LIFO"
-                              ? new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime()
-                              : new Date(a.receivedAt).getTime() - new Date(b.receivedAt).getTime()
-                          )
-                          .map((batch, idx) => {
-                            const isNext = idx === 0; // this batch will be consumed next
-                            const ageMs = Date.now() - new Date(batch.receivedAt).getTime();
-                            const ageDays = Math.floor(ageMs / 86400000);
-                            const isOld = ageDays > 30 && effectiveMethod === "LIFO";
+                        {sortedForDisplay.map((batch, idx) => {
+                            const isNext = idx === 0; // this batch will be consumed next (FIFO)
                             const isBackfill = batch.source === "BACKFILL";
                             return (
                               <tr key={batch.id} className={`border-b last:border-b-0 border-shark-50 dark:border-shark-800 ${isNext ? "bg-action-50/30 dark:bg-action-500/5" : ""}`}>
@@ -2152,9 +2030,8 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                                 </td>
                                 <td className="px-3 py-2 text-shark-500 capitalize">{batch.source.replace(/_/g, " ").toLowerCase()}</td>
                                 <td className="px-3 py-2 text-right text-shark-700 dark:text-shark-300">{batch.quantityAdded}</td>
-                                <td className={`px-3 py-2 text-right font-semibold ${isOld ? "text-red-600" : "text-shark-800 dark:text-shark-200"}`}>
+                                <td className="px-3 py-2 text-right font-semibold text-shark-800 dark:text-shark-200">
                                   {batch.quantityRemaining}
-                                  {isOld && <span className="ml-1 text-[10px] text-red-500">⚠ {ageDays}d</span>}
                                 </td>
                                 {batches.some(b => b.unitCost !== null) && (
                                   <td className="px-3 py-2 text-right text-shark-500">

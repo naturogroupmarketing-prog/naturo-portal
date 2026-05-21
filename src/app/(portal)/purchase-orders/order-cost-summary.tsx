@@ -56,12 +56,9 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
           onClick={() => setCollapsed((c) => !c)}
           className="w-full flex items-center gap-2 text-left"
         >
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="bar-chart" size={14} className="text-action-600" />
-          </div>
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Procurement Pipeline</h3>
-            <p className="text-xs text-shark-400">Active purchase orders by region (excl. received)</p>
+            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Procurement Pipeline</h3>
+            <p className="text-xs text-shark-400 mt-0.5">Active purchase orders by region (excl. received)</p>
           </div>
           <div className="text-right shrink-0 mr-2">
             <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{fmt(grandTotal)}</p>
@@ -86,8 +83,8 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
                 </span>
               )}
               {approvedTotal > 0 && (
-                <span className="flex items-center gap-1 text-[11px] font-semibold bg-blue-50 text-blue-600 border border-blue-100 px-2.5 py-1 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                <span className="flex items-center gap-1 text-[11px] font-semibold bg-action-50 text-action-600 border border-action-100 px-2.5 py-1 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-action-400" />
                   Approved: {fmt(approvedTotal)}
                 </span>
               )}
@@ -100,7 +97,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
             </div>
 
             {/* Per-region breakdown */}
-            <div className="bg-white dark:bg-shark-900 rounded-[28px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+            <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
               {regions.map((region) => {
                 const pct = grandTotal > 0 ? (region.total / grandTotal) * 100 : 0;
                 return (
@@ -114,7 +111,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
                         {/* Progress bar */}
                         <div className="h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
                           <div
-                            className={`h-full rounded-full transition-all ${pct >= 50 ? "bg-[#0057FF]" : "bg-red-500"}`}
+                            className={`h-full rounded-full transition-colors ${pct >= 50 ? "bg-[#0057FF]" : "bg-red-500"}`}
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -124,7 +121,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
                             <span className="text-[10px] text-action-500 font-medium">Pending {fmt(region.pending)}</span>
                           )}
                           {region.approved > 0 && (
-                            <span className="text-[10px] text-blue-500 font-medium">Approved {fmt(region.approved)}</span>
+                            <span className="text-[10px] text-action-500 font-medium">Approved {fmt(region.approved)}</span>
                           )}
                           {region.ordered > 0 && (
                             <span className="text-[10px] text-action-500 font-medium">Ordered {fmt(region.ordered)}</span>

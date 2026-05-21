@@ -12,7 +12,7 @@ import { createUser, updateUser, deleteUser, batchDisableUsers, resetPassword } 
 import { useToast } from "@/components/ui/toast";
 
 const SECTION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
+  { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-[#0057FF]", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
@@ -238,11 +238,11 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                 onClick={() => toggleSection(section.id)}
                 className="flex items-center gap-3 px-1 w-full text-left group"
               >
-                <div className={`w-8 h-8 rounded-lg ${section.bg} flex items-center justify-center`}>
+                <div className={`w-8 h-8 rounded-[14px] ${section.bg} flex items-center justify-center`}>
                   <Icon name="map-pin" size={16} className={section.color} />
                 </div>
                 <div className="flex items-center gap-2 flex-1">
-                  <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">{section.name}</h2>
+                  <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">{section.name}</h2>
                   <span className="text-xs text-shark-400">{section.stateName}</span>
                   <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                     {section.users.length}
@@ -270,11 +270,11 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             onClick={() => toggleSection("head-office")}
             className="flex items-center gap-3 px-1 w-full text-left group"
           >
-            <div className={`w-8 h-8 rounded-lg ${headOfficeColors.bg} flex items-center justify-center`}>
+            <div className={`w-8 h-8 rounded-[14px] ${headOfficeColors.bg} flex items-center justify-center`}>
               <Icon name="dashboard" size={16} className={headOfficeColors.color} />
             </div>
             <div className="flex items-center gap-2 flex-1">
-              <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Head Office</h2>
+              <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Head Office</h2>
               <span className="text-xs text-shark-400">No region assigned</span>
               <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                 {headOfficeUsers.length}

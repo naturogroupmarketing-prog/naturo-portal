@@ -50,7 +50,7 @@ const ALL = "all";
 const PO_STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   PENDING:  { label: "Pending",  cls: "text-action-700 bg-action-50 border-action-100" },
   APPROVED: { label: "Approved", cls: "text-action-700 bg-action-50 border-action-100" },
-  ORDERED:  { label: "Ordered",  cls: "text-blue-700 bg-blue-50 border-blue-100" },
+  ORDERED:  { label: "Ordered",  cls: "text-action-700 bg-action-50 border-action-100" },
 };
 
 /* ── PO badge popover ───────────────────────────────────────────────────── */
@@ -110,7 +110,7 @@ function POPopover({ data, onClose }: { data: POPopoverState; onClose: () => voi
     <div
       ref={ref}
       style={{ position: "fixed", top: pos.top, left: pos.left, width: 288, zIndex: 10000 }}
-      className="bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-[28px] shadow-2xl overflow-hidden pointer-events-auto"
+      className="bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-[20px] shadow-2xl overflow-hidden pointer-events-auto"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-shark-100 dark:border-shark-800 bg-shark-50/60 dark:bg-shark-800/50">
@@ -135,7 +135,7 @@ function POPopover({ data, onClose }: { data: POPopoverState; onClose: () => voi
               key={po.id}
               href={href}
               onClick={onClose}
-              className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
+              className="flex items-center gap-2.5 px-2.5 py-2 rounded-[10px] hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
             >
               <Icon name="package" size={13} className="text-shark-300 shrink-0" />
               <div className="min-w-0 flex-1">
@@ -212,7 +212,7 @@ function ItemTooltip({ data, onKeepOpen, onClose }: { data: TooltipState; onKeep
       onMouseEnter={onKeepOpen}
     onMouseLeave={onClose}
       style={{ position: "fixed", top: pos.top, left: pos.left, width: 280, zIndex: 9999 }}
-      className="bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-[28px] shadow-2xl p-3.5 pointer-events-auto"
+      className="bg-white dark:bg-shark-900 border border-shark-200 dark:border-shark-700 rounded-[20px] shadow-2xl p-3.5 pointer-events-auto"
     >
       {/* Item name */}
       <p className="text-xs font-semibold text-shark-700 dark:text-shark-200 mb-2.5 leading-tight">
@@ -234,7 +234,7 @@ function ItemTooltip({ data, onKeepOpen, onClose }: { data: TooltipState; onKeep
           {item.activePOs.map((po) => {
             const s = PO_STATUS_LABEL[po.status] ?? { label: po.status, cls: "text-shark-600 bg-shark-50 border-shark-100" };
             return (
-              <div key={po.id} className="flex items-center justify-between gap-2 bg-shark-50 dark:bg-shark-800 rounded-lg px-2.5 py-1.5">
+              <div key={po.id} className="flex items-center justify-between gap-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] px-2.5 py-1.5">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium text-shark-700 dark:text-shark-200 truncate">
                     {po.quantity} {po.quantity === 1 ? "unit" : "units"}
@@ -472,7 +472,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
         style={isFlashed ? { boxShadow: "inset 0 0 0 2px #3B82F6, inset 0 0 0 9999px rgba(59,130,246,0.08)" } : undefined}
       >
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          <div className="w-9 h-9 rounded-[28px] overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-[20px] overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
             {item.imageUrl ? (
               <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
             ) : (
@@ -532,7 +532,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
       >
         <td className="px-5 py-3">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-[14px] overflow-hidden bg-shark-100 dark:bg-shark-700 flex items-center justify-center shrink-0">
               {item.imageUrl ? (
                 <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
               ) : (
@@ -615,7 +615,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                   : "cursor-default"
               }`}
             >
-              <div className="w-8 h-8 rounded-lg bg-action-100 dark:bg-action-900/30 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-[14px] bg-action-100 dark:bg-action-900/30 flex items-center justify-center shrink-0">
                 <Icon name="map-pin" size={15} className="text-action-600 dark:text-action-400" />
               </div>
 
@@ -639,7 +639,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
               </div>
 
               {regionItems.length > 0 && (
-                <span className="flex items-center gap-1.5 text-xs font-semibold text-[#0057FF] bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1.5 rounded-lg shrink-0">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-[#0057FF] bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1.5 rounded-[10px] shrink-0">
                   <Icon name="alert-triangle" size={12} />
                   {regionItems.length} low stock
                 </span>
@@ -650,7 +650,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
             {regionDropdownOpen && (hasMultipleRegions || isSuperAdmin) && (
               <div className="absolute left-0 right-0 top-full z-50 bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-700 shadow-xl rounded-b-xl overflow-hidden">
                 <div className="px-3 py-2.5 border-b border-shark-100 dark:border-shark-700">
-                  <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-1.5">
+                  <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-1.5">
                     <Icon name="search" size={13} className="text-shark-400 shrink-0" />
                     <input
                       autoFocus
@@ -723,36 +723,31 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
 
           {/* ── Page header ─────────────────────────────────────────────────── */}
           <div className="flex items-center justify-between gap-4 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-800">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/30 flex items-center justify-center shrink-0">
-                <Icon name="alert-triangle" size={16} className="text-[#0057FF]" />
-              </div>
-              <div className="min-w-0">
-                <h1 className="text-base font-semibold text-shark-900 dark:text-shark-100 leading-tight">
-                  Low Stock Alerts
-                </h1>
-                <p className="text-xs text-shark-400 mt-0.5">
-                  {regionItems.length} item{regionItems.length !== 1 ? "s" : ""} at or below minimum threshold
-                  {regionItems.length > 0 && " · hover on-hand qty for details"}
-                </p>
-              </div>
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold text-shark-900 dark:text-shark-100">
+                Low Stock Alerts
+              </h1>
+              <p className="text-xs text-shark-400 mt-0.5">
+                {regionItems.length} item{regionItems.length !== 1 ? "s" : ""} at or below minimum threshold
+                {regionItems.length > 0 && " · hover on-hand qty for details"}
+              </p>
             </div>
 
             {regionItems.length > 0 && (
               <div className="flex items-center gap-2 shrink-0">
                 {outCount > 0 && (
-                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1 rounded-lg">
+                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1 rounded-[10px]">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block" />
                     {outCount} out of stock
                   </span>
                 )}
                 {criticalCount > 0 && (
-                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-[#0057FF] bg-action-50 dark:bg-action-950/20 border border-action-100 dark:border-action-900/30 px-2.5 py-1 rounded-lg">
+                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-[#0057FF] bg-action-50 dark:bg-action-950/20 border border-action-100 dark:border-action-900/30 px-2.5 py-1 rounded-[10px]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#0057FF] inline-block" />
                     {criticalCount} critical
                   </span>
                 )}
-                <span className="inline-flex items-center text-xs font-semibold text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 px-2.5 py-1 rounded-lg">
+                <span className="inline-flex items-center text-xs font-semibold text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 px-2.5 py-1 rounded-[10px]">
                   {regionItems.length} total
                 </span>
               </div>
@@ -762,7 +757,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           {/* ── Search bar ──────────────────────────────────────────────────── */}
           {regionItems.length > 0 && (
             <div className="px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-800">
-              <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2">
+              <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2">
                 <Icon name="search" size={13} className="text-shark-400 shrink-0" />
                 <input
                   value={search}
@@ -785,7 +780,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           {/* ── Content ─────────────────────────────────────────────────────── */}
           {regionItems.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="w-14 h-14 rounded-[28px] bg-action-50 dark:bg-action-950/30 flex items-center justify-center mx-auto mb-4">
+              <div className="w-14 h-14 rounded-[20px] bg-action-50 dark:bg-action-950/30 flex items-center justify-center mx-auto mb-4">
                 <Icon name="check" size={24} className="text-action-500" />
               </div>
               <p className="text-base font-semibold text-shark-900 dark:text-shark-100">All stock levels OK</p>
@@ -814,7 +809,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                         className="w-full flex items-center justify-between px-4 sm:px-5 py-3.5 hover:bg-shark-50 dark:hover:bg-shark-800/40 transition-colors text-left"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-action-50 dark:bg-action-950/30 flex items-center justify-center shrink-0">
+                          <div className="w-8 h-8 rounded-[14px] bg-action-50 dark:bg-action-950/30 flex items-center justify-center shrink-0">
                             <Icon name="map-pin" size={14} className="text-action-600 dark:text-action-400" />
                           </div>
                           <div>

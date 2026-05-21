@@ -34,9 +34,9 @@ const SEVERITY_CONFIG: Record<
   },
   info: {
     label: "Info",
-    bar: "bg-blue-400",
-    badge: "bg-blue-50 text-blue-600 ring-1 ring-blue-200 dark:bg-blue-950/50 dark:text-blue-400 dark:ring-blue-800",
-    count: "text-blue-600 dark:text-blue-400",
+    bar: "bg-action-400",
+    badge: "bg-action-50 text-action-600 ring-1 ring-action-200 dark:bg-action-950/50 dark:text-action-400 dark:ring-action-800",
+    count: "text-action-600 dark:text-action-400",
     icon: "help-circle",
   },
 };
@@ -128,7 +128,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.2, delay: index * 0.04, ease: "easeOut" }}
-      className="rounded-[28px] border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60"
+      className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60"
     >
       {/* Card body */}
       <div className="px-4 py-4">
@@ -179,7 +179,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
                 ? "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300"
                 : anomaly.severity === "warning"
                   ? "bg-action-50 text-action-700 dark:bg-action-950/40 dark:text-action-300"
-                  : "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                  : "bg-action-50 text-action-700 dark:bg-action-950/40 dark:text-action-300"
             )}
           >
             <span
@@ -189,7 +189,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
                   ? "bg-red-500 animate-pulse"
                   : anomaly.severity === "warning"
                     ? "bg-action-400"
-                    : "bg-blue-400"
+                    : "bg-action-400"
               )}
             />
             {anomaly.metric}
@@ -241,7 +241,7 @@ function EmptyState({ filter }: { filter: FilterTab }) {
       transition={{ duration: 0.25 }}
       className="flex flex-col items-center justify-center py-20 text-center"
     >
-      <div className="w-16 h-16 rounded-[28px] bg-action-50 dark:bg-action-950/40 flex items-center justify-center mb-5">
+      <div className="w-16 h-16 rounded-[20px] bg-action-50 dark:bg-action-950/40 flex items-center justify-center mb-5">
         <Icon name="check-circle" size={28} className="text-action-500 dark:text-action-400" />
       </div>
       <p className="text-base font-semibold text-shark-900 dark:text-shark-100">{label}</p>
@@ -281,7 +281,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
   }
 
   return (
-    <div className="rounded-[28px] border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60">
+    <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -317,7 +317,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="10"
                 defaultValue={currentSettings.stockConsumptionMultiplier}
                 required
-                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-[14px] border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -333,7 +333,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="90"
                 defaultValue={currentSettings.overdueReturnDays}
                 required
-                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-[14px] border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -349,7 +349,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="20"
                 defaultValue={currentSettings.damageReportsThreshold}
                 required
-                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-[14px] border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -365,14 +365,14 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="200"
                 defaultValue={currentSettings.maxAnomalies}
                 required
-                className="w-full rounded-lg border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
+                className="w-full rounded-[14px] border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div className="sm:col-span-2 flex items-center gap-3">
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center gap-2 rounded-lg bg-action-600 px-4 py-2 text-sm font-medium text-white hover:bg-action-700 disabled:opacity-60 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-action-600 px-4 py-2 text-sm font-medium text-white hover:bg-action-700 disabled:opacity-60 transition-colors"
               >
                 {saving ? "Saving..." : "Save Settings"}
               </button>
@@ -436,29 +436,24 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
       )}
 
       <Card padding="none">
-      <div className="p-5 space-y-8">
+      <div className="px-5 py-4 space-y-8">
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="alert-triangle" size={14} className="text-action-600" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Anomaly Alerts</h3>
-            <p className="text-xs text-shark-400">
-              {anomalies.length === 0 ? (
-                "No anomalies detected — all systems normal."
-              ) : (
-                <>
-                  <span className="font-semibold text-shark-700 dark:text-shark-300">
-                    {anomalies.length} {anomalies.length === 1 ? "anomaly" : "anomalies"} detected
-                  </span>
-                  <span className="mx-1.5 text-shark-300">·</span>
-                  Last checked {lastChecked}
-                </>
-              )}
-            </p>
-          </div>
+        <div>
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Anomaly Alerts</h2>
+          <p className="text-xs text-shark-400 mt-0.5">
+            {anomalies.length === 0 ? (
+              "No anomalies detected — all systems normal."
+            ) : (
+              <>
+                <span className="font-semibold text-shark-700 dark:text-shark-300">
+                  {anomalies.length} {anomalies.length === 1 ? "anomaly" : "anomalies"} detected
+                </span>
+                <span className="mx-1.5 text-shark-300">·</span>
+                Last checked {lastChecked}
+              </>
+            )}
+          </p>
         </div>
 
         {/* Severity summary pills */}
@@ -492,7 +487,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1">
         {FILTER_TABS.map((tab) => {
           const isActive = activeFilter === tab.id;
           const count = counts[tab.id];
@@ -500,7 +495,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
             <button
               key={tab.id}
               onClick={() => setActiveFilter(tab.id)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors flex items-center gap-1.5 ${
                 isActive
                   ? "bg-action-500 text-white shadow-sm"
                   : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 hover:text-shark-700 dark:text-shark-300"

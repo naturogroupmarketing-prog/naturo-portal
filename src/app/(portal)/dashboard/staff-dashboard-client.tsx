@@ -442,14 +442,9 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
     <PullToRefresh>
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="home" size={14} className="text-action-600" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Dashboard</h3>
-          <p className="text-xs text-shark-400">Your personal overview</p>
-        </div>
+      <div>
+        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Dashboard</h2>
+        <p className="text-xs text-shark-400 mt-0.5">Your personal overview</p>
       </div>
 
       {/* Pending Starter Kit Checklist */}
@@ -941,7 +936,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
           <div className="bg-white dark:bg-shark-900 rounded-[20px] shadow-2xl w-full max-w-md my-auto animate-fade-in">
             <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100 dark:border-shark-800">
-              <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Return Item</h3>
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Return Item</h3>
               <button
                 onClick={() => setReturningItemId(null)}
                 className="p-1.5 rounded-[10px] hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-shark-400"
@@ -1113,14 +1108,9 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             className="px-4 py-4 flex items-center justify-between cursor-pointer"
             onClick={() => setShowUsageHistory(!showUsageHistory)}
           >
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-                <Icon name="droplet" size={14} className="text-action-600" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Supply Usage</h3>
-                <p className="text-xs text-shark-400">Last 6 months</p>
-              </div>
+            <div>
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Supply Usage</h3>
+              <p className="text-xs text-shark-400 mt-0.5">Last 6 months</p>
             </div>
             <Icon name="chevron-down" size={16} className={`text-shark-400 transition-transform ${showUsageHistory ? "" : "-rotate-90"}`} />
           </div>
@@ -1168,12 +1158,8 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
             className="px-4 py-4 flex items-center justify-between cursor-pointer"
             onClick={() => setShowConditionChecks(!showConditionChecks)}
           >
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-                <Icon name="search" size={14} className="text-action-600" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">{freqLabel} Condition Check</h3>
+            <div>
+              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">{freqLabel} Condition Check</h3>
                 <p className="text-xs text-shark-400">
                   {checkedCount === conditionCheckItems.length ? (
                     <span className="text-action-600 font-medium">All {conditionCheckItems.length} items checked ✓</span>

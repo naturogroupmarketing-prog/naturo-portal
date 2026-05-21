@@ -11,7 +11,7 @@ import { markConsumableUsed, requestConsumable, acknowledgeConsumable } from "@/
 import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-[#0057FF]", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
@@ -137,15 +137,10 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="droplet" size={14} className="text-action-600" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">My Supplies</h3>
-          <p className="text-xs text-shark-400">Your supply assignments and requests</p>
-        </div>
+    <div className="px-5 py-4 space-y-8">
+      <div>
+        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">My Supplies</h2>
+        <p className="text-xs text-shark-400 mt-0.5">Your supply assignments and requests</p>
       </div>
 
       {/* Pending Assignments — need confirmation */}
@@ -153,7 +148,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
         <Card className="border-action-200 bg-action-50/30">
           <CardContent className="pt-5">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center">
                 <Icon name="clipboard" size={14} className="text-[#0057FF]" />
               </div>
               <div>
@@ -163,8 +158,8 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
             </div>
             <div className="space-y-2">
               {pendingAssignments.map((a) => (
-                <div key={a.id} className="flex items-center gap-3 bg-white dark:bg-shark-800 rounded-lg px-3 py-2.5 border border-shark-100 dark:border-shark-700">
-                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                <div key={a.id} className="flex items-center gap-3 bg-white dark:bg-shark-800 rounded-[14px] px-3 py-2.5 border border-shark-100 dark:border-shark-700">
+                  <div className="w-9 h-9 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                     {a.consumable.imageUrl ? <img src={a.consumable.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -212,7 +207,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
               onClick={() => toggleSection(sectionName)}
               className="flex items-center gap-3 px-1 w-full text-left group"
             >
-              <div className={`w-8 h-8 rounded-lg ${colors.bg} flex items-center justify-center`}>
+              <div className={`w-8 h-8 rounded-[14px] ${colors.bg} flex items-center justify-center`}>
                 <Icon name="droplet" size={16} className={colors.color} />
               </div>
               <div className="flex items-center gap-2 flex-1">
@@ -291,7 +286,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
                     )}
                   </div>
                   {r.notes && (
-                    <p className="mt-2 text-sm text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 rounded-[28px] p-3">{r.notes}</p>
+                    <p className="mt-2 text-sm text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 rounded-[20px] p-3">{r.notes}</p>
                   )}
                 </CardContent>
               </Card>
@@ -357,10 +352,10 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
             <img
               src={ca.consumable.imageUrl}
               alt={ca.consumable.name}
-              className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-shark-100 dark:border-shark-700"
+              className="w-14 h-14 rounded-[14px] object-cover flex-shrink-0 border border-shark-100 dark:border-shark-700"
             />
           ) : (
-            <div className="w-14 h-14 rounded-lg bg-shark-100 dark:bg-shark-700 flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 rounded-[14px] bg-shark-100 dark:bg-shark-700 flex items-center justify-center flex-shrink-0">
               <Icon name="droplet" size={20} className="text-shark-400" />
             </div>
           )}
@@ -377,7 +372,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
         </div>
 
         {ca.consumable.notes && (
-          <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-lg p-2.5">
+          <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-[14px] p-2.5">
             <p className="text-xs font-medium text-shark-400 mb-0.5">Notes</p>
             <p className="text-sm text-shark-600 dark:text-shark-400 whitespace-pre-wrap">{ca.consumable.notes}</p>
           </div>
@@ -393,14 +388,14 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
 
         {/* Mark Used mode */}
         {mode === "use" && !success && (
-          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-lg p-3">
+          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] p-3">
             <p className="text-xs font-medium text-shark-600 dark:text-shark-400">How many did you use?</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => setUseQty(Math.max(0, useQty - 1))}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-[10px] bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                   disabled={useQty <= 0}
                 >
                   <span className="text-sm font-bold leading-none">−</span>
@@ -416,7 +411,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
                 <button
                   type="button"
                   onClick={() => setUseQty(Math.min(ca.quantity, useQty + 1))}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-[10px] bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                   disabled={useQty >= ca.quantity}
                 >
                   <Icon name="plus" size={12} />
@@ -442,14 +437,14 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
 
         {/* Request More mode */}
         {mode === "request" && !success && (
-          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-lg p-3">
+          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] p-3">
             <p className="text-xs font-medium text-shark-600 dark:text-shark-400">Request more</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => setReqQty(Math.max(1, reqQty - 1))}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-[10px] bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                   disabled={reqQty <= 1}
                 >
                   <span className="text-sm font-bold leading-none">−</span>
@@ -464,7 +459,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
                 <button
                   type="button"
                   onClick={() => setReqQty(reqQty + 1)}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-[10px] bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                 >
                   <Icon name="plus" size={12} />
                 </button>
@@ -544,10 +539,10 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
             <img
               src={c.imageUrl}
               alt={c.name}
-              className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-shark-100 dark:border-shark-700"
+              className="w-14 h-14 rounded-[14px] object-cover flex-shrink-0 border border-shark-100 dark:border-shark-700"
             />
           ) : (
-            <div className="w-14 h-14 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 rounded-[14px] bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0">
               <Icon name="droplet" size={20} className="text-shark-400" />
             </div>
           )}
@@ -566,14 +561,14 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
         )}
 
         {showRequest && !success && (
-          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-lg p-3">
+          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] p-3">
             <p className="text-xs font-medium text-shark-600 dark:text-shark-400">Request this item</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => setReqQty(Math.max(1, reqQty - 1))}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-[10px] bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                   disabled={reqQty <= 1}
                 >
                   <span className="text-sm font-bold leading-none">−</span>
@@ -588,7 +583,7 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
                 <button
                   type="button"
                   onClick={() => setReqQty(reqQty + 1)}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-[10px] bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                 >
                   <Icon name="plus" size={12} />
                 </button>

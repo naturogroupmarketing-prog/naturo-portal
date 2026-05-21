@@ -312,16 +312,11 @@ export function ImportClient({ regions }: Props) {
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
+    <div className="px-5 py-4 space-y-8">
       {/* Header */}
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="upload" size={14} className="text-action-600" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Import Data</h3>
-          <p className="text-xs text-shark-400">Bulk import assets, supplies, or staff from CSV or Excel files</p>
-        </div>
+      <div>
+        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Import Data</h2>
+        <p className="text-xs text-shark-400 mt-0.5">Bulk import assets, supplies, or staff from CSV or Excel files</p>
       </div>
 
       {/* Progress Bar */}
@@ -371,7 +366,7 @@ export function ImportClient({ regions }: Props) {
               onClick={() => setImportType(item.type)}
             >
               <CardContent className="py-6 text-center">
-                <div className={`w-12 h-12 rounded-[28px] flex items-center justify-center mx-auto mb-3 ${
+                <div className={`w-12 h-12 rounded-[20px] flex items-center justify-center mx-auto mb-3 ${
                   importType === item.type ? "bg-action-100 text-action-600" : "bg-shark-100 dark:bg-shark-800 text-shark-400"
                 }`}>
                   <Icon name={item.icon} size={24} />
@@ -462,7 +457,7 @@ export function ImportClient({ regions }: Props) {
             <div
               onDrop={onDrop}
               onDragOver={(e) => e.preventDefault()}
-              className="border-2 border-dashed border-shark-200 rounded-[28px] p-8 text-center hover:border-action-400 hover:bg-action-50/20 transition-colors cursor-pointer"
+              className="border-2 border-dashed border-shark-200 rounded-[20px] p-8 text-center hover:border-action-400 hover:bg-action-50/20 transition-colors cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
             >
               <Icon name="file-spreadsheet" size={40} className="mx-auto text-shark-300 mb-3" />
@@ -473,7 +468,7 @@ export function ImportClient({ regions }: Props) {
                 or click to browse — Supports .csv, .xlsx, .xls
               </p>
               {fileName && (
-                <div className="mt-3 inline-flex items-center gap-2 bg-action-50 text-action-700 px-3 py-1.5 rounded-lg text-sm">
+                <div className="mt-3 inline-flex items-center gap-2 bg-action-50 text-action-700 px-3 py-1.5 rounded-[10px] text-sm">
                   <Icon name="file-text" size={14} />
                   {fileName}
                 </div>
@@ -488,7 +483,7 @@ export function ImportClient({ regions }: Props) {
             </div>
 
             {uploadError && (
-              <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-[28px] px-4 py-3 text-sm text-red-700">
+              <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-[20px] px-4 py-3 text-sm text-red-700">
                 <Icon name="alert-triangle" size={16} className="text-red-500 flex-shrink-0" />
                 {uploadError}
               </div>
@@ -719,22 +714,22 @@ export function ImportClient({ regions }: Props) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4">
-              <div className="bg-action-50 rounded-[28px] p-4 text-center">
+              <div className="bg-action-50 rounded-[20px] p-4 text-center">
                 <p className="text-2xl font-bold text-action-700">{result.success}</p>
                 <p className="text-xs text-action-600">Imported</p>
               </div>
-              <div className="bg-action-50 rounded-[28px] p-4 text-center">
+              <div className="bg-action-50 rounded-[20px] p-4 text-center">
                 <p className="text-2xl font-bold text-[#0057FF]">{result.skipped}</p>
                 <p className="text-xs text-[#0057FF]">Skipped (duplicates)</p>
               </div>
-              <div className="bg-red-50 rounded-[28px] p-4 text-center">
+              <div className="bg-red-50 rounded-[20px] p-4 text-center">
                 <p className="text-2xl font-bold text-red-700">{result.errors.length}</p>
                 <p className="text-xs text-red-600">Errors</p>
               </div>
             </div>
 
             {result.errors.length > 0 && (
-              <div className="bg-red-50 rounded-[28px] p-4">
+              <div className="bg-red-50 rounded-[20px] p-4">
                 <h4 className="text-sm font-medium text-red-800 mb-2">Error Details</h4>
                 <div className="space-y-1 max-h-48 overflow-y-auto">
                   {result.errors.map((err, i) => (

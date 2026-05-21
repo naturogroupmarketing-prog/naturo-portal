@@ -95,16 +95,11 @@ export function StarterKitsClient({
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
+    <div className="px-5 py-4 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="box" size={14} className="text-action-600" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Starter Kits</h3>
-            <p className="text-xs text-shark-400">Pre-defined sets of assets and supplies assigned to new staff automatically.</p>
-          </div>
+        <div>
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Starter Kits</h2>
+          <p className="text-xs text-shark-400 mt-0.5">Pre-defined sets of assets and supplies assigned to new staff automatically.</p>
         </div>
         <Button size="sm" onClick={() => setShowCreate(true)}>
           <Icon name="plus" size={14} className="mr-1.5" />
@@ -184,7 +179,7 @@ export function StarterKitsClient({
                           {assetItems.length > 0 && (
                             <div>
                               <div className="flex items-center gap-2 mb-2">
-                                <div className="w-6 h-6 rounded-lg bg-action-500 flex items-center justify-center">
+                                <div className="w-6 h-6 rounded-[14px] bg-action-500 flex items-center justify-center">
                                   <Icon name="package" size={12} className="text-white" />
                                 </div>
                                 <h4 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Assets ({assetItems.reduce((s, i) => s + i.quantity, 0)})</h4>
@@ -196,9 +191,9 @@ export function StarterKitsClient({
                                     {items.map((item) => {
                                       const photo = assetPhotos[item.category || ""];
                                       return (
-                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2">
+                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2">
                                           <div className="flex items-center gap-2.5">
-                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 dark:bg-shark-800 flex items-center justify-center shrink-0">
+                                            <div className="w-8 h-8 rounded-[14px] overflow-hidden bg-shark-100 dark:bg-shark-800 flex items-center justify-center shrink-0">
                                               {photo ? <img src={photo} alt="" className="w-full h-full object-cover" /> : <Icon name="package" size={14} className="text-shark-400" />}
                                             </div>
                                             <span className="text-sm text-shark-700 dark:text-shark-300">{item.category}</span>
@@ -224,7 +219,7 @@ export function StarterKitsClient({
                           {consumableItems.length > 0 && (
                             <div>
                               <div className="flex items-center gap-2 mb-2">
-                                <div className="w-6 h-6 rounded-lg bg-action-500 flex items-center justify-center">
+                                <div className="w-6 h-6 rounded-[14px] bg-action-500 flex items-center justify-center">
                                   <Icon name="droplet" size={12} className="text-white" />
                                 </div>
                                 <h4 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Supplies ({consumableItems.reduce((s, i) => s + i.quantity, 0)})</h4>
@@ -236,9 +231,9 @@ export function StarterKitsClient({
                                     {items.map((item) => {
                                       const c = consumables.find((con) => con.id === item.consumableId);
                                       return (
-                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 dark:bg-shark-800 rounded-lg px-3 py-2">
+                                        <div key={item.id} className="flex items-center justify-between bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2">
                                           <div className="flex items-center gap-2.5">
-                                            <div className="w-8 h-8 rounded-lg overflow-hidden bg-shark-100 dark:bg-shark-800 flex items-center justify-center shrink-0">
+                                            <div className="w-8 h-8 rounded-[14px] overflow-hidden bg-shark-100 dark:bg-shark-800 flex items-center justify-center shrink-0">
                                               {c?.imageUrl ? <img src={c.imageUrl} alt="" className="w-full h-full object-cover" /> : <Icon name="droplet" size={14} className="text-shark-400" />}
                                             </div>
                                             <div>
@@ -542,7 +537,7 @@ function AddItemsChecklist({
               return (
                 <div
                   key={cat.id}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-[14px] transition-colors ${
                     alreadyAdded ? "bg-shark-100 dark:bg-shark-800 opacity-50" : isSelected ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800 border border-transparent"
                   }`}
                 >
@@ -553,7 +548,7 @@ function AddItemsChecklist({
                     onChange={() => !alreadyAdded && toggleCategory(cat.name)}
                     className="rounded border-shark-300 text-action-500 focus:ring-action-400 cursor-pointer"
                   />
-                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-[14px] overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                     {assetPhotos[cat.name] ? (
                       <img src={assetPhotos[cat.name]!} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -575,7 +570,7 @@ function AddItemsChecklist({
                         min="1"
                         value={selectedCategories.get(cat.name) || 1}
                         onChange={(e) => setCategoryQty(cat.name, parseInt(e.target.value) || 1)}
-                        className="w-14 text-center text-sm rounded-lg border border-shark-200 dark:border-shark-700 py-0.5"
+                        className="w-14 text-center text-sm rounded-[10px] border border-shark-200 dark:border-shark-700 py-0.5"
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>
@@ -605,8 +600,8 @@ function AddItemsChecklist({
                 return (
                   <div
                     key={c.id}
-                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
-                      alreadyAdded ? "bg-shark-100 dark:bg-shark-800 opacity-50" : isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800 border border-transparent"
+                    className={`flex items-center gap-2.5 px-3 py-2 rounded-[14px] transition-colors ${
+                      alreadyAdded ? "bg-shark-100 dark:bg-shark-800 opacity-50" : isSelected ? "bg-action-50 border border-action-200" : "hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-800 border border-transparent"
                     }`}
                   >
                     <input
@@ -616,11 +611,11 @@ function AddItemsChecklist({
                       onChange={() => !alreadyAdded && toggleConsumable(c.id)}
                       className="rounded border-shark-300 text-action-500 focus:ring-action-400"
                     />
-                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-[14px] overflow-hidden bg-white dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                       {c.imageUrl ? (
                         <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <Icon name="droplet" size={12} className="text-blue-500" />
+                        <Icon name="droplet" size={12} className="text-action-500" />
                       )}
                     </div>
                     <label
@@ -638,7 +633,7 @@ function AddItemsChecklist({
                           min="1"
                           value={selectedConsumables.get(c.id) || 1}
                           onChange={(e) => setConsumableQty(c.id, parseInt(e.target.value) || 1)}
-                          className="w-14 text-center text-sm rounded-lg border border-shark-200 dark:border-shark-700 py-0.5"
+                          className="w-14 text-center text-sm rounded-[10px] border border-shark-200 dark:border-shark-700 py-0.5"
                           onClick={(e) => e.stopPropagation()}
                         />
                       </div>
@@ -699,7 +694,7 @@ function ApplyToStaffForm({
     const user = users.find((u) => u.id === selectedUserId);
     return (
       <div className="space-y-4">
-        <div className="bg-action-50 rounded-[28px] p-4 text-center">
+        <div className="bg-action-50 rounded-[20px] p-4 text-center">
           <div className="w-12 h-12 rounded-full bg-action-500 flex items-center justify-center mx-auto mb-3">
             <Icon name="check" size={24} className="text-white" />
           </div>

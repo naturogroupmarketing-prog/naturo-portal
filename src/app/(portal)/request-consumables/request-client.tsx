@@ -12,7 +12,7 @@ import { requestConsumable, acknowledgeConsumable, closeRequest } from "@/app/ac
 import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
-  { color: "text-blue-600", bg: "bg-blue-50" },
+  { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-[#0057FF]", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
@@ -121,23 +121,18 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
+    <div className="px-5 py-4 space-y-8">
       {/* Header */}
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="clipboard" size={14} className="text-action-600" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Requests</h3>
-          <p className="text-xs text-shark-400">Request items and confirm what you&apos;ve received</p>
-        </div>
+      <div>
+        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Requests</h2>
+        <p className="text-xs text-shark-400 mt-0.5">Request items and confirm what you&apos;ve received</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[28px] p-1">
+      <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1">
         <button
           onClick={() => setTab("request")}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
             tab === "request" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
           }`}
         >
@@ -152,7 +147,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         </button>
         <button
           onClick={() => setTab("confirm")}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
             tab === "confirm" ? "bg-action-500 text-white shadow-sm" : "text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 hover:text-shark-700 dark:text-shark-300"
           }`}
         >
@@ -217,7 +212,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                         )}
                       </div>
                       {r.notes && (
-                        <p className="mt-2 text-sm text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 rounded-[28px] p-3">{r.notes}</p>
+                        <p className="mt-2 text-sm text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 rounded-[20px] p-3">{r.notes}</p>
                       )}
                     </CardContent>
                   </Card>
@@ -246,7 +241,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                   onClick={() => toggleSection(sectionName)}
                   className="flex items-center gap-3 px-1 w-full text-left group"
                 >
-                  <div className={`w-8 h-8 rounded-lg ${colors.bg} flex items-center justify-center`}>
+                  <div className={`w-8 h-8 rounded-[14px] ${colors.bg} flex items-center justify-center`}>
                     <Icon name="droplet" size={16} className={colors.color} />
                   </div>
                   <div className="flex items-center gap-2 flex-1">
@@ -308,7 +303,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
                 <Card key={a.id}>
                   <CardContent className="py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                      <div className="w-12 h-12 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                         {a.consumable.imageUrl ? (
                           <img src={a.consumable.imageUrl} alt="" className="w-full h-full object-cover" />
                         ) : (
@@ -394,10 +389,10 @@ function ConsumableRequestCard({
             <img
               src={c.imageUrl}
               alt={c.name}
-              className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-shark-100 dark:border-shark-700"
+              className="w-14 h-14 rounded-[14px] object-cover flex-shrink-0 border border-shark-100 dark:border-shark-700"
             />
           ) : (
-            <div className="w-14 h-14 rounded-lg bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 rounded-[14px] bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0">
               <Icon name="droplet" size={20} className="text-shark-400" />
             </div>
           )}
@@ -409,14 +404,14 @@ function ConsumableRequestCard({
 
         {/* Request form */}
         {showRequest && (
-          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-lg p-3">
+          <div className="mt-3 space-y-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] p-3">
             <p className="text-xs font-medium text-shark-600 dark:text-shark-400">How many do you need?</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => setReqQty(Math.max(1, reqQty - 1))}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-[10px] bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                   disabled={reqQty <= 1}
                 >
                   <span className="text-sm font-bold leading-none">−</span>
@@ -431,7 +426,7 @@ function ConsumableRequestCard({
                 <button
                   type="button"
                   onClick={() => setReqQty(reqQty + 1)}
-                  className="w-7 h-7 rounded-lg bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
+                  className="w-7 h-7 rounded-[10px] bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 dark:hover:bg-shark-700"
                 >
                   <Icon name="plus" size={12} />
                 </button>

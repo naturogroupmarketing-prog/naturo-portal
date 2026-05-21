@@ -130,14 +130,9 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   if (submitted) {
     return (
       <div className="space-y-10">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-            <Icon name="arrow-left" size={14} className="text-action-600" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Returns</h3>
-            <p className="text-xs text-shark-400">All returns processed</p>
-          </div>
+        <div>
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Returns</h2>
+          <p className="text-xs text-shark-400 mt-0.5">All returns processed</p>
         </div>
         <Card>
           <div className="py-12 text-center">
@@ -154,14 +149,11 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
   return (
     <Card padding="none">
-    <div className="p-4 sm:p-5 space-y-8">
+    <div className="px-5 py-4 space-y-8">
       <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-action-100 flex items-center justify-center shrink-0">
-          <Icon name="arrow-left" size={14} className="text-action-600" />
-        </div>
         <div className="flex-1">
-          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Returns</h3>
-          <p className="text-xs text-shark-400">
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Returns</h2>
+          <p className="text-xs text-shark-400 mt-0.5">
             {totalItems} item{totalItems !== 1 ? "s" : ""} pending verification
             {processedCount > 0 && <span> · {processedCount} marked</span>}
           </p>
@@ -174,7 +166,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
           {totalItems > 0 && (
             <Link
               href="/returns/quick"
-              className="inline-flex items-center gap-1.5 rounded-[28px] bg-action-600 px-3 py-2 text-sm font-semibold text-white hover:bg-action-700 transition-colors shadow-sm"
+              className="inline-flex items-center gap-1.5 rounded-[20px] bg-action-600 px-3 py-2 text-sm font-semibold text-white hover:bg-action-700 transition-colors shadow-sm"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
@@ -265,7 +257,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                                 isNotReturned ? "text-[#0057FF] focus:ring-action-200" : "text-action-500 focus:ring-action-400"
                               }`}
                             />
-                            <div className="w-9 h-9 rounded-lg overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
                               {photo ? (
                                 <img src={photo} alt="" className="w-full h-full object-cover" />
                               ) : (
@@ -305,7 +297,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                                     if (reason) toggleItem(item.id, "rejected", reason);
                                   }
                                 }}
-                                className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                                className={`p-1.5 rounded-[10px] transition-colors shrink-0 ${
                                   isRejected ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
                                 }`}
                                 title={isRejected ? "Undo rejection" : "Reject"}

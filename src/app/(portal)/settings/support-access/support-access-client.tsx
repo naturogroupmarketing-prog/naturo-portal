@@ -177,7 +177,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
 
       {/* Active session alert */}
       {activeSessions.length > 0 && (
-        <div className="rounded-[28px] border border-action-200 dark:border-action-700 bg-action-50 dark:bg-action-900/20 p-4 flex items-start gap-3">
+        <div className="rounded-[20px] border border-action-200 dark:border-action-700 bg-action-50 dark:bg-action-900/20 p-4 flex items-start gap-3">
           <Icon name="alert-triangle" size={16} className="text-action-600 dark:text-action-400 mt-0.5 shrink-0" />
           <div className="flex-1">
             <p className="text-sm font-semibold text-action-800 dark:text-action-300">
@@ -204,7 +204,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-shark-100 dark:bg-shark-800 rounded-[28px] p-1">
+      <div className="flex gap-1 bg-shark-100 dark:bg-shark-800 rounded-[20px] p-1">
         {(["settings", "history", "requests"] as const).map((tab) => (
           <button
             key={tab}
@@ -225,7 +225,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
         <Card className="overflow-hidden border-shark-200 dark:border-shark-700">
           <div className="px-6 py-5 border-b border-shark-100 dark:border-shark-700 flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-shark-900 dark:text-shark-100">Support Access Settings</h2>
+              <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Support Access Settings</h2>
               <p className="text-xs text-shark-500 dark:text-shark-400 mt-0.5">Configure when and how Trackio support can access your account</p>
             </div>
             <div className={`text-xs font-semibold px-2.5 py-1 rounded-full ${policy.supportAccessEnabled ? "bg-action-100 text-action-700 dark:bg-action-900/30 dark:text-action-400" : "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"}`}>
@@ -276,7 +276,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
               {ACCESS_LEVEL_OPTIONS.map((o) => (
                 <div
                   key={o.value}
-                  className={`flex gap-3 p-3 rounded-[28px] border transition-colors ${
+                  className={`flex gap-3 p-3 rounded-[20px] border transition-colors ${
                     policy.defaultAccessLevel === o.value
                       ? "border-action-200 bg-action-50 dark:bg-action-900/20 dark:border-action-700/40"
                       : "border-shark-100 dark:border-shark-700 opacity-60"
@@ -364,7 +364,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
       {activeTab === "history" && (
         <Card className="overflow-hidden border-shark-200 dark:border-shark-700">
           <div className="px-6 py-4 border-b border-shark-100 dark:border-shark-700">
-            <h2 className="text-base font-semibold text-shark-900 dark:text-shark-100">Support Session History</h2>
+            <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Support Session History</h2>
             <p className="text-xs text-shark-500 dark:text-shark-400 mt-0.5">Immutable log of all support access to your account</p>
           </div>
           {sessions.length === 0 ? (
@@ -429,7 +429,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
       {activeTab === "requests" && (
         <Card className="overflow-hidden border-shark-200 dark:border-shark-700">
           <div className="px-6 py-4 border-b border-shark-100 dark:border-shark-700">
-            <h2 className="text-base font-semibold text-shark-900 dark:text-shark-100">Support Access Requests</h2>
+            <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Support Access Requests</h2>
             <p className="text-xs text-shark-500 dark:text-shark-400 mt-0.5">
               Requests from Trackio support to access your account. Approve or deny from here when approval is required.
             </p>
@@ -473,7 +473,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
       {/* What support can and cannot do */}
       <Card className="border-shark-200 dark:border-shark-700">
         <div className="px-6 py-4 border-b border-shark-100 dark:border-shark-700">
-          <h3 className="text-sm font-semibold text-shark-800 dark:text-shark-200">What Trackio support can and cannot do</h3>
+          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">What Trackio support can and cannot do</h3>
         </div>
         <div className="px-6 py-4 grid sm:grid-cols-2 gap-4">
           <div>

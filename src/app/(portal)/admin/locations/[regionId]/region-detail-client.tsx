@@ -14,7 +14,7 @@ import { useToast } from "@/components/ui/toast";
 import { getItemTemplates, applyItemsToRegion } from "@/app/actions/locations";
 
 const SECTION_COLORS = [
-  { bg: "bg-blue-50", color: "text-blue-600" },
+  { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-action-50", color: "text-[#0057FF]" },
   { bg: "bg-action-50", color: "text-action-600" },
@@ -280,7 +280,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                   <p className="text-2xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
                 </div>
-                <div className={`w-10 h-10 rounded-[28px] ${stat.bg} flex items-center justify-center`}>
+                <div className={`w-10 h-10 rounded-[20px] ${stat.bg} flex items-center justify-center`}>
                   <Icon name={stat.icon} size={18} className={stat.color} />
                 </div>
               </div>
@@ -293,7 +293,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
       {isEmpty && (
         <Card className="border-2 border-dashed border-action-200 bg-action-50/30">
           <div className="px-6 py-8 text-center">
-            <div className="w-14 h-14 rounded-[28px] bg-action-500 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-[20px] bg-action-500 flex items-center justify-center mx-auto mb-4">
               <Icon name="plus" size={24} className="text-white" />
             </div>
             <h3 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Set Up This Location</h3>
@@ -383,11 +383,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     onClick={() => toggleSection(`asset-${catName}`)}
                     className="flex items-center gap-3 px-1 w-full text-left group"
                   >
-                    <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center`}>
+                    <div className={`w-7 h-7 rounded-[14px] ${colors.bg} flex items-center justify-center`}>
                       <Icon name="package" size={14} className={colors.color} />
                     </div>
                     <div className="flex items-center gap-2 flex-1">
-                      <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{catName}</h3>
+                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">{catName}</h3>
                       <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                         {catAssets.length}
                       </span>
@@ -415,7 +415,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                             {catAssets.map((asset) => (
                               <tr key={asset.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50">
                                 <td className="px-4 py-2.5">
-                                  <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
+                                  <div className="w-9 h-9 rounded-[14px] bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
                                     {asset.imageUrl ? (
                                       <img src={asset.imageUrl} alt={asset.name} className="w-full h-full object-cover" />
                                     ) : (
@@ -466,11 +466,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     onClick={() => toggleSection(`consumable-${catName}`)}
                     className="flex items-center gap-3 px-1 w-full text-left group"
                   >
-                    <div className={`w-7 h-7 rounded-lg ${colors.bg} flex items-center justify-center`}>
+                    <div className={`w-7 h-7 rounded-[14px] ${colors.bg} flex items-center justify-center`}>
                       <Icon name="droplet" size={14} className={colors.color} />
                     </div>
                     <div className="flex items-center gap-2 flex-1">
-                      <h3 className="text-base font-semibold text-shark-900 dark:text-shark-100">{catName}</h3>
+                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">{catName}</h3>
                       <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
                         {catItems.length}
                       </span>
@@ -501,7 +501,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                               return (
                                 <tr key={item.id} className="border-b border-shark-50 dark:border-shark-800 hover:bg-shark-50 dark:hover:bg-shark-800/50">
                                   <td className="px-4 py-2.5">
-                                    <div className="w-9 h-9 rounded-lg bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
+                                    <div className="w-9 h-9 rounded-[14px] bg-shark-50 dark:bg-shark-800 overflow-hidden flex items-center justify-center">
                                       {item.imageUrl ? (
                                         <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                                       ) : (
@@ -593,7 +593,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             {templates.assets.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Assets ({totalAssetCount} items)</h3>
+                  <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Assets ({totalAssetCount} items)</h3>
                   <div className="flex items-center gap-2">
                     <button onClick={() => { const q: Record<string, number> = {}; templates.assets.forEach((a) => { q[`${a.category}|${a.name}`] = 1; }); setAssetQtys(q); }} className="text-xs text-action-500 hover:text-action-600">All to 1</button>
                     <button onClick={() => { const q: Record<string, number> = {}; templates.assets.forEach((a) => { q[`${a.category}|${a.name}`] = 0; }); setAssetQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600 dark:text-shark-400">Clear</button>
@@ -604,11 +604,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     const key = `${a.category}|${a.name}`;
                     const qty = assetQtys[key] || 0;
                     return (
-                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50 dark:hover:bg-shark-800"}`}>
+                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-[14px] ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50 dark:hover:bg-shark-800"}`}>
                         <div className="flex items-center gap-1 shrink-0">
-                          <button onClick={() => setAssetQty(key, qty - 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-sm font-bold">−</button>
+                          <button onClick={() => setAssetQty(key, qty - 1)} className="w-7 h-7 rounded-[10px] border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-sm font-bold">−</button>
                           <span className="w-8 text-center text-sm font-semibold text-shark-800 dark:text-shark-200">{qty}</span>
-                          <button onClick={() => setAssetQty(key, qty + 1)} className="w-7 h-7 rounded-lg border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-sm font-bold">+</button>
+                          <button onClick={() => setAssetQty(key, qty + 1)} className="w-7 h-7 rounded-[10px] border border-shark-200 dark:border-shark-700 flex items-center justify-center text-shark-500 dark:text-shark-400 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-sm font-bold">+</button>
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{a.name}</p>
@@ -626,7 +626,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             {templates.consumables.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-shark-700 dark:text-shark-300">Supplies ({totalConsumableCount}/{templates.consumables.length})</h3>
+                  <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Supplies ({totalConsumableCount}/{templates.consumables.length})</h3>
                   <div className="flex items-center gap-2">
                     <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 10; }); setConsumableQtys(q); }} className="text-xs text-action-500 hover:text-action-600">All to 10</button>
                     <button onClick={() => { const q: Record<string, number> = {}; templates.consumables.forEach((c) => { q[`${c.category}|${c.name}`] = 0; }); setConsumableQtys(q); }} className="text-xs text-shark-400 hover:text-shark-600 dark:text-shark-400">Clear</button>
@@ -638,13 +638,13 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
                     const key = `${c.category}|${c.name}`;
                     const qty = consumableQtys[key] || 0;
                     return (
-                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50 dark:hover:bg-shark-800"}`}>
+                      <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-[14px] ${qty > 0 ? "bg-action-50/50" : "hover:bg-shark-50 dark:hover:bg-shark-800"}`}>
                         <input
                           type="number"
                           min="0"
                           value={qty}
                           onChange={(e) => setConsumableQty(key, parseInt(e.target.value) || 0)}
-                          className="w-16 text-center text-sm border border-shark-200 dark:border-shark-700 rounded-lg py-1 focus:border-action-400 focus:outline-none"
+                          className="w-16 text-center text-sm border border-shark-200 dark:border-shark-700 rounded-[10px] py-1 focus:border-action-400 focus:outline-none"
                         />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-shark-800 dark:text-shark-200">{c.name}</p>
