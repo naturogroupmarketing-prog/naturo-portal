@@ -825,7 +825,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             { href: `/returns?region=${region.regionId}`,                                                                                    icon: "arrow-left"     as const, iconColor: "text-action-600", bg: "bg-action-400/15", value: region.overdueReturns,  label: "Returns"   },
                             { href: `/purchase-orders?status=PENDING&region=${region.regionId}`,                                                             icon: "truck"          as const, iconColor: "text-action-600", bg: "bg-action-400/15", value: region.pendingPOs,      label: "POs"       },
                           ] as const).map((tile) => (
-                            <Link key={tile.label} href={tile.href} className="block group aspect-square lg:aspect-auto lg:h-[72px]">
+                            <Link key={tile.label} href={tile.href} className="block group aspect-square lg:aspect-auto lg:h-24">
                               <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${tile.bg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
                                 <div className="p-2 lg:px-4 lg:py-0 h-full">
                                   <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:justify-start lg:gap-3">
