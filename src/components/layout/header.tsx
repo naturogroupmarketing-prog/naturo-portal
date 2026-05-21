@@ -183,7 +183,7 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
 
           {/* Dropdown menu */}
           {dropdownOpen && (
-            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] backdrop-blur-[20px] bg-white/80 dark:bg-shark-800/80 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.12),0_1px_0_rgba(255,255,255,0.80)_inset] border border-white/60 dark:border-white/[0.08] py-1.5 z-50">
+            <div className="fixed right-2 top-14 sm:absolute sm:right-0 sm:top-full sm:mt-1.5 w-56 max-w-[calc(100vw-1rem)] bg-white dark:bg-shark-800 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.12)] border border-shark-100 dark:border-shark-700 py-1.5 z-50">
               {/* User info */}
               <div className="px-4 py-2.5 border-b border-shark-100 dark:border-shark-700">
                 <p className="text-sm font-semibold text-shark-800 dark:text-shark-100">{userName}</p>
