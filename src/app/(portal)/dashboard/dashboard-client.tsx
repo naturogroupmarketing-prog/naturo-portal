@@ -424,7 +424,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         {/* Mobile: centered column; Desktop: left-aligned row */}
                         <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:justify-start lg:text-left lg:gap-3">
                           {/* Icon: bare on mobile, glass chip on desktop */}
-                          <div className="flex items-center justify-center flex-shrink-0 lg:w-9 lg:h-9 lg:rounded-[14px] lg:bg-white/50 dark:lg:bg-white/10">
+                          <div className="flex items-center justify-center flex-shrink-0">
                             <Icon name={s.icon} size={20} className={s.iconColor} />
                           </div>
                           {/* Number + label */}
