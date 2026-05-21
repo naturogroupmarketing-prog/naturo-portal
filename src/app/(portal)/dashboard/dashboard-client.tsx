@@ -428,7 +428,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <Icon name={s.icon} size={20} className={s.iconColor} />
                           </div>
                           {/* Number + label */}
-                          <div className="min-w-0 lg:flex-1">
+                          <div className="min-w-0 lg:flex-1 lg:text-center">
                             <AnimatedCounter value={s.value} className="text-base lg:text-2xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
                             <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
                           </div>
