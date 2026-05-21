@@ -420,13 +420,17 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 <StaggerItem key={s.label}>
                   <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-full">
                     <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${s.buttonBg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
-                      <div className="p-2 lg:px-3 lg:py-3 h-full">
-                        {/* Mobile: square compact; Desktop: horizontal */}
-                        <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:text-left lg:gap-2">
-                          <Icon name={s.icon} size={20} className={`${s.iconColor} flex-shrink-0`} />
-                          <div className="min-w-0">
-                            <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                            <p className="text-[11px] lg:text-xs font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
+                      <div className="p-2 lg:px-4 lg:py-0 h-full">
+                        {/* Mobile: centered column; Desktop: left-aligned row */}
+                        <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:justify-start lg:text-left lg:gap-3">
+                          {/* Icon chip */}
+                          <div className="w-9 h-9 rounded-[14px] bg-white/50 dark:bg-white/10 flex items-center justify-center flex-shrink-0">
+                            <Icon name={s.icon} size={18} className={s.iconColor} />
+                          </div>
+                          {/* Number + label */}
+                          <div className="flex-1 min-w-0">
+                            <AnimatedCounter value={s.value} className="text-base lg:text-2xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                            <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight mt-0.5">{s.label}</p>
                           </div>
                           <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                         </div>
