@@ -423,7 +423,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <div className="p-2 lg:px-3 lg:py-3 h-full">
                         {/* Mobile: square compact; Desktop: horizontal */}
                         <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:text-left lg:gap-2">
-                          <Icon name={s.icon} size={27} className={`${s.iconColor} flex-shrink-0`} />
+                          <Icon name={s.icon} size={20} className={`${s.iconColor} flex-shrink-0`} />
                           <div className="min-w-0">
                             <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
                             <p className="text-[11px] lg:text-xs font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
