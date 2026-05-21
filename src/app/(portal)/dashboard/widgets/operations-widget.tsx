@@ -93,7 +93,7 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
 
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-bold text-shark-900 dark:text-shark-100 leading-tight">Operations Performance</h2>
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-tight">Operations Performance</h2>
           <div className="flex items-center gap-1.5 bg-action-50 dark:bg-action-500/10 border border-action-100 dark:border-action-500/20 rounded-full px-2 py-0.5 shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-action-500 animate-pulse" />
             <span className="text-[10px] font-bold text-action-600 dark:text-action-400 uppercase tracking-wider">Live</span>
@@ -161,7 +161,7 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
           <div className="w-6 h-6 rounded-[14px] bg-red-50 dark:bg-red-500/10 flex items-center justify-center shrink-0">
             <Icon name="alert-triangle" size={12} className="text-red-500" />
           </div>
-          <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">Priority Alerts</span>
+          <span className="text-lg font-bold text-shark-900 dark:text-shark-100">Priority Alerts</span>
           {total > 0 && (
             <span className="text-[10px] font-bold bg-red-500 text-white rounded-full px-1.5 py-0.5 leading-none">
               {total}

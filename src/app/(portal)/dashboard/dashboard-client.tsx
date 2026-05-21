@@ -463,7 +463,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="bar-chart" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h2 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Finance</h2>
+                          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Finance</h2>
                           <p className="text-xs text-shark-400">Asset &amp; Supply Value</p>
                         </div>
                       </div>
@@ -592,7 +592,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="package" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Asset Status</h3>
+                          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Asset Status</h3>
                           <p className="text-xs text-shark-400">Breakdown by status</p>
                         </div>
                       </div>
@@ -626,7 +626,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="box" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Assets by Category</h3>
+                          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Assets by Category</h3>
                           <p className="text-xs text-shark-400">Distribution across categories</p>
                         </div>
                       </div>
@@ -664,7 +664,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="droplet" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Supply Status</h3>
+                          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Supply Status</h3>
                           <p className="text-xs text-shark-400">Breakdown by stock level</p>
                         </div>
                       </div>
@@ -698,7 +698,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Icon name="clipboard" size={14} className="text-action-600" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Supplies by Category</h3>
+                          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Supplies by Category</h3>
                           <p className="text-xs text-shark-400">Distribution across categories</p>
                         </div>
                       </div>
@@ -737,7 +737,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         <Icon name="alert-triangle" size={14} className="text-red-500" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Low Stock Alerts</h3>
+                        <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Low Stock Alerts</h3>
                         <p className="text-xs text-shark-400">Items below minimum threshold</p>
                       </div>
                     </div>
@@ -797,7 +797,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <Icon name="bar-chart" size={14} className="text-action-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Predicted Shortages</h3>
+                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Predicted Shortages</h3>
                       <p className="text-xs text-shark-400">AI-powered depletion forecasts</p>
                     </div>
                     <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-md shrink-0">AI</span>
@@ -998,7 +998,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 <Icon name="map-pin" size={14} className="text-action-600" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-shark-900 dark:text-shark-100">Storage Locations</h3>
+                <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Storage Locations</h3>
                 <p className="text-xs text-shark-400">Map and location overview</p>
               </div>
             </div>
