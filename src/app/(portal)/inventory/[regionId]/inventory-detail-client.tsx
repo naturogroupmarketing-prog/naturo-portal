@@ -111,11 +111,8 @@ export function InventoryDetailClient({
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => { setLocationDropdownOpen((o) => !o); setLocationSearch(""); }}
-            className="w-full flex items-center gap-3 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors group text-left"
+            className="w-full flex items-center px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-700 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors group text-left"
           >
-            <div className="w-8 h-8 rounded-[14px] bg-action-100 flex items-center justify-center shrink-0">
-              <Icon name="map-pin" size={15} className="text-action-600" />
-            </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
                 <h1 className="text-base font-semibold text-shark-900 dark:text-shark-100">{region.name}</h1>
@@ -209,7 +206,7 @@ export function InventoryDetailClient({
         </div>
 
         {/* Tab bar — scrollable so it never squeezes at narrow widths */}
-        <div className="px-3 sm:px-4 py-3 border-b border-shark-100 dark:border-shark-700 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+        <div className="px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-700 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
           <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1 min-w-max">
             {TABS.map((tab) => (
               <button
@@ -248,7 +245,7 @@ export function InventoryDetailClient({
         )}
 
         {/* Tab content */}
-        <div className="px-5 py-4">
+        <div>
           {activeTab === "Assets" && (
             <AssetsClient
               assets={assets as never}
