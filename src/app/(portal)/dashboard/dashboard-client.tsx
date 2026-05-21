@@ -429,7 +429,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           </div>
                           {/* Number + label */}
                           <div className="min-w-0 lg:flex-1 lg:text-center">
-                            <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                            <AnimatedCounter value={s.value} className="text-base lg:text-2xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
                             <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
                           </div>
                           <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
@@ -833,7 +833,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                       <Icon name={tile.icon} size={20} className={tile.iconColor} />
                                     </div>
                                     <div className="min-w-0 lg:flex-1 lg:text-center">
-                                      <AnimatedCounter value={tile.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                                      <AnimatedCounter value={tile.value} className="text-base lg:text-2xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
                                       <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{tile.label}</p>
                                     </div>
                                     <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
