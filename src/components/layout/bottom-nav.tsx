@@ -341,7 +341,10 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
             </div>
 
             {/* Nav pill — fixed size, never changes */}
-            <div className="overflow-hidden rounded-[44px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 border border-white/50 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]">
+            <div
+              className="overflow-hidden rounded-[44px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 border border-white/50 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]"
+              onClick={() => quickOpen && setQuickOpen(false)}
+            >
             {/* Nav row — always visible */}
             <nav
               aria-label="Mobile navigation"
@@ -365,13 +368,13 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                   key={item.href}
                   item={item}
                   active={!moreOpen && navActiveIdx === idx}
-                  onSelect={() => setMoreOpen(false)}
+                  onSelect={() => { setMoreOpen(false); setQuickOpen(false); }}
                 />
               ))}
 
               {/* More button */}
               <button
-                onClick={() => setMoreOpen((p) => !p)}
+                onClick={() => { setMoreOpen((p) => !p); setQuickOpen(false); }}
                 aria-label={moreOpen ? "Close more menu" : "Open more menu"}
                 className="relative z-10 flex flex-col items-center justify-center flex-1 gap-0.5 py-1 px-3 min-h-[32px] touch-manipulation select-none"
               >
@@ -410,10 +413,12 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 const openDelay  = (quickActions.length - 1 - i) * 50;
                 const closeDelay = i * 35;
                 return (
-                  <div
+                  <Link
                     key={action.label}
+                    href={action.href}
+                    onClick={() => setQuickOpen(false)}
                     className={cn(
-                      "flex items-center gap-2.5 transition-all",
+                      "flex items-center gap-2.5 transition-all touch-manipulation select-none",
                       quickOpen
                         ? "opacity-100 translate-y-0 pointer-events-auto"
                         : "opacity-0 translate-y-4 pointer-events-none"
@@ -431,17 +436,13 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                       </span>
                     </div>
                     {/* Mini FAB */}
-                    <Link
-                      href={action.href}
-                      onClick={() => setQuickOpen(false)}
-                      className={cn(
-                        "w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(0,0,0,0.15)] touch-manipulation select-none active:scale-95 transition-transform",
-                        action.color
-                      )}
-                    >
+                    <div className={cn(
+                      "w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(0,0,0,0.15)] active:scale-95 transition-transform",
+                      action.color
+                    )}>
                       <Icon name={action.icon} size={19} className="text-white" />
-                    </Link>
-                  </div>
+                    </div>
+                  </Link>
                 );
               })}
             </div>
