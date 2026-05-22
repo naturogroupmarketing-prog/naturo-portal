@@ -301,7 +301,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
         className="fixed bottom-0 inset-x-0 z-40 lg:hidden"
         style={{ paddingBottom: "max(10px, env(safe-area-inset-bottom))" }}
       >
-        <div className="mx-4 flex items-stretch gap-2.5">
+        <div className="mx-4 flex items-end gap-2.5">
 
           {/* Unified nav card — glassmorphism */}
           <div
@@ -402,7 +402,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
           </div>
 
           {/* ── FAB speed-dial ─────────────────────────────────────────────── */}
-          <div className="relative shrink-0 flex flex-col">
+          <div className="relative shrink-0">
 
             {/* Speed-dial actions — stacked above FAB */}
             <div className="absolute bottom-full mb-3 right-0 flex flex-col items-end gap-3 pointer-events-none">
@@ -451,7 +451,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
               onClick={() => setQuickOpen((p) => !p)}
               aria-label={quickOpen ? "Close quick actions" : "Quick actions"}
               className={cn(
-                "w-[56px] flex-1 rounded-[44px] flex items-center justify-center touch-manipulation select-none transition-all duration-200",
+                "w-[56px] h-[54px] rounded-[44px] flex items-center justify-center touch-manipulation select-none transition-all duration-200",
                 "backdrop-blur-[40px] backdrop-saturate-[180%] border border-white/50 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]",
                 quickOpen
                   ? "bg-white/20 scale-95"
