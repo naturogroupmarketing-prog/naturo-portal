@@ -306,43 +306,42 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
           {/* Unified nav card — glassmorphism */}
           <div
             ref={containerRef}
-            className="flex-1 overflow-hidden rounded-[44px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 border border-white/50 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]"
+            className="flex-1 relative"
           >
-            {/* More grid — expands upward */}
+            {/* More panel — floats above the nav pill, never changes pill size */}
             <div
               className={cn(
-                "grid transition-[grid-template-rows] duration-300",
+                "absolute bottom-full left-0 right-0 mb-2 rounded-[28px] overflow-hidden backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/60 border border-white/60 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]",
+                "transition-all duration-300",
                 moreOpen
-                  ? "grid-rows-[1fr] ease-[cubic-bezier(0.32,0.72,0,1)]"
-                  : "grid-rows-[0fr] ease-in"
+                  ? "opacity-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 translate-y-3 pointer-events-none"
               )}
             >
-              <div className="overflow-hidden min-h-0">
-                <div className="grid grid-cols-3 gap-y-5 gap-x-3 px-5 pt-6 pb-4">
-                  {moreItems.map((item) => (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      onClick={() => setMoreOpen(false)}
-                      className="flex flex-col items-center gap-2 touch-manipulation select-none"
-                    >
-                      <div className={cn(
-                        "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center backdrop-blur-[20px] border border-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform",
-                        item.bg
-                      )}>
-                        <Icon name={item.icon} size={27} className={item.fg} />
-                      </div>
-                      <span className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 text-center leading-tight">
-                        {item.label}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-                {/* Divider */}
-                <div className="mx-4 h-px bg-black/[0.06] dark:bg-shark-700" />
+              <div className="grid grid-cols-3 gap-y-5 gap-x-3 px-5 pt-6 pb-6">
+                {moreItems.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMoreOpen(false)}
+                    className="flex flex-col items-center gap-2 touch-manipulation select-none"
+                  >
+                    <div className={cn(
+                      "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center backdrop-blur-[20px] border border-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform",
+                      item.bg
+                    )}>
+                      <Icon name={item.icon} size={27} className={item.fg} />
+                    </div>
+                    <span className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 text-center leading-tight">
+                      {item.label}
+                    </span>
+                  </Link>
+                ))}
               </div>
             </div>
 
+            {/* Nav pill — fixed size, never changes */}
+            <div className="overflow-hidden rounded-[44px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 border border-white/50 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]">
             {/* Nav row — always visible */}
             <nav
               aria-label="Mobile navigation"
@@ -399,7 +398,8 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 </span>
               </button>
             </nav>
-          </div>
+            </div>{/* end nav pill */}
+          </div>{/* end containerRef */}
 
           {/* ── FAB speed-dial ─────────────────────────────────────────────── */}
           <div className="relative shrink-0">
