@@ -48,19 +48,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-action-500">
+    <div className="min-h-screen bg-white">
 
-      {/* ── Blue header section ── */}
-      <div className="flex flex-col items-center justify-center pt-16 pb-12 px-6 shrink-0">
+      {/* ── Blue header section — extends behind top of card ── */}
+      <div className="bg-action-500 pt-16 pb-40 px-6 flex flex-col items-center text-center">
         <Logo size={56} className="mb-5 [&_img]:brightness-0 [&_img]:invert" />
-        <h1 className="text-[28px] sm:text-[32px] font-bold text-white leading-tight tracking-tight text-center">
+        <h1 className="text-[28px] sm:text-[32px] font-bold text-white leading-tight tracking-tight">
           Sign In
         </h1>
-        <p className="text-white/70 text-sm mt-1 text-center">Asset &amp; Consumable Tracker</p>
+        <p className="text-white/70 text-sm mt-1">Asset &amp; Consumable Tracker</p>
       </div>
 
-      {/* ── White card section ── */}
-      <div className="flex-1 bg-white rounded-t-[28px] px-6 pt-8 pb-10 overflow-y-auto">
+      {/* ── White card — overlaps up into the blue section ── */}
+      <div className="px-4 -mt-32 pb-10">
+      <div className="bg-white rounded-[28px] shadow-lg px-6 pt-8 pb-10">
 
         {error && (
           <div className="mb-5 p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600 text-center">
@@ -171,6 +172,7 @@ export default function LoginPage() {
           {" "}and{" "}
           <Link href="/privacy-policy" className="text-action-500 hover:underline">Privacy Policy</Link>.
         </p>
+      </div>
       </div>
     </div>
   );
