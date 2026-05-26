@@ -444,17 +444,12 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
     <div>
       {/* Hero Banner — matches admin dashboard */}
       <div
-        className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32 bg-action-500"
-        style={{ minHeight: 240 }}
+        className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-20 bg-action-500"
+        style={{ minHeight: 140 }}
       >
-        <div className="absolute bottom-36 left-0 right-0 px-5 sm:px-10">
-          <h1 className="text-xl sm:text-3xl font-bold text-white tracking-tight">
-            {userName ?? "Dashboard"}
-          </h1>
-        </div>
       </div>
 
-    <div className="relative z-10 -mt-24 space-y-8">
+    <div className="relative z-10 -mt-14 space-y-8">
       {/* Pending Starter Kit Checklist */}
       {hasPendingKit && (
         <Card className="">

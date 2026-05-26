@@ -374,14 +374,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
         {/* Hero Banner — full-width bleed, extends down into Health Score widget */}
         <div
-          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32 bg-action-500"
-          style={{ minHeight: 240 }}
+          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-20 bg-action-500"
+          style={{ minHeight: 140 }}
         >
-          {/* Heading + settings cog — inline row, higher in the hero */}
-          <div className="absolute bottom-36 left-0 right-0 px-5 sm:px-10 flex items-center justify-between">
-            <h1 className="text-xl sm:text-3xl font-bold text-white tracking-tight">
-              {userName ?? "Dashboard"}
-            </h1>
+          {/* Settings cog */}
+          <div className="absolute bottom-16 right-0 px-5 sm:px-10 flex items-center justify-end">
             <button
               onClick={() => setSettingsOpen(true)}
               className="p-2.5 rounded-full text-white/70 hover:text-white transition-colors"
@@ -394,7 +391,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </div>
 
         {/* ── AI Briefing (1/2) | Stat cards stacked (1/2) — pulled up to overlap hero */}
-        <div className="relative z-10 -mt-24 flex flex-col gap-4">
+        <div className="relative z-10 -mt-14 flex flex-col gap-4">
           {/* AI Briefing — full width if present */}
           {briefingWidget && (
             <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
