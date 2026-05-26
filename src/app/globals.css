@@ -76,9 +76,9 @@
 
 /* Stronger glass — more blur + lower opacity so background colour bleeds through visibly on all browsers incl. Safari iOS */
 .glass-card-strong {
-  background: rgba(255, 255, 255, 0.50);
-  backdrop-filter: blur(60px) saturate(2.5);
-  -webkit-backdrop-filter: blur(60px) saturate(2.5);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(40px) saturate(2.0);
+  -webkit-backdrop-filter: blur(40px) saturate(2.0);
   border: 1px solid rgba(255, 255, 255, 0.90);
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.90);
 }
