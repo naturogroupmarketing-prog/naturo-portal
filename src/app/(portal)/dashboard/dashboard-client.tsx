@@ -377,6 +377,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32 bg-action-500"
           style={{ minHeight: 240 }}
         >
+          {/* Decorative blobs — give backdrop-filter something to blur so the frosted-glass effect is visible on all browsers incl. Safari iOS */}
+          <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10" />
+          <div className="absolute -top-8 left-1/3 w-48 h-48 rounded-full bg-blue-300/20" />
+          <div className="absolute bottom-8 -left-10 w-40 h-40 rounded-full bg-white/[0.08]" />
+          <div className="absolute bottom-0 right-1/4 w-32 h-32 rounded-full bg-blue-200/15" />
 
           {/* Heading + settings cog — inline row, higher in the hero */}
           <div className="absolute bottom-36 left-0 right-0 px-5 sm:px-10 flex items-center justify-between">
