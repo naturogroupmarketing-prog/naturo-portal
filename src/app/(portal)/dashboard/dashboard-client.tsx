@@ -816,60 +816,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "regional":
-            return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
-              <div key="regional" className="space-y-4 mt-10">
-                <div className="flex items-center gap-2 pl-5">
-                  <Icon name="map-pin" size={13} className="text-shark-400" />
-                  <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Locations</p>
-                </div>
-                {[...regionBreakdown].sort((a, b) => a.regionName.localeCompare(b.regionName)).map((region) => {
-                  const isCollapsed = collapsedRegions.has(region.regionId);
-                  return (
-                    <div key={region.regionId}>
-                      {/* Tappable region label row */}
-                      <button
-                        onClick={() => toggleRegion(region.regionId)}
-                        className="flex items-center gap-1.5 mb-2 pl-5 group"
-                      >
-                        <p className="text-xs font-semibold text-shark-500 dark:text-shark-400 group-hover:text-shark-700 dark:group-hover:text-shark-200 transition-colors">{region.regionName}</p>
-                        <Icon
-                          name="chevron-down"
-                          size={12}
-                          className={`text-shark-400 transition-transform duration-200 ${isCollapsed ? "-rotate-90" : ""}`}
-                        />
-                      </button>
-                      {!isCollapsed && (
-                        <div className="grid grid-cols-4 gap-2">
-                          {([
-                            { href: isSuperAdmin ? `/alerts/low-stock?region=${region.regionId}` : "/alerts/low-stock", icon: "alert-triangle" as const, iconColor: "text-red-500",    bg: "bg-red-400/15",    value: region.lowStockCount,   label: "Low Stock" },
-                            { href: `/consumables?tab=requests&region=${region.regionId}`,                                                                   icon: "clipboard"      as const, iconColor: "text-action-600", bg: "bg-action-400/15", value: region.pendingRequests, label: "Requests"  },
-                            { href: `/returns?region=${region.regionId}`,                                                                                    icon: "arrow-left"     as const, iconColor: "text-action-600", bg: "bg-action-400/15", value: region.overdueReturns,  label: "Returns"   },
-                            { href: `/purchase-orders?status=PENDING&region=${region.regionId}`,                                                             icon: "truck"          as const, iconColor: "text-action-600", bg: "bg-action-400/15", value: region.pendingPOs,      label: "POs"       },
-                          ] as const).map((tile) => (
-                            <Link key={tile.label} href={tile.href} className="block group aspect-square lg:aspect-auto lg:h-[72px]">
-                              <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${tile.bg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
-                                <div className="p-2 lg:px-4 lg:py-0 h-full">
-                                  <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:justify-start lg:gap-3">
-                                    <div className="flex items-center justify-center flex-shrink-0">
-                                      <Icon name={tile.icon} size={20} className={tile.iconColor} />
-                                    </div>
-                                    <div className="min-w-0 lg:flex-1 lg:text-center">
-                                      <AnimatedCounter value={tile.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                                      <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{tile.label}</p>
-                                    </div>
-                                    <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
-                                  </div>
-                                </div>
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ) : null;
+            return null;
 
           case "quick-links":
             return showQuickLinks ? (
@@ -931,58 +878,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         </ErrorBoundary>
       ))}
 
-      {/* Storage Locations Map */}
-      {isSuperAdmin && showMap && mapLocations.length > 0 && (
-        <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Map unavailable</div>}>
-        <Card padding="none">
-          <div className="px-5 py-4">
-            {/* Header */}
-            <div className="flex items-center gap-2 mb-5">
-              <Icon name="map-pin" size={13} className="text-shark-400" />
-              <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Storage Locations</p>
-            </div>
-            {/* Google Maps embed — no API key needed */}
-            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-[20px] overflow-hidden border border-shark-100 dark:border-shark-800 mb-3">
-              <iframe
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                src={`https://maps.google.com/maps?q=${mapLocations.map((l) => `${l.latitude},${l.longitude}`).join("|")}&z=5&output=embed&ll=${mapLocations.length > 0 ? `${mapLocations.reduce((s, l) => s + l.latitude, 0) / mapLocations.length},${mapLocations.reduce((s, l) => s + l.longitude, 0) / mapLocations.length}` : "-33.8688,151.2093"}`}
-              />
-            </div>
-            {/* Location list */}
-            <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
-              {mapLocations.map((loc) => (
-                <a
-                  key={loc.id}
-                  href={`https://www.google.com/maps?q=${loc.latitude},${loc.longitude}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors group"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
-                      <Icon name="map-pin" size={13} className="text-action-600" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-shark-700 dark:text-shark-300 group-hover:text-action-500 transition-colors">{loc.name}</span>
-                      <span className="text-xs text-shark-400 ml-2">{loc.stateName}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs text-shark-400">
-                    <span>{loc.assetCount} assets</span>
-                    <span>{loc.consumableCount} supplies</span>
-                    <span>{loc.staffCount} staff</span>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        </Card>
-        </ErrorBoundary>
-      )}
 
       {/* ── ZONE 3: MOMENTUM LAYER — System Performance ───────────────── */}
       {operationsOverview && (
