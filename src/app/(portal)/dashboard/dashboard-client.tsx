@@ -379,14 +379,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         >
           {/* Content */}
           <div className="relative px-5 py-4 sm:px-10 sm:py-7">
-            <div className="inline-flex items-center gap-1.5 bg-white/15 border border-white/25 rounded-full px-2.5 py-1 mb-2 sm:mb-3 w-fit">
-              <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
-              <span className="text-[9px] font-bold text-white/80 tracking-widest uppercase">Enterprise Standard</span>
-            </div>
-            <h1 className="text-lg sm:text-3xl font-bold text-white tracking-tight">
-              Asset &amp; Inventory Management
+            <h1 className="text-xl sm:text-3xl font-bold text-white tracking-tight">
+              {subtitle}
             </h1>
-            <p className="text-[11px] sm:text-xs text-white/60 mt-1 sm:mt-1.5 font-medium">{subtitle}</p>
           </div>
           {/* Settings gear in hero corner */}
           <button

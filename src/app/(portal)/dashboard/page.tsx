@@ -1326,7 +1326,7 @@ export default async function DashboardPage() {
     lowStockItems: JSON.parse(JSON.stringify(lowStockItems)),
     quickLinks,
     preferences,
-    subtitle: isSuperAdmin ? "All locations overview" : "Your region overview",
+    subtitle: isSuperAdmin ? "All Locations Overview" : (regionBreakdown?.[0]?.regionName ?? "Your Location"),
     userName: session.user.name ?? undefined,
     regionBreakdown,
     assetStatusChart,
