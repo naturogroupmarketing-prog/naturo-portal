@@ -607,7 +607,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
 
       {/* Starter Kit — All assigned items */}
       {hasEquipment && (
-        <Card className="">
+        <Card className="!bg-white dark:!bg-shark-900 [backdrop-filter:none] [-webkit-backdrop-filter:none] !border-shark-100 dark:!border-shark-800 !shadow-none">
           <CardHeader
             className="cursor-pointer select-none"
             onClick={() => setEquipmentExpanded((prev) => !prev)}
