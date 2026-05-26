@@ -377,59 +377,60 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32 bg-action-500"
           style={{ minHeight: 240 }}
         >
-          {/* Heading — absolute, positioned just above the widget overlap zone */}
-          <div className="absolute bottom-28 left-0 right-0 px-5 sm:px-10">
+
+          {/* Heading + settings cog — inline row, higher in the hero */}
+          <div className="absolute bottom-36 left-0 right-0 px-5 sm:px-10 flex items-center justify-between">
             <h1 className="text-xl sm:text-3xl font-bold text-white tracking-tight">
-              {subtitle}
+              {userName ?? "Dashboard"}
             </h1>
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className="p-2.5 rounded-full text-white/70 hover:text-white transition-colors"
+              aria-label="Dashboard settings"
+              title="Dashboard settings"
+            >
+              <Icon name="settings" size={18} />
+            </button>
           </div>
-          {/* Settings gear in hero corner */}
-          <button
-            onClick={() => setSettingsOpen(true)}
-            className="absolute top-4 right-4 p-2.5 rounded-full text-white/70 hover:text-white transition-colors"
-            aria-label="Dashboard settings"
-            title="Dashboard settings"
-          >
-            <Icon name="settings" size={18} />
-          </button>
         </div>
 
         {/* ── AI Briefing (1/2) | Stat cards stacked (1/2) — pulled up to overlap hero */}
-        <div className="relative z-10 -mt-24 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:items-stretch">
-          {/* Col 1 — AI Briefing + Health Score + Operations Performance */}
-          {(briefingWidget || (operationsOverview && showOperations)) && (
+        <div className="relative z-10 -mt-24 flex flex-col gap-4">
+          {/* AI Briefing — full width if present */}
+          {briefingWidget && (
             <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
-              <div className="flex flex-col gap-4 h-full">
-                {briefingWidget && <div>{briefingWidget}</div>}
-                {operationsOverview && showOperations && (
-                  <>
-                    <HealthScoreWidget data={operationsOverview} />
-                    <OperationsWidget data={operationsOverview} className="flex-1" />
-                  </>
-                )}
+              <div>{briefingWidget}</div>
+            </ErrorBoundary>
+          )}
+
+          {/* Health Score | Operations Performance — side by side */}
+          {operationsOverview && showOperations && (
+            <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Overview unavailable</div>}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <HealthScoreWidget data={operationsOverview} />
+                <OperationsWidget data={operationsOverview} />
               </div>
             </ErrorBoundary>
           )}
 
-          {/* Col 2 — Stat cards (4-across on mobile, stacked on desktop) */}
+          {/* Stat buttons — 4 across, underneath */}
           {visibleStats.length > 0 && (
             <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
-              <StaggerContainer className="flex flex-col gap-2 h-full">
-                <div className="grid grid-cols-4 gap-2 lg:grid-cols-1 lg:h-full">
+              <StaggerContainer>
+                <div className="grid grid-cols-4 gap-2">
                 {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
-                    <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-full">
+                    <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-44">
                       <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${s.buttonBg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
-                        <div className="p-2 lg:px-4 lg:py-0 h-full">
-                          <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:justify-start lg:text-left lg:gap-3">
+                        <div className="p-2 h-full">
+                          <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
                             <div className="flex items-center justify-center flex-shrink-0">
                               <Icon name={s.icon} size={20} className={s.iconColor} />
                             </div>
-                            <div className="min-w-0 lg:flex-1 lg:text-center">
-                              <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                            <div className="min-w-0">
+                              <AnimatedCounter value={s.value} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
                               <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
                             </div>
-                            <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                           </div>
                         </div>
                       </div>

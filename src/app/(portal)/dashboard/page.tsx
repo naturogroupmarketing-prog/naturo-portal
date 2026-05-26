@@ -6,7 +6,6 @@ import { parsePreferences } from "@/lib/dashboard-types";
 import { DashboardClient } from "./dashboard-client";
 import { StaffDashboardClient } from "./staff-dashboard-client";
 import { BranchManagerDashboard } from "./branch-manager-dashboard";
-import { AiBriefingWidget } from "./ai-briefing-widget";
 import { AuditorDashboard } from "./auditor-dashboard";
 import { getReplenishmentSuggestions } from "@/app/actions/predictions";
 import { detectAnomalies } from "@/lib/anomaly-detection";
@@ -358,27 +357,9 @@ export default async function DashboardPage() {
 
     return (
       <>
-        <AiBriefingWidget
-          orgName={staffOrgRecord?.name ?? "Your Organisation"}
-          lowStockCount={0}
-          criticalStockCount={0}
-          overdueReturns={0}
-          pendingApprovals={staffData.pendingRequestCount}
-          unresolvedDamage={0}
-          healthScore={100}
-          depletionForecasts={[]}
-          recentAnomalyCount={0}
-          staffUnacknowledgedCount={0}
-          date={new Date().toISOString()}
-          userRole="staff"
-          userName={session.user.name ?? undefined}
-          assignedAssetsCount={staffData.assetCount}
-          assignedConsumablesCount={staffData.consumableCount}
-          pendingConfirmations={staffPendingConfirmations}
-          conditionChecksDue={staffConditionChecksDue}
-        />
         <StaffDashboardClient
           stats={staffData.staffStats}
+          userName={session.user.name ?? undefined}
           recentAssets={staffData.recentAssets}
           recentConsumables={staffData.recentConsumables}
           recentRequests={staffData.recentRequests}

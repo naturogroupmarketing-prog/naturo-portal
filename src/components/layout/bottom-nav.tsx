@@ -301,7 +301,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
         className="fixed bottom-0 inset-x-0 z-40 lg:hidden"
         style={{ paddingBottom: "max(10px, env(safe-area-inset-bottom))" }}
       >
-        <div className="mx-4 flex items-end gap-2.5">
+        <div className="mx-8 flex items-end gap-2.5">
 
           {/* Unified nav card — glassmorphism */}
           <div

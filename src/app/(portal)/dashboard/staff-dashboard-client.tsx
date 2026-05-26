@@ -134,6 +134,7 @@ interface UsageMonth {
 
 interface Props {
   stats: StatCard[];
+  userName?: string | null;
   recentAssets?: unknown[];
   recentConsumables?: unknown[];
   recentRequests?: unknown[];
@@ -151,7 +152,7 @@ interface Props {
   consumableUsageHistory?: UsageMonth[];
 }
 
-export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [], activeKitApplications = [], individualAssets = [], individualConsumables = [], conditionCheckItems = [], conditionCheckMonth = "", conditionCheckFrequency = null, conditionCheckDueDate = null, inspectionSchedules = [], consumableUsageHistory = [] }: Props) {
+export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pendingAssetItems = [], pendingConsumableItems = [], activeKitApplications = [], individualAssets = [], individualConsumables = [], conditionCheckItems = [], conditionCheckMonth = "", conditionCheckFrequency = null, conditionCheckDueDate = null, inspectionSchedules = [], consumableUsageHistory = [] }: Props) {
   const router = useRouter();
   const { addToast } = useToast();
   // Track item states: "received" | "not_received" | undefined (pending)
@@ -440,13 +441,20 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
 
   return (
     <PullToRefresh>
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Dashboard</h2>
-        <p className="text-xs text-shark-400 mt-0.5">Your personal overview</p>
+    <div>
+      {/* Hero Banner — matches admin dashboard */}
+      <div
+        className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32 bg-action-500"
+        style={{ minHeight: 240 }}
+      >
+        <div className="absolute bottom-36 left-0 right-0 px-5 sm:px-10">
+          <h1 className="text-xl sm:text-3xl font-bold text-white tracking-tight">
+            {userName ?? "Dashboard"}
+          </h1>
+        </div>
       </div>
 
+    <div className="relative z-10 -mt-24 space-y-8">
       {/* Pending Starter Kit Checklist */}
       {hasPendingKit && (
         <Card className="">
@@ -1332,6 +1340,7 @@ export function StaffDashboardClient({ stats, unacknowledgedCount, pendingAssetI
           </Link>
         </div>
       </div>
+    </div>
     </div>
     </PullToRefresh>
   );
