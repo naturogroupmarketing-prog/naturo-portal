@@ -369,83 +369,88 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
-      {/* ── Hero Banner ───────────────────────────────────────────── */}
-      <div className="relative rounded-[20px] overflow-hidden" style={{ minHeight: 90 }}>
-        {/* Hero image */}
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.png')" }} />
-        {/* Dark gradient overlay so text is always readable */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#001832]/90 via-[#003d7d]/70 to-transparent" />
-        {/* Content */}
-        <div className="relative px-5 py-4 sm:px-10 sm:py-7">
-          <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1 mb-2 sm:mb-3 w-fit">
-            <span className="w-1.5 h-1.5 rounded-full bg-action-400" />
-            <span className="text-[9px] font-bold text-white/80 tracking-widest uppercase">Enterprise Standard</span>
-          </div>
-          <h1 className="text-lg sm:text-3xl font-bold text-white tracking-tight">
-            Asset &amp; Inventory Management
-          </h1>
-          <p className="text-[11px] sm:text-xs text-white/50 mt-1 sm:mt-1.5 font-medium">{subtitle}</p>
-        </div>
-        {/* Settings gear in hero corner */}
-        <button
-          onClick={() => setSettingsOpen(true)}
-          className="absolute top-4 right-4 p-2.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white/90 hover:text-white hover:bg-white/30 transition-colors"
-          aria-label="Dashboard settings"
-          title="Dashboard settings"
+      {/* ── Hero + first widget row — single wrapper so space-y doesn't split them ── */}
+      <div className="relative">
+
+        {/* Hero Banner — full-width bleed, extends down into Health Score widget */}
+        <div
+          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32"
+          style={{ minHeight: 90 }}
         >
-          <Icon name="settings" size={18} />
-        </button>
-      </div>
-
-      {/* ── AI Briefing (1/2) | Stat cards stacked (1/2) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:items-stretch">
-        {/* Col 1 — AI Briefing + Operations Performance merged */}
-        {(briefingWidget || (operationsOverview && showOperations)) && (
-          <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
-            <div className="flex flex-col gap-4 h-full">
-              {briefingWidget && <div>{briefingWidget}</div>}
-              {operationsOverview && showOperations && (
-                <>
-                  <HealthScoreWidget data={operationsOverview} />
-                  <OperationsWidget data={operationsOverview} className="flex-1" />
-                </>
-              )}
+          {/* Hero image */}
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.png')" }} />
+          {/* Dark gradient overlay so text is always readable */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#001832]/90 via-[#003d7d]/70 to-transparent" />
+          {/* Content */}
+          <div className="relative px-5 py-4 sm:px-10 sm:py-7">
+            <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1 mb-2 sm:mb-3 w-fit">
+              <span className="w-1.5 h-1.5 rounded-full bg-action-400" />
+              <span className="text-[9px] font-bold text-white/80 tracking-widest uppercase">Enterprise Standard</span>
             </div>
-          </ErrorBoundary>
-        )}
+            <h1 className="text-lg sm:text-3xl font-bold text-white tracking-tight">
+              Asset &amp; Inventory Management
+            </h1>
+            <p className="text-[11px] sm:text-xs text-white/50 mt-1 sm:mt-1.5 font-medium">{subtitle}</p>
+          </div>
+          {/* Settings gear in hero corner */}
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="absolute top-4 right-4 p-2.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white/90 hover:text-white hover:bg-white/30 transition-colors"
+            aria-label="Dashboard settings"
+            title="Dashboard settings"
+          >
+            <Icon name="settings" size={18} />
+          </button>
+        </div>
 
-        {/* Col 2 — Stat cards (3-across on mobile, stacked on desktop) */}
-        {visibleStats.length > 0 && (
-          <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
-            <StaggerContainer className="flex flex-col gap-2 h-full">
-              <div className="grid grid-cols-4 gap-2 lg:grid-cols-1 lg:h-full">
-              {(["stat-low-stock", "stat-pending-requests", "stat-pending-returns", "stat-pending-pos"] as const).map(id => stats.find(s => s.widgetId === id)).filter((s): s is NonNullable<typeof s> => !!s).map((s) => (
-                <StaggerItem key={s.label}>
-                  <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-full">
-                    <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${s.buttonBg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
-                      <div className="p-2 lg:px-4 lg:py-0 h-full">
-                        {/* Mobile: centered column; Desktop: left-aligned row */}
-                        <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:justify-start lg:text-left lg:gap-3">
-                          {/* Icon: bare on mobile, glass chip on desktop */}
-                          <div className="flex items-center justify-center flex-shrink-0">
-                            <Icon name={s.icon} size={20} className={s.iconColor} />
+        {/* ── AI Briefing (1/2) | Stat cards stacked (1/2) — pulled up to overlap hero */}
+        <div className="relative z-10 -mt-24 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:items-stretch">
+          {/* Col 1 — AI Briefing + Health Score + Operations Performance */}
+          {(briefingWidget || (operationsOverview && showOperations)) && (
+            <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
+              <div className="flex flex-col gap-4 h-full">
+                {briefingWidget && <div>{briefingWidget}</div>}
+                {operationsOverview && showOperations && (
+                  <>
+                    <HealthScoreWidget data={operationsOverview} />
+                    <OperationsWidget data={operationsOverview} className="flex-1" />
+                  </>
+                )}
+              </div>
+            </ErrorBoundary>
+          )}
+
+          {/* Col 2 — Stat cards (4-across on mobile, stacked on desktop) */}
+          {visibleStats.length > 0 && (
+            <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
+              <StaggerContainer className="flex flex-col gap-2 h-full">
+                <div className="grid grid-cols-4 gap-2 lg:grid-cols-1 lg:h-full">
+                {(["stat-low-stock", "stat-pending-requests", "stat-pending-returns", "stat-pending-pos"] as const).map(id => stats.find(s => s.widgetId === id)).filter((s): s is NonNullable<typeof s> => !!s).map((s) => (
+                  <StaggerItem key={s.label}>
+                    <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-full">
+                      <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${s.buttonBg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
+                        <div className="p-2 lg:px-4 lg:py-0 h-full">
+                          <div className="flex flex-col items-center justify-center text-center gap-1 h-full lg:flex-row lg:items-center lg:justify-start lg:text-left lg:gap-3">
+                            <div className="flex items-center justify-center flex-shrink-0">
+                              <Icon name={s.icon} size={20} className={s.iconColor} />
+                            </div>
+                            <div className="min-w-0 lg:flex-1 lg:text-center">
+                              <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
+                              <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
+                            </div>
+                            <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                           </div>
-                          {/* Number + label */}
-                          <div className="min-w-0 lg:flex-1 lg:text-center">
-                            <AnimatedCounter value={s.value} className="text-base lg:text-xl font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                            <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
-                          </div>
-                          <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0 hidden lg:block" />
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                </StaggerItem>
-              ))}
-              </div>
-            </StaggerContainer>
-          </ErrorBoundary>
-        )}
+                    </Link>
+                  </StaggerItem>
+                ))}
+                </div>
+              </StaggerContainer>
+            </ErrorBoundary>
+          )}
+        </div>
+
       </div>
 
       {preferences.sectionOrder.map((sectionId) => (
