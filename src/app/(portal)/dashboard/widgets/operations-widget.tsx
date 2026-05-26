@@ -101,7 +101,7 @@ export function HealthScoreWidget({ data, className }: { data: OperationsOvervie
   const valueColor = score >= 50 ? "text-[#0057FF]" : "text-red-600 dark:text-red-400";
 
   return (
-    <div className={cn("rounded-[20px] glass-card dark:bg-shark-900/70 dark:border-white/[0.07] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_4px_16px_rgba(0,0,0,0.20)] p-5", className)}>
+    <div className={cn("rounded-[20px] glass-card-strong dark:bg-shark-900/60 dark:border-white/[0.07] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_4px_16px_rgba(0,0,0,0.20)] p-5", className)}>
       <WidgetHeader icon="bar-chart" label="Health Score" />
 
       {/* Ring centred */}
