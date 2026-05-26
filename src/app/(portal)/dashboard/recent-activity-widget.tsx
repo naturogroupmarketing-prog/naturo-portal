@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/icon";
-import { Card } from "@/components/ui/card";
 
 export interface RecentActivityItem {
   id: string;
@@ -36,15 +35,19 @@ function timeAgoLabel(isoDate: string): string {
 
 export function RecentActivityWidget({ items }: { items: RecentActivityItem[] }) {
   return (
-    <Card padding="none">
-      <div className="px-5 py-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Recent Activity</h3>
-          <Link href="/reports" className="text-[11px] font-semibold text-action-600 hover:text-action-700 transition-colors shrink-0">
-            View all →
-          </Link>
+    <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-2">
+          <Icon name="clock" size={13} className="text-shark-400" />
+          <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+            Recent Activity
+          </p>
         </div>
+        <Link href="/reports" className="text-[11px] font-semibold text-action-600 hover:text-action-700 transition-colors shrink-0">
+          View all →
+        </Link>
+      </div>
 
         {items.length === 0 ? (
           <div className="py-6 text-center">
@@ -82,8 +85,7 @@ export function RecentActivityWidget({ items }: { items: RecentActivityItem[] })
             })}
           </div>
         )}
-      </div>
-    </Card>
+    </div>
   );
 }
 

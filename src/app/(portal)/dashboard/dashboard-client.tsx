@@ -464,7 +464,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {showPortfolio && portfolioValue && (portfolioValue.purchase > 0 || portfolioValue.consumableValue > 0) && (
                   <Card padding="none">
                     <div className="px-5 py-4">
-                      <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Finance</h2>
+                      <div className="flex items-center gap-2 mb-5">
+                        <Icon name="bar-chart" size={13} className="text-shark-400" />
+                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Finance</p>
+                      </div>
 
                       {/* Summary cards */}
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 overflow-hidden mb-4">
@@ -585,7 +588,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {assetStatusChart && assetStatusChart.length > 0 && (
                   <Card padding="none">
                     <div className="px-5 py-4">
-                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Asset Status</h3>
+                      <div className="flex items-center gap-2 mb-5">
+                        <Icon name="package" size={13} className="text-shark-400" />
+                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Asset Status</p>
+                      </div>
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {assetStatusChart.map((item) => {
                           const total = assetStatusChart.reduce((sum, i) => sum + i.value, 0);
@@ -611,7 +617,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {categoryChart && categoryChart.length > 0 && (
                   <Card padding="none">
                     <div className="px-5 py-4">
-                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Assets by Category</h3>
+                      <div className="flex items-center gap-2 mb-5">
+                        <Icon name="box" size={13} className="text-shark-400" />
+                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Assets by Category</p>
+                      </div>
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {categoryChart.map((item, idx) => {
                           const maxVal = Math.max(...categoryChart.map((c) => c.value));
@@ -641,7 +650,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {consumableStatusChart && consumableStatusChart.length > 0 && (
                   <Card padding="none">
                     <div className="px-5 py-4">
-                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Supply Status</h3>
+                      <div className="flex items-center gap-2 mb-5">
+                        <Icon name="droplet" size={13} className="text-shark-400" />
+                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Supply Status</p>
+                      </div>
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {consumableStatusChart.map((item) => {
                           const total = consumableStatusChart.reduce((sum, i) => sum + i.value, 0);
@@ -667,7 +679,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 {consumableCategoryChart && consumableCategoryChart.length > 0 && (
                   <Card padding="none">
                     <div className="px-5 py-4">
-                      <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Supplies by Category</h3>
+                      <div className="flex items-center gap-2 mb-5">
+                        <Icon name="box" size={13} className="text-shark-400" />
+                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Supplies by Category</p>
+                      </div>
                       <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
                         {consumableCategoryChart.map((item, idx) => {
                           const maxVal = Math.max(...consumableCategoryChart.map((c) => c.value));
@@ -803,7 +818,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "regional":
             return showRegional && regionBreakdown && regionBreakdown.length > 0 ? (
               <div key="regional" className="space-y-4 mt-10">
-                <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 pl-5">Locations</h3>
+                <div className="flex items-center gap-2 pl-5">
+                  <Icon name="map-pin" size={13} className="text-shark-400" />
+                  <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Locations</p>
+                </div>
                 {[...regionBreakdown].sort((a, b) => a.regionName.localeCompare(b.regionName)).map((region) => {
                   const isCollapsed = collapsedRegions.has(region.regionId);
                   return (
@@ -919,7 +937,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         <Card padding="none">
           <div className="px-5 py-4">
             {/* Header */}
-            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100 mb-4">Storage Locations</h3>
+            <div className="flex items-center gap-2 mb-5">
+              <Icon name="map-pin" size={13} className="text-shark-400" />
+              <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Storage Locations</p>
+            </div>
             {/* Google Maps embed — no API key needed */}
             <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-[20px] overflow-hidden border border-shark-100 dark:border-shark-800 mb-3">
               <iframe

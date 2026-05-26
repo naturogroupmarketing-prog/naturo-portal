@@ -132,27 +132,30 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
     <Card className="border-action-200">
       <div className="px-5 py-4">
         {/* ── Header ── */}
-        <div className="flex items-center gap-2 mb-5">
-          <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Asset Health</h2>
-            <p className="text-xs text-shark-400 mt-0.5">
-              {totalAssets} asset{totalAssets !== 1 ? "s" : ""} scored
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <Icon name="shield" size={13} className="text-shark-400" />
+            <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+              Asset Health
             </p>
+            <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
           </div>
-          <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full shrink-0">AI</span>
-          {/* Average score badge */}
-          <div
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-full ring-1 font-semibold text-sm",
-              badgeColor.bg,
-              badgeColor.text,
-              badgeColor.ring
-            )}
-          >
-            <span className="text-lg font-bold leading-none">
-              {averageScore}
-            </span>
-            <span className="text-xs font-medium opacity-70">/ 100</span>
+          {/* Average score + count */}
+          <div className="flex items-center gap-2">
+            <p className="text-[11px] text-shark-400 dark:text-shark-500">
+              {totalAssets} asset{totalAssets !== 1 ? "s" : ""}
+            </p>
+            <div
+              className={cn(
+                "flex items-center gap-1 px-2.5 py-1 rounded-full ring-1 font-semibold text-sm",
+                badgeColor.bg,
+                badgeColor.text,
+                badgeColor.ring
+              )}
+            >
+              <span className="text-base font-bold leading-none">{averageScore}</span>
+              <span className="text-[10px] font-medium opacity-70">/ 100</span>
+            </div>
           </div>
         </div>
 

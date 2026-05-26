@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +17,40 @@ interface OperationsOverview {
   pendingRequests: number;
   lowStockCount: number;
 }
+
+// ─── Shared animated bar ──────────────────────────────────────────────────────
+
+function AnimatedBar({ value, colorClass, delay = 0 }: { value: number; colorClass: string; delay?: number }) {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setWidth(Math.max(0, Math.min(100, value))), delay + 80);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+
+  return (
+    <div className="h-1.5 bg-shark-100 dark:bg-shark-800 rounded-full overflow-hidden">
+      <div
+        className={cn("h-full rounded-full transition-all duration-700 ease-out", colorClass)}
+        style={{ width: `${width}%` }}
+      />
+    </div>
+  );
+}
+
+// ─── Shared widget header ─────────────────────────────────────────────────────
+
+function WidgetHeader({ icon, label }: { icon: Parameters<typeof Icon>[0]["name"]; label: string }) {
+  return (
+    <div className="flex items-center gap-2 mb-5">
+      <Icon name={icon} size={13} className="text-shark-400" />
+      <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+// ─── Health ring ─────────────────────────────────────────────────────────────
 
 function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   const [animated, setAnimated] = useState(0);
@@ -35,10 +68,7 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke="#e5e7eb" strokeWidth={strokeWidth}
-        />
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#e5e7eb" strokeWidth={strokeWidth} />
         <circle
           cx={size / 2} cy={size / 2} r={radius}
           fill="none" stroke={color} strokeWidth={strokeWidth}
@@ -58,39 +88,35 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   );
 }
 
-// ─── Health Score Widget (ring only) ─────────────────────────────────────────
+// ─── Health Score Widget ──────────────────────────────────────────────────────
 
 export function HealthScoreWidget({ data, className }: { data: OperationsOverview; className?: string }) {
   const score = data.healthScore;
-  const label = score >= 80 ? "Excellent" : score >= 60 ? "Good" : score >= 40 ? "Fair" : "Needs Attention";
-  const labelColor = score >= 80 ? "text-action-600 dark:text-action-400" : score >= 60 ? "text-action-500 dark:text-action-400" : "text-red-500";
+  const sublabel =
+    score >= 90 ? "Excellent" :
+    score >= 75 ? "Good" :
+    score >= 60 ? "Fair" :
+    score >= 40 ? "Poor" :
+    "Critical";
+  const valueColor = score >= 50 ? "text-[#0057FF]" : "text-red-600 dark:text-red-400";
 
   return (
-    <Card padding="none" className={cn("backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 dark:bg-shark-900/30 border border-white/50 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)]", className)}>
-      <div className="px-5 py-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-tight">Health Score</h2>
-          <div className="flex items-center gap-1.5 bg-action-50 dark:bg-action-500/10 border border-action-100 dark:border-action-500/20 rounded-full px-2 py-0.5 shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-action-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-action-600 dark:text-action-400 uppercase tracking-wider">Live</span>
-          </div>
-        </div>
+    <div className={cn("rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5", className)}>
+      <WidgetHeader icon="bar-chart" label="Health Score" />
 
-        {/* Ring centred */}
-        <div className="flex flex-col items-center justify-center py-2 gap-2">
-          <HealthRing score={score} size={148} />
-          <div className="text-center">
-            <p className={cn("text-sm font-bold leading-none", labelColor)}>{label}</p>
-            <p className="text-[11px] text-shark-400 dark:text-shark-500 mt-0.5">Operations Health</p>
-          </div>
+      {/* Ring centred */}
+      <div className="flex flex-col items-center justify-center gap-3 py-1">
+        <HealthRing score={score} size={148} />
+        <div className="text-center">
+          <p className={cn("text-sm font-bold leading-none", valueColor)}>{sublabel}</p>
+          <p className="text-[11px] text-shark-400 dark:text-shark-500 mt-1">Operations Health</p>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
-// ─── Operations Performance Widget (metrics only) ────────────────────────────
+// ─── Operations Performance Widget ───────────────────────────────────────────
 
 export function OperationsWidget({ data, className }: { data: OperationsOverview; className?: string }) {
   const pct0 = Math.max(4, 100 - Math.min(96, data.ordersAwaitingApproval * 18));
@@ -100,68 +126,52 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
   const metrics = [
     {
       label: "Awaiting Approval",
-      display: `${data.ordersAwaitingApproval} orders`,
+      displayValue: `${data.ordersAwaitingApproval} orders`,
+      sublabel: data.ordersAwaitingApproval === 0 ? "Queue is clear" : "Pending review",
       barPct: pct0,
-      barColor: pct0 < 50 ? "#ef4444" : "#0057FF",
+      colorClass: pct0 < 50 ? "bg-red-500" : "bg-[#0057FF]",
+      valueColor: pct0 < 50 ? "text-red-600 dark:text-red-400" : "text-[#0057FF]",
       href: "/purchase-orders",
     },
     {
       label: "Fleet Uptime",
-      display: `${data.totalStaff} staff`,
+      displayValue: `${data.totalStaff} staff`,
+      sublabel: data.totalStaff === 0 ? "No active staff" : "Active members",
       barPct: pct1,
-      barColor: pct1 < 50 ? "#ef4444" : "#0057FF",
+      colorClass: pct1 < 50 ? "bg-red-500" : "bg-[#0057FF]",
+      valueColor: pct1 < 50 ? "text-red-600 dark:text-red-400" : "text-[#0057FF]",
       href: "/staff",
     },
     {
       label: "Awaiting Receival",
-      display: `${data.ordersAwaitingReceival} orders`,
+      displayValue: `${data.ordersAwaitingReceival} orders`,
+      sublabel: data.ordersAwaitingReceival === 0 ? "All orders received" : "In transit",
       barPct: pct2,
-      barColor: pct2 < 50 ? "#ef4444" : "#0057FF",
+      colorClass: pct2 < 50 ? "bg-red-500" : "bg-[#0057FF]",
+      valueColor: pct2 < 50 ? "text-red-600 dark:text-red-400" : "text-[#0057FF]",
       href: "/purchase-orders?status=ORDERED",
     },
   ];
 
   return (
-    <Card padding="none" className={cn("h-full backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 dark:bg-shark-900/30 border border-white/50 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)]", className)}>
-      <div className="px-5 py-4">
+    <div className={cn("rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5", className)}>
+      <WidgetHeader icon="bar-chart" label="Operations Performance" />
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-tight">Operations Performance</h2>
-          <div className="flex items-center gap-1.5 bg-action-50 dark:bg-action-500/10 border border-action-100 dark:border-action-500/20 rounded-full px-2 py-0.5 shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-action-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-action-600 dark:text-action-400 uppercase tracking-wider">Live</span>
-          </div>
-        </div>
-
-        {/* Metrics — full width, one per row */}
-        <div className="grid grid-cols-1 gap-2">
-          {metrics.map((m) => (
-            <Link
-              key={m.label}
-              href={m.href}
-              className="group flex items-center gap-3 bg-white/60 dark:bg-shark-800/50 backdrop-blur-sm border border-white/70 dark:border-white/10 rounded-[20px] px-3.5 py-3 shadow-sm hover:bg-white/80 dark:hover:bg-shark-800/70 transition-all duration-200 min-h-[44px]"
-            >
-              <div className="flex-1 min-w-0">
-                <p className="text-[11px] text-shark-500 dark:text-shark-400 leading-none font-semibold truncate">{m.label}</p>
-                <p className="text-sm font-bold text-shark-900 dark:text-shark-100 leading-tight truncate group-hover:text-action-600 dark:group-hover:text-action-400 transition-colors mt-0.5">
-                  {m.display}
-                </p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {metrics.map((m, i) => (
+          <Link key={m.label} href={m.href} className="block hover:opacity-80 transition-opacity">
+            <div className="space-y-2 group">
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-shark-500 dark:text-shark-400">{m.label}</p>
+                <p className={cn("text-base font-bold", m.valueColor)}>{m.displayValue}</p>
               </div>
-              <div className="w-24 shrink-0">
-                <div className="h-1 bg-shark-100/80 dark:bg-shark-700/80 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-1000 ease-out"
-                    style={{ width: `${m.barPct}%`, backgroundColor: m.barColor }}
-                  />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
+              <AnimatedBar value={m.barPct} colorClass={m.colorClass} delay={i * 120} />
+              <p className="text-[11px] text-shark-400 dark:text-shark-500">{m.sublabel}</p>
+            </div>
+          </Link>
+        ))}
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -181,17 +191,17 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
   const total = alerts.reduce((sum, a) => sum + a.value, 0);
 
   return (
-    <Card className="h-fit border-shark-100 dark:border-shark-800 overflow-hidden">
+    <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 overflow-hidden">
       {/* Header row — always visible, tap to toggle */}
       <button
         onClick={() => setOpen((p) => !p)}
-        className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
+        className="w-full flex items-center justify-between px-5 py-4 hover:bg-shark-50 dark:hover:bg-shark-800/50 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-[14px] bg-red-50 dark:bg-red-500/10 flex items-center justify-center shrink-0">
-            <Icon name="alert-triangle" size={12} className="text-red-500" />
-          </div>
-          <span className="text-lg font-bold text-shark-900 dark:text-shark-100">Priority Alerts</span>
+          <Icon name="alert-triangle" size={13} className="text-shark-400" />
+          <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+            Priority Alerts
+          </p>
           {total > 0 && (
             <span className="text-[10px] font-bold bg-red-500 text-white rounded-full px-1.5 py-0.5 leading-none">
               {total}
@@ -217,7 +227,7 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
+                  className="flex items-center justify-between px-5 py-3 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <Icon name={item.icon} size={13} className="text-action-600" />
@@ -228,13 +238,13 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
               ))}
             </div>
           ) : (
-            <div className="px-3 py-3 border-t border-shark-100 dark:border-shark-800 flex items-center gap-2">
+            <div className="px-5 py-3 border-t border-shark-100 dark:border-shark-800 flex items-center gap-2">
               <Icon name="check-circle" size={13} className="text-action-500" />
               <span className="text-xs text-shark-500 dark:text-shark-400">No active alerts — all clear!</span>
             </div>
           )}
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
