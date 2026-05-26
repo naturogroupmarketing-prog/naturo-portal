@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -51,6 +52,7 @@ interface Props {
 
 export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const [showAddForm, setShowAddForm] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const [newHref, setNewHref] = useState("");
@@ -92,6 +94,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
       setSectionOrder(newOrder);
       startTransition(async () => {
         await reorderSections(newOrder);
+        router.refresh();
       });
     }
     dragItem.current = null;
@@ -107,12 +110,14 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
     setSectionOrder(newOrder);
     startTransition(async () => {
       await reorderSections(newOrder);
+      router.refresh();
     });
-  }, [sectionOrder, startTransition]);
+  }, [sectionOrder, startTransition, router]);
 
   const handleToggle = (widgetId: WidgetId, currentlyVisible: boolean) => {
     startTransition(async () => {
       await updateWidgetVisibility(widgetId, !currentlyVisible);
+      router.refresh();
     });
   };
 
@@ -124,12 +129,14 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
       setNewHref("");
       setNewIcon("star");
       setShowAddForm(false);
+      router.refresh();
     });
   };
 
   const handleRemoveShortcut = (id: string) => {
     startTransition(async () => {
       await removeCustomShortcut(id);
+      router.refresh();
     });
   };
 
@@ -189,7 +196,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         <div>
           <p className="text-xs font-medium text-shark-500 dark:text-shark-400 mb-2">Stat Cards</p>
           <div className="space-y-1">
-            {(["stat-total-assets", "stat-checked-out", "stat-overdue", "stat-damaged", "stat-pending-requests", "stat-pending-pos"] as WidgetId[]).map((id) => {
+            {(["stat-low-stock", "stat-pending-requests", "stat-pending-returns", "stat-pending-pos", "stat-damaged", "stat-total-assets", "stat-checked-out", "stat-overdue"] as WidgetId[]).map((id) => {
               const isVisible = !preferences.hiddenWidgets.includes(id);
               return (
                 <div key={id} className="flex items-center justify-between py-1.5">
@@ -205,7 +212,7 @@ export function DashboardSettingsModal({ open, onClose, preferences }: Props) {
         <div>
           <p className="text-xs font-medium text-shark-500 dark:text-shark-400 mb-2">Sections</p>
           <div className="space-y-1">
-            {(["operations-overview", "portfolio-valuation", "maintenance-due", "asset-charts", "consumable-charts", "low-stock-alerts", "predicted-shortages", "ai-forecast", "recent-activity", "regional-breakdown", "location-map", "quick-links"] as WidgetId[]).map((id) => {
+            {(["operations-overview", "maintenance-due", "asset-charts", "consumable-charts", "low-stock-alerts", "predicted-shortages", "recent-activity", "location-map", "quick-links"] as WidgetId[]).map((id) => {
               const isVisible = !preferences.hiddenWidgets.includes(id);
               return (
                 <div key={id} className="flex items-center justify-between py-1.5">

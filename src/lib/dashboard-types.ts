@@ -33,12 +33,14 @@ export const DEFAULT_SECTION_ORDER = DASHBOARD_SECTIONS.map((s) => s.id);
 export type SectionId = (typeof DASHBOARD_SECTIONS)[number]["id"];
 
 export const WIDGET_IDS = {
+  STAT_LOW_STOCK: "stat-low-stock",
   STAT_TOTAL_ASSETS: "stat-total-assets",
   STAT_CHECKED_OUT: "stat-checked-out",
   STAT_OVERDUE: "stat-overdue",
   STAT_DAMAGED: "stat-damaged",
   STAT_LOST: "stat-lost",
   STAT_PENDING_REQUESTS: "stat-pending-requests",
+  STAT_PENDING_RETURNS: "stat-pending-returns",
   STAT_PENDING_POS: "stat-pending-pos",
   LOW_STOCK_ALERTS: "low-stock-alerts",
   QUICK_LINKS: "quick-links",
@@ -57,12 +59,14 @@ export const WIDGET_IDS = {
 export type WidgetId = (typeof WIDGET_IDS)[keyof typeof WIDGET_IDS];
 
 export const WIDGET_LABELS: Record<WidgetId, string> = {
+  "stat-low-stock": "Low Stock",
   "stat-total-assets": "Total Assets",
   "stat-checked-out": "Checked Out",
   "stat-overdue": "Overdue",
   "stat-damaged": "Damage",
   "stat-lost": "Lost (legacy)",
   "stat-pending-requests": "Pending Requests",
+  "stat-pending-returns": "Pending Returns",
   "stat-pending-pos": "Pending POs",
   "low-stock-alerts": "Low Stock Alerts",
   "quick-links": "Quick Links",

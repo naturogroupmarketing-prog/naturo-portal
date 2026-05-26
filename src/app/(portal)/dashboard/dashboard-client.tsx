@@ -416,7 +416,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
               <StaggerContainer className="flex flex-col gap-2 h-full">
                 <div className="grid grid-cols-4 gap-2 lg:grid-cols-1 lg:h-full">
-                {(["stat-low-stock", "stat-pending-requests", "stat-pending-returns", "stat-pending-pos"] as const).map(id => stats.find(s => s.widgetId === id)).filter((s): s is NonNullable<typeof s> => !!s).map((s) => (
+                {visibleStats.map((s) => (
                   <StaggerItem key={s.label}>
                     <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-full">
                       <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${s.buttonBg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
@@ -703,8 +703,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "low-stock":
-            return null; // Low Stock Alerts hidden
-            return (showLowStock || !isSuperAdmin) ? (
+            return showLowStock ? (
               <Card key="low-stock">
                 <div className="p-4 sm:p-5">
                   {/* Header */}
@@ -764,7 +763,6 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             ) : null;
 
           case "predicted-shortages":
-            return null; // Predicted Shortages hidden
             return showPredictions && predictedShortages.length > 0 ? (
               <Card key="predicted-shortages" className="border-action-100">
                 <div className="px-5 py-4">
