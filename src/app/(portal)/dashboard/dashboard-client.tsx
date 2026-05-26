@@ -374,23 +374,19 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
         {/* Hero Banner — full-width bleed, extends down into Health Score widget */}
         <div
-          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32"
+          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32 bg-action-500"
           style={{ minHeight: 90 }}
         >
-          {/* Hero image */}
-          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.png')" }} />
-          {/* Dark gradient overlay so text is always readable */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#001832]/90 via-[#003d7d]/70 to-transparent" />
           {/* Content */}
           <div className="relative px-5 py-4 sm:px-10 sm:py-7">
-            <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1 mb-2 sm:mb-3 w-fit">
-              <span className="w-1.5 h-1.5 rounded-full bg-action-400" />
+            <div className="inline-flex items-center gap-1.5 bg-white/15 border border-white/25 rounded-full px-2.5 py-1 mb-2 sm:mb-3 w-fit">
+              <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
               <span className="text-[9px] font-bold text-white/80 tracking-widest uppercase">Enterprise Standard</span>
             </div>
             <h1 className="text-lg sm:text-3xl font-bold text-white tracking-tight">
               Asset &amp; Inventory Management
             </h1>
-            <p className="text-[11px] sm:text-xs text-white/50 mt-1 sm:mt-1.5 font-medium">{subtitle}</p>
+            <p className="text-[11px] sm:text-xs text-white/60 mt-1 sm:mt-1.5 font-medium">{subtitle}</p>
           </div>
           {/* Settings gear in hero corner */}
           <button
