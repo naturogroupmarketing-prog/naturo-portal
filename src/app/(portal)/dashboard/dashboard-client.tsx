@@ -386,7 +386,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           {/* Settings gear in hero corner */}
           <button
             onClick={() => setSettingsOpen(true)}
-            className="absolute top-4 right-4 p-2.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white/90 hover:text-white hover:bg-white/30 transition-colors"
+            className="absolute top-4 right-4 p-2.5 rounded-full text-white/70 hover:text-white transition-colors"
             aria-label="Dashboard settings"
             title="Dashboard settings"
           >
