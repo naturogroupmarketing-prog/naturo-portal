@@ -372,13 +372,61 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* ── Hero + first widget row — single wrapper so space-y doesn't split them ── */}
       <div className="relative">
 
-        {/* Hero Banner — full-width bleed, extends down into Health Score widget */}
+        {/* Hero Banner — full-width bleed */}
         <div
-          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-20 bg-action-500"
-          style={{ minHeight: 140 }}
+          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-20"
+          style={{
+            minHeight: 140,
+            background: "linear-gradient(135deg, #004de0 0%, #0066ff 55%, #1a7aff 100%)",
+          }}
         >
-          {/* Settings cog */}
-          <div className="absolute bottom-16 right-0 px-5 sm:px-10 flex items-center justify-end">
+          {/* Noise / grain texture */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-overlay"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+              backgroundSize: "200px 200px",
+            }}
+          />
+
+          {/* Vignette */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse 130% 100% at 50% 0%, transparent 45%, rgba(5,15,60,0.32) 100%)",
+            }}
+          />
+
+          {/* Animated glow — top left */}
+          <div
+            className="absolute -top-16 -left-16 w-72 h-72 rounded-full pointer-events-none opacity-20 animate-pulse"
+            style={{
+              background: "radial-gradient(circle, rgba(99,179,255,0.9) 0%, transparent 65%)",
+              animationDuration: "3000ms",
+            }}
+          />
+
+          {/* Animated glow — bottom right */}
+          <div
+            className="absolute -bottom-8 right-4 w-56 h-56 rounded-full pointer-events-none opacity-[0.15] animate-pulse"
+            style={{
+              background: "radial-gradient(circle, rgba(147,197,255,0.7) 0%, transparent 65%)",
+              animationDuration: "4500ms",
+              animationDelay: "1500ms",
+            }}
+          />
+
+          {/* Bottom shadow fade */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
+            style={{ background: "linear-gradient(to bottom, transparent, rgba(5,10,50,0.14))" }}
+          />
+
+          {/* Name + settings cog */}
+          <div className="absolute bottom-20 left-0 right-0 px-5 sm:px-10 flex items-center justify-between">
+            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              Hi {userName ?? "there"}, Have a great day
+            </h1>
             <button
               onClick={() => setSettingsOpen(true)}
               className="p-2.5 rounded-full text-white/70 hover:text-white transition-colors"
@@ -403,7 +451,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           {operationsOverview && showOperations && (
             <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Overview unavailable</div>}>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <HealthScoreWidget data={operationsOverview} />
+                <HealthScoreWidget data={operationsOverview} trend={5} />
                 <OperationsWidget data={operationsOverview} />
               </div>
             </ErrorBoundary>

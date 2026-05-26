@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useId } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
@@ -53,34 +53,99 @@ function WidgetHeader({ icon, label }: { icon: Parameters<typeof Icon>[0]["name"
 // ─── Health ring ─────────────────────────────────────────────────────────────
 
 function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
-  const [animated, setAnimated] = useState(0);
-  const strokeWidth = 8;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (animated / 100) * circumference;
-  const color = score >= 80 ? "#0057FF" : score >= 50 ? "#ef4444" : "#dc2626";
+  const uid = useId().replace(/:/g, "");
+  const gradId  = `rg-${uid}`;
 
+  const [animated, setAnimated] = useState(0);
+  const [displayScore, setDisplayScore] = useState(0);
+
+  const strokeWidth   = 13;
+  const radius        = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset        = circumference - (animated / 100) * circumference;
+
+  const isGreen  = score >= 90;
+  const isOrange = score >= 75; // 75–89
+  // < 75 → red (fallback)
+  const color1 = isGreen ? "#15803d" : isOrange ? "#c2410c" : "#dc2626";
+  const color2 = isGreen ? "#4ade80" : isOrange ? "#fb923c" : "#f87171";
+
+  // Animate the arc fill
   useEffect(() => {
-    const timer = setTimeout(() => setAnimated(score), 100);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setAnimated(score), 120);
+    return () => clearTimeout(t);
+  }, [score]);
+
+  // Count up the displayed number
+  useEffect(() => {
+    let rafId: number;
+    const duration  = 1300;
+    const startTime = performance.now();
+
+    const tick = (now: number) => {
+      const elapsed  = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased    = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      setDisplayScore(Math.round(eased * score));
+      if (progress < 1) rafId = requestAnimationFrame(tick);
+    };
+
+    const timeout = setTimeout(() => { rafId = requestAnimationFrame(tick); }, 160);
+    return () => { clearTimeout(timeout); cancelAnimationFrame(rafId); };
   }, [score]);
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#e5e7eb" strokeWidth={strokeWidth} />
+      <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
+        <defs>
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stopColor={color1} />
+            <stop offset="100%" stopColor={color2} />
+          </linearGradient>
+        </defs>
+
+        {/* Track */}
         <circle
           cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke={color} strokeWidth={strokeWidth}
+          fill="none" stroke="currentColor"
+          className="text-shark-100 dark:text-shark-800"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+        />
+
+        {/* Glow layer — blurred duplicate underneath the active arc */}
+        <circle
+          cx={size / 2} cy={size / 2} r={radius}
+          fill="none" stroke={color1}
+          strokeWidth={strokeWidth + 5}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          style={{
+            opacity: 0.10,
+            filter: "blur(4px)",
+            transition: "stroke-dashoffset 1.2s ease-out",
+          }}
+        />
+
+        {/* Active arc with gradient */}
+        <circle
+          cx={size / 2} cy={size / 2} r={radius}
+          fill="none" stroke={`url(#${gradId})`}
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           style={{ transition: "stroke-dashoffset 1.2s ease-out" }}
         />
       </svg>
+
+      {/* Centre score */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
-          <span className="text-2xl font-black text-shark-800 dark:text-shark-200 leading-none">{score}</span>
+          <span className="text-2xl font-black text-shark-800 dark:text-shark-200 leading-none tabular-nums">
+            {displayScore}
+          </span>
           <span className="text-[10px] text-shark-400 font-normal block leading-none mt-0.5">/ 100</span>
         </div>
       </div>
@@ -90,7 +155,7 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
 
 // ─── Health Score Widget ──────────────────────────────────────────────────────
 
-export function HealthScoreWidget({ data, className }: { data: OperationsOverview; className?: string }) {
+export function HealthScoreWidget({ data, className, trend }: { data: OperationsOverview; className?: string; trend?: number }) {
   const score = data.healthScore;
   const sublabel =
     score >= 90 ? "Excellent" :
@@ -98,18 +163,38 @@ export function HealthScoreWidget({ data, className }: { data: OperationsOvervie
     score >= 60 ? "Fair" :
     score >= 40 ? "Poor" :
     "Critical";
-  const valueColor = score >= 50 ? "text-[#0057FF]" : "text-red-600 dark:text-red-400";
+  const valueColor =
+    score >= 90 ? "text-green-600 dark:text-green-400" :
+    score >= 75 ? "text-orange-500 dark:text-orange-400" :
+    "text-red-600 dark:text-red-400";
 
   return (
     <div className={cn("rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5", className)}>
       <WidgetHeader icon="bar-chart" label="Health Score" />
 
-      {/* Ring centred */}
-      <div className="flex flex-col items-center justify-center gap-3 py-1">
-        <HealthRing score={score} size={148} />
-        <div className="text-center">
-          <p className={cn("text-sm font-bold leading-none", valueColor)}>{sublabel}</p>
-          <p className="text-[11px] text-shark-400 dark:text-shark-500 mt-1">Operations Health</p>
+      {/* Ring left, info right */}
+      <div className="flex items-center gap-10 py-1">
+        <div className="flex-shrink-0">
+          <HealthRing score={score} size={148} />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <p className={cn("text-2xl font-bold leading-none", valueColor)}>{sublabel}</p>
+          <p className="text-sm text-shark-400 dark:text-shark-500 mt-1">Operations Health</p>
+
+          {/* Trend badge */}
+          {trend !== undefined && (
+            <div className={cn(
+              "inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full w-fit mt-1",
+              trend > 0
+                ? "bg-action-50 text-action-600 dark:bg-action-500/20 dark:text-action-400"
+                : trend < 0
+                ? "bg-red-50 text-red-600 dark:bg-red-500/20 dark:text-red-400"
+                : "bg-shark-50 text-shark-500 dark:bg-shark-800 dark:text-shark-400"
+            )}>
+              <span>{trend > 0 ? "↑" : trend < 0 ? "↓" : "→"}</span>
+              <span>{trend > 0 ? "+" : ""}{trend} this week</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
