@@ -374,11 +374,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
         {/* Hero Banner — full-width bleed, extends down into Health Score widget */}
         <div
-          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32 bg-action-500"
-          style={{ minHeight: 90 }}
+          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-32 bg-action-500 flex flex-col justify-end"
+          style={{ minHeight: 140 }}
         >
-          {/* Content */}
-          <div className="relative px-5 py-4 sm:px-10 sm:py-7">
+          {/* Heading — sits just above the widget overlap zone */}
+          <div className="relative px-5 pb-5 sm:px-10">
             <h1 className="text-xl sm:text-3xl font-bold text-white tracking-tight">
               {subtitle}
             </h1>
