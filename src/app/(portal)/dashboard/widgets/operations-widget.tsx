@@ -58,6 +58,40 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   );
 }
 
+// ─── Health Score Widget (ring only) ─────────────────────────────────────────
+
+export function HealthScoreWidget({ data, className }: { data: OperationsOverview; className?: string }) {
+  const score = data.healthScore;
+  const label = score >= 80 ? "Excellent" : score >= 60 ? "Good" : score >= 40 ? "Fair" : "Needs Attention";
+  const labelColor = score >= 80 ? "text-action-600 dark:text-action-400" : score >= 60 ? "text-action-500 dark:text-action-400" : "text-red-500";
+
+  return (
+    <Card padding="none" className={cn("backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 dark:bg-shark-900/30 border border-white/50 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)]", className)}>
+      <div className="px-5 py-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100 leading-tight">Health Score</h2>
+          <div className="flex items-center gap-1.5 bg-action-50 dark:bg-action-500/10 border border-action-100 dark:border-action-500/20 rounded-full px-2 py-0.5 shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-action-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-action-600 dark:text-action-400 uppercase tracking-wider">Live</span>
+          </div>
+        </div>
+
+        {/* Ring centred */}
+        <div className="flex flex-col items-center justify-center py-2 gap-2">
+          <HealthRing score={score} size={148} />
+          <div className="text-center">
+            <p className={cn("text-sm font-bold leading-none", labelColor)}>{label}</p>
+            <p className="text-[11px] text-shark-400 dark:text-shark-500 mt-0.5">Operations Health</p>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+// ─── Operations Performance Widget (metrics only) ────────────────────────────
+
 export function OperationsWidget({ data, className }: { data: OperationsOverview; className?: string }) {
   const pct0 = Math.max(4, 100 - Math.min(96, data.ordersAwaitingApproval * 18));
   const pct1 = Math.min(100, Math.max(10, data.totalStaff * 5));
@@ -89,7 +123,7 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
 
   return (
     <Card padding="none" className={cn("h-full backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 dark:bg-shark-900/30 border border-white/50 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.90)]", className)}>
-      <div className="px-5 py-4 sm:px-5 sm:py-4">
+      <div className="px-5 py-4">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
@@ -100,34 +134,30 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
           </div>
         </div>
 
-        {/* Ring + Metrics — always side by side */}
-        <div className="flex items-center gap-3">
-          {/* Ring */}
-          <div className="shrink-0">
-            <HealthRing score={data.healthScore} size={128} />
-          </div>
-
-          {/* Metrics — stacked vertically */}
-          <div className="flex-1 grid grid-cols-1 gap-1.5">
-            {metrics.map((m) => (
-              <Link
-                key={m.label}
-                href={m.href}
-                className="group block bg-white/60 dark:bg-shark-800/50 backdrop-blur-sm border border-white/70 dark:border-white/10 rounded-[20px] px-2.5 py-2 shadow-sm hover:bg-white/80 dark:hover:bg-shark-800/70 transition-all duration-200"
-              >
-                <p className="text-[11px] text-shark-700 dark:text-shark-300 leading-none font-semibold truncate">{m.label}</p>
-                <p className="text-xs font-bold text-shark-900 dark:text-shark-100 leading-tight truncate group-hover:text-action-600 dark:group-hover:text-action-400 transition-colors mt-0.5">
+        {/* Metrics — full width, one per row */}
+        <div className="grid grid-cols-1 gap-2">
+          {metrics.map((m) => (
+            <Link
+              key={m.label}
+              href={m.href}
+              className="group flex items-center gap-3 bg-white/60 dark:bg-shark-800/50 backdrop-blur-sm border border-white/70 dark:border-white/10 rounded-[20px] px-3.5 py-3 shadow-sm hover:bg-white/80 dark:hover:bg-shark-800/70 transition-all duration-200 min-h-[44px]"
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-shark-500 dark:text-shark-400 leading-none font-semibold truncate">{m.label}</p>
+                <p className="text-sm font-bold text-shark-900 dark:text-shark-100 leading-tight truncate group-hover:text-action-600 dark:group-hover:text-action-400 transition-colors mt-0.5">
                   {m.display}
                 </p>
-                <div className="mt-1.5 h-0.5 bg-shark-100/80 dark:bg-shark-700/80 rounded-full overflow-hidden">
+              </div>
+              <div className="w-24 shrink-0">
+                <div className="h-1 bg-shark-100/80 dark:bg-shark-700/80 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-1000 ease-out"
                     style={{ width: `${m.barPct}%`, backgroundColor: m.barColor }}
                   />
                 </div>
-              </Link>
-            ))}
-          </div>
+              </div>
+            </Link>
+          ))}
         </div>
 
       </div>

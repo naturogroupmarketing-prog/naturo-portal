@@ -11,7 +11,7 @@ import { DashboardSettingsModal } from "./dashboard-settings-modal";
 import { useRegisterPageCog } from "@/components/layout/page-cog-context";
 import { OnboardingOverlay } from "@/components/ui/onboarding";
 import { PageTransition, StaggerContainer, StaggerItem } from "@/components/ui/page-transition";
-import { OperationsWidget, PriorityAlertsPanel } from "./widgets/operations-widget";
+import { OperationsWidget, HealthScoreWidget, PriorityAlertsPanel } from "./widgets/operations-widget";
 import { removeCustomShortcut } from "@/app/actions/dashboard";
 import type { DashboardPreferences } from "@/lib/dashboard-types";
 import { type SmartActionItem } from "./smart-actions-panel";
@@ -405,7 +405,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
             <div className="flex flex-col gap-4 h-full">
               {briefingWidget && <div>{briefingWidget}</div>}
               {operationsOverview && showOperations && (
-                <OperationsWidget data={operationsOverview} className="flex-1" />
+                <>
+                  <HealthScoreWidget data={operationsOverview} />
+                  <OperationsWidget data={operationsOverview} className="flex-1" />
+                </>
               )}
             </div>
           </ErrorBoundary>
