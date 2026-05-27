@@ -428,16 +428,13 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                     }}
                   >
                     {/* Label chip */}
-                    <div className="backdrop-blur-[20px] bg-white/80 rounded-full px-3.5 py-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.08)] border border-white/90">
-                      <span className="text-[12px] font-semibold text-shark-800 whitespace-nowrap">
+                    <div className="backdrop-blur-[28px] bg-white/90 rounded-[14px] px-4 py-2 shadow-[0_8px_28px_rgba(0,0,0,0.18),0_2px_8px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.95)] border border-white/80">
+                      <span className="text-[13px] font-semibold text-shark-900 whitespace-nowrap tracking-tight">
                         {action.label}
                       </span>
                     </div>
                     {/* Mini FAB */}
-                    <div className={cn(
-                      "w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(0,0,0,0.15)] active:scale-95 transition-transform",
-                      action.color
-                    )}>
+                    <div className="w-12 h-12 rounded-[16px] bg-[#1b1b1b] flex items-center justify-center shrink-0 shadow-[0_8px_24px_rgba(0,0,0,0.32),0_2px_8px_rgba(0,0,0,0.20)] active:scale-95 transition-transform">
                       <Icon name={action.icon} size={19} className="text-white" />
                     </div>
                   </Link>

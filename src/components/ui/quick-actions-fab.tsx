@@ -106,7 +106,7 @@ export function QuickActionsFab() {
               <Link
                 href={action.href}
                 onClick={() => setOpen(false)}
-                className={`w-11 h-11 rounded-lg ${action.color} text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.18)] hover:scale-110 active:scale-95 transition-transform`}
+                className="w-11 h-11 rounded-lg bg-black text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.18)] hover:scale-110 active:scale-95 transition-transform"
               >
                 <Icon name={action.icon} size={17} />
               </Link>
