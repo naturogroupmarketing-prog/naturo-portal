@@ -54,42 +54,37 @@ function WidgetHeader({ icon, label }: { icon: Parameters<typeof Icon>[0]["name"
 
 function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
   const uid = useId().replace(/:/g, "");
-  const gradId  = `rg-${uid}`;
+  const gradId = `rg-${uid}`;
 
   const [animated, setAnimated] = useState(0);
   const [displayScore, setDisplayScore] = useState(0);
 
-  const strokeWidth   = 13;
+  const strokeWidth   = 9;
   const radius        = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset        = circumference - (animated / 100) * circumference;
 
   const isGreen  = score >= 90;
-  const isOrange = score >= 75; // 75–89
-  // < 75 → red (fallback)
-  const color1 = isGreen ? "#15803d" : isOrange ? "#c2410c" : "#dc2626";
+  const isOrange = score >= 75;
+  const color1 = isGreen ? "#15803d" : isOrange ? "#ea580c" : "#dc2626";
   const color2 = isGreen ? "#4ade80" : isOrange ? "#fb923c" : "#f87171";
 
-  // Animate the arc fill
   useEffect(() => {
     const t = setTimeout(() => setAnimated(score), 120);
     return () => clearTimeout(t);
   }, [score]);
 
-  // Count up the displayed number
   useEffect(() => {
     let rafId: number;
     const duration  = 1300;
     const startTime = performance.now();
-
     const tick = (now: number) => {
       const elapsed  = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const eased    = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      const eased    = 1 - Math.pow(1 - progress, 3);
       setDisplayScore(Math.round(eased * score));
       if (progress < 1) rafId = requestAnimationFrame(tick);
     };
-
     const timeout = setTimeout(() => { rafId = requestAnimationFrame(tick); }, 160);
     return () => { clearTimeout(timeout); cancelAnimationFrame(rafId); };
   }, [score]);
@@ -103,51 +98,25 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
             <stop offset="100%" stopColor={color2} />
           </linearGradient>
         </defs>
-
         {/* Track */}
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
+        <circle cx={size / 2} cy={size / 2} r={radius}
           fill="none" stroke="currentColor"
           className="text-shark-100 dark:text-shark-800"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
+          strokeWidth={strokeWidth} strokeLinecap="round"
         />
-
-        {/* Glow layer — blurred duplicate underneath the active arc */}
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke={color1}
-          strokeWidth={strokeWidth + 5}
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          style={{
-            opacity: 0.10,
-            filter: "blur(4px)",
-            transition: "stroke-dashoffset 1.2s ease-out",
-          }}
-        />
-
-        {/* Active arc with gradient */}
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
+        {/* Active arc */}
+        <circle cx={size / 2} cy={size / 2} r={radius}
           fill="none" stroke={`url(#${gradId})`}
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
+          strokeWidth={strokeWidth} strokeLinecap="round"
+          strokeDasharray={circumference} strokeDashoffset={offset}
           style={{ transition: "stroke-dashoffset 1.2s ease-out" }}
         />
       </svg>
-
       {/* Centre score */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center">
-          <span className="text-2xl font-black text-shark-800 dark:text-shark-200 leading-none tabular-nums">
-            {displayScore}
-          </span>
-          <span className="text-[10px] text-shark-400 font-normal block leading-none mt-0.5">/ 100</span>
-        </div>
+        <span className="text-[22px] font-bold text-shark-800 dark:text-shark-200 leading-none tabular-nums">
+          {displayScore}
+        </span>
       </div>
     </div>
   );
@@ -157,46 +126,45 @@ function HealthRing({ score, size = 96 }: { score: number; size?: number }) {
 
 export function HealthScoreWidget({ data, className, trend }: { data: OperationsOverview; className?: string; trend?: number }) {
   const score = data.healthScore;
-  const sublabel =
+
+  const statusLabel =
     score >= 90 ? "Excellent" :
     score >= 75 ? "Good" :
     score >= 60 ? "Fair" :
-    score >= 40 ? "Poor" :
-    "Critical";
-  const valueColor =
+    score >= 40 ? "Poor" : "Critical";
+
+  const statusColor =
     score >= 90 ? "text-green-600 dark:text-green-400" :
     score >= 75 ? "text-orange-500 dark:text-orange-400" :
-    "text-red-600 dark:text-red-400";
+    "text-red-500 dark:text-red-400";
+
 
   return (
-    <div className={cn("rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5", className)}>
-      <WidgetHeader icon="bar-chart" label="Health Score" />
+    <div className={cn("rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden", className)}>
 
-      {/* Ring left, info right */}
-      <div className="flex items-center gap-10 py-1">
-        <div className="flex-shrink-0">
-          <HealthRing score={score} size={148} />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <p className={cn("text-2xl font-bold leading-none", valueColor)}>{sublabel}</p>
-          <p className="text-sm text-shark-400 dark:text-shark-500 mt-1">Operations Health</p>
+      {/* ── Hero section ── */}
+      <div className="flex flex-col items-center text-center px-6 pt-8 pb-8">
+        {/* Ring */}
+        <HealthRing score={score} size={120} />
 
-          {/* Trend badge */}
-          {trend !== undefined && (
-            <div className={cn(
-              "inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full w-fit mt-1",
-              trend > 0
-                ? "bg-action-50 text-action-600 dark:bg-action-500/20 dark:text-action-400"
-                : trend < 0
-                ? "bg-red-50 text-red-600 dark:bg-red-500/20 dark:text-red-400"
-                : "bg-shark-50 text-shark-500 dark:bg-shark-800 dark:text-shark-400"
-            )}>
-              <span>{trend > 0 ? "↑" : trend < 0 ? "↓" : "→"}</span>
-              <span>{trend > 0 ? "+" : ""}{trend} this week</span>
-            </div>
-          )}
-        </div>
+        {/* Status — Apple large label style */}
+        <p className={cn("text-[32px] font-bold tracking-tight leading-none mt-5", statusColor)}>
+          {statusLabel}
+        </p>
+
+        {/* Descriptor */}
+        <p className="text-[13px] text-shark-400 dark:text-shark-500 mt-2 leading-snug">
+          Operations health score
+        </p>
+
+        {/* Trend — plain text, no pill */}
+        {trend !== undefined && trend !== 0 && (
+          <p className={cn("text-[12px] mt-2 font-normal", trend > 0 ? "text-green-600 dark:text-green-400" : "text-red-500 dark:text-red-400")}>
+            {trend > 0 ? "↑" : "↓"} {Math.abs(trend)} pts from last week
+          </p>
+        )}
       </div>
+
     </div>
   );
 }
@@ -214,8 +182,8 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
       displayValue: `${data.ordersAwaitingApproval} orders`,
       sublabel: data.ordersAwaitingApproval === 0 ? "Queue is clear" : "Pending review",
       barPct: pct0,
-      colorClass: pct0 < 50 ? "bg-red-500" : "bg-[#0057FF]",
-      valueColor: pct0 < 50 ? "text-red-600 dark:text-red-400" : "text-[#0057FF]",
+      colorClass: pct0 < 50 ? "bg-red-500" : "bg-action-500",
+      valueColor: pct0 < 50 ? "text-red-600 dark:text-red-400" : "text-action-500",
       href: "/purchase-orders",
     },
     {
@@ -223,8 +191,8 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
       displayValue: `${data.totalStaff} staff`,
       sublabel: data.totalStaff === 0 ? "No active staff" : "Active members",
       barPct: pct1,
-      colorClass: pct1 < 50 ? "bg-red-500" : "bg-[#0057FF]",
-      valueColor: pct1 < 50 ? "text-red-600 dark:text-red-400" : "text-[#0057FF]",
+      colorClass: pct1 < 50 ? "bg-red-500" : "bg-action-500",
+      valueColor: pct1 < 50 ? "text-red-600 dark:text-red-400" : "text-action-500",
       href: "/staff",
     },
     {
@@ -232,14 +200,14 @@ export function OperationsWidget({ data, className }: { data: OperationsOverview
       displayValue: `${data.ordersAwaitingReceival} orders`,
       sublabel: data.ordersAwaitingReceival === 0 ? "All orders received" : "In transit",
       barPct: pct2,
-      colorClass: pct2 < 50 ? "bg-red-500" : "bg-[#0057FF]",
-      valueColor: pct2 < 50 ? "text-red-600 dark:text-red-400" : "text-[#0057FF]",
+      colorClass: pct2 < 50 ? "bg-red-500" : "bg-action-500",
+      valueColor: pct2 < 50 ? "text-red-600 dark:text-red-400" : "text-action-500",
       href: "/purchase-orders?status=ORDERED",
     },
   ];
 
   return (
-    <div className={cn("rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5", className)}>
+    <div className={cn("rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-6", className)}>
       <WidgetHeader icon="bar-chart" label="Operations Performance" />
 
       <div className="grid grid-cols-1 gap-5">
@@ -276,7 +244,7 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
   const total = alerts.reduce((sum, a) => sum + a.value, 0);
 
   return (
-    <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 overflow-hidden">
+    <div className="rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden">
       {/* Header row — always visible, tap to toggle */}
       <button
         onClick={() => setOpen((p) => !p)}
@@ -307,7 +275,7 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
       )}>
         <div className="overflow-hidden min-h-0">
           {alerts.length > 0 ? (
-            <div className="divide-y divide-shark-50 dark:divide-shark-800 border-t border-shark-100 dark:border-shark-800">
+            <div className="divide-y divide-shark-100 dark:divide-shark-800 border-t border-shark-100 dark:border-shark-800">
               {alerts.map((item) => (
                 <Link
                   key={item.label}
@@ -318,7 +286,7 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
                     <Icon name={item.icon} size={13} className="text-action-600" />
                     <span className="text-xs text-shark-600 dark:text-shark-400">{item.label}</span>
                   </div>
-                  <span className="text-xs font-bold text-[#0057FF]">{item.value}</span>
+                  <span className="text-xs font-bold text-action-500">{item.value}</span>
                 </Link>
               ))}
             </div>

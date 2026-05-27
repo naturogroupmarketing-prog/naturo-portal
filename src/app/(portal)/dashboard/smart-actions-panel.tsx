@@ -87,7 +87,7 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
 
   return (
     <div
-      className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-shark-800 rounded-[20px] shadow-sm overflow-hidden flex flex-col"
+      className="bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] rounded-[20px] overflow-hidden flex flex-col"
       style={maxHeight ? { height: maxHeight } : undefined}
     >
       {/* Header */}
@@ -102,7 +102,7 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
         </div>
         <div className="flex items-center gap-2.5">
           {items.length > 0 && (
-            <span className="text-[10px] font-bold bg-[#0057FF] text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-tight">
+            <span className="text-[10px] font-bold bg-action-500 text-white px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-tight">
               {items.length}
             </span>
           )}
@@ -136,7 +136,7 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
           )}
         </div>
       ) : (
-        <div className="divide-y divide-shark-50 dark:divide-shark-800 overflow-y-auto flex-1">
+        <div className="divide-y divide-shark-100 dark:divide-shark-800 overflow-y-auto flex-1">
           {items.map((item) => {
             const borderColor =
               item.priority === "critical"

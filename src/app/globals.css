@@ -111,6 +111,7 @@ a, button, [role="button"], input, select, textarea, label {
   touch-action: manipulation;
 }
 
+
 /* ── One UI–inspired page entry ── */
 @keyframes page-in {
   from { opacity: 0; transform: translateY(10px) scale(0.98); }

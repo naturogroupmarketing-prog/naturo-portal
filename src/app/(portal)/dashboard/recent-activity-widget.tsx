@@ -35,12 +35,12 @@ function timeAgoLabel(isoDate: string): string {
 
 export function RecentActivityWidget({ items }: { items: RecentActivityItem[] }) {
   return (
-    <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5">
+    <div className="rounded-[20px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <Icon name="clock" size={13} className="text-shark-400" />
-          <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">
             Recent Activity
           </p>
         </div>

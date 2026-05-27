@@ -76,40 +76,42 @@ function getMoreItems(role: Role): MoreGridItem[] {
         { label: "Scan QR",        href: "/scan",                icon: "qr-code",        bg: "bg-[#f2f2f2]",          fg: "text-shark-600" },
         { label: "Request Supply", href: "/request-consumables", icon: "droplet",        bg: "bg-action-400/15",     fg: "text-action-600" },
         { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", bg: "bg-red-400/15",        fg: "text-red-600" },
-        { label: "My Assets",      href: "/my-assets",           icon: "package",        bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
-        { label: "My Supplies",    href: "/my-consumables",      icon: "droplet",        bg: "bg-[#0057FF]/10",       fg: "text-[#0057FF]" },
-        { label: "Dashboard",      href: "/dashboard",           icon: "home",           bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
+        { label: "My Assets",      href: "/my-assets",           icon: "package",        bg: "bg-action-500/10",     fg: "text-action-500" },
+        { label: "My Supplies",    href: "/my-consumables",      icon: "droplet",        bg: "bg-action-500/10",       fg: "text-action-500" },
+        { label: "Dashboard",      href: "/dashboard",           icon: "home",           bg: "bg-action-500/10",     fg: "text-action-500" },
         { label: "Settings",       href: "/settings",            icon: "settings",       bg: "bg-[#f2f2f2]",          fg: "text-shark-500" },
       ];
     case "SUPER_ADMIN":
       return [
+        { label: "Assets",          href: "/assets",           icon: "package",        bg: "bg-action-500/10",      fg: "text-action-500" },
         { label: "Supplies",        href: "/inventory",        icon: "droplet",        bg: "bg-action-400/15",     fg: "text-action-600" },
-        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-[#0057FF]/10",      fg: "text-[#0057FF]" },
-        { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
-        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-[#0057FF]/10",      fg: "text-[#0057FF]" },
-        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
+        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-action-500/10",      fg: "text-action-500" },
+        { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-action-500/10",     fg: "text-action-500" },
+        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-action-500/10",      fg: "text-action-500" },
+        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: "bg-action-500/10",     fg: "text-action-500" },
         { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: "bg-[#f2f2f2]",          fg: "text-shark-500" },
-        { label: "Reports",         href: "/reports",          icon: "bar-chart",      bg: "bg-[#0057FF]/10",       fg: "text-[#0057FF]" },
-        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
+        { label: "Reports",         href: "/reports",          icon: "bar-chart",      bg: "bg-action-500/10",       fg: "text-action-500" },
+        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: "bg-action-500/10",     fg: "text-action-500" },
         { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: "bg-red-400/15",        fg: "text-red-600" },
       ];
     case "BRANCH_MANAGER":
       return [
+        { label: "Assets",          href: "/assets",           icon: "package",        bg: "bg-action-500/10",      fg: "text-action-500" },
         { label: "Supplies",        href: "/inventory",        icon: "droplet",        bg: "bg-action-400/15",     fg: "text-action-600" },
-        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-[#0057FF]/10",      fg: "text-[#0057FF]" },
-        { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
-        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-[#0057FF]/10",      fg: "text-[#0057FF]" },
-        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
+        { label: "Purchase Orders", href: "/purchase-orders",  icon: "truck",          bg: "bg-action-500/10",      fg: "text-action-500" },
+        { label: "Staff",           href: "/staff",            icon: "users",          bg: "bg-action-500/10",     fg: "text-action-500" },
+        { label: "Starter Kits",    href: "/starter-kits",     icon: "box",            bg: "bg-action-500/10",      fg: "text-action-500" },
+        { label: "Returns",         href: "/returns",          icon: "arrow-left",     bg: "bg-action-500/10",     fg: "text-action-500" },
         { label: "Maintenance",     href: "/maintenance",      icon: "wrench",         bg: "bg-[#f2f2f2]",          fg: "text-shark-500" },
-        { label: "Reports",         href: "/reports",          icon: "bar-chart",      bg: "bg-[#0057FF]/10",       fg: "text-[#0057FF]" },
-        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
+        { label: "Reports",         href: "/reports",          icon: "bar-chart",      bg: "bg-action-500/10",       fg: "text-action-500" },
+        { label: "Inspections",     href: "/condition-checks", icon: "search",         bg: "bg-action-500/10",     fg: "text-action-500" },
         { label: "Anomalies",       href: "/alerts/anomalies", icon: "alert-triangle", bg: "bg-red-400/15",        fg: "text-red-600" },
       ];
     case "AUDITOR":
       return [
-        { label: "Dashboard", href: "/dashboard", icon: "home",           bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
-        { label: "Reports",   href: "/reports",   icon: "clipboard",      bg: "bg-[#0057FF]/10",       fg: "text-[#0057FF]" },
-        { label: "Activity",  href: "/activity",  icon: "clock",          bg: "bg-[#0057FF]/10",     fg: "text-[#0057FF]" },
+        { label: "Dashboard", href: "/dashboard", icon: "home",           bg: "bg-action-500/10",     fg: "text-action-500" },
+        { label: "Reports",   href: "/reports",   icon: "clipboard",      bg: "bg-action-500/10",       fg: "text-action-500" },
+        { label: "Activity",  href: "/activity",  icon: "clock",          bg: "bg-action-500/10",     fg: "text-action-500" },
         { label: "Scan QR",   href: "/scan",      icon: "qr-code",        bg: "bg-[#f2f2f2]",          fg: "text-shark-600" },
         { label: "Settings",  href: "/settings",  icon: "settings",       bg: "bg-[#f2f2f2]",          fg: "text-shark-500" },
       ];
@@ -137,14 +139,14 @@ function getQuickActions(role: Role): QuickAction[] {
     case "SUPER_ADMIN":
     case "BRANCH_MANAGER":
       return [
-        { label: "New User",    href: "/staff?action=add",              icon: "users",   color: "bg-[#0057FF]" },
-        { label: "Add Stock",   href: "/consumables?action=add",        icon: "droplet", color: "bg-[#0057FF]" },
-        { label: "Starter Kit", href: "/starter-kits?action=new",      icon: "box",     color: "bg-[#0057FF]" },
-        { label: "New Order",   href: "/purchase-orders?action=create", icon: "truck",   color: "bg-[#0057FF]" },
+        { label: "New User",    href: "/staff?action=add",              icon: "users",   color: "bg-action-500" },
+        { label: "Add Stock",   href: "/consumables?action=add",        icon: "droplet", color: "bg-action-500" },
+        { label: "Starter Kit", href: "/starter-kits?action=new",      icon: "box",     color: "bg-action-500" },
+        { label: "New Order",   href: "/purchase-orders?action=create", icon: "truck",   color: "bg-action-500" },
       ];
     case "STAFF":
       return [
-        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        color: "bg-[#0057FF]"   },
+        { label: "Request Supply", href: "/request-consumables", icon: "droplet",        color: "bg-action-500"   },
         { label: "Report Damage",  href: "/report-damage",       icon: "alert-triangle", color: "bg-red-500"    },
         { label: "Scan QR",        href: "/scan",                icon: "qr-code",        color: "bg-shark-700"  },
       ];
@@ -384,7 +386,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                     size={23}
                     className={cn(
                       "transition-colors duration-200",
-                      moreOpen || navActiveIdx === -1 ? "text-[#0057FF]" : "text-shark-400"
+                      moreOpen || navActiveIdx === -1 ? "text-action-500" : "text-shark-400"
                     )}
                   />
                   {installReady && !moreOpen && (
@@ -394,7 +396,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 <span className={cn(
                   "text-[10px] leading-none transition-colors duration-200",
                   moreOpen || navActiveIdx === -1
-                    ? "font-bold text-[#0057FF]"
+                    ? "font-bold text-action-500"
                     : "font-medium text-shark-400"
                 )}>
                   More
@@ -493,7 +495,7 @@ function NavButton({ item, active, onSelect }: { item: NavItem; active: boolean;
           filled={active}
           className={cn(
             "transition-all duration-220",
-            active ? "text-[#0057FF] scale-110" : "text-shark-400"
+            active ? "text-action-500 scale-110" : "text-shark-400"
           )}
         />
         {item.badge != null && item.badge > 0 && (
@@ -505,7 +507,7 @@ function NavButton({ item, active, onSelect }: { item: NavItem; active: boolean;
       <span className={cn(
         "text-[10px] leading-none transition-all duration-220",
         active
-          ? "font-bold text-[#0057FF]"
+          ? "font-bold text-action-500"
           : "font-medium text-shark-400"
       )}>
         {item.label}

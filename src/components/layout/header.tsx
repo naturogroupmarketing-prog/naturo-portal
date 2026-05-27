@@ -16,13 +16,11 @@ interface HeaderProps {
   userImage?: string | null;
   role: Role;
   onMenuToggle: () => void;
-  sidebarExpanded?: boolean;
-  onSidebarToggle?: () => void;
   orgName?: string;
   orgLogo?: string | null;
 }
 
-export function Header({ userName, userImage, role, onMenuToggle, sidebarExpanded, onSidebarToggle, orgName, orgLogo }: HeaderProps) {
+export function Header({ userName, userImage, role, onMenuToggle, orgName, orgLogo }: HeaderProps) {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
@@ -111,24 +109,16 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-[20px] bg-white/80 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.90)_inset]">
-      {/* Left side: mobile menu + logo */}
+    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-[20px] bg-white dark:bg-shark-950 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-black/[0.06] dark:border-white/[0.08] shadow-[0_1px_0_rgba(255,255,255,0.90)_inset]">
+      {/* Left side: initial badge + business name */}
       <div className="flex items-center gap-2">
-        {/* Brand — org logo if set, otherwise name with initial badge */}
         <Link href="/dashboard" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity min-w-0">
-          {orgLogo ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={orgLogo}
-              alt={orgName ?? ""}
-              className="h-8 w-auto max-w-[160px] object-contain"
-              draggable={false}
-            />
-          ) : (
-            <span className="font-semibold text-shark-900 dark:text-shark-100 text-base truncate max-w-[180px]">
-              {orgName}
-            </span>
-          )}
+          <span className="w-7 h-7 rounded-[8px] bg-action-500 flex items-center justify-center text-white text-[12px] font-bold shadow-[0_1px_4px_rgba(0,87,255,0.35)] flex-shrink-0 select-none">
+            {(orgName ?? "W").charAt(0).toUpperCase()}
+          </span>
+          <span className="font-bold text-shark-900 dark:text-shark-100 text-[15px] truncate max-w-[200px] tracking-tight">
+            {orgName ?? "Workspace"}
+          </span>
         </Link>
       </div>
 
@@ -169,6 +159,9 @@ export function Header({ userName, userImage, role, onMenuToggle, sidebarExpande
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="flex items-center p-0.5 rounded-full hover:ring-2 hover:ring-shark-100 transition-all"
+            aria-label="Open user menu"
+            aria-haspopup="true"
+            aria-expanded={dropdownOpen}
           >
             {userImage ? (
               <img src={userImage} alt="" className="w-9 h-9 rounded-full" />

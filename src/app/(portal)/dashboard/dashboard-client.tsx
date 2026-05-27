@@ -100,53 +100,6 @@ interface ChartItem {
   color?: string;
 }
 
-function RecalcPredictionsButton() {
-  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
-  const router = useRouter();
-
-  const handleRecalc = async () => {
-    setStatus("loading");
-    try {
-      const res = await fetch("/api/predictions", { method: "POST" });
-      const data = await res.json();
-      if (res.ok) {
-        setStatus("done");
-        router.refresh();
-        setTimeout(() => setStatus("idle"), 3000);
-      } else {
-        console.error(data.error);
-        setStatus("error");
-        setTimeout(() => setStatus("idle"), 3000);
-      }
-    } catch {
-      setStatus("error");
-      setTimeout(() => setStatus("idle"), 3000);
-    }
-  };
-
-  return (
-    <button
-      onClick={handleRecalc}
-      disabled={status === "loading"}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border text-xs sm:text-sm transition-all ${
-        status === "done"
-          ? "border-action-300 bg-action-50 text-action-600"
-          : status === "error"
-          ? "border-red-300 bg-red-50 text-red-600"
-          : "border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 text-shark-600 dark:text-shark-300 hover:border-action-300 hover:text-action-600 hover:shadow-sm"
-      }`}
-      title="Recalculate AI predictions from consumption history"
-    >
-      <Icon
-        name={status === "loading" ? "clock" : status === "done" ? "check" : "bar-chart"}
-        size={12}
-        className={status === "loading" ? "animate-spin" : status === "done" ? "text-action-500" : "text-action-500"}
-      />
-      {status === "loading" ? "Calculating…" : status === "done" ? "Updated!" : status === "error" ? "Failed" : "AI Predict"}
-    </button>
-  );
-}
-
 function QuickActionsBar({ role }: { role: string }) {
   const actions: { label: string; href: string; icon: IconName }[] = [
     { label: "Assign Item", href: "/inventory", icon: "package" },
@@ -161,7 +114,7 @@ function QuickActionsBar({ role }: { role: string }) {
     <>
       {actions.map((action) => (
         <Link key={action.label} href={action.href} className="block group">
-          <Card className="hover:shadow-md transition-all duration-200 cursor-pointer">
+          <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer">
             <CardContent className="px-3 py-3">
               <div className="flex items-center gap-2 min-h-[44px]">
                 <div className="w-9 h-9 rounded-[14px] bg-shark-50 dark:bg-shark-800 flex items-center justify-center flex-shrink-0 group-hover:bg-action-50 transition-colors">
@@ -369,87 +322,33 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
-      {/* ── Hero + first widget row — single wrapper so space-y doesn't split them ── */}
-      <div className="relative">
-
-        {/* Hero Banner — full-width bleed */}
-        <div
-          className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-20"
-          style={{
-            minHeight: 140,
-            background: "linear-gradient(135deg, #004de0 0%, #0066ff 55%, #1a7aff 100%)",
-          }}
+      {/* ── Greeting row ── */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-[28px] sm:text-[32px] font-bold leading-tight tracking-tight text-shark-900 dark:text-white">
+          Hi {userName ?? "there"}, Have a great day
+        </h1>
+        <button
+          onClick={() => setSettingsOpen(true)}
+          className="p-2.5 rounded-full text-shark-500 hover:text-shark-700 dark:text-shark-400 dark:hover:text-white transition-colors"
+          aria-label="Dashboard settings"
+          title="Dashboard settings"
         >
-          {/* Noise / grain texture */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-overlay"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-              backgroundSize: "200px 200px",
-            }}
-          />
+          <Icon name="settings" size={18} />
+        </button>
+      </div>
 
-          {/* Vignette */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: "radial-gradient(ellipse 130% 100% at 50% 0%, transparent 45%, rgba(5,15,60,0.32) 100%)",
-            }}
-          />
-
-          {/* Animated glow — top left */}
-          <div
-            className="absolute -top-16 -left-16 w-72 h-72 rounded-full pointer-events-none opacity-20 animate-pulse"
-            style={{
-              background: "radial-gradient(circle, rgba(99,179,255,0.9) 0%, transparent 65%)",
-              animationDuration: "3000ms",
-            }}
-          />
-
-          {/* Animated glow — bottom right */}
-          <div
-            className="absolute -bottom-8 right-4 w-56 h-56 rounded-full pointer-events-none opacity-[0.15] animate-pulse"
-            style={{
-              background: "radial-gradient(circle, rgba(147,197,255,0.7) 0%, transparent 65%)",
-              animationDuration: "4500ms",
-              animationDelay: "1500ms",
-            }}
-          />
-
-          {/* Bottom shadow fade */}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
-            style={{ background: "linear-gradient(to bottom, transparent, rgba(5,10,50,0.14))" }}
-          />
-
-          {/* Name + settings cog */}
-          <div className="absolute bottom-20 left-0 right-0 px-5 sm:px-10 flex items-center justify-between">
-            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-              Hi {userName ?? "there"}, Have a great day
-            </h1>
-            <button
-              onClick={() => setSettingsOpen(true)}
-              className="p-2.5 rounded-full text-white/70 hover:text-white transition-colors"
-              aria-label="Dashboard settings"
-              title="Dashboard settings"
-            >
-              <Icon name="settings" size={18} />
-            </button>
-          </div>
-        </div>
-
-        {/* ── AI Briefing (1/2) | Stat cards stacked (1/2) — pulled up to overlap hero */}
-        <div className="relative z-10 -mt-14 flex flex-col gap-4">
+      {/* ── First widget row ── */}
+      <div className="flex flex-col gap-4">
           {/* AI Briefing — full width if present */}
           {briefingWidget && (
-            <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
+            <ErrorBoundary fallback={<div className="rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] bg-white dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Briefing unavailable</div>}>
               <div>{briefingWidget}</div>
             </ErrorBoundary>
           )}
 
           {/* Health Score | Operations Performance — side by side */}
           {operationsOverview && showOperations && (
-            <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Overview unavailable</div>}>
+            <ErrorBoundary fallback={<div className="rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] bg-white dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Overview unavailable</div>}>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <HealthScoreWidget data={operationsOverview} trend={5} />
                 <OperationsWidget data={operationsOverview} />
@@ -459,23 +358,40 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
           {/* Stat buttons — 4 across, underneath */}
           {visibleStats.length > 0 && (
-            <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
+            <ErrorBoundary fallback={<div className="rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] bg-white dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Stats unavailable</div>}>
               <StaggerContainer>
-                <div className="grid grid-cols-4 gap-2">
-                {visibleStats.map((s) => (
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {visibleStats.map((s, i) => (
                   <StaggerItem key={s.label}>
                     <Link href={s.href} className="block group aspect-square lg:aspect-auto lg:h-44">
-                      <div className={`h-full rounded-[20px] backdrop-blur-[20px] border border-white/60 dark:border-white/10 ${s.buttonBg} shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform cursor-pointer`}>
-                        <div className="p-2 h-full">
-                          <div className="flex flex-col items-center justify-center text-center gap-1 h-full">
-                            <div className="flex items-center justify-center flex-shrink-0">
-                              <Icon name={s.icon} size={20} className={s.iconColor} />
-                            </div>
-                            <div className="min-w-0">
-                              <AnimatedCounter value={s.value} className="text-base font-bold text-shark-900 dark:text-shark-100 leading-none" />
-                              <p className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 truncate leading-tight">{s.label}</p>
-                            </div>
+                      <div className={`h-full rounded-[28px] border active:scale-[0.97] transition-transform cursor-pointer ${
+                        i === 0
+                          ? "bg-action-500 border-action-600/20 shadow-[0_2px_12px_rgba(0,87,255,0.30)]"
+                          : "bg-white dark:bg-shark-900 border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)]"
+                      }`}>
+                        <div className="p-4 lg:p-5 h-full flex flex-col justify-between">
+                          {/* Top — label + icon side by side */}
+                          <div className="flex items-center justify-between">
+                            <p className={`text-[10px] font-bold uppercase tracking-widest leading-none ${
+                              i === 0 ? "text-white/70" : s.iconColor
+                            }`}>
+                              {s.label}
+                            </p>
+                            <Icon name={s.icon} size={24} className={i === 0 ? "text-white/70" : s.iconColor} />
                           </div>
+                          {/* Middle — big dominant number like "27" */}
+                          <AnimatedCounter
+                            value={s.value}
+                            className={`text-[42px] font-bold leading-none tabular-nums ${
+                              i === 0 ? "text-white" : "text-shark-900 dark:text-shark-100"
+                            }`}
+                          />
+                          {/* Bottom — muted subtext like "No events today" */}
+                          <p className={`text-[11px] font-medium leading-snug ${
+                            i === 0 ? "text-white/60" : "text-shark-400 dark:text-shark-500"
+                          }`}>
+                            {s.trend ? s.trend.label : "View details →"}
+                          </p>
                         </div>
                       </div>
                     </Link>
@@ -487,10 +403,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           )}
         </div>
 
-      </div>
-
       {preferences.sectionOrder.map((sectionId) => (
-        <ErrorBoundary key={sectionId} fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-4 text-center text-sm text-shark-400">Widget unavailable</div>}>
+        <ErrorBoundary key={sectionId} fallback={<div className="rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] bg-white dark:bg-shark-900 p-4 text-center text-sm text-shark-400">Widget unavailable</div>}>
           {(() => { switch (sectionId) {
           case "stats":
             return null; // rendered above briefing — see explicit block after briefingWidget
@@ -507,18 +421,18 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     <div className="px-5 py-4">
                       <div className="flex items-center gap-2 mb-5">
                         <Icon name="bar-chart" size={13} className="text-shark-400" />
-                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Finance</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">Finance</p>
                       </div>
 
                       {/* Summary cards */}
-                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 overflow-hidden mb-4">
-                        <div className="grid grid-cols-2 divide-x divide-shark-50">
+                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
+                        <div className="grid grid-cols-2 divide-x divide-shark-100 dark:divide-shark-800">
                         <div className="px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
                             <span className="w-2 h-2 rounded-full" style={{ background: "#1F3DD9" }} />
                             <span className="text-xs text-shark-500 dark:text-shark-400">Assets</span>
                           </div>
-                          <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
+                          <p className="text-xl font-bold tabular-nums text-shark-900 dark:text-shark-100">
                             ${portfolioValue.current.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
                           </p>
                           {portfolioValue.depreciation > 0 && (
@@ -532,7 +446,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <span className="w-2 h-2 rounded-full" style={{ background: "#0057FF" }} />
                             <span className="text-xs text-shark-500 dark:text-shark-400">Supplies</span>
                           </div>
-                          <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
+                          <p className="text-xl font-bold tabular-nums text-shark-900 dark:text-shark-100">
                             ${portfolioValue.consumableValue.toLocaleString("en-AU", { maximumFractionDigits: 0 })}
                           </p>
                         </div>
@@ -595,9 +509,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       )}
 
                       {/* Total */}
-                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-shark-100 dark:border-shark-700/60">
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/60 dark:border-white/[0.08]">
                         <span className="text-xs font-medium text-shark-500 dark:text-shark-400">Total Portfolio</span>
-                        <span className="text-lg font-bold text-shark-900 dark:text-shark-100">
+                        <span className="text-lg font-bold tabular-nums text-shark-900 dark:text-shark-100">
                           ${(portfolioValue.current + portfolioValue.consumableValue).toLocaleString("en-AU", { maximumFractionDigits: 0 })}
                         </span>
                       </div>
@@ -615,7 +529,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <Card className="hover:border-action-300 transition-colors cursor-pointer">
                     <CardContent className="pt-5">
                       <p className="text-xs font-medium text-shark-400 uppercase tracking-wider">Maintenance Due</p>
-                      <p className="text-2xl font-bold text-action-600 mt-1">{upcomingMaintenance}</p>
+                      <p className="text-2xl font-bold tabular-nums text-action-600 mt-1">{upcomingMaintenance}</p>
                       <p className="text-xs text-shark-400 mt-1">Due within 7 days</p>
                     </CardContent>
                   </Card>
@@ -631,9 +545,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     <div className="px-5 py-4">
                       <div className="flex items-center gap-2 mb-5">
                         <Icon name="package" size={13} className="text-shark-400" />
-                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Asset Status</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">Asset Status</p>
                       </div>
-                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] divide-y divide-shark-100 dark:divide-shark-800 overflow-hidden">
                         {assetStatusChart.map((item) => {
                           const total = assetStatusChart.reduce((sum, i) => sum + i.value, 0);
                           const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
@@ -660,9 +574,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     <div className="px-5 py-4">
                       <div className="flex items-center gap-2 mb-5">
                         <Icon name="box" size={13} className="text-shark-400" />
-                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Assets by Category</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">Assets by Category</p>
                       </div>
-                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] divide-y divide-shark-100 dark:divide-shark-800 overflow-hidden">
                         {categoryChart.map((item, idx) => {
                           const maxVal = Math.max(...categoryChart.map((c) => c.value));
                           const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
@@ -693,9 +607,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     <div className="px-5 py-4">
                       <div className="flex items-center gap-2 mb-5">
                         <Icon name="droplet" size={13} className="text-shark-400" />
-                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Supply Status</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">Supply Status</p>
                       </div>
-                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] divide-y divide-shark-100 dark:divide-shark-800 overflow-hidden">
                         {consumableStatusChart.map((item) => {
                           const total = consumableStatusChart.reduce((sum, i) => sum + i.value, 0);
                           const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
@@ -722,9 +636,9 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     <div className="px-5 py-4">
                       <div className="flex items-center gap-2 mb-5">
                         <Icon name="box" size={13} className="text-shark-400" />
-                        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Supplies by Category</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">Supplies by Category</p>
                       </div>
-                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                      <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] divide-y divide-shark-100 dark:divide-shark-800 overflow-hidden">
                         {consumableCategoryChart.map((item, idx) => {
                           const maxVal = Math.max(...consumableCategoryChart.map((c) => c.value));
                           const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
@@ -766,7 +680,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   </Link>
                   {/* Content */}
                   {lowStockItems.length === 0 ? (
-                    <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 overflow-hidden">
+                    <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden">
                       <div className="flex items-center gap-3 px-4 py-3.5">
                         <div className="w-7 h-7 rounded-[14px] bg-action-50 flex items-center justify-center shrink-0">
                           <Icon name="check" size={14} className="text-action-500" />
@@ -775,7 +689,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                    <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] divide-y divide-shark-100 dark:divide-shark-800 overflow-hidden">
                       {lowStockItems.map((item) => (
                         <Link key={item.id} href={isSuperAdmin ? `/alerts/low-stock${item.region?.id ? `?region=${item.region.id}` : ""}` : "/purchase-orders"} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                           <div className="flex-1 min-w-0 mr-3">
@@ -817,7 +731,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                     <Icon name="arrow-right" size={16} className="text-shark-400 group-hover:text-action-500 transition-colors shrink-0" />
                   </Link>
                   {/* Items */}
-                  <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+                  <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] divide-y divide-shark-100 dark:divide-shark-800 overflow-hidden">
                     {predictedShortages.map((item) => (
                       <Link key={item.id} href={`/purchase-orders`} className="flex items-center justify-between px-3 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -901,7 +815,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                       <button
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleRemoveShortcut(shortcut.id); }}
                         disabled={isPending}
-                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white dark:bg-shark-800 shadow-sm border border-shark-100 dark:border-shark-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-shark-400 hover:text-red-500 hover:border-red-200 disabled:opacity-50"
+                        className="absolute top-1 right-1 w-8 h-8 rounded-full bg-white dark:bg-shark-800 shadow-sm border border-shark-100 dark:border-shark-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-shark-400 hover:text-red-500 hover:border-red-200 disabled:opacity-50"
                       >
                         <Icon name="x" size={12} />
                       </button>
@@ -920,14 +834,14 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
 
       {/* Storage Locations Map */}
       {isSuperAdmin && showMap && mapLocations.length > 0 && (
-        <ErrorBoundary fallback={<div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-shark-50 dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Map unavailable</div>}>
+        <ErrorBoundary fallback={<div className="rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] bg-white dark:bg-shark-900 p-6 text-center text-sm text-shark-400">Map unavailable</div>}>
         <Card padding="none">
           <div className="px-5 py-4">
             <div className="flex items-center gap-2 mb-5">
               <Icon name="map-pin" size={13} className="text-shark-400" />
-              <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Storage Locations</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">Storage Locations</p>
             </div>
-            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-[20px] overflow-hidden border border-shark-100 dark:border-shark-800 mb-3">
+            <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-[20px] overflow-hidden border border-black/[0.05] dark:border-white/[0.06] mb-3">
               <iframe
                 width="100%"
                 height="100%"
@@ -937,7 +851,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                 src={`https://maps.google.com/maps?q=${mapLocations.map((l) => `${l.latitude},${l.longitude}`).join("|")}&z=5&output=embed&ll=${mapLocations.length > 0 ? `${mapLocations.reduce((s, l) => s + l.latitude, 0) / mapLocations.length},${mapLocations.reduce((s, l) => s + l.longitude, 0) / mapLocations.length}` : "-33.8688,151.2093"}`}
               />
             </div>
-            <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-shark-100 dark:border-shark-800 divide-y divide-shark-50 dark:divide-shark-800 overflow-hidden">
+            <div className="bg-white dark:bg-shark-900 rounded-[20px] border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] divide-y divide-shark-100 dark:divide-shark-800 overflow-hidden">
               {mapLocations.map((loc) => (
                 <a
                   key={loc.id}

@@ -9,12 +9,12 @@ export function Card({ className, variant = "default", padding = "md", children,
   return (
     <div
       className={cn(
-        // Warm glass: cream-tinted frosted surface (Designer Maryam MD3 system)
-        "rounded-[20px] transition-colors",
+        // iOS 17 widget glass — large radius, strong translucency, top-light inset highlight
+        "rounded-[28px] transition-colors",
         {
-          "glass-card dark:bg-shark-900/70 dark:border-white/[0.07] dark:shadow-[0_1px_0_rgba(255,255,255,0.04),0_4px_16px_rgba(0,0,0,0.20)]": variant === "default",
-          "backdrop-blur-[20px] bg-white/40 dark:bg-shark-900/50 border border-white/50 dark:border-white/[0.08]": variant === "flat",
-          "glass-card dark:bg-shark-900/80 dark:border-white/[0.08] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_8px_28px_rgba(0,0,0,0.30),inset_0_1px_0_rgba(255,255,255,0.06)] shadow-[0_4px_40px_rgba(0,113,227,0.10),0_1px_0_rgba(255,255,255,0.90)]": variant === "elevated",
+          "bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)]": variant === "default",
+          "bg-white dark:bg-shark-900 border border-black/[0.04] dark:border-white/[0.05] shadow-[0_1px_4px_rgba(0,0,0,0.05)]": variant === "flat",
+          "bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.07] shadow-[0_4px_20px_rgba(0,0,0,0.10),0_1px_4px_rgba(0,0,0,0.06)]": variant === "elevated",
           "bg-transparent": variant === "ghost",
         },
         {

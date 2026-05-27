@@ -39,7 +39,7 @@ function AnimatedBar({
 }
 
 function scoreColor(val: number): string {
-  return val >= 50 ? "bg-[#0057FF]" : "bg-red-500";
+  return val >= 50 ? "bg-action-500" : "bg-red-500";
 }
 
 function scoreLabel(val: number): string {
@@ -51,7 +51,7 @@ function scoreLabel(val: number): string {
 }
 
 function scoreTextColor(val: number): string {
-  return val >= 50 ? "text-[#0057FF]" : "text-red-600 dark:text-red-400";
+  return val >= 50 ? "text-action-500" : "text-red-600 dark:text-red-400";
 }
 
 export function SystemHealthBar({
@@ -105,11 +105,11 @@ export function SystemHealthBar({
   ];
 
   return (
-    <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 p-5">
+    <div className="rounded-[20px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-5">
       {/* Header */}
       <div className="flex items-center gap-2 mb-5">
         <Icon name="bar-chart" size={13} className="text-shark-400" />
-        <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">
           System Performance
         </p>
       </div>
