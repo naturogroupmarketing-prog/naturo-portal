@@ -305,52 +305,49 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
       >
         <div className="mx-8 flex items-end gap-2.5">
 
-          {/* Unified nav card — glassmorphism */}
+          {/* Unified nav card — more panel + nav in one container */}
           <div
             ref={containerRef}
-            className="flex-1 relative"
+            className="flex-1 overflow-hidden rounded-[28px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/60 border border-white/60 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]"
           >
-            {/* More panel — slides up from the nav bar */}
+            {/* More panel — expands inside the unified card, pushing nav down */}
             <div
               className={cn(
-                "absolute bottom-full left-0 right-0 mb-2 rounded-[28px] overflow-hidden backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/60 border border-white/60 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]",
-                moreOpen
-                  ? "opacity-100 translate-y-0 pointer-events-auto"
-                  : "opacity-0 translate-y-full pointer-events-none"
+                "grid transition-[grid-template-rows] ease-[cubic-bezier(0.22,1,0.36,1)] duration-[380ms]",
+                moreOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
               )}
-              style={{ transition: "transform 380ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease" }}
             >
-              <div className="grid grid-cols-3 gap-y-5 gap-x-3 px-5 pt-6 pb-6">
-                {moreItems.map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => setMoreOpen(false)}
-                    className="flex flex-col items-center gap-2 touch-manipulation select-none"
-                  >
-                    <div className={cn(
-                      "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center backdrop-blur-[20px] border border-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform",
-                      item.bg
-                    )}>
-                      <Icon name={item.icon} size={27} className={item.fg} />
-                    </div>
-                    <span className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 text-center leading-tight">
-                      {item.label}
-                    </span>
-                  </Link>
-                ))}
+              <div className="overflow-hidden min-h-0">
+                <div className="grid grid-cols-3 gap-y-5 gap-x-3 px-5 pt-6 pb-4">
+                  {moreItems.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      onClick={() => setMoreOpen(false)}
+                      className="flex flex-col items-center gap-2 touch-manipulation select-none"
+                    >
+                      <div className={cn(
+                        "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center active:scale-95 transition-transform",
+                        item.bg
+                      )}>
+                        <Icon name={item.icon} size={27} className={item.fg} />
+                      </div>
+                      <span className="text-[11px] font-semibold text-shark-700 dark:text-shark-300 text-center leading-tight">
+                        {item.label}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+                {/* Hairline divider between grid and nav row */}
+                <div className="h-px bg-white/40 mx-3" />
               </div>
             </div>
 
-            {/* Nav pill — fixed size, never changes */}
-            <div
-              className="overflow-hidden rounded-[44px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/30 border border-white/50 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]"
-              onClick={() => quickOpen && setQuickOpen(false)}
-            >
-            {/* Nav row — always visible */}
+            {/* Nav row — always visible at the bottom */}
             <nav
               aria-label="Mobile navigation"
               className="relative flex items-center py-1"
+              onClick={() => quickOpen && setQuickOpen(false)}
             >
               {/* One UI–style active pill */}
               <div
@@ -403,8 +400,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                 </span>
               </button>
             </nav>
-            </div>{/* end nav pill */}
-          </div>{/* end containerRef */}
+          </div>{/* end unified card */}
 
           {/* ── FAB speed-dial ─────────────────────────────────────────────── */}
           <div className="relative shrink-0">
