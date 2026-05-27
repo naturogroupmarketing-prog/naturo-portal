@@ -21,12 +21,12 @@ import { exportToCSV } from "@/lib/csv";
 // Color palette auto-assigned by category index
 const SECTION_COLORS = [
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-500", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
-  { color: "text-gray-600", bg: "bg-gray-100" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-100 dark:bg-shark-800" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
@@ -97,7 +97,7 @@ interface Request {
 const REGION_COLORS = [
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-500", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
@@ -561,7 +561,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
           </div>
           <div className="h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all ${stockPercent >= 50 ? "bg-[#0057FF]" : "bg-red-500"}`}
+              className={`h-full rounded-full transition-all ${stockPercent >= 50 ? "bg-action-500" : "bg-red-500"}`}
               style={{ width: `${stockPercent}%` }}
             />
           </div>
@@ -1307,7 +1307,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   </tr>
                 ))}
                 {pendingRequests.length === 0 && (
-                  <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400">No pending requests.</td></tr>
+                  <tr><td colSpan={5} className="px-4 py-8 text-center text-shark-400 dark:text-shark-500">No pending requests.</td></tr>
                 )}
               </tbody>
             </table>
@@ -1651,7 +1651,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             }
           }} className="space-y-4">
             <input type="hidden" name="consumableId" value={showAssign.id} />
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-shark-600 dark:text-shark-400">
               Available stock: <strong>{showAssign.quantityOnHand} {showAssign.unitType}</strong>
             </p>
             <div>
@@ -1665,13 +1665,13 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   ))}
               </Select>
               {showAssign?.region?.id && users.filter((u) => u.regionId === showAssign.region.id).length === 0 && (
-                <p className="text-xs text-[#0057FF]">No staff assigned to this region</p>
+                <p className="text-xs text-action-500">No staff assigned to this region</p>
               )}
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity *</label>
               <Input name="quantity" type="number" min="1" max={showAssign.quantityOnHand} required />
-              <p className="text-xs text-gray-400 mt-1">Max: {showAssign.quantityOnHand}</p>
+              <p className="text-xs text-shark-400 dark:text-shark-500 mt-1">Max: {showAssign.quantityOnHand}</p>
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowAssign(null)}>Cancel</Button>
@@ -1697,7 +1697,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
             }
           }} className="space-y-4">
             <input type="hidden" name="assignmentId" value={showReturn.assignment.id} />
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-shark-600 dark:text-shark-400">
               Assigned to <strong>{showReturn.assignment.user.name || showReturn.assignment.user.email}</strong>
               {" \u2014 "}{showReturn.assignment.quantity} {showReturn.consumable.unitType}
             </p>

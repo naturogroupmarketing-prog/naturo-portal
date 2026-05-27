@@ -29,14 +29,14 @@ const QRScanner = dynamic(
 const SECTION_COLORS = [
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
-  { color: "text-[#0057FF]", bg: "bg-action-50", border: "border-action-200" },
+  { color: "text-action-500", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800", border: "border-shark-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-pink-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
-  { color: "text-gray-600", bg: "bg-gray-100", border: "border-gray-200" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-100 dark:bg-shark-800", border: "border-shark-200 dark:border-shark-700" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
   { color: "text-action-600", bg: "bg-action-50", border: "border-action-200" },
@@ -83,7 +83,7 @@ interface Asset {
 const REGION_COLORS = [
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-500", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
@@ -1437,7 +1437,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
           </div>
           <div className="flex items-center gap-2">
             <input type="checkbox" name="isHighValue" value="true" id="isHighValue" className="rounded" />
-            <label htmlFor="isHighValue" className="text-sm text-gray-700">High-value asset</label>
+            <label htmlFor="isHighValue" className="text-sm text-shark-700 dark:text-shark-300">High-value asset</label>
           </div>
           <div>
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Quantity</label>
@@ -1491,7 +1491,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   ))}
               </Select>
               {showAssign?.region?.id && users.filter((u) => u.regionId === showAssign.region.id).length === 0 && (
-                <p className="text-xs text-[#0057FF]">No staff assigned to this region</p>
+                <p className="text-xs text-action-500">No staff assigned to this region</p>
               )}
             </div>
             <div>
@@ -1504,7 +1504,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Expected Return Date</label>
               <Input name="expectedReturnDate" type="date" />
-              <p className="text-xs text-gray-400 mt-1">Leave blank for permanent assignments</p>
+              <p className="text-xs text-shark-400 dark:text-shark-500 mt-1">Leave blank for permanent assignments</p>
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="secondary" onClick={() => setShowAssign(null)}>Cancel</Button>
@@ -1545,7 +1545,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div className="flex items-center gap-2">
               <input type="checkbox" name="isDamaged" value="true" id="isDamaged" className="rounded" />
-              <label htmlFor="isDamaged" className="text-sm text-gray-700">Mark as damaged (makes asset unavailable)</label>
+              <label htmlFor="isDamaged" className="text-sm text-shark-700 dark:text-shark-300">Mark as damaged (makes asset unavailable)</label>
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>
@@ -1741,7 +1741,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             </div>
             <div className="flex items-center gap-2">
               <input type="checkbox" name="isHighValue" value="true" id="editIsHighValue" className="rounded" defaultChecked={editAsset.isHighValue} />
-              <label htmlFor="editIsHighValue" className="text-sm text-gray-700">High-value asset</label>
+              <label htmlFor="editIsHighValue" className="text-sm text-shark-700 dark:text-shark-300">High-value asset</label>
             </div>
             <div>
               <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes</label>

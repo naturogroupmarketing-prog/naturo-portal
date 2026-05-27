@@ -5,6 +5,9 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Modal } from "@/components/ui/modal";
+import { Input } from "@/components/ui/input";
 import { batchProcessReturns } from "@/app/actions/returns";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
@@ -39,6 +42,9 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   const [submitted, setSubmitted] = useState(false);
   const [expandedStaff, setExpandedStaff] = useState<Set<string>>(new Set());
   const [processedStaff, setProcessedStaff] = useState<Set<string>>(new Set());
+  // Rejection reason modal
+  const [rejectionModal, setRejectionModal] = useState<{ itemId: string; itemName: string } | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   // Group returns by staff
   const staffGroups = useMemo(() => {
@@ -147,6 +153,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
   }
 
   return (
+    <>
     <Card padding="none">
     <div className="px-5 py-4 space-y-8">
       <div className="flex items-center gap-2">
@@ -177,10 +184,12 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
 
       {returns.length === 0 ? (
         <Card>
-          <div className="py-12 text-center">
-            <Icon name="check" size={32} className="text-action-400 mx-auto mb-3" />
-            <p className="text-sm text-shark-400">No returns pending. All clear.</p>
-          </div>
+          <EmptyState
+            icon="check"
+            title="No returns pending"
+            description="All clear — your team is on track."
+            className="py-10"
+          />
         </Card>
       ) : (
         <div className="space-y-3">
@@ -252,7 +261,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                               checked={isVerified}
                               onChange={() => toggleItem(item.id, "verified")}
                               className={`w-5 h-5 rounded border-shark-300 cursor-pointer shrink-0 ${
-                                isNotReturned ? "text-[#0057FF] focus:ring-action-200" : "text-action-500 focus:ring-action-400"
+                                isNotReturned ? "text-action-500 focus:ring-action-200" : "text-action-500 focus:ring-action-400"
                               }`}
                             />
                             <div className="w-9 h-9 rounded-[14px] overflow-hidden bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 flex items-center justify-center shrink-0">
@@ -268,7 +277,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                                   {name}
                                 </p>
                                 {isNotReturned && (
-                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-action-100 text-[#0057FF] uppercase shrink-0">Not Returned</span>
+                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-action-100 text-action-500 uppercase shrink-0">Not Returned</span>
                                 )}
                               </div>
                               {item.returnCondition && item.returnCondition !== "NOT_RETURNED" && (
@@ -280,7 +289,7 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                             </div>
 
                             {isVerified && (
-                              <span className={`text-xs font-medium shrink-0 ${isNotReturned ? "text-[#0057FF]" : "text-action-500"}`}>
+                              <span className={`text-xs font-medium shrink-0 ${isNotReturned ? "text-action-500" : "text-action-500"}`}>
                                 {isNotReturned ? "Acknowledged" : "Restocked"}
                               </span>
                             )}
@@ -291,11 +300,11 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
                                   if (isRejected) {
                                     toggleItem(item.id, "rejected");
                                   } else {
-                                    const reason = prompt("Why is this item not being returned?");
-                                    if (reason) toggleItem(item.id, "rejected", reason);
+                                    setRejectionReason("");
+                                    setRejectionModal({ itemId: item.id, itemName: name });
                                   }
                                 }}
-                                className={`p-1.5 rounded-[10px] transition-colors shrink-0 ${
+                                className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-[10px] transition-colors shrink-0 ${
                                   isRejected ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"
                                 }`}
                                 title={isRejected ? "Undo rejection" : "Reject"}
@@ -336,5 +345,51 @@ export function ReturnsClient({ returns }: { returns: PendingReturnItem[] }) {
       )}
     </div>
     </Card>
+
+    {/* Rejection reason modal */}
+    {rejectionModal && (
+      <Modal
+        open
+        onClose={() => setRejectionModal(null)}
+        title="Reason for rejection"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-shark-600 dark:text-shark-400">
+            <span className="font-medium text-shark-800 dark:text-shark-200">{rejectionModal.itemName}</span> will be marked as rejected. Please provide a reason.
+          </p>
+          <div>
+            <label className="text-xs font-medium text-shark-600 dark:text-shark-400 block mb-1.5">Reason</label>
+            <Input
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="e.g. Item is damaged beyond acceptable condition..."
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && rejectionReason.trim()) {
+                  toggleItem(rejectionModal.itemId, "rejected", rejectionReason.trim());
+                  setRejectionModal(null);
+                }
+              }}
+            />
+          </div>
+          <div className="flex gap-2 pt-1">
+            <Button variant="secondary" className="flex-1" onClick={() => setRejectionModal(null)}>
+              Cancel
+            </Button>
+            <Button
+              className="flex-1"
+              disabled={!rejectionReason.trim()}
+              onClick={() => {
+                toggleItem(rejectionModal.itemId, "rejected", rejectionReason.trim());
+                setRejectionModal(null);
+              }}
+            >
+              Confirm
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    )}
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
+import { EmptyState } from "@/components/ui/empty-state";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { Select } from "@/components/ui/select";
@@ -27,7 +28,7 @@ import {
 const STATE_COLORS = [
   { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-action-50", color: "text-action-600" },
-  { bg: "bg-action-50", color: "text-[#0057FF]" },
+  { bg: "bg-action-50", color: "text-action-500" },
   { bg: "bg-action-50", color: "text-action-600" },
   { bg: "bg-shark-50 dark:bg-shark-800", color: "text-shark-600 dark:text-shark-400" },
   { bg: "bg-rose-50", color: "text-rose-600" },
@@ -130,9 +131,13 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
 
         {/* Location list — divided sections inside the card */}
         {filteredLocations.length === 0 ? (
-          <div className="border-t border-shark-100 dark:border-shark-700 py-12 text-center">
-            <Icon name="map-pin" size={36} className="text-shark-200 mx-auto mb-3" />
-            <p className="text-sm text-shark-400">{search ? "No locations match your search." : "No locations yet."}</p>
+          <div className="border-t border-shark-100 dark:border-shark-700">
+            <EmptyState
+              icon="map-pin"
+              title={search ? "No locations found" : "No locations yet"}
+              description={search ? "No locations match your search — try adjusting your filter." : "Add a state to get started organising your inventory."}
+              className="py-12"
+            />
           </div>
         ) : (
           <div className="space-y-6 pt-2 pb-4">
@@ -206,7 +211,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                       {damageLost > 0 && (
                                         <span
                                           onClick={(e) => { e.preventDefault(); window.location.href = `/alerts/damage?region=${region.id}`; }}
-                                          className="flex items-center gap-1 text-[#0057FF] bg-red-50 border border-red-100 hover:bg-red-100 px-2 py-0.5 rounded-full font-semibold text-xs transition-colors"
+                                          className="flex items-center gap-1 text-action-500 bg-red-50 border border-red-100 hover:bg-red-100 px-2 py-0.5 rounded-full font-semibold text-xs transition-colors"
                                           title={`${damageLost} damaged/lost`}
                                         >
                                           <Icon name="alert-triangle" size={11} />
@@ -235,6 +240,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                       }}
                                       className="p-1.5 rounded-[10px] text-shark-300 hover:text-amber-500 hover:bg-amber-50 transition-colors opacity-0 group-hover:opacity-100"
                                       title="Archive Location"
+                                      aria-label={`Archive ${region.name}`}
                                     >
                                       <Icon name="download" size={14} />
                                     </button>
@@ -245,6 +251,7 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                       }}
                                       className="p-1.5 rounded-[10px] text-shark-300 hover:text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
                                       title="Delete Location"
+                                      aria-label={`Delete ${region.name}`}
                                     >
                                       <Icon name="trash-2" size={14} />
                                     </button>

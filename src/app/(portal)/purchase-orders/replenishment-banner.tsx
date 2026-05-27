@@ -119,8 +119,8 @@ export function ReplenishmentBanner({ suggestions }: Props) {
           onClick={() => setCollapsed((c) => !c)}
           className="w-full flex items-center gap-2 text-left"
         >
-          <div className="w-7 h-7 rounded-[14px] bg-[#0057FF]/10 flex items-center justify-center shrink-0">
-            <Icon name="bar-chart" size={14} className="text-[#0057FF]" />
+          <div className="w-7 h-7 rounded-[14px] bg-action-500/10 flex items-center justify-center shrink-0">
+            <Icon name="bar-chart" size={14} className="text-action-500" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Smart Replenishment</h3>

@@ -54,8 +54,8 @@ const CATEGORY_CONFIG: Record<
   asset: {
     label: "Asset",
     icon: "box",
-    bg: "bg-[#0057FF]/10",
-    text: "text-[#0057FF]",
+    bg: "bg-action-500/10",
+    text: "text-action-500",
   },
   staff: {
     label: "Staff",
@@ -66,8 +66,8 @@ const CATEGORY_CONFIG: Record<
   damage: {
     label: "Damage",
     icon: "alert-triangle",
-    bg: "bg-[#0057FF]/10",
-    text: "text-[#0057FF]",
+    bg: "bg-action-500/10",
+    text: "text-action-500",
   },
   procurement: {
     label: "Procurement",
@@ -504,7 +504,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
               {tab.label}
               {count > 0 && (
                 <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
-                  isActive ? "text-white bg-[#0057FF]" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
+                  isActive ? "text-white bg-action-500" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
                 }`}>
                   {count}
                 </span>

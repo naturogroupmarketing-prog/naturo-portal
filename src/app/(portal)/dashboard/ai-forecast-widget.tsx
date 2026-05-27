@@ -95,7 +95,7 @@ export function AiForecastWidget({ items }: Props) {
                           <div className="flex items-center gap-1.5">
                             <p className="text-[13px] font-semibold text-shark-800 dark:text-shark-200 truncate">{item.name}</p>
                             {item.spiking && (
-                              <span className="text-[9px] font-bold bg-[#0057FF]/10 text-[#0057FF] px-1 py-0.5 rounded shrink-0 uppercase tracking-wide">
+                              <span className="text-[9px] font-bold bg-action-500/10 text-action-500 px-1 py-0.5 rounded shrink-0 uppercase tracking-wide">
                                 ↑ spike
                               </span>
                             )}

@@ -12,12 +12,12 @@ import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-500", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
-  { color: "text-gray-600", bg: "bg-gray-100" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-100 dark:bg-shark-800" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
@@ -148,7 +148,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
           <CardContent className="pt-5">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-7 h-7 rounded-[14px] bg-action-100 flex items-center justify-center">
-                <Icon name="clipboard" size={14} className="text-[#0057FF]" />
+                <Icon name="clipboard" size={14} className="text-action-500" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Confirm Receipt</p>
@@ -264,7 +264,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
       {/* Pending & Recent Requests */}
       {recentRequests.length > 0 && (
         <div>
-          <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest mb-3">Pending & Recent Requests</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400 mb-3">Pending & Recent Requests</p>
           <div className="space-y-3">
             {recentRequests.map((r) => (
               <Card key={r.id}>
@@ -421,7 +421,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
               </span>
             </div>
             {useQty >= ca.quantity && (
-              <p className="text-xs text-[#0057FF]">All used — this will close the assignment.</p>
+              <p className="text-xs text-action-500">All used — this will close the assignment.</p>
             )}
             <div className="flex items-center gap-2 pt-1">
               <Button size="sm" onClick={handleMarkUsed} disabled={loading || useQty === 0} loading={loading} className="text-xs">

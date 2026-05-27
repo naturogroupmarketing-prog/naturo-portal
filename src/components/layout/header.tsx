@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { Icon } from "@/components/ui/icon";
 import { NotificationBell } from "./notification-bell";
 import { useTheme } from "@/components/theme-provider";
 import { CommandSearch } from "@/components/ui/command-search";
 import { QuickAddMenu } from "@/components/ui/quick-add-menu";
+import { usePageCog } from "@/components/layout/page-cog-context";
 import type { Role } from "@/generated/prisma/browser";
 
 interface HeaderProps {
@@ -22,6 +23,8 @@ interface HeaderProps {
 
 export function Header({ userName, userImage, role, onMenuToggle, orgName, orgLogo }: HeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { cogAction } = usePageCog();
   const { theme, toggleTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
@@ -280,7 +283,7 @@ export function Header({ userName, userImage, role, onMenuToggle, orgName, orgLo
       </div>
       </div>{/* end Row 1 */}
 
-      {/* ── Row 2: mobile-only full-width search + filter ── */}
+      {/* ── Row 2: mobile-only full-width search + (dashboard-only) settings cog ── */}
       <div className="lg:hidden flex items-center gap-2 px-4 pb-3">
         <button
           onClick={() => setSearchOpen(true)}
@@ -292,13 +295,15 @@ export function Header({ userName, userImage, role, onMenuToggle, orgName, orgLo
           </svg>
           <span className="flex-1 text-left leading-none">Search...</span>
         </button>
-        <Link
-          href="/settings"
-          className="w-9 h-9 flex items-center justify-center rounded-full bg-[#f0f0f0] dark:bg-shark-800 border border-black/[0.06] dark:border-white/[0.06] text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 transition-colors"
-          aria-label="Settings"
-        >
-          <Icon name="settings" size={16} />
-        </Link>
+        {pathname === "/dashboard" && cogAction !== null && (
+          <button
+            onClick={cogAction}
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-[#f0f0f0] dark:bg-shark-800 border border-black/[0.06] dark:border-white/[0.06] text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 transition-colors"
+            aria-label="Dashboard settings"
+          >
+            <Icon name="sliders" size={16} />
+          </button>
+        )}
       </div>
 
       <CommandSearch open={searchOpen} onClose={() => setSearchOpen(false)} />

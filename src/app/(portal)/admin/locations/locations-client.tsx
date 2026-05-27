@@ -20,7 +20,7 @@ import {
 } from "@/app/actions/locations";
 
 const STATE_COLORS = [
-  { iconBg: "bg-[#0057FF]/10",   iconColor: "text-[#0057FF]"   },
+  { iconBg: "bg-action-500/10",   iconColor: "text-action-500"   },
   { iconBg: "bg-violet-100",     iconColor: "text-violet-600"  },
   { iconBg: "bg-teal-100",       iconColor: "text-teal-600"    },
   { iconBg: "bg-rose-100",       iconColor: "text-rose-600"    },

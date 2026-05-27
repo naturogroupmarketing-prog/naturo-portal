@@ -18,14 +18,14 @@ import { applyStarterKit } from "@/app/actions/starter-kits";
 const SECTION_COLORS = [
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-500", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-gray-600", bg: "bg-gray-100" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-100 dark:bg-shark-800" },
 ];
 
 interface StaffUser {
@@ -743,7 +743,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                     )}
                                     <span className="truncate">{a.asset.name}</span>
                                     {!a.acknowledgedAt && (
-                                      <span className="text-[10px] font-medium text-[#0057FF] bg-action-50 ring-1 ring-[#0057FF]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
+                                      <span className="text-[10px] font-medium text-action-500 bg-action-50 ring-1 ring-action-500/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
                                     )}
                                   </div>
                                 ))}
@@ -913,7 +913,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                                   )}
                                   <p className="text-sm text-shark-700 dark:text-shark-300 truncate">{a.asset.name}</p>
                                   {!a.acknowledgedAt && (
-                                    <span className="text-[10px] font-medium text-[#0057FF] bg-action-50 ring-1 ring-[#0057FF]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
+                                    <span className="text-[10px] font-medium text-action-500 bg-action-50 ring-1 ring-action-500/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
                                   )}
                                 </div>
                               ))}
@@ -1043,7 +1043,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                 </p>
                 <p className="text-sm text-red-500">This action cannot be undone. All assignment history for this user will also be removed.</p>
                 {editUser.assetAssignments.length > 0 && (
-                  <p className="text-sm text-[#0057FF] font-medium">
+                  <p className="text-sm text-action-500 font-medium">
                     This user has {editUser.assetAssignments.length} active asset assignment(s). Please return all assets before deleting.
                   </p>
                 )}
@@ -1112,7 +1112,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                               )}
                               <span className="font-medium text-shark-800 dark:text-shark-200 truncate">{a.asset.name}</span>
                               {!a.acknowledgedAt && (
-                                <span className="text-[10px] font-medium text-[#0057FF] bg-action-50 ring-1 ring-[#0057FF]/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
+                                <span className="text-[10px] font-medium text-action-500 bg-action-50 ring-1 ring-action-500/20 px-1.5 py-0.5 rounded-full shrink-0">Awaiting</span>
                               )}
                             </div>
                           ))}
@@ -1201,7 +1201,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                     <div key={d.id} className="text-sm py-2 border-b border-shark-50 dark:border-shark-800 last:border-0">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${d.type === "DAMAGE" ? "bg-action-100 text-[#0057FF]" : "bg-red-100 text-red-700"}`}>
+                          <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${d.type === "DAMAGE" ? "bg-action-100 text-action-500" : "bg-red-100 text-red-700"}`}>
                             {d.type}
                           </span>
                           <span className="font-medium text-shark-800 dark:text-shark-200">{d.asset?.name || "Unknown"}</span>
@@ -1236,7 +1236,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   <p className="text-[10px] text-shark-400">Inspections Done</p>
                 </div>
                 <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-3 py-2.5 text-center">
-                  <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-[#0057FF]" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
+                  <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-action-500" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Damage Reports</p>
                 </div>
               </div>

@@ -92,7 +92,7 @@ export default async function AlertsPage() {
                 <div
                   className={`flex items-center justify-center h-10 w-10 rounded-[20px] ${
                     card.count > 0
-                      ? "bg-[#0057FF]/10 text-[#0057FF]"
+                      ? "bg-action-500/10 text-action-500"
                       : "bg-action-50 text-action-500 dark:bg-action-900/20 dark:text-action-400"
                   }`}
                 >
@@ -112,7 +112,7 @@ export default async function AlertsPage() {
                   <span
                     className={`text-3xl font-bold ${
                       card.count > 0
-                        ? "text-[#0057FF]"
+                        ? "text-action-500"
                         : "text-action-500 dark:text-action-400"
                     }`}
                   >

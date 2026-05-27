@@ -272,7 +272,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                     >
                       <Link
                         href={`/assets?search=${encodeURIComponent(asset.assetCode)}`}
-                        className="flex items-start gap-2.5 p-2.5 rounded-[20px] border border-shark-100 dark:border-shark-800 hover:border-action-200 hover:bg-action-50/30 transition-all group"
+                        className="flex items-start gap-2.5 p-2.5 rounded-[20px] border border-white/70 dark:border-white/[0.08] hover:border-action-200 hover:bg-action-50/30 transition-all group"
                       >
                         {/* Score badge */}
                         <span

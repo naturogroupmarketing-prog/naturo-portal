@@ -111,7 +111,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
                         {/* Progress bar */}
                         <div className="h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
                           <div
-                            className={`h-full rounded-full transition-colors ${pct >= 50 ? "bg-[#0057FF]" : "bg-red-500"}`}
+                            className={`h-full rounded-full transition-colors ${pct >= 50 ? "bg-action-500" : "bg-red-500"}`}
                             style={{ width: `${pct}%` }}
                           />
                         </div>

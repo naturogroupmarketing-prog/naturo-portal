@@ -13,12 +13,12 @@ import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
   { color: "text-action-600", bg: "bg-action-50" },
-  { color: "text-[#0057FF]", bg: "bg-action-50" },
+  { color: "text-action-500", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-red-600", bg: "bg-red-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-50 dark:bg-shark-800" },
-  { color: "text-gray-600", bg: "bg-gray-100" },
+  { color: "text-shark-600 dark:text-shark-400", bg: "bg-shark-100 dark:bg-shark-800" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
   { color: "text-action-600", bg: "bg-action-50" },
@@ -139,7 +139,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
           Request
           {recentRequests.length > 0 && (
             <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
-              recentRequests.some((r) => r.status === "PENDING") ? "text-white bg-[#0057FF]" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
+              recentRequests.some((r) => r.status === "PENDING") ? "text-white bg-action-500" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
             }`}>
               {recentRequests.length}
             </span>
@@ -153,7 +153,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         >
           Confirm Receipt
           {pendingAssignments.length > 0 && (
-            <span className="ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full text-white bg-[#0057FF]">
+            <span className="ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full text-white bg-action-500">
               {pendingAssignments.length}
             </span>
           )}
@@ -166,7 +166,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
           {/* Active Requests */}
           {recentRequests.length > 0 && (
             <div>
-              <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest mb-3">My Requests</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400 mb-3">My Requests</p>
               <div className="space-y-3">
                 {recentRequests.map((r) => (
                   <Card key={r.id}>

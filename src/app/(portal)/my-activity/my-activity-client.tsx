@@ -82,7 +82,7 @@ export function MyActivityClient({
       type: "request" as const,
       icon: "clipboard" as IconName,
       iconBg: "bg-action-50",
-      iconColor: "text-[#0057FF]",
+      iconColor: "text-action-500",
       imageUrl: r.consumable.imageUrl,
       title: r.consumable.name,
       detail: `${r.quantity} ${r.consumable.unitType} requested`,

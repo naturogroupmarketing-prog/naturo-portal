@@ -158,6 +158,9 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
   // Track item states: "received" | "not_received" | undefined (pending)
   const [itemStates, setItemStates] = useState<Record<string, { status: "received" | "not_received"; reason?: string }>>({});
   const [submitting, setSubmitting] = useState(false);
+  // Not-received reason modal
+  const [notReceivedModal, setNotReceivedModal] = useState<{ key: string; itemName: string } | null>(null);
+  const [notReceivedReason, setNotReceivedReason] = useState("");
 
   // Condition check state
   const [checkStates, setCheckStates] = useState<Record<string, { condition: string; photoUrl: string; notes: string; uploading: boolean; submitting: boolean }>>({});
@@ -440,74 +443,22 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
   const hasEquipment = visibleKitApplications.length > 0 || visibleIndividualAssets.length > 0 || visibleIndividualConsumables.length > 0;
 
   return (
+    <>
     <PullToRefresh>
     <div>
-      {/* Hero Banner — matches admin dashboard */}
-      <div
-        className="relative overflow-hidden -mx-4 -mt-5 sm:-mx-5 sm:-mt-6 lg:-mx-6 lg:-mt-10 pb-20"
-        style={{
-          minHeight: 140,
-          background: "linear-gradient(135deg, #004de0 0%, #0066ff 55%, #1a7aff 100%)",
-        }}
-      >
-        {/* Noise / grain texture */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-overlay"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            backgroundSize: "200px 200px",
-          }}
-        />
+      {/* ── Greeting row ── */}
+      <h1 className="text-[28px] sm:text-[32px] font-bold leading-tight tracking-tight text-shark-900 dark:text-white">
+        Hi {userName ?? "there"}, Have a great day
+      </h1>
 
-        {/* Vignette */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: "radial-gradient(ellipse 130% 100% at 50% 0%, transparent 45%, rgba(5,15,60,0.32) 100%)",
-          }}
-        />
-
-        {/* Animated glow — top left */}
-        <div
-          className="absolute -top-16 -left-16 w-72 h-72 rounded-full pointer-events-none opacity-20 animate-pulse"
-          style={{
-            background: "radial-gradient(circle, rgba(99,179,255,0.9) 0%, transparent 65%)",
-            animationDuration: "3000ms",
-          }}
-        />
-
-        {/* Animated glow — bottom right */}
-        <div
-          className="absolute -bottom-8 right-4 w-56 h-56 rounded-full pointer-events-none opacity-[0.15] animate-pulse"
-          style={{
-            background: "radial-gradient(circle, rgba(147,197,255,0.7) 0%, transparent 65%)",
-            animationDuration: "4500ms",
-            animationDelay: "1500ms",
-          }}
-        />
-
-        {/* Bottom shadow fade */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, transparent, rgba(5,10,50,0.14))" }}
-        />
-
-        {/* Name */}
-        <div className="absolute bottom-20 left-0 right-0 px-5 sm:px-10">
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            Hi {userName ?? "there"}, Have a great day
-          </h1>
-        </div>
-      </div>
-
-    <div className="relative z-10 -mt-14 space-y-8">
+    <div className="space-y-8">
       {/* Pending Starter Kit Checklist */}
       {hasPendingKit && (
         <Card className="">
           <CardHeader>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-[14px] bg-action-100 flex items-center justify-center">
-                <Icon name="clipboard" size={16} className="text-[#0057FF]" />
+                <Icon name="clipboard" size={16} className="text-action-500" />
               </div>
               <div>
                 <CardTitle>Equipment Checklist</CardTitle>
@@ -560,7 +511,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                               <p className="text-xs text-shark-400">{item.asset.category}</p>
                               {isNotReceived && state.reason && <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>}
                             </div>
-                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { const reason = prompt("Why was this item not received?"); if (reason) toggleItem(key, "not_received", reason); } }} className={`p-1.5 rounded-[10px] transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
+                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { setNotReceivedReason(""); setNotReceivedModal({ key, itemName: item.asset.name }); } }} className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-[10px] transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
                               <Icon name="x" size={16} />
                             </button>
                           </div>
@@ -599,7 +550,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                               <p className="text-xs text-shark-400">{item.consumable.unitType}</p>
                               {isNotReceived && state.reason && <p className="text-xs text-red-400 mt-0.5">Reason: {state.reason}</p>}
                             </div>
-                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { const reason = prompt("Why was this item not received?"); if (reason) toggleItem(key, "not_received", reason); } }} className={`p-1.5 rounded-[10px] transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
+                            <button onClick={() => { if (isNotReceived) { toggleItem(key, "not_received"); } else { setNotReceivedReason(""); setNotReceivedModal({ key, itemName: item.consumable.name }); } }} className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-[10px] transition-colors shrink-0 ${isNotReceived ? "bg-red-100 text-red-500" : "hover:bg-red-50 text-shark-400 hover:text-red-500"}`} title={isNotReceived ? "Undo not received" : "Not received"}>
                               <Icon name="x" size={16} />
                             </button>
                           </div>
@@ -906,7 +857,8 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
             <div className="flex gap-2 pt-2">
               <Button variant="secondary" className="flex-1" onClick={() => { setReturningKitId(null); setReturnError(null); }}>Cancel</Button>
               <Button
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                variant="danger"
+                className="flex-1"
                 onClick={handleReturnKit}
                 loading={returnSubmitting}
                 disabled={returnSubmitting || Object.entries(kitItemExclusions).some(([, v]) => v.excluded && v.note.trim() === "")}
@@ -973,7 +925,8 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
             <div className="flex gap-2 pt-2">
               <Button variant="secondary" className="flex-1" onClick={() => setShowReturnAll(false)}>Cancel</Button>
               <Button
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                variant="danger"
+                className="flex-1"
                 onClick={handleReturnAll}
                 loading={returnSubmitting}
                 disabled={returnSubmitting || returnAllSelected.size === 0}
@@ -987,59 +940,43 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
 
       {/* Return Individual Item Modal */}
       {returningItemId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-shark-900 rounded-[20px] shadow-2xl w-full max-w-md my-auto animate-fade-in">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-shark-100 dark:border-shark-800">
-              <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Return Item</h3>
-              <button
-                onClick={() => setReturningItemId(null)}
-                className="p-1.5 rounded-[10px] hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 text-shark-400"
-              >
-                <Icon name="x" size={18} />
-              </button>
+        <Modal
+          open
+          onClose={() => { if (!returnSubmitting) { setReturningItemId(null); setReturnError(null); } }}
+          title="Return Item"
+        >
+          <div className="space-y-4">
+            <div className="bg-action-50 border border-action-200 rounded-[14px] px-4 py-3">
+              <p className="text-sm text-action-800">
+                This return will be sent to your manager for verification before restocking.
+              </p>
             </div>
-            <div className="px-6 py-4 space-y-4">
-              <div className="bg-action-50 border border-action-200 rounded-[14px] px-4 py-3">
-                <p className="text-sm text-action-800">
-                  This return will be sent to your manager for verification before restocking.
-                </p>
-              </div>
 
-              {/* Condition */}
-              <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Condition</label>
-                <select
-                  value={returnCondition}
-                  onChange={(e) => setReturnCondition(e.target.value)}
-                  className="w-full border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 rounded-[14px] px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500"
-                >
-                  <option value="GOOD">Good</option>
-                  <option value="FAIR">Fair</option>
-                  <option value="POOR">Poor</option>
-                  <option value="DAMAGED">Damaged</option>
-                </select>
-              </div>
-
-              {/* Notes */}
-              <div>
-                <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Notes (optional)</label>
-                <textarea
-                  value={returnNotes}
-                  onChange={(e) => setReturnNotes(e.target.value)}
-                  placeholder="Any additional details about the return..."
-                  rows={3}
-                  className="w-full border border-shark-200 dark:border-shark-700 bg-white dark:bg-shark-800 rounded-[14px] px-3 py-2 text-sm text-shark-800 dark:text-shark-200 focus:ring-2 focus:ring-action-500 focus:border-action-500 resize-none"
-                />
-              </div>
+            {/* Condition */}
+            <div>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1.5">Condition</label>
+              <ConditionSelect value={returnCondition} onChange={setReturnCondition} />
             </div>
+
+            {/* Notes */}
+            <div>
+              <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1.5">Notes (optional)</label>
+              <Input
+                value={returnNotes}
+                onChange={(e) => setReturnNotes(e.target.value)}
+                placeholder="Any additional details about the return..."
+              />
+            </div>
+
             {returnError && (
-              <div className="mx-6 mb-2 bg-red-50 border border-red-200 rounded-[14px] px-4 py-3">
+              <div className="bg-red-50 border border-red-200 rounded-[14px] px-4 py-3">
                 <p className="text-sm text-red-700">{returnError}</p>
               </div>
             )}
+
             {/* Processing overlay for individual return */}
-            {returnSubmitting && (
-              <div className="px-6 py-8 flex flex-col items-center animate-fade-in">
+            {returnSubmitting ? (
+              <div className="flex flex-col items-center py-4 animate-fade-in">
                 <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-3">
                   <svg className="animate-spinner text-red-500" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
@@ -1052,9 +989,8 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                   <div className="h-full bg-red-400 rounded-full animate-progress-bar" />
                 </div>
               </div>
-            )}
-            {!returnSubmitting && (
-              <div className="flex gap-3 px-6 py-4 border-t border-shark-100 dark:border-shark-700">
+            ) : (
+              <div className="flex gap-3 pt-2">
                 <Button
                   variant="outline"
                   className="flex-1"
@@ -1063,7 +999,8 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                   Cancel
                 </Button>
                 <Button
-                  className="flex-1 bg-red-600 hover:bg-red-700"
+                  variant="danger"
+                  className="flex-1"
                   onClick={handleReturnIndividualItem}
                 >
                   Confirm Return
@@ -1071,7 +1008,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
               </div>
             )}
           </div>
-        </div>
+        </Modal>
       )}
 
       {/* Inspection Schedule Alerts */}
@@ -1104,12 +1041,12 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
             )}
             {upcoming.length > 0 && !allDone && overdue.length === 0 && (
               <div className="bg-action-50 border border-action-200 rounded-[20px] px-4 py-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-[14px] bg-[#0057FF] flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-[14px] bg-action-500 flex items-center justify-center shrink-0">
                   <Icon name="clock" size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-action-800">Inspection Due Soon</p>
-                  <p className="text-xs text-[#0057FF] mt-0.5">
+                  <p className="text-xs text-action-500 mt-0.5">
                     {upcoming[0].title} — due by {new Date(upcoming[0].dueDate).toLocaleDateString("en-AU", { day: "numeric", month: "long" })}.
                     {upcoming[0].notes && ` ${upcoming[0].notes}`}
                   </p>
@@ -1145,7 +1082,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{stat.label}</p>
-                    <p className="text-xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
+                    <p className="text-xl font-bold tabular-nums text-shark-900 dark:text-shark-100">{stat.value}</p>
                   </div>
                   <Icon name="arrow-right" size={14} className="text-shark-400 group-hover:text-action-500 transition-colors flex-shrink-0" />
                 </div>
@@ -1203,7 +1140,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
         const dueDate = conditionCheckDueDate ? new Date(conditionCheckDueDate) : null;
         const now = new Date();
         const daysUntilDue = dueDate ? Math.ceil((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : null;
-        const dueDateColor = daysUntilDue === null ? "" : daysUntilDue < 0 ? "text-red-600" : daysUntilDue <= 7 ? "text-[#0057FF]" : "text-action-600";
+        const dueDateColor = daysUntilDue === null ? "" : daysUntilDue < 0 ? "text-red-600" : daysUntilDue <= 7 ? "text-action-500" : "text-action-600";
         const dueDateLabel = dueDate ? `Due ${daysUntilDue !== null && daysUntilDue < 0 ? "overdue" : `by ${dueDate.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}`}` : null;
 
         return (
@@ -1279,7 +1216,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                             <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${
                               item.condition === "GOOD" ? "bg-action-100 text-action-700" :
                               item.condition === "FAIR" ? "bg-action-100 text-action-700" :
-                              item.condition === "POOR" ? "bg-action-100 text-[#0057FF]" :
+                              item.condition === "POOR" ? "bg-action-100 text-action-500" :
                               "bg-red-100 text-red-700"
                             }`}>
                               {item.condition}
@@ -1374,7 +1311,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
           <Link href="/report-damage">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="py-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-[20px] bg-[#0057FF] flex items-center justify-center group-hover:bg-[#d14a28] transition-colors">
+                <div className="w-12 h-12 rounded-[20px] bg-action-500 flex items-center justify-center group-hover:bg-[#d14a28] transition-colors">
                   <Icon name="alert-triangle" size={24} className="text-white" />
                 </div>
                 <div>
@@ -1389,5 +1326,51 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
     </div>
     </div>
     </PullToRefresh>
+
+    {/* Not-received reason modal */}
+    {notReceivedModal && (
+      <Modal
+        open
+        onClose={() => setNotReceivedModal(null)}
+        title="Why wasn't this received?"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-shark-600 dark:text-shark-400">
+            <span className="font-medium text-shark-800 dark:text-shark-200">{notReceivedModal.itemName}</span> will be marked as not received. Please provide a reason.
+          </p>
+          <div>
+            <label className="text-xs font-medium text-shark-600 dark:text-shark-400 block mb-1.5">Reason</label>
+            <Input
+              value={notReceivedReason}
+              onChange={(e) => setNotReceivedReason(e.target.value)}
+              placeholder="e.g. Item was missing from the kit..."
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && notReceivedReason.trim()) {
+                  toggleItem(notReceivedModal.key, "not_received", notReceivedReason.trim());
+                  setNotReceivedModal(null);
+                }
+              }}
+            />
+          </div>
+          <div className="flex gap-2 pt-1">
+            <Button variant="secondary" className="flex-1" onClick={() => setNotReceivedModal(null)}>
+              Cancel
+            </Button>
+            <Button
+              className="flex-1"
+              disabled={!notReceivedReason.trim()}
+              onClick={() => {
+                toggleItem(notReceivedModal.key, "not_received", notReceivedReason.trim());
+                setNotReceivedModal(null);
+              }}
+            >
+              Confirm
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    )}
+    </>
   );
 }

@@ -546,7 +546,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
 
           {/* System rules */}
           <div className="space-y-3">
-            <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">System Rules</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">System Rules</p>
             {systemRules.map((rule) => (
               <RuleCard
                 key={rule.id}
@@ -563,7 +563,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
           {/* Custom rules */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Custom Rules</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">Custom Rules</p>
               <span className="text-[11px] text-shark-400">{customRules.length} rule{customRules.length !== 1 ? "s" : ""}</span>
             </div>
             {customRules.length === 0 ? (
@@ -597,7 +597,7 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
 
           {/* Recent executions */}
           <div className="space-y-3">
-            <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Recent Executions</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">Recent Executions</p>
             <Card className="border-shark-100 dark:border-shark-800">
               <div className="flex flex-col items-center justify-center py-12 gap-3 text-center px-6">
                 <div className="w-12 h-12 rounded-full bg-shark-100 dark:bg-shark-700 flex items-center justify-center">

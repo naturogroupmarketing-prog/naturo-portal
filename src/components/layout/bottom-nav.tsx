@@ -308,7 +308,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
           {/* Unified nav card — more panel + nav in one container */}
           <div
             ref={containerRef}
-            className="flex-1 overflow-hidden rounded-[28px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/60 border border-white/60 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]"
+            className="flex-1 overflow-hidden rounded-[28px] backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/60 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]"
           >
             {/* More panel — expands inside the unified card, pushing nav down */}
             <div

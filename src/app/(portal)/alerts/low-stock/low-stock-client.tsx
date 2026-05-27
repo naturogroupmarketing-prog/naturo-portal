@@ -505,11 +505,11 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           onMouseLeave={hideTooltip}
         >
           <div className="flex items-center justify-end gap-1.5">
-            <span className={`text-sm font-bold ${isOut ? "text-red-600" : "text-[#0057FF]"}`}>
+            <span className={`text-sm font-bold ${isOut ? "text-red-600" : "text-action-500"}`}>
               {item.quantityOnHand}
             </span>
             {isOut && <span className="text-[10px] font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">OUT</span>}
-            {isCritical && <span className="text-[10px] font-semibold text-[#0057FF] bg-action-50 dark:bg-action-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
+            {isCritical && <span className="text-[10px] font-semibold text-action-500 bg-action-50 dark:bg-action-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
           </div>
           <p className="text-[10px] text-shark-400 mt-0.5">Min: {item.minimumThreshold}</p>
         </div>
@@ -564,11 +564,11 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           onMouseLeave={hideTooltip}
         >
           <div className="flex items-center justify-end gap-1.5">
-            <span className={`font-bold ${isOut ? "text-red-600" : "text-[#0057FF]"}`}>
+            <span className={`font-bold ${isOut ? "text-red-600" : "text-action-500"}`}>
               {item.quantityOnHand}
             </span>
             {isOut && <span className="text-[10px] font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">OUT</span>}
-            {isCritical && <span className="text-[10px] font-semibold text-[#0057FF] bg-action-50 dark:bg-action-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
+            {isCritical && <span className="text-[10px] font-semibold text-action-500 bg-action-50 dark:bg-action-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
           </div>
         </td>
         <td className="px-5 py-3 text-right text-shark-500 dark:text-shark-400">{item.minimumThreshold}</td>
@@ -639,7 +639,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
               </div>
 
               {regionItems.length > 0 && (
-                <span className="flex items-center gap-1.5 text-xs font-semibold text-[#0057FF] bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1.5 rounded-[10px] shrink-0">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-action-500 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1.5 rounded-[10px] shrink-0">
                   <Icon name="alert-triangle" size={12} />
                   {regionItems.length} low stock
                 </span>
@@ -705,7 +705,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                                 {r.name}
                               </span>
                               {count > 0 && (
-                                <span className="text-[10px] font-semibold text-[#0057FF] bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded-full shrink-0">
+                                <span className="text-[10px] font-semibold text-action-500 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded-full shrink-0">
                                   {count}
                                 </span>
                               )}
@@ -742,8 +742,8 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                   </span>
                 )}
                 {criticalCount > 0 && (
-                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-[#0057FF] bg-action-50 dark:bg-action-950/20 border border-action-100 dark:border-action-900/30 px-2.5 py-1 rounded-[10px]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0057FF] inline-block" />
+                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-action-500 bg-action-50 dark:bg-action-950/20 border border-action-100 dark:border-action-900/30 px-2.5 py-1 rounded-[10px]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-action-500 inline-block" />
                     {criticalCount} critical
                   </span>
                 )}
@@ -817,7 +817,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                             <span className="ml-2 text-xs text-shark-400">{group.stateName}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-semibold text-[#0057FF] bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded-full">
+                            <span className="text-xs font-semibold text-action-500 bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded-full">
                               {group.items.length} item{group.items.length !== 1 ? "s" : ""}
                             </span>
                             {groupOutCount > 0 && (

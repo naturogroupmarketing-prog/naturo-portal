@@ -323,18 +323,10 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       <PageTransition className="space-y-6 sm:space-y-8 lg:space-y-10">
 
       {/* ── Greeting row ── */}
-      <div className="flex items-center justify-between">
+      <div>
         <h1 className="text-[28px] sm:text-[32px] font-bold leading-tight tracking-tight text-shark-900 dark:text-white">
           Hi {userName ?? "there"}, Have a great day
         </h1>
-        <button
-          onClick={() => setSettingsOpen(true)}
-          className="p-2.5 rounded-full text-shark-500 hover:text-shark-700 dark:text-shark-400 dark:hover:text-white transition-colors"
-          aria-label="Dashboard settings"
-          title="Dashboard settings"
-        >
-          <Icon name="settings" size={18} />
-        </button>
       </div>
 
       {/* ── First widget row ── */}

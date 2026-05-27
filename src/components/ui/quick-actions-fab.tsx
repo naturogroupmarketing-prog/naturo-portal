@@ -23,7 +23,7 @@ const PAGE_ACTIONS: Record<string, QuickAction[]> = {
   ],
   "/assets": [
     { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-shark-700" },
-    { label: "Report Damage", href: "/report-damage", icon: "alert-triangle", color: "bg-[#0057FF]" },
+    { label: "Report Damage", href: "/report-damage", icon: "alert-triangle", color: "bg-action-500" },
     { label: "Add Asset", href: "/assets?action=add", icon: "package", color: "bg-action-500" },
   ],
   "/consumables": [
