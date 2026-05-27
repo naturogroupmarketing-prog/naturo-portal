@@ -109,7 +109,10 @@ export function Header({ userName, userImage, role, onMenuToggle, orgName, orgLo
   const isSuperAdmin = role === "SUPER_ADMIN";
 
   return (
-    <header className="relative z-30 flex min-h-[56px] items-center justify-between backdrop-blur-[20px] bg-white dark:bg-shark-950 px-4 sm:px-4 lg:px-6 safe-top transition-colors border-b border-black/[0.06] dark:border-white/[0.08] shadow-[0_1px_0_rgba(255,255,255,0.90)_inset]">
+    <header className="relative z-30 backdrop-blur-[20px] bg-white dark:bg-shark-950 safe-top transition-colors border-b border-black/[0.06] dark:border-white/[0.08] shadow-[0_1px_0_rgba(255,255,255,0.90)_inset]">
+
+      {/* ── Row 1: logo + (desktop search) + icons ── */}
+      <div className="flex min-h-[52px] items-center justify-between px-4 sm:px-4 lg:px-6">
       {/* Left side: initial badge + business name */}
       <div className="flex items-center gap-2">
         <Link href="/dashboard" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity min-w-0">
@@ -122,19 +125,8 @@ export function Header({ userName, userImage, role, onMenuToggle, orgName, orgLo
         </Link>
       </div>
 
-      <div className="lg:hidden flex-1" />
-
-      {/* Mobile search button — opens command search */}
-      <button
-        onClick={() => setSearchOpen(true)}
-        className="lg:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 rounded-full hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors"
-        aria-label="Search"
-      >
-        <Icon name="search" size={18} />
-      </button>
-
       {/* Desktop search — styled button that opens CommandSearch */}
-      <div className="hidden lg:flex items-center flex-1 max-w-xl">
+      <div className="hidden lg:flex items-center flex-1 max-w-xl px-4">
         <button
           onClick={() => setSearchOpen(true)}
           className="flex items-center gap-2 px-3 py-1.5 text-sm text-shark-400 bg-[#f2f2f2] dark:bg-shark-800 border border-black/[0.07] dark:border-shark-700 rounded-full hover:bg-[#e5e1d8] dark:hover:bg-shark-750 transition-colors w-48 lg:w-64"
@@ -286,6 +278,29 @@ export function Header({ userName, userImage, role, onMenuToggle, orgName, orgLo
           )}
         </div>
       </div>
+      </div>{/* end Row 1 */}
+
+      {/* ── Row 2: mobile-only full-width search + filter ── */}
+      <div className="lg:hidden flex items-center gap-2 px-4 pb-3">
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="flex-1 flex items-center gap-2.5 px-3.5 py-[9px] bg-[#f0f0f0] dark:bg-shark-800 rounded-full text-[13px] text-shark-400 dark:text-shark-500 border border-black/[0.06] dark:border-white/[0.06]"
+          aria-label="Open search"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <span className="flex-1 text-left leading-none">Search...</span>
+        </button>
+        <Link
+          href="/settings"
+          className="w-9 h-9 flex items-center justify-center rounded-full bg-[#f0f0f0] dark:bg-shark-800 border border-black/[0.06] dark:border-white/[0.06] text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 transition-colors"
+          aria-label="Settings"
+        >
+          <Icon name="funnel" size={16} />
+        </Link>
+      </div>
+
       <CommandSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Install App modal — shown when no native prompt is available */}

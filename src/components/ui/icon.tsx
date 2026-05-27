@@ -145,7 +145,8 @@ export type IconName =
   | "home" | "wrench"
   | "refresh-cw" | "calendar"
   | "grid"
-  | "dots-nine";
+  | "dots-nine"
+  | "funnel";
 
 // Map icon names → Phosphor components
 const iconMap: Record<IconName, React.ComponentType<{ size?: number; weight?: "thin" | "light" | "regular" | "bold" | "fill" | "duotone"; className?: string }>> = {
@@ -200,6 +201,7 @@ const iconMap: Record<IconName, React.ComponentType<{ size?: number; weight?: "t
   calendar:     Calendar,
   grid:         SquaresFour,
   "dots-nine":  DotsNine,
+  funnel:       Funnel,
 };
 
 interface IconProps {
