@@ -325,7 +325,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
       {/* ── Greeting row ── */}
       <div>
         <h1 className="text-[28px] sm:text-[32px] font-bold leading-tight tracking-tight text-shark-900 dark:text-white">
-          Hi {userName ?? "there"}, Have a great day
+          Dashboard
         </h1>
       </div>
 

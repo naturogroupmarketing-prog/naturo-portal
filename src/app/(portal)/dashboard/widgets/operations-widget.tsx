@@ -142,8 +142,13 @@ export function HealthScoreWidget({ data, className, trend }: { data: Operations
   return (
     <div className={cn("rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden", className)}>
 
+      {/* ── Widget header — top-left, matches other widgets ── */}
+      <div className="px-6 pt-6">
+        <WidgetHeader icon="check-circle" label="Health Score" />
+      </div>
+
       {/* ── Hero section ── */}
-      <div className="flex flex-col items-center text-center px-6 pt-8 pb-8">
+      <div className="flex flex-col items-center text-center px-6 pt-0 pb-8">
         {/* Ring */}
         <HealthRing score={score} size={120} />
 
