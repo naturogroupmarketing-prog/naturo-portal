@@ -297,7 +297,7 @@ export function Header({ userName, userImage, role, onMenuToggle, orgName, orgLo
           className="w-9 h-9 flex items-center justify-center rounded-full bg-[#f0f0f0] dark:bg-shark-800 border border-black/[0.06] dark:border-white/[0.06] text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 transition-colors"
           aria-label="Settings"
         >
-          <Icon name="funnel" size={16} />
+          <Icon name="settings" size={16} />
         </Link>
       </div>
 
