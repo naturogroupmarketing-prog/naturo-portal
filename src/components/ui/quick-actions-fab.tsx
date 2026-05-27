@@ -16,49 +16,49 @@ interface QuickAction {
 // Context-aware actions per page prefix
 const PAGE_ACTIONS: Record<string, QuickAction[]> = {
   "/dashboard": [
-    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-shark-700" },
-    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-action-500" },
-    { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-action-500" },
-    { label: "Add Asset", href: "/assets?action=add", icon: "package", color: "bg-action-500" },
+    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-black" },
+    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-black" },
+    { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-black" },
+    { label: "Add Asset", href: "/assets?action=add", icon: "package", color: "bg-black" },
   ],
   "/assets": [
-    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-shark-700" },
-    { label: "Report Damage", href: "/report-damage", icon: "alert-triangle", color: "bg-action-500" },
-    { label: "Add Asset", href: "/assets?action=add", icon: "package", color: "bg-action-500" },
+    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-black" },
+    { label: "Report Damage", href: "/report-damage", icon: "alert-triangle", color: "bg-black" },
+    { label: "Add Asset", href: "/assets?action=add", icon: "package", color: "bg-black" },
   ],
   "/consumables": [
-    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-shark-700" },
-    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-action-500" },
-    { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-action-500" },
+    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-black" },
+    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-black" },
+    { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-black" },
   ],
   "/purchase-orders": [
-    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-shark-700" },
-    { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-action-500" },
-    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-action-500" },
+    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-black" },
+    { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-black" },
+    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-black" },
   ],
   "/staff": [
-    { label: "Issue Kit", href: "/starter-kits?action=new", icon: "box", color: "bg-action-500" },
-    { label: "Add Staff", href: "/staff?action=add", icon: "user", color: "bg-action-500" },
+    { label: "Issue Kit", href: "/starter-kits?action=new", icon: "box", color: "bg-black" },
+    { label: "Add Staff", href: "/staff?action=add", icon: "user", color: "bg-black" },
   ],
   "/returns": [
-    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-shark-700" },
-    { label: "Process Return", href: "/returns", icon: "arrow-left", color: "bg-action-500" },
+    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-black" },
+    { label: "Process Return", href: "/returns", icon: "arrow-left", color: "bg-black" },
   ],
   "/inventory": [
-    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-shark-700" },
-    { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-action-500" },
+    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-black" },
+    { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-black" },
   ],
   "/alerts": [
-    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-action-500" },
-    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-shark-700" },
+    { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-black" },
+    { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-black" },
   ],
 };
 
 const DEFAULT_ACTIONS: QuickAction[] = [
-  { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-shark-700" },
-  { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-action-500" },
-  { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-action-500" },
-  { label: "Add Asset", href: "/assets?action=add", icon: "package", color: "bg-action-500" },
+  { label: "Scan QR", href: "/scan", icon: "qr-code", color: "bg-black" },
+  { label: "Create PO", href: "/purchase-orders?action=create", icon: "truck", color: "bg-black" },
+  { label: "Add Supply", href: "/consumables?action=add", icon: "droplet", color: "bg-black" },
+  { label: "Add Asset", href: "/assets?action=add", icon: "package", color: "bg-black" },
 ];
 
 export function QuickActionsFab() {
@@ -99,7 +99,7 @@ export function QuickActionsFab() {
               }}
             >
               {/* Label pill */}
-              <span className="bg-shark-900/90 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-lg whitespace-nowrap pointer-events-none">
+              <span className="bg-shark-900/90 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-[0_8px_28px_rgba(0,0,0,0.40),0_2px_8px_rgba(0,0,0,0.28)] whitespace-nowrap pointer-events-none">
                 {action.label}
               </span>
               {/* Icon button */}
