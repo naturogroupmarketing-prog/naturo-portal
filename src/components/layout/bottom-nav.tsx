@@ -310,15 +310,15 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
             ref={containerRef}
             className="flex-1 relative"
           >
-            {/* More panel — floats above the nav pill, never changes pill size */}
+            {/* More panel — slides up from the nav bar */}
             <div
               className={cn(
                 "absolute bottom-full left-0 right-0 mb-2 rounded-[28px] overflow-hidden backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/60 border border-white/60 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]",
-                "transition-all duration-300",
                 moreOpen
                   ? "opacity-100 translate-y-0 pointer-events-auto"
-                  : "opacity-0 translate-y-3 pointer-events-none"
+                  : "opacity-0 translate-y-full pointer-events-none"
               )}
+              style={{ transition: "transform 380ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease" }}
             >
               <div className="grid grid-cols-3 gap-y-5 gap-x-3 px-5 pt-6 pb-6">
                 {moreItems.map((item) => (
