@@ -310,17 +310,15 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
             ref={containerRef}
             className="flex-1 relative"
           >
-            {/* More panel — slides up from below the nav pill */}
+            {/* More panel — floats above the nav pill, never changes pill size */}
             <div
               className={cn(
-                "absolute bottom-full left-0 right-0 mb-2 rounded-[28px] overflow-hidden",
-                "bg-white dark:bg-shark-900 border border-black/[0.06] dark:border-white/[0.06]",
-                "shadow-[0_-4px_32px_rgba(0,0,0,0.10),0_8px_32px_rgba(0,0,0,0.08)]",
+                "absolute bottom-full left-0 right-0 mb-2 rounded-[28px] overflow-hidden backdrop-blur-[40px] backdrop-saturate-[180%] bg-white/60 border border-white/60 shadow-[0_8px_24px_-2px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.90)]",
+                "transition-all duration-300",
                 moreOpen
                   ? "opacity-100 translate-y-0 pointer-events-auto"
-                  : "opacity-0 translate-y-full pointer-events-none"
+                  : "opacity-0 translate-y-3 pointer-events-none"
               )}
-              style={{ transition: "transform 350ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease" }}
             >
               <div className="grid grid-cols-3 gap-y-5 gap-x-3 px-5 pt-6 pb-6">
                 {moreItems.map((item) => (
@@ -331,7 +329,7 @@ export function BottomNav({ role, pendingPOCount = 0, pendingReturnsCount = 0 }:
                     className="flex flex-col items-center gap-2 touch-manipulation select-none"
                   >
                     <div className={cn(
-                      "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center active:scale-95 transition-transform",
+                      "w-[62px] h-[62px] rounded-[20px] flex items-center justify-center backdrop-blur-[20px] border border-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.80),0_2px_8px_rgba(0,113,227,0.08)] active:scale-95 transition-transform",
                       item.bg
                     )}>
                       <Icon name={item.icon} size={27} className={item.fg} />
