@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -129,8 +128,8 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
   const hasCritical = criticalAssets.length > 0;
 
   return (
-    <Card className="border-action-200">
-      <div className="px-5 py-4">
+    <div className="rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-6">
+      <div>
         {/* ── Header ── */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
@@ -324,6 +323,6 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
           </Link>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
