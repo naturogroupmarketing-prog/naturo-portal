@@ -48,131 +48,133 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F7F7F7] flex flex-col items-center justify-center px-4 py-12">
 
-      {/* ── Blue header section — extends behind top of card ── */}
-      <div className="bg-action-500 pt-16 pb-40 px-6 flex flex-col items-center text-center">
-        <Logo size={56} className="mb-5 [&_img]:brightness-0 [&_img]:invert" />
-        <h1 className="text-[28px] sm:text-[32px] font-bold text-white leading-tight tracking-tight">
-          Sign In
-        </h1>
-        <p className="text-white/70 text-sm mt-1">Asset &amp; Consumable Tracker</p>
-      </div>
+      {/* ── Centered card — constrained width on desktop ── */}
+      <div className="w-full max-w-[420px]">
 
-      {/* ── White card — overlaps up into the blue section ── */}
-      <div className="px-4 -mt-32 pb-10">
-      <div className="bg-white rounded-[28px] shadow-lg px-6 pt-8 pb-10">
+        {/* Logo + heading above the card */}
+        <div className="flex flex-col items-center text-center mb-8">
+          <Logo size={48} className="mb-4" />
+          <h1 className="text-[26px] font-bold text-shark-900 leading-tight tracking-tight">
+            Sign In
+          </h1>
+          <p className="text-shark-400 text-sm mt-1">Asset &amp; Consumable Tracker</p>
+        </div>
 
-        {error && (
-          <div className="mb-5 p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600 text-center">
-            {error}
-          </div>
-        )}
+        {/* Card */}
+        <div className="bg-white rounded-[28px] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] border border-black/[0.05] px-6 pt-7 pb-8">
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-medium text-shark-500 mb-1.5">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="you@company.com"
-              autoComplete="email"
-              disabled={isDisabled}
-              className="w-full bg-[#f2f2f2] rounded-xl px-4 py-3.5 text-sm text-shark-900 placeholder-shark-400 outline-none focus:ring-2 focus:ring-action-400 disabled:opacity-50 min-h-[48px]"
-            />
-          </div>
+          {error && (
+            <div className="mb-5 p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600 text-center">
+              {error}
+            </div>
+          )}
 
-          {/* Password */}
-          <div>
-            <label className="block text-sm font-medium text-shark-500 mb-1.5">Password</label>
-            <div className="relative">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-shark-500 mb-1.5">Email</label>
               <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="Enter your password"
-                autoComplete="current-password"
+                placeholder="you@company.com"
+                autoComplete="email"
                 disabled={isDisabled}
-                className="w-full bg-[#f2f2f2] rounded-xl px-4 py-3.5 pr-11 text-sm text-shark-900 placeholder-shark-400 outline-none focus:ring-2 focus:ring-action-400 disabled:opacity-50 min-h-[48px]"
+                className="w-full bg-[#f2f2f2] rounded-xl px-4 py-3.5 text-sm text-shark-900 placeholder-shark-400 outline-none focus:ring-2 focus:ring-action-400 disabled:opacity-50 min-h-[48px]"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-shark-400 hover:text-shark-600 transition-colors"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                tabIndex={-1}
-              >
-                {showPassword ? (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                ) : (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                )}
-              </button>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-medium text-shark-500 mb-1.5">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
+                  disabled={isDisabled}
+                  className="w-full bg-[#f2f2f2] rounded-xl px-4 py-3.5 pr-11 text-sm text-shark-900 placeholder-shark-400 outline-none focus:ring-2 focus:ring-action-400 disabled:opacity-50 min-h-[48px]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-shark-400 hover:text-shark-600 transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Forgot password */}
+            <div className="flex justify-end -mt-1">
+              <Link href="/forgot-password" className="text-xs text-action-500 font-medium hover:text-action-600">
+                Forgot password?
+              </Link>
+            </div>
+
+            {/* Sign in button */}
+            <button
+              type="submit"
+              disabled={isDisabled}
+              className="w-full bg-action-500 hover:bg-action-600 active:bg-action-700 text-white font-semibold rounded-full py-4 text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[52px] mt-2"
+            >
+              {loading ? "Signing in…" : "Sign In"}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-shark-100" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-white px-3 text-xs text-shark-400 font-medium">Or</span>
             </div>
           </div>
 
-          {/* Forgot password */}
-          <div className="flex justify-end -mt-1">
-            <Link href="/forgot-password" className="text-xs text-action-500 font-medium hover:text-action-600">
-              Forgot password?
-            </Link>
+          {/* OAuth buttons */}
+          <div className="space-y-3">
+            <button
+              type="button"
+              onClick={() => handleOAuth("google")}
+              disabled={isDisabled}
+              className="w-full flex items-center justify-center gap-3 bg-white border border-shark-200 rounded-xl py-3.5 text-sm font-semibold text-shark-800 hover:bg-shark-50 transition-colors disabled:opacity-50 min-h-[52px]"
+            >
+              {oauthLoading === "google" ? <Spinner /> : <GoogleIcon />}
+              Continue with Google
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleOAuth("apple")}
+              disabled={isDisabled}
+              className="w-full flex items-center justify-center gap-3 bg-white border border-shark-200 rounded-xl py-3.5 text-sm font-semibold text-shark-800 hover:bg-shark-50 transition-colors disabled:opacity-50 min-h-[52px]"
+            >
+              {oauthLoading === "apple" ? <Spinner /> : <AppleIcon />}
+              Continue with Apple
+            </button>
           </div>
 
-          {/* Sign in button */}
-          <button
-            type="submit"
-            disabled={isDisabled}
-            className="w-full bg-action-500 hover:bg-action-600 active:bg-action-700 text-white font-semibold rounded-full py-4 text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[52px] mt-2"
-          >
-            {loading ? "Signing in…" : "Sign In"}
-          </button>
-        </form>
-
-        {/* Divider */}
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-shark-100" />
-          </div>
-          <div className="relative flex justify-center">
-            <span className="bg-white px-3 text-xs text-shark-400 font-medium">Or</span>
-          </div>
+          {/* Terms */}
+          <p className="text-center text-xs text-shark-400 mt-8">
+            By signing in, you agree to our{" "}
+            <Link href="/terms-of-service" className="text-action-500 hover:underline">Terms of Service</Link>
+            {" "}and{" "}
+            <Link href="/privacy-policy" className="text-action-500 hover:underline">Privacy Policy</Link>.
+          </p>
         </div>
-
-        {/* OAuth buttons */}
-        <div className="space-y-3">
-          <button
-            type="button"
-            onClick={() => handleOAuth("google")}
-            disabled={isDisabled}
-            className="w-full flex items-center justify-center gap-3 bg-white border border-shark-200 rounded-xl py-3.5 text-sm font-semibold text-shark-800 hover:bg-shark-50 transition-colors disabled:opacity-50 min-h-[52px]"
-          >
-            {oauthLoading === "google" ? <Spinner /> : <GoogleIcon />}
-            Continue with Google
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleOAuth("apple")}
-            disabled={isDisabled}
-            className="w-full flex items-center justify-center gap-3 bg-white border border-shark-200 rounded-xl py-3.5 text-sm font-semibold text-shark-800 hover:bg-shark-50 transition-colors disabled:opacity-50 min-h-[52px]"
-          >
-            {oauthLoading === "apple" ? <Spinner /> : <AppleIcon />}
-            Continue with Apple
-          </button>
-        </div>
-
-        {/* Terms */}
-        <p className="text-center text-xs text-shark-400 mt-8">
-          By signing in, you agree to our{" "}
-          <Link href="/terms-of-service" className="text-action-500 hover:underline">Terms of Service</Link>
-          {" "}and{" "}
-          <Link href="/privacy-policy" className="text-action-500 hover:underline">Privacy Policy</Link>.
-        </p>
-      </div>
       </div>
     </div>
   );
