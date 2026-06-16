@@ -53,13 +53,9 @@ export default function LoginPage() {
       {/* ── Centered card — constrained width on desktop ── */}
       <div className="w-full max-w-[420px]">
 
-        {/* Logo + heading above the card */}
-        <div className="flex flex-col items-center text-center mb-8">
-          <Logo size={48} className="mb-4" />
-          <h1 className="text-[26px] font-bold text-shark-900 leading-tight tracking-tight">
-            Sign In
-          </h1>
-          <p className="text-shark-400 text-sm mt-1">Asset &amp; Consumable Tracker</p>
+        {/* Centered logo above the card */}
+        <div className="flex flex-col items-center mb-8">
+          <Logo size={56} />
         </div>
 
         {/* Card */}
