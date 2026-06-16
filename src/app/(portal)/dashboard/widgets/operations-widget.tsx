@@ -43,7 +43,7 @@ function WidgetHeader({ icon, label }: { icon: Parameters<typeof Icon>[0]["name"
   return (
     <div className="flex items-center gap-2 mb-5">
       <Icon name={icon} size={13} className="text-shark-400" />
-      <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+      <p className="text-[11px] font-bold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
         {label}
       </p>
     </div>
@@ -284,7 +284,7 @@ export function PriorityAlertsPanel({ data }: { data: OperationsOverview }) {
       >
         <div className="flex items-center gap-2">
           <Icon name="alert-triangle" size={13} className="text-shark-400" />
-          <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+          <p className="text-[11px] font-bold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
             Priority Alerts
           </p>
           {total > 0 && (

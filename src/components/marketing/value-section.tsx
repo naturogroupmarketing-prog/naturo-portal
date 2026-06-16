@@ -81,7 +81,7 @@ function IllustrationPhoneChain() {
 
 export function ValueSection() {
   return (
-    <section className="py-16 sm:py-24 px-6 border-b border-gray-200 bg-white text-[#191c1f]">
+    <section className="py-16 sm:py-24 px-6 border-b border-shark-200 bg-white text-[#191c1f]">
       <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
@@ -138,14 +138,14 @@ export function ValueSection() {
           {/* Card 2 — White */}
           <ScrollReveal delay={100}>
             <div
-              className="rounded-2xl border border-gray-200 overflow-hidden flex flex-col h-full bg-white"
+              className="rounded-2xl border border-shark-200 overflow-hidden flex flex-col h-full bg-white"
               style={{ minHeight: "460px" }}
             >
               <div className="p-8 sm:p-10 flex-1 flex flex-col">
                 <h3 className="text-2xl font-bold text-[#191c1f] leading-snug mb-5">
                   Stock runs out with no warning
                 </h3>
-                <p className="text-gray-500 leading-relaxed text-lg mb-8 flex-1">
+                <p className="text-shark-500 leading-relaxed text-lg mb-8 flex-1">
                   Manual checks miss the drop. By the time someone notices, operations are already stalled.
                 </p>
                 <a
@@ -165,14 +165,14 @@ export function ValueSection() {
           {/* Card 3 — White */}
           <ScrollReveal delay={200}>
             <div
-              className="rounded-2xl border border-gray-200 overflow-hidden flex flex-col h-full bg-white"
+              className="rounded-2xl border border-shark-200 overflow-hidden flex flex-col h-full bg-white"
               style={{ minHeight: "460px" }}
             >
               <div className="p-8 sm:p-10 flex-1 flex flex-col">
                 <h3 className="text-2xl font-bold text-[#191c1f] leading-snug mb-5">
                   Your team is on the phone, not the job
                 </h3>
-                <p className="text-gray-500 leading-relaxed text-lg mb-8 flex-1">
+                <p className="text-shark-500 leading-relaxed text-lg mb-8 flex-1">
                   Email chains, WhatsApp groups, and spreadsheet hunts — none of it moves the business forward.
                 </p>
                 <a
@@ -193,10 +193,10 @@ export function ValueSection() {
 
         <ScrollReveal delay={300}>
           <div
-            className="bg-white p-6 sm:p-8 md:p-10 rounded-2xl border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-10"
+            className="bg-white p-6 sm:p-8 md:p-10 rounded-2xl border border-shark-100 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-10"
             style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}
           >
-            <p className="text-xl text-gray-700 max-w-3xl font-light leading-relaxed">
+            <p className="text-xl text-shark-700 max-w-3xl font-light leading-relaxed">
               The average service business loses over{" "}
               <strong className="text-[#191c1f] font-bold">$18,000 a year</strong> to untracked equipment and
               emergency restocking. trackio pays for itself in weeks.

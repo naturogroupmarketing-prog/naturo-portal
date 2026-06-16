@@ -1,6 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface AuditorDashboardProps {
   orgName: string;
@@ -32,7 +33,7 @@ function KpiCard({ label, value, suffix, icon }: { label: string; value: number;
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{label}</p>
-            <p className="text-xl font-bold text-shark-900 dark:text-shark-100">
+            <p className="text-xl font-bold tabular-nums text-shark-900 dark:text-shark-100">
               {value}{suffix && <span className="text-sm font-medium text-shark-400 ml-0.5">{suffix}</span>}
             </p>
           </div>
@@ -53,7 +54,7 @@ function AlertCard({ label, value, description, icon }: { label: string; value: 
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-shark-500 dark:text-shark-400 truncate">{label}</p>
-            <p className={`text-xl font-bold ${isWarning ? "text-action-500" : "text-shark-900 dark:text-shark-100"}`}>{value}</p>
+            <p className={`text-xl font-bold tabular-nums ${isWarning ? "text-action-500" : "text-shark-900 dark:text-shark-100"}`}>{value}</p>
             <p className="text-[10px] text-shark-400 leading-tight mt-0.5">{description}</p>
           </div>
         </div>
@@ -92,7 +93,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
 
       {/* Key Metrics */}
       <div className="space-y-3">
-        <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Key Metrics</p>
+        <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest">Key Metrics</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
           <KpiCard label="Total Assets" value={stats.totalAssets} icon="package" />
           <KpiCard label="Total Consumables" value={stats.totalConsumables} icon="droplet" />
@@ -103,7 +104,7 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
 
       {/* Alerts */}
       <div className="space-y-3">
-        <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Alerts</p>
+        <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest">Alerts</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
           <AlertCard label="Low Stock" value={stats.lowStockCount} description="Items at or below minimum threshold" icon="alert-triangle" />
           <AlertCard label="Damage Reports" value={stats.damageReports} description="Unresolved damage or loss reports" icon="x" />
@@ -114,16 +115,15 @@ export function AuditorDashboard({ orgName, stats, recentActivity }: AuditorDash
 
       {/* Recent Activity */}
       <div className="space-y-3">
-        <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Recent Activity</p>
+        <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest">Recent Activity</p>
         <Card>
           <div className="divide-y divide-shark-50 dark:divide-shark-800">
             {recentActivity.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 gap-3 text-center px-6">
-                <div className="w-10 h-10 rounded-full bg-shark-100 dark:bg-shark-700 flex items-center justify-center">
-                  <Icon name="clock" size={18} className="text-shark-400" />
-                </div>
-                <p className="text-sm text-shark-400">No recent activity to display.</p>
-              </div>
+              <EmptyState
+                icon="clock"
+                title="No recent activity"
+                description="Recent actions across the organisation will appear here as they happen."
+              />
             ) : (
               recentActivity.map((entry, idx) => (
                 <div key={idx} className="flex items-center gap-3 px-4 py-3">

@@ -52,7 +52,7 @@ export function Navbar() {
             <a
               key={href}
               href={href}
-              className="text-[14px] font-medium text-gray-600 hover:text-gray-900 px-3.5 py-2 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+              className="text-[14px] font-medium text-shark-600 hover:text-shark-900 px-3.5 py-2 rounded-md hover:bg-shark-50 transition-colors whitespace-nowrap"
             >
               {label}
             </a>
@@ -63,7 +63,7 @@ export function Navbar() {
         <div className="hidden lg:flex items-center gap-2 shrink-0">
           <Link
             href="/login"
-            className="text-[14px] font-medium text-gray-600 hover:text-gray-900 px-4 py-2 transition-colors whitespace-nowrap"
+            className="text-[14px] font-medium text-shark-600 hover:text-shark-900 px-4 py-2 transition-colors whitespace-nowrap"
           >
             Sign in
           </Link>
@@ -80,7 +80,7 @@ export function Navbar() {
         <div className="flex-1 lg:hidden" />
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden p-2 -mr-1 text-gray-600"
+          className="lg:hidden p-2 -mr-1 text-shark-600"
           aria-label="Toggle menu"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
@@ -95,20 +95,20 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
+        <div className="lg:hidden bg-white border-t border-shark-100 shadow-lg">
           <div className="px-6 py-4 space-y-1">
             {NAV_LINKS.map(([href, label]) => (
               <a
                 key={href}
                 href={href}
                 onClick={() => setMobileOpen(false)}
-                className="block py-2.5 text-[15px] font-medium text-gray-700 hover:text-gray-900"
+                className="block py-2.5 text-[15px] font-medium text-shark-700 hover:text-shark-900"
               >
                 {label}
               </a>
             ))}
-            <div className="pt-4 border-t border-gray-100 mt-3 flex flex-col gap-2">
-              <Link href="/login" className="text-center py-2.5 text-sm font-medium text-gray-600 border border-gray-200 rounded-full">
+            <div className="pt-4 border-t border-shark-100 mt-3 flex flex-col gap-2">
+              <Link href="/login" className="text-center py-2.5 text-sm font-medium text-shark-600 border border-shark-200 rounded-full">
                 Sign in
               </Link>
               <Link

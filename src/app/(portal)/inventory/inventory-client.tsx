@@ -631,10 +631,10 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
                                 className="text-sm h-8"
                                 autoFocus
                               />
-                              <Button type="submit" size="sm" className="px-2">
+                              <Button aria-label="Save" type="submit" size="sm" className="px-2">
                                 <Icon name="check" size={14} />
                               </Button>
-                              <Button type="button" size="sm" variant="secondary" className="px-2" onClick={() => setEditingStateName(null)}>
+                              <Button aria-label="Cancel" type="button" size="sm" variant="secondary" className="px-2" onClick={() => setEditingStateName(null)}>
                                 <Icon name="x" size={14} />
                               </Button>
                             </form>

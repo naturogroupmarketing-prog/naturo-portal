@@ -332,7 +332,7 @@ export function CommandPalette() {
           {/* ── AI search results ── */}
           {isSearching && (hasResults || searchLoading) && (
             <div className="p-2 border-b border-shark-100 dark:border-white/[0.08]">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-action-500 px-3 py-1.5 flex items-center gap-1.5">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-action-500 px-3 py-1.5 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-action-400 animate-pulse" />
                 Live Results
               </p>
@@ -439,7 +439,7 @@ export function CommandPalette() {
             ) : (
               Object.entries(grouped).map(([section, items]) => (
                 <div key={section}>
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400 px-3 py-2">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-shark-400 px-3 py-2">
                     {section}
                   </p>
                   {items.map((item) => {

@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Icon } from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -266,7 +267,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">{region.name}</h1>
+        <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-shark-100 leading-tight tracking-tight">{region.name}</h1>
         <p className="text-sm text-shark-400 mt-1">{region.state.name}</p>
       </div>
 
@@ -277,7 +278,7 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
+                  <p className="text-2xl font-bold text-shark-900 dark:text-shark-100 tabular-nums">{stat.value}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-[20px] ${stat.bg} flex items-center justify-center`}>
@@ -368,10 +369,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
         <>
           {assetCategories.length === 0 ? (
             <Card>
-              <div className="py-12 text-center">
-                <Icon name="package" size={40} className="text-shark-200 mx-auto mb-3" />
-                <p className="text-shark-400">{search || statusFilter !== "ALL" ? "No assets match your filters." : "No assets in this region."}</p>
-              </div>
+              <EmptyState
+                icon="package"
+                title={search || statusFilter !== "ALL" ? "No assets found" : "No assets in this region"}
+                description={search || statusFilter !== "ALL" ? "No assets match your filters." : "No assets in this region."}
+              />
             </Card>
           ) : (
             assetCategories.map(([catName, catAssets], idx) => {
@@ -451,10 +453,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
         <>
           {consumableCategories.length === 0 ? (
             <Card>
-              <div className="py-12 text-center">
-                <Icon name="droplet" size={40} className="text-shark-200 mx-auto mb-3" />
-                <p className="text-shark-400">{search || stockFilter !== "ALL" ? "No supplies match your filters." : "No supplies in this region."}</p>
-              </div>
+              <EmptyState
+                icon="droplet"
+                title={search || stockFilter !== "ALL" ? "No supplies found" : "No supplies in this region"}
+                description={search || stockFilter !== "ALL" ? "No supplies match your filters." : "No supplies in this region."}
+              />
             </Card>
           ) : (
             consumableCategories.map(([catName, catItems]) => {
@@ -542,10 +545,11 @@ export function RegionDetailClient({ region, assets, consumables, staff, lowStoc
         <>
           {filteredStaff.length === 0 ? (
             <Card>
-              <div className="py-12 text-center">
-                <Icon name="users" size={40} className="text-shark-200 mx-auto mb-3" />
-                <p className="text-shark-400">{search ? "No staff match your search." : "No staff assigned to this region."}</p>
-              </div>
+              <EmptyState
+                icon="users"
+                title={search ? "No staff found" : "No staff assigned"}
+                description={search ? "No staff match your search." : "No staff assigned to this region."}
+              />
             </Card>
           ) : (
             <Card>

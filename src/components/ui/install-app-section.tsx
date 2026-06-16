@@ -130,7 +130,7 @@ export function InstallAppSection() {
         </div>
         {showGuide && (
           <div className="mt-3 bg-shark-50 dark:bg-shark-800 rounded-[20px] p-4 space-y-3">
-            <p className="text-xs font-semibold text-shark-500 uppercase tracking-wider">Steps to install</p>
+            <p className="text-[11px] font-bold text-shark-500 dark:text-shark-400 uppercase tracking-widest">Steps to install</p>
             <ol className="space-y-2.5">
               {[
                 <>Tap the <strong>Share</strong> button{" "}
@@ -196,7 +196,7 @@ export function InstallAppSection() {
           </div>
         </div>
         <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] p-4 space-y-3">
-          <p className="text-xs font-semibold text-shark-500 uppercase tracking-wider">
+          <p className="text-[11px] font-bold text-shark-500 dark:text-shark-400 uppercase tracking-widest">
             Steps to install{isAndroid ? " (Chrome)" : ""}
           </p>
           <ol className="space-y-2.5">

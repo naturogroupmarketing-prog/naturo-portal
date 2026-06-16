@@ -72,14 +72,14 @@ export function SwitcherBar() {
 
         {/* Floating white panel — AGL card style */}
         <div
-          className="bg-white rounded-2xl overflow-hidden border border-gray-100"
+          className="bg-white rounded-2xl overflow-hidden border border-shark-100"
           style={{ boxShadow: "0 8px 40px rgba(0,27,148,0.10)" }}
         >
           <div className="px-6 sm:px-10 md:px-14 pt-8 pb-8 sm:pt-10 sm:pb-10">
 
             {/* Label row */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8 sm:mb-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+              <p className="text-xs font-bold uppercase tracking-widest text-shark-400">
                 Switching from
               </p>
               <a
@@ -100,7 +100,7 @@ export function SwitcherBar() {
                   </div>
                   <div>
                     <p className="font-bold text-[#191c1f] text-lg leading-tight">{item.name}</p>
-                    <p className="text-gray-500 text-sm mt-1.5">{item.sub}</p>
+                    <p className="text-shark-500 text-sm mt-1.5">{item.sub}</p>
                   </div>
                 </div>
               ))}

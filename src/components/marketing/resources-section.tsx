@@ -268,7 +268,7 @@ export function ResourcesSection() {
                 }}
                 className="group relative overflow-hidden flex flex-col text-left cursor-pointer"
                 style={{
-                  background: isActive ? "#1F3DD9" : "#f0f1f5",
+                  background: isActive ? "#1F3DD9" : "var(--color-shark-50)",
                   minHeight: "340px",
                   opacity: isVisible ? 1 : 0,
                   transform: isVisible ? "translateY(0)" : "translateY(60px)",

@@ -75,7 +75,7 @@ export function NotificationsClient({ notifications }: { notifications: Notifica
     <div className="space-y-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Notifications</h1>
+          <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-shark-100 leading-tight tracking-tight">Notifications</h1>
           <p className="text-sm text-shark-400 mt-1">
             {unreadCount > 0 ? `${unreadCount} unread` : "All caught up"}
           </p>

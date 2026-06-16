@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
@@ -138,7 +139,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         >
           Request
           {recentRequests.length > 0 && (
-            <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
+            <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full tabular-nums ${
               recentRequests.some((r) => r.status === "PENDING") ? "text-white bg-action-500" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
             }`}>
               {recentRequests.length}
@@ -153,7 +154,7 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         >
           Confirm Receipt
           {pendingAssignments.length > 0 && (
-            <span className="ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full text-white bg-action-500">
+            <span className="ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full text-white bg-action-500 tabular-nums">
               {pendingAssignments.length}
             </span>
           )}
@@ -270,12 +271,11 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
 
           {orderedSections.length === 0 && (
             <Card>
-              <CardContent className="py-12 text-center">
-                <Icon name="droplet" size={40} className="text-shark-200 mx-auto mb-3" />
-                <p className="text-shark-400">
-                  {search ? "No supplies match your search." : "No supplies available to request."}
-                </p>
-              </CardContent>
+              <EmptyState
+                icon="droplet"
+                title={search ? "No supplies found" : "No supplies available"}
+                description={search ? "No supplies match your search." : "No supplies available to request."}
+              />
             </Card>
           )}
         </>
@@ -286,13 +286,11 @@ export function RequestConsumablesClient({ consumables, categories, recentReques
         <>
           {pendingAssignments.length === 0 ? (
             <Card>
-              <CardContent className="py-12 text-center">
-                <div className="w-14 h-14 rounded-full bg-action-50 flex items-center justify-center mx-auto mb-4">
-                  <Icon name="check" size={28} className="text-action-500" />
-                </div>
-                <p className="text-lg font-semibold text-shark-900 dark:text-shark-100">All items confirmed</p>
-                <p className="text-sm text-shark-400 mt-1">No items awaiting receipt confirmation.</p>
-              </CardContent>
+              <EmptyState
+                icon="check"
+                title="All items confirmed"
+                description="No items awaiting receipt confirmation."
+              />
             </Card>
           ) : (
             <div className="space-y-3">

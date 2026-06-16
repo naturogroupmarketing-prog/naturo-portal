@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Icon } from "@/components/ui/icon";
+import { EmptyState } from "@/components/ui/empty-state";
 import { createMaintenanceSchedule, completeMaintenanceTask, deleteMaintenanceSchedule } from "@/app/actions/maintenance";
 
 interface Schedule {
@@ -59,10 +61,22 @@ const FREQ_LABELS: Record<string, string> = {
 export function MaintenanceClient({ schedules, assets, users }: { schedules: Schedule[]; assets: Asset[]; users: User[] }) {
   const [showCreate, setShowCreate] = useState(false);
   const [showComplete, setShowComplete] = useState<Schedule | null>(null);
+  const [deleteSchedule, setDeleteSchedule] = useState<Schedule | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [filter, setFilter] = useState<"all" | "overdue" | "upcoming">("all");
+  const [search, setSearch] = useState("");
 
   const filtered = schedules.filter((s) => {
     if (!s.isActive) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      const matches =
+        s.title.toLowerCase().includes(q) ||
+        s.asset.name.toLowerCase().includes(q) ||
+        s.asset.assetCode.toLowerCase().includes(q) ||
+        s.asset.region.name.toLowerCase().includes(q);
+      if (!matches) return false;
+    }
     if (filter === "all") return true;
     const daysUntil = Math.ceil((new Date(s.nextDueDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
     if (filter === "overdue") return daysUntil < 0;
@@ -75,17 +89,24 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
   return (
     <Card padding="none">
     <div className="px-5 py-4 space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <p className="text-xs text-shark-400">
-            {schedules.filter((s) => s.isActive).length} scheduled tasks
-            {overdueCount > 0 && <span className="text-red-500 font-medium"> · {overdueCount} overdue</span>}
-          </p>
+      {/* Header + toolbar on one line — task count left, controls right-justified */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <p className="text-xs text-shark-400 shrink-0">
+          <span className="tabular-nums">{schedules.filter((s) => s.isActive).length}</span> scheduled tasks
+          {overdueCount > 0 && <span className="text-red-500 font-medium"> · <span className="tabular-nums">{overdueCount}</span> overdue</span>}
+        </p>
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:justify-end">
+          <Input
+            placeholder="Search tasks..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-52 min-w-0"
+          />
+          <Button size="sm" onClick={() => setShowCreate(true)}>
+            <Icon name="plus" size={14} className="mr-1.5" />
+            Schedule Maintenance
+          </Button>
         </div>
-        <Button size="sm" onClick={() => setShowCreate(true)}>
-          <Icon name="plus" size={14} className="mr-1.5" />
-          Schedule Maintenance
-        </Button>
       </div>
 
       <div className="flex gap-1 bg-shark-50 dark:bg-shark-800/60 rounded-[20px] p-1">
@@ -105,12 +126,11 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
       </div>
 
       {filtered.length === 0 ? (
-        <Card>
-          <div className="py-12 text-center">
-            <Icon name="settings" size={32} className="text-shark-300 mx-auto mb-3" />
-            <p className="text-sm text-shark-400">No maintenance tasks found.</p>
-          </div>
-        </Card>
+        <EmptyState
+          icon="wrench"
+          title="No maintenance tasks found"
+          description={search || filter !== "all" ? "Try adjusting your search or filter to see more tasks." : "Schedule maintenance on an asset to start tracking upkeep."}
+        />
       ) : (
         <div className="space-y-3">
           {filtered.map((schedule) => {
@@ -154,11 +174,7 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={async () => {
-                        if (confirm("Delete this maintenance schedule?")) {
-                          await deleteMaintenanceSchedule(schedule.id);
-                        }
-                      }}
+                      onClick={() => setDeleteSchedule(schedule)}
                     >
                       <Icon name="x" size={14} className="text-red-500" />
                     </Button>
@@ -256,6 +272,30 @@ export function MaintenanceClient({ schedules, assets, users }: { schedules: Sch
           </form>
         )}
       </Modal>
+
+      <ConfirmDialog
+        open={!!deleteSchedule}
+        onClose={() => setDeleteSchedule(null)}
+        onConfirm={async () => {
+          if (!deleteSchedule) return;
+          setDeleting(true);
+          try {
+            await deleteMaintenanceSchedule(deleteSchedule.id);
+            setDeleteSchedule(null);
+          } finally {
+            setDeleting(false);
+          }
+        }}
+        title="Delete schedule?"
+        description={
+          deleteSchedule
+            ? `This will permanently delete the "${deleteSchedule.title}" maintenance schedule for ${deleteSchedule.asset.assetCode} ${deleteSchedule.asset.name}.`
+            : ""
+        }
+        confirmLabel="Delete"
+        variant="danger"
+        loading={deleting}
+      />
     </div>
     </Card>
   );

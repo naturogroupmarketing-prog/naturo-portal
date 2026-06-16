@@ -603,7 +603,7 @@ export default async function DashboardPage() {
     { name: "Assigned", value: statusCountMap["ASSIGNED"] || 0, color: "#4d83ff" },
     { name: "Checked Out", value: statusCountMap["CHECKED_OUT"] || 0, color: "#80a8ff" },
     { name: "Damaged", value: statusCountMap["DAMAGED"] || 0, color: "#ef4444" },
-    { name: "Lost", value: statusCountMap["LOST"] || 0, color: "#6b7280" },
+    { name: "Lost", value: statusCountMap["LOST"] || 0, color: "#6b7080" },
     { name: "Unavailable", value: statusCountMap["UNAVAILABLE"] || 0, color: "#b3c9ff" },
   ].filter((s) => s.value > 0);
 
@@ -640,7 +640,7 @@ export default async function DashboardPage() {
       { name: "Adequate", value: adequate, color: "#0057FF" },
       { name: "Low Stock", value: low, color: "#ef4444" },
       { name: "Critical", value: critical, color: "#dc2626" },
-      { name: "Out of Stock", value: outOfStock, color: "#6b7280" },
+      { name: "Out of Stock", value: outOfStock, color: "#6b7080" },
     ].filter((s) => s.value > 0);
   })();
 

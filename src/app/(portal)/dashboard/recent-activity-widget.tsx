@@ -40,7 +40,7 @@ export function RecentActivityWidget({ items }: { items: RecentActivityItem[] })
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <Icon name="clock" size={13} className="text-shark-400" />
-          <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+          <p className="text-[11px] font-bold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
             Recent Activity
           </p>
         </div>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
@@ -74,20 +75,18 @@ export function UnresolvedDamageClient({ reports, focusRegionId }: { reports: Da
           <Icon name="arrow-left" size={18} />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Damage</h1>
+          <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-shark-100 leading-tight tracking-tight">Damage</h1>
           <p className="text-sm text-shark-400 mt-0.5">{reports.length} unresolved report{reports.length !== 1 ? "s" : ""}</p>
         </div>
       </div>
 
       {reports.length === 0 ? (
         <Card>
-          <div className="py-12 text-center">
-            <div className="w-14 h-14 rounded-[20px] bg-action-100 flex items-center justify-center mx-auto mb-4">
-              <Icon name="check" size={24} className="text-action-600" />
-            </div>
-            <p className="text-lg font-semibold text-shark-900 dark:text-shark-100">No Unresolved Reports</p>
-            <p className="text-sm text-shark-400 mt-1">All damage and loss reports have been resolved.</p>
-          </div>
+          <EmptyState
+            icon="check"
+            title="No Unresolved Reports"
+            description="All damage and loss reports have been resolved."
+          />
         </Card>
       ) : (
         <div className="space-y-3">

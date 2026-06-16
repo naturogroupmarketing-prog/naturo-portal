@@ -68,7 +68,7 @@ export function QuickLinks({ open, onClose }: QuickLinksProps) {
               className="w-full max-w-sm bg-white dark:bg-shark-900 rounded-[20px] shadow-2xl border border-shark-200 dark:border-shark-700 overflow-hidden pointer-events-auto"
             >
               <div className="flex items-center justify-between px-4 py-3 border-b border-shark-100 dark:border-shark-800">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-shark-400">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-shark-400">
                   Quick Links
                 </p>
                 <kbd className="text-[10px] text-shark-400 bg-shark-100 dark:bg-shark-800 border border-shark-200 dark:border-shark-700 px-1.5 py-0.5 rounded font-mono">

@@ -777,12 +777,12 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         }}
                         onMouseLeave={() => { setHoveredQtyId(null); setQtyTooltipPos(null); }}
                       >
-                        <span className={`font-bold ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
+                        <span className={`font-bold tabular-nums ${c.quantityOnHand <= c.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>{c.quantityOnHand}</span>
                       </div>
                       {hoveredQtyId === c.id && qtyTooltipPos && (() => {
                         const isCritical = c.quantityOnHand === 0 || c.riskLevel === "critical";
                         const isWarning = !isCritical && (c.quantityOnHand <= c.minimumThreshold || c.riskLevel === "warning");
-                        const accentColor = isCritical ? "#dc2626" : isWarning ? "#ef4444" : "#0057FF";
+                        const accentColor = isCritical ? "#dc2626" : isWarning ? "#ef4444" : "var(--color-action-500)";
                         const statusLabel = isCritical ? "Out of Stock" : isWarning ? "Low Stock" : "In Stock";
                         const daysLeft = c.avgDailyUsage && c.avgDailyUsage > 0 ? Math.round(c.quantityOnHand / c.avgDailyUsage) : null;
                         const depletionDate = c.predictedDepletionDate
@@ -800,7 +800,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                           >
                             {/* Status header */}
                             <div className="px-3 pt-2.5 pb-2">
-                              <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400 mb-1">Stock Info</p>
+                              <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400 mb-1">Stock Info</p>
                               <div className="flex items-center gap-2">
                                 <span className="text-2xl font-bold" style={{ color: accentColor }}>{c.quantityOnHand}</span>
                                 <div>
@@ -870,7 +870,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                           style={{ top: assignedDropdownPos.top, left: assignedDropdownPos.left, minWidth: 200 }}
                           onMouseDown={(e) => e.stopPropagation()}
                         >
-                          <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-shark-400 border-b border-shark-100 dark:border-shark-800">
+                          <p className="px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400 border-b border-shark-100 dark:border-shark-800">
                             Assigned Staff
                           </p>
                           {activeAssignments.map((a) => (
@@ -1003,7 +1003,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                   }, {});
                   return Object.entries(byState).map(([stateName, stateRegions]) => (
                     <div key={stateName}>
-                      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
+                      <p className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
                         {stateName}
                       </p>
                       {stateRegions.map((r) => (
@@ -1072,7 +1072,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
 
                 {/* View mode */}
                 <div className="px-4 pt-4 pb-3 border-b border-shark-100 dark:border-shark-700">
-                  <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-widest mb-2.5">View</p>
+                  <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-2.5">View</p>
                   <div className="flex gap-1 bg-shark-50 dark:bg-shark-700 rounded-xl p-1">
                     {(["list", "card", "compact"] as const).map((m) => (
                       <button
@@ -1094,7 +1094,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 {/* Columns (list view only) */}
                 {viewMode === "list" && (
                   <div className="px-4 pt-3 pb-3 border-b border-shark-100 dark:border-shark-700">
-                    <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-widest mb-2.5">Columns</p>
+                    <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-2.5">Columns</p>
                     <div className="space-y-1">
                       {(Object.keys(visibleColumns) as Array<keyof typeof visibleColumns>).map((col) => (
                         <button
@@ -2101,7 +2101,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                 <p className="text-sm text-shark-400 text-center py-6">No batch records yet. Batches are created when stock is added.</p>
               ) : (
                 <div className="space-y-2">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">
                     Active Batches — oldest first (consumed first)
                   </p>
                   <div className="overflow-hidden rounded-[20px] border border-shark-100 dark:border-shark-700">

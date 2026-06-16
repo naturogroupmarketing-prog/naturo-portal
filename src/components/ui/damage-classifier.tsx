@@ -115,7 +115,7 @@ export function DamageClassifier({
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.35-4.35" />
               </svg>
-              <span className="text-xs font-semibold text-shark-600 dark:text-shark-400 uppercase tracking-wide">AI Damage Analysis</span>
+              <span className="text-[11px] font-bold text-shark-600 dark:text-shark-400 uppercase tracking-widest">AI Damage Analysis</span>
             </div>
             <button
               type="button"

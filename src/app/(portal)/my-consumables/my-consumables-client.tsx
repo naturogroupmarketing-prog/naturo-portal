@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/utils";
 import { markConsumableUsed, requestConsumable, acknowledgeConsumable } from "@/app/actions/consumables";
+import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 
 const SECTION_COLORS = [
@@ -78,6 +79,7 @@ interface Props {
 
 export function MyConsumablesClient({ assignments, pendingAssignments = [], categories, consumables, recentRequests }: Props) {
   const router = useRouter();
+  const { addToast } = useToast();
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
@@ -175,7 +177,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
                         await acknowledgeConsumable(a.id);
                         router.refresh();
                       } catch {
-                        alert("Failed to confirm receipt.");
+                        addToast("Failed to confirm receipt.", "error");
                       }
                       setConfirmingId(null);
                     }}
@@ -301,6 +303,7 @@ export function MyConsumablesClient({ assignments, pendingAssignments = [], cate
 // ─── Assignment Card (has items assigned) ─────────────────────
 
 function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQuantity?: number; assignmentIds?: string[] } }) {
+  const { addToast } = useToast();
   const displayQty = ca.totalQuantity ?? ca.quantity;
   const [mode, setMode] = useState<"idle" | "use" | "request">("idle");
   const [loading, setLoading] = useState(false);
@@ -316,7 +319,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
       setMode("idle");
       setUseQty(0);
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to mark as used.");
+      addToast(e instanceof Error ? e.message : "Failed to mark as used.", "error");
     } finally {
       setLoading(false);
     }
@@ -336,7 +339,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
       setReqNotes("");
       setTimeout(() => setSuccess(null), 3000);
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to request.");
+      addToast(e instanceof Error ? e.message : "Failed to request.", "error");
     } finally {
       setLoading(false);
     }
@@ -364,7 +367,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
                 <h3 className="font-semibold text-shark-900 dark:text-shark-100 truncate">{ca.consumable.name}</h3>
                 <p className="text-xs text-shark-400 mt-0.5">{ca.consumable.unitType} · {ca.consumable.region.name}</p>
               </div>
-              <span className={`text-lg font-bold ml-2 ${displayQty === 0 ? "text-shark-400" : "text-shark-800 dark:text-shark-200"}`}>×{displayQty}</span>
+              <span className={`text-lg font-bold ml-2 tabular-nums ${displayQty === 0 ? "text-shark-400" : "text-shark-800 dark:text-shark-200"}`}>×{displayQty}</span>
             </div>
             <p className="text-xs text-shark-400 mt-1">Assigned: {formatDate(ca.assignedDate)}</p>
           </div>
@@ -503,6 +506,7 @@ function AssignmentCard({ assignment: ca }: { assignment: Assignment & { totalQu
 // ─── Unassigned Consumable Card (request only) ────────────────
 
 function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable }) {
+  const { addToast } = useToast();
   const [showRequest, setShowRequest] = useState(false);
   const [loading, setLoading] = useState(false);
   const [reqQty, setReqQty] = useState(1);
@@ -523,7 +527,7 @@ function UnassignedConsumableCard({ consumable: c }: { consumable: Consumable })
       setReqNotes("");
       setTimeout(() => setSuccess(null), 3000);
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Failed to request.");
+      addToast(e instanceof Error ? e.message : "Failed to request.", "error");
     } finally {
       setLoading(false);
     }

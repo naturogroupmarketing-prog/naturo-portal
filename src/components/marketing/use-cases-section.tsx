@@ -69,7 +69,7 @@ export function UseCasesSection() {
   const ind = industries[active];
 
   return (
-    <section id="use-cases" className="py-16 sm:py-24 px-6 bg-white border-b border-gray-200">
+    <section id="use-cases" className="py-16 sm:py-24 px-6 bg-white border-b border-shark-200">
       <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
@@ -80,7 +80,7 @@ export function UseCasesSection() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-[#191c1f] leading-tight tracking-tight">
               Built for your industry.
             </h2>
-            <p className="text-gray-700 mb-0 text-xl font-light">
+            <p className="text-shark-700 mb-0 text-xl font-light">
               Select your sector to see exactly how trackio fits your operation.
             </p>
           </div>
@@ -107,11 +107,11 @@ export function UseCasesSection() {
         </div>
 
         {/* Content Card */}
-        <div className="bg-[#f4f5f8] rounded-2xl p-6 sm:p-10 md:p-12 grid md:grid-cols-2 gap-10 md:gap-16 items-start">
+        <div className="bg-shark-50 rounded-2xl p-6 sm:p-10 md:p-12 grid md:grid-cols-2 gap-10 md:gap-16 items-start">
 
           {/* Left — What they track */}
           <div>
-            <h4 className="font-bold text-sm uppercase tracking-widest text-gray-500 mb-8">
+            <h4 className="font-bold text-sm uppercase tracking-widest text-shark-500 mb-8">
               What {ind.label} Teams Track
             </h4>
             <ul className="space-y-6">
@@ -127,7 +127,7 @@ export function UseCasesSection() {
                       <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
                     </svg>
                   </div>
-                  <span className="text-gray-800 font-medium text-xl leading-snug">{item}</span>
+                  <span className="text-shark-900 font-medium text-xl leading-snug">{item}</span>
                 </li>
               ))}
             </ul>
@@ -136,7 +136,7 @@ export function UseCasesSection() {
           {/* Right — Quote + Outcome + CTA */}
           <div className="space-y-8">
             <blockquote
-              className="bg-white p-8 rounded-2xl italic text-gray-800 text-xl font-light border-l-4"
+              className="bg-white p-8 rounded-2xl italic text-shark-900 text-xl font-light border-l-4"
               style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)", borderLeftColor: BLUE }}
             >
               {ind.quote}
@@ -166,7 +166,7 @@ export function UseCasesSection() {
 
             <a
               href="/login"
-              className="block text-center border-2 py-4 font-bold hover:bg-gray-50 transition-colors text-lg"
+              className="block text-center border-2 py-4 font-bold hover:bg-shark-50 transition-colors text-lg"
               style={{ borderColor: BLUE, color: BLUE, borderRadius: "24px" }}
             >
               Start your free 14-day trial →

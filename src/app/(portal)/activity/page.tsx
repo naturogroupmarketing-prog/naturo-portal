@@ -2,7 +2,8 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { isAdminOrManager } from "@/lib/permissions";
 import { db } from "@/lib/db";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -113,7 +114,7 @@ export default async function ActivityPage({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Recent Activity</h1>
+        <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-shark-100 leading-tight tracking-tight">Recent Activity</h1>
         <p className="text-sm text-shark-400 mt-1">
           {session.user.role === "SUPER_ADMIN" ? "All activity across locations" : "Activity in your region"}
         </p>
@@ -121,15 +122,17 @@ export default async function ActivityPage({
 
       {logs.length === 0 && currentPage === 1 ? (
         <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-shark-400">No activity recorded yet.</p>
-          </CardContent>
+          <EmptyState
+            icon="clock"
+            title="No activity recorded yet."
+            description="System activity and audit events will appear here as they happen."
+          />
         </Card>
       ) : (
         <div className="space-y-8">
           {Object.entries(grouped).map(([date, entries]) => (
             <div key={date}>
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-shark-400 mb-3 px-1">
+              <h2 className="text-[11px] font-bold uppercase tracking-widest text-shark-400 mb-3 px-1">
                 {date}
               </h2>
               <Card>
@@ -172,7 +175,7 @@ export default async function ActivityPage({
 
           {/* Pagination */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-            <p className="text-sm text-shark-400">
+            <p className="text-sm text-shark-400 tabular-nums">
               Showing {skip + 1}&ndash;{Math.min(skip + PAGE_SIZE, totalCount)} of {totalCount}
             </p>
             <div className="flex items-center gap-2">
@@ -189,7 +192,7 @@ export default async function ActivityPage({
                   Previous
                 </Button>
               )}
-              <span className="text-sm text-shark-500 dark:text-shark-400 px-2">
+              <span className="text-sm text-shark-500 dark:text-shark-400 px-2 tabular-nums">
                 {currentPage} / {totalPages}
               </span>
               {hasNext ? (

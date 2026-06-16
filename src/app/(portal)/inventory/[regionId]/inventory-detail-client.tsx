@@ -157,7 +157,7 @@ export function InventoryDetailClient({
                   }, {});
                   return Object.entries(byState).map(([stateName, regions]) => (
                     <div key={stateName}>
-                      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
+                      <p className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
                         {stateName}
                       </p>
                       {regions.map((r) => (
@@ -200,7 +200,7 @@ export function InventoryDetailClient({
                 }`}
               >
                 {tab}
-                <span className={`inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[11px] font-bold rounded-full ${
+                <span className={`inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[11px] font-bold rounded-full tabular-nums ${
                   activeTab === tab ? "bg-white/20 text-white" : "bg-shark-200 dark:bg-shark-700 text-shark-500 dark:text-shark-400"
                 }`}>
                   {tabCounts[tab]}

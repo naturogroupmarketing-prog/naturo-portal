@@ -72,12 +72,12 @@ export function PricingSection() {
           <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: NAVY }}>
             Pricing
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight text-gray-900">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight text-shark-900">
             Simple,{" "}
             <span style={{ color: NAVY }}>transparent</span>
             {" "}pricing.
           </h2>
-          <p className="mt-4 text-gray-500 text-lg">
+          <p className="mt-4 text-shark-500 text-lg">
             Start free and upgrade as your team grows. All paid plans include a 14-day free trial.
           </p>
         </div>
@@ -138,14 +138,14 @@ export function PricingSection() {
                   className={`flex flex-col flex-1 bg-white border ${
                     plan.popular
                       ? "border-[#002FA0] rounded-b-2xl rounded-tr-2xl shadow-lg"
-                      : "border-gray-200 rounded-2xl"
+                      : "border-shark-200 rounded-2xl"
                   }`}
                 >
                   <div className="p-6 flex flex-col flex-1">
 
                     {/* Plan name */}
-                    <h3 className="text-xl font-extrabold text-gray-900 mb-1">{plan.name}</h3>
-                    <p className="text-sm text-gray-500 leading-snug mb-6">{plan.description}</p>
+                    <h3 className="text-xl font-extrabold text-shark-900 mb-1">{plan.name}</h3>
+                    <p className="text-sm text-shark-500 leading-snug mb-6">{plan.description}</p>
 
                     {/* Price */}
                     <div className="mb-2">
@@ -162,15 +162,15 @@ export function PricingSection() {
                         </div>
                       )}
                       {isPaid && (
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-shark-500 mt-1">
                           per month{isAnnual ? ", billed annually" : ""}
                         </p>
                       )}
                       {!isPaid && !isCustom && (
-                        <p className="text-sm text-gray-500 mt-1">Free forever</p>
+                        <p className="text-sm text-shark-500 mt-1">Free forever</p>
                       )}
                       {isAnnual && isPaid && plan.monthlyPrice !== plan.annualPrice && (
-                        <p className="text-xs text-gray-400 mt-0.5">
+                        <p className="text-xs text-shark-400 mt-0.5">
                           <span className="line-through">${plan.monthlyPrice}/mo</span>
                           {" "}if billed monthly
                         </p>
@@ -178,12 +178,12 @@ export function PricingSection() {
                     </div>
 
                     {/* Divider */}
-                    <div className="border-t border-gray-100 my-5" />
+                    <div className="border-t border-shark-100 my-5" />
 
                     {/* Users & Assets — AGL-style metric rows */}
                     <div className="mb-4 space-y-3">
                       <div>
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
+                        <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-0.5">
                           {plan.users.label}
                         </p>
                         <p className="text-2xl font-extrabold" style={{ color: NAVY }}>
@@ -191,7 +191,7 @@ export function PricingSection() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
+                        <p className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-0.5">
                           {plan.assets.label}
                         </p>
                         <p className="text-2xl font-extrabold" style={{ color: NAVY }}>
@@ -201,12 +201,12 @@ export function PricingSection() {
                     </div>
 
                     {/* Divider */}
-                    <div className="border-t border-gray-100 my-5" />
+                    <div className="border-t border-shark-100 my-5" />
 
                     {/* Features */}
                     <ul className="space-y-2.5 mb-8 flex-1">
                       {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2 text-sm text-gray-700">
+                        <li key={feature} className="flex items-start gap-2 text-sm text-shark-700">
                           <svg
                             width="16" height="16" viewBox="0 0 24 24" fill="none"
                             stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
@@ -242,7 +242,7 @@ export function PricingSection() {
             { icon: <polyline points="22 4 12 14.01 9 11.01" />, label: "Cancel anytime" },
             { icon: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></>, label: "Secure & encrypted" },
           ].map((badge) => (
-            <div key={badge.label} className="flex items-center gap-1.5 text-gray-400">
+            <div key={badge.label} className="flex items-center gap-1.5 text-shark-400">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 {badge.icon}
               </svg>
@@ -251,7 +251,7 @@ export function PricingSection() {
           ))}
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-shark-400 mt-6">
           All prices in AUD. Need help choosing?{" "}
           <a
             href="mailto:support@trackio.com.au"

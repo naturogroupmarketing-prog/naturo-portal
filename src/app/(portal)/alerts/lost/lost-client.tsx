@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Icon } from "@/components/ui/icon";
 
 interface LostItem {
@@ -50,7 +51,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
           <Icon name="arrow-left" size={18} />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Lost Items</h1>
+          <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-shark-100 leading-tight tracking-tight">Lost Items</h1>
           <p className="text-sm text-shark-400 mt-0.5">
             {items.length} lost asset{items.length !== 1 ? "s" : ""}
             {totalCost > 0 && <span> · Est. value: ${totalCost.toLocaleString()}</span>}
@@ -60,13 +61,11 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
 
       {items.length === 0 ? (
         <Card>
-          <div className="py-12 text-center">
-            <div className="w-14 h-14 rounded-[20px] bg-action-100 flex items-center justify-center mx-auto mb-4">
-              <Icon name="check" size={24} className="text-action-600" />
-            </div>
-            <p className="text-lg font-semibold text-shark-900 dark:text-shark-100">No Lost Items</p>
-            <p className="text-sm text-shark-400 mt-1">All assets are accounted for.</p>
-          </div>
+          <EmptyState
+            icon="check"
+            title="No Lost Items"
+            description="All assets are accounted for."
+          />
         </Card>
       ) : (
         <div className="space-y-3">
@@ -132,7 +131,7 @@ export function LostItemsClient({ items, focusRegionId }: { items: LostItem[]; f
                             </div>
                           </div>
                           {item.purchaseCost && (
-                            <p className="text-sm font-bold text-shark-700 dark:text-shark-300 shrink-0">${item.purchaseCost.toLocaleString()}</p>
+                            <p className="text-sm font-bold text-shark-700 dark:text-shark-300 shrink-0 tabular-nums">${item.purchaseCost.toLocaleString()}</p>
                           )}
                         </div>
                       </div>

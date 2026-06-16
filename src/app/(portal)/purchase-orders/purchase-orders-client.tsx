@@ -264,7 +264,8 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
     });
   };
 
-  const visibleCount = Object.values(visibleColumns).filter(Boolean).length + 1; // +1 for actions
+  // Colspan for the empty-row: visible toggle columns + always-on (In Stock, Region) + optional checkbox
+  const visibleCount = Object.values(visibleColumns).filter(Boolean).length + 2 + (canApprovePO ? 1 : 0);
 
   // Selected region object
   const selectedRegion = isSuperAdmin
@@ -408,7 +409,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                     <p className="text-sm font-semibold text-shark-800 dark:text-shark-200 truncate">{po.consumable.name}</p>
                     {renderStatus(po)}
                   </div>
-                  <p className="text-xs text-shark-400 mt-0.5">In stock: {po.consumable.quantityOnHand} · Order: {po.quantity} {po.consumable.unitType} · {po.region.name}</p>
+                  <p className="text-xs text-shark-400 mt-0.5">In stock: <span className="tabular-nums">{po.consumable.quantityOnHand}</span> · Order: <span className="tabular-nums">{po.quantity}</span> {po.consumable.unitType} · {po.region.name}</p>
                   {po.consumable.shopUrl && (
                     <a href={po.consumable.shopUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 text-[10px] font-medium text-action-600 mt-0.5 hover:underline">
                       <Icon name="arrow-right" size={10} />
@@ -428,17 +429,21 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
           <thead>
             <tr className="border-b border-shark-100 dark:border-shark-700 text-left text-xs font-medium text-shark-400 uppercase tracking-wider">
               {canApprovePO && <th scope="col" className="px-3 py-3 w-10"><input type="checkbox" checked={selected.size > 0 && selected.size === orders.length} onChange={() => { if (selected.size === orders.length) setSelected(new Set()); else setSelected(new Set(orders.map((o) => o.id))); }} className="rounded border-shark-300 text-action-500" /></th>}
-              <th scope="col" className="px-5 py-3">Item</th>
+              {visibleColumns.item && <th scope="col" className="px-5 py-3">Item</th>}
+              {visibleColumns.category && <th scope="col" className="px-5 py-3">Category</th>}
               <th scope="col" className="px-5 py-3">In Stock</th>
-              <th scope="col" className="px-5 py-3">Order Qty</th>
+              {visibleColumns.qty && <th scope="col" className="px-5 py-3">Order Qty</th>}
+              {visibleColumns.supplier && <th scope="col" className="px-5 py-3">Supplier</th>}
               <th scope="col" className="px-5 py-3">Region</th>
-              <th scope="col" className="px-5 py-3 text-right">Status</th>
+              {visibleColumns.createdBy && <th scope="col" className="px-5 py-3">Created By</th>}
+              {visibleColumns.date && <th scope="col" className="px-5 py-3">Date</th>}
+              {visibleColumns.status && <th scope="col" className="px-5 py-3 text-right">Status</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-shark-50 dark:divide-shark-800">
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={canApprovePO ? 6 : 5} className="px-5 py-8 text-center text-shark-400">
+                <td colSpan={visibleCount} className="px-5 py-8 text-center text-shark-400">
                   No purchase orders found.
                 </td>
               </tr>
@@ -450,6 +455,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                       <input type="checkbox" checked={selected.has(po.id)} onChange={() => toggleSelect(po.id)} className="rounded border-shark-300 text-action-500 focus:ring-action-400" />
                     </td>
                   )}
+                  {visibleColumns.item && (
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
                       {po.consumable.imageUrl ? (
@@ -482,17 +488,34 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                       </div>
                     </div>
                   </td>
+                  )}
+                  {visibleColumns.category && (
+                  <td className="px-5 py-3.5 text-shark-500 dark:text-shark-400">{po.consumable.category}</td>
+                  )}
                   <td className="px-5 py-3.5">
-                    <span className={`font-semibold ${po.consumable.quantityOnHand <= po.consumable.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>
+                    <span className={`font-semibold tabular-nums ${po.consumable.quantityOnHand <= po.consumable.minimumThreshold ? "text-red-500" : "text-shark-800 dark:text-shark-200"}`}>
                       {po.consumable.quantityOnHand}
                     </span>
                     <span className="text-xs text-shark-400 ml-1">{po.consumable.unitType}</span>
                   </td>
-                  <td className="px-5 py-3.5 font-semibold text-shark-800 dark:text-shark-200">{po.quantity} <span className="font-normal text-xs text-shark-400">{po.consumable.unitType}</span></td>
+                  {visibleColumns.qty && (
+                  <td className="px-5 py-3.5 font-semibold text-shark-800 dark:text-shark-200"><span className="tabular-nums">{po.quantity}</span> <span className="font-normal text-xs text-shark-400">{po.consumable.unitType}</span></td>
+                  )}
+                  {visibleColumns.supplier && (
+                  <td className="px-5 py-3.5 text-shark-500 dark:text-shark-400">{po.supplier || "—"}</td>
+                  )}
                   <td className="px-5 py-3.5 text-shark-500 dark:text-shark-400">{po.region.name}</td>
+                  {visibleColumns.createdBy && (
+                  <td className="px-5 py-3.5 text-shark-500 dark:text-shark-400">{po.createdBy ? (po.createdBy.name || po.createdBy.email) : "AI"}</td>
+                  )}
+                  {visibleColumns.date && (
+                  <td className="px-5 py-3.5 text-shark-500 dark:text-shark-400 tabular-nums">{formatDate(po.createdAt)}</td>
+                  )}
+                  {visibleColumns.status && (
                   <td className="px-5 py-3.5 text-right">
                     {renderStatus(po)}
                   </td>
+                  )}
                 </tr>
               ))
             )}
@@ -531,7 +554,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
               {pendingCount > 0 && (
                 <span className="flex items-center gap-1.5 text-xs font-semibold text-red-500 bg-red-50 border border-red-100 px-2.5 py-1.5 rounded-[14px] shrink-0">
                   <Icon name="alert-triangle" size={12} />
-                  {pendingCount} pending
+                  <span className="tabular-nums">{pendingCount}</span> pending
                 </span>
               )}
             </button>
@@ -570,7 +593,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                     }, {});
                     return Object.entries(byState).map(([stateName, stateRegions]) => (
                       <div key={stateName}>
-                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
+                        <p className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
                           {stateName}
                         </p>
                         {stateRegions.map((r) => {
@@ -610,32 +633,95 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
         )}
 
         <div className="px-5 py-4 space-y-4">
-          {/* Title row */}
+          {/* Header + toolbar on one line — count left, controls right-justified */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-              <p className="text-xs text-shark-400">
-                {regionPOs.length} total · {pendingCount} pending
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {isSuperAdmin && (
-                <Button
-                  size="sm"
-                  variant={showAllHistory ? "primary" : "secondary"}
-                  onClick={() => {
-                    const url = new URL(window.location.href);
-                    if (showAllHistory) {
-                      url.searchParams.delete("showAll");
-                    } else {
-                      url.searchParams.set("showAll", "true");
-                    }
-                    router.push(url.pathname + url.search);
-                  }}
+            <p className="text-xs text-shark-400 shrink-0">
+              <span className="tabular-nums">{regionPOs.length}</span> total · <span className="tabular-nums">{pendingCount}</span> pending
+            </p>
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:justify-end">
+              {/* Mobile tab switcher */}
+              <Select
+                value={activeTab}
+                onChange={(e) => setActiveTab(e.target.value as typeof activeTab)}
+                className="sm:hidden w-auto min-w-[120px] shrink-0"
+              >
+                {TABS.map((tab) => (
+                  <option key={tab} value={tab}>
+                    {tab}{tabCounts[tab] > 0 ? ` (${tabCounts[tab]})` : ""}
+                  </option>
+                ))}
+              </Select>
+              <Input
+                placeholder="Search items, regions..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full sm:w-52 min-w-0"
+              />
+              {/* Settings cog — collapses All History & Columns */}
+              <div className="relative" ref={columnMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setShowColumnMenu((v) => !v)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors ${
+                    showColumnMenu
+                      ? "bg-shark-100 dark:bg-shark-700 border-shark-200 dark:border-shark-600 text-shark-900 dark:text-shark-100"
+                      : "bg-white dark:bg-shark-800 border-shark-200 dark:border-shark-700 text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700"
+                  }`}
+                  aria-label="Settings"
+                  aria-expanded={showColumnMenu}
                 >
-                  <Icon name="clock" size={14} className="mr-1.5" />
-                  {showAllHistory ? "Recent Only" : "All History"}
-                </Button>
-              )}
+                  <Icon name="settings" size={15} />
+                  Settings
+                  {showAllHistory && <span className="w-1.5 h-1.5 bg-action-500 rounded-full" />}
+                </button>
+
+                {showColumnMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-shark-800 rounded-[20px] border border-shark-100 dark:border-shark-700 shadow-[0_8px_24px_rgba(0,0,0,0.12)] z-30 overflow-hidden">
+                    {/* History (super admin only) */}
+                    {isSuperAdmin && (
+                      <div className="px-3 py-2.5 border-b border-shark-100 dark:border-shark-700 space-y-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const url = new URL(window.location.href);
+                            if (showAllHistory) {
+                              url.searchParams.delete("showAll");
+                            } else {
+                              url.searchParams.set("showAll", "true");
+                            }
+                            router.push(url.pathname + url.search);
+                            setShowColumnMenu(false);
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors text-left"
+                        >
+                          <Icon name="clock" size={14} className="text-shark-400 shrink-0" />
+                          <span className="text-sm font-medium text-shark-700 dark:text-shark-300">{showAllHistory ? "Show Recent Only" : "Show All History"}</span>
+                          {showAllHistory && <span className="ml-auto w-2 h-2 bg-action-500 rounded-full" />}
+                        </button>
+                      </div>
+                    )}
+                    {/* Columns */}
+                    <div className="px-4 pt-3 pb-3">
+                      <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-2.5">Columns</p>
+                      <div className="space-y-1">
+                        {PO_COL_LABELS.map(([key, label]) => (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => toggleColumn(key)}
+                            className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
+                          >
+                            <span className="text-sm text-shark-700 dark:text-shark-300">{label}</span>
+                            <div className={`w-8 h-[18px] rounded-full transition-colors flex items-center px-0.5 ${visibleColumns[key] ? "bg-action-500" : "bg-shark-200 dark:bg-shark-600"}`}>
+                              <div className={`w-3.5 h-3.5 rounded-full bg-white shadow transition-transform ${visibleColumns[key] ? "translate-x-3.5" : "translate-x-0"}`} />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
               {canManagePO && (
                 <Button size="sm" onClick={() => setShowCreate(true)}>
                   <Icon name="plus" size={14} className="mr-1.5" />
@@ -643,27 +729,6 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 </Button>
               )}
             </div>
-          </div>
-
-          {/* Search */}
-          <div className="flex items-center gap-2">
-            <Select
-              value={activeTab}
-              onChange={(e) => setActiveTab(e.target.value as typeof activeTab)}
-              className="sm:hidden w-auto min-w-[120px] shrink-0"
-            >
-              {TABS.map((tab) => (
-                <option key={tab} value={tab}>
-                  {tab}{tabCounts[tab] > 0 ? ` (${tabCounts[tab]})` : ""}
-                </option>
-              ))}
-            </Select>
-            <Input
-              placeholder="Search items, regions..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="flex-1"
-            />
           </div>
 
           {/* Tab bar */}
@@ -854,7 +919,7 @@ export function PurchaseOrdersClient({ purchaseOrders, regions, consumables = []
                 </div>
                 <div>
                   <p className="text-xs font-medium text-shark-400 uppercase mb-1">Quantity</p>
-                  <p className="font-semibold text-shark-900 dark:text-shark-100">{viewOrder.quantity} {viewOrder.consumable.unitType}</p>
+                  <p className="font-semibold text-shark-900 dark:text-shark-100"><span className="tabular-nums">{viewOrder.quantity}</span> {viewOrder.consumable.unitType}</p>
                 </div>
               </div>
 

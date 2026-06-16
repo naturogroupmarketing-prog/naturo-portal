@@ -923,7 +923,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
               {/* View mode */}
               <div className="px-4 pt-4 pb-3 border-b border-shark-100 dark:border-shark-700">
-                <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-widest mb-2.5">View</p>
+                <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-2.5">View</p>
                 <div className="flex gap-1 bg-shark-50 dark:bg-shark-700 rounded-xl p-1">
                   {(["list", "card", "compact"] as const).map((m) => (
                     <button
@@ -945,7 +945,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
               {/* Columns (list view only) */}
               {viewMode === "list" && (
                 <div className="px-4 pt-3 pb-3 border-b border-shark-100 dark:border-shark-700">
-                  <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-widest mb-2.5">Columns</p>
+                  <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-2.5">Columns</p>
                   <div className="space-y-1">
                     {([
                       ["photo", "Photo"],

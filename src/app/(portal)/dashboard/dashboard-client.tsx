@@ -412,14 +412,14 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <div className="rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-6">
                       <div className="flex items-center gap-2 mb-5">
                         <Icon name="bar-chart" size={13} className="text-shark-400" />
-                        <p className="text-[11px] font-semibold uppercase tracking-widest text-shark-400 dark:text-shark-500">Finance</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-shark-400 dark:text-shark-500">Finance</p>
                       </div>
 
                       {/* Summary stats */}
                       <div className="grid grid-cols-2 gap-3 mb-4">
                         <div className="bg-shark-50 dark:bg-shark-800 rounded-2xl px-3.5 py-2.5">
                           <div className="flex items-center gap-2 mb-0.5">
-                            <span className="w-2 h-2 rounded-full" style={{ background: "#1F3DD9" }} />
+                            <span className="w-2 h-2 rounded-full" style={{ background: "#004de0" }} />
                             <span className="text-xs text-shark-500 dark:text-shark-400">Assets</span>
                           </div>
                           <p className="text-xl font-bold tabular-nums text-shark-900 dark:text-shark-100">
@@ -449,8 +449,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                             <AreaChart data={portfolioChartData} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
                               <defs>
                                 <linearGradient id="gradAssets" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="#1F3DD9" stopOpacity={0.12} />
-                                  <stop offset="100%" stopColor="#1F3DD9" stopOpacity={0.01} />
+                                  <stop offset="0%" stopColor="#004de0" stopOpacity={0.12} />
+                                  <stop offset="100%" stopColor="#004de0" stopOpacity={0.01} />
                                 </linearGradient>
                                 <linearGradient id="gradConsumables" x1="0" y1="0" x2="0" y2="1">
                                   <stop offset="0%" stopColor="#0057FF" stopOpacity={0.12} />
@@ -473,7 +473,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                     <div style={{ background: "#1a1c21", borderRadius: 10, padding: "10px 14px", border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
                                       <p style={{ color: "#8b8f96", fontSize: 11, marginBottom: 6, fontWeight: 600 }}>{label}</p>
                                       {payload.map((p) => {
-                                        const color = p.dataKey === "assets" ? "#1F3DD9" : p.dataKey === "consumables" ? "#0057FF" : "#8b8f96";
+                                        const color = p.dataKey === "assets" ? "#004de0" : p.dataKey === "consumables" ? "#0057FF" : "#8b8f96";
                                         const name = p.dataKey === "assets" ? "Assets" : p.dataKey === "consumables" ? "Supplies" : "Depreciation";
                                         return (
                                           <div key={p.dataKey} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
@@ -489,7 +489,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                                   );
                                 }}
                               />
-                              <Area type="monotone" dataKey="assets" stroke="#1F3DD9" strokeWidth={2} fill="url(#gradAssets)" dot={false} activeDot={{ r: 4, fill: "#1F3DD9", stroke: "#fff", strokeWidth: 2 }} />
+                              <Area type="monotone" dataKey="assets" stroke="#004de0" strokeWidth={2} fill="url(#gradAssets)" dot={false} activeDot={{ r: 4, fill: "#004de0", stroke: "#fff", strokeWidth: 2 }} />
                               <Area type="monotone" dataKey="consumables" stroke="#0057FF" strokeWidth={2} fill="url(#gradConsumables)" dot={false} activeDot={{ r: 4, fill: "#0057FF", stroke: "#fff", strokeWidth: 2 }} />
                               <Area type="monotone" dataKey="depreciation" stroke="#8b8f96" strokeWidth={1.5} strokeDasharray="4 3" fill="url(#gradDepreciation)" dot={false} activeDot={{ r: 4, fill: "#8b8f96", stroke: "#fff", strokeWidth: 2 }} />
                             </AreaChart>
@@ -532,7 +532,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <div className="rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-6">
                     <div className="flex items-center gap-2 mb-5">
                       <Icon name="package" size={13} className="text-shark-400" />
-                      <p className="text-[11px] font-semibold uppercase tracking-widest text-shark-400 dark:text-shark-500">Asset Status</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-shark-400 dark:text-shark-500">Asset Status</p>
                     </div>
                     <div className="divide-y divide-shark-100 dark:divide-shark-800 -mx-6">
                       {assetStatusChart.map((item) => {
@@ -544,11 +544,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Link key={item.name} href={`/assets${statusParam ? `?status=${statusParam}` : ""}`} className="flex items-center gap-3 px-6 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                             <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                             <span className="text-sm text-shark-700 dark:text-shark-300 flex-1">{item.name}</span>
-                            <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
+                            <span className="text-sm font-semibold tabular-nums text-shark-900 dark:text-shark-100">{item.value}</span>
                             <div className="w-20 bg-shark-100 dark:bg-shark-700 rounded-full h-1.5 overflow-hidden">
                               <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
                             </div>
-                            <span className="text-xs text-shark-400 w-8 text-right">{pct}%</span>
+                            <span className="text-xs text-shark-400 w-8 text-right tabular-nums">{pct}%</span>
                           </Link>
                         );
                       })}
@@ -559,18 +559,18 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <div className="rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-6">
                     <div className="flex items-center gap-2 mb-5">
                       <Icon name="box" size={13} className="text-shark-400" />
-                      <p className="text-[11px] font-semibold uppercase tracking-widest text-shark-400 dark:text-shark-500">Assets by Category</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-shark-400 dark:text-shark-500">Assets by Category</p>
                     </div>
                     <div className="divide-y divide-shark-100 dark:divide-shark-800 -mx-6">
                       {categoryChart.map((item, idx) => {
                         const maxVal = Math.max(...categoryChart.map((c) => c.value));
                         const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
-                        const colors = ["#0057FF", "#4d83ff", "#80a8ff", "#b3c9ff", "#003fba", "#1A6BFF", "#dde6ff", "#6b7280"];
+                        const colors = ["#0057FF", "#4d83ff", "#80a8ff", "#b3c9ff", "#003fba", "#0057FF", "#dde6ff", "#6b7080"];
                         const color = colors[idx % colors.length];
                         return (
                           <Link key={item.name} href={`/assets?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-6 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                             <span className="text-sm text-shark-700 dark:text-shark-300 flex-1 truncate">{item.name}</span>
-                            <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
+                            <span className="text-sm font-semibold tabular-nums text-shark-900 dark:text-shark-100">{item.value}</span>
                             <div className="w-24 bg-shark-100 dark:bg-shark-700 rounded-full h-1.5 overflow-hidden">
                               <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
                             </div>
@@ -590,7 +590,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <div className="rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-6">
                     <div className="flex items-center gap-2 mb-5">
                       <Icon name="droplet" size={13} className="text-shark-400" />
-                      <p className="text-[11px] font-semibold uppercase tracking-widest text-shark-400 dark:text-shark-500">Supply Status</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-shark-400 dark:text-shark-500">Supply Status</p>
                     </div>
                     <div className="divide-y divide-shark-100 dark:divide-shark-800 -mx-6">
                       {consumableStatusChart.map((item) => {
@@ -602,11 +602,11 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                           <Link key={item.name} href={`/consumables${stockParam ? `?stock=${stockParam}` : ""}`} className="flex items-center gap-3 px-6 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                             <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                             <span className="text-sm text-shark-700 dark:text-shark-300 flex-1">{item.name}</span>
-                            <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
+                            <span className="text-sm font-semibold tabular-nums text-shark-900 dark:text-shark-100">{item.value}</span>
                             <div className="w-20 bg-shark-100 dark:bg-shark-700 rounded-full h-1.5 overflow-hidden">
                               <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: item.color }} />
                             </div>
-                            <span className="text-xs text-shark-400 w-8 text-right">{pct}%</span>
+                            <span className="text-xs text-shark-400 w-8 text-right tabular-nums">{pct}%</span>
                           </Link>
                         );
                       })}
@@ -617,18 +617,18 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <div className="rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-6">
                     <div className="flex items-center gap-2 mb-5">
                       <Icon name="box" size={13} className="text-shark-400" />
-                      <p className="text-[11px] font-semibold uppercase tracking-widest text-shark-400 dark:text-shark-500">Supplies by Category</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-shark-400 dark:text-shark-500">Supplies by Category</p>
                     </div>
                     <div className="divide-y divide-shark-100 dark:divide-shark-800 -mx-6">
                       {consumableCategoryChart.map((item, idx) => {
                         const maxVal = Math.max(...consumableCategoryChart.map((c) => c.value));
                         const pct = maxVal > 0 ? Math.round((item.value / maxVal) * 100) : 0;
-                        const colors = ["#0057FF", "#4d83ff", "#80a8ff", "#b3c9ff", "#003fba", "#1A6BFF", "#dde6ff", "#6b7280"];
+                        const colors = ["#0057FF", "#4d83ff", "#80a8ff", "#b3c9ff", "#003fba", "#0057FF", "#dde6ff", "#6b7080"];
                         const color = colors[idx % colors.length];
                         return (
                           <Link key={item.name} href={`/consumables?category=${encodeURIComponent(item.name)}`} className="flex items-center gap-3 px-6 py-2.5 hover:bg-shark-50 dark:hover:bg-shark-800 transition-colors cursor-pointer">
                             <span className="text-sm text-shark-700 dark:text-shark-300 flex-1 truncate">{item.name}</span>
-                            <span className="text-sm font-semibold text-shark-900 dark:text-shark-100">{item.value}</span>
+                            <span className="text-sm font-semibold tabular-nums text-shark-900 dark:text-shark-100">{item.value}</span>
                             <div className="w-24 bg-shark-100 dark:bg-shark-700 rounded-full h-1.5 overflow-hidden">
                               <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
                             </div>
@@ -648,7 +648,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                       <Icon name="alert-triangle" size={13} className="text-shark-400" />
-                      <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Low Stock Alerts</p>
+                      <p className="text-[11px] font-bold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Low Stock Alerts</p>
                     </div>
                     <Link href={isSuperAdmin ? "/alerts/low-stock" : "/purchase-orders"} className="text-[11px] font-semibold text-action-600 hover:text-action-700 transition-colors shrink-0">
                       View all →
@@ -682,8 +682,8 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-sm font-bold text-red-500">{item.quantityOnHand} {item.unitType}</p>
-                              <p className="text-xs text-shark-400">min: {item.minimumThreshold}</p>
+                              <p className="text-sm font-bold tabular-nums text-red-500">{item.quantityOnHand} {item.unitType}</p>
+                              <p className="text-xs text-shark-400 tabular-nums">min: {item.minimumThreshold}</p>
                             </div>
                             <Icon name="arrow-right" size={14} className="text-shark-400" />
                           </div>
@@ -701,7 +701,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                       <Icon name="bar-chart" size={13} className="text-shark-400" />
-                      <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Predicted Shortages</p>
+                      <p className="text-[11px] font-bold text-shark-400 dark:text-shark-500 uppercase tracking-widest">Predicted Shortages</p>
                     </div>
                     <Link href="/purchase-orders" className="text-[11px] font-semibold text-action-600 hover:text-action-700 transition-colors shrink-0">View all →</Link>
                   </div>
@@ -718,7 +718,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <div className="text-right">
-                            <p className="text-sm font-bold text-shark-900 dark:text-shark-100">{item.quantityOnHand} <span className="text-xs font-normal text-shark-400">{item.unitType}</span></p>
+                            <p className="text-sm font-bold tabular-nums text-shark-900 dark:text-shark-100">{item.quantityOnHand} <span className="text-xs font-normal text-shark-400">{item.unitType}</span></p>
                             {item.daysRemaining !== null && (
                               <span className={`text-xs font-semibold ${item.riskLevel === "critical" ? "text-red-500" : "text-action-500"}`}>
                                 {item.daysRemaining === 0 ? "Depleted today" : `~${item.daysRemaining}d left`}
@@ -772,7 +772,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
           case "shortcuts":
             return preferences.customShortcuts.length > 0 ? (
               <div key="shortcuts">
-                <h2 className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-3">My Shortcuts</h2>
+                <h2 className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-3">My Shortcuts</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {preferences.customShortcuts.map((shortcut) => (
                     <div key={shortcut.id} className="relative group">
@@ -812,7 +812,7 @@ export function DashboardClient({ stats, lowStockItems, quickLinks, preferences,
         <div className="rounded-[28px] bg-white dark:bg-shark-900 border border-black/[0.05] dark:border-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] p-6">
           <div className="flex items-center gap-2 mb-5">
             <Icon name="map-pin" size={13} className="text-shark-400" />
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-shark-400 dark:text-shark-500">Storage Locations</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-shark-400 dark:text-shark-500">Storage Locations</p>
           </div>
           <div className="h-[250px] sm:h-[300px] lg:h-[350px] rounded-[20px] overflow-hidden border border-black/[0.05] dark:border-white/[0.06] mb-5">
             <iframe

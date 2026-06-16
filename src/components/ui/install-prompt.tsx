@@ -129,7 +129,7 @@ export function InstallPrompt() {
                 </div>
                 <p className="text-sm font-semibold text-shark-900 dark:text-shark-100">Install Trackio</p>
               </div>
-              <button onClick={handleDismiss} className="text-shark-400 hover:text-shark-600 p-1 -mr-1">
+              <button aria-label="Dismiss" onClick={handleDismiss} className="text-shark-400 hover:text-shark-600 p-1 -mr-1">
                 <Icon name="x" size={15} />
               </button>
             </div>
@@ -153,7 +153,7 @@ export function InstallPrompt() {
                 <span>Tap <strong>&ldquo;Add&rdquo;</strong> in the top-right corner</span>
               </li>
             </ol>
-            <button onClick={handleDismiss} className="w-full text-center text-[11px] text-shark-400 hover:text-shark-600 py-1">
+            <button aria-label="Dismiss" onClick={handleDismiss} className="w-full text-center text-[11px] text-shark-400 hover:text-shark-600 py-1">
               Dismiss
             </button>
           </div>
@@ -177,7 +177,7 @@ export function InstallPrompt() {
                   </p>
                 </div>
               </div>
-              <button onClick={handleDismiss} className="text-shark-400 hover:text-shark-600 p-1 shrink-0">
+              <button aria-label="Dismiss" onClick={handleDismiss} className="text-shark-400 hover:text-shark-600 p-1 shrink-0">
                 <Icon name="x" size={15} />
               </button>
             </div>
@@ -195,7 +195,7 @@ export function InstallPrompt() {
               <p className="text-xs text-shark-400 leading-snug">Install for a faster, app-like experience</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <button onClick={handleDismiss} className="text-shark-400 hover:text-shark-600 p-1" aria-label="Dismiss">
+              <button aria-label="Dismiss" onClick={handleDismiss} className="text-shark-400 hover:text-shark-600 p-1">
                 <Icon name="x" size={15} />
               </button>
               <button onClick={handleNativeInstall} className="bg-action-600 hover:bg-action-700 text-white text-xs font-semibold px-4 py-2 rounded-[20px] transition-colors">

@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import { useToast } from "@/components/ui/toast";
 import { acknowledgeAsset } from "@/app/actions/assets";
 
 export function ConfirmReceiptButton({ assignmentId }: { assignmentId: string }) {
+  const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
 
   const handleConfirm = async () => {
@@ -13,7 +15,7 @@ export function ConfirmReceiptButton({ assignmentId }: { assignmentId: string })
     try {
       await acknowledgeAsset(assignmentId);
     } catch {
-      alert("Failed to confirm receipt. Please try again.");
+      addToast("Failed to confirm receipt. Please try again.", "error");
     } finally {
       setLoading(false);
     }

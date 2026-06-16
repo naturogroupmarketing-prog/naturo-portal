@@ -17,7 +17,7 @@ export function BenefitsSection() {
       <div className="max-w-6xl mx-auto px-6">
         <ScrollReveal>
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-xs font-bold text-blue-300 uppercase tracking-widest mb-4">
+            <p className="text-xs font-bold text-action-300 uppercase tracking-widest mb-4">
               Why teams switch to trackio
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-white">

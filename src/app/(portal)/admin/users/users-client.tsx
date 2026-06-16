@@ -197,34 +197,31 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
 
   return (
     <div className="space-y-10">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">User Management</h1>
-          <p className="text-sm text-shark-400 mt-1">{filtered.length} total users</p>
-        </div>
-        <Button size="sm" onClick={() => setShowCreate(true)}>
-          <Icon name="plus" size={14} className="mr-1.5" />
-          New User
-        </Button>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <Input
-          placeholder="Search users..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-xs"
-        />
-        {selected.size > 0 && (
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={handleDisableSelected}
-            disabled={disabling}
-          >
-            {disabling ? "Disabling..." : `Disable Selected (${selected.size})`}
+      {/* Header + toolbar on one line — user count left, controls right-justified */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <p className="text-xs text-shark-400 shrink-0 tabular-nums">{filtered.length} total users</p>
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:justify-end">
+          <Input
+            placeholder="Search users..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-52 min-w-0"
+          />
+          {selected.size > 0 && (
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={handleDisableSelected}
+              disabled={disabling}
+            >
+              {disabling ? "Disabling..." : `Disable Selected (${selected.size})`}
+            </Button>
+          )}
+          <Button size="sm" onClick={() => setShowCreate(true)}>
+            <Icon name="plus" size={14} className="mr-1.5" />
+            New User
           </Button>
-        )}
+        </div>
       </div>
 
       {/* Region Sections */}
@@ -244,7 +241,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
                 <div className="flex items-center gap-2 flex-1">
                   <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">{section.name}</h2>
                   <span className="text-xs text-shark-400">{section.stateName}</span>
-                  <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full tabular-nums">
                     {section.users.length}
                   </span>
                 </div>
@@ -276,7 +273,7 @@ export function UsersClient({ users, regions }: { users: User[]; regions: Region
             <div className="flex items-center gap-2 flex-1">
               <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Head Office</h2>
               <span className="text-xs text-shark-400">No region assigned</span>
-              <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-700 px-2 py-0.5 rounded-full tabular-nums">
                 {headOfficeUsers.length}
               </span>
             </div>

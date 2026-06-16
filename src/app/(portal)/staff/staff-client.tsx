@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 import { createUser, updateUser, deleteUser, resetPassword, toggleUserActive, restoreUser, permanentlyDeleteUser } from "@/app/actions/users";
 import { applyStarterKit } from "@/app/actions/starter-kits";
@@ -113,6 +114,8 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   const { addToast } = useToast();
   const [showDeleted, setShowDeleted] = useState(false);
   const [restoringId, setRestoringId] = useState<string | null>(null);
+  const [permDeleteUser, setPermDeleteUser] = useState<DeletedUser | null>(null);
+  const [permDeleting, setPermDeleting] = useState(false);
 
   // Assign Starter Kit modal
   const [showAssignKit, setShowAssignKit] = useState(false);
@@ -121,6 +124,20 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   const [assignKitSubmitting, setAssignKitSubmitting] = useState(false);
   const [search, setSearch] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
+
+  // Settings cog — collapses Export & location filter
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
+  const columnMenuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!showColumnMenu) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (columnMenuRef.current && !columnMenuRef.current.contains(e.target as Node)) {
+        setShowColumnMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showColumnMenu]);
   // If initialRegion is set, collapse all OTHER regions so the target region is visible
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
     if (!initialRegion) return new Set();
@@ -444,12 +461,67 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
   return (
     <Wrapper {...wrapperProps}>
     <div className="px-5 py-4 space-y-10">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Staff Overview</h2>
-          <p className="text-xs text-shark-400 mt-0.5">{filtered.length} staff members</p>
-        </div>
-        <div className="flex items-center gap-2">
+      {/* Header + toolbar on one line — staff count left, controls right-justified */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <p className="text-xs text-shark-400 shrink-0 tabular-nums">{filtered.length} total staff</p>
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:justify-end">
+          <Input
+            placeholder="Search staff..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-52 min-w-0"
+          />
+          {/* Settings cog — collapses location filter & Export */}
+          <div className="relative" ref={columnMenuRef}>
+            <button
+              type="button"
+              onClick={() => setShowColumnMenu((v) => !v)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors ${
+                showColumnMenu
+                  ? "bg-shark-100 dark:bg-shark-700 border-shark-200 dark:border-shark-600 text-shark-900 dark:text-shark-100"
+                  : "bg-white dark:bg-shark-800 border-shark-200 dark:border-shark-700 text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700"
+              }`}
+              aria-label="Settings"
+              aria-expanded={showColumnMenu}
+            >
+              <Icon name="settings" size={15} />
+              Settings
+              {locationFilter !== "all" && <span className="w-1.5 h-1.5 bg-action-500 rounded-full" />}
+            </button>
+
+            {showColumnMenu && (
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-shark-800 rounded-[20px] border border-shark-100 dark:border-shark-700 shadow-[0_8px_24px_rgba(0,0,0,0.12)] z-30 overflow-hidden">
+                {/* Location filter */}
+                <div className="px-4 pt-4 pb-3 border-b border-shark-100 dark:border-shark-700">
+                  <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-2.5">Location</p>
+                  <Select
+                    value={locationFilter}
+                    onChange={(e) => setLocationFilter(e.target.value)}
+                    className="text-sm"
+                  >
+                    <option value="all">All locations</option>
+                    {regions.map((r) => (
+                      <option key={r.id} value={r.id}>{r.name}</option>
+                    ))}
+                    {headOfficeUsers.length > 0 && (
+                      <option value="head-office">Head Office</option>
+                    )}
+                  </Select>
+                </div>
+                {/* Export */}
+                <div className="px-3 py-2.5 space-y-1">
+                  <button
+                    type="button"
+                    onClick={() => { exportCSV(); setShowColumnMenu(false); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors text-left"
+                  >
+                    <Icon name="download" size={14} className="text-shark-400 shrink-0" />
+                    <span className="text-sm font-medium text-shark-700 dark:text-shark-300">Export CSV</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
           {starterKits.length > 0 && (
             <Button variant="outline" size="sm" onClick={() => { setShowAssignKit(true); setAssignKitUserId(""); setAssignKitId(starterKits.find(k => k.isDefault)?.id || starterKits[0]?.id || ""); }}>
               <Icon name="box" size={14} className="mr-1.5" />
@@ -463,32 +535,6 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
             </Button>
           )}
         </div>
-      </div>
-
-      <div className="flex items-center gap-3 flex-wrap">
-        <Input
-          placeholder="Search staff..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-xs min-h-[36px] sm:min-h-[32px] py-2 text-xs"
-        />
-        <Select
-          value={locationFilter}
-          onChange={(e) => setLocationFilter(e.target.value)}
-          className="max-w-[180px] min-h-[36px] sm:min-h-[32px] py-2 text-xs"
-        >
-          <option value="all">All locations</option>
-          {regions.map((r) => (
-            <option key={r.id} value={r.id}>{r.name}</option>
-          ))}
-          {headOfficeUsers.length > 0 && (
-            <option value="head-office">Head Office</option>
-          )}
-        </Select>
-        <Button variant="outline" size="sm" onClick={exportCSV}>
-          <Icon name="download" size={14} className="mr-1.5" />
-          Export CSV
-        </Button>
       </div>
 
       {/* Region Sections */}
@@ -509,9 +555,9 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                   <Icon name="map-pin" size={16} className={section.color} />
                 </div>
                 <div className="flex items-center gap-2 flex-1">
-                  <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">{section.name}</h2>
+                  <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">{section.name}</h2>
                   <span className="text-xs text-shark-400">{section.stateName}</span>
-                  <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full tabular-nums">
                     {section.users.length}
                   </span>
                 </div>
@@ -529,9 +575,9 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               <Icon name="dashboard" size={16} className={headOfficeColors.color} />
             </div>
             <div className="flex items-center gap-2 flex-1">
-              <h2 className="text-lg font-semibold text-shark-900 dark:text-shark-100">Head Office</h2>
+              <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">Head Office</h2>
               <span className="text-xs text-shark-400">No region assigned</span>
-              <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full tabular-nums">
                 {headOfficeUsers.length}
               </span>
             </div>
@@ -1224,19 +1270,19 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-3 py-2.5 text-center">
-                  <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.assetAssignments.length}</p>
+                  <p className="text-lg font-bold text-shark-900 dark:text-shark-100 tabular-nums">{detailUser.assetAssignments.length}</p>
                   <p className="text-[10px] text-shark-400">Assets Assigned</p>
                 </div>
                 <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-3 py-2.5 text-center">
-                  <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.consumableAssignments?.length || 0}</p>
+                  <p className="text-lg font-bold text-shark-900 dark:text-shark-100 tabular-nums">{detailUser.consumableAssignments?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Supplies</p>
                 </div>
                 <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-3 py-2.5 text-center">
-                  <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{detailUser.conditionChecks?.length || 0}</p>
+                  <p className="text-lg font-bold text-shark-900 dark:text-shark-100 tabular-nums">{detailUser.conditionChecks?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Inspections Done</p>
                 </div>
                 <div className="bg-shark-50 dark:bg-shark-800 rounded-[20px] px-3 py-2.5 text-center">
-                  <p className={`text-lg font-bold ${(detailUser.damageReports?.length || 0) > 0 ? "text-action-500" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
+                  <p className={`text-lg font-bold tabular-nums ${(detailUser.damageReports?.length || 0) > 0 ? "text-action-500" : "text-shark-900 dark:text-shark-100"}`}>{detailUser.damageReports?.length || 0}</p>
                   <p className="text-[10px] text-shark-400">Damage Reports</p>
                 </div>
               </div>
@@ -1296,20 +1342,7 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
                         size="sm"
                         variant="danger"
                         disabled={!!restoringId}
-                        onClick={async () => {
-                          if (!confirm(`Permanently delete ${u.name || u.email}? This cannot be undone.`)) return;
-                          setRestoringId(u.id);
-                          try {
-                            const result = await permanentlyDeleteUser(u.id);
-                            if (result.success) {
-                              addToast("Permanently deleted", "success");
-                              router.refresh();
-                            } else {
-                              addToast(result.error || "Failed", "error");
-                            }
-                          } catch (e) { addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error"); }
-                          setRestoringId(null);
-                        }}
+                        onClick={() => setPermDeleteUser(u)}
                       >
                         Delete
                       </Button>
@@ -1321,6 +1354,40 @@ export function StaffClient({ users, regions, allRegions, isSuperAdmin, canViewS
           )}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!permDeleteUser}
+        onClose={() => setPermDeleteUser(null)}
+        onConfirm={async () => {
+          if (!permDeleteUser) return;
+          const target = permDeleteUser;
+          setPermDeleting(true);
+          setRestoringId(target.id);
+          try {
+            const result = await permanentlyDeleteUser(target.id);
+            if (result.success) {
+              addToast("Permanently deleted", "success");
+              router.refresh();
+            } else {
+              addToast(result.error || "Failed", "error");
+            }
+          } catch (e) {
+            addToast(e instanceof Error ? e.message : "Something went wrong — please try again", "error");
+          }
+          setRestoringId(null);
+          setPermDeleting(false);
+          setPermDeleteUser(null);
+        }}
+        title="Permanently delete user?"
+        description={
+          permDeleteUser
+            ? `This will permanently delete ${permDeleteUser.name || permDeleteUser.email}. This cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete permanently"
+        variant="danger"
+        loading={permDeleting}
+      />
     </div>
     </Wrapper>
   );

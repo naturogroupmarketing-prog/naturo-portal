@@ -11,7 +11,7 @@ export function SignupBanner() {
       {/* Gradient background — warm coral/orange to deep purple/blue */}
       <div className="absolute inset-0">
         {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-rose-500 to-indigo-600" />
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-rose-500 to-action-600" />
 
         {/* Layered color washes for depth */}
         <div
@@ -59,7 +59,7 @@ export function SignupBanner() {
             <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href="/login"
-                className="group relative inline-flex items-center justify-center text-sm font-semibold bg-white text-indigo-600 px-7 py-3 rounded-full hover:bg-white/90 transition-all hover:-translate-y-px hover:shadow-xl active:scale-[0.97]"
+                className="group relative inline-flex items-center justify-center text-sm font-semibold bg-white text-action-600 px-7 py-3 rounded-full hover:bg-white/90 transition-all hover:-translate-y-px hover:shadow-xl active:scale-[0.97]"
               >
                 Start Free Trial
                 <svg

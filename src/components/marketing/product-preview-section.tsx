@@ -12,7 +12,7 @@ export function ProductPreviewSection() {
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-exo leading-tight">
               <span className="text-shark-900">A clearer way to </span>
-              <span className="bg-gradient-to-r from-action-500 to-indigo-500 bg-clip-text text-transparent">manage your branches.</span>
+              <span className="bg-gradient-to-r from-action-500 to-action-500 bg-clip-text text-transparent">manage your branches.</span>
             </h2>
             <p className="mt-4 text-shark-400 text-lg">
               See stock levels, staff assignments, and activity across every
@@ -68,7 +68,7 @@ export function ProductPreviewSection() {
               {/* State group: New South Wales */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-action-50 flex items-center justify-center">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   </div>
                   <h4 className="text-base font-bold text-shark-900">New South Wales</h4>

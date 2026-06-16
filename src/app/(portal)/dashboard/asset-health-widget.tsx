@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Icon } from "@/components/ui/icon";
+import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -134,7 +135,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
             <Icon name="shield" size={13} className="text-shark-400" />
-            <p className="text-[11px] font-semibold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
+            <p className="text-[11px] font-bold text-shark-400 dark:text-shark-500 uppercase tracking-widest">
               Asset Health
             </p>
             <span className="text-[10px] font-medium bg-action-50 text-action-600 px-1.5 py-0.5 rounded-full">AI</span>
@@ -152,7 +153,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                 badgeColor.ring
               )}
             >
-              <span className="text-base font-bold leading-none">{averageScore}</span>
+              <span className="text-base font-bold leading-none tabular-nums">{averageScore}</span>
               <span className="text-[10px] font-medium opacity-70">/ 100</span>
             </div>
           </div>
@@ -162,7 +163,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {/* LEFT — Grade distribution bar chart */}
           <div>
-            <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-wider mb-3">
+            <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-3">
               Grade Distribution
             </p>
             <div className="space-y-2.5">
@@ -201,7 +202,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                     </div>
 
                     {/* Count */}
-                    <span className="text-xs font-semibold text-shark-700 dark:text-shark-300 w-6 text-right shrink-0">
+                    <span className="text-xs font-semibold tabular-nums text-shark-700 dark:text-shark-300 w-6 text-right shrink-0">
                       {item.count}
                     </span>
                   </div>
@@ -212,7 +213,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
             {/* Top performers teaser */}
             {topPerformers.length > 0 && (
               <div className="mt-4 pt-4 border-t border-shark-100 dark:border-shark-700">
-                <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-wider mb-2">
+                <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-2">
                   Top Performers
                 </p>
                 <div className="space-y-1.5">
@@ -228,7 +229,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                       <span className="text-xs font-medium text-shark-700 dark:text-shark-300 truncate flex-1 group-hover:text-action-600 transition-colors">
                         {asset.assetName}
                       </span>
-                      <span className="text-[10px] text-shark-400">
+                      <span className="text-[10px] text-shark-400 tabular-nums">
                         {asset.score}
                       </span>
                     </Link>
@@ -240,21 +241,18 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
 
           {/* RIGHT — Critical / Needs Attention */}
           <div>
-            <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-wider mb-3">
+            <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-3">
               Needs Attention
             </p>
 
             {!hasCritical ? (
               /* All good state */
-              <div className="flex flex-col items-center justify-center py-8 gap-2 text-center rounded-[20px] bg-action-50 border border-action-100">
-                <div className="w-10 h-10 rounded-full bg-action-100 flex items-center justify-center">
-                  <Icon name="check" size={18} className="text-action-600" />
-                </div>
-                <p className="text-sm font-semibold text-action-700">
-                  All assets in good health
-                </p>
-                <p className="text-xs text-action-500">No critical assets found</p>
-              </div>
+              <EmptyState
+                icon="check-circle"
+                title="All assets in good health"
+                description="No critical assets need attention right now."
+                className="rounded-[20px] bg-action-50 border border-action-100 py-8"
+              />
             ) : (
               <div className="space-y-2">
                 {criticalAssets.slice(0, 5).map((asset, idx) => {
@@ -276,7 +274,7 @@ export function AssetHealthWidget({ summary }: AssetHealthWidgetProps) {
                         {/* Score badge */}
                         <span
                           className={cn(
-                            "mt-0.5 text-xs font-bold px-1.5 py-0.5 rounded-md border shrink-0",
+                            "mt-0.5 text-xs font-bold tabular-nums px-1.5 py-0.5 rounded-md border shrink-0",
                             scoreBadgeColor(asset.score)
                           )}
                         >

@@ -579,7 +579,7 @@ export function ChatWidget() {
                     <Icon name="x" size={16} />
                   </button>
                 ) : (
-                  <button type="submit" disabled={!input.trim()} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-[20px] bg-action-400 text-white hover:bg-action-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                  <button aria-label="Send" type="submit" disabled={!input.trim()} className="shrink-0 w-9 h-9 flex items-center justify-center rounded-[20px] bg-action-400 text-white hover:bg-action-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                     <Icon name="arrow-right" size={16} />
                   </button>
                 )}

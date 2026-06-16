@@ -89,7 +89,7 @@ export function AiForecastWidget({ items }: Props) {
                       <Link
                         key={item.id}
                         href="/purchase-orders?action=create"
-                        className="flex items-center gap-3 px-3 py-2.5 hover:bg-white/60 transition-colors group"
+                        className="flex items-center gap-3 px-3 py-2.5 hover:bg-white/60 dark:hover:bg-white/[0.04] transition-colors group"
                       >
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">

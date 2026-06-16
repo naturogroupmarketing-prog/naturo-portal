@@ -54,7 +54,7 @@ function renderCell(type: CellType) {
   if (type === "x") return <XMark />;
   if (type === "green-check") return <GreenCheck />;
   if (type === "navy-check") return <NavyCheck />;
-  if (type === "dash") return <span className="text-gray-300 font-bold text-xl">—</span>;
+  if (type === "dash") return <span className="text-shark-300 font-bold text-xl">—</span>;
   if (type === "cta") {
     return (
       <Link
@@ -70,7 +70,7 @@ function renderCell(type: CellType) {
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-16 sm:py-24 px-6 bg-white border-b border-gray-200">
+    <section id="features" className="py-16 sm:py-24 px-6 bg-white border-b border-shark-200">
       <div className="max-w-6xl mx-auto">
 
         <ScrollReveal>
@@ -81,7 +81,7 @@ export function FeaturesSection() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-[#191c1f] leading-tight tracking-tight">
               See how we stack up.
             </h2>
-            <p className="text-gray-700 text-xl font-light">
+            <p className="text-shark-700 text-xl font-light">
               Most teams are still tracking with tools that weren&apos;t built for this work.
             </p>
           </div>
@@ -89,28 +89,28 @@ export function FeaturesSection() {
 
         <ScrollReveal delay={100}>
           <div
-            className="bg-white rounded-2xl border border-gray-200 overflow-hidden"
+            className="bg-white rounded-2xl border border-shark-200 overflow-hidden"
             style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
           >
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[640px]">
                 <thead>
-                  <tr className="border-b-2 border-gray-200">
+                  <tr className="border-b-2 border-shark-200">
                     <th className="p-8 bg-white w-[40%]" />
-                    <th className="p-8 bg-[#f4f5f8] text-center w-[20%] font-bold text-gray-800 border-l border-gray-200">
+                    <th className="p-8 bg-shark-50 text-center w-[20%] font-bold text-shark-900 border-l border-shark-200">
                       Spreadsheets
-                      <span className="text-sm font-normal text-gray-500 mt-2 block">(Excel, Sheets)</span>
+                      <span className="text-sm font-normal text-shark-500 mt-2 block">(Excel, Sheets)</span>
                     </th>
-                    <th className="p-8 bg-[#f4f5f8] text-center w-[20%] font-bold text-gray-800 border-l border-gray-200">
+                    <th className="p-8 bg-shark-50 text-center w-[20%] font-bold text-shark-900 border-l border-shark-200">
                       Other apps
-                      <span className="text-sm font-normal text-gray-500 mt-2 block">(ServiceM8, Simpro)</span>
+                      <span className="text-sm font-normal text-shark-500 mt-2 block">(ServiceM8, Simpro)</span>
                     </th>
                     <th
                       className="p-8 text-white text-center w-[20%] border-l"
                       style={{ background: BLUE, borderColor: BLUE }}
                     >
                       <div className="font-bold text-2xl mb-2">trackio</div>
-                      <div className="text-sm font-medium text-blue-200">Built for service teams</div>
+                      <div className="text-sm font-medium text-action-200">Built for service teams</div>
                     </th>
                   </tr>
                 </thead>
@@ -118,20 +118,20 @@ export function FeaturesSection() {
                   {rows.map((row, i) => (
                     <tr
                       key={row.feature}
-                      className={`border-b border-gray-200 transition-colors ${
-                        i < rows.length - 1 ? "hover:bg-gray-50" : "bg-gray-50/50"
+                      className={`border-b border-shark-200 transition-colors ${
+                        i < rows.length - 1 ? "hover:bg-shark-50" : "bg-shark-50/50"
                       }`}
                     >
                       <td className="p-6 pl-10 font-medium text-[#191c1f]">{row.feature}</td>
-                      <td className="p-6 text-center border-l border-gray-200">
+                      <td className="p-6 text-center border-l border-shark-200">
                         {renderCell(row.sheet)}
                       </td>
-                      <td className="p-6 text-center border-l border-gray-200">
+                      <td className="p-6 text-center border-l border-shark-200">
                         {renderCell(row.other)}
                       </td>
                       <td
-                        className={`p-6 text-center border-l border-gray-200 ${
-                          row.trackio === "cta" ? "bg-blue-50/50" : "bg-blue-50/20"
+                        className={`p-6 text-center border-l border-shark-200 ${
+                          row.trackio === "cta" ? "bg-action-50/50" : "bg-action-50/20"
                         }`}
                       >
                         {renderCell(row.trackio)}
@@ -142,7 +142,7 @@ export function FeaturesSection() {
               </table>
             </div>
           </div>
-          <p className="text-center mt-8 text-base text-gray-500 font-medium">
+          <p className="text-center mt-8 text-base text-shark-500 font-medium">
             14-day free trial — No credit card required
           </p>
         </ScrollReveal>

@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -576,7 +577,7 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       </Modal>
 
       {/* Summary Stats */}
-      <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest">Overview</p>
+      <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest">Overview</p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
         {[
           { label: "Staff with Items", value: staffStatus.length, icon: "users" as const, iconBg: "bg-action-500", iconColor: "text-white" },
@@ -619,10 +620,11 @@ export function ConditionChecksClient({ checks, staffStatus, monthYear, regions,
       {/* Staff List */}
       {filteredStaff.length === 0 ? (
         <Card>
-          <div className="py-12 text-center">
-            <Icon name="users" size={40} className="text-shark-200 mx-auto mb-3" />
-            <p className="text-shark-400">No staff match your filters.</p>
-          </div>
+          <EmptyState
+            icon="users"
+            title="No staff found"
+            description="No staff match your filters."
+          />
         </Card>
       ) : (
         <div className="space-y-3">

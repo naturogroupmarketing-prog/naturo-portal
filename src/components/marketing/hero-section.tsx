@@ -276,7 +276,7 @@ export function HeroSection() {
             Start tracking your assets — get set up in minutes
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-            <div className="flex-1 flex items-center gap-3 border border-gray-300 rounded-lg px-4 py-3 focus-within:border-[#001b94] transition-colors">
+            <div className="flex-1 flex items-center gap-3 border border-shark-300 rounded-lg px-4 py-3 focus-within:border-[#001b94] transition-colors">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                 <polyline points="22,6 12,13 2,6" />
@@ -284,7 +284,7 @@ export function HeroSection() {
               <input
                 type="email"
                 placeholder="you@yourcompany.com.au"
-                className="flex-1 text-sm bg-transparent outline-none text-gray-700 placeholder-gray-400 min-w-0"
+                className="flex-1 text-sm bg-transparent outline-none text-shark-700 placeholder-shark-400 min-w-0"
               />
             </div>
             <Link

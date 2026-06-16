@@ -8,7 +8,7 @@ export function CTASection() {
       <div className="max-w-4xl mx-auto px-6">
         <ScrollReveal>
           <div className="text-center mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-300 mb-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-action-300 mb-4">
               Start today — free for 14 days
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-white">
@@ -37,7 +37,7 @@ export function CTASection() {
               name="email"
               required
               placeholder="Enter your work email"
-              className="flex-1 px-5 py-4 rounded-full text-sm font-medium text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/30"
+              className="flex-1 px-5 py-4 rounded-full text-sm font-medium text-shark-900 placeholder-shark-400 outline-none focus:ring-2 focus:ring-white/30"
               style={{ background: "rgba(255,255,255,0.97)" }}
             />
             <button

@@ -4,6 +4,8 @@ import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
+import { Input } from "@/components/ui/input";
+import { EmptyState } from "@/components/ui/empty-state";
 
 /* ── Types ─────────────────────────────────────────────────────────────── */
 
@@ -115,12 +117,12 @@ function POPopover({ data, onClose }: { data: POPopoverState; onClose: () => voi
       {/* Header */}
       <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-shark-100 dark:border-shark-800 bg-shark-50/60 dark:bg-shark-800/50">
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400">
             Purchase Orders
           </p>
           <p className="text-xs font-medium text-shark-700 dark:text-shark-200 truncate mt-0.5">{data.itemName}</p>
         </div>
-        <button onClick={onClose} className="text-shark-300 hover:text-shark-500 dark:hover:text-shark-300 transition-colors ml-2 shrink-0">
+        <button aria-label="Dismiss alert" onClick={onClose} className="text-shark-300 hover:text-shark-500 dark:hover:text-shark-300 transition-colors ml-2 shrink-0">
           <Icon name="x" size={13} />
         </button>
       </div>
@@ -228,7 +230,7 @@ function ItemTooltip({ data, onKeepOpen, onClose }: { data: TooltipState; onKeep
         </div>
       ) : (
         <div className="mb-2.5 space-y-1.5">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-shark-400 mb-1.5">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400 mb-1.5">
             {poCount} Active PO{poCount !== 1 ? "s" : ""}
           </p>
           {item.activePOs.map((po) => {
@@ -505,13 +507,13 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           onMouseLeave={hideTooltip}
         >
           <div className="flex items-center justify-end gap-1.5">
-            <span className={`text-sm font-bold ${isOut ? "text-red-600" : "text-action-500"}`}>
+            <span className={`text-sm font-bold tabular-nums ${isOut ? "text-red-600" : "text-action-500"}`}>
               {item.quantityOnHand}
             </span>
             {isOut && <span className="text-[10px] font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">OUT</span>}
             {isCritical && <span className="text-[10px] font-semibold text-action-500 bg-action-50 dark:bg-action-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
           </div>
-          <p className="text-[10px] text-shark-400 mt-0.5">Min: {item.minimumThreshold}</p>
+          <p className="text-[10px] text-shark-400 mt-0.5 tabular-nums">Min: {item.minimumThreshold}</p>
         </div>
       </div>
     );
@@ -564,15 +566,15 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
           onMouseLeave={hideTooltip}
         >
           <div className="flex items-center justify-end gap-1.5">
-            <span className={`font-bold ${isOut ? "text-red-600" : "text-action-500"}`}>
+            <span className={`font-bold tabular-nums ${isOut ? "text-red-600" : "text-action-500"}`}>
               {item.quantityOnHand}
             </span>
             {isOut && <span className="text-[10px] font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">OUT</span>}
             {isCritical && <span className="text-[10px] font-semibold text-action-500 bg-action-50 dark:bg-action-950/20 px-1.5 py-0.5 rounded">CRITICAL</span>}
           </div>
         </td>
-        <td className="px-5 py-3 text-right text-shark-500 dark:text-shark-400">{item.minimumThreshold}</td>
-        <td className="px-5 py-3 text-right text-shark-500 dark:text-shark-400 hidden md:table-cell">{item.reorderLevel}</td>
+        <td className="px-5 py-3 text-right text-shark-500 dark:text-shark-400 tabular-nums">{item.minimumThreshold}</td>
+        <td className="px-5 py-3 text-right text-shark-500 dark:text-shark-400 hidden md:table-cell tabular-nums">{item.reorderLevel}</td>
         <td className="px-5 py-3 text-right text-shark-500 dark:text-shark-400 hidden lg:table-cell">{item.supplier || "—"}</td>
       </tr>
     );
@@ -641,7 +643,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
               {regionItems.length > 0 && (
                 <span className="flex items-center gap-1.5 text-xs font-semibold text-action-500 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1.5 rounded-[10px] shrink-0">
                   <Icon name="alert-triangle" size={12} />
-                  {regionItems.length} low stock
+                  <span className="tabular-nums">{regionItems.length}</span> low stock
                 </span>
               )}
             </button>
@@ -682,7 +684,7 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                   ) : (
                     Object.entries(regionsByState).map(([stateName, stateRegions]) => (
                       <div key={stateName}>
-                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
+                        <p className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-shark-500 dark:text-shark-400 bg-shark-50/80 dark:bg-shark-800/60 border-b border-shark-50 dark:border-shark-700">
                           {stateName}
                         </p>
                         {stateRegions.map((r) => {
@@ -721,80 +723,52 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
             )}
           </div>
 
-          {/* ── Page header ─────────────────────────────────────────────────── */}
-          <div className="flex items-center justify-between gap-4 px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-800">
-            <div className="min-w-0">
-              <h1 className="text-lg font-bold text-shark-900 dark:text-shark-100">
-                Low Stock Alerts
-              </h1>
-              <p className="text-xs text-shark-400 mt-0.5">
-                {regionItems.length} item{regionItems.length !== 1 ? "s" : ""} at or below minimum threshold
+          {/* ── Toolbar: count left, stat pills + search right ──────────────── */}
+          <div className="px-4 sm:px-5 py-4 border-b border-shark-100 dark:border-shark-800 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <p className="text-xs text-shark-400 shrink-0">
+                <span className="tabular-nums">{regionItems.length}</span> total {regionItems.length === 1 ? "item" : "items"} at or below minimum threshold
                 {regionItems.length > 0 && " · hover on-hand qty for details"}
               </p>
-            </div>
-
-            {regionItems.length > 0 && (
-              <div className="flex items-center gap-2 shrink-0">
-                {outCount > 0 && (
-                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1 rounded-[10px]">
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:justify-end">
+                {regionItems.length > 0 && outCount > 0 && (
+                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 px-2.5 py-1 rounded-[10px] shrink-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block" />
-                    {outCount} out of stock
+                    <span className="tabular-nums">{outCount}</span> out of stock
                   </span>
                 )}
-                {criticalCount > 0 && (
-                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-action-500 bg-action-50 dark:bg-action-950/20 border border-action-100 dark:border-action-900/30 px-2.5 py-1 rounded-[10px]">
+                {regionItems.length > 0 && criticalCount > 0 && (
+                  <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-action-500 bg-action-50 dark:bg-action-950/20 border border-action-100 dark:border-action-900/30 px-2.5 py-1 rounded-[10px] shrink-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-action-500 inline-block" />
-                    {criticalCount} critical
+                    <span className="tabular-nums">{criticalCount}</span> critical
                   </span>
                 )}
-                <span className="inline-flex items-center text-xs font-semibold text-shark-500 dark:text-shark-400 bg-shark-50 dark:bg-shark-800 border border-shark-100 dark:border-shark-700 px-2.5 py-1 rounded-[10px]">
-                  {regionItems.length} total
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* ── Search bar ──────────────────────────────────────────────────── */}
-          {regionItems.length > 0 && (
-            <div className="px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-800">
-              <div className="flex items-center gap-2 bg-shark-50 dark:bg-shark-800 rounded-[14px] px-3 py-2">
-                <Icon name="search" size={13} className="text-shark-400 shrink-0" />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search by name, category, supplier…"
-                  className="flex-1 bg-transparent text-sm text-shark-800 dark:text-shark-100 placeholder-shark-400 outline-none"
-                />
-                {search && (
-                  <button
-                    onClick={() => setSearch("")}
-                    className="text-shark-400 hover:text-shark-600 dark:hover:text-shark-200 transition-colors"
-                  >
-                    <Icon name="x" size={13} />
-                  </button>
+                {regionItems.length > 0 && (
+                  <Input
+                    placeholder="Search by name, category, supplier…"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full sm:w-52 min-w-0"
+                  />
                 )}
               </div>
             </div>
-          )}
+          </div>
 
           {/* ── Content ─────────────────────────────────────────────────────── */}
           {regionItems.length === 0 ? (
-            <div className="py-16 text-center">
-              <div className="w-14 h-14 rounded-[20px] bg-action-50 dark:bg-action-950/30 flex items-center justify-center mx-auto mb-4">
-                <Icon name="check" size={24} className="text-action-500" />
-              </div>
-              <p className="text-base font-semibold text-shark-900 dark:text-shark-100">All stock levels OK</p>
-              <p className="text-sm text-shark-400 mt-1">No supplies are below their minimum threshold.</p>
-            </div>
+            <EmptyState
+              icon="check"
+              title="All stock levels OK"
+              description="No supplies are below their minimum threshold."
+            />
           ) : filteredItems.length === 0 ? (
-            <div className="py-12 text-center">
-              <p className="text-sm text-shark-500 dark:text-shark-400">
-                No items match &ldquo;{search}&rdquo;
-              </p>
-              <button onClick={() => setSearch("")} className="mt-2 text-xs text-action-500 hover:underline">
-                Clear search
-              </button>
-            </div>
+            <EmptyState
+              icon="search"
+              title={`No items match “${search}”`}
+              description="Try a different name, category, or supplier."
+              action={{ label: "Clear search", onClick: () => setSearch("") }}
+            />
           ) : (
             <div className="divide-y divide-shark-100 dark:divide-shark-800">
               {byRegion.map((group) => {
@@ -818,11 +792,11 @@ export function LowStockClient({ items, regions, focusRegionId, isSuperAdmin, hi
                           </div>
                           <div className="flex items-center gap-1.5">
                             <span className="text-xs font-semibold text-action-500 bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded-full">
-                              {group.items.length} item{group.items.length !== 1 ? "s" : ""}
+                              <span className="tabular-nums">{group.items.length}</span> item{group.items.length !== 1 ? "s" : ""}
                             </span>
                             {groupOutCount > 0 && (
                               <span className="text-xs font-semibold text-red-600 bg-red-100 dark:bg-red-950/50 px-2 py-0.5 rounded-full">
-                                {groupOutCount} out
+                                <span className="tabular-nums">{groupOutCount}</span> out
                               </span>
                             )}
                           </div>

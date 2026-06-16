@@ -56,8 +56,7 @@ export function ShowcaseSection() {
   return (
     <section
       id="how-it-works"
-      className="py-16 sm:py-24 px-6 border-b border-gray-200"
-      style={{ background: "#f4f5f8" }}
+      className="py-16 sm:py-24 px-6 border-b border-shark-200 bg-shark-50"
     >
       <div className="max-w-6xl mx-auto">
 
@@ -69,7 +68,7 @@ export function ShowcaseSection() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-[#191c1f] leading-tight tracking-tight">
               Up and running in an afternoon.
             </h2>
-            <p className="text-gray-700 text-xl font-light">
+            <p className="text-shark-700 text-xl font-light">
               No complex setup. No IT team. No training manuals. Just a clear system your team will actually use.
             </p>
           </div>
@@ -80,7 +79,7 @@ export function ShowcaseSection() {
             <ScrollReveal key={step.title} delay={i * 150}>
               {/* mt-8 gives space for the floating circle that hangs above */}
               <div
-                className="bg-white p-8 sm:p-10 rounded-2xl border border-gray-100 flex flex-col items-center text-center relative mt-8 h-full"
+                className="bg-white p-8 sm:p-10 rounded-2xl border border-shark-100 flex flex-col items-center text-center relative mt-8 h-full"
                 style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
               >
                 {/* Floating numbered circle */}
@@ -100,7 +99,7 @@ export function ShowcaseSection() {
                 </div>
 
                 <h3 className="text-2xl font-bold mb-4 text-[#191c1f]">{step.title}</h3>
-                <p className="text-gray-600 leading-relaxed text-lg font-light">{step.desc}</p>
+                <p className="text-shark-600 leading-relaxed text-lg font-light">{step.desc}</p>
               </div>
             </ScrollReveal>
           ))}
@@ -108,15 +107,15 @@ export function ShowcaseSection() {
 
         <ScrollReveal delay={500}>
           <div
-            className="mt-16 bg-white p-10 rounded-2xl border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-8"
+            className="mt-16 bg-white p-10 rounded-2xl border border-shark-100 flex flex-col sm:flex-row items-center justify-between gap-8"
             style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
           >
-            <p className="text-gray-700 text-xl font-light">
+            <p className="text-shark-700 text-xl font-light">
               Setup takes under 15 minutes. Most teams are fully live within a day.
             </p>
             <Link
               href="/login"
-              className="font-bold px-10 py-4 text-white hover:bg-blue-900 transition-colors whitespace-nowrap text-lg shrink-0"
+              className="font-bold px-10 py-4 text-white hover:bg-action-900 transition-colors whitespace-nowrap text-lg shrink-0"
               style={{ background: BLUE, borderRadius: "24px" }}
             >
               Start your free trial →

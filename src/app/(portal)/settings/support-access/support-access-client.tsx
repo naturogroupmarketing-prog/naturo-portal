@@ -169,7 +169,7 @@ export function SupportAccessClient({ policy: initialPolicy, sessions, requests 
     <div className="max-w-3xl mx-auto space-y-6 pb-12">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Support Access</h1>
+        <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-shark-100 leading-tight tracking-tight">Support Access</h1>
         <p className="mt-1 text-sm text-shark-500 dark:text-shark-400">
           Control when and how Trackio support can access your account to help diagnose issues.
         </p>

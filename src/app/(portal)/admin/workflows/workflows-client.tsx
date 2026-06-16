@@ -4,6 +4,8 @@ import { useState, useTransition, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import { Modal } from "@/components/ui/modal";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { cn } from "@/lib/utils";
 import type { WorkflowRule, WorkflowTrigger, WorkflowAction } from "@/lib/workflow-engine";
 import {
@@ -299,24 +301,8 @@ function WorkflowModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-
-      {/* Panel */}
-      <div className="relative bg-white dark:bg-shark-900 rounded-[20px] shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-shark-100 dark:border-shark-800">
-          <div>
-            <h2 className="text-lg font-bold text-shark-900 dark:text-shark-100">
-              {editRule ? "Edit Rule" : "Create Automation Rule"}
-            </h2>
-          </div>
-          <button type="button" onClick={onClose} className="p-1.5 text-shark-400 hover:text-shark-700 dark:text-shark-300 hover:bg-shark-100 dark:hover:bg-shark-800 dark:bg-shark-700 rounded-[10px] transition-colors">
-            <Icon name="x" size={16} />
-          </button>
-        </div>
-
-        <form ref={formRef} className="p-5 space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+    <Modal open onClose={onClose} title={editRule ? "Edit Rule" : "Create Automation Rule"}>
+        <form ref={formRef} className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-shark-700 dark:text-shark-300 mb-1">Rule Name *</label>
@@ -421,36 +407,7 @@ function WorkflowModal({
             </Button>
           </div>
         </form>
-      </div>
-    </div>
-  );
-}
-
-// ─── Delete confirmation dialog ───────────────────────────────────────────────
-
-function DeleteConfirm({ ruleName, onConfirm, onCancel }: { ruleName: string; onConfirm: () => void; onCancel: () => void }) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-white dark:bg-shark-900 rounded-[20px] shadow-xl w-full max-w-sm p-6 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-            <Icon name="trash-2" size={18} className="text-red-500" />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">Delete Rule</h3>
-            <p className="text-xs text-shark-400 mt-0.5">This action cannot be undone.</p>
-          </div>
-        </div>
-        <p className="text-sm text-shark-600 dark:text-shark-400">
-          Are you sure you want to delete <span className="font-semibold text-shark-900 dark:text-shark-100">{ruleName}</span>?
-        </p>
-        <div className="flex gap-3">
-          <Button type="button" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
-          <Button type="button" className="flex-1 bg-red-500 hover:bg-red-600 text-white" onClick={onConfirm}>Delete</Button>
-        </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
 
@@ -623,13 +580,19 @@ export default function WorkflowsClient({ systemRules, customRules: initialCusto
       )}
 
       {/* Delete confirm */}
-      {deleteTarget && (
-        <DeleteConfirm
-          ruleName={deleteTarget.name}
-          onConfirm={confirmDelete}
-          onCancel={() => setDeleteTarget(null)}
-        />
-      )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+        title="Delete rule?"
+        description={
+          deleteTarget
+            ? `This will delete the "${deleteTarget.name}" automation rule. This cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete"
+        variant="danger"
+      />
     </>
   );
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@/components/ui/icon";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Anomaly, AnomalySeverity, AnomalyCategory } from "@/lib/anomaly-detection";
 import type { IconName } from "@/components/ui/icon";
@@ -128,7 +129,7 @@ function AnomalyCard({ anomaly, index }: AnomalyCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.2, delay: index * 0.04, ease: "easeOut" }}
-      className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60"
+      className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 shadow-sm overflow-hidden"
     >
       {/* Card body */}
       <div className="px-4 py-4">
@@ -281,7 +282,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
   }
 
   return (
-    <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white shadow-sm overflow-hidden dark:border-shark-800 dark:bg-shark-900/60">
+    <div className="rounded-[20px] border border-shark-100 dark:border-shark-800 bg-white dark:bg-shark-900 shadow-sm overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -309,7 +310,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 Stock consumption multiplier
                 <span className="ml-1 font-normal text-shark-400">(flag if usage exceeds Nx baseline)</span>
               </label>
-              <input
+              <Input
                 type="number"
                 name="stockConsumptionMultiplier"
                 step="0.1"
@@ -317,7 +318,6 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="10"
                 defaultValue={currentSettings.stockConsumptionMultiplier}
                 required
-                className="w-full rounded-[14px] border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -325,7 +325,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 Overdue return days
                 <span className="ml-1 font-normal text-shark-400">(flag checkouts older than N days)</span>
               </label>
-              <input
+              <Input
                 type="number"
                 name="overdueReturnDays"
                 step="1"
@@ -333,7 +333,6 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="90"
                 defaultValue={currentSettings.overdueReturnDays}
                 required
-                className="w-full rounded-[14px] border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -341,7 +340,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 Damage reports threshold
                 <span className="ml-1 font-normal text-shark-400">(flag staff with more than N reports/30d)</span>
               </label>
-              <input
+              <Input
                 type="number"
                 name="damageReportsThreshold"
                 step="1"
@@ -349,7 +348,6 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="20"
                 defaultValue={currentSettings.damageReportsThreshold}
                 required
-                className="w-full rounded-[14px] border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div>
@@ -357,7 +355,7 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 Max anomalies shown
                 <span className="ml-1 font-normal text-shark-400">(cap on total anomalies displayed)</span>
               </label>
-              <input
+              <Input
                 type="number"
                 name="maxAnomalies"
                 step="1"
@@ -365,7 +363,6 @@ function SettingsPanel({ currentSettings }: { currentSettings: AnomalySettingsVa
                 max="200"
                 defaultValue={currentSettings.maxAnomalies}
                 required
-                className="w-full rounded-[14px] border border-shark-200 dark:border-shark-700 bg-white px-3 py-2 text-sm text-shark-900 dark:text-shark-100 focus:border-action-400 focus:outline-none focus:ring-2 focus:ring-action-400/20 dark:border-shark-700 dark:bg-shark-800 dark:text-shark-100"
               />
             </div>
             <div className="sm:col-span-2 flex items-center gap-3">
@@ -503,7 +500,7 @@ export default function AnomaliesClient({ anomalies, isSuperAdmin, currentSettin
             >
               {tab.label}
               {count > 0 && (
-                <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full ${
+                <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold rounded-full tabular-nums ${
                   isActive ? "text-white bg-action-500" : "text-shark-500 dark:text-shark-400 bg-shark-200 dark:bg-shark-700"
                 }`}>
                   {count}

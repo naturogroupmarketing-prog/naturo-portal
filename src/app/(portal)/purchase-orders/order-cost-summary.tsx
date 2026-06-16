@@ -61,7 +61,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
             <p className="text-xs text-shark-400 mt-0.5">Active purchase orders by region (excl. received)</p>
           </div>
           <div className="text-right shrink-0 mr-2">
-            <p className="text-lg font-bold text-shark-900 dark:text-shark-100">{fmt(grandTotal)}</p>
+            <p className="text-lg font-bold text-shark-900 dark:text-shark-100 tabular-nums">{fmt(grandTotal)}</p>
             <p className="text-[10px] text-shark-400">total committed</p>
           </div>
           <Icon
@@ -79,19 +79,19 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
               {pendingTotal > 0 && (
                 <span className="flex items-center gap-1 text-[11px] font-semibold bg-action-50 text-action-600 border border-action-100 px-2.5 py-1 rounded-full">
                   <span className="w-1.5 h-1.5 rounded-full bg-action-400" />
-                  Pending approval: {fmt(pendingTotal)}
+                  Pending approval: <span className="tabular-nums">{fmt(pendingTotal)}</span>
                 </span>
               )}
               {approvedTotal > 0 && (
                 <span className="flex items-center gap-1 text-[11px] font-semibold bg-action-50 text-action-600 border border-action-100 px-2.5 py-1 rounded-full">
                   <span className="w-1.5 h-1.5 rounded-full bg-action-400" />
-                  Approved: {fmt(approvedTotal)}
+                  Approved: <span className="tabular-nums">{fmt(approvedTotal)}</span>
                 </span>
               )}
               {orderedTotal > 0 && (
                 <span className="flex items-center gap-1 text-[11px] font-semibold bg-action-50 text-action-600 border border-action-100 px-2.5 py-1 rounded-full">
                   <span className="w-1.5 h-1.5 rounded-full bg-action-400" />
-                  On order: {fmt(orderedTotal)}
+                  On order: <span className="tabular-nums">{fmt(orderedTotal)}</span>
                 </span>
               )}
             </div>
@@ -106,7 +106,7 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-sm font-semibold text-shark-800 dark:text-shark-200 truncate">{region.regionName}</span>
-                          <span className="text-sm font-bold text-shark-900 dark:text-shark-100 ml-2 shrink-0">{fmt(region.total)}</span>
+                          <span className="text-sm font-bold text-shark-900 dark:text-shark-100 ml-2 shrink-0 tabular-nums">{fmt(region.total)}</span>
                         </div>
                         {/* Progress bar */}
                         <div className="h-1.5 bg-shark-100 dark:bg-shark-700 rounded-full overflow-hidden">
@@ -118,13 +118,13 @@ export function OrderCostSummary({ regions, autoExpand }: Props) {
                         {/* Status breakdown */}
                         <div className="flex gap-3 mt-1.5 flex-wrap">
                           {region.pending > 0 && (
-                            <span className="text-[10px] text-action-500 font-medium">Pending {fmt(region.pending)}</span>
+                            <span className="text-[10px] text-action-500 font-medium tabular-nums">Pending {fmt(region.pending)}</span>
                           )}
                           {region.approved > 0 && (
-                            <span className="text-[10px] text-action-500 font-medium">Approved {fmt(region.approved)}</span>
+                            <span className="text-[10px] text-action-500 font-medium tabular-nums">Approved {fmt(region.approved)}</span>
                           )}
                           {region.ordered > 0 && (
-                            <span className="text-[10px] text-action-500 font-medium">Ordered {fmt(region.ordered)}</span>
+                            <span className="text-[10px] text-action-500 font-medium tabular-nums">Ordered {fmt(region.ordered)}</span>
                           )}
                         </div>
                       </div>

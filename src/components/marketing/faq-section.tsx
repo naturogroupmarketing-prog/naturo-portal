@@ -26,7 +26,7 @@ export function FAQSection() {
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight" style={{ color: "#111827" }}>
               Common questions, clear answers.
             </h2>
-            <p className="mt-4 text-gray-500 text-lg">
+            <p className="mt-4 text-shark-500 text-lg">
               Everything you need to know before getting started.
             </p>
           </div>
@@ -57,7 +57,7 @@ export function FAQSection() {
                 </button>
                 {isOpen && (
                   <div className="px-6 pb-5 -mt-1">
-                    <p className="text-sm text-gray-500 leading-relaxed">{faq.answer}</p>
+                    <p className="text-sm text-shark-500 leading-relaxed">{faq.answer}</p>
                   </div>
                 )}
               </div>
@@ -66,7 +66,7 @@ export function FAQSection() {
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-shark-400">
             Still have questions?{" "}
             <a href="mailto:support@trackio.com.au" className="font-medium hover:underline" style={{ color: "#002FA0" }}>
               Contact our team

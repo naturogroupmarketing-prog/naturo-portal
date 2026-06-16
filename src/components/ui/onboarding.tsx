@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "./button";
+import { Input } from "./input";
 
 interface PlacePrediction {
   name: string;
@@ -161,13 +162,12 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
 
               <p className="text-sm text-shark-600 dark:text-shark-300 mb-2 text-left">Company name</p>
               <div className="relative mb-5" ref={dropdownRef}>
-                <input
+                <Input
                   type="text"
                   placeholder="Start typing to search..."
                   value={companyName}
                   onChange={(e) => handleCompanyInput(e.target.value)}
                   onFocus={() => predictions.length > 0 && setShowDropdown(true)}
-                  className="w-full border border-shark-200 dark:border-shark-700 rounded-lg px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 bg-white dark:bg-shark-800 placeholder-shark-400 focus:outline-none focus:ring-2 focus:ring-action-500/30 focus:border-action-500 transition-colors"
                 />
                 {showDropdown && predictions.length > 0 && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-lg shadow-lg overflow-hidden z-10">
@@ -188,12 +188,11 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               </div>
 
               <p className="text-sm text-shark-600 dark:text-shark-300 mb-2 text-left">Your role</p>
-              <input
+              <Input
                 type="text"
                 placeholder="e.g. Operations Manager"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
-                className="w-full border border-shark-200 dark:border-shark-700 rounded-lg px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 bg-white dark:bg-shark-800 placeholder-shark-400 focus:outline-none focus:ring-2 focus:ring-action-500/30 focus:border-action-500 transition-colors"
               />
             </div>
           )}
@@ -276,7 +275,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               <p className="text-sm text-shark-600 dark:text-shark-300 mb-3">Name your branches</p>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {branchNames.map((name, i) => (
-                  <input
+                  <Input
                     key={i}
                     type="text"
                     placeholder={`Branch ${i + 1}`}
@@ -286,7 +285,6 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
                       updated[i] = e.target.value;
                       setBranchNames(updated);
                     }}
-                    className="w-full border border-shark-200 dark:border-shark-700 rounded-lg px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 bg-white dark:bg-shark-800 placeholder-shark-400 focus:outline-none focus:ring-2 focus:ring-action-500/30 focus:border-action-500 transition-colors"
                   />
                 ))}
               </div>
@@ -307,12 +305,12 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
               </p>
 
               <p className="text-sm text-shark-600 dark:text-shark-300 mb-2 text-center">Add your company website</p>
-              <input
+              <Input
                 type="url"
                 placeholder="Company website"
                 value={companyWebsite}
                 onChange={(e) => setCompanyWebsite(e.target.value)}
-                className="w-full border border-shark-200 dark:border-shark-700 rounded-lg px-3.5 py-2.5 text-sm text-shark-900 dark:text-shark-100 bg-white dark:bg-shark-800 placeholder-shark-400 focus:outline-none focus:ring-2 focus:ring-action-500/30 focus:border-action-500 transition-colors mb-6"
+                className="mb-6"
               />
 
               <p className="text-sm text-shark-600 dark:text-shark-300 mb-3 text-center">Add your company logo</p>
@@ -442,7 +440,7 @@ export function OnboardingOverlay({ onComplete }: { onComplete: () => void }) {
           {step === 6 && (
             <div className="text-center py-4">
               <div className="w-12 h-12 rounded-full bg-action-50 flex items-center justify-center mx-auto mb-4">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-action-500">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>

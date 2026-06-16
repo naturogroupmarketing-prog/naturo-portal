@@ -87,7 +87,7 @@ export function SmartInsightsTicker({ insights }: SmartInsightsTickerProps) {
       </div>
 
       {/* Label */}
-      <span className="text-[10px] font-bold uppercase tracking-widest text-shark-400 dark:text-shark-500 shrink-0 hidden sm:block">
+      <span className="text-[11px] font-bold uppercase tracking-widest text-shark-400 dark:text-shark-500 shrink-0 hidden sm:block">
         Insight
       </span>
 

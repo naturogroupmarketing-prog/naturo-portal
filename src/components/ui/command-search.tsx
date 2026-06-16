@@ -162,7 +162,7 @@ export function CommandSearch({ open, onClose }: CommandSearchProps) {
                 ) : (
                   <>
                     {!query && (
-                      <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-shark-400 mb-0.5">
+                      <p className="px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-shark-400 mb-0.5">
                         Jump to
                       </p>
                     )}

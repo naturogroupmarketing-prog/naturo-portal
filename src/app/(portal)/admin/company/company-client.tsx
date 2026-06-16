@@ -79,7 +79,7 @@ export function CompanyClient({ org }: Props) {
   return (
     <div className="max-w-2xl space-y-10">
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Company Details</h1>
+        <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-shark-100 leading-tight tracking-tight">Company Details</h1>
         <p className="text-sm text-shark-400 mt-1">Manage your organisation information</p>
       </div>
 

@@ -29,7 +29,7 @@ const SUPPORT_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-200">
+    <footer className="bg-white border-t border-shark-200">
       {/* Main footer grid */}
       <div className="max-w-6xl mx-auto px-6 py-14 sm:py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
@@ -39,7 +39,7 @@ export function Footer() {
             <Link href="/welcome" className="inline-block mb-4">
               <img src="/Logotrackio.svg" alt="trackio" className="h-8 w-auto" />
             </Link>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-6">
+            <p className="text-sm text-shark-500 leading-relaxed max-w-xs mb-6">
               Asset &amp; supply tracking for operational teams. Know exactly what you have, where it is, and who has it.
             </p>
 
@@ -79,7 +79,7 @@ export function Footer() {
                   key={s.label}
                   href={s.href}
                   aria-label={s.label}
-                  className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-700 transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-full border border-shark-200 text-shark-400 hover:border-shark-300 hover:text-shark-700 transition-colors"
                 >
                   {s.icon}
                 </a>
@@ -89,11 +89,11 @@ export function Footer() {
 
           {/* Product */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Product</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-shark-400 mb-4">Product</h3>
             <ul className="space-y-2.5">
               {PRODUCT_LINKS.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a href={l.href} className="text-sm text-shark-600 hover:text-shark-900 transition-colors">
                     {l.label}
                   </a>
                 </li>
@@ -103,11 +103,11 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Company</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-shark-400 mb-4">Company</h3>
             <ul className="space-y-2.5">
               {COMPANY_LINKS.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a href={l.href} className="text-sm text-shark-600 hover:text-shark-900 transition-colors">
                     {l.label}
                   </a>
                 </li>
@@ -117,11 +117,11 @@ export function Footer() {
 
           {/* Support */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Support</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-shark-400 mb-4">Support</h3>
             <ul className="space-y-2.5">
               {SUPPORT_LINKS.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a href={l.href} className="text-sm text-shark-600 hover:text-shark-900 transition-colors">
                     {l.label}
                   </a>
                 </li>
@@ -145,19 +145,19 @@ export function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-gray-100">
+      <div className="border-t border-shark-100">
         <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[11px] text-gray-400">
+          <p className="text-[11px] text-shark-400">
             &copy; {new Date().getFullYear()} trackio Pty Ltd. All rights reserved. ABN 00 000 000 000
           </p>
           <div className="flex items-center gap-5">
-            <Link href="/privacy-policy" className="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">
+            <Link href="/privacy-policy" className="text-[11px] text-shark-400 hover:text-shark-600 transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms-of-service" className="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">
+            <Link href="/terms-of-service" className="text-[11px] text-shark-400 hover:text-shark-600 transition-colors">
               Terms of Service
             </Link>
-            <a href="#" className="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">
+            <a href="#" className="text-[11px] text-shark-400 hover:text-shark-600 transition-colors">
               Cookie Settings
             </a>
           </div>

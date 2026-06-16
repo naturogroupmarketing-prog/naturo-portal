@@ -123,7 +123,7 @@ export function SmartActionsPanel({ items, maxHeight }: { items: SmartActionItem
             <Icon name="check-circle" size={20} className="text-action-600" />
             {celebrated && (
               <>
-                {["#0057FF","#4d83ff","#80a8ff","#b3c9ff","#003fba","#1A6BFF"].map((c, i) => (
+                {["#0057FF","#4d83ff","#80a8ff","#b3c9ff","#003fba","#0057FF"].map((c, i) => (
                   <span key={i} className="animate-confetti-pop absolute w-2 h-2 rounded-full" style={{ background: c, top: "50%", left: "50%", transformOrigin: `${12 * Math.cos((i/6)*2*Math.PI)}px ${12 * Math.sin((i/6)*2*Math.PI)}px`, animationDelay: `${i * 0.07}s` }} />
                 ))}
               </>

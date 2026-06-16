@@ -493,7 +493,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                 }
                 return Array.from(assetsByCategory.entries()).map(([cat, items]) => (
                   <div key={`asset-cat-${cat}`}>
-                    <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider px-3 mb-1">{cat}</p>
+                    <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest px-3 mb-1">{cat}</p>
                     <div className="divide-y divide-shark-100 dark:divide-shark-700">
                       {items.map((item) => {
                         const key = `asset-${item.id}`;
@@ -532,7 +532,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                 }
                 return Array.from(consumablesByCategory.entries()).map(([cat, items]) => (
                   <div key={`consumable-cat-${cat}`}>
-                    <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider px-3 mb-1">{cat}</p>
+                    <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest px-3 mb-1">{cat}</p>
                     <div className="divide-y divide-shark-100 dark:divide-shark-700">
                       {items.map((item) => {
                         const key = `consumable-${item.id}`;
@@ -785,7 +785,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                 <div className="space-y-3">
                   {Array.from(assetsByCategory.entries()).map(([cat, assets]) => (
                     <div key={cat}>
-                      <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">{cat}</p>
+                      <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-1.5">{cat}</p>
                       <div className="space-y-1">
                         {assets.map((a) => {
                           const key = `asset-${a.id}`;
@@ -812,7 +812,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
 
                   {returningKit.consumables.length > 0 && (
                     <div>
-                      <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-wider mb-1.5">Supplies</p>
+                      <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-1.5">Supplies</p>
                       <div className="space-y-1">
                         {returningKit.consumables.map((c) => {
                           const key = `consumable-${c.id}`;
@@ -1119,13 +1119,13 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
                           {m.items.map((item) => (
                             <div key={item.name} className="flex items-center justify-between text-sm">
                               <span className="text-shark-700 dark:text-shark-300">{item.name}</span>
-                              <span className="text-xs font-semibold text-shark-900 dark:text-shark-100">{item.quantity} {item.unitType}</span>
+                              <span className="text-xs font-semibold tabular-nums text-shark-900 dark:text-shark-100">{item.quantity} {item.unitType}</span>
                             </div>
                           ))}
                         </div>
                       )}
                     </div>
-                    <div className="w-12 text-right text-sm font-bold text-shark-900 dark:text-shark-100 pt-0.5">{m.totalUsed}</div>
+                    <div className="w-12 text-right text-sm font-bold tabular-nums text-shark-900 dark:text-shark-100 pt-0.5">{m.totalUsed}</div>
                   </div>
                 ))}
               </div>
@@ -1306,7 +1306,7 @@ export function StaffDashboardClient({ stats, userName, unacknowledgedCount, pen
 
       {/* Quick Actions */}
       <div>
-        <p className="text-[11px] font-semibold text-shark-400 uppercase tracking-widest mb-4">Quick Actions</p>
+        <p className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-4">Quick Actions</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Link href="/report-damage">
             <Card className="hover:shadow-md transition-shadow cursor-pointer group">

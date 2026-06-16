@@ -143,6 +143,15 @@ export function Header({ userName, userImage, role, onMenuToggle, orgName, orgLo
             {isMac ? "⌘" : "Ctrl+"}K
           </kbd>
         </button>
+        {pathname === "/dashboard" && cogAction !== null && (
+          <button
+            onClick={cogAction}
+            className="ml-2 w-9 h-9 flex items-center justify-center rounded-full bg-[#f0f0f0] dark:bg-shark-800 border border-black/[0.06] dark:border-white/[0.06] text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200 transition-colors shrink-0"
+            aria-label="Dashboard settings"
+          >
+            <Icon name="sliders" size={16} />
+          </button>
+        )}
       </div>
 
       <div className="flex items-center gap-2">
@@ -336,7 +345,7 @@ function InstallModal({ onClose }: { onClose: () => void }) {
               <p className="text-xs text-shark-400">Add to your home screen</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-shark-400 hover:text-shark-600 p-1">
+          <button aria-label="Close" onClick={onClose} className="text-shark-400 hover:text-shark-600 p-1">
             <Icon name="x" size={18} />
           </button>
         </div>

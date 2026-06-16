@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Modal } from "@/components/ui/modal";
 import { Icon } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
@@ -135,7 +136,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">Locations</h1>
+          <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-shark-100 leading-tight tracking-tight">Locations</h1>
           <p className="text-sm text-shark-400 mt-1">{locations.length} states &middot; {totalRegions} regions</p>
         </div>
         <div className="flex items-center gap-2">
@@ -162,7 +163,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-shark-900 dark:text-shark-100">{stat.value}</p>
+                  <p className="text-2xl font-bold text-shark-900 dark:text-shark-100 tabular-nums">{stat.value}</p>
                   <p className="text-xs text-shark-400 mt-0.5">{stat.label}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-[20px] ${stat.bg} flex items-center justify-center`}>
@@ -187,12 +188,11 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
       {/* Locations */}
       {filteredLocations.length === 0 ? (
         <Card>
-          <div className="py-12 text-center">
-            <Icon name="map-pin" size={40} className="text-shark-200 mx-auto mb-3" />
-            <p className="text-shark-400">
-              {search ? "No locations match your search." : "No locations configured yet. Start by adding a state."}
-            </p>
-          </div>
+          <EmptyState
+            icon="map-pin"
+            title={search ? "No locations found" : "No locations configured yet"}
+            description={search ? "No locations match your search." : "Start by adding a state."}
+          />
         </Card>
       ) : (
         filteredLocations.map((state, sIdx) => {
@@ -203,7 +203,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
           const stateStaffTotal = state.regions.reduce((sum, r) => sum + r._count.users, 0);
 
           return (
-            <div key={state.id} className="backdrop-blur-[20px] bg-white/70 border border-white/90 rounded-[20px] shadow-[0_2px_20px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.90)] overflow-hidden">
+            <div key={state.id} className="bg-white dark:bg-shark-900 border border-shark-100 dark:border-white/[0.06] rounded-[20px] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden">
               {/* State Header */}
               <button
                 onClick={() => toggleState(state.id)}
@@ -312,7 +312,7 @@ export function LocationsClient({ locations }: { locations: Location[] }) {
                           </div>
 
                           {/* Stats */}
-                          <div className="flex items-center gap-3 text-xs text-shark-400 shrink-0">
+                          <div className="flex items-center gap-3 text-xs text-shark-400 shrink-0 tabular-nums">
                             <span className="flex items-center gap-1">
                               <Icon name="package" size={11} />
                               {region._count.assets}

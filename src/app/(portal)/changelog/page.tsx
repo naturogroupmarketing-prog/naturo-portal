@@ -106,7 +106,7 @@ export default async function ChangelogPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-shark-900 dark:text-shark-100 tracking-tight">What&apos;s New</h1>
+        <h1 className="text-[28px] sm:text-[32px] font-bold text-shark-900 dark:text-shark-100 leading-tight tracking-tight">What&apos;s New</h1>
       </div>
 
       <div className="space-y-4">

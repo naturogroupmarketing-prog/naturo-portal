@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Icon } from "@/components/ui/icon";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
@@ -352,6 +353,8 @@ function EditStarterKitForm({
   const [saving, setSaving] = useState(false);
   const [showAddItems, setShowAddItems] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [editQty, setEditQty] = useState<Record<string, number>>(
     () => Object.fromEntries(kit.items.map((i) => [i.id, i.quantity]))
   );
@@ -409,12 +412,7 @@ function EditStarterKitForm({
             type="button"
             variant="danger"
             size="sm"
-            onClick={async () => {
-              if (confirm(`Delete starter kit "${kit.name}"? This cannot be undone.`)) {
-                await deleteStarterKit(kit.id);
-                onDone();
-              }
-            }}
+            onClick={() => setConfirmDelete(true)}
           >
             Delete Kit
           </Button>
@@ -424,6 +422,26 @@ function EditStarterKitForm({
           </div>
         </div>
       </form>
+
+      <ConfirmDialog
+        open={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={async () => {
+          setDeleting(true);
+          try {
+            await deleteStarterKit(kit.id);
+            setConfirmDelete(false);
+            onDone();
+          } finally {
+            setDeleting(false);
+          }
+        }}
+        title="Delete starter kit?"
+        description={`This will delete the "${kit.name}" starter kit. This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        loading={deleting}
+      />
     </div>
   );
 }

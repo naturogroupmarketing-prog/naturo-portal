@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { formatDate } from "@/lib/utils";
@@ -103,10 +104,11 @@ export function MyActivityClient({
 
       {activities.length === 0 ? (
         <Card>
-          <div className="py-12 text-center">
-            <Icon name="clock" size={32} className="text-shark-300 mx-auto mb-3" />
-            <p className="text-sm text-shark-400">No recent activity.</p>
-          </div>
+          <EmptyState
+            icon="clock"
+            title="No recent activity."
+            description="Your assignment and request history will appear here."
+          />
         </Card>
       ) : (
         <Card>

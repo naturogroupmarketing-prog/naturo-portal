@@ -114,7 +114,7 @@ function ManagerCard({ manager }: { manager: Manager }) {
               if (groupKeys.length === 0) return null;
               return (
                 <div key={group}>
-                  <h4 className="text-xs font-semibold text-shark-400 uppercase tracking-wider mb-3">{group}</h4>
+                  <h4 className="text-[11px] font-bold text-shark-400 uppercase tracking-widest mb-3">{group}</h4>
                   <div className="space-y-3">
                     {groupKeys.map((key) => {
                       const info = PERMISSION_INFO[key];
