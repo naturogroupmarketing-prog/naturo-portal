@@ -10,6 +10,7 @@ import { Select } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
 import { Icon, type IconName } from "@/components/ui/icon";
+import { PortalDropdown } from "@/components/ui/portal-dropdown";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useToast } from "@/components/ui/toast";
 import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
@@ -36,6 +37,44 @@ const SECTION_COLORS = [
   { color: "text-rose-600", bg: "bg-rose-50" },
   { color: "text-action-600", bg: "bg-action-50" },
 ];
+
+/** Per-row actions — groups Stock / Assign / Return under one dropdown button. */
+function ConsumableRowActions({ canReturn, onStock, onAssign, onReturn }: {
+  canReturn: boolean;
+  onStock: () => void;
+  onAssign: () => void;
+  onReturn: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const item = "w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 hover:bg-shark-50 dark:hover:bg-shark-700 text-shark-700 dark:text-shark-200";
+  return (
+    <div onClick={(e) => e.stopPropagation()}>
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs font-semibold border border-shark-200 dark:border-shark-700 text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
+      >
+        Actions
+        <Icon name="chevron-down" size={11} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      <PortalDropdown triggerRef={btnRef} open={open} onClose={() => setOpen(false)} align="right" width={150}>
+        <button type="button" onClick={() => { onStock(); setOpen(false); }} className={item}>
+          <Icon name="plus" size={13} className="text-shark-400 shrink-0" /> Stock
+        </button>
+        <button type="button" onClick={() => { onAssign(); setOpen(false); }} className={item}>
+          <Icon name="users" size={13} className="text-shark-400 shrink-0" /> Assign
+        </button>
+        {canReturn && (
+          <button type="button" onClick={() => { onReturn(); setOpen(false); }} className={item}>
+            <Icon name="arrow-left" size={13} className="text-shark-400 shrink-0" /> Return
+          </button>
+        )}
+      </PortalDropdown>
+    </div>
+  );
+}
 
 interface CategoryDef {
   id: string;
@@ -673,14 +712,15 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-shark-50 dark:border-shark-800" onClick={(e) => e.stopPropagation()}>
-                    <Button size="sm" variant="outline" onClick={() => {
-                      if (!canAdjustStock) { addToast("You don't have permission to adjust stock. To update stock, confirm receival in Purchase Orders.", "error"); return; }
-                      setStockMode("add"); setShowAddStock(c);
-                    }}>Stock</Button>
-                    <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
-                    {activeAssignments.length > 0 && (
-                      <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}>Return</Button>
-                    )}
+                    <ConsumableRowActions
+                      canReturn={activeAssignments.length > 0}
+                      onStock={() => {
+                        if (!canAdjustStock) { addToast("You don't have permission to adjust stock. To update stock, confirm receival in Purchase Orders.", "error"); return; }
+                        setStockMode("add"); setShowAddStock(c);
+                      }}
+                      onAssign={() => setShowAssign(c)}
+                      onReturn={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}
+                    />
                   </div>
                 </div>
               );
@@ -859,21 +899,15 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                     )}
                     <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
-                        <Button size="sm" variant="outline" onClick={() => {
-                          if (!canAdjustStock) { addToast("You don't have permission to adjust stock. To update stock, confirm receival in Purchase Orders.", "error"); return; }
-                          setStockMode("add"); setShowAddStock(c);
-                        }}>Stock</Button>
-                        <Button size="sm" variant="outline" onClick={() => setShowAssign(c)}>Assign</Button>
-                        {activeAssignments.length > 0 && <Button size="sm" variant="outline" onClick={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}>Return</Button>}
-                        {isSuperAdmin && (
-                          <button
-                            onClick={() => setShowBatchPanel(c)}
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-[10px] transition-colors text-action-700 bg-action-50 hover:bg-action-100 ring-1 ring-action-300/50"
-                            title="View batch breakdown"
-                          >
-                            Batches
-                          </button>
-                        )}
+                        <ConsumableRowActions
+                          canReturn={activeAssignments.length > 0}
+                          onStock={() => {
+                            if (!canAdjustStock) { addToast("You don't have permission to adjust stock. To update stock, confirm receival in Purchase Orders.", "error"); return; }
+                            setStockMode("add"); setShowAddStock(c);
+                          }}
+                          onAssign={() => setShowAssign(c)}
+                          onReturn={() => setShowReturn({ assignment: activeAssignments[0], consumable: c })}
+                        />
                       </div>
                     </td>
                   </tr>
@@ -996,12 +1030,130 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         <div>
           <p className="text-xs text-shark-400">{consumables.length} total items{pendingRequests.length > 0 ? ` · ${pendingRequests.length} pending` : ""}</p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <ViewToggle value={viewMode} onChange={setViewMode} />
-          <Button variant="outline" size="sm" onClick={() => setShowManageSections(true)}>
-            <Icon name="settings" size={14} className="mr-1.5" />
-            Sections
-          </Button>
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:justify-end">
+          {tab === "stock" && (
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Input
+                placeholder="Search supplies..."
+                value={search}
+                onChange={(e) => setSearchAndClear(e.target.value)}
+                className="w-full sm:w-52 min-w-0"
+              />
+              {stockFilter && stockFilter !== "ALL" && (
+                <button
+                  onClick={() => setStockFilter("ALL")}
+                  className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100 transition-colors whitespace-nowrap shrink-0"
+                  title="Clear stock filter"
+                >
+                  {stockFilter === "critical" ? "Critical Only" : stockFilter === "low" ? "Low Stock" : stockFilter === "out" ? "Out of Stock" : stockFilter}
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+              )}
+            </div>
+          )}
+          {/* Settings cog — contains View, Columns, Sections, Export */}
+          <div className="relative" ref={columnMenuRef}>
+            <button
+              type="button"
+              onClick={() => setShowColumnMenu((v) => !v)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors ${
+                showColumnMenu
+                  ? "bg-shark-100 dark:bg-shark-700 border-shark-200 dark:border-shark-600 text-shark-900 dark:text-shark-100"
+                  : "bg-white dark:bg-shark-800 border-shark-200 dark:border-shark-700 text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700"
+              }`}
+              aria-label="Settings"
+            >
+              <Icon name="settings" size={15} />
+              Settings
+            </button>
+
+            {showColumnMenu && (
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-shark-800 rounded-[20px] border border-shark-100 dark:border-shark-700 shadow-[0_8px_24px_rgba(0,0,0,0.12)] z-30 overflow-hidden">
+
+                {/* View mode */}
+                <div className="px-4 pt-4 pb-3 border-b border-shark-100 dark:border-shark-700">
+                  <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-widest mb-2.5">View</p>
+                  <div className="flex gap-1 bg-shark-50 dark:bg-shark-700 rounded-xl p-1">
+                    {(["list", "card", "compact"] as const).map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setViewMode(m)}
+                        className={`flex-1 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors ${
+                          viewMode === m
+                            ? "bg-white dark:bg-shark-600 text-shark-900 dark:text-white shadow-sm"
+                            : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"
+                        }`}
+                      >
+                        {m === "list" ? "List" : m === "card" ? "Cards" : "Compact"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Columns (list view only) */}
+                {viewMode === "list" && (
+                  <div className="px-4 pt-3 pb-3 border-b border-shark-100 dark:border-shark-700">
+                    <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-widest mb-2.5">Columns</p>
+                    <div className="space-y-1">
+                      {(Object.keys(visibleColumns) as Array<keyof typeof visibleColumns>).map((col) => (
+                        <button
+                          key={col}
+                          type="button"
+                          onClick={() => toggleColumn(col)}
+                          className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
+                        >
+                          <span className="text-sm text-shark-700 dark:text-shark-300 capitalize">{col === "assignedTo" ? "Assigned To" : col === "qty" ? "Quantity" : col}</span>
+                          <div className={`w-8 h-4.5 rounded-full transition-colors flex items-center px-0.5 ${visibleColumns[col] ? "bg-action-500" : "bg-shark-200 dark:bg-shark-600"}`}>
+                            <div className={`w-3.5 h-3.5 rounded-full bg-white shadow transition-transform ${visibleColumns[col] ? "translate-x-3.5" : "translate-x-0"}`} />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Sections + Export */}
+                <div className="px-3 py-2.5 space-y-1">
+                  <button
+                    type="button"
+                    onClick={() => { setShowManageSections(true); setShowColumnMenu(false); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors text-left"
+                  >
+                    <Icon name="grid" size={14} className="text-shark-400 shrink-0" />
+                    <span className="text-sm font-medium text-shark-700 dark:text-shark-300">Manage Sections</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const rows = filtered.map((c) => ({
+                        "Name": c.name, "Category": c.category, "Unit Type": c.unitType,
+                        "Quantity on Hand": c.quantityOnHand, "Minimum Threshold": c.minimumThreshold,
+                        "Reorder Level": c.reorderLevel, "Unit Cost": c.unitCost != null ? c.unitCost : "",
+                        "Region": c.region.name,
+                      }));
+                      exportToCSV(rows as Record<string, unknown>[], "consumables.csv");
+                      setShowColumnMenu(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors text-left"
+                  >
+                    <Icon name="download" size={14} className="text-shark-400 shrink-0" />
+                    <span className="text-sm font-medium text-shark-700 dark:text-shark-300">Export CSV</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {selectedIds.size > 0 && (
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => setShowBulkDelete(true)}
+            >
+              Delete Selected ({selectedIds.size})
+            </Button>
+          )}
           <Button size="sm" onClick={() => {
             if (!canAdd) {
               addToast("You don't have permission to add supplies. Please contact your admin.", "error");
@@ -1041,59 +1193,6 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
         </div>
       </div>
 
-      {/* Search + Export + Bulk Delete — border-b, stock tab only */}
-      {tab === "stock" && (
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 sm:px-5 py-3 border-b border-shark-100 dark:border-shark-800">
-          <div className="flex items-center gap-2 flex-1 sm:max-w-md">
-            <Input
-              placeholder="Search supplies..."
-              value={search}
-              onChange={(e) => setSearchAndClear(e.target.value)}
-              className="flex-1"
-            />
-            {stockFilter && stockFilter !== "ALL" && (
-              <button
-                onClick={() => setStockFilter("ALL")}
-                className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100 transition-colors whitespace-nowrap shrink-0"
-                title="Clear stock filter"
-              >
-                {stockFilter === "critical" ? "Critical Only" : stockFilter === "low" ? "Low Stock" : stockFilter === "out" ? "Out of Stock" : stockFilter}
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
-            )}
-          </div>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              const rows = filtered.map((c) => ({
-                "Name": c.name,
-                "Category": c.category,
-                "Unit Type": c.unitType,
-                "Quantity on Hand": c.quantityOnHand,
-                "Minimum Threshold": c.minimumThreshold,
-                "Reorder Level": c.reorderLevel,
-                "Unit Cost": c.unitCost != null ? c.unitCost : "",
-                "Region": c.region.name,
-              }));
-              exportToCSV(rows as Record<string, unknown>[], "consumables.csv");
-            }}
-          >
-            <Icon name="download" size={14} className="mr-1" />
-            Export
-          </Button>
-          {selectedIds.size > 0 && (
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={() => setShowBulkDelete(true)}
-            >
-              Delete Selected ({selectedIds.size})
-            </Button>
-          )}
-        </div>
-      )}
-
       {/* Content */}
       <div className="px-4 sm:px-5 py-3 space-y-4">
         {tab === "stock" && (
@@ -1119,11 +1218,14 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                         const catKey = `${region.id}-${cat.name}`;
                         const catCollapsed = collapsedCategories.has(catKey);
                         return (
-                          <div key={cat.name} className="space-y-4 ml-4">
+                          <div key={cat.name} className="space-y-4">
                             <button
                               onClick={() => toggleCategory(catKey)}
-                              className="flex items-center gap-3 px-1 w-full text-left group"
+                              className="flex items-center gap-3 w-full text-left group"
                             >
+                              <div className={`w-8 h-8 rounded-[14px] ${colors.bg} flex items-center justify-center shrink-0`}>
+                                <Icon name="droplet" size={16} className={colors.color} />
+                              </div>
                               <div className="flex items-center gap-2 flex-1">
                                 <h3 className="text-lg font-bold text-shark-900 dark:text-shark-100">{cat.name}</h3>
                                 <span className="text-xs font-medium text-shark-400 bg-shark-100 dark:bg-shark-800 px-2 py-0.5 rounded-full">
@@ -1162,7 +1264,7 @@ export function ConsumablesClient({ consumables, pendingRequests, regions, users
                       })}
 
                       {regionItems.length === 0 && (
-                        <p className="text-sm text-shark-400 ml-4 px-1">No supplies in this region.</p>
+                        <p className="text-sm text-shark-400 px-1">No supplies in this region.</p>
                       )}
                 </div>
               );

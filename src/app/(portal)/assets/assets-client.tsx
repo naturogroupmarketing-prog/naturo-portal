@@ -17,7 +17,7 @@ import { createCategory, updateCategory, deleteCategory, addEquipmentItem, remov
 import { useRouter } from "next/navigation";
 import { compressImage } from "@/lib/image-utils";
 import { exportToCSV } from "@/lib/csv";
-import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
+import { type ViewMode } from "@/components/ui/view-toggle";
 
 // Lazy-load QR scanner (~100KB html5-qrcode) — only needed when modal opens
 const QRScanner = dynamic(
@@ -886,46 +886,140 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
 
   return (
     <div className="space-y-8 px-4 sm:px-5 py-4">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <p className="text-xs text-shark-400">{assets.length} total assets</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setShowScanner(true)}>
-            <Icon name="search" size={14} className="mr-1.5" />
-            Scan QR
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => setShowManageSections(true)}>
-            <Icon name="settings" size={14} className="mr-1.5" />
-            Sections
-          </Button>
-          <Button size="sm" onClick={() => {
-            if (!permissions.canAdd) {
-              addToast("You don't have permission to add assets. Please contact your admin.", "error");
-              return;
-            }
-            setShowCreate(true);
-          }}>
-            <Icon name="plus" size={14} className="mr-1.5" />
-            New Asset
-          </Button>
-        </div>
-      </div>
-
-      {/* Filters + Delete Selected */}
-      <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
+      {/* Header + toolbar on one line — total assets left, controls right-justified */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <p className="text-xs text-shark-400 shrink-0">{assets.length} total assets</p>
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:justify-end">
         <Input
           placeholder="Search assets..."
           value={search}
           onChange={(e) => setSearchAndClear(e.target.value)}
-          className="flex-1 sm:max-w-md"
+          className="w-full sm:w-52 min-w-0"
         />
+        <Button variant="outline" size="sm" onClick={() => setShowScanner(true)}>
+          <Icon name="search" size={14} className="mr-1.5" />
+          Scan QR
+        </Button>
+        {/* Settings cog — collapses Filters, Export, View & Columns */}
+        <div className="relative" ref={columnMenuRef}>
+          <button
+            type="button"
+            onClick={() => setShowColumnMenu((v) => !v)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors ${
+              showColumnMenu
+                ? "bg-shark-100 dark:bg-shark-700 border-shark-200 dark:border-shark-600 text-shark-900 dark:text-shark-100"
+                : "bg-white dark:bg-shark-800 border-shark-200 dark:border-shark-700 text-shark-600 dark:text-shark-300 hover:bg-shark-50 dark:hover:bg-shark-700"
+            }`}
+            aria-label="Settings"
+            aria-expanded={showColumnMenu}
+          >
+            <Icon name="settings" size={15} />
+            Settings
+            {(categoryFilter !== "ALL" || dateFrom || dateTo) && <span className="w-1.5 h-1.5 bg-action-500 rounded-full" />}
+          </button>
+
+          {showColumnMenu && (
+            <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-shark-800 rounded-[20px] border border-shark-100 dark:border-shark-700 shadow-[0_8px_24px_rgba(0,0,0,0.12)] z-30 overflow-hidden">
+
+              {/* View mode */}
+              <div className="px-4 pt-4 pb-3 border-b border-shark-100 dark:border-shark-700">
+                <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-widest mb-2.5">View</p>
+                <div className="flex gap-1 bg-shark-50 dark:bg-shark-700 rounded-xl p-1">
+                  {(["list", "card", "compact"] as const).map((m) => (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => setViewMode(m)}
+                      className={`flex-1 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors ${
+                        viewMode === m
+                          ? "bg-white dark:bg-shark-600 text-shark-900 dark:text-white shadow-sm"
+                          : "text-shark-500 dark:text-shark-400 hover:text-shark-700 dark:hover:text-shark-200"
+                      }`}
+                    >
+                      {m === "list" ? "List" : m === "card" ? "Cards" : "Compact"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Columns (list view only) */}
+              {viewMode === "list" && (
+                <div className="px-4 pt-3 pb-3 border-b border-shark-100 dark:border-shark-700">
+                  <p className="text-[10px] font-semibold text-shark-400 uppercase tracking-widest mb-2.5">Columns</p>
+                  <div className="space-y-1">
+                    {([
+                      ["photo", "Photo"],
+                      ["code", "Code"],
+                      ["name", "Name"],
+                      ["location", "Location"],
+                      ["status", "Status"],
+                      ["assignedTo", "Assigned To"],
+                    ] as [keyof typeof visibleColumns, string][]).map(([key, label]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => toggleColumn(key)}
+                        className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors"
+                      >
+                        <span className="text-sm text-shark-700 dark:text-shark-300">{label}</span>
+                        <div className={`w-8 h-[18px] rounded-full transition-colors flex items-center px-0.5 ${visibleColumns[key] ? "bg-action-500" : "bg-shark-200 dark:bg-shark-600"}`}>
+                          <div className={`w-3.5 h-3.5 rounded-full bg-white shadow transition-transform ${visibleColumns[key] ? "translate-x-3.5" : "translate-x-0"}`} />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Sections + Filters + Export */}
+              <div className="px-3 py-2.5 space-y-1">
+                <button
+                  type="button"
+                  onClick={() => { setShowManageSections(true); setShowColumnMenu(false); }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors text-left"
+                >
+                  <Icon name="grid" size={14} className="text-shark-400 shrink-0" />
+                  <span className="text-sm font-medium text-shark-700 dark:text-shark-300">Manage Sections</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setShowAdvancedFilters((s) => !s); setShowColumnMenu(false); }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors text-left"
+                >
+                  <Icon name="search" size={14} className="text-shark-400 shrink-0" />
+                  <span className="text-sm font-medium text-shark-700 dark:text-shark-300">Filters</span>
+                  {(categoryFilter !== "ALL" || dateFrom || dateTo) && <span className="ml-auto w-2 h-2 bg-action-500 rounded-full" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const rows = filtered.map((a) => ({
+                      "Asset Code": a.assetCode,
+                      "Name": a.name,
+                      "Category": a.category,
+                      "Status": a.status,
+                      "Serial Number": a.serialNumber ?? "",
+                      "Region": a.region.name,
+                      "Purchase Cost": a.purchaseCost != null ? a.purchaseCost : "",
+                      "Purchase Date": a.purchaseDate ?? "",
+                    }));
+                    exportToCSV(rows as Record<string, unknown>[], "assets.csv");
+                    setShowColumnMenu(false);
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-shark-50 dark:hover:bg-shark-700 transition-colors text-left"
+                >
+                  <Icon name="download" size={14} className="text-shark-400 shrink-0" />
+                  <span className="text-sm font-medium text-shark-700 dark:text-shark-300">Export CSV</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
         {isSuperAdmin && regions.length > 1 && (
           <Select
             value={regionFilter}
             onChange={(e) => setRegionFilterAndClear(e.target.value)}
-            className="sm:max-w-[200px]"
+            className="shrink-0 sm:max-w-[160px]"
           >
             <option value="ALL">All regions</option>
             {regions.map((r) => (
@@ -933,59 +1027,16 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             ))}
           </Select>
         )}
-        <Button size="sm" variant="outline" onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}>
-          <Icon name="search" size={14} className="mr-1" />
-          Filters
-          {(categoryFilter !== "ALL" || dateFrom || dateTo) && <span className="ml-1 w-2 h-2 bg-action-500 rounded-full" />}
+        <Button size="sm" onClick={() => {
+          if (!permissions.canAdd) {
+            addToast("You don't have permission to add assets. Please contact your admin.", "error");
+            return;
+          }
+          setShowCreate(true);
+        }}>
+          <Icon name="plus" size={14} className="mr-1.5" />
+          New Asset
         </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            const rows = filtered.map((a) => ({
-              "Asset Code": a.assetCode,
-              "Name": a.name,
-              "Category": a.category,
-              "Status": a.status,
-              "Serial Number": a.serialNumber ?? "",
-              "Region": a.region.name,
-              "Purchase Cost": a.purchaseCost != null ? a.purchaseCost : "",
-              "Purchase Date": a.purchaseDate ?? "",
-            }));
-            exportToCSV(rows as Record<string, unknown>[], "assets.csv");
-          }}
-        >
-          <Icon name="download" size={14} className="mr-1" />
-          Export
-        </Button>
-        <ViewToggle value={viewMode} onChange={setViewMode} />
-        <div className="relative" ref={columnMenuRef}>
-          <Button size="sm" variant="outline" onClick={() => setShowColumnMenu(!showColumnMenu)}>
-            Columns
-          </Button>
-          {showColumnMenu && (
-            <div className="absolute right-0 top-full mt-1 bg-white dark:bg-shark-800 border border-shark-200 dark:border-shark-700 rounded-[14px] shadow-lg z-50 py-2 min-w-[160px]">
-              {([
-                ["photo", "Photo"],
-                ["code", "Code"],
-                ["name", "Name"],
-                ["location", "Location"],
-                ["status", "Status"],
-                ["assignedTo", "Assigned To"],
-              ] as [keyof typeof visibleColumns, string][]).map(([key, label]) => (
-                <label key={key} className="flex items-center gap-2 px-3 py-1.5 hover:bg-shark-50 dark:bg-shark-800 dark:hover:bg-shark-700 cursor-pointer text-sm text-shark-700 dark:text-shark-200">
-                  <input
-                    type="checkbox"
-                    checked={visibleColumns[key]}
-                    onChange={() => toggleColumn(key)}
-                    className="rounded border-shark-300 text-action-500 focus:ring-action-400"
-                  />
-                  {label}
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
         {permissions.canDelete && selectedIds.size > 0 && (
           <Button
             variant="danger"
@@ -995,6 +1046,7 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
             Delete Selected ({selectedIds.size})
           </Button>
         )}
+        </div>
       </div>
 
       {/* Advanced Filters */}
@@ -1056,8 +1108,8 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                           onClick={() => toggleCategory(catKey)}
                           className="flex items-center gap-2.5 w-full text-left group"
                         >
-                          <div className={`w-6 h-6 rounded-md ${colors.bg} flex items-center justify-center shrink-0`}>
-                            <Icon name="package" size={12} className={colors.color} />
+                          <div className={`w-8 h-8 rounded-[14px] ${colors.bg} flex items-center justify-center shrink-0`}>
+                            <Icon name="package" size={16} className={colors.color} />
                           </div>
                           <div className="flex items-center gap-2 flex-1">
                             <h3 className="text-lg font-bold text-shark-800 dark:text-shark-100">{cat.name}</h3>
@@ -1123,8 +1175,8 @@ export function AssetsClient({ assets, regions, users, categories, isSuperAdmin,
                   onClick={() => toggleCategory(section.name)}
                   className="flex items-center gap-2.5 w-full text-left group flex-1"
                 >
-                  <div className={`w-6 h-6 rounded-md ${section.bg} flex items-center justify-center shrink-0`}>
-                    <Icon name="package" size={12} className={section.color} />
+                  <div className={`w-8 h-8 rounded-[14px] ${section.bg} flex items-center justify-center shrink-0`}>
+                    <Icon name="package" size={16} className={section.color} />
                   </div>
                   <div className="flex items-center gap-2 flex-1">
                     <h2 className="text-lg font-bold text-shark-800 dark:text-shark-100">{section.name}</h2>

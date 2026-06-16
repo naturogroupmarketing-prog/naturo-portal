@@ -126,14 +126,14 @@ export function ConfirmDialog({
       role="dialog"
       aria-modal="true"
       aria-labelledby="confirm-dialog-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
     >
       <div
         ref={contentRef}
-        className="w-full max-w-sm rounded-[20px] backdrop-blur-2xl bg-white/72 dark:bg-shark-800/80 border border-white/68 dark:border-white/[0.08] shadow-[0_2px_40px_rgba(100,140,220,0.26),0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_2px_4px_rgba(0,0,0,0.20),0_12px_40px_rgba(0,0,0,0.40),inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-200 animate-fade-in"
+        className="w-full max-w-sm rounded-[20px] bg-white dark:bg-shark-800 border border-shark-100 dark:border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.14)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.45)] transition-all duration-200 animate-fade-in"
       >
         <div className="px-6 pt-6 pb-4 text-center">
           <div

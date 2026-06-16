@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, createContext, useContext } from "react";
+import { useState, useRef, useCallback, useEffect, createContext, useContext } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
@@ -29,6 +29,24 @@ export const useSidebar = () => useContext(SidebarContext);
 export function AppShell({ children, role, userName, userImage, pendingPOCount = 0, pendingReturnsCount = 0, orgName, orgLogo }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // ── Desktop contextual nav ──
+  // The expanded menu shows ONLY the active rail section's items — and nothing
+  // for single-destination sections like Home (which just shows the dashboard).
+  // Lifted here so the panel can sit INSIDE the same rounded card as <main>.
+  const pathname = usePathname();
+  const navSecs = getNavConfig(role, pendingPOCount, pendingReturnsCount).filter((s) => s.roles.includes(role));
+  const routeSectionId = navSecs.find((s) =>
+    s.sections.flatMap((p) => p.items).some((i) => pathname === i.href || pathname.startsWith(i.href + "/"))
+  )?.id ?? "home";
+  const [activeRail, setActiveRail] = useState<string | null>(null);
+  // Sync the open panel to the current route (deep-links / in-content navigation).
+  // Single-destination sections (Home, Staff) open no menu; multi-page sections do.
+  useEffect(() => {
+    const sec = navSecs.find((s) => s.id === routeSectionId);
+    setActiveRail(sec && !sectionIsDirect(sec) ? routeSectionId : null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeSectionId]);
+
   // Swipe-to-close sidebar
   const touchStartX = useRef(0);
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -56,7 +74,7 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
     <SidebarContext.Provider value={{ expanded: true, toggle: () => {} }}>
     {/* Outermost: solid background */}
     <div
-      className="relative h-dvh overflow-hidden bg-[#F7F7F7] dark:bg-shark-950"
+      className="relative h-dvh overflow-hidden bg-[#F7F7F7] lg:bg-[#E6E6E9] dark:bg-shark-950"
     >
       {/* No overlay needed — solid bg */}
       <div
@@ -93,15 +111,30 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
 
       {/* Below header: sidebar + content */}
       {/* ── Workspace row: bordered nav rail + plain content ── */}
-      <div className="flex flex-1 overflow-hidden lg:p-2 lg:pt-0 lg:gap-2">
+      <div className="flex flex-1 overflow-hidden lg:p-2 lg:gap-2">
 
-        {/* Desktop two-panel nav */}
+        {/* Desktop icon rail — separate dark card */}
         <DesktopNav
           role={role}
-          orgName={orgName}
+          activeRail={activeRail}
+          setActiveRail={setActiveRail}
+          routeSectionId={routeSectionId}
           pendingPOCount={pendingPOCount}
           pendingReturnsCount={pendingReturnsCount}
         />
+
+        {/* Combined content card — secondary nav + main share ONE rounded panel (Sophiie-style) */}
+        <div className="flex flex-1 overflow-hidden lg:rounded-[12px] lg:border lg:border-black/[0.05] dark:lg:border-white/[0.06] lg:shadow-[0_2px_8px_rgba(0,0,0,0.06)] lg:bg-white dark:lg:bg-shark-900">
+
+          {/* Desktop secondary nav — contextual: only the active section's items */}
+          {activeRail && (
+            <DesktopPanel
+              role={role}
+              activeRail={activeRail}
+              pendingPOCount={pendingPOCount}
+              pendingReturnsCount={pendingReturnsCount}
+            />
+          )}
 
         {/* Main content wrapper — no border, plain bg */}
         <div className="flex flex-1 overflow-hidden">
@@ -127,11 +160,12 @@ export function AppShell({ children, role, userName, userImage, pendingPOCount =
           <main
             id="main-content"
             style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}
-            className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 sm:px-5 sm:py-6 lg:px-6 lg:py-10 lg:pb-12 bg-[#F7F7F7] dark:bg-shark-950"
+            className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 sm:px-5 sm:py-6 lg:px-6 lg:py-10 lg:pb-12 bg-[#F7F7F7] dark:bg-shark-900"
           >
             <Breadcrumbs />
             {children}
           </main>
+        </div>
         </div>
       </div>
 
@@ -159,7 +193,7 @@ import { cn } from "@/lib/utils";
 
 interface PanelNavItem { label: string; href: string; icon: IconName; badge?: number }
 interface PanelSection { heading?: string; items: PanelNavItem[] }
-interface RailSection { id: string; icon: IconName; label: string; sections: PanelSection[]; roles: Role[] }
+interface RailSection { id: string; icon: IconName; label: string; short?: string; sections: PanelSection[]; roles: Role[] }
 
 function getNavConfig(role: Role, pendingPOCount: number, pendingReturnsCount: number): RailSection[] {
   return [
@@ -171,41 +205,49 @@ function getNavConfig(role: Role, pendingPOCount: number, pendingReturnsCount: n
       sections: [{ items: [{ label: "Dashboard", href: "/dashboard", icon: "home" }] }],
     },
     {
-      id: "manage",
-      icon: "package",
-      label: "Manage",
+      id: "supplies",
+      icon: "droplet",
+      label: "Supplies",
       roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
-      sections: [
-        {
-          heading: "Inventory",
-          items: [
-            { label: "Assets", href: "/assets", icon: "package" },
-            { label: "Supplies", href: "/inventory", icon: "droplet" },
-            { label: "Returns", href: "/returns", icon: "arrow-left", badge: pendingReturnsCount },
-            { label: "Starter Kits", href: "/starter-kits", icon: "box" },
-            { label: "Maintenance", href: "/maintenance", icon: "wrench" },
-          ],
-        },
-        {
-          heading: "Procurement",
-          items: [
-            { label: "Purchase Orders", href: "/purchase-orders", icon: "truck", badge: pendingPOCount },
-          ],
-        },
-      ],
+      sections: [{ items: [{ label: "Supplies", href: "/inventory", icon: "droplet" }] }],
     },
     {
-      id: "people",
+      id: "returns",
+      icon: "arrow-left",
+      label: "Returns",
+      roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
+      sections: [{ items: [{ label: "Returns", href: "/returns", icon: "arrow-left", badge: pendingReturnsCount }] }],
+    },
+    {
+      id: "starter-kits",
+      icon: "box",
+      label: "Starter Kits",
+      short: "Kits",
+      roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
+      sections: [{ items: [{ label: "Starter Kits", href: "/starter-kits", icon: "box" }] }],
+    },
+    {
+      id: "purchase-orders",
+      icon: "truck",
+      label: "Purchase Orders",
+      short: "Orders",
+      roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
+      sections: [{ items: [{ label: "Purchase Orders", href: "/purchase-orders", icon: "truck", badge: pendingPOCount }] }],
+    },
+    {
+      id: "staff",
       icon: "users",
-      label: "People",
+      label: "Staff",
       roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
       sections: [{ items: [{ label: "Staff", href: "/staff", icon: "users" }] }],
     },
     {
+      // Managers & auditors reach reports directly from the rail; for super
+      // admins these live inside the Admin menu (below).
       id: "reports",
       icon: "bar-chart",
       label: "Reports",
-      roles: ["SUPER_ADMIN", "BRANCH_MANAGER", "AUDITOR"],
+      roles: ["BRANCH_MANAGER", "AUDITOR"],
       sections: [
         {
           items: [
@@ -224,9 +266,20 @@ function getNavConfig(role: Role, pendingPOCount: number, pendingReturnsCount: n
       roles: ["SUPER_ADMIN"],
       sections: [
         {
+          heading: "Reports",
+          items: [
+            { label: "Reports", href: "/reports", icon: "bar-chart" },
+            { label: "Activity Log", href: "/activity", icon: "clock" },
+            { label: "Inspections", href: "/condition-checks", icon: "search" },
+            { label: "Anomalies", href: "/alerts/anomalies", icon: "alert-triangle" },
+          ],
+        },
+        {
+          heading: "Administration",
           items: [
             { label: "Permissions", href: "/admin/permissions", icon: "lock" },
             { label: "Import Data", href: "/admin/import", icon: "upload" },
+            { label: "Maintenance", href: "/maintenance", icon: "wrench" },
             { label: "Support Access", href: "/settings/support-access", icon: "shield" },
             { label: "Workflows", href: "/admin/workflows", icon: "git-branch" },
           ],
@@ -273,87 +326,147 @@ function getNavConfig(role: Role, pendingPOCount: number, pendingReturnsCount: n
   ];
 }
 
-function DesktopNav({ role, orgName, pendingPOCount = 0, pendingReturnsCount = 0 }: {
-  role: Role; orgName?: string; pendingPOCount?: number; pendingReturnsCount?: number;
+// Single-destination sections (Home, Staff) navigate straight to their page —
+// no expanded menu. Multi-page sections (Manage/Reports/Admin) open a menu.
+function sectionIsDirect(section: RailSection): boolean {
+  const itemCount = section.sections.reduce((n, sub) => n + sub.items.length, 0);
+  const hasHeadings = section.sections.some((sub) => !!sub.heading);
+  return itemCount <= 1 && !hasHeadings;
+}
+
+function DesktopNav({ role, activeRail, setActiveRail, routeSectionId, pendingPOCount = 0, pendingReturnsCount = 0 }: {
+  role: Role;
+  activeRail: string | null;
+  setActiveRail: (value: string | null | ((prev: string | null) => string | null)) => void;
+  routeSectionId: string;
+  pendingPOCount?: number; pendingReturnsCount?: number;
 }) {
   const pathname = usePathname();
   const allSections = getNavConfig(role, pendingPOCount, pendingReturnsCount);
   const visibleSections = allSections.filter((s) => s.roles.includes(role));
 
-  // Panel open/close — toggled by clicking any rail item
-  const [panelOpen, setPanelOpen] = useState(true);
+  // Highlight the open panel's section, else the section that owns the current route
+  const highlightId = activeRail ?? routeSectionId;
 
-  // Which rail item is highlighted (the one whose path is currently active)
-  const activeRailId = visibleSections.find((s) =>
-    s.sections.flatMap((p) => p.items).some((i) => pathname === i.href || pathname.startsWith(i.href + "/"))
-  )?.id ?? "home";
+  // Settings is pinned at the bottom (Sophiie layout), so keep it out of the top list
+  const topSections = visibleSections.filter((s) => s.id !== "settings");
+  const settingsActive = pathname.startsWith("/settings");
 
+  // Dark icon rail — replicates Sophiie's gradient strip (62px, white active tile, 8.5px labels)
   return (
-    <aside className={cn(
-      "hidden lg:flex flex-shrink-0 border border-black/[0.08] dark:border-white/[0.06] shadow-[0_2px_8px_rgba(0,0,0,0.06)] overflow-hidden",
-      panelOpen ? "rounded-l-[12px]" : "rounded-[12px]"
-    )}>
-      {/* ── Dark icon rail ── */}
-      <div className="w-[68px] bg-[#1b1b1b] flex flex-col border-r border-white/[0.05]">
+      <aside className="hidden lg:flex flex-shrink-0 w-[62px] flex-col overflow-hidden rounded-[8px] bg-gradient-to-b from-[#2e2e2e] via-[#191919] to-[#080808] shadow-[0_10px_34px_rgba(0,0,0,0.30)]">
         {/* Rail nav items — clicking any item toggles the panel */}
-        <nav className="flex flex-col items-center gap-0.5 px-2 pt-1 flex-1 overflow-y-auto">
-          {visibleSections.map((section) => {
-            const isCurrent = section.id === activeRailId;
-            return (
+        <nav className="flex flex-1 flex-col items-center gap-1.5 overflow-y-auto px-1 pt-2.5">
+          {topSections.map((section) => {
+            const active = section.id === highlightId;
+            // Single-destination sections (Home, Staff) navigate straight to their
+            // page; multi-page sections open their contextual menu.
+            const isDirect = sectionIsDirect(section);
+            const firstHref = section.sections.flatMap((p) => p.items)[0]?.href ?? "/dashboard";
+            const railBadge = section.sections.flatMap((p) => p.items).reduce((n, i) => n + (i.badge ?? 0), 0);
+            const railClass = "group flex w-full flex-col items-center gap-0.5 rounded-lg px-0.5";
+            const inner = (
+              <>
+                <span
+                  className={cn(
+                    "relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150",
+                    active ? "bg-white shadow-sm" : "group-hover:bg-white/15"
+                  )}
+                >
+                  <Icon name={section.icon} size={20} className={active ? "text-[#2d2d2d]" : "text-white"} />
+                  {railBadge > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-red-500 px-1 text-[8px] font-bold leading-none text-white ring-2 ring-[#191919]">
+                      {railBadge > 99 ? "99+" : railBadge}
+                    </span>
+                  )}
+                </span>
+                <span
+                  className={cn(
+                    "w-full truncate text-center text-[8.5px] leading-tight",
+                    active ? "font-semibold text-white" : "font-medium text-white/80 group-hover:text-white"
+                  )}
+                >
+                  {section.short ?? section.label}
+                </span>
+              </>
+            );
+            // Home navigates straight to the dashboard; all other sections open
+            // their contextual menu in the shared card.
+            return isDirect ? (
+              <Link
+                key={section.id}
+                href={firstHref}
+                title={section.label}
+                aria-current={active ? "page" : undefined}
+                onClick={() => setActiveRail(null)}
+                className={railClass}
+              >
+                {inner}
+              </Link>
+            ) : (
               <button
                 key={section.id}
                 type="button"
                 title={section.label}
-                onClick={() => setPanelOpen((p) => !p)}
-                className={cn(
-                  "w-full flex flex-col items-center gap-1 py-2 rounded-[10px] transition-colors duration-150",
-                  isCurrent && panelOpen
-                    ? "bg-white/[0.10] text-white"
-                    : "text-white/45 hover:bg-white/[0.06] hover:text-white/80"
-                )}
+                aria-current={active ? "page" : undefined}
+                onClick={() => setActiveRail((prev) => (prev === section.id ? null : section.id))}
+                className={railClass}
               >
-                <Icon
-                  name={section.icon}
-                  size={18}
-                  className={isCurrent ? "text-action-400" : "text-white/40"}
-                />
-                <span className="text-[9px] font-semibold leading-none tracking-wide">
-                  {section.label}
-                </span>
+                {inner}
               </button>
             );
           })}
         </nav>
 
-        {/* Settings pinned at bottom */}
-        <div className="pb-3 flex justify-center">
+        {/* Settings pinned at bottom — divider above, same tile style */}
+        <div className="mt-1 border-t border-white/15 px-1 pb-2.5 pt-2">
           <Link
             href="/settings"
             title="Settings"
-            className={cn(
-              "w-11 h-11 flex flex-col items-center justify-center gap-1 rounded-[10px] transition-colors duration-150",
-              pathname.startsWith("/settings")
-                ? "bg-white/[0.10] text-action-400"
-                : "text-white/35 hover:bg-white/[0.06] hover:text-white/70"
-            )}
+            aria-current={settingsActive ? "page" : undefined}
+            className="group flex w-full flex-col items-center gap-0.5 rounded-lg px-0.5"
           >
-            <Icon name="settings" size={17} />
+            <span
+              className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-lg transition-colors duration-150",
+                settingsActive ? "bg-white shadow-sm" : "group-hover:bg-white/15"
+              )}
+            >
+              <Icon name="settings" size={20} className={settingsActive ? "text-[#2d2d2d]" : "text-white"} />
+            </span>
+            <span
+              className={cn(
+                "w-full truncate text-center text-[8.5px] leading-tight",
+                settingsActive ? "font-semibold text-white" : "font-medium text-white/80 group-hover:text-white"
+              )}
+            >
+              Settings
+            </span>
           </Link>
         </div>
-      </div>
+      </aside>
+  );
+}
 
-      {/* ── Secondary panel — ClickUp style ── */}
-      {panelOpen && (
-        <div className="w-[220px] bg-white dark:bg-shark-900 flex flex-col overflow-hidden flex-shrink-0">
+/* ── Desktop secondary panel — lives INSIDE the shared content card, joined to <main> by a divider ── */
+function DesktopPanel({ role, activeRail, pendingPOCount = 0, pendingReturnsCount = 0 }: {
+  role: Role; activeRail: string | null; pendingPOCount?: number; pendingReturnsCount?: number;
+}) {
+  const pathname = usePathname();
+  const allSections = getNavConfig(role, pendingPOCount, pendingReturnsCount);
+  const section = allSections.find((s) => s.id === activeRail && s.roles.includes(role));
+  if (!section) return null;
+
+  return (
+        <aside className="hidden lg:flex flex-shrink-0 w-[220px] bg-white dark:bg-shark-900 flex-col border-r border-black/[0.06] dark:border-white/[0.06] overflow-hidden">
           <div className="flex-1 overflow-y-auto pt-3 pb-4">
-            {visibleSections.map((railSection, rIdx) => (
-              <div key={railSection.id} className={rIdx > 0 ? "mt-5" : ""}>
+              <div>
                 {/* Section heading — ClickUp style: small, medium weight, muted */}
                 <p className="px-3 mb-1 text-[11px] font-medium text-shark-400 dark:text-shark-500">
-                  {railSection.label}
+                  {section.label}
                 </p>
 
-                {railSection.sections.map((sub, sIdx) => (
+                {section.sections.map((sub, sIdx) => (
                   <div key={sIdx} className={sIdx > 0 ? "mt-3" : ""}>
                     {sub.heading && (
                       <p className="px-3 mb-1 mt-2 text-[10px] font-medium text-shark-300 dark:text-shark-600">
@@ -392,10 +505,7 @@ function DesktopNav({ role, orgName, pendingPOCount = 0, pendingReturnsCount = 0
                   </div>
                 ))}
               </div>
-            ))}
           </div>
-        </div>
-      )}
-    </aside>
+        </aside>
   );
 }
