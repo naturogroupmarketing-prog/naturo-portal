@@ -105,28 +105,27 @@ export function InventoryListClient({ locations, regionAlerts = {}, isSuperAdmin
     <div className="space-y-6">
       {/* Header + search + all regions — one unified card */}
       <Card padding="none">
-        <div className="p-4 sm:p-5 space-y-4">
-          {/* Title row */}
+        <div className="p-4 sm:p-5">
+          {/* Title row — count left; search + Manage on one right-justified row (matches Assets/Supplies) */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-              <p className="text-xs text-shark-400">
-                {totalRegions} locations · {totalAssets} assets · {totalConsumables} supplies
-              </p>
+            <p className="text-xs text-shark-400 shrink-0">
+              {totalRegions} locations · {totalAssets} assets · {totalConsumables} supplies
+            </p>
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:justify-end">
+              <Input
+                placeholder="Search locations..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full sm:w-64 min-w-0"
+              />
+              {isSuperAdmin && (
+                <Button size="sm" onClick={() => { setShowManageModal(true); setManageTab("locations"); }}>
+                  <Icon name="settings" size={14} className="mr-1.5" />
+                  Manage Locations
+                </Button>
+              )}
             </div>
-            {isSuperAdmin && (
-              <Button size="sm" onClick={() => { setShowManageModal(true); setManageTab("locations"); }}>
-                <Icon name="settings" size={14} className="mr-1.5" />
-                Manage Locations
-              </Button>
-            )}
           </div>
-
-          {/* Search */}
-          <Input
-            placeholder="Search locations..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
         </div>
 
         {/* Location list — divided sections inside the card */}
