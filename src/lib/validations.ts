@@ -287,6 +287,101 @@ export const removeShortcutSchema = z.object({
   shortcutId: z.string().uuid(),
 });
 
+// ─── Training ───────────────────────────────────────────
+
+const boolFromString = () => z.enum(["true", "false"]).transform((v) => v === "true");
+
+/** Optional numeric from FormData string — empty → undefined, else coerced int */
+const optionalInt = () =>
+  z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => (v ? parseInt(v, 10) : undefined))
+    .refine((v) => v === undefined || Number.isFinite(v), "Must be a number");
+
+const COURSE_CATEGORY_VALUES = [
+  "NEW_STAFF_INDUCTION",
+  "SITE_INDUCTION",
+  "SAFETY_TRAINING",
+  "EQUIPMENT_TRAINING",
+  "CHEMICAL_HANDLING",
+  "COMPANY_POLICY",
+  "SOP_TRAINING",
+  "REFRESHER",
+  "COMPLIANCE",
+  "OTHER",
+] as const;
+
+const COURSE_STATUS_VALUES = ["DRAFT", "PUBLISHED", "ARCHIVED"] as const;
+
+export const createCourseSchema = z.object({
+  title: safeString(200),
+  description: optionalString(5000),
+  category: z.enum(COURSE_CATEGORY_VALUES),
+  isMandatory: boolFromString(),
+  estimatedMinutes: optionalInt(),
+  passMark: z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => (v ? parseInt(v, 10) : undefined))
+    .refine((v) => v === undefined || (Number.isFinite(v) && v >= 0 && v <= 100), "Pass mark must be between 0 and 100"),
+  requirePassToComplete: boolFromString(),
+  requireSignoff: boolFromString(),
+  certificateEnabled: boolFromString(),
+  certificateValidityDays: optionalInt(),
+  refresherIntervalDays: optionalInt(),
+  coverImageUrl: optionalString(1000),
+});
+
+export const updateCourseSchema = createCourseSchema.extend({
+  courseId: cuid(),
+  status: z.enum(COURSE_STATUS_VALUES),
+});
+
+export const courseIdSchema = z.object({
+  courseId: cuid(),
+});
+
+export const setCourseStatusSchema = z.object({
+  courseId: cuid(),
+  status: z.enum(COURSE_STATUS_VALUES),
+});
+
+export const sectionSchema = z.object({
+  courseId: cuid(),
+  title: safeString(200),
+  description: optionalString(2000),
+});
+
+export const updateSectionSchema = z.object({
+  sectionId: cuid(),
+  title: safeString(200),
+  description: optionalString(2000),
+});
+
+export const lessonSchema = z.object({
+  sectionId: cuid(),
+  title: safeString(200),
+});
+
+export const updateLessonSchema = z.object({
+  lessonId: cuid(),
+  title: safeString(200),
+});
+
+export const idSchema = z.object({
+  id: cuid(),
+});
+
+export const reorderSchema = z.object({
+  id: cuid(),
+  direction: z.enum(["up", "down"]),
+});
+
 // ─── Helper to parse FormData ───────────────────────────
 
 /**

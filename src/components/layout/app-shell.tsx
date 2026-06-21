@@ -242,6 +242,13 @@ function getNavConfig(role: Role, pendingPOCount: number, pendingReturnsCount: n
       sections: [{ items: [{ label: "Staff", href: "/staff", icon: "users" }] }],
     },
     {
+      id: "training",
+      icon: "graduation-cap",
+      label: "Training",
+      roles: ["SUPER_ADMIN", "BRANCH_MANAGER"],
+      sections: [{ items: [{ label: "Staff Induction & Training", href: "/training", icon: "graduation-cap" }] }],
+    },
+    {
       // Managers & auditors reach reports directly from the rail; for super
       // admins these live inside the Admin menu (below).
       id: "reports",

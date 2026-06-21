@@ -131,6 +131,7 @@ import {
   Moon as MoonIcon,
   Subtract,
   DotsNine,
+  GraduationCap,
 } from "@phosphor-icons/react";
 
 export type IconName =
@@ -147,7 +148,8 @@ export type IconName =
   | "grid"
   | "dots-nine"
   | "funnel"
-  | "sliders";
+  | "sliders"
+  | "graduation-cap";
 
 // Map icon names → Phosphor components
 const iconMap: Record<IconName, React.ComponentType<{ size?: number; weight?: "thin" | "light" | "regular" | "bold" | "fill" | "duotone"; className?: string }>> = {
@@ -204,6 +206,7 @@ const iconMap: Record<IconName, React.ComponentType<{ size?: number; weight?: "t
   "dots-nine":  DotsNine,
   funnel:       Funnel,
   sliders:      SlidersHorizontal,
+  "graduation-cap": GraduationCap,
 };
 
 interface IconProps {

@@ -30,6 +30,10 @@ export type PermissionKey =
   // Regions
   | "regionAdd"
   | "regionDelete"
+  // Training
+  | "trainingManage"
+  | "trainingAssign"
+  | "trainingView"
   // AI
   | "aiAssetCreate";
 
@@ -60,6 +64,9 @@ export const MANAGER_DEFAULTS: Record<PermissionKey, boolean> = {
   importData: false,
   regionAdd: false,
   regionDelete: false,
+  trainingManage: true,
+  trainingAssign: true,
+  trainingView: true,
   aiAssetCreate: false,
 };
 
@@ -90,5 +97,8 @@ export const PERMISSION_INFO: Record<PermissionKey, { label: string; description
   importData: { label: "Import Data", description: "Bulk import assets, consumables, and staff", group: "Features" },
   regionAdd: { label: "Add Regions", description: "Create new regions/locations", group: "Regions" },
   regionDelete: { label: "Delete Regions", description: "Remove regions from the system", group: "Regions" },
+  trainingManage: { label: "Manage Training", description: "Create, edit, publish, and delete training courses", group: "Training" },
+  trainingAssign: { label: "Assign Training", description: "Assign courses to staff and track enrolments", group: "Training" },
+  trainingView: { label: "View Training Records", description: "View training progress, completions, and certificates", group: "Training" },
   aiAssetCreate: { label: "AI Asset Creation", description: "Create assets via AI chat assistant", group: "AI" },
 };

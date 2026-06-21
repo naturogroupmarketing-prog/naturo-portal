@@ -53,13 +53,13 @@ export default function LoginPage() {
       {/* ── Centered card — constrained width on desktop ── */}
       <div className="w-full max-w-[420px]">
 
-        {/* Centered logo above the card */}
-        <div className="flex flex-col items-center mb-8">
-          <Logo size={56} />
-        </div>
-
         {/* Card */}
-        <div className="bg-white rounded-[28px] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] border border-black/[0.05] px-6 pt-7 pb-8">
+        <div className="bg-white rounded-[28px] shadow-[0_2px_12px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] border border-black/[0.05] px-6 pt-8 pb-8">
+
+          {/* Logo inside the card */}
+          <div className="flex justify-center mb-6">
+            <Logo size={52} />
+          </div>
 
           {error && (
             <div className="mb-5 p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600 text-center">

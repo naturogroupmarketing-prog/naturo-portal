@@ -14,14 +14,14 @@ enum Role {
   BRANCH_MANAGER
   STAFF
   AUDITOR
-  TRACKIO_SUPPORT         // Internal Trackio L1/L2 support
-  TRACKIO_SUPPORT_SENIOR  // Internal Trackio L3 impersonation
+  TRACKIO_SUPPORT // Internal Trackio L1/L2 support
+  TRACKIO_SUPPORT_SENIOR // Internal Trackio L3 impersonation
 }
 
 enum SupportAccessLevel {
-  DIAGNOSTICS    // L1 — view diagnostics only, no tenant entry
-  READONLY       // L2 — enter tenant in strict view-only mode
-  IMPERSONATION  // L3 — act as a specific user, time-limited
+  DIAGNOSTICS // L1 — view diagnostics only, no tenant entry
+  READONLY // L2 — enter tenant in strict view-only mode
+  IMPERSONATION // L3 — act as a specific user, time-limited
 }
 
 enum SupportSessionStatus {
@@ -126,6 +126,21 @@ enum AuditAction {
   // System / admin
   BACKUP_DOWNLOADED
   ASSET_DELETED
+  // Training / LMS
+  COURSE_CREATED
+  COURSE_UPDATED
+  COURSE_PUBLISHED
+  COURSE_ARCHIVED
+  COURSE_DELETED
+  COURSE_ASSIGNED
+  ENROLLMENT_STARTED
+  ENROLLMENT_COMPLETED
+  ENROLLMENT_FAILED
+  TRAINING_SIGNED_OFF
+  CERTIFICATE_ISSUED
+  FILE_UPLOAD_SUBMITTED
+  FILE_UPLOAD_APPROVED
+  FILE_UPLOAD_REJECTED
 }
 
 // ─── ORGANIZATION (Multi-Tenancy) ──────────────────────────
@@ -152,26 +167,26 @@ enum ConditionCheckFrequency {
 }
 
 model Organization {
-  id                 String             @id @default(cuid())
-  name               String
-  slug               String             @unique
-  logo               String?
-  plan               SubscriptionPlan   @default(FREE)
-  subscriptionStatus SubscriptionStatus @default(TRIALING)
-  stripeCustomerId   String?            @unique
-  stripeSubscriptionId String?          @unique
-  trialEndsAt        DateTime?
-  maxUsers           Int                @default(3)
-  maxAssets          Int                @default(50)
-  phone              String?
-  email              String?
-  address            String?
-  website            String?
-  abn                String?            // Australian Business Number
-  aiRequestsUsed     Int                @default(0)
-  aiRequestsLimit    Int                @default(100)
-  aiResetDate        DateTime?
-  anomalySettings    Json               @default("{}")
+  id                   String             @id @default(cuid())
+  name                 String
+  slug                 String             @unique
+  logo                 String?
+  plan                 SubscriptionPlan   @default(FREE)
+  subscriptionStatus   SubscriptionStatus @default(TRIALING)
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  trialEndsAt          DateTime?
+  maxUsers             Int                @default(3)
+  maxAssets            Int                @default(50)
+  phone                String?
+  email                String?
+  address              String?
+  website              String?
+  abn                  String? // Australian Business Number
+  aiRequestsUsed       Int                @default(0)
+  aiRequestsLimit      Int                @default(100)
+  aiResetDate          DateTime?
+  anomalySettings      Json               @default("{}")
 
   // Inventory method: "FIFO" | "LIFO" — operational only (IFRS compliance: LIFO NOT for financial reporting)
   defaultInventoryMethod String @default("FIFO")
@@ -182,24 +197,45 @@ model Organization {
   onboardingSkippedAt   DateTime?
   onboardingData        Json?
 
-  users          User[]
-  states         State[]
-  regions        Region[]
-  assets         Asset[]
-  consumables    Consumable[]
-  categories     Category[]
-  purchaseOrders PurchaseOrder[]
-  auditLogs      AuditLog[]
-  damageReports   DamageReport[]
-  conditionChecks      ConditionCheck[]
-  inspectionSchedules        InspectionSchedule[]
-  conditionCheckSchedules    ConditionCheckSchedule[]
-  customFieldDefs            CustomFieldDefinition[]
-  starterKits    StarterKit[]
-  workflowRules  WorkflowRule[]
-  supportPolicy   TenantSupportPolicy?
-  supportSessions SupportSession[]
-  supportRequests SupportAccessRequest[]
+  users                   User[]
+  states                  State[]
+  regions                 Region[]
+  assets                  Asset[]
+  consumables             Consumable[]
+  categories              Category[]
+  purchaseOrders          PurchaseOrder[]
+  auditLogs               AuditLog[]
+  damageReports           DamageReport[]
+  conditionChecks         ConditionCheck[]
+  inspectionSchedules     InspectionSchedule[]
+  conditionCheckSchedules ConditionCheckSchedule[]
+  customFieldDefs         CustomFieldDefinition[]
+  starterKits             StarterKit[]
+  workflowRules           WorkflowRule[]
+  supportPolicy           TenantSupportPolicy?
+  supportSessions         SupportSession[]
+  supportRequests         SupportAccessRequest[]
+
+  // Training / LMS
+  courses                   Course[]
+  courseSections            CourseSection[]
+  lessons                   Lesson[]
+  contentBlocks             ContentBlock[]
+  checklistItems            ChecklistItem[]
+  questions                 Question[]
+  answerOptions             AnswerOption[]
+  acknowledgementStatements AcknowledgementStatement[]
+  courseAssignments         CourseAssignment[]
+  enrollments               Enrollment[]
+  lessonProgress            LessonProgress[]
+  checklistCompletions      ChecklistCompletion[]
+  quizAttempts              QuizAttempt[]
+  quizAnswers               QuizAnswer[]
+  signoffs                  Signoff[]
+  certificates              Certificate[]
+  mediaAssets               MediaAsset[]
+  fileUploadTasks           FileUploadTask[]
+  fileUploadSubmissions     FileUploadSubmission[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -257,20 +293,20 @@ model State {
 }
 
 model Region {
-  id             String       @id @default(cuid())
+  id             String          @id @default(cuid())
   name           String
   stateId        String
   organizationId String
   address        String?
   latitude       Float?
   longitude      Float?
-  state          State        @relation(fields: [stateId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  state          State           @relation(fields: [stateId], references: [id])
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   assets         Asset[]
   consumables    Consumable[]
   users          User[]
   purchaseOrders PurchaseOrder[]
-  createdAt      DateTime       @default(now())
+  createdAt      DateTime        @default(now())
   archivedAt     DateTime?
 
   @@unique([name, stateId])
@@ -281,56 +317,69 @@ model Region {
 // ─── USERS ──────────────────────────────────────────────
 
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String    @unique
-  emailVerified  DateTime?
-  image          String?
-  role           Role      @default(STAFF)
-  regionId       String?
-  organizationId String?
-  isActive              Boolean   @default(true)
-  phone                 String?
-  password              String?
-  dashboardPreferences  Json?
-  emailNotifications    Boolean  @default(true)
-  failedLoginAttempts   Int      @default(0)
-  lockedUntil           DateTime?
-  sessionVersion        Int      @default(1)
-  totpSecret            String?
-  totpEnabled           Boolean  @default(false)
-  onboardingComplete    Boolean  @default(false)
-  resetToken            String?
-  resetTokenExpiry      DateTime?
-  deletedAt             DateTime?
+  id                   String    @id @default(cuid())
+  name                 String?
+  email                String    @unique
+  emailVerified        DateTime?
+  image                String?
+  role                 Role      @default(STAFF)
+  regionId             String?
+  organizationId       String?
+  isActive             Boolean   @default(true)
+  phone                String?
+  password             String?
+  dashboardPreferences Json?
+  emailNotifications   Boolean   @default(true)
+  failedLoginAttempts  Int       @default(0)
+  lockedUntil          DateTime?
+  sessionVersion       Int       @default(1)
+  totpSecret           String?
+  totpEnabled          Boolean   @default(false)
+  onboardingComplete   Boolean   @default(false)
+  resetToken           String?
+  resetTokenExpiry     DateTime?
+  deletedAt            DateTime?
 
   // ── Smart Activity Memory ──
-  recentActions         Json?    // [{action, targetId, targetType, timestamp}] last 20
-  frequentItems         Json?    // [{itemId, itemType, count}] top 10 most-used
+  recentActions Json? // [{action, targetId, targetType, timestamp}] last 20
+  frequentItems Json? // [{itemId, itemType, count}] top 10 most-used
 
   region       Region?       @relation(fields: [regionId], references: [id])
   organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  accounts               Account[]
-  sessions               Session[]
-  assetAssignments       AssetAssignment[]
-  consumableAssignments  ConsumableAssignment[]
-  consumableRequests     ConsumableRequest[]
-  damageReports          DamageReport[]
-  conditionChecks        ConditionCheck[]
-  inspectionSchedules    InspectionSchedule[]    @relation("InspectionCreatedBy")
-  auditLogsPerformed     AuditLog[]              @relation("PerformedBy")
-  auditLogsTarget        AuditLog[]              @relation("TargetUser")
-  permissions            ManagerPermission?
-  purchaseOrdersCreated  PurchaseOrder[]         @relation("POCreatedBy")
-  purchaseOrdersApproved PurchaseOrder[]         @relation("POApprovedBy")
-  notifications          Notification[]
-  maintenanceAssigned    MaintenanceSchedule[]   @relation("MaintenanceAssignee")
-  maintenancePerformed   MaintenanceLog[]        @relation("MaintenancePerformer")
-  starterKitApplications   StarterKitApplication[]
-  appliedStarterKits       StarterKitApplication[] @relation("AppliedStarterKit")
-  conditionCheckSchedule   ConditionCheckSchedule?
+  accounts                       Account[]
+  sessions                       Session[]
+  assetAssignments               AssetAssignment[]
+  consumableAssignments          ConsumableAssignment[]
+  consumableRequests             ConsumableRequest[]
+  damageReports                  DamageReport[]
+  conditionChecks                ConditionCheck[]
+  inspectionSchedules            InspectionSchedule[]     @relation("InspectionCreatedBy")
+  auditLogsPerformed             AuditLog[]               @relation("PerformedBy")
+  auditLogsTarget                AuditLog[]               @relation("TargetUser")
+  permissions                    ManagerPermission?
+  purchaseOrdersCreated          PurchaseOrder[]          @relation("POCreatedBy")
+  purchaseOrdersApproved         PurchaseOrder[]          @relation("POApprovedBy")
+  notifications                  Notification[]
+  maintenanceAssigned            MaintenanceSchedule[]    @relation("MaintenanceAssignee")
+  maintenancePerformed           MaintenanceLog[]         @relation("MaintenancePerformer")
+  starterKitApplications         StarterKitApplication[]
+  appliedStarterKits             StarterKitApplication[]  @relation("AppliedStarterKit")
+  conditionCheckSchedule         ConditionCheckSchedule?
   conditionCheckSchedulesCreated ConditionCheckSchedule[] @relation("ScheduleCreatedBy")
+
+  // Training / LMS
+  coursesCreated          Course[]               @relation("CourseCreatedBy")
+  assignmentTargets       CourseAssignment[]     @relation("AssignmentTargetUser")
+  assignmentsCreated      CourseAssignment[]     @relation("AssignmentAssignedBy")
+  enrollments             Enrollment[]           @relation("EnrollmentUser")
+  enrollmentsAssigned     Enrollment[]           @relation("EnrollmentAssignedBy")
+  signoffs                Signoff[]              @relation("SignoffUser")
+  certificates            Certificate[]          @relation("CertificateUser")
+  mediaUploaded           MediaAsset[]           @relation("MediaUploadedBy")
+  fileTasksCreated        FileUploadTask[]       @relation("FileTaskCreatedBy")
+  fileSubmissions         FileUploadSubmission[] @relation("FileSubmissionUser")
+  fileSubmissionsReviewed FileUploadSubmission[] @relation("FileSubmissionReviewer")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -344,36 +393,36 @@ model User {
 // ─── ASSETS ─────────────────────────────────────────────
 
 model Asset {
-  id             String      @id @default(cuid())
-  assetCode      String      @unique
-  name           String
-  category       String
-  description    String?
-  serialNumber   String?
-  imageUrl       String?
-  qrCodeData     String?
-  regionId       String
-  organizationId String
-  status         AssetStatus @default(AVAILABLE)
-  isHighValue    Boolean     @default(false)
-  purchaseDate   DateTime?
-  purchaseCost   Float?
-  supplier       String?
-  notes          String?     @db.Text
-  sortOrder      Int         @default(0)
-  warrantyExpiry DateTime?
-  depreciationRate Float?    // annual percentage
-  customFields   Json?       // User-defined custom fields as JSON
-  deletedAt      DateTime?
+  id               String      @id @default(cuid())
+  assetCode        String      @unique
+  name             String
+  category         String
+  description      String?
+  serialNumber     String?
+  imageUrl         String?
+  qrCodeData       String?
+  regionId         String
+  organizationId   String
+  status           AssetStatus @default(AVAILABLE)
+  isHighValue      Boolean     @default(false)
+  purchaseDate     DateTime?
+  purchaseCost     Float?
+  supplier         String?
+  notes            String?     @db.Text
+  sortOrder        Int         @default(0)
+  warrantyExpiry   DateTime?
+  depreciationRate Float? // annual percentage
+  customFields     Json? // User-defined custom fields as JSON
+  deletedAt        DateTime?
 
-  region       Region       @relation(fields: [regionId], references: [id])
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  region          Region                @relation(fields: [regionId], references: [id])
+  organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   assignments     AssetAssignment[]
   damageReports   DamageReport[]
   conditionChecks ConditionCheck[]
-  photos        AssetPhoto[]
-  auditLogs     AuditLog[]
-  maintenance   MaintenanceSchedule[]
+  photos          AssetPhoto[]
+  auditLogs       AuditLog[]
+  maintenance     MaintenanceSchedule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -395,17 +444,17 @@ model AssetPhoto {
 }
 
 model AssetAssignment {
-  id                 String         @id @default(cuid())
-  assetId            String
-  userId             String
-  assignmentType     AssignmentType
-  checkoutDate       DateTime       @default(now())
-  expectedReturnDate DateTime?
-  actualReturnDate   DateTime?
-  returnCondition    String?
-  returnNotes        String?        @db.Text
-  acknowledgedAt     DateTime?
-  isActive           Boolean        @default(true)
+  id                      String         @id @default(cuid())
+  assetId                 String
+  userId                  String
+  assignmentType          AssignmentType
+  checkoutDate            DateTime       @default(now())
+  expectedReturnDate      DateTime?
+  actualReturnDate        DateTime?
+  returnCondition         String?
+  returnNotes             String?        @db.Text
+  acknowledgedAt          DateTime?
+  isActive                Boolean        @default(true)
   starterKitApplicationId String?
 
   asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
@@ -423,39 +472,39 @@ model AssetAssignment {
 // ─── CONSUMABLES ────────────────────────────────────────
 
 model Consumable {
-  id               String  @id @default(cuid())
+  id               String    @id @default(cuid())
   name             String
   category         String
   unitType         String
   imageUrl         String?
-  quantityOnHand   Int     @default(0)
-  minimumThreshold Int     @default(5)
-  reorderLevel     Int     @default(10)
+  quantityOnHand   Int       @default(0)
+  minimumThreshold Int       @default(5)
+  reorderLevel     Int       @default(10)
   regionId         String
   organizationId   String
   supplier         String?
   shopUrl          String? // Direct link to the online shop/product page for reordering
   unitCost         Float?
-  notes            String? @db.Text
-  isActive         Boolean @default(true)
-  sortOrder        Int     @default(0)
-  customFields     Json?   // User-defined custom fields as JSON
+  notes            String?   @db.Text
+  isActive         Boolean   @default(true)
+  sortOrder        Int       @default(0)
+  customFields     Json? // User-defined custom fields as JSON
   deletedAt        DateTime?
 
   // ── Smart Inventory Predictions ──
-  avgDailyUsage         Float?    // Rolling 30-day average daily consumption
+  avgDailyUsage          Float? // Rolling 30-day average daily consumption
   predictedDepletionDate DateTime? // Estimated date stock reaches 0
-  riskLevel             String?   // "critical" | "warning" | "ok"
-  lastUsageCalcAt       DateTime? // When predictions were last recalculated
+  riskLevel              String? // "critical" | "warning" | "ok"
+  lastUsageCalcAt        DateTime? // When predictions were last recalculated
 
   // ── Inventory Method Override ──
   // null = inherit org default (defaultInventoryMethod on Organization)
   // "FIFO" | "LIFO" — operational stock tracking only (IFRS: LIFO NOT for financial reporting)
   inventoryMethod String?
 
-  region       Region       @relation(fields: [regionId], references: [id], onDelete: Restrict)
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  requests       ConsumableRequest[]
+  region          Region                 @relation(fields: [regionId], references: [id], onDelete: Restrict)
+  organization    Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requests        ConsumableRequest[]
   assignments     ConsumableAssignment[]
   conditionChecks ConditionCheck[]
   purchaseOrders  PurchaseOrder[]
@@ -498,16 +547,16 @@ model ConsumableRequest {
 }
 
 model ConsumableAssignment {
-  id              String    @id @default(cuid())
-  consumableId    String
-  userId          String
-  quantity        Int
-  assignedDate    DateTime  @default(now())
-  returnedDate    DateTime?
-  returnCondition String?
-  returnNotes     String?   @db.Text
-  isActive        Boolean   @default(true)
-  acknowledgedAt  DateTime?
+  id                      String    @id @default(cuid())
+  consumableId            String
+  userId                  String
+  quantity                Int
+  assignedDate            DateTime  @default(now())
+  returnedDate            DateTime?
+  returnCondition         String?
+  returnNotes             String?   @db.Text
+  isActive                Boolean   @default(true)
+  acknowledgedAt          DateTime?
   starterKitApplicationId String?
 
   consumable Consumable @relation(fields: [consumableId], references: [id], onDelete: Cascade)
@@ -525,18 +574,18 @@ model ConsumableAssignment {
 // ─── DAMAGE / LOSS REPORTS ──────────────────────────────
 
 model DamageReport {
-  id             String  @id @default(cuid())
-  assetId        String
-  reportedById   String
-  organizationId String
-  type           String // "DAMAGE" or "LOSS"
-  description    String  @db.Text
+  id              String    @id @default(cuid())
+  assetId         String
+  reportedById    String
+  organizationId  String
+  type            String // "DAMAGE" or "LOSS"
+  description     String    @db.Text
   photoUrl        String?
-  isResolved      Boolean  @default(false)
+  isResolved      Boolean   @default(false)
   resolvedAt      DateTime?
   resolvedById    String?
-  resolution      String?  // REPAIRED, REPLACED, WRITTEN_OFF, INSURANCE_CLAIM
-  resolutionNotes String?  @db.Text
+  resolution      String? // REPAIRED, REPLACED, WRITTEN_OFF, INSURANCE_CLAIM
+  resolutionNotes String?   @db.Text
 
   asset        Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
   reportedBy   User         @relation(fields: [reportedById], references: [id], onDelete: Cascade)
@@ -554,17 +603,17 @@ model DamageReport {
 // ─── CONDITION CHECKS (Monthly Photo Inspections) ──────
 
 model ConditionCheck {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   userId         String
   organizationId String
-  itemType       String   // "ASSET" or "CONSUMABLE"
+  itemType       String // "ASSET" or "CONSUMABLE"
   assetId        String?
   consumableId   String?
-  condition      String   // "GOOD", "FAIR", "POOR", "DAMAGED"
-  photoUrl       String   @db.Text
-  photoLabel     String?  // Custom label e.g. "Front View", "Interior" — null = default check
-  notes          String?  @db.Text
-  monthYear      String   // "2026-03" format — kept for backward compat
+  condition      String // "GOOD", "FAIR", "POOR", "DAMAGED"
+  photoUrl       String    @db.Text
+  photoLabel     String? // Custom label e.g. "Front View", "Interior" — null = default check
+  notes          String?   @db.Text
+  monthYear      String // "2026-03" format — kept for backward compat
   periodStart    DateTime? // Start of the check period (for schedule-based frequency)
 
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -606,15 +655,15 @@ model InspectionSchedule {
 // ─── CONDITION CHECK SCHEDULES (Per-Staff Frequency) ───
 
 model ConditionCheckSchedule {
-  id                String                   @id @default(cuid())
-  userId            String                   @unique
+  id                String                  @id @default(cuid())
+  userId            String                  @unique
   organizationId    String
-  frequency         ConditionCheckFrequency  @default(MONTHLY)
+  frequency         ConditionCheckFrequency @default(MONTHLY)
   nextDueDate       DateTime
   lastCompletedDate DateTime?
   periodStart       DateTime
   createdById       String
-  isActive          Boolean                  @default(true)
+  isActive          Boolean                 @default(true)
 
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -630,14 +679,14 @@ model ConditionCheckSchedule {
 // ─── CATEGORIES ────────────────────────────────────────
 
 model Category {
-  id                  String   @id @default(cuid())
-  name                String
-  type                String // "ASSET" or "CONSUMABLE"
-  organizationId      String
-  sortOrder           Int      @default(0)
-  equipment           String[] @default([])
-  requiresInspection  Boolean  @default(false)
-  inspectionPhotos    String[] @default([]) // Custom photo labels e.g. ["Front View", "Interior", "Label"]
+  id                 String   @id @default(cuid())
+  name               String
+  type               String // "ASSET" or "CONSUMABLE"
+  organizationId     String
+  sortOrder          Int      @default(0)
+  equipment          String[] @default([])
+  requiresInspection Boolean  @default(false)
+  inspectionPhotos   String[] @default([]) // Custom photo labels e.g. ["Front View", "Interior", "Label"]
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
@@ -690,9 +739,9 @@ model ConsumableBatch {
   id                String   @id @default(cuid())
   consumableId      String
   organizationId    String
-  quantityAdded     Int      // original quantity when batch was created
-  quantityRemaining Int      // remaining (decrements on consumption)
-  unitCost          Float?   // cost per unit at time of receipt (optional)
+  quantityAdded     Int // original quantity when batch was created
+  quantityRemaining Int // remaining (decrements on consumption)
+  unitCost          Float? // cost per unit at time of receipt (optional)
   // "STOCK_ADD" | "RETURN" | "ADJUSTMENT" | "BACKFILL" | "STARTER_KIT"
   source            String
   notes             String?
@@ -700,7 +749,7 @@ model ConsumableBatch {
   receivedAt        DateTime @default(now()) // KEY field for LIFO/FIFO sort
   isActive          Boolean  @default(true)
 
-  consumable   Consumable        @relation(fields: [consumableId], references: [id], onDelete: Cascade)
+  consumable   Consumable         @relation(fields: [consumableId], references: [id], onDelete: Cascade)
   consumptions BatchConsumption[]
 
   createdAt DateTime @default(now())
@@ -713,13 +762,13 @@ model ConsumableBatch {
 
 /// Immutable record of stock deducted from a specific batch.
 model BatchConsumption {
-  id            String   @id @default(cuid())
+  id            String  @id @default(cuid())
   batchId       String
   consumableId  String
   quantity      Int
   // "ASSIGNMENT" | "REQUEST_ISSUE" | "DIRECT_DEDUCT" | "STARTER_KIT" | "DAMAGED"
   actionType    String
-  referenceId   String?  // FK to assignment / request / etc.
+  referenceId   String? // FK to assignment / request / etc.
   performedById String
 
   batch ConsumableBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
@@ -770,25 +819,25 @@ model AuditLog {
 // ─── RETURN CHECKLIST ───────────────────────────────────
 
 model PendingReturn {
-  id               String    @id @default(cuid())
-  itemType         String    // ASSET or CONSUMABLE
-  assetId          String?
-  consumableId     String?
-  quantity         Int       @default(1)
-  returnedByName   String    // Name of the user who had the item
-  returnedByEmail  String
-  returnReason     String?   // e.g. "User deleted", "Manual return"
-  returnCondition  String?   // GOOD, FAIR, POOR, DAMAGED
-  returnNotes      String?   @db.Text
-  organizationId   String
-  regionId         String?
+  id              String  @id @default(cuid())
+  itemType        String // ASSET or CONSUMABLE
+  assetId         String?
+  consumableId    String?
+  quantity        Int     @default(1)
+  returnedByName  String // Name of the user who had the item
+  returnedByEmail String
+  returnReason    String? // e.g. "User deleted", "Manual return"
+  returnCondition String? // GOOD, FAIR, POOR, DAMAGED
+  returnNotes     String? @db.Text
+  organizationId  String
+  regionId        String?
 
-  verifiedById     String?
-  verifiedAt       DateTime?
-  isVerified       Boolean   @default(false)
-  verificationNotes String?  @db.Text
+  verifiedById      String?
+  verifiedAt        DateTime?
+  isVerified        Boolean   @default(false)
+  verificationNotes String?   @db.Text
 
-  createdAt        DateTime  @default(now())
+  createdAt DateTime @default(now())
 
   @@index([organizationId, isVerified])
   @@index([organizationId, isVerified, createdAt])
@@ -810,12 +859,12 @@ model PasswordResetToken {
 // ─── STARTER KITS ───────────────────────────────────────
 
 model StarterKit {
-  id             String @id @default(cuid())
+  id             String                  @id @default(cuid())
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization   Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   name           String
   description    String?
-  isDefault      Boolean @default(false) // auto-apply on new staff creation
+  isDefault      Boolean                 @default(false) // auto-apply on new staff creation
   items          StarterKitItem[]
   applications   StarterKitApplication[]
 
@@ -826,31 +875,31 @@ model StarterKit {
 }
 
 model StarterKitApplication {
-  id             String @id @default(cuid())
+  id             String     @id @default(cuid())
   starterKitId   String
   starterKit     StarterKit @relation(fields: [starterKitId], references: [id], onDelete: Cascade)
   userId         String
-  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   appliedById    String
-  appliedBy      User @relation("AppliedStarterKit", fields: [appliedById], references: [id], onDelete: Cascade)
-  results        String? @db.Text // JSON string of what was applied
-  acknowledged   Boolean @default(false)
+  appliedBy      User       @relation("AppliedStarterKit", fields: [appliedById], references: [id], onDelete: Cascade)
+  results        String?    @db.Text // JSON string of what was applied
+  acknowledged   Boolean    @default(false)
   acknowledgedAt DateTime?
-  signatureData  String? @db.Text // base64 signature image
-  appliedAt      DateTime @default(now())
+  signatureData  String?    @db.Text // base64 signature image
+  appliedAt      DateTime   @default(now())
 
   @@index([userId])
   @@index([starterKitId])
 }
 
 model StarterKitItem {
-  id           String @id @default(cuid())
+  id           String     @id @default(cuid())
   starterKitId String
   starterKit   StarterKit @relation(fields: [starterKitId], references: [id], onDelete: Cascade)
   itemType     String // "ASSET_CATEGORY" or "CONSUMABLE"
   category     String? // for ASSET_CATEGORY: assign one available asset from this category
   consumableId String? // for CONSUMABLE: specific consumable to assign
-  quantity     Int    @default(1) // quantity for consumables
+  quantity     Int        @default(1) // quantity for consumables
 
   @@index([starterKitId])
 }
@@ -858,15 +907,15 @@ model StarterKitItem {
 // ─── CUSTOM FIELD DEFINITIONS ───────────────────────────
 
 model CustomFieldDefinition {
-  id             String  @id @default(cuid())
+  id             String       @id @default(cuid())
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  entityType     String  // "ASSET" or "CONSUMABLE"
+  entityType     String // "ASSET" or "CONSUMABLE"
   fieldName      String
-  fieldType      String  // "TEXT", "NUMBER", "DATE", "SELECT"
+  fieldType      String // "TEXT", "NUMBER", "DATE", "SELECT"
   options        String? // comma-separated options for SELECT type
-  isRequired     Boolean @default(false)
-  sortOrder      Int     @default(0)
+  isRequired     Boolean      @default(false)
+  sortOrder      Int          @default(0)
 
   createdAt DateTime @default(now())
 
@@ -877,17 +926,17 @@ model CustomFieldDefinition {
 // ─── NOTIFICATIONS ──────────────────────────────────────
 
 model Notification {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type      String   // LOW_STOCK, OVERDUE_RETURN, PENDING_REQUEST, DAMAGE_REPORT, ASSET_ASSIGNED, etc.
-  title     String
-  message   String
-  link      String?  // optional URL to navigate to
-  isRead    Boolean  @default(false)
-  priority  String   @default("info") // "critical" | "warning" | "info"
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type          String // LOW_STOCK, OVERDUE_RETURN, PENDING_REQUEST, DAMAGE_REPORT, ASSET_ASSIGNED, etc.
+  title         String
+  message       String
+  link          String? // optional URL to navigate to
+  isRead        Boolean   @default(false)
+  priority      String    @default("info") // "critical" | "warning" | "info"
   predictedDate DateTime? // For forecast-based alerts (e.g. "runs out on X date")
-  createdAt DateTime @default(now())
+  createdAt     DateTime  @default(now())
 
   @@index([userId, isRead])
   @@index([userId, createdAt])
@@ -897,20 +946,20 @@ model Notification {
 // ─── MAINTENANCE ────────────────────────────────────────
 
 model MaintenanceSchedule {
-  id          String    @id @default(cuid())
-  assetId     String
-  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  title       String
-  description String?   @db.Text
-  frequency   String    // ONCE, DAILY, WEEKLY, MONTHLY, QUARTERLY, YEARLY
-  nextDueDate DateTime
+  id                String           @id @default(cuid())
+  assetId           String
+  asset             Asset            @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  title             String
+  description       String?          @db.Text
+  frequency         String // ONCE, DAILY, WEEKLY, MONTHLY, QUARTERLY, YEARLY
+  nextDueDate       DateTime
   lastCompletedDate DateTime?
-  assignedToId String?
-  assignedTo  User?     @relation("MaintenanceAssignee", fields: [assignedToId], references: [id])
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  logs        MaintenanceLog[]
+  assignedToId      String?
+  assignedTo        User?            @relation("MaintenanceAssignee", fields: [assignedToId], references: [id])
+  isActive          Boolean          @default(true)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  logs              MaintenanceLog[]
 
   @@index([assetId])
   @@index([nextDueDate])
@@ -919,15 +968,15 @@ model MaintenanceSchedule {
 }
 
 model MaintenanceLog {
-  id          String   @id @default(cuid())
-  scheduleId  String
-  schedule    MaintenanceSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  id            String              @id @default(cuid())
+  scheduleId    String
+  schedule      MaintenanceSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   performedById String
-  performedBy User     @relation("MaintenancePerformer", fields: [performedById], references: [id])
-  notes       String?  @db.Text
-  cost        Float?
-  condition   String?  // GOOD, FAIR, POOR, NEEDS_REPLACEMENT
-  completedAt DateTime @default(now())
+  performedBy   User                @relation("MaintenancePerformer", fields: [performedById], references: [id])
+  notes         String?             @db.Text
+  cost          Float?
+  condition     String? // GOOD, FAIR, POOR, NEEDS_REPLACEMENT
+  completedAt   DateTime            @default(now())
 
   @@index([scheduleId])
 }
@@ -937,17 +986,17 @@ model MaintenanceLog {
 // ─── WORKFLOW RULES ─────────────────────────────────────
 
 model WorkflowRule {
-  id             String   @id @default(cuid())
+  id             String       @id @default(cuid())
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   name           String
-  trigger        String   // WorkflowTrigger value
-  conditions     Json     @default("{}")
-  action         String   // WorkflowAction value
-  actionConfig   Json     @default("{}")
-  enabled        Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  trigger        String // WorkflowTrigger value
+  conditions     Json         @default("{}")
+  action         String // WorkflowAction value
+  actionConfig   Json         @default("{}")
+  enabled        Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@index([organizationId])
 }
@@ -960,17 +1009,17 @@ model ManagerPermission {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Staff permissions
-  staffAdd            Boolean @default(true)
-  staffEdit           Boolean @default(false)
-  staffDelete         Boolean @default(true)
-  staffViewDetails    Boolean @default(false)
-  staffPasswordReset  Boolean @default(false)
+  staffAdd           Boolean @default(true)
+  staffEdit          Boolean @default(false)
+  staffDelete        Boolean @default(true)
+  staffViewDetails   Boolean @default(false)
+  staffPasswordReset Boolean @default(false)
 
   // Asset permissions
-  assetAdd         Boolean @default(true)
-  assetEdit        Boolean @default(true)
-  assetDelete      Boolean @default(true)
-  assetAssign      Boolean @default(true)
+  assetAdd    Boolean @default(true)
+  assetEdit   Boolean @default(true)
+  assetDelete Boolean @default(true)
+  assetAssign Boolean @default(true)
 
   // Consumable permissions
   consumableAdd         Boolean @default(true)
@@ -980,23 +1029,23 @@ model ManagerPermission {
   consumableStockAdjust Boolean @default(false)
 
   // Feature permissions
-  purchaseOrderManage    Boolean @default(false)
-  purchaseOrderApprove   Boolean @default(false)
-  purchaseOrderEditQty   Boolean @default(false)
-  maintenanceManage      Boolean @default(true)
-  starterKitsManage      Boolean @default(false)
-  returnsVerify          Boolean @default(true)
-  reportsAccess          Boolean @default(true)
-  activityLogAccess      Boolean @default(false)
-  viewFinancialData      Boolean @default(false)
-  importData             Boolean @default(false)
+  purchaseOrderManage  Boolean @default(false)
+  purchaseOrderApprove Boolean @default(false)
+  purchaseOrderEditQty Boolean @default(false)
+  maintenanceManage    Boolean @default(true)
+  starterKitsManage    Boolean @default(false)
+  returnsVerify        Boolean @default(true)
+  reportsAccess        Boolean @default(true)
+  activityLogAccess    Boolean @default(false)
+  viewFinancialData    Boolean @default(false)
+  importData           Boolean @default(false)
 
   // Region permissions
-  regionAdd           Boolean @default(false)
-  regionDelete        Boolean @default(false)
+  regionAdd    Boolean @default(false)
+  regionDelete Boolean @default(false)
 
   // AI permissions
-  aiAssetCreate       Boolean @default(false)
+  aiAssetCreate Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1025,23 +1074,23 @@ model TenantSupportPolicy {
 
 /// A request from a support agent to access a tenant workspace.
 model SupportAccessRequest {
-  id             String @id @default(cuid())
-  organizationId String
-  agentId        String
-  agentEmail     String
-  agentName      String
-  accessLevel    SupportAccessLevel
-  targetUserId   String?
-  targetUserEmail String?
-  reason         String               @db.Text
-  status         SupportRequestStatus @default(PENDING)
-  approvedById   String?
-  approvedAt     DateTime?
-  deniedAt       DateTime?
-  statusNote     String?
-  sessionDurationMinutes Int @default(60)
-  expiresAt      DateTime
-  session        SupportSession?
+  id                     String               @id @default(cuid())
+  organizationId         String
+  agentId                String
+  agentEmail             String
+  agentName              String
+  accessLevel            SupportAccessLevel
+  targetUserId           String?
+  targetUserEmail        String?
+  reason                 String               @db.Text
+  status                 SupportRequestStatus @default(PENDING)
+  approvedById           String?
+  approvedAt             DateTime?
+  deniedAt               DateTime?
+  statusNote             String?
+  sessionDurationMinutes Int                  @default(60)
+  expiresAt              DateTime
+  session                SupportSession?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1056,31 +1105,31 @@ model SupportAccessRequest {
 
 /// An active or historical support session.
 model SupportSession {
-  id             String @id @default(cuid())
-  organizationId String
-  orgName        String
-  agentId        String
-  agentEmail     String
-  agentName      String
-  accessLevel    SupportAccessLevel
+  id                     String               @id @default(cuid())
+  organizationId         String
+  orgName                String
+  agentId                String
+  agentEmail             String
+  agentName              String
+  accessLevel            SupportAccessLevel
   impersonatingUserId    String?
   impersonatingUserEmail String?
   impersonatingUserName  String?
-  status         SupportSessionStatus @default(ACTIVE)
-  startedAt      DateTime             @default(now())
-  endedAt        DateTime?
-  expiresAt      DateTime
-  ipAddress      String?
-  userAgent      String?
-  endReason      String?
-  approvedByAdmin      Boolean  @default(false)
-  approvalTimestamp    DateTime?
-  notes          String?  @db.Text
-  pagesVisited   String[] @default([])
-  writeAttempts  Int      @default(0)
-  accessRequestId String? @unique
+  status                 SupportSessionStatus @default(ACTIVE)
+  startedAt              DateTime             @default(now())
+  endedAt                DateTime?
+  expiresAt              DateTime
+  ipAddress              String?
+  userAgent              String?
+  endReason              String?
+  approvedByAdmin        Boolean              @default(false)
+  approvalTimestamp      DateTime?
+  notes                  String?              @db.Text
+  pagesVisited           String[]             @default([])
+  writeAttempts          Int                  @default(0)
+  accessRequestId        String?              @unique
 
-  organization  Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization  Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   accessRequest SupportAccessRequest? @relation(fields: [accessRequestId], references: [id])
   events        SupportSessionEvent[]
 
@@ -1095,7 +1144,7 @@ model SupportSession {
 
 /// Individual events recorded during a support session.
 model SupportSessionEvent {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   sessionId   String
   eventType   String
   description String
@@ -1107,4 +1156,554 @@ model SupportSessionEvent {
 
   @@index([sessionId])
   @@index([createdAt])
+}
+
+// ─── STAFF INDUCTION & TRAINING (LMS) ───────────────────────────────────────
+
+enum CourseCategory {
+  NEW_STAFF_INDUCTION
+  SITE_INDUCTION
+  SAFETY_TRAINING
+  EQUIPMENT_TRAINING
+  CHEMICAL_HANDLING
+  COMPANY_POLICY
+  SOP_TRAINING
+  REFRESHER
+  COMPLIANCE
+  OTHER
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContentBlockType {
+  RICH_TEXT
+  VIDEO
+  IMAGE
+  FILE_DOWNLOAD
+  CHECKLIST
+}
+
+enum VideoProvider {
+  UPLOAD
+  YOUTUBE
+  VIMEO
+}
+
+enum QuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  SHORT_ANSWER
+}
+
+enum MediaType {
+  VIDEO
+  IMAGE
+  PDF
+  DOCUMENT
+}
+
+enum EnrollmentStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  EXPIRED
+}
+
+enum AssignmentTargetType {
+  INDIVIDUAL
+  ROLE
+  REGION
+  ALL_STAFF
+}
+
+enum SignatureType {
+  DRAWN
+  TYPED
+}
+
+enum FileUploadStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+/// Top-level training container (induction, SOP, safety course, etc.)
+model Course {
+  id                      String         @id @default(cuid())
+  organizationId          String
+  title                   String
+  description             String?        @db.Text
+  category                CourseCategory @default(NEW_STAFF_INDUCTION)
+  coverImageUrl           String?
+  status                  CourseStatus   @default(DRAFT)
+  isMandatory             Boolean        @default(false)
+  estimatedMinutes        Int?
+  passMark                Int? // % required to pass quizzes (null = no quiz gate)
+  requirePassToComplete   Boolean        @default(false)
+  requireSignoff          Boolean        @default(true)
+  certificateEnabled      Boolean        @default(true)
+  certificateValidityDays Int? // null = certificate never expires
+  refresherIntervalDays   Int? // auto re-assign every N days (null = no refresher)
+  sortOrder               Int            @default(0)
+  createdById             String
+  deletedAt               DateTime?
+
+  organization    Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy       User                       @relation("CourseCreatedBy", fields: [createdById], references: [id])
+  sections        CourseSection[]
+  statements      AcknowledgementStatement[]
+  fileUploadTasks FileUploadTask[]
+  assignments     CourseAssignment[]
+  enrollments     Enrollment[]
+  certificates    Certificate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([organizationId, status, deletedAt])
+  @@index([category])
+  @@index([sortOrder])
+}
+
+/// Ordered grouping of lessons within a course
+model CourseSection {
+  id             String  @id @default(cuid())
+  courseId       String
+  organizationId String
+  title          String
+  description    String? @db.Text
+  sortOrder      Int     @default(0)
+
+  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lessons      Lesson[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId, sortOrder])
+  @@index([organizationId])
+}
+
+/// A single lesson; holds ordered content blocks and optional questions
+model Lesson {
+  id             String @id @default(cuid())
+  sectionId      String
+  courseId       String // denormalized for course-wide queries
+  organizationId String
+  title          String
+  sortOrder      Int    @default(0)
+
+  section       CourseSection    @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  organization  Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contentBlocks ContentBlock[]
+  questions     Question[]
+  progress      LessonProgress[]
+  quizAttempts  QuizAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sectionId, sortOrder])
+  @@index([courseId])
+  @@index([organizationId])
+}
+
+/// Flexible content unit: rich text, video, image(s), file download, or checklist
+model ContentBlock {
+  id             String           @id @default(cuid())
+  lessonId       String
+  organizationId String
+  type           ContentBlockType
+  sortOrder      Int              @default(0)
+  richText       String?          @db.Text // HTML for RICH_TEXT
+  videoProvider  VideoProvider? // for VIDEO
+  videoUrl       String?          @db.Text
+  imageUrls      Json? // array of image URLs for IMAGE (single / multiple / before-after)
+  caption        String?          @db.Text
+  fileUrl        String?          @db.Text // for FILE_DOWNLOAD
+  fileName       String?
+  fileSizeBytes  Int?
+  required       Boolean          @default(false)
+  config         Json? // extra per-block options (formatting, layout)
+
+  lesson         Lesson          @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  checklistItems ChecklistItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lessonId, sortOrder])
+  @@index([organizationId])
+}
+
+/// An item inside a CHECKLIST content block
+model ChecklistItem {
+  id             String  @id @default(cuid())
+  contentBlockId String
+  organizationId String
+  text           String  @db.Text
+  required       Boolean @default(true)
+  sortOrder      Int     @default(0)
+
+  contentBlock ContentBlock          @relation(fields: [contentBlockId], references: [id], onDelete: Cascade)
+  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  completions  ChecklistCompletion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contentBlockId, sortOrder])
+  @@index([organizationId])
+}
+
+/// Knowledge-verification question attached to a lesson
+model Question {
+  id             String       @id @default(cuid())
+  lessonId       String
+  organizationId String
+  type           QuestionType
+  prompt         String       @db.Text
+  points         Int          @default(1)
+  sortOrder      Int          @default(0)
+  explanation    String?      @db.Text
+  correctBoolean Boolean? // for TRUE_FALSE
+  correctText    String? // for SHORT_ANSWER (keyword / exact match)
+
+  lesson       Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  options      AnswerOption[]
+  answers      QuizAnswer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lessonId, sortOrder])
+  @@index([organizationId])
+}
+
+/// Selectable option for a SINGLE_CHOICE / MULTIPLE_CHOICE question
+model AnswerOption {
+  id             String  @id @default(cuid())
+  questionId     String
+  organizationId String
+  text           String  @db.Text
+  isCorrect      Boolean @default(false)
+  sortOrder      Int     @default(0)
+
+  question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([questionId, sortOrder])
+  @@index([organizationId])
+}
+
+/// A statement the staff member must acknowledge at sign-off
+model AcknowledgementStatement {
+  id             String  @id @default(cuid())
+  courseId       String
+  organizationId String
+  text           String  @db.Text
+  required       Boolean @default(true)
+  sortOrder      Int     @default(0)
+
+  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId, sortOrder])
+  @@index([organizationId])
+}
+
+/// Assignment rule — drives auto-enrolment by individual, role, region, or all staff
+model CourseAssignment {
+  id             String               @id @default(cuid())
+  courseId       String
+  organizationId String
+  targetType     AssignmentTargetType
+  targetUserId   String?
+  targetRole     Role?
+  targetRegionId String?
+  dueInDays      Int?
+  assignedById   String
+
+  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  targetUser   User?        @relation("AssignmentTargetUser", fields: [targetUserId], references: [id], onDelete: Cascade)
+  assignedBy   User         @relation("AssignmentAssignedBy", fields: [assignedById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([courseId])
+  @@index([organizationId])
+  @@index([targetUserId])
+  @@index([targetRegionId])
+}
+
+/// A specific staff member's instance of taking a course (progress + outcome)
+model Enrollment {
+  id               String           @id @default(cuid())
+  courseId         String
+  userId           String
+  organizationId   String
+  status           EnrollmentStatus @default(NOT_STARTED)
+  progressPct      Int              @default(0)
+  timeSpentSeconds Int              @default(0)
+  scorePct         Int?
+  passed           Boolean?
+  attemptCount     Int              @default(0)
+  startedAt        DateTime?
+  lastActivityAt   DateTime?
+  completedAt      DateTime?
+  dueAt            DateTime?
+  expiresAt        DateTime?
+  assignedById     String?
+
+  course               Course                @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user                 User                  @relation("EnrollmentUser", fields: [userId], references: [id], onDelete: Cascade)
+  organization         Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assignedBy           User?                 @relation("EnrollmentAssignedBy", fields: [assignedById], references: [id])
+  lessonProgress       LessonProgress[]
+  checklistCompletions ChecklistCompletion[]
+  quizAttempts         QuizAttempt[]
+  signoff              Signoff?
+  certificate          Certificate?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, userId])
+  @@index([userId, status])
+  @@index([courseId, status])
+  @@index([organizationId])
+  @@index([organizationId, status])
+  @@index([dueAt])
+  @@index([expiresAt])
+}
+
+/// Per-lesson completion within an enrollment
+model LessonProgress {
+  id               String    @id @default(cuid())
+  enrollmentId     String
+  lessonId         String
+  organizationId   String
+  completed        Boolean   @default(false)
+  completedAt      DateTime?
+  timeSpentSeconds Int       @default(0)
+
+  enrollment   Enrollment   @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lesson       Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([enrollmentId, lessonId])
+  @@index([enrollmentId])
+  @@index([organizationId])
+}
+
+/// A ticked checklist item within an enrollment (required before completion)
+model ChecklistCompletion {
+  id              String   @id @default(cuid())
+  enrollmentId    String
+  checklistItemId String
+  organizationId  String
+  checkedAt       DateTime @default(now())
+
+  enrollment    Enrollment    @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  checklistItem ChecklistItem @relation(fields: [checklistItemId], references: [id], onDelete: Cascade)
+  organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([enrollmentId, checklistItemId])
+  @@index([enrollmentId])
+  @@index([organizationId])
+}
+
+/// A single graded attempt at a lesson's questions
+model QuizAttempt {
+  id             String    @id @default(cuid())
+  enrollmentId   String
+  lessonId       String
+  organizationId String
+  scorePct       Int       @default(0)
+  passed         Boolean   @default(false)
+  startedAt      DateTime  @default(now())
+  submittedAt    DateTime?
+
+  enrollment   Enrollment   @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lesson       Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  answers      QuizAnswer[]
+
+  createdAt DateTime @default(now())
+
+  @@index([enrollmentId])
+  @@index([lessonId])
+  @@index([organizationId])
+}
+
+/// A staff member's answer to one question within an attempt
+model QuizAnswer {
+  id                String   @id @default(cuid())
+  attemptId         String
+  questionId        String
+  organizationId    String
+  selectedOptionIds Json? // array of AnswerOption ids
+  shortAnswerText   String?  @db.Text
+  booleanAnswer     Boolean?
+  isCorrect         Boolean  @default(false)
+
+  attempt      QuizAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([attemptId])
+  @@index([questionId])
+  @@index([organizationId])
+}
+
+/// Permanent digital sign-off / acknowledgement record (signature + audit metadata)
+model Signoff {
+  id                     String        @id @default(cuid())
+  enrollmentId           String        @unique
+  userId                 String
+  organizationId         String
+  signatureType          SignatureType
+  signatureData          String        @db.Text // base64 PNG (drawn) or typed name
+  signedName             String
+  acknowledgedStatements Json // snapshot [{ id, text }]
+  ipAddress              String?
+  userAgent              String?       @db.Text
+  deviceInfo             String?       @db.Text
+  signedAt               DateTime      @default(now())
+
+  enrollment   Enrollment   @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  user         User         @relation("SignoffUser", fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([organizationId])
+}
+
+/// PDF certificate issued on successful completion (stored in staff record)
+model Certificate {
+  id                String    @id @default(cuid())
+  enrollmentId      String    @unique
+  courseId          String
+  userId            String
+  organizationId    String
+  certificateNumber String    @unique
+  pdfUrl            String?   @db.Text
+  issuedAt          DateTime  @default(now())
+  expiresAt         DateTime?
+
+  enrollment   Enrollment   @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user         User         @relation("CertificateUser", fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([courseId])
+  @@index([organizationId])
+  @@index([expiresAt])
+}
+
+/// Central reusable media library (videos, images, PDFs, documents)
+model MediaAsset {
+  id             String         @id @default(cuid())
+  organizationId String
+  type           MediaType
+  title          String
+  url            String         @db.Text
+  fileName       String?
+  fileSizeBytes  Int?
+  mimeType       String?
+  provider       VideoProvider? // for externally-hosted video
+  thumbnailUrl   String?        @db.Text
+  uploadedById   String
+  deletedAt      DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  uploadedBy   User         @relation("MediaUploadedBy", fields: [uploadedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId, type, deletedAt])
+  @@index([organizationId])
+}
+
+/// A required document upload (licence, police check, qualification, etc.)
+model FileUploadTask {
+  id             String    @id @default(cuid())
+  organizationId String
+  courseId       String? // optional — can be course-attached or standalone
+  title          String
+  description    String?   @db.Text
+  required       Boolean   @default(true)
+  allowedTypes   Json      @default("[\"image\", \"pdf\"]")
+  allowMultiple  Boolean   @default(false)
+  expiryTracking Boolean   @default(false) // for documents that expire
+  sortOrder      Int       @default(0)
+  createdById    String
+  deletedAt      DateTime?
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  course       Course?                @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdBy    User                   @relation("FileTaskCreatedBy", fields: [createdById], references: [id])
+  submissions  FileUploadSubmission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([courseId])
+}
+
+/// A staff member's submitted file for a FileUploadTask (with approval workflow)
+model FileUploadSubmission {
+  id             String           @id @default(cuid())
+  taskId         String
+  userId         String
+  organizationId String
+  fileUrl        String           @db.Text
+  fileName       String
+  fileSizeBytes  Int?
+  mimeType       String?
+  status         FileUploadStatus @default(PENDING)
+  reviewNote     String?          @db.Text
+  reviewedById   String?
+  reviewedAt     DateTime?
+  expiresAt      DateTime? // e.g. licence / check expiry
+
+  task         FileUploadTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user         User           @relation("FileSubmissionUser", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy   User?          @relation("FileSubmissionReviewer", fields: [reviewedById], references: [id])
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([taskId, status])
+  @@index([userId])
+  @@index([organizationId, status])
 }

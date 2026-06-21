@@ -19,6 +19,7 @@ const staticOverrides: Record<string, string> = {
   "maintenance":      "Maintenance",
   "returns":          "Returns",
   "staff":            "Staff",
+  "training":         "Staff Induction & Training",
   "settings":         "Settings",
   "activity":         "Activity Log",
   "scan":             "Scan QR",
